@@ -1,0 +1,714 @@
+/* main look -------------------------------------------------------------- */
+BODY {
+	background-color: #fff;
+	padding: 0;
+	margin: 4px 6px;
+	font-family: verdana, lucida, helvetica, arial, geneva, sans-serif;
+	font-size: 14px;
+}
+
+H1#title {
+	font-size: x-large;
+	margin-top: 0;
+	padding-top: 0;
+}
+
+
+/* content area ----------------------------------------------------------- */
+
+DIV#banner {
+	font-size: smaller;
+}
+
+DIV#banner DIV#tools {
+	float: right;
+	text-align: right;
+	padding-bottom: .5em;
+}
+
+DIV#page {
+	clear: both;
+	border : 1px solid #f96;
+	border-top : none;
+	margin : 0;
+	width: 100%;
+	padding : 0;
+}
+
+DIV#contents {
+	float: right;
+	margin: 0.75em 6px 0 0;
+	padding: 0;
+	width:72%;
+	}
+/* be nice to Opera 5 */
+BODY>DIV#contents {width:72%;}
+
+DIV.nomenu#contents {
+	width:97%;
+	}
+/* be nice to Opera 5. */
+BODY>DIV.nomenu#contents {width:97%;}
+
+DIV.spacer {
+	clear: both;
+	height: 6px;
+	margin: 0;
+	padding: 0;
+}
+
+DIV#footer {
+	margin: 0;
+	margin-top: 2px;
+	padding: 0;
+	text-align: center;
+	font-size: x-small;
+}
+
+
+/* wizard step menu area -------------------------------------------------- */
+
+DIV#menu {
+	float: left;
+	margin: 0.75em 0 0 6px;
+	padding: 0;
+	font-size: smaller;
+	width:25%;
+	}
+/* be nice to Opera 5. */
+BODY>DIV#menu {width:25%;}
+
+DIV#menu P.header {
+	background-color: #363;
+	color: #cfc;
+	margin: 0;
+	font-size: larger;
+	font-weight: bold;
+	padding: 0.25em;
+}
+
+DIV#menu UL {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+DIV#menu UL LI {
+	margin-top: 1em;
+	margin-left: 16px;
+}
+
+DIV#menu UL LI P {
+	background-color: #fc9;
+	margin: 0;
+	padding: 0.25em;
+}
+
+DIV#menu A {
+	font-weight: bold;
+}
+
+DIV#menu A:link,
+DIV#menu A:visited {
+	color:#696;
+}
+
+DIV#menu A:hover,
+DIV#menu A:active,
+DIV#menu LI.here A:link,
+DIV#menu LI.here A:visited {
+	color:#363;
+}
+
+DIV#menu LI.here A {
+	text-decoration:none;
+}
+
+DIV#menu LI.here {
+	list-style: square url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow.gif) outside;
+}
+
+DIV#menu UL UL LI {
+	background-color: #fff;
+	margin: 0;
+	padding: 0 0.25em;
+	list-style: none;
+}
+
+
+/* table format ----------------------------------------------------------- */
+
+DIV#contents TABLE {
+	border: 1px solid #363;
+	border-collapse: collapse;
+}
+
+DIV#contents TABLE.nowrap {
+	white-space: nowrap;
+}
+
+DIV#contents TABLE TH {
+	background-color: #363;
+	color: #cfc;
+	padding: 0.1em .6em;
+}
+
+DIV#contents TABLE TH.L {
+	text-align: left;
+}
+
+DIV#contents TABLE TH.Lsm {
+	text-align: left;
+	font-size: smaller;
+}
+
+DIV#contents TABLE TH.sm {
+	font-size: smaller;
+}
+
+DIV#contents TABLE TH.R {
+	text-align: right;
+}
+
+DIV#contents TABLE TH.Rsm {
+	text-align: right;
+	font-size: smaller;
+}
+
+DIV#contents TABLE TD {
+	padding: 0.1em .6em;
+}
+
+DIV#contents TABLE.srcView TD {
+	padding: 0;
+}
+
+DIV#contents DIV.toolbar TABLE {
+	border: none;
+}
+
+DIV#contents DIV.toolbar TABLE TD {
+	padding: 0;
+}
+
+DIV#contents TABLE.srcView TD TABLE TD {
+	padding: 1;
+}
+
+DIV#contents TABLE TD.sm {
+	font-size: smaller;
+}
+
+DIV#contents TABLE TD.marker {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow.gif);
+        background-repeat: no-repeat;
+	background-position: center left;
+}
+
+DIV#contents TABLE.percentbar {
+	border-width: 0;
+	padding: 0;
+	margin: 0;
+	/* width: 200px;
+	height: 12px; */
+}
+
+DIV#contents TABLE.percentbar TD {
+	padding: 0;
+	margin: 0;
+	border: none;
+}
+DIV#contents TABLE.percentbar TD.plus  { background-color: #00df00; }
+DIV#contents TABLE.percentbar TD.minus { background-color: #df0000; }
+
+DIV#contents TABLE TR#divider TD { border-top: 1px solid #363; }
+DIV#contents TABLE TR#divider TABLE.percentbar TD { border: none; }
+
+DIV.shadow {
+	background: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/images/shadowAlpha.png) no-repeat bottom right !important;
+	background: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/images/shadow.gif) no-repeat bottom right;
+	float: left;
+	margin: 10px 0 0 10px !important;
+	margin: 10px 0 0 5px;
+}
+
+DIV.shadow TABLE {
+	display: block;
+  	position: relative;
+	margin: -6px 6px 6px -6px;
+}
+
+
+/* globalnav -------------------------------------------------------------- */
+
+#globalnav {
+	position:relative;
+	float:left;
+	width:100%;
+	/*padding: 0 0 1.5em 0; */ /* 0 1.75em 1em 1.75em; */
+	padding: 0;
+	margin:0;
+	list-style:none;
+	line-height:1em;
+}
+
+#globalnav LI {
+	float:left;
+	margin:0;
+	/* margin-left: 10px; */
+	padding:0;
+}
+
+#globalnav LI.globalnav-indent {
+	/* cannot just use left padding on the LI or the globalnav, since
+	   that will make the subnav UL block too wide. */
+	width: 2em;
+}
+
+#globalsubnav LI.uid {
+	font-size: smaller;
+	float: right;
+        display: block;
+	margin: 1px 4px 0 0;
+}
+
+#globalnav A {
+	display:block;
+	color:#9c9;
+	text-decoration:none;
+	font-weight:bold;
+	background:#363;
+	margin:0;
+	padding:0.25em 1em;
+	border-left:1px solid #cfc;
+	border-top:1px solid #cfc;
+	border-right:1px solid #030;
+}
+
+#globalnav LI.admin A {
+	color: #c9c;
+	background:#636;
+	border-left:1px solid #fcf;
+	border-top:1px solid #fcf;
+	border-right:1px solid #303;
+}
+
+#globalnav LI.staff A {
+	color: #ccf;
+	background:#336;
+	border-left:1px solid #ccf;
+	border-top:1px solid #ccf;
+	border-right:1px solid #003;
+}
+
+#globalnav A:hover,
+#globalnav A:active,
+#globalnav LI.here1 A:link,
+#globalnav LI.here1 A:visited {
+	background: #fc9;
+	color: #363;
+	border-left:1px solid #ffc;
+	border-top:1px solid #ffc;
+	border-right:1px solid #930;
+}
+
+#globalnav LI.admin A:hover,
+#globalnav LI.admin A:active {
+	background: #c9c;
+	color: #303;
+	border-left:1px solid #fcf;
+	border-top:1px solid #fcf;
+	border-right:1px solid #303;
+}
+
+#globalnav LI.staff A:hover,
+#globalnav LI.staff A:active {
+	background: #ccf;
+	color: #336;
+	border-left:1px solid #cff;
+	border-top:1px solid #cff;
+	border-right:1px solid #003;
+}
+
+#globalnav LI.here1 A:link,
+#globalnav LI.here1 A:visited {
+	position:relative;
+	z-index:102;
+}
+
+
+/* subnav ----------------------------------------------------------------- */
+
+#globalsubnav {
+	position:relative;
+	float:left;
+	width:100%;
+/*
+        position: absolute;
+	left:0;
+	top:1.5em;
+*/
+	background:#fc9;
+        color: #000;
+	margin:0;
+	list-style:none;
+	border-top:1px solid #ffc;
+	border-left:1px solid #fc9;
+	border-right:1px solid #fc9;
+        display: block;
+	padding:0.25em 0 0.25em 0;
+}
+
+#globalsubnav LI {
+	float:left;
+	display:block;
+	margin-top:1px;
+	margin-left: 0;
+}
+
+#globalsubnav A {
+	display:block;
+	color:#9c9;
+	text-decoration:none;
+	font-weight:bold;
+	background:#363;
+	margin:0;
+	padding:0.25em 1em;
+	border-left:1px solid #cfc;
+	border-top:1px solid #cfc;
+	border-right:1px solid #030;
+}
+
+#globalsubnav A:link,
+#globalsubnav A:visited {
+	background:#fc9;
+	color:#696;
+	display:inline;
+	margin:0 .2em;
+	padding:0 1em;
+	border:0;
+}
+
+#globalsubnav A:hover,
+#globalsubnav A:active,
+#globalsubnav LI.here2 A:link,
+#globalsubnav LI.here2 A:visited {
+	color:#363;
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow.gif);
+        background-repeat: no-repeat;
+	background-position: center left;
+}
+
+
+/* Color-coding for generic user pages ------------------------------------ */
+
+BODY.user H1, BODY.user H2, BODY.user H3, BODY.user H4,
+BODY.user H5, BODY.user H6, BODY.user H7 {
+    color: #363;
+}
+
+BODY.user B, BODY.user STRONG {
+    color: #363;
+}
+
+SPAN.hl {
+	/* background-color: #fc9; */
+        background-color: #ffd;
+	color: #363;
+	font-weight: bold;
+	padding: .2em .5em;
+}
+SPAN.sm { font-size: smaller }
+
+TR.o  { background-color: #fff; }
+TR.e  { background-color: #ffd; }
+TR.oe { background-color: #faa; }
+TR.ee { background-color: #f99; }
+TR.oc { background-color: #ef4; }
+TR.ec { background-color: #de0; }
+TD.n  { text-align: right;  }
+TD.s  { text-align: center; }
+TD.L  { text-align: left;   }
+TD.R  { text-align: right;  }
+TD.nowrap { white-space: nowrap; }
+
+DIV#contents TABLE.ErrorDictionaryPanel,
+BODY.admin DIV#contents TABLE.ErrorDictionaryPanel,
+BODY.staff DIV#contents TABLE.ErrorDictionaryPanel {
+    border: 1px solid #ff6600;
+    margin-top: .5em;
+    margin-bottom: .5em;
+}
+
+DIV#contents TABLE.ErrorDictionaryPanel TD {
+    padding: 0.25em;
+}
+
+TABLE.FullBox {
+    border: 1px solid #f96;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+
+/* Color-coding for admin pages ------------------------------------------- */
+
+BODY.admin DIV#page {
+	border : 1px solid #969;
+	border-top : none;
+}
+
+BODY.admin H1, BODY.admin H2, BODY.admin H3, BODY.admin H4,
+BODY.admin H5, BODY.admin H6, BODY.admin H7 {
+    color: #636;
+}
+
+BODY.admin B, BODY.admin STRONG {
+    color: #636;
+}
+
+BODY.admin DIV#contents TABLE {
+	border-color: #636;
+}
+
+BODY.admin TABLE.FullBox {
+	border-color: #636;
+}
+
+BODY.admin DIV#contents TABLE TH {
+	background-color: #636;
+	color: #fcf;
+}
+
+BODY.admin #globalnav LI.here1 A:link,
+BODY.admin #globalnav LI.here1 A:visited {
+	background: #c9c;
+	color: #303;
+	border-left:1px solid #fcf;
+	border-top:1px solid #fcf;
+	border-right:1px solid #303;
+}
+
+BODY.admin #globalsubnav {
+	background:#c9c;
+	border-top:1px solid #fcf;
+	border-left:1px solid #969;
+	border-right:1px solid #969;
+}
+
+BODY.admin #globalsubnav A:link,
+BODY.admin #globalsubnav A:visited {
+	background:#c9c;
+	color:#636;
+	border:0;
+}
+
+BODY.admin #globalsubnav A:hover,
+BODY.admin #globalsubnav A:active,
+BODY.admin #globalsubnav LI.here2 A:link,
+BODY.admin #globalsubnav LI.here2 A:visited {
+	color:#303;
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-admin.gif);
+        background-repeat: no-repeat;
+	background-position: center left;
+}
+
+BODY.admin DIV#menu P.header {
+	background-color:#636;
+	color:#fcf;
+}
+
+BODY.admin DIV#menu UL LI P {
+	background-color: #fcf;
+}
+
+BODY.admin DIV#menu A:link,
+BODY.admin DIV#menu A:visited {
+	color:#969;
+}
+
+BODY.admin DIV#menu A:hover,
+BODY.admin DIV#menu A:active,
+BODY.admin DIV#menu LI.here A:link,
+BODY.admin DIV#menu LI.here A:visited {
+	color:#636;
+}
+
+BODY.admin DIV#menu LI.here {
+	list-style-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-admin.gif);
+}
+
+BODY.admin DIV#contents TABLE TD.marker {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-admin.gif);
+}
+
+BODY.admin DIV#contents TABLE TR#divider TD { border-top: 1px solid #636; }
+BODY.admin DIV#contents TABLE TR#divider TABLE.percentbar TD { border: none; }
+
+
+/* Color-coding for staff pages ------------------------------------------- */
+
+BODY.staff DIV#page {
+	border : 1px solid #669;
+	border-top : none;
+}
+
+BODY.staff H1, BODY.staff H2, BODY.staff H3, BODY.staff H4,
+BODY.staff H5, BODY.staff H6, BODY.staff H7 {
+    color: #336;
+}
+
+BODY.staff B, BODY.staff STRONG {
+    color: #336;
+}
+
+BODY.staff DIV#contents TABLE {
+	border-color: #336;
+}
+
+BODY.staff TABLE.FullBox {
+	border-color: #336;
+}
+
+BODY.staff DIV#contents TABLE TH {
+	background-color: #336;
+	color: #ccf;
+}
+
+BODY.staff #globalnav LI.here1 A:link,
+BODY.staff #globalnav LI.here1 A:visited {
+	background: #ccf;
+	color: #336;
+	border-left:1px solid #cff;
+	border-top:1px solid #cff;
+	border-right:1px solid #003;
+}
+
+BODY.staff #globalsubnav {
+	background:#ccf;
+	border-top:1px solid #cff;
+	border-left:1px solid #669;
+	border-right:1px solid #669;
+}
+
+BODY.staff #globalsubnav A:link,
+BODY.staff #globalsubnav A:visited {
+	background:#ccf;
+	color:#669;
+	border:0;
+}
+
+BODY.staff #globalsubnav A:hover,
+BODY.staff #globalsubnav A:active,
+BODY.staff #globalsubnav LI.here2 A:link,
+BODY.staff #globalsubnav LI.here2 A:visited {
+	color:#336;
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-staff.gif);
+        background-repeat: no-repeat;
+	background-position: center left;
+}
+
+BODY.staff DIV#menu P.header {
+	background-color:#336;
+	color:#ccf;
+}
+
+BODY.staff DIV#menu UL LI P {
+	background-color: #ccf;
+}
+
+BODY.staff DIV#menu A:link,
+BODY.staff DIV#menu A:visited {
+	color:#669;
+}
+
+BODY.staff DIV#menu A:hover,
+BODY.staff DIV#menu A:active,
+BODY.staff DIV#menu LI.here A:link,
+BODY.staff DIV#menu LI.here A:visited {
+	color:#336;
+}
+
+BODY.staff DIV#menu LI.here {
+	list-style-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-staff.gif);
+}
+
+BODY.staff DIV#contents TABLE TD.marker {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-staff.gif);
+}
+
+BODY.staff DIV#contents TABLE TR#divider TD { border-top: 1px solid #336; }
+BODY.staf DIV#contents TABLE TR#divider TABLE.percentbar TD { border: none; }
+
+SPAN.meta {
+	font-size: small;
+	background-color: #eee;
+}
+
+div#contents table.distchart,
+div#contents div.shadow table.distchart {
+    margin: 0;
+    background-color: white;
+    empty-cells: show;
+    table-layout: fixed;
+    width: 100;
+    display: table;
+}
+div#contents table.distchart td,
+div#contents div.shadow table.distchart td {
+    padding: 0px;
+    margin:  0px;
+    width:  10px;
+    height: 10px;
+    line-height: 10px;
+}
+div#contents table.distchart td.b0,
+div#contents div.shadow table.distchart td.b0 {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar00.gif);
+}
+div#contents table.distchart td.b1,
+div#contents div.shadow table.distchart td.b1 {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar01.gif);
+}
+div#contents table.distchart td.b2,
+div#contents div.shadow table.distchart td.b2 {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar02.gif);
+}
+div#contents table.distchart td.b3,
+div#contents div.shadow table.distchart td.b3 {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar03.gif);
+}
+div#contents table.distchart td.b4,
+div#contents div.shadow table.distchart td.b4 {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar04.gif);
+}
+div#contents table.distchart td.b5,
+div#contents div.shadow table.distchart td.b5 {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar05.gif);
+}
+div#contents table.distchart td.b6,
+div#contents div.shadow table.distchart td.b6 {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar06.gif);
+}
+div#contents table.distchart td.b7,
+div#contents div.shadow table.distchart td.b7 {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar07.gif);
+}
+div#contents table.distchart td.b8,
+div#contents div.shadow table.distchart td.b8 {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar08.gif);
+}
+div#contents table.distchart td.b9,
+div#contents div.shadow table.distchart td.b9 {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar09.gif);
+}
+div#contents table.distchart td.b10,
+div#contents div.shadow table.distchart td.b10 {
+	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar10.gif);
+}
+div#contents table.distchart td img.bar,
+div#contents div.shadow table.distchart td img.bar {
+    width:  10px;
+    height: 10px;
+    border: 0px;
+}

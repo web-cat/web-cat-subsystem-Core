@@ -1,0 +1,97 @@
+{
+    courseParticipants = {
+        class = EOFetchSpecification; 
+        entityName = User; 
+        fetchLimit = 0; 
+        isDeep = YES; 
+        qualifier = {
+            class = EOAndQualifier; 
+            qualifiers = (
+                {
+                    class = EOKeyValueQualifier; 
+                    key = enrolledIn; 
+                    selectorName = "doesContain:"; 
+                    value = {_key = courseOffering; class = EOQualifierVariable; }; 
+                }, 
+                {
+                    class = EOKeyValueQualifier; 
+                    key = accessLevel; 
+                    selectorName = "isEqualTo:"; 
+                    value = {_key = accessLevel; class = EOQualifierVariable; }; 
+                }
+            ); 
+        }; 
+    }; 
+    staffForCourse = {
+        class = EOFetchSpecification; 
+        entityName = User; 
+        fetchLimit = 0; 
+        isDeep = YES; 
+        qualifier = {
+            class = EOOrQualifier; 
+            qualifiers = (
+                {
+                    class = EOKeyValueQualifier; 
+                    key = TAFor; 
+                    selectorName = "doesContain:"; 
+                    value = {_key = courseOffering; class = EOQualifierVariable; }; 
+                }, 
+                {
+                    class = EOKeyValueQualifier; 
+                    key = teaching; 
+                    selectorName = "doesContain:"; 
+                    value = {_key = courseOffering; class = EOQualifierVariable; }; 
+                }
+            ); 
+        }; 
+    }; 
+    studentsForCourse = {
+        class = EOFetchSpecification; 
+        entityName = User; 
+        fetchLimit = 0; 
+        isDeep = YES; 
+        qualifier = {
+            class = EOAndQualifier; 
+            qualifiers = (
+                {
+                    class = EOKeyValueQualifier; 
+                    key = enrolledIn; 
+                    selectorName = "doesContain:"; 
+                    value = {_key = courseOffering; class = EOQualifierVariable; }; 
+                }, 
+                {
+                    class = EONotQualifier; 
+                    qualifier = {
+                        class = EOOrQualifier; 
+                        qualifiers = (
+                            {
+                                class = EOKeyValueQualifier; 
+                                key = teaching; 
+                                selectorName = "doesContain:"; 
+                                value = {_key = courseOffering; class = EOQualifierVariable; }; 
+                            }, 
+                            {
+                                class = EOKeyValueQualifier; 
+                                key = TAFor; 
+                                selectorName = "doesContain:"; 
+                                value = {_key = courseOffering; class = EOQualifierVariable; }; 
+                            }
+                        ); 
+                    }; 
+                }
+            ); 
+        }; 
+    }; 
+    userWithName = {
+        class = EOFetchSpecification; 
+        entityName = User; 
+        fetchLimit = 0; 
+        isDeep = YES; 
+        qualifier = {
+            class = EOKeyValueQualifier; 
+            key = userName; 
+            selectorName = "isEqualTo:"; 
+            value = {_key = name; class = EOQualifierVariable; }; 
+        }; 
+    }; 
+}

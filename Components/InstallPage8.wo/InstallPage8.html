@@ -1,0 +1,33 @@
+<webobject name="Page">
+<p>You have successfully completed the Web-CAT installation process.</p>
+<p>When you click the "Site Administration" button, you will be logged
+in as the administrator and taken to Web-CAT's administration settings
+page.</p>
+<div class="shadow"><table>
+<tr><th colspan="2">Administrator Account Details</th></tr>
+<tr class="o"><td>User name</td><td><webobject name="adminUsername"/></td></tr>
+<tr class="e"><td>Password</td><td><webobject name="adminPassword"/></td></tr>
+<tr class="o"><td>E-mail</td><td><webobject name="coreAdminEmail"/></td></tr>
+<tr class="e"><td>Notification e-mail</td><td><webobject name="adminNotifyAddrs"/></td></tr>
+</table></div><div class="spacer">&nbsp;</div>
+<div class="shadow"><table>
+<tr><th colspan="2">Configuration File</th></tr>
+<tr class="o"><td>Location</td><td><webobject name="ConfigLocation"/></td></tr>
+<tr class="o"><td>Writeable?</td><td><webobject name="ConfigWriteable"><b class="check">Writeable</b></webobject><webobject name="ConfigNotWriteable"><b class="warn">Unwriteable</b></webobject></td></tr>
+<tr class="e"><td>Settings saved?</td><td><webobject name="ConfigSaved"><b class="check">Yes</b></webobject><webobject name="ConfigNotSaved"><b class="warn">No</span></webobject></td></tr>
+</table></div><div class="spacer">&nbsp;</div>
+<webobject name="ConfigSaved">
+<p>Your configuration settings have been saved to the configuration file.
+Web-CAT is fully initialized and operational, and the saved configuration
+settings will take effect each time Web-CAT is restarted.</p>
+</webobject><webobject name="ConfigNotSaved">
+<p>Your configuration settings <b class="warn">could not be saved</b> to the
+configuration file.  Web-CAT is still fully initialized and operational, but
+your configuration settings will be lost once Web-CAT restarts.
+</p>
+<p>To save these configuration settings permanently, <b>cut-and-paste</b>
+the text in the box below and <b>save it</b> to the configuration file
+named above yourself.  Then these settings will take effect each time
+Web-CAT is restarted.</p>
+<webobject name="Config"/>
+</webobject></webobject>

@@ -1,0 +1,42 @@
+{
+    attributes = (
+        {columnName = CCOURSEID; name = courseId; prototypeName = foreignId; }, 
+        {
+            columnName = CCOURSEOFFERINGID; 
+            name = courseOfferingId; 
+            prototypeName = foreignId; 
+        }, 
+        {name = id; prototypeName = id; }, 
+        {columnName = CUSERID; name = userId; prototypeName = foreignId; }
+    ); 
+    attributesUsedForLocking = (id, courseId, courseOfferingId, userId); 
+    className = net.sf.webcat.core.CoreSelections; 
+    classProperties = (course, courseOffering, user); 
+    externalName = TCORESELECTIONS; 
+    fetchSpecificationDictionary = {}; 
+    name = CoreSelections; 
+    primaryKeyAttributes = (id); 
+    relationships = (
+        {
+            destination = Course; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = courseId; }); 
+            name = course; 
+        }, 
+        {
+            destination = CourseOffering; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = courseOfferingId; }); 
+            name = courseOffering; 
+        }, 
+        {
+            destination = User; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = userId; }); 
+            name = user; 
+        }
+    ); 
+}

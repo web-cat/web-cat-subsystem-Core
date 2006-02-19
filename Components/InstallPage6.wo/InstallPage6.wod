@@ -1,0 +1,35 @@
+AdminFirstName: WOTextField {
+    value = application.properties.AdminFirstName;
+    name  = "AdminFirstName";
+}
+
+AdminLastName: WOTextField {
+    value = application.properties.AdminLastName;
+    name  = "AdminLastName";
+}
+
+adminNotifyAddrs: WOTextField {
+    value = application.properties.adminNotifyAddrs;
+    name  = "adminNotifyAddrs";
+}
+
+AdminPassword: WOTextField {
+    value = application.properties.AdminPassword;
+    name  = "AdminPassword";
+}
+
+AdminUsername: WOTextField {
+    value = application.properties.AdminUsername;
+    name  = "AdminUsername";
+}
+
+coreAdminEmail: WOTextField {
+    value = application.properties.coreAdminEmail;
+    name  = "coreAdminEmail";
+}
+
+Page : net.sf.webcat.core.install.InstallPageWrapper {
+    title  = "Administrator Account";
+    stepNo = stepNo;
+    errors = errors;
+}

@@ -1,0 +1,58 @@
+<webobject name="Page">
+<table class="optionlist"><tbody>
+<tr>
+  <td class="rtn">MySQL server host name:</td>
+  <td class="t"><webobject name="DBhostname"/></td>
+  <td class="t">
+  This is the host name for your MySQL server, which is usually "localhost".
+  </td>
+</tr>
+<tr>
+  <td class="rtn">MySQL server port:</td>
+  <td class="t"><webobject name="DBhostport"/></td>
+  <td class="t">
+  This is the port number on which your MySQL server listens.  The default
+  port value for MySQL is port 3306.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">MySQL user name:</td>
+  <td class="t"><webobject name="DBusername"/></td>
+  <td class="t">
+  This is the MySQL user name that Web-CAT will use when connecting to
+  the MySQL server.  It can be 'root', or a username given to you by your
+  database adminnistrator.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">MySQL password:</td>
+  <td class="t"><webobject name="DBpassword"/></td>
+  <td class="t">
+  This is the MySQL user name that Web-CAT will use when connecting to
+  the MySQL server.  A non-empty password is mandatory.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">MySQL database name:</td>
+  <td class="t"><webobject name="DBname"/></td>
+  <td class="t">
+  This is the name of the MySQL database to use.  If at all possible,
+  use a database that only contains Web-CAT tables.  If you run multiple
+  Web-CAT servers that share the same MySQL server, they must each have their
+  own unique database.
+  </td>
+</tr>
+<tr>
+  <td class="t" colspan="2" align="center">
+  <input name="DBDelete" id="DBDelete" value="1" type="checkbox">
+  <label for="DBDelete">Drop existing database</label>
+  </td>
+  <td class="t">
+  The entire database, including all previous tables, will be cleared
+  before proceeding.
+  </td>
+</tr>
+</tbody></table>
+<p>Note that creating a new database will take a few moments.  Please be
+patient while waiting for the next installation step to appear.</p>
+</webobject>

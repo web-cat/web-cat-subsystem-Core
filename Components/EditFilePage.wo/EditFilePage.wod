@@ -1,0 +1,40 @@
+Cancel: WOSubmitButton {
+    value  = "Cancel";
+    action = cancelEdit;
+}
+
+FileContents: WOText {
+    value = fileContents;
+    rows  = "30";
+    cols  = "80";
+}
+
+Filename: WOString {
+    value = fileName;
+}
+
+Page: net.sf.webcat.core.PageWithNavigation {
+    sideStepTitle = sideStepTitle;
+}
+
+SaveAndContinue: WOSubmitButton {
+    value  = "Save and Keep Editing";
+    action = saveAndContinue;
+}
+
+SaveAndDone: WOSubmitButton {
+    value  = "Save and Close File";
+    action = saveAndDone;
+}
+
+Time: WOString {
+    value      = lastModified;
+	dateformat = "%m/%d/%Y %I:%M%p";
+}
+
+WizardForm: WOForm {
+    multipleSubmit = true;
+    enctype        = "multipart/form-data";
+    action         = saveAndDone;
+    name           = "WizardForm";
+}

@@ -1,0 +1,27 @@
+AllowSelection: WOConditional {
+    condition = allowSelection;
+}
+
+IncludeSeparator: WOConditional {
+    condition = includeSeparator;
+}
+
+Row : net.sf.webcat.core.FileBrowserRow {
+	file                  = file;
+	baseFile              = file;
+	isExpanded            = isExpanded;
+	isEditable            = isEditable;
+	allowSelection        = allowSelection;
+    allowSelectDir        = allowSelectDir;
+    allowSelectExtensions = allowSelectExtensions;
+	initialExpansionDepth = initialExpansionDepth;
+	index                 = index;
+	fileSelectionListener = fileSelectionListener;
+	fileEditListener      = fileEditListener;
+    applyChangesOnMod     = applyChangesOnMod;
+}
+
+
+Title : WOString {
+	value = title;
+}

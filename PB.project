@@ -1,0 +1,276 @@
+
+{
+    PDO_UNIX_JAVA_COMPILER = "$(JDKBINDIR)/javac";
+    PDO_UNIX_OBJCPLUS_COMPILER = "$(NEXTDEV_BIN)/gcc";
+    PDO_UNIX_BUILDTOOL = $NEXT_ROOT/Developer/bin/make;
+    WINDOWS_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+    PROJECTNAME = Core;
+    MAKEFILEDIR = "$(MAKEFILEPATH)/java_makefiles";
+    PBPROJECTTYPEVERSION = 4.0;
+    WINDOWS_BUILDTOOL = $NEXT_ROOT/Developer/Executables/make;
+    PDO_UNIX_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+    FRAMEWORKSEARCH = 
+    (
+       "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks"
+    );
+    NEXTSTEP_BUILDTOOL = /bin/gnumake;
+    LANGUAGE = English;
+    NEXTSTEP_JAVA_COMPILER = /usr/bin/javac;
+    DEPLOY_WITH_VERSION_NAME = A;
+    DYNAMIC_CODE_GEN = YES;
+    NEXTSTEP_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+    NEXTSTEP_OBJCPLUS_COMPILER = /usr/bin/cc;
+    PROJECTTYPE = JavaWebObjectsFramework;
+    WINDOWS_JAVA_COMPILER = "$(JDKBINDIR)/javac.exe";
+    PROJECTVERSION = 2.8;
+    WINDOWS_OBJCPLUS_COMPILER = "$(DEVDIR)/gcc";
+    CURRENTLY_ACTIVE_VERSION = YES;
+    FILESTABLE = 
+    {
+        FRAMEWORKS = 
+        (
+           DBUpdateEngine.framework, 
+           EOJDBCPrototypes.framework, 
+           DBUpdateEngine.framework, 
+           EOJDBCPrototypes.framework, 
+           ERExtensions.framework, 
+           ERJars.framework, 
+           ERJars.framework, 
+           ERJars.framework, 
+           ERJars.framework, 
+           ERJars.framework, 
+           JavaWOExtensions.framework, 
+           WOUnitTest.framework, 
+           JavaEOAccess.framework, 
+           JavaEOControl.framework, 
+           JavaFoundation.framework, 
+           JavaJDBCAdaptor.framework, 
+           JavaWebObjects.framework, 
+           JavaWOJSPServlet.framework, 
+           JavaXML.framework, 
+           JDBCEOAdaptor.framework
+        );
+        CLASSES = 
+        (
+           src/net/sf/webcat/archives/AbstractArchiveHandler.java, 
+           src/net/sf/webcat/archives/ArchiveEntry.java, 
+           src/net/sf/webcat/archives/ArchiveManager.java, 
+           src/net/sf/webcat/archives/IArchiveEntry.java, 
+           src/net/sf/webcat/archives/IArchiveHandler.java, 
+           src/net/sf/webcat/archives/internal/CopyUtil.java, 
+           src/net/sf/webcat/archives/internal/Main.java, 
+           src/net/sf/webcat/archives/internal/TarArchiveHandler.java, 
+           src/net/sf/webcat/archives/internal/TarGzArchiveHandler.java, 
+           src/net/sf/webcat/archives/internal/TarUtil.java, 
+           src/net/sf/webcat/archives/internal/ZipArchiveHandler.java, 
+           src/net/sf/webcat/core/install/InstallPage.java, 
+           src/net/sf/webcat/core/install/InstallPage1.java, 
+           src/net/sf/webcat/core/install/InstallPage2.java, 
+           src/net/sf/webcat/core/install/InstallPage3.java, 
+           src/net/sf/webcat/core/install/InstallPage4.java, 
+           src/net/sf/webcat/core/install/InstallPage5.java, 
+           src/net/sf/webcat/core/install/InstallPage6.java, 
+           src/net/sf/webcat/core/install/InstallPage7.java, 
+           src/net/sf/webcat/core/install/InstallPage8.java, 
+           src/net/sf/webcat/core/install/InstallPageWrapper.java, 
+           src/net/sf/webcat/core/install/LicensePage.java, 
+           src/net/sf/webcat/core/install/install.java, 
+           src/net/sf/webcat/core/tests/TabDescriptorTest.java, 
+           src/net/sf/webcat/core/tests/WCPropertiesTest.java, 
+           src/net/sf/webcat/core/Application.java, 
+           src/net/sf/webcat/core/AuthenticationDomain.java, 
+           src/net/sf/webcat/core/BarePage.java, 
+           src/net/sf/webcat/core/CoreDatabaseUpdates.java, 
+           src/net/sf/webcat/core/CoreSelections.java, 
+           src/net/sf/webcat/core/Course.java, 
+           src/net/sf/webcat/core/CourseOffering.java, 
+           src/net/sf/webcat/core/DatabaseAuthenticator.java, 
+           src/net/sf/webcat/core/DelegatingUrlClassLoader.java, 
+           src/net/sf/webcat/core/DeliverFile.java, 
+           src/net/sf/webcat/core/Department.java, 
+           src/net/sf/webcat/core/DirectAction.java, 
+           src/net/sf/webcat/core/DynamicElement.java, 
+           src/net/sf/webcat/core/EdAuthAuthenticator.java, 
+           src/net/sf/webcat/core/EditFilePage.java, 
+           src/net/sf/webcat/core/ErrorDictionaryPanel.java, 
+           src/net/sf/webcat/core/ErrorPage.java, 
+           src/net/sf/webcat/core/FeedbackPage.java, 
+           src/net/sf/webcat/core/FileBrowser.java, 
+           src/net/sf/webcat/core/FileBrowserRow.java, 
+           src/net/sf/webcat/core/Footer.java, 
+           src/net/sf/webcat/core/FormattedString.java, 
+           src/net/sf/webcat/core/JarSubsystem.java, 
+           src/net/sf/webcat/core/Language.java, 
+           src/net/sf/webcat/core/LockErrorScreamerEditingContext.java, 
+           src/net/sf/webcat/core/LoginPage.java, 
+           src/net/sf/webcat/core/LoginSession.java, 
+           src/net/sf/webcat/core/MutableArray.java, 
+           src/net/sf/webcat/core/MutableContainer.java, 
+           src/net/sf/webcat/core/MutableDictionary.java, 
+           src/net/sf/webcat/core/MyProfilePage.java, 
+           src/net/sf/webcat/core/PageWithNavigation.java, 
+           src/net/sf/webcat/core/PopAuthenticator.java, 
+           src/net/sf/webcat/core/Semester.java, 
+           src/net/sf/webcat/core/Session.java, 
+           src/net/sf/webcat/core/Status.java, 
+           src/net/sf/webcat/core/StatusPage.java, 
+           src/net/sf/webcat/core/SubmitDebug.java, 
+           src/net/sf/webcat/core/Subsystem.java, 
+           src/net/sf/webcat/core/SubsystemEOMRedirector.java, 
+           src/net/sf/webcat/core/SubsystemFragmentCollector.java, 
+           src/net/sf/webcat/core/SubsystemManager.java, 
+           src/net/sf/webcat/core/SubsystemSessionState.java, 
+           src/net/sf/webcat/core/SystemStatusBlock.java, 
+           src/net/sf/webcat/core/TBDPage.java, 
+           src/net/sf/webcat/core/TabDescriptor.java, 
+           src/net/sf/webcat/core/TableRow.java, 
+           src/net/sf/webcat/core/User.java, 
+           src/net/sf/webcat/core/UserAuthenticator.java, 
+           src/net/sf/webcat/core/WCBatchNavigator.java, 
+           src/net/sf/webcat/core/WCComponent.java, 
+           src/net/sf/webcat/core/WCComponentWithErrorMessages.java, 
+           src/net/sf/webcat/core/WCConfigurationFile.java, 
+           src/net/sf/webcat/core/WCFile.java, 
+           src/net/sf/webcat/core/WCFileProperties.java, 
+           src/net/sf/webcat/core/WCProperties.java, 
+           src/net/sf/webcat/core/WCSortOrder.java, 
+           src/net/sf/webcat/core/WOEC.java, 
+           src/net/sf/webcat/core/WOForcedForm.java, 
+           src/net/sf/webcat/core/WizardPage.java, 
+           src/net/sf/webcat/core/_AuthenticationDomain.java, 
+           src/net/sf/webcat/core/_CoreSelections.java, 
+           src/net/sf/webcat/core/_Course.java, 
+           src/net/sf/webcat/core/_CourseOffering.java, 
+           src/net/sf/webcat/core/_Department.java, 
+           src/net/sf/webcat/core/_Language.java, 
+           src/net/sf/webcat/core/_LoginSession.java, 
+           src/net/sf/webcat/core/_Semester.java, 
+           src/net/sf/webcat/core/_User.java, 
+           src/enet/sf/webcat/core/AuthenticationDomain.java, 
+           src/enet/sf/webcat/core/_AuthenticationDomain.java, 
+           src/edu/vt/cs/Web_CAT/Core/MutableArray.java, 
+           src/edu/vt/cs/Web_CAT/Core/MutableDictionary.java
+        );
+        WEBSERVER_RESOURCES = 
+        (
+           WebServerResources/icons/Ascending.gif, 
+           WebServerResources/icons/Descending.gif, 
+           WebServerResources/icons/Unsorted.gif, 
+           WebServerResources/icons/archive.gif, 
+           WebServerResources/icons/arrowDown.bmp, 
+           WebServerResources/icons/arrowDown.gif, 
+           WebServerResources/icons/arrowUp.bmp, 
+           WebServerResources/icons/arrowUp.gif, 
+           WebServerResources/icons/blank.gif, 
+           WebServerResources/icons/caution.bmp, 
+           WebServerResources/icons/caution.gif, 
+           WebServerResources/icons/check.gif, 
+           WebServerResources/icons/close.gif, 
+           WebServerResources/icons/dir.gif, 
+           WebServerResources/icons/diropen.gif, 
+           WebServerResources/icons/edit.gif, 
+           WebServerResources/icons/exclaim.gif, 
+           WebServerResources/icons/expand.gif, 
+           WebServerResources/icons/feedback.gif, 
+           WebServerResources/icons/file.gif, 
+           WebServerResources/icons/go.png, 
+           WebServerResources/icons/help.gif, 
+           WebServerResources/icons/info.gif, 
+           WebServerResources/icons/message_warning.bmp, 
+           WebServerResources/icons/minus.gif, 
+           WebServerResources/icons/newfile.gif, 
+           WebServerResources/icons/newfolder.gif, 
+           WebServerResources/icons/notready.gif, 
+           "WebServerResources/icons/old-caution.gif", 
+           "WebServerResources/icons/old-exclaim.gif", 
+           WebServerResources/icons/partially.gif, 
+           WebServerResources/icons/plus.gif, 
+           "WebServerResources/icons/rt-arrow-admin.gif", 
+           "WebServerResources/icons/rt-arrow-staff.gif", 
+           "WebServerResources/icons/rt-arrow.gif", 
+           WebServerResources/icons/suggestion.bmp, 
+           WebServerResources/icons/suggestion.gif, 
+           WebServerResources/icons/todo.bmp, 
+           WebServerResources/icons/todo.gif, 
+           WebServerResources/icons/trash.gif, 
+           WebServerResources/icons/upload.gif, 
+           WebServerResources/icons/vert.gif, 
+           WebServerResources/icons/download.gif, 
+           WebServerResources/icons/emptyspacer.gif, 
+           WebServerResources/icons/expandbot.gif, 
+           WebServerResources/icons/report.gif, 
+           "WebServerResources/wc-ie5.css", 
+           "WebServerResources/wc-ie6.css", 
+           WebServerResources/wc.css
+        );
+        WO_COMPONENTS = 
+        (
+           Components/BarePage.wo, 
+           Components/ErrorDictionaryPanel.wo, 
+           Components/ErrorPage.wo, 
+           Components/Footer.wo, 
+           Components/LoginPage.wo, 
+           Components/MyProfilePage.wo, 
+           Components/PageWithNavigation.wo, 
+           Components/StatusPage.wo, 
+           Components/SubmitDebug.wo, 
+           Components/TBDPage.wo, 
+           Components/TableRow.wo, 
+           Components/WCBatchNavigator.wo, 
+           Components/WCSortOrder.wo, 
+           Components/WizardPage.wo, 
+           Components/DeliverFile.wo, 
+           Components/SystemStatusBlock.wo, 
+           Components/FileBrowser.wo, 
+           Components/FileBrowserRow.wo, 
+           Components/FormattedString.wo, 
+           Components/FeedbackPage.wo, 
+           Components/EditFilePage.wo, 
+           Components/InstallPage1.wo, 
+           Components/InstallPage2.wo, 
+           Components/InstallPage3.wo, 
+           Components/InstallPage4.wo, 
+           Components/InstallPage5.wo, 
+           Components/InstallPage6.wo, 
+           Components/InstallPage7.wo, 
+           Components/InstallPageWrapper.wo, 
+           Components/LicensePage.wo, 
+           Components/InstallPage8.wo
+        );
+        SUBPROJECTS = 
+        ();
+        OTHER_SOURCES = 
+        (
+           CustomInfo.plist, 
+           java.template, 
+           Makefile, 
+           Makefile.postamble, 
+           Makefile.preamble
+        );
+        WOAPP_RESOURCES = 
+        (
+           Core.eomodeld, 
+           Tabs.plist, 
+           Components/DeliverFile.api, 
+           Components/SystemStatusBlock.api, 
+           Components/FileBrowser.api, 
+           Components/FileBrowserRow.api, 
+           filetype.properties, 
+           Components/FormattedString.api, 
+           Components/FeedbackPage.api, 
+           Properties, 
+           Components/TableRow.api, 
+           Components/LoginPage.api, 
+           Components/TBDPage.api, 
+           Components/BarePage.api, 
+           Components/Footer.api, 
+           Components/PageWithNavigation.api, 
+           Components/ErrorDictionaryPanel.api, 
+           Components/ErrorPage.api, 
+           Components/SubmitDebug.api, 
+           Components/WCBatchNavigator.api, 
+           Components/WCSortOrder.api, 
+           Components/WizardPage.api
+        );
+    };
+}

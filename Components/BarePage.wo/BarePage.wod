@@ -1,0 +1,52 @@
+PageContent: WOComponentContent {
+}
+
+PageTitle: WOString {
+	value = pageTitle;
+}
+
+StyleSheet: WOString {
+	value      = styleSheetLink;
+	escapeHTML = false;
+}
+
+JavaScript: WOString {
+	value      = javaScriptLink;
+	escapeHTML = false;
+}
+
+IncludePageWrapping: WOConditional {
+    condition = includePageWrapping;
+}
+
+InlineHeaderContents: WOString {
+	value      = inlineHeaderContents;
+	escapeHTML = false;
+}
+
+OnLoad: WOString {
+	value      = onLoad;
+	escapeHTML = false;
+}
+
+BodyClass: WOString {
+	value      = bodyClass;
+}
+
+IncludeStdStyleSheet: WOConditional {
+    condition = omitStdStyleSheet;
+    negate    = true;
+}
+
+StdStyleSheet: WOString {
+	escapeHTML = false;
+	// The value is placed here to keep the IE-directed comments from being
+    // stripped out by WO.
+    value = "<style media=\"all\" type=\"text/css\">@import \"http://web-cat.cs.vt.edu/wc.css\";</style>
+<!--[if IE 5]>
+<style media=\"all\" type=\"text/css\">@import \"http://web-cat.cs.vt.edu/wc-ie5.css\";</style>
+<![endif]-->
+<!--[if IE 6]>
+<style media=\"all\" type=\"text/css\">@import \"http://web-cat.cs.vt.edu/wc-ie6.css\";</style>
+<![endif]-->";
+}

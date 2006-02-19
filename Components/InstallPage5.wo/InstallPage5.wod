@@ -1,0 +1,26 @@
+InstitutionName: WOTextField {
+    value = application.properties.InstitutionName;
+    name  = "InstitutionName";
+}
+
+InstitutionEmailDomain: WOTextField {
+    value = application.properties.InstitutionEmailDomain;
+    name  = "InstitutionEmailDomain";
+}
+
+InstitutionShortName: WOTextField {
+    value = application.properties.authenticator.default;
+    name  = "authenticator.default";
+}
+
+UseDBAuth: WORadioButton {
+    value     = "net.sf.webcat.core.DatabaseAuthenticator";
+    selection = application.properties.authenticator.default.class;
+    name      = "authenticator.default.class";
+}
+
+Page : net.sf.webcat.core.install.InstallPageWrapper {
+    title  = "Authentication";
+    stepNo = stepNo;
+    errors = errors;
+}

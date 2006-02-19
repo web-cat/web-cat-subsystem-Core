@@ -1,0 +1,14 @@
+{
+    userPid = {
+        class = EOFetchSpecification; 
+        entityName = LoginSession; 
+        fetchLimit = 0; 
+        isDeep = YES; 
+        qualifier = {
+            class = EOKeyValueQualifier; 
+            key = user.userName; 
+            selectorName = "isEqualTo:"; 
+            value = {_key = userName; class = EOQualifierVariable; }; 
+        }; 
+    }; 
+}

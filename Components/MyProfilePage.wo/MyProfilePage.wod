@@ -1,0 +1,135 @@
+Page : net.sf.webcat.core.PageWithNavigation {
+	title = "Manage Your Profile";
+}
+
+UserName: WOString {
+    value = session.user.userName;
+}
+
+DomainName: WOString {
+    value = session.user.authenticationDomain.displayableName;
+}
+
+Form: WOForm {
+	action = applyChanges;
+}
+
+FirstName: WOTextField {
+    value = session.localUser.firstName;
+    size = 40;
+}
+
+LastName: WOTextField {
+    value = session.localUser.lastName;
+    size = 40;
+}
+
+Email: WOTextField {
+    value = session.localUser.email;
+    size = 40;
+}
+
+URL: WOTextField {
+    value = session.localUser.url;
+    size = 40;
+}
+
+CanChangePassword: WOConditional {
+    condition = session.localUser.canChangePassword;
+}
+
+NewPassword1: WOPasswordField {
+    value = newPassword1;
+	size  = 40;
+}
+
+NewPassword2: WOPasswordField {
+    value = newPassword2;
+	size  = 40;
+}
+
+ApplyChanges: WOSubmitButton {
+	action = apply;
+	value  = " Apply ";
+}
+
+Errors: net.sf.webcat.core.ErrorDictionaryPanel {
+	errorMessages          = errors;
+	shouldShowNewlineAbove = true;
+	shouldShowNewlineBelow = true;
+}
+
+EnrolledInCourses: WOConditional {
+    condition = session.user.enrolledIn.count;
+}
+
+NotEnrolledInCourses: WOConditional {
+    condition = session.user.enrolledIn.count;
+    negate    = true;
+}
+
+EnrollmentRepetition: WORepetition {
+	item  = courseOffering;
+	list  = enrolledInDisplayGroup.displayedObjects;
+	index = index;
+}
+
+TR: net.sf.webcat.core.TableRow {
+    index = index;
+}
+
+CompactName: WOString {
+	value = courseOffering.compactName;
+}
+
+CourseName: WOString {
+	value = courseOffering.course.name;
+}
+
+InstructorRepetition: WORepetition {
+    item = instructor;
+    list = courseOffering.instructors;
+}
+
+InstructorName: WOHyperlink {
+	href   = instructor.url;
+    string = instructor.shortName;
+}
+
+CanTA: WOConditional {
+	condition = session.user.hasTAPrivileges;
+}
+
+TAInCourses: WOConditional {
+    condition = session.user.TAFor.count;
+}
+
+NotTAInCourses: WOConditional {
+    condition = session.user.TAFor.count;
+    negate    = true;
+}
+
+TARepetition: WORepetition {
+	item  = courseOffering;
+	list  = TADisplayGroup.displayedObjects;
+	index = index;
+}
+
+CanTeach: WOConditional {
+	condition = session.user.hasFacultyPrivileges;
+}
+
+TeachingCourses: WOConditional {
+    condition = session.user.teaching.count;
+}
+
+NotTeachingCourses: WOConditional {
+    condition = session.user.teaching.count;
+    negate    = true;
+}
+
+TeachingRepetition: WORepetition {
+	item  = courseOffering;
+	list  = teachingDisplayGroup.displayedObjects;
+	index = index;
+}

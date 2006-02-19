@@ -1,0 +1,65 @@
+DeptName: WOTextField {
+    value = application.properties.DeptName;
+    name  = "DeptName";
+    size  = 70;
+}
+
+DeptAbbrev: WOTextField {
+    value = application.properties.DeptAbbrev;
+    name  = "DeptAbbrev";
+}
+
+Institution: WOString {
+    value = "foo";
+}
+
+SemesterPeriod: WOPopUpButton {
+	list              = periods;
+	item              = period;
+	selection         = selectedPeriod;
+	displayString     = periodName;
+	name              = "SemesterPeriod";
+}
+
+
+StartDate: WOTextField {
+    value    = application.properties.StartDate;
+    name     = "StartDate";
+    size     = 15;
+	readonly = 1;
+}
+
+StartDateSelector: WOImage {
+	src      = "http://web-cat.cs.vt.edu/icons/cal.gif";
+	width    = 16;
+	height   = 16;
+	alt      = "Select start date";
+	title    = "Select start date";
+	id       = "StartDateSelector";
+}
+
+EndDate: WOTextField {
+    value    = application.properties.EndDate;
+    name     = "EndDate";
+    size     = 15;
+	readonly = 1;
+}
+
+EndDateSelector: WOImage {
+	src      = "http://web-cat.cs.vt.edu/icons/cal.gif";
+	width    = 16;
+	height   = 16;
+	alt      = "Select end date";
+	title    = "Select end date";
+	id       = "EndDateSelector";
+}
+
+//  <input name="SemesterCreate" id="SemesterCreate" value="1" checked="true" type="checkbox">
+
+Page : net.sf.webcat.core.install.InstallPageWrapper {
+    title  = "Create Supporting Data";
+    stepNo = stepNo;
+    errors = errors;
+    stylesheet         = "http://web-cat.cs.vt.edu/jscalendar/skins/aqua/theme.css";
+    externalJavascript = "http://web-cat.cs.vt.edu/jscalendar/calendar.js,http://web-cat.cs.vt.edu/jscalendar/lang/calendar-en.js,http://web-cat.cs.vt.edu/jscalendar/calendar-setup.js"; 
+}

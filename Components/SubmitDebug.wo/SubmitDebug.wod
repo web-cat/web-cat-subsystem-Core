@@ -1,0 +1,9 @@
+Conditional1: WOConditional {
+	condition = error;
+}
+
+Errors: net.sf.webcat.core.ErrorDictionaryPanel {
+	errorMessages          = errors;
+	shouldShowNewlineAbove = true;
+	shouldShowNewlineBelow = true;
+}

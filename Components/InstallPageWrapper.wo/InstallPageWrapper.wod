@@ -1,0 +1,138 @@
+BackButton: WOSubmitButton {
+    value  = " < Back ";
+    name   = "back";
+}
+
+BackButtonEnabled: WOConditional {
+    condition = backEnabled;
+}
+
+BarePage : net.sf.webcat.core.BarePage {
+	title = title;
+	bodyClass = "user";
+	stylesheet = stylesheet;
+	externalJavascript = externalJavascript;
+	inlineHeaderContents = "<style type=\"text/css\">
+td#toc {
+    width: 200px;
+    padding: 5px 10px;
+    border: 1px solid #f96;
+    text-align: center;
+    vertical-align: top;
+}
+td#body {
+    padding: 5px 10px;
+    vertical-align: top;
+}
+div.stepbar {
+    text-align: left;
+}
+div.step-on {
+    color: #363;
+    background-color: #fc9;
+	font-weight: bold;
+	font-size: 13px;
+	padding: 8px;
+	border: 1px solid #363;
+	margin-bottom: 4px;
+}
+div.step-off {
+    color: #9c9;
+	font-weight: bold;
+	font-size: 13px;
+	padding: 8px;
+	border: 1px solid #9c9;
+	margin-bottom: 4px;
+}
+td#body table {
+	border: 1px solid #363;
+	border-collapse: collapse;
+}
+td#body table.optionlist {
+    border: none;
+}
+td#body table.optionlist td {
+    padding-bottom: 1em;
+}
+td#body table th {
+	background-color: #363;
+	color: #cfc;
+	padding: 0.1em .6em;
+}
+
+td#body table td {
+	padding: 0.1em .6em;
+}
+
+body.user b.check {
+    color: green;
+}
+body.user b.warn {
+    color: red;
+}
+td.t { vertical-align: top; }
+td.rtn {
+    text-align: right;
+    vertical-align: top;
+    white-space: nowrap;
+}
+</style>";
+}
+
+Errors: net.sf.webcat.core.ErrorDictionaryPanel {
+	errorMessages          = errors;
+	shouldShowNewlineAbove = true;
+	shouldShowNewlineBelow = true;
+}
+
+NextButton: WOSubmitButton {
+    value  = nextButtonLabel;
+    name   = "next";
+}
+
+NextForm: WOForm {
+    href = ""; //loginDirectAction;
+	multipleSubmit = true;
+}
+
+PageContent: WOComponentContent {
+}
+
+Spacer: WOImage {
+    filename = "images/blank.gif";
+    width    = 8;
+    height   = 1;
+    alt      = "";
+}
+
+StepRepetition: WORepetition {
+    item  = step;
+    list  = stepList;
+    index = index;
+}
+
+StepClass: WOString {
+    value = stepClass;
+}
+
+StepImage: WOImage {
+	filename = imageFileName;
+	width    = "40";
+	height   = "19";
+	alt      = "install";
+	border   = "0";
+	align    = "middle";
+	style    = "padding-right: 4px;";
+}
+
+StepName: WOString {
+    value = step;
+}
+
+Title: WOString {
+    value = title;
+}
+
+Version: WOString {
+    value = application.version;
+}

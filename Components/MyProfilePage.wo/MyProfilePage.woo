@@ -1,0 +1,48 @@
+{
+    "WebObjects Release" = "WebObjects 5.0"; 
+    encoding = NSWindowsCP1252StringEncoding; 
+    variables = {
+        enrolledInDisplayGroup = {
+            class = WODisplayGroup; 
+            dataSource = {
+                class = EODetailDataSource; 
+                detailKey = enrolledIn; 
+                masterClassDescription = User; 
+            }; 
+            fetchesOnLoad = YES; 
+            formatForLikeQualifier = "%@*"; 
+            localKeys = (); 
+            numberOfObjectsPerBatch = 0; 
+            selectsFirstObjectAfterFetch = YES; 
+            sortOrdering = ({class = EOSortOrdering; key = course.number; selectorName = "compareAscending:"; }, {class = EOSortOrdering; key = crn; selectorName = "compareAscending:"; }); 
+        }; 
+        TADisplayGroup = {
+            class = WODisplayGroup; 
+            dataSource = {
+                class = EODetailDataSource; 
+                detailKey = TAFor; 
+                masterClassDescription = User; 
+            }; 
+            fetchesOnLoad = YES; 
+            formatForLikeQualifier = "*%@*"; 
+            localKeys = (); 
+            numberOfObjectsPerBatch = 0; 
+            selectsFirstObjectAfterFetch = YES; 
+            sortOrdering = ({class = EOSortOrdering; key = course.number; selectorName = "compareAscending:"; }, {class = EOSortOrdering; key = crn; selectorName = "compareAscending:"; }); 
+        }; 
+        teachingDisplayGroup = {
+            class = WODisplayGroup; 
+            dataSource = {
+                class = EODetailDataSource; 
+                detailKey = teaching; 
+                masterClassDescription = User; 
+            }; 
+            fetchesOnLoad = YES; 
+            formatForLikeQualifier = "*%@*"; 
+            localKeys = (); 
+            numberOfObjectsPerBatch = 0; 
+            selectsFirstObjectAfterFetch = YES; 
+            sortOrdering = ({class = EOSortOrdering; key = course.number; selectorName = "compareAscending:"; }, {class = EOSortOrdering; key = crn; selectorName = "compareAscending:"; }); 
+        }; 
+    }; 
+}

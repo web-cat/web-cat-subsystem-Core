@@ -1,0 +1,12 @@
+PrivacyStatement: WOHyperlink {
+	href  = application.properties.corePrivacyURL;
+	string = "Privacy statement";
+}
+
+AdminEmail: WOString {
+	value = application.properties.coreAdminEmail;
+}
+
+Version: WOString {
+    value = application.version;
+}

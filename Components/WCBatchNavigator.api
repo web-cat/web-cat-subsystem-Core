@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<wodefinitions>
+	<wo class="WCBatchNavigator" wocomponentcontent="false">
+                <image path="WCBatchNavigator.tiff"/>
+
+		<binding name="displayGroup"/>
+
+		<validation message="&apos;displayGroup&apos; is a required binding">
+			<unbound name="displayGroup"/>
+		</validation>
+	</wo>
+</wodefinitions>

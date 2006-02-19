@@ -1,0 +1,37 @@
+Category: WOPopUpButton {
+	list = categories;
+	selection = selectedCategory;
+}
+
+Form1: WOForm {
+    multipleSubmit = true;
+}
+
+Page: net.sf.webcat.core.PageWithNavigation {
+}
+
+NotSent: WOConditional {
+	condition = sent;
+	negate = true;
+}
+
+ResetButton: WOResetButton {
+}
+
+Sent: WOConditional {
+	condition = sent;
+}
+
+SubmitButton: WOSubmitButton {
+	action = sendFeedback;
+}
+
+Text: WOText {
+	rows  = 18;
+	cols  = 80;
+	value = comments;
+}
+
+UserName: WOString {
+	value = session.user.nameAndUid;
+}

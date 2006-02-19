@@ -1,0 +1,22 @@
+SubsystemRows: net.sf.webcat.core.SubsystemFragmentCollector {
+    index       = index;
+    fragmentKey = "systemStatusRows";
+}
+
+StartTime: WOString {
+	dateformat = "%m/%d/%y %I:%M%p";
+	value      = application.startTime;
+}
+
+TR : net.sf.webcat.core.TableRow {
+    index     = index;
+    increment = true;
+}
+
+UserCount: WOString {
+	value = userCount;
+}
+
+IncludeSeparator: WOConditional {
+    condition = includeSeparator;
+}

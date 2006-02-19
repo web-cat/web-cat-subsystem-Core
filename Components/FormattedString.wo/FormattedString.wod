@@ -1,0 +1,8 @@
+Preformatted: WOConditional {
+	condition = preformatted;
+}
+
+Value: WOString {
+	value = value;
+	escapeHTML = preformatted;
+}

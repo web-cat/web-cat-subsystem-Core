@@ -1,0 +1,86 @@
+<webobject name="Page">
+<p>In Web-CAT's data model, your institution,
+"<webobject name="Institution"/>", can have one or more departments, and each
+department can have its own set of courses.  In a given academic semester
+(or quarter), one or more sections of a course may be offered.  In this
+installation step, you will identify the <b>first department</b> that
+will be created for your institution, the <b>first semester</b> in which
+courses will be offered, and an <b>initial list of courses</b> you want
+Web-CAT to know about.</p>
+<p>If you have already installed Web-CAT and are working with a database
+that already contains this information, then <b>leave the fields below
+blank</b>.  Only complete these fields if you want to create new database
+entries for the items listed below.</p>
+<table class="optionlist"><tbody>
+<tr><th colspan="3">Create a department</th></tr>
+<tr>
+  <td class="rtn" style="padding-bottom:0">Dept. name:</td>
+  <td class="t" colspan="2" style="padding-bottom:0"><webobject name="DeptName"/></td>
+</tr><tr><td></td><td></td>
+  <td class="t">
+  This is the name of the department in which you offer courses.  For example,
+  "Computer Science" or "Computer and Software Engineering".  Leave this
+  field blank if you do not wish to create a department data entry at this
+  time.  An administrator can create new department(s) later as needed, and
+  you can have as many as you want.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">Dept. abbrev.:</td>
+  <td class="t"><webobject name="DeptAbbrev"/></td>
+  <td class="t">
+  This is the official abbreviation used by your university for identifying
+  courses in the department named above.  For example, "CS", or "COMPSCI".
+  </td>
+</tr>
+<tr><th colspan="3">Create a semester/quarter</th></tr>
+<tr>
+  <td class="t" colspan="2" align="center">
+  <input name="SemesterCreate" id="SemesterCreate" value="1" checked="true" type="checkbox">
+  <label for="SemesterCreate">Create a new semester</label>
+  </td>
+  <td class="t">
+  Uncheck this box to skip creation of a new semester object.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">Period:</td>
+  <td class="t"><webobject name="SemesterPeriod"/></td>
+  <td class="t">
+  Pick the label that most closely corresponds to the term you use for the
+  semester/quarter you want to create.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">Start date:</td>
+  <td class="t"><webobject name="StartDate"/>&nbsp;<webobject name="StartDateSelector"/></td>
+  <td class="t">
+  Select the starting date of the semester/quarter you wish to create.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">End date:</td>
+  <td class="t"><webobject name="EndDate"/>&nbsp;<webobject name="EndDateSelector"/></td>
+  <td class="t">
+  Select the ending date of the semester/quarter you wish to create.
+  </td>
+</tr>
+<tr><th colspan="3">Create a list of courses</th></tr>
+</tbody></table>
+<script type="text/javascript">
+    Calendar.setup({
+        inputField     :    "StartDate",
+        ifFormat       :    "%m/%d/%Y",
+        button         :    "StartDateSelector",
+        align          :    "bl",
+        singleClick    :    true
+    });
+    Calendar.setup({
+        inputField     :    "EndDate",
+        ifFormat       :    "%m/%d/%Y",
+        button         :    "EndDateSelector",
+        align          :    "bl",
+        singleClick    :    true
+    });
+</script>
+</webobject>

@@ -1,0 +1,55 @@
+ConfigExists: WOConditional {
+    condition = configExists;
+}
+
+ConfigDoesNotExist: WOConditional {
+    condition = configExists;
+    negate    = true;
+}
+
+ConfigLocation: WOString {
+    value = configLocation;
+}
+
+ConfigWriteable: WOConditional {
+    condition = configIsWriteable;
+}
+
+ConfigNotWriteable: WOConditional {
+    condition = configIsWriteable;
+    negate    = true;
+}
+
+JavaVendor: WOString {
+    value = application.properties.java.vendor;
+}
+
+JavaRuntimeVersion: WOString {
+    value = application.properties.java.runtime.version;
+}
+
+JavaHome: WOString {
+    value = application.properties.java.home;
+}
+
+JavaExtDirs: WOString {
+    value = application.properties.java.ext.dirs;
+}
+
+ComWebObjectsVersion: WOString {
+    value = application.properties.com.webobjects.version;
+}
+
+OSName: WOString {
+    value = application.properties.os.name;
+}
+
+Page : net.sf.webcat.core.install.InstallPageWrapper {
+    title  = "Pre-installation Check";
+    stepNo = stepNo;
+    errors = errors;
+}
+
+Version: WOString {
+    value = application.version;
+}

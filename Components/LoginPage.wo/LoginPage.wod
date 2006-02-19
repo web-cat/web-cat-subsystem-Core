@@ -1,0 +1,82 @@
+AdminEmail: WOString {
+	value = application.properties.coreAdminEmail;
+}
+
+BarePage : net.sf.webcat.core.BarePage {
+	title = "Login";
+	bodyClass = "user";
+	inlineHeaderContents = "<style type=\"text/css\">
+td#logo {
+    width: 30%;
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #f96;
+}
+
+td#form {
+    padding: 10px;
+}
+
+body.user table#form { border: none }
+</style>";
+}
+
+Footer: net.sf.webcat.core.Footer {}
+
+HasLangList: WOConditional {
+    condition = application.properties.graderLangList;
+}
+
+HasMOTD: WOConditional {
+    condition = application.properties.coreMotd;
+}
+
+LangList: WOString {
+    value = application.properties.graderLangList;
+    escapeHTML = false;
+}
+
+LoginForm: WOForm {
+    href = ""; //loginDirectAction;
+}
+
+MOTD: WOString {
+    value = application.properties.coreMotd;
+    escapeHTML = false;
+}
+
+UserName: WOTextField {
+	value = userName;
+	name  = "UserName";
+	?size = "20";
+}
+
+UserPassword: WOPasswordField {
+	value = password;
+	name  = "UserPassword";
+	?size = "20";
+}
+
+AuthList: WOPopUpButton {
+	list              = domainDisplayGroup.allObjects;
+	selection         = domain;
+	item              = domainItem;
+	displayString     = domainItem.displayableName;
+	noSelectionString = "Choose your institution";
+	name              = "AuthenticationDomain";
+}
+
+Errors: net.sf.webcat.core.ErrorDictionaryPanel {
+	errorMessages          = errors;
+	shouldShowNewlineAbove = true;
+	shouldShowNewlineBelow = true;
+}
+
+Logo: WOImage {
+	filename = "images/Web-CAT-big2.gif";
+	width    = "100";
+	height   = "40";
+	alt      = "Web-CAT";
+	border   = "0";
+	align    = "middle";
+}

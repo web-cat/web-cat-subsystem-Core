@@ -1,0 +1,53 @@
+BatchNumber: WOTextField {
+	numberformat = "0";
+	size = 3;
+	value = batchIndex;
+}
+
+Count: WOString {
+	value = ^displayGroup.allObjects.count;
+}
+
+IsBatchedDisplay: WOConditional {
+	condition = ^displayGroup.hasMultipleBatches;
+}
+
+ItemsPerBatch: WOTextField {
+	align = "center";
+	numberformat = "0";
+	size = 2;
+	value = numberOfObjectsPerBatch;
+}
+
+LeftArrow: WOImage {
+	alt = "Left Arrow";
+	border = "0";
+	filename = "lft-OSarw.gif";
+	framework = "JavaWOExtensions";
+	height = "16";
+	name = "Left Arrow";
+	width = "11";
+}
+
+NextBatchLink: WOHyperlink {
+	action = ^displayGroup.displayNextBatch;
+}
+
+PreviousBatchLink: WOHyperlink {
+	action = ^displayGroup.displayPreviousBatch;
+}
+
+RightArrow: WOImage {
+	alt = "Right Arrow";
+	border = "0";
+	filename = "rt-OSarw.gif";
+	framework = "JavaWOExtensions";
+	height = "16";
+	name = "Right Arrow";
+	width = "11";
+}
+
+TotalBatches: WOString {
+	value = ^displayGroup.batchCount;
+}
+

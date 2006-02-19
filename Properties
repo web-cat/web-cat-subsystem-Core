@@ -1,0 +1,5 @@
+core.archive.handler.list = (\
+	net.sf.webcat.archives.internal.ZipArchiveHandler    \
+	,net.sf.webcat.archives.internal.TarGzArchiveHandler \
+	,net.sf.webcat.archives.internal.TarArchiveHandler   \
+	)

@@ -1,0 +1,231 @@
+AllowSelection: WOConditional {
+    condition = allowSelection;
+}
+
+CanDelete: WOConditional {
+    condition = canDelete;
+}
+
+CanEdit : WOConditional {
+    condition = canEdit;
+}
+
+CanEditAny : WOConditional {
+    condition = isEditable;
+}
+
+CannotDelete: WOConditional {
+    condition = canDelete;
+    negate    = true;
+}
+
+CanSelectThis : WOConditional {
+    condition = canSelectThis;
+}
+
+Collapse1: WOActiveImage {
+	action    = toggleExpansion;
+	filename  = "icons/minus.gif";
+	framework = "Core";
+	width     = 21;
+	height    = 17;
+	alt       = "Collapse Folder";
+	title     = "Collapse Folder";
+}
+
+Collapse2: WOActiveImage {
+	action    = toggleExpansion;
+	filename  = "icons/diropen.gif";
+	framework = "Core";
+	width     = 22;
+	height    = 19;
+	alt       = "Collapse Folder";
+	title     = "Collapse Folder";
+}
+
+DeleteFile: WOActiveImage {
+	action    = deleteFile;
+	filename  = "icons/trash.gif";
+	framework = "Core";
+	width     = 14;
+	height    = 17;
+	alt       = "[Delete]";
+	title     = deleteFileTitle;
+	onClick   = deleteFileOnClick;
+}
+
+DownloadFile: WOActiveImage {
+	action   = downloadFile;
+	filename = downloadIcon;
+	framework = "Core";
+	alt      = "[Download]";
+	title    = "Download";
+}
+
+EditFile: WOActiveImage {
+	action    = editFile;
+	filename  = "icons/edit.gif";
+	framework = "Core";
+	width     = 18;
+	height    = 17;
+	alt       = "[Edit]";
+	title     = "Edit this file";
+}
+
+Expand1: WOActiveImage {
+	action    = toggleExpansion;
+	filename  = "icons/plus.gif";
+	framework = "Core";
+	width     = 20;
+	height    = 17;
+	alt       = "Expand Folder";
+	title     = "Expand Folder";
+}
+
+Expand2: WOActiveImage {
+	action    = toggleExpansion;
+	filename  = "icons/dir.gif";
+	framework = "Core";
+	width     = 20;
+	height    = 17;
+	alt       = "Expand Folder";
+	title     = "Expand Folder";
+}
+
+Expanded : WOConditional {
+    condition = isExpanded;
+}
+
+FileIcon: WOImage {
+	src = iconURL;
+}
+
+IsArchive : WOConditional {
+	condition = isArchive;
+}
+
+IsDirectory : WOConditional {
+	condition = isDirectory;
+}
+
+IsEmptySpacer : WOConditional {
+	condition = spacerWalker.last;
+}
+
+IsExpanded : WOConditional {
+    condition = isExpanded;
+}
+
+IsFinalSpacerRep : WOConditional {
+    condition = isFinalSpacerRep;
+}
+
+IsLastInParent : WOConditional {
+    condition = isLast;
+}
+
+IsNonemptySpacer : WOConditional {
+	condition = spacerWalker.last;
+	negate = true;
+}
+
+IsNotArchive : WOConditional {
+	condition = isArchive;
+	negate = true;
+}
+
+IsNotDirectory : WOConditional {
+	condition = isDirectory;
+	negate = true;
+}
+
+IsNotExpanded : WOConditional {
+    condition = isExpanded;
+    negate = true;
+}
+
+IsNotFinalSpacerRep : WOConditional {
+    condition = isFinalSpacerRep;
+    negate = true;
+}
+
+IsNotLastInParent : WOConditional {
+    condition = isLast;
+    negate = true;
+}
+
+IsNotViewable : WOConditional {
+	condition = isViewable;
+	negate = true;
+}
+
+IsViewable : WOConditional {
+	condition = isViewable;
+}
+
+Name1 : WOString {
+	value = file.getName;
+}
+
+Name2 : WOHyperlink {
+	string = file.getName;
+	action = viewFile;
+	target = "viewFile";
+}
+
+NoDeleteFile: WOImage {
+	filename  = "images/blank.gif";
+	framework = "Core";
+	width     = 14;
+	height    = 17;
+	alt       = "";
+}
+
+NotExpanded : WOConditional {
+    condition = isExpanded;
+    negate = true;
+}
+
+Select: WOActiveImage {
+	action    = select;
+	filename  = "select-sm-btn.gif";
+	framework = "JavaDirectToWeb";
+	width     = 46;
+	height    = 17;
+	alt       = "Select";
+	title     = "Select this entry";
+}
+
+SpacerRepetition : WORepetition {
+	list = isLastEntry;
+	item = spacerWalker;
+	index = spacerIndex;
+}
+
+SubFileBrowser : net.sf.webcat.core.FileBrowserRow {
+	file                  = subFileWalker;
+	baseFile              = baseFile;
+	depth                 = innerDepth;
+	isLast                = currentEntryIsLastAtItsLevel;
+	isLastEntry           = isLastEntry;
+	isEditable            = isEditable;
+	allowSelection        = allowSelection;
+    allowSelectDir        = allowSelectDir;
+    allowSelectExtensions = allowSelectExtensions;
+	index                 = index;
+	initialExpansionDepth = initialExpansionDepth;
+	fileSelectionListener = fileSelectionListener;
+	fileEditListener      = fileEditListener;
+    applyChangesOnMod     = applyChangesOnMod;
+}
+
+SubFileRepetition : WORepetition {
+	list = contents;
+	item = subFileWalker;
+	index = subFileIndex;
+}
+
+TR1 : net.sf.webcat.core.TableRow {
+	index     = index;
+	increment = true;
+}

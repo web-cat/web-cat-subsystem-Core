@@ -1,0 +1,117 @@
+ApplyButton: WOSubmitButton {
+	value    = " Apply All ";
+	action   = apply;
+    name     = "ApplyButton";
+}
+
+BackButton: WOSubmitButton {
+    action   = back;
+    value    = " < Back ";
+}
+
+CancelButton: WOSubmitButton {
+	action   = cancel;
+	value    = " Cancel ";
+}
+
+DebugRepetition: WORepetition {
+	item = debugKey;
+	list = thisPage.session.attributeKeys;
+}
+
+DefaultButton: WOImageButton {
+    action   = defaultAction;
+    filename = "images/blank.gif";
+    width    = 1;
+    height   = 1;
+    name     = "DefaultButton";
+}
+
+DefaultFocus: WOString {
+    value = initialFocusTo;
+}
+
+EODescription: WOString {
+	value = thisPage.toString;
+}
+
+FinishButton: WOSubmitButton {
+	value    = " Finish ";
+	action   = finish;
+    name     = "FinishButton";
+}
+
+HasApplyButton: WOConditional {
+	condition = applyEnabled;
+}
+
+HasBackButton: WOConditional {
+	condition = backEnabled;
+}
+
+HasCancelButton: WOConditional {
+	condition = cancelEnabled;
+}
+
+HasExtraGap: WOConditional {
+	condition = hasExtraGap;
+}
+
+HasFinishButton: WOConditional {
+	condition = finishEnabled;
+}
+
+HasNextButton: WOConditional {
+	condition = nextEnabled;
+}
+
+HasStateDebug: WOConditional {
+	condition = debugState;
+}
+
+KeyString: WOString {
+	value = debugKey;
+}
+
+NextButton: WOSubmitButton {
+    action   = next;
+    value    = " Next > ";
+    name     = "NextButton";
+}
+
+Page: net.sf.webcat.core.PageWithNavigation {
+    stylesheet           = stylesheet;
+    externalJavascript   = externalJavascript;
+    inlineHeaderContents = inlineHeaderContents;
+    onLoad               = onLoad;
+    omitStdStyleSheet    = omitStdStyleSheet;
+    title                = title;
+    sideStepTitle        = sideStepTitle;
+    hideSteps            = hideSteps;
+}
+
+Spacer: WOImage {
+    filename = "images/blank.gif";
+    width    = 8;
+    height   = 1;
+    alt      = "";
+}
+
+ValString: WOString {
+	value = debugKeyValue;
+}
+
+WizardContent: WOComponentContent {
+}
+
+WizardForm: WOForm {
+    multipleSubmit = true;
+    action         = defaultAction;
+
+    // This works stand-alone, but not in a servlet
+//    enctype        = "multipart/form-data";
+//    name           = "WizardForm";
+
+    // So use this instead.
+    otherTagString = "enctype=\"multipart/form-data\" name=\"WizardForm\"";
+}

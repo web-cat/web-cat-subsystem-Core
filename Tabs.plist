@@ -1,0 +1,22 @@
+{
+    Home = {
+        priority   = 10;
+        wantsStart = YES;
+        children   = {
+            Status = {
+                pageName = net.sf.webcat.core.StatusPage;
+                priority = 100;
+                wantsStart = YES;
+            };
+            "My Profile" = {
+                pageName = net.sf.webcat.core.MyProfilePage;
+                priority = 1001;
+            };
+            Feedback = {
+                pageName = net.sf.webcat.core.FeedbackPage;
+                priority = 1002;
+                id       = Feedback;
+            };
+        };
+    };
+}

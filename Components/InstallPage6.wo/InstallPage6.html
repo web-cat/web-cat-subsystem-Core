@@ -1,0 +1,70 @@
+<webobject name="Page">
+<p>As part of the installation process, Web-CAT will create an administrator
+account.  This administrator account will have full access to all of
+Web-CAT's features.</p>
+<p>Once installation is complete, you can use this administrator account
+to create other administrator accounts if multiple individuals need super-user
+access to this Web-CAT server.  You can have as many administrators as you
+like, but here we will just create the first one.</p>
+<table class="optionlist"><tbody>
+<tr>
+  <td class="rtn">Admin user name:</td>
+  <td class="t"><webobject name="AdminUsername"/></td>
+  <td class="t">
+  This is the user name for the administrator account that will be created.
+  It can be any user name you like.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">First name:</td>
+  <td class="t"><webobject name="AdminFirstName"/></td>
+  <td class="t">
+  If you like, you can associate a first and last name with the administrator
+  account.  This information is used when identifying the account to others,
+  particularly if the administrator account will be used by an instructor
+  who also teaches classes.  You may omit this information if desired, and
+  it can always be changed later under the administrator's
+  <i>Home-&gt;My Profile</i> page.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">Last name:</td>
+  <td class="t"><webobject name="AdminLastName"/></td>
+  <td class="t">
+  This is the last name that goes along with the first name above.  It can be
+  omitted if desired, or changed later via the <i>Home-&gt;My Profile</i> page.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">admin e-mail:</td>
+  <td class="t"><webobject name="coreAdminEmail"/></td>
+  <td class="t">
+  This is the e-mail address to use for the administrator account.  It will
+  be shown on various pages within the site as the primary contact point
+  for your Web-CAT server.  It also will be used as the "from" address
+  for all outgoing e-mail messages sent by Web-CAT.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">Admin password:</td>
+  <td class="t"><webobject name="AdminPassword"/></td>
+  <td class="t">
+  This is the password that will be given to the administrator account when
+  it is created.  A non-empty password is mandatory.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">Notification e-mail(s):</td>
+  <td class="t"><webobject name="adminNotifyAddrs"/></td>
+  <td class="t">
+  During operation, Web-CAT may periodically need to notify an administrator
+  of some condition that has arisen.  Enter the e-mail address to which
+  these notification messages and diagnostics should be sent.  If you want
+  messages to be sent to multiple addresses, use a comma-separated list.  All
+  of these addresses then will receive copies of all Web-CAT notifications.
+  If you leave this entry blank, then all such messages will be sent to
+  the administrator account e-mail address you have provided above instead.
+  </td>
+</tr>
+</tbody></table>
+</webobject>

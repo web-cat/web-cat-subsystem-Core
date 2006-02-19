@@ -1,0 +1,124 @@
+/*==========================================================================*\
+ |  $Id$
+ |*-------------------------------------------------------------------------*|
+ |  Copyright (C) 2006 Virginia Tech
+ |
+ |  This file is part of Web-CAT.
+ |
+ |  Web-CAT is free software; you can redistribute it and/or modify
+ |  it under the terms of the GNU General Public License as published by
+ |  the Free Software Foundation; either version 2 of the License, or
+ |  (at your option) any later version.
+ |
+ |  Web-CAT is distributed in the hope that it will be useful,
+ |  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ |  GNU General Public License for more details.
+ |
+ |  You should have received a copy of the GNU General Public License
+ |  along with Web-CAT; if not, write to the Free Software
+ |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
+ |
+ |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
+ |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+\*==========================================================================*/
+
+package net.sf.webcat.core;
+
+import com.webobjects.appserver.*;
+import com.webobjects.eoaccess.*;
+import com.webobjects.eocontrol.*;
+import com.webobjects.foundation.*;
+import org.apache.log4j.Logger;
+
+// -------------------------------------------------------------------------
+/*
+ * Looks up EO classes referenced in EOModels; serves as a delegate for the
+ * default EOModelGroup.
+ *
+ * <p>
+ * The main operation defined here is
+ * {@link #failedToLookupClassNamed(EOEntity,String)}.  The rest of the
+ * <code>EOModelGroup.Delegate</code> functions implemented here just
+ * return null or some default value.
+ * </p>
+ *
+ * @author Lally Singh
+ * @version $Id$
+ */
+public class SubsystemEOMRedirector
+    implements EOModelGroup.Delegate
+{
+    //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Loads an EO class from the Web-CAT {@link DelegatingUrlClassLoader}.
+     * This method is called when the EOModelGroup couldn't find a class.
+     * We load it here and return it, using the DelegatingUrlClassLoader.
+     * 
+     * @param entity    
+     * @param className The class to find
+     * @return          The resulting <code>Class</code> object
+     */
+    public Class failedToLookupClassNamed( EOEntity entity, String className )
+    {
+        try
+        {
+            return DelegatingUrlClassLoader.getClassLoader().loadClass( 
+                           className );
+        }
+        catch ( Exception e )
+        {
+            log.error( "Couldn't load class with name: " + className );
+        }
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public Class classForObjectWithGlobalID( EOEntity entity,
+                                             EOGlobalID gid )
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public EOModel modelGroupEntityNamed( EOModelGroup modelGroup,
+                                          String name )
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public EOEntity relationshipFailedToLookupDestinationWithName(
+             EORelationship relationship, 
+             String         name
+         )
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public EORelationship relationshipForRow( EOEntity entity, 
+                                              NSDictionary dictionary, 
+                                              EORelationship relationship )
+    {
+        return relationship;
+    }
+
+
+    // ----------------------------------------------------------
+    public EOEntity subEntityForEntity( EOEntity entity, NSDictionary dic )
+    {
+        return null;
+    }
+
+
+    //~ Instance/static variables .............................................
+
+    static Logger log = Logger.getLogger( SubsystemEOMRedirector.class );
+}

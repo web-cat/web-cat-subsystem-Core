@@ -1,0 +1,42 @@
+HasExtraMessage: WOConditional {
+	condition = extraErrorMessage.length;
+}
+
+ShowNewLineBelow: WOConditional {
+	condition = shouldShowNewLineBelow;
+}
+
+ShowNewLineAbove: WOConditional {
+	condition = shouldShowNewLineAbove;
+}
+
+DictionaryRepetition: WORepetition { 	
+	list = errorKeys;
+	//key = errorKey;
+	//item = errorMessageItem;
+	//dictionary = errorMessages;
+	item = errorKey;
+}
+
+HasErrors: WOConditional {
+	condition = hasErrors;
+}
+
+Caution: WOImage
+{
+    filename  = "icons/caution.gif";
+    framework = "Core";
+    height    = "16";
+    width     = "16";
+    border    = 0;
+}
+
+Message: WOString {
+	value      = errorMessageItem;
+    escapeHTML = false;
+}
+
+ExtraMessage: WOString {
+	value      = extraErrorMessage;
+    escapeHTML = false;
+}

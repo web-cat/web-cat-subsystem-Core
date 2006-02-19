@@ -1,0 +1,210 @@
+BarePage: net.sf.webcat.core.BarePage {
+    title                = title;
+    stylesheet           = stylesheet;
+    externalJavascript   = externalJavascript;
+    inlineHeaderContents = inlineHeaderContents;
+    onLoad               = onLoad;
+    bodyClass            = session.currentTab.cssClass;
+    omitStdStyleSheet    = omitStdStyleSheet;
+}
+
+Critical: WOImage {
+    filename  = "icons/exclaim.gif";
+    framework = "Core";
+    height    = "16";
+    width     = "16";
+    border    = 0;
+}
+
+DeathIsScheduled: WOConditional {
+    condition = application.deathIsScheduled;
+}
+
+DeathTime: WOString {
+	dateformat = "%I:%M%p";
+	value      = application.deathTime;
+}
+
+Errors: net.sf.webcat.core.ErrorDictionaryPanel {
+	errorMessages          = thisPage.errors;
+//	shouldShowNewlineAbove = true;
+//	shouldShowNewlineBelow = true;
+}
+
+FeedbackLink: WOHyperlink {
+	action = goToFeedback;
+}
+
+FeedbackBtn: WOActiveImage {
+	href     = feedback;
+	filename = "icons/feedback.gif";
+	width    = "20";
+	height   = "18";
+	alt      = "Feedback";
+	border   = "0";
+	align    = "middle";
+//	otherTagString = "width=\"20\" height=\"18\" alt=\"Feedback\" border=\"0\"";
+}
+
+Footer: net.sf.webcat.core.Footer {}
+
+HasMenu: WOConditional {
+    condition = hasSteps;
+}
+
+HasSecondTabs: WOConditional {
+    condition = session.tabs.selectedChild.children.count;
+}
+
+HasTitle: WOConditional {
+    condition = hasTitle;
+}
+
+HelpBtn: WOActiveImage {
+	href     = helpURL;
+	filename = "icons/help.gif";
+	target   = "\"WCHelp\"";
+	width    = "16";
+	height   = "16";
+	alt      = "Help";
+	border   = "0";
+	align    = "middle";
+//	otherTagString = "width=\"16\" height=\"16\" alt=\"Help\" border=\"0\"";
+}
+
+HelpLink: WOHyperlink {
+	href = helpURL;
+	target = "\"WCHelp\"";
+}
+
+IncludePageWrapping: WOConditional {
+    condition = includePageWrapping;
+}
+
+IsSideStep: WOConditional {
+	condition = isSideStep;
+}
+
+LogoutLink: WOHyperlink {
+	action = logout;
+}
+
+Logo: WOImage {
+	filename = "images/Web-CAT2.gif";
+	width    = "50";
+	height   = "20";
+	alt      = "Web-CAT";
+	border   = "0";
+	align    = "middle";
+//	otherTagString = "width=\"16\" height=\"14\" alt=\"Log out\" border=\"0\"";
+}
+
+LogoutBtn: WOActiveImage {
+	action = logout;
+	filename = "icons/close.gif";
+	width    = "16";
+	height   = "14";
+	alt      = "Log out";
+	border   = "0";
+	align    = "middle";
+//	otherTagString = "width=\"16\" height=\"14\" alt=\"Log out\" border=\"0\"";
+}
+
+MenuHeader: WOString {
+	value = secondLevelSelection.label;
+}
+
+NoMenu: WOConditional {
+    condition = hasSteps;
+    negate    = true;
+}
+
+NoSecondTabs: WOConditional {
+    condition = session.tabs.selectedChild.children.count;
+    negate    = true;
+}
+
+OmitPageWrapping: WOConditional {
+    condition = includePageWrapping;
+    negate    = true;
+}
+
+PageContent: WOComponentContent {
+}
+
+PrimaryTabClass: WOString {
+	value = primaryTabClass;
+}
+
+PrimaryTabLabel: WOString {
+	value = primaryTabItem.label;
+}
+
+PrimaryTabLink: WOHyperlink {
+	action = primaryTabLink;
+}
+
+PrimaryTabs: WORepetition {
+	list = session.tabs.children;
+	item = primaryTabItem;
+}
+
+SecondaryTabClass: WOString {
+	value = secondaryTabClass;
+}
+
+SecondaryTabLabel: WOString {
+	value = secondaryTabItem.label;
+}
+
+SecondaryTabLink: WOHyperlink {
+	action = secondaryTabLink;
+}
+
+SecondaryTabs: WORepetition {
+	list = session.tabs.selectedChild.children;
+	item = secondaryTabItem;
+}
+
+SideStepTitle: WOString {
+	value = lcSideStepTitle;
+}
+
+Steps: WORepetition {
+	list  = secondLevelSelection.children;
+	item  = tertiaryTabItem;
+	index = tertiaryTabIndex;
+}
+
+StepNumber: WOString {
+	value = tertiaryNumeral;
+}
+
+StepLabel: WOString {
+	value = tertiaryTabItem.lcLabel;
+}
+
+StepIsSelected: WOConditional {
+	condition = stepIsSelected;
+}
+
+StepUsesLink: WOConditional {
+	condition = stepUsesLink;
+}
+
+StepLink: WOHyperlink {
+	action = stepLink;
+}
+
+StepWithoutLink: WOConditional {
+	condition = stepUsesLink;
+	negate    = true;
+}
+
+Title: WOString {
+	value = title;
+}
+
+UserName: WOString {
+	value = session.user.name;
+}

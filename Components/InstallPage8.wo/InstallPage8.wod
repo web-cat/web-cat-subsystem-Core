@@ -1,0 +1,53 @@
+adminNotifyAddrs: WOTextField {
+    value = adminNotifyAddrs;
+    name  = "adminNotifyAddrs";
+}
+
+adminPassword: WOTextField {
+    value = adminPassword;
+    name  = "AdminPassword";
+}
+
+adminUsername: WOTextField {
+    value = adminUsername;
+    name  = "AdminUsername";
+}
+
+ConfigWriteable: WOConditional {
+    condition = configIsWriteable;
+}
+
+ConfigNotWriteable: WOConditional {
+    condition = configIsWriteable;
+    negate    = true;
+}
+
+coreAdminEmail: WOTextField {
+    value = application.properties.coreAdminEmail;
+    name  = "coreAdminEmail";
+}
+
+Config: WOText {
+    value = application.configurationProperties.configSettingsAsString;
+    cols  = 70;
+    rows  = 40;
+}
+
+ConfigLocation: WOString {
+    value = configLocation;
+}
+
+ConfigNotSaved: WOConditional {
+    condition = configSaved;
+    negate    = true;
+}
+
+ConfigSaved: WOConditional {
+    condition = configSaved;
+}
+
+Page : net.sf.webcat.core.install.InstallPageWrapper {
+    title  = "Congratulations! Web-CAT is Installed";
+    stepNo = stepNo;
+    errors = errors;
+}

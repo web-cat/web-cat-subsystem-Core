@@ -1,0 +1,31 @@
+DBhostname: WOTextField {
+    value = application.properties.DBhostname;
+    name  = "DBhostname";
+}
+
+DBhostport: WOTextField {
+    numberformat = "0";
+    value = application.properties.DBhostport;
+    name  = "DBhostport";
+}
+
+DBname: WOTextField {
+    value = application.properties.DBname;
+    name  = "DBname";
+}
+
+DBpassword: WOTextField {
+    value = application.properties.dbConnectPasswordGLOBAL;
+    name  = "dbConnectPasswordGLOBAL";
+}
+
+DBusername: WOTextField {
+    value = application.properties.dbConnectUserGLOBAL;
+    name  = "dbConnectUserGLOBAL";
+}
+
+Page : net.sf.webcat.core.install.InstallPageWrapper {
+    title  = "MySQL Database Configuration";
+    stepNo = stepNo;
+    errors = errors;
+}
