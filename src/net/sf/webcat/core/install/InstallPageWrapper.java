@@ -75,7 +75,7 @@ public class InstallPageWrapper
     // ----------------------------------------------------------
     public String imageFileName()
     {
-        String name = "images/install-cat" + stepNo;
+        String name = "images/install-cat" + ( index + 1 );
         if ( stepNo != index + 1 )
         {
             name += "-off";
@@ -95,7 +95,7 @@ public class InstallPageWrapper
     public String nextButtonLabel()
     {
         return ( stepNo == install.steps.length )
-            ? " Site Administration > "
+            ? " Login > " // " Site Administration > "
             : " Next > ";
     }
 
@@ -103,7 +103,7 @@ public class InstallPageWrapper
     // ----------------------------------------------------------
     public boolean backEnabled()
     {
-        return stepNo > 1;
+        return 1 < stepNo  &&  stepNo < install.steps.length;
     }
 
 

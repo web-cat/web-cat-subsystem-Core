@@ -26,11 +26,11 @@
 package net.sf.webcat.core.install;
 
 import com.webobjects.appserver.*;
+import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.ERXValueUtilities;
 import java.util.Calendar;
-
 import net.sf.webcat.core.*;
-
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -62,6 +62,7 @@ public class InstallPage7
     public NSArray periods = new NSArray( Semester.integers );
     public Integer period;
     public Integer selectedPeriod;
+    public String  empty;
 
 
     //~ Methods ...............................................................
@@ -102,9 +103,189 @@ public class InstallPage7
         }
 
         setConfigDefault( configuration, "StartDate",
-            "" + startMonth + "/" + startDay + "/" + startYear );
+            ( startMonth < 10 ? "0" : "" ) + startMonth
+            + ( startDay < 10 ? "/0" : "/" )  + startDay
+            + "/" + startYear );
         setConfigDefault( configuration, "EndDate",
-            "" + endMonth + "/" + endDay + "/" + endYear );
+            ( endMonth < 10 ? "0" : "" )  + endMonth
+            + ( endDay < 10 ? "/0" : "/" ) + endDay
+            + "/" + endYear );
+    }
+
+
+    // ----------------------------------------------------------
+    public void takeFormValues( NSDictionary formValues )
+    {
+        EOEditingContext ec = Application.newPeerEditingContext();
+        try
+        {
+            // SemesterCreate = ("1");
+            if ( ERXValueUtilities.booleanValue(
+                 extractFormValue( formValues, "SemesterCreate" ) ) )
+            {
+                Semester semester = new Semester();
+                // SemesterPeriod = ("0");
+                semester.setSeason(ERXValueUtilities.intValue(
+                    extractFormValue( formValues, "SemesterPeriod" ) ) );
+                // StartDate = ("1/1/2006");
+                java.text.DateFormat df = java.text.DateFormat
+                    .getDateInstance( java.text.DateFormat.SHORT );
+                try
+                {
+                    String str = extractFormValue( formValues, "StartDate" );
+                    log.debug( "start raw value = " + str );
+                    NSTimestamp t = new NSTimestamp(
+                        df.parse( str )
+                        );
+                    log.debug( "start timestamp = " + t );
+                    semester.setSemesterStartDate( t );
+                    Calendar cal = Calendar.getInstance();
+                    cal.setTime( t );
+                    semester.setYear( cal.get( Calendar.YEAR ) );
+                }
+                catch ( java.text.ParseException e )
+                {
+                    errorMessage( "Invalid format for semester start date." );
+                }
+                // EndDate = ("5/31/2006");
+                try
+                {
+                    String str = extractFormValue( formValues, "EndDate" );
+                    log.debug( "end raw value = " + str );
+                    NSTimestamp t = new NSTimestamp(
+                        df.parse( str )
+                        );
+                    log.debug( "end timestamp = " + t );
+                    semester.setSemesterEndDate( t );
+                }
+                catch ( java.text.ParseException e )
+                {
+                    errorMessage( "Invalid format for semester end date." );
+                }
+                if ( !hasErrors() )
+                {
+                    ec.insertObject( semester );
+                }
+            }
+
+            // SandboxCreate = ("1");
+            Department dept = null;
+            if ( ERXValueUtilities.booleanValue(
+                     extractFormValue( formValues, "SandboxCreate" ) ) )
+            {
+                dept = new Department();
+                ec.insertObject( dept );
+                dept.setName( "Sandbox Department" );
+                dept.setAbbreviation( "Sandbox" );
+                dept.setInstitutionRelationship(
+                    AuthenticationDomain.authDomainByName(
+                        Application.configurationProperties()
+                        .getProperty( "authenticator.default" ) )
+                );
+                Course course = new Course();
+                ec.insertObject( course );
+                course.setDepartmentRelationship( dept );
+                course.setName( "Sandbox Course" );
+                course.setNumber( 1 );
+            }
+
+            // DeptName = ("");
+            // DeptAbbrev = ("");
+            String deptName   = extractFormValue( formValues, "DeptName" );
+            String deptAbbrev = extractFormValue( formValues, "DeptAbbrev" );
+            if ( deptName != null && !deptName.equals( "" ) )
+            {
+                if ( deptAbbrev == null || deptAbbrev.equals( "" ) )
+                {
+                    errorMessage( "Please provide a department abbreviation." );
+                }
+                else
+                {
+                    dept = new Department();
+                    ec.insertObject( dept );
+                    dept.setName( deptName );
+                    dept.setAbbreviation( deptAbbrev );
+                    dept.setInstitutionRelationship(
+                        AuthenticationDomain.authDomainByName(
+                            Application.configurationProperties()
+                            .getProperty( "authenticator.default" ) )
+                    );
+                }
+            }
+
+            // CourseNo = ("", "", "", "", "");
+            // CourseName = ("", "", "", "", "");
+            NSArray courseNos = (NSArray)formValues.objectForKey( "CourseNo" );
+            NSArray courseNames =
+                (NSArray)formValues.objectForKey( "CourseName" );
+            if ( dept != null )
+            {
+                for ( int i = 0; i < courseNos.count(); i++ )
+                {
+                    String num  = (String)courseNos.objectAtIndex( i );
+                    String name = (String)courseNames.objectAtIndex( i );
+                    if ( num != null && !num.equals( "" )
+                         && name != null && !name.equals( "" ) )
+                    {
+                        try
+                        {
+                            int number = Integer.parseInt( num );
+                            Course course = new Course();
+                            ec.insertObject( course );
+                            course.setName( name );
+                            course.setNumber( number );
+                            course.setDepartmentRelationship( dept );
+                        }
+                        catch ( NumberFormatException e )
+                        {
+                            errorMessage( "Course no. \"" + num + "\" cannot "
+                                + "be parsed as an integer." );
+                        }
+                    }
+                    else if ( num != null && !num.equals( "" )
+                              && ( name == null || name.equals( "" ) ) )
+                    {
+                        errorMessage(
+                            "Course \"" + num + "\" needs a name."  );
+                    }
+                    else if ( name != null && !name.equals( "" )
+                              && ( num == null || num.equals( "" ) ) )
+                    {
+                        errorMessage(
+                            "Course \"" + name + "\" needs a number."  );
+                    }
+                }
+            }
+            else
+            {
+                for ( int i = 0; i < courseNos.count(); i++ )
+                {
+                    String str = (String)courseNos.objectAtIndex( i );
+                    if ( str != null && !str.equals( "" ) )
+                    {
+                        errorMessage(
+                            "Cannot create courses without a department!" );
+                        break;
+                    }
+                    str = (String)courseNames.objectAtIndex( i );
+                    if ( str != null && !str.equals( "" ) )
+                    {
+                        errorMessage(
+                            "Cannot create courses without a department!" );
+                        break;
+                    }
+                }
+            }
+
+            // commit changes to the database
+            ec.saveChanges();
+        }
+        finally
+        {
+            Application.releasePeerEditingContext( ec );
+        }
+        Application.configurationProperties().remove( "StartDate" );
+        Application.configurationProperties().remove( "EndDate" );
     }
 
 

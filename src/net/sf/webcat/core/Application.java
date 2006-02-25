@@ -33,6 +33,7 @@ import com.webobjects.woextensions.*;
 import net.sf.webcat.dbupdate.*;
 import er.extensions.*;
 import java.io.File;
+import java.net.*;
 import java.util.Enumeration;
 import java.util.Vector;
 import javax.activation.*;
@@ -76,13 +77,13 @@ public class Application
         setSessionStoreClassName( "WOServerSessionStore" );
         if ( log.isInfoEnabled() )
         {
-            log.info( "Web-CAT " + version() +
-                ", Copyright (C) 2006 Virginia Tech" );
-            log.info( "Web-CAT comes with ABSOLUTELY NO WARRANTY; this is "
-                + "free software" );
-            log.info( "under the terms of the GNU General Public License.  "
-                + "See:");
-            log.info( "http://www.gnu.org/licenses/gpl.html\n" );
+            log.info( "Web-CAT v" + version()
+                + "\nCopyright (C) 2006 Virginia Tech\n\n"
+                + "Web-CAT comes with ABSOLUTELY NO WARRANTY; this is "
+                + "free software\n"
+                + "under the terms of the GNU General Public License.  "
+                + "See:\n"
+                + "http://www.gnu.org/licenses/gpl.html\n" );
             log.info( "Properties loaded from:" );
             NSArray dirs =
                 ERXProperties.pathsForUserAndBundleProperties();
@@ -121,7 +122,7 @@ public class Application
         setDefaultRequestHandler(
             requestHandlerForKey( directActionRequestHandlerKey() ) );
 
-//        if ( configurationProperties().hasUsableConfiguration() )
+        if ( configurationProperties().hasUsableConfiguration() )
         {
             initializeApplication();
             setNeedsInstallation( false );
@@ -674,6 +675,26 @@ public class Application
 
 
     // ----------------------------------------------------------
+    static public String configurationFileName()
+    {
+        String configFileName = ERXSystem.getProperty(
+            "webobjects.user.dir" );
+        if ( configFileName == null || configFileName.equals( "" ) )
+        {
+            configFileName = ERXSystem.getProperty( "user.dir" );
+        }
+        configFileName = configFileName.replace( '\\', '/' );
+        if ( configFileName.length() > 0
+             && !configFileName.endsWith( "/" ) )
+        {
+            configFileName += "/";
+        }
+        configFileName += "configuration.properties";
+        return configFileName;
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Access the application's property settings.
      * @return the property settings
@@ -682,20 +703,8 @@ public class Application
     {
         if ( __properties == null )
         {
-            String configFileName = ERXSystem.getProperty(
-                "webobjects.user.dir" );
-            if ( configFileName == null || configFileName.equals( "" ) )
-            {
-                configFileName = ERXSystem.getProperty( "user.dir" );
-            }
-            configFileName = configFileName.replace( '\\', '/' );
-            if ( configFileName.length() > 0
-                 && !configFileName.endsWith( "/" ) )
-            {
-                configFileName += "/";
-            }
-            configFileName += "configuration.properties";
-            __properties = new WCConfigurationFile( configFileName );
+            __properties = new WCConfigurationFile( configurationFileName() );
+            __properties.updateToSystemProperties();
         }
         return __properties;
     }
@@ -1413,6 +1422,13 @@ public class Application
     // ----------------------------------------------------------
     public String version()
     {
+        if ( version == null )
+        {
+            WCConfigurationFile config = properties();
+            version =   config.getProperty( "core.version.major", "x" )
+                + "." + config.getProperty( "core.version.minor", "x" )
+                + "." + config.getProperty( "core.version.date", "xxxxxxxx" );
+        }
         return version;
     }
 
@@ -1472,6 +1488,7 @@ public class Application
     private static final NSArray SERVER_PORT_KEYS = new NSArray(new Object[]
         {"x-webobjects-server-port", "SERVER_PORT"});
 
+    private static String version;
     private static NSTimestamp startTime = new NSTimestamp();
     private static NSTimestamp dieTime = null;
     private static WCConfigurationFile __properties;
@@ -1479,8 +1496,6 @@ public class Application
     private static SubsystemManager __subsystemManager;
     private static String cmdShell;
     
-    private static final String version = "v1.1.0 2006-02-18";
-
     private boolean needsInstallation = true;
 
     static Logger log = Logger.getLogger( Application.class );

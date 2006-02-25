@@ -104,9 +104,32 @@ public class InstallPage5
         {
             if ( authClass != null )
             {
-                Application.configurationProperties().setProperty(
-                    "authenticator." + defaultAuth,
-                    authClass );
+                if ( authClass.equals( "custom-auth-class" ) )
+                {
+                    String customClass = storeFormValueToConfig( formValues,
+                        "authenticator.default.class.custom",
+                        "authenticator." + defaultAuth,
+                        "You must specify a custom authentication class name."
+                        );
+                    if ( customClass != null )
+                    {
+                        // Check to see that it is indeed on the classpath
+                        try
+                        {
+                            Class.forName( customClass );
+                        }
+                        catch ( ClassNotFoundException e )
+                        {
+                            errorMessage( e.getMessage() );
+                        }
+                    }
+                }
+                else
+                {
+                    Application.configurationProperties().setProperty(
+                        "authenticator." + defaultAuth,
+                        authClass );
+                }
             }
             String value =
                 storeFormValueToConfig( formValues, "InstitutionName",
@@ -124,6 +147,10 @@ public class InstallPage5
             storeFormValueToConfig( formValues, "InstitutionEmailDomain",
                 "mail.default.domain",
                 null );
+            if ( !hasErrors() )
+            {
+                net.sf.webcat.core.AuthenticationDomain.refreshAuthDomains();
+            }
         }
     }
 

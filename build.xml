@@ -30,6 +30,11 @@
 	<target name="init.install">
 		<tstamp/>
 		<property name="dest.dir" value="${install.dir}"/>
+        <propertyfile file="Properties"
+         comment="This file is automatically rewritten by ANT, so all formatting will be trashed.">
+          <entry key="core.version.date" value="${DSTAMP}"/>  
+        </propertyfile>
+        <echo message="stamp = ${DSTAMP}"/>      
 	</target>
 	
 	<target name="init.build">

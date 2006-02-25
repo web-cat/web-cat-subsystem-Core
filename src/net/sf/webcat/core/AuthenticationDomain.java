@@ -145,6 +145,11 @@ public class AuthenticationDomain
                     log.debug ( "trying to register: " + base );
                     UserAuthenticator ua = null;
                     String uaClassName   = properties.getProperty( base );
+                    if ( uaClassName == null || uaClassName.equals( "" ) )
+                    {
+                        uaClassName = properties.getProperty(
+                            "authenticator.default.class" );
+                    }
                     try
                     {
                         ua = (UserAuthenticator)

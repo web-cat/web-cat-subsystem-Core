@@ -106,6 +106,8 @@ public class DatabaseAuthenticator
         User user = null;
         try
         {
+            // FIXME: need to add the auth domain as an extra parameter
+            // in this search
             User u = (User)EOUtilities.objectMatchingKeyAndValue(
                     ec,
                     User.ENTITY_NAME,

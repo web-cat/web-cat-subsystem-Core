@@ -739,12 +739,14 @@ public class WCProperties
                 property =
                     super.getProperty( key + ERXProperties.DefaultString );
             }
-            // We go ahead and set the value to increase the lookup the next time the
-            // property is accessed.
-            if ( property != null && application != null )
-            {
-                setProperty( key + application, property );
-            }
+            // This behavior from ERXProperties makes it hard to dynamically
+            // reset properties easily, so turn it off here.
+            // // We go ahead and set the value to increase the lookup the
+            // // next time the property is accessed.
+            // if ( property != null && application != null )
+            // {
+            //     setProperty( key + application, property );
+            // }
         }
         if ( performSubstitution )
         {

@@ -1,5 +1,6 @@
-core.archive.handler.list = (\
-	net.sf.webcat.archives.internal.ZipArchiveHandler    \
-	,net.sf.webcat.archives.internal.TarGzArchiveHandler \
-	,net.sf.webcat.archives.internal.TarArchiveHandler   \
-	)
+#This file is automatically rewritten by ANT, so all formatting will be trashed.
+#Fri Feb 24 23:32:19 EST 2006
+core.archive.handler.list=(net.sf.webcat.archives.internal.ZipArchiveHandler, net.sf.webcat.archives.internal.TarGzArchiveHandler, net.sf.webcat.archives.internal.TarArchiveHandler)
+core.version.minor=2
+core.version.date=20060224
+core.version.major=1

@@ -172,6 +172,10 @@ public class Session
         {
             ec.unlock();
         }
+        if ( loginSession == null )
+        {
+            Application.releasePeerEditingContext( ec );
+        }
         updateLoginSession();
         return this.sessionID();
     }
@@ -263,12 +267,15 @@ public class Session
                     ec.insertObject( loginSession );
                     loginSession.setSessionId( sessionID() );
                     loginSession.setUserRelationship( loginUser );
-                    
                 }
             }
             finally
             {
                 ec.unlock();
+            }
+            if ( loginSession == null )
+            {
+                Application.releasePeerEditingContext( ec );
             }
         }
         try

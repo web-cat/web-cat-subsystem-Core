@@ -26,7 +26,9 @@
 package net.sf.webcat.core.install;
 
 import com.webobjects.appserver.*;
+import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.*;
+
 import er.extensions.ERXDirectAction;
 import er.extensions.ERXValueUtilities;
 import net.sf.webcat.core.*;
@@ -62,11 +64,11 @@ public class install
     public static final String[] steps = new String[] {
         "pre-check",    // 1
         "license",      // 2
-        "1",            // 3
-        "2",            // 4
-        "3",            // 5
-        "4",            // 6
-        "5",            // 7
+        "step 1",       // 3
+        "step 2",       // 4
+        "step 3",       // 5
+        "step 4",       // 6
+        "step 5",       // 7
         "done!"         // 8
         };
 
@@ -88,18 +90,20 @@ public class install
     public WOActionResults defaultAction()
     {
         Application app = (Application)Application.application();
+        WCConfigurationFile configuration = app.configurationProperties();
         if ( log.isDebugEnabled() )
         {
-            log.debug( "defaultAction(): form values = "
+            log.debug( "defaultAction(): incoming configuration = "
                 + request().formValues() );
-            log.debug( app.configurationProperties().configSettingsAsString() );
+            log.debug( configuration.configSettingsAsString() );
         }
         if ( !app.needsInstallation() )
         {
             return app.gotoLoginPage( context() );
         }
-        int step = app.configurationProperties().intForKey( "configStep" );
-        if ( step > 0 && step <= steps.length )
+        int step = configuration.intForKey( "configStep" );
+        if ( step > 0 && step <= steps.length
+             && request().formValueForKey( "back" ) == null )
         {
             InstallPage oldPage = (InstallPage)
                 pageWithName( InstallPage.class.getName() + step );
@@ -109,12 +113,64 @@ public class install
                 return oldPage;
             }
         }
-        if ( step == steps.length && request().formValueForKey( "next" ) != null )
+        if ( step == steps.length
+             && request().formValueForKey( "next" ) != null )
         {
-            // Replace this with logging in under the newly created
-            // administrator account and then going directly to
-            // the Administer tab
-            return app.gotoLoginPage( context() );
+            // The login action code here is commented out, since it causes
+            // session restore errors for some reason.  Instead, we just
+            // forward to the login page itself and require the user to
+            // login to get in.
+            
+            // The following three lines are currently in InstallPage8
+//            app.setNeedsInstallation( false );
+//            app.notifyAdminsOfStartup();
+//            configuration.remove( "configStep" );
+            
+//            String authDomainName =
+//                configuration.getProperty( "authenticator.default" );
+//            Session session = (Session)context().session();
+//            try
+//            {
+//            session.defaultEditingContext().lock();
+//            AuthenticationDomain domain =
+//                AuthenticationDomain.authDomainByName( authDomainName );
+//            log.debug( "domain = " + domain );
+//            NSArray users = EOUtilities.objectsMatchingValues(
+//                session.localContext(),
+//                User.ENTITY_NAME,
+//                new NSDictionary(
+//                    new Object[] {
+//                        configuration.getProperty( "AdminUsername" ),
+//                        domain
+//                    },
+//                    new Object[] {
+//                        User.USER_NAME_KEY,
+//                        User.AUTHENTICATION_DOMAIN_KEY
+//                    }
+//                )
+//            );
+//            log.debug( "users = " + users );
+//            if ( users.count() > 0 )
+//            {
+//                User admin = (User)users.objectAtIndex( 0 );
+//                session.setUser( admin );
+//                session.tabs.selectById( "AdminHome" );
+//                //Application.application().saveSessionForContext( context() );
+//                log.debug( "going to = " + session.currentPageName() );
+//                return pageWithName( session.currentPageName() );
+//            }
+//            else
+            {
+                log.debug( "going to login page" );
+//                return ( (Application)Application.application() )
+//                    .gotoLoginPage( context() );
+                return pageWithName(
+                    net.sf.webcat.core.LoginPage.class.getName() );
+            }
+//            finally
+//            {
+//                session.defaultEditingContext().unlock();
+//            }
         }
         else if ( step == 0 || request().formValueForKey( "next" ) != null )
         {
@@ -124,8 +180,12 @@ public class install
         {
             step--;
         }
-        app.configurationProperties().setProperty(
-            "configStep", Integer.toString( step ) );
+        configuration.setProperty( "configStep", Integer.toString( step ) );
+        if ( log.isDebugEnabled() )
+        {
+            log.debug( "defaultAction(): configuration for install page = " );
+            log.debug( configuration.configSettingsAsString() );
+        }
         return pageWithName( InstallPage.class.getName() + step );
     }
 

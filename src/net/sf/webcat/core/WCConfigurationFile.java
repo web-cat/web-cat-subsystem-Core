@@ -100,17 +100,12 @@ public class WCConfigurationFile
      */
     public boolean hasUsableConfiguration()
     {
-        boolean oldIsInstalling = isInstalling();
-        setIsInstalling( true );
-        boolean result =
-            getProperty( "configStep" ) == null
-            && getProperty( "applicationBaseURL" ) != null
+        return getProperty( "configStep" ) == null
+            && getProperty( "base.url" ) != null
             && getProperty( "dbConnectURLGLOBAL" ) != null
             && getProperty( "dbConnectUserGLOBAL" ) != null
             && getProperty( "dbConnectPasswordGLOBAL" ) != null
             && booleanForKey( "installComplete" );
-        setIsInstalling( oldIsInstalling );
-        return result;
     }
 
 
@@ -175,36 +170,10 @@ public class WCConfigurationFile
         for ( Iterator i = localEntrySet().iterator(); i.hasNext(); )
         {
             Map.Entry e = (Map.Entry)i.next();
-            System.setProperty(
-                e.getKey().toString(), e.getValue().toString() );
+            System.setProperty( (String)e.getKey(), e.getValue().toString() );
         }
+        er.extensions.ERXSystem.updateProperties();
         er.extensions.ERXLogger.configureLoggingWithSystemProperties();
-    }
-
-
-    // ----------------------------------------------------------
-    public void setIsInstalling( boolean value )
-    {
-        isInstalling = value;
-    }
-
-
-    // ----------------------------------------------------------
-    public boolean isInstalling()
-    {
-        return isInstalling;
-    }
-
-
-    // ----------------------------------------------------------
-    /* (non-Javadoc)
-     * @see net.sf.webcat.core.WCProperties#applicationNameForAppending()
-     * Override so that "property.Web-CAT"-style keys aren't actually
-     * searched in the config file while installing
-     */
-    protected String applicationNameForAppending()
-    {
-        return isInstalling ? null : super.applicationNameForAppending();
     }
 
 
@@ -230,7 +199,6 @@ public class WCConfigurationFile
     //~ Instance/static variables .............................................
 
     protected File configFile;
-    private   boolean isInstalling = false;
 
     public static final String header =
         " Web-CAT configuration settings\n"

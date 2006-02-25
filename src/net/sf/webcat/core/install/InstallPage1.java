@@ -72,10 +72,18 @@ public class InstallPage1
     // ----------------------------------------------------------
     public void setDefaultConfigValues( WCConfigurationFile configuration )
     {
-        configuration.setIsInstalling( true );
         if ( configuration.getProperty( "installComplete" ) != null )
         {
             configuration.remove( "installComplete" );
+        }
+        String osname = configuration.getProperty( "os.name" );
+        if ( osname.toLowerCase().startsWith( "windows" ) )
+        {
+            configuration.setProperty( "coreCmdShell", "cmd /c" );
+        }
+        else
+        {
+            configuration.setProperty( "coreCmdShell", "" );
         }
         super.setDefaultConfigValues( configuration );
     }

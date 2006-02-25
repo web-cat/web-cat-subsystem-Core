@@ -1,3 +1,9 @@
+CustomAuthClass: WOTextField {
+    value = application.properties.authenticator.default.class.custom;
+    name  = "authenticator.default.class.custom";
+    size  = 70;
+}
+
 InstitutionName: WOTextField {
     value = application.properties.InstitutionName;
     name  = "InstitutionName";
@@ -11,6 +17,12 @@ InstitutionEmailDomain: WOTextField {
 InstitutionShortName: WOTextField {
     value = application.properties.authenticator.default;
     name  = "authenticator.default";
+}
+
+UseCustomAuth: WORadioButton {
+    value     = "custom-auth-class";
+    selection = application.properties.authenticator.default.class;
+    name      = "authenticator.default.class";
 }
 
 UseDBAuth: WORadioButton {

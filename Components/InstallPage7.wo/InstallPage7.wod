@@ -1,3 +1,15 @@
+CourseNo: WOTextField {
+    value = empty;
+    name  = "CourseNo";
+    size  = 10;
+}
+
+CourseName: WOTextField {
+    value = empty;
+    name  = "CourseName";
+    size  = 70;
+}
+
 DeptName: WOTextField {
     value = application.properties.DeptName;
     name  = "DeptName";
@@ -25,6 +37,7 @@ SemesterPeriod: WOPopUpButton {
 StartDate: WOTextField {
     value    = application.properties.StartDate;
     name     = "StartDate";
+    id       = "StartDate";
     size     = 15;
 	readonly = 1;
 }
@@ -41,6 +54,7 @@ StartDateSelector: WOImage {
 EndDate: WOTextField {
     value    = application.properties.EndDate;
     name     = "EndDate";
+    id       = "EndDate";
     size     = 15;
 	readonly = 1;
 }

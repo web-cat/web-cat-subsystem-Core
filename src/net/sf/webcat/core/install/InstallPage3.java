@@ -26,12 +26,15 @@
 package net.sf.webcat.core.install;
 
 import com.webobjects.appserver.*;
+import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.*;
 import com.webobjects.foundation.NSValidation.ValidationException;
 import net.sf.webcat.dbupdate.Database;
 import net.sf.webcat.dbupdate.MySQLDatabase;
+import er.extensions.ERXConfigurationManager;
 import er.extensions.ERXValueUtilities;
 import java.net.URI;
+import java.net.URL;
 import java.sql.SQLException;
 
 import net.sf.webcat.core.*;
@@ -116,14 +119,6 @@ public class InstallPage3
         setConfigDefault( configuration, "DBhostname" , "localhost" );
         setConfigDefault( configuration, "DBhostport" , "3306" );
         setConfigDefault( configuration, "DBname" ,     "WebCAT" );
-        if ( configuration.getProperty( "grader.workarea" ) == null )
-        {
-            String value = configuration.getProperty( "java.io.tmpdir" );
-            if ( value != null && !value.equals( "" ) )
-            {
-                configuration.setProperty( "grader.workarea", value );
-            }
-        }
         if ( log.isDebugEnabled() )
         {
             log.debug( "configuration = " + configuration );
@@ -207,6 +202,9 @@ public class InstallPage3
                 db.executeSQL( "use `" + dbname + "`" );
             }
             // Initialize database
+            ( (Application)Application.application() )
+                .configurationProperties().updateToSystemProperties();
+            updateEOModels();
             ( (Application)Application.application() ).initializeApplication();
         }
         catch ( Exception e )
@@ -220,6 +218,30 @@ public class InstallPage3
                 db.close();
             }
         }
+    }
+
+
+    // ----------------------------------------------------------
+    protected void updateEOModels()
+    {
+        // remove all of the existing EOModels and re-install them, so that
+        // they pick up the newly configured connection info.
+        NSArray models = EOModelGroup.defaultGroup().models();
+        if ( models != null )
+        {
+            URL[] modelPaths = new URL[models.count()];
+            for ( int i = 0; i < models.count(); i++ )
+            {
+                EOModel model = (EOModel)models.objectAtIndex( i );
+                modelPaths[i] = model.pathURL();
+                EOModelGroup.defaultGroup().removeModel( model );
+            }
+            for ( int i = 0; i < modelPaths.length; i++ )
+            {
+                EOModelGroup.defaultGroup()
+                    .addModelWithPathURL( modelPaths[i] );
+            }
+        }        
     }
 
 

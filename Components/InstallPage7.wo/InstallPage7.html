@@ -12,7 +12,62 @@ that already contains this information, then <b>leave the fields below
 blank</b>.  Only complete these fields if you want to create new database
 entries for the items listed below.</p>
 <table class="optionlist"><tbody>
-<tr><th colspan="3">Create a department</th></tr>
+<tr><th colspan="3">Create a semester/quarter</th></tr>
+<tr>
+  <td class="t" colspan="2" align="center">
+  <input name="SemesterCreate" id="SemesterCreate" value="1" checked type="checkbox">
+  <label for="SemesterCreate">Create a new semester</label>
+  </td>
+  <td class="t">
+  Leave this box checked and select dates below when you are setting up a
+  brand new database.  Uncheck this box to skip creation of a new semester
+  object if you are using an existing database that already has a current
+  semester created within it.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">Period:</td>
+  <td class="t"><webobject name="SemesterPeriod"/></td>
+  <td class="t">
+  Pick the label that most closely corresponds to the term you use for the
+  semester/quarter you want to create.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">Start date:</td>
+  <td class="t"><webobject name="StartDate"/>&nbsp;<webobject name="StartDateSelector"/></td>
+  <td class="t">
+  Select the starting date of the semester/quarter you wish to create.  Dates
+  are used for informational purposes only.
+  </td>
+</tr>
+<tr>
+  <td class="rtn">End date:</td>
+  <td class="t"><webobject name="EndDate"/>&nbsp;<webobject name="EndDateSelector"/></td>
+  <td class="t">
+  Select the ending date of the semester/quarter you wish to create.  Dates
+  are used for informational purposes only.
+  </td>
+</tr>
+<tr><th colspan="3">Create sample data</th></tr>
+<tr>
+  <td class="t" colspan="2" align="center">
+  <input name="SandboxCreate" id="SandboxCreate" value="1" unchecked type="checkbox">
+  <label for="SandboxCreate">Create sample dept. &amp; courses</label>
+  </td>
+  <td class="t">
+  Check this box to automatically create a sample demo department called
+  "Sandbox Department", which contains a demo course called "Sandbox Course".
+  This may be useful if you are new to Web-CAT and are not yet ready to
+  create your own department.  You can change the name of this department
+  and course any time you wish (as well as create more) using the administrator
+  account.
+  <em>Soon we will include the
+  creation of a couple of demo assignments for you to explore, but this part
+  of the sample data is not yet ready.</em>
+  </td>
+</tr>
+<tr><th colspan="3">Create your own department</th></tr>
 <tr>
   <td class="rtn" style="padding-bottom:0">Dept. name:</td>
   <td class="t" colspan="2" style="padding-bottom:0"><webobject name="DeptName"/></td>
@@ -33,39 +88,20 @@ entries for the items listed below.</p>
   courses in the department named above.  For example, "CS", or "COMPSCI".
   </td>
 </tr>
-<tr><th colspan="3">Create a semester/quarter</th></tr>
-<tr>
-  <td class="t" colspan="2" align="center">
-  <input name="SemesterCreate" id="SemesterCreate" value="1" checked="true" type="checkbox">
-  <label for="SemesterCreate">Create a new semester</label>
-  </td>
-  <td class="t">
-  Uncheck this box to skip creation of a new semester object.
-  </td>
-</tr>
-<tr>
-  <td class="rtn">Period:</td>
-  <td class="t"><webobject name="SemesterPeriod"/></td>
-  <td class="t">
-  Pick the label that most closely corresponds to the term you use for the
-  semester/quarter you want to create.
-  </td>
-</tr>
-<tr>
-  <td class="rtn">Start date:</td>
-  <td class="t"><webobject name="StartDate"/>&nbsp;<webobject name="StartDateSelector"/></td>
-  <td class="t">
-  Select the starting date of the semester/quarter you wish to create.
-  </td>
-</tr>
-<tr>
-  <td class="rtn">End date:</td>
-  <td class="t"><webobject name="EndDate"/>&nbsp;<webobject name="EndDateSelector"/></td>
-  <td class="t">
-  Select the ending date of the semester/quarter you wish to create.
-  </td>
-</tr>
 <tr><th colspan="3">Create a list of courses</th></tr>
+<tr><td colspan="3">If you would like to create your own list of courses
+within the department you have created above, list them here.  All of these
+courses will be created within your new department (or within the Sandbox
+department if you have chosen to create a sample department rather than a
+new one of your own).  List the course number <b>without including your
+department's abbreviated name</b> together with the <b>course title</b>.
+You may list up to five courses to create.</td></tr>
+<tr><td><b>Course No.</b></td><td colspan="2"><b>Course Name</b></td></tr>
+<tr><td><webobject name="CourseNo"/></td><td colspan="2"><webobject name="CourseName"/></td></tr>
+<tr><td><webobject name="CourseNo"/></td><td colspan="2"><webobject name="CourseName"/></td></tr>
+<tr><td><webobject name="CourseNo"/></td><td colspan="2"><webobject name="CourseName"/></td></tr>
+<tr><td><webobject name="CourseNo"/></td><td colspan="2"><webobject name="CourseName"/></td></tr>
+<tr><td><webobject name="CourseNo"/></td><td colspan="2"><webobject name="CourseName"/></td></tr>
 </tbody></table>
 <script type="text/javascript">
     Calendar.setup({

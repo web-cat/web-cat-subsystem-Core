@@ -119,7 +119,9 @@ public class DirectAction
     public boolean tryLogin( WORequest request, NSMutableDictionary errors )
     {
         boolean result = false;
-        if ( request.formValues().count() == 0 )
+        if ( request.formValues().count() == 0
+             || ( request.formValues().count() == 1
+                  && request.stringFormValueForKey( "next" ) != null ) )
         {
             return result;
         }

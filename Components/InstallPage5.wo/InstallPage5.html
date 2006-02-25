@@ -49,5 +49,19 @@ desired.</p>
   perform user authentication against this internal information.
   </td>
 </tr>
+<tr>
+  <td class="t" colspan="3" style="padding-bottom:0"><webobject name="UseCustomAuth"/> Use custom authenticator class:<br/>
+  &nbsp;&nbsp;&nbsp;&nbsp;<webobject name="CustomAuthClass"/></td>
+</tr><tr><td></td><td></td>
+  <td class="t">
+  <b class="warn">Caution: for advanced users only.</b>
+  Web-CAT can use a user-provided class for authentication.  This class must
+  implement the <code>net.sf.webcat.core.UserAuthenticator</code> interface.
+  In addition, you should have already placed this class (and any support
+  classes it requires) on the application's CLASSPATH, preferably by adding
+  your own jar(s) to the web application's <code>Web-INF/lib</code>
+  subdirectory.
+  </td>
+</tr>
 </tbody></table>
 </webobject>

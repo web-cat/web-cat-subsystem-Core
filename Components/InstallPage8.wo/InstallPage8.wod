@@ -1,16 +1,13 @@
-adminNotifyAddrs: WOTextField {
+adminNotifyAddrs: WOString {
     value = adminNotifyAddrs;
-    name  = "adminNotifyAddrs";
 }
 
-adminPassword: WOTextField {
+adminPassword: WOString {
     value = adminPassword;
-    name  = "AdminPassword";
 }
 
-adminUsername: WOTextField {
-    value = adminUsername;
-    name  = "AdminUsername";
+adminUsername: WOString {
+    value = application.properties.AdminUsername;
 }
 
 ConfigWriteable: WOConditional {
@@ -22,9 +19,8 @@ ConfigNotWriteable: WOConditional {
     negate    = true;
 }
 
-coreAdminEmail: WOTextField {
+coreAdminEmail: WOString {
     value = application.properties.coreAdminEmail;
-    name  = "coreAdminEmail";
 }
 
 Config: WOText {

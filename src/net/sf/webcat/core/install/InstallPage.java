@@ -160,10 +160,24 @@ public abstract class InstallPage
             if ( value != null )
             {
                 value = validateValueForKey( value, formKey ).toString();
-                if ( ( value == null || value.equals( "" ) )
-                     && errMsgIfEmpty != null )
+                if ( value == null || value.equals( "" ) )
                 {
-                    errorMessage( errMsgIfEmpty );
+                    if ( errMsgIfEmpty != null )
+                    {
+                        errorMessage( errMsgIfEmpty );
+                    }
+                    else if ( Application.configurationProperties()
+                                  .get( configKey ) != null )
+                    {
+                        Application.configurationProperties().remove(
+                            configKey );
+                    }
+                    else if ( Application.configurationProperties()
+                                    .getProperty( configKey ) != null )
+                      {
+                          Application.configurationProperties().setProperty(
+                              configKey, "" );
+                      }
                     value = null;
                 }
                 else

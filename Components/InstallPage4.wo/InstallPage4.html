@@ -49,10 +49,17 @@
   <td class="t" colspan="2" style="padding-bottom:0"><webobject name="WorkDir"/></td>
 </tr><tr><td></td><td></td>
   <td class="t">
-  Web-CAT stores student submissions and results in your server's file system.
-  This directory is where Web-CAT will store this information.  This directory
-  must be writeable by Web-CAT.  Be sure that this directory is backed up
-  on a regular schedule to prevent any data loss.
+  Web-CAT upacks, compiles, and executes student submissions in a separate
+  area from where the originals are stored.
+  This directory is the "scratch area" where Web-CAT will perform these
+  operations.  If possible, it is helpful to make sure this directory lives on
+  a different partition or different device from either the storage directory
+  listed above, or the system directories used by your server's operating
+  system.  Sandboxing the scratch area in this way will ensure that student
+  program actions cannot consume excessive disk resources and cause problems
+  with other services.  This directory
+  must be writeable by Web-CAT.  This directory is only used for transient
+  data and need not be backed up.
   </td>
 </tr>
 <tr>

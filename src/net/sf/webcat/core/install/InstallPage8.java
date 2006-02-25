@@ -26,7 +26,9 @@
 package net.sf.webcat.core.install;
 
 import com.webobjects.appserver.*;
+import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.*;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
@@ -63,7 +65,6 @@ public class InstallPage8
     public boolean configSaved = false;
     public String  adminNotifyAddrs;
     public String  adminPassword;
-    public String  adminUsername;
 
 
     //~ Methods ...............................................................
@@ -78,20 +79,25 @@ public class InstallPage8
     // ----------------------------------------------------------
     public void setDefaultConfigValues( WCConfigurationFile configuration )
     {
+        adminPassword = configuration.getProperty( "AdminPassword" );
+        if ( adminPassword != null )
+        {
+            configuration.remove( "AdminPassword" );
+        }
         adminNotifyAddrs = configuration.getProperty( "adminNotifyAddrs" );
         if ( adminNotifyAddrs == null || adminNotifyAddrs.equals( "" ) )
         {
             adminNotifyAddrs = configuration.getProperty( "coreAdminEmail" );
         }
-        adminUsername = configuration.getProperty( "AdminUsername" );
-        configuration.remove( "AdminUsername" );
-        adminPassword = configuration.getProperty( "AdminPassword" );
-        configuration.remove( "AdminPassword" );
+        configuration.remove( "configStep" );
         configuration.setProperty( "installComplete", "true" );
         configSaved = configuration.attemptToSave();
-        Application app = (Application)Application.application();
-        app.setNeedsInstallation( false );
-        app.notifyAdminsOfStartup();
+        configuration.updateToSystemProperties();
+        // configuration.setProperty( "configStep", "" + stepNo() );
+        ( (Application)Application.application() )
+            .setNeedsInstallation( false );
+        ( (Application)Application.application() )
+            .notifyAdminsOfStartup();
     }
 
 
@@ -99,7 +105,6 @@ public class InstallPage8
     public void appendToResponse( WOResponse request, WOContext context )
     {
         super.appendToResponse( request, context );
-        Application.configurationProperties().setIsInstalling( false );
     }
 
 

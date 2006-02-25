@@ -23,6 +23,10 @@ AdminUsername: WOTextField {
     name  = "AdminUsername";
 }
 
+CanSetPassword: WOConditional {
+    condition = canSetPassword;
+}
+
 coreAdminEmail: WOTextField {
     value = application.properties.coreAdminEmail;
     name  = "coreAdminEmail";
@@ -32,4 +36,13 @@ Page : net.sf.webcat.core.install.InstallPageWrapper {
     title  = "Administrator Account";
     stepNo = stepNo;
     errors = errors;
+}
+
+UsingDatabaseAuthentication: WOConditional {
+    condition = usingDatabaseAuthentication;
+}
+
+UsingOtherAuthentication: WOConditional {
+    condition = usingDatabaseAuthentication;
+    negate    = true;
 }

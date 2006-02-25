@@ -92,6 +92,15 @@ public class InstallPage4
                 configuration.setProperty( "base.url", url );
             }
         }
+        if ( configuration.getProperty( "grader.workarea" ) == null )
+        {
+            String value = configuration.getProperty( "java.io.tmpdir" );
+            if ( value != null && !value.equals( "" ) )
+            {
+                value = value.replace( '\\', '/' );
+                configuration.setProperty( "grader.workarea", value );
+            }
+        }
         if ( configuration.getProperty( "WOSMTPHost" ) == null
              && configuration.getProperty( "mail.smtp.host" ) != null )
         {
