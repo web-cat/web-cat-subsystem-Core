@@ -84,6 +84,21 @@ public class WCComponentWithErrorMessages
 
     // ----------------------------------------------------------
     /**
+     * Record an error message for this page, if one is provided.  If a
+     * null message is provided, nothing happens (no message is recorded).
+     * @param message the error message, or null
+     */
+    public void possibleErrorMessage( String message )
+    {
+        if ( message != null )
+        {
+            errorMessage( message, message );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Record an error message for this page.
      * @param message the error message
      * @param id a unique id used to distinguish this message from others

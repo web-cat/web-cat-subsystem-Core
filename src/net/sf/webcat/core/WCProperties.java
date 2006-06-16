@@ -133,6 +133,7 @@ public class WCProperties
                     propertyfiles_loaded += ";" + file.getAbsolutePath();
                 }
                 setProperty( PROPERTYFILES_LOADED, propertyfiles_loaded );
+                is.close();
             }
             catch ( IOException e )
             {

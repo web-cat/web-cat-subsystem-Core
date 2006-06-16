@@ -75,6 +75,20 @@ public class Application
         // restoring sessions through the WCServletSessionStore doesn't
         // really work.
         setSessionStoreClassName( "WOServerSessionStore" );
+        NSNotificationCenter.defaultCenter().addObserver(
+            this, 
+            new NSSelector( "logNotification", 
+                            new Class[] { NSNotification.class } ), 
+            NSBundle.BundleDidLoadNotification,
+            null
+        );
+        NSNotificationCenter.defaultCenter().addObserver(
+            this, 
+            new NSSelector( "logNotification", 
+                            new Class[] { NSNotification.class } ), 
+            NSBundle.LoadedClassesNotification,
+            null
+        );
         if ( log.isInfoEnabled() )
         {
             log.info( "Web-CAT v" + version()
@@ -271,6 +285,12 @@ public class Application
         if ( __subsystemManager == null )
             __subsystemManager = new SubsystemManager( configurationProperties() );
         return __subsystemManager;
+    }
+
+    public void logNotification( NSNotification notification )
+    {
+        log.info( "notification posted: " + notification );
+        log.info( "notification object: " + notification.object() );
     }
 
 
@@ -1425,9 +1445,9 @@ public class Application
         if ( version == null )
         {
             WCConfigurationFile config = properties();
-            version =   config.getProperty( "core.version.major", "x" )
-                + "." + config.getProperty( "core.version.minor", "x" )
-                + "." + config.getProperty( "core.version.date", "xxxxxxxx" );
+            version =   config.getProperty( "Core.version.major", "x" )
+                + "." + config.getProperty( "Core.version.minor", "x" )
+                + "." + config.getProperty( "Core.version.date", "xxxxxxxx" );
         }
         return version;
     }

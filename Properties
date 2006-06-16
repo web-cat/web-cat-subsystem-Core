@@ -1,6 +1,16 @@
 #This file is automatically rewritten by ANT, so all formatting will be trashed.
-#Sat Feb 25 11:24:37 EST 2006
-core.version.minor=2a
-core.archive.handler.list=(net.sf.webcat.archives.internal.ZipArchiveHandler, net.sf.webcat.archives.internal.TarGzArchiveHandler, net.sf.webcat.archives.internal.TarArchiveHandler)
-core.version.date=20060225
-core.version.major=1
+#Wed May 24 14:39:19 EDT 2006
+Core.info.url=http\://web-cat.cs.vt.edu/WCWiki/CoreSubsystem
+Core.provider.url=http\://web-cat.cs.vt.edu/updates
+Core.provider=Virginia Tech Computer Science
+Core.version.minor=2
+Core.copyright=(c) 2006 Virginia Tech Department of Computer Science
+Core.version.revision=2
+Core.version.date=20060524
+Core.version.major=1
+Core.history.url=http\://web-cat.cs.vt.edu/WCWiki/CoreSubsystem/ChangeHistory
+Core.license.url=http\://www.gnu.org/copyleft/gpl.html
+Core.description=This is the principal subsystem for Web-CAT, and provides all the capabilities necessary for loading and operating all other subsystems.  It also provides authentication services, and common UI elements used system-wide.
+Core.archive.handler.list=(net.sf.webcat.archives.internal.ZipArchiveHandler, net.sf.webcat.archives.internal.TarGzArchiveHandler, net.sf.webcat.archives.internal.TarArchiveHandler)
+subsystem.Core=
+Core.license=GNU General Public License v.2

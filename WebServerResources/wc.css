@@ -419,6 +419,8 @@ SPAN.hl {
 	padding: .2em .5em;
 }
 SPAN.sm { font-size: smaller }
+b.check { color: green; }
+b.warn  { color: red; }
 
 TR.o  { background-color: #fff; }
 TR.e  { background-color: #ffd; }

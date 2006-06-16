@@ -3,6 +3,7 @@
 	<name>Core</name>
 	<comment></comment>
 	<projects>
+		<project>Bootstrap</project>
 		<project>DBUpdateEngine</project>
 		<project>EOJDBCPrototypes</project>
 	</projects>

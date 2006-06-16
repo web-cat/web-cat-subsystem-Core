@@ -48,7 +48,8 @@
            JavaWebObjects.framework, 
            JavaWOJSPServlet.framework, 
            JavaXML.framework, 
-           JDBCEOAdaptor.framework
+           JDBCEOAdaptor.framework, 
+           JavaWOJSPServlet.framework
         );
         CLASSES = 
         (
@@ -201,7 +202,8 @@
            WebServerResources/icons/report.gif, 
            "WebServerResources/wc-ie5.css", 
            "WebServerResources/wc-ie6.css", 
-           WebServerResources/wc.css
+           WebServerResources/wc.css, 
+           WebServerResources/wc.bak
         );
         WO_COMPONENTS = 
         (

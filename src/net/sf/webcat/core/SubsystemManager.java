@@ -67,20 +67,45 @@ public class SubsystemManager
         log.debug( "creating subsystem manager" );
         if ( properties != null )
         {
-            String jarDir = properties.getProperty( "subsystem.jar.dir" );
-            if ( jarDir != null )
+//            String jarDir = properties.getProperty( "subsystem.jar.dir" );
+//            if ( jarDir != null )
+//            {
+//                addSubsystemJarsFromDirectory( jarDir );
+//            }
+//
+//            NSArray subs =
+//                properties.arrayForKey( "subsystem.unjarred.classes" );
+//            if ( subs != null )
+//            {
+//                for ( int i = 0; i < subs.count(); i++ )
+//                {
+//                    addSubsystemFromClassName(
+//                        (String)subs.objectAtIndex( i ) );
+//                }
+//            }
+            // Have to look in the system properties, because that is where
+            // all subsystem info will go, not in the config file
+            for ( Enumeration e = System.getProperties().keys();
+                  e.hasMoreElements(); )
             {
-                addSubsystemJarsFromDirectory( jarDir );
-            }
-
-            NSArray subs =
-                properties.arrayForKey( "subsystem.unjarred.classes" );
-            if ( subs != null )
-            {
-                for ( int i = 0; i < subs.count(); i++ )
+                String key = (String)e.nextElement();
+                if (  key.startsWith( SUBSYSTEM_KEY_PREFIX )
+                   && key.indexOf( '.', SUBSYSTEM_KEY_PREFIX.length() ) == -1 )
                 {
-                    addSubsystemFromClassName(
-                        (String)subs.objectAtIndex( i ) );
+                    String name =
+                        key.substring( SUBSYSTEM_KEY_PREFIX.length() );
+                    String className = properties.getProperty( key );
+
+                    // Use a default class if no class name is specified
+                    // in the property
+                    if ( className == null || className.equals( "" ) )
+                    {
+                        className = Subsystem.class.getName();
+                    }
+
+                    // TODO: need to add dependency support for proper
+                    // loading order
+                    addSubsystemFromClassName( name, className );
                 }
             }
         }
@@ -96,36 +121,36 @@ public class SubsystemManager
      * 
      * @param directory  The root directory for loading the jar'ed subsystems
      */
-    public void addSubsystemJarsFromDirectory( String directory )
-    {
-        File root = new File( directory );
-
-        // Get list of all .jar files in the directory
-        File[] jars = root.listFiles( new FilenameFilter() {
-            public boolean accept( File dir, String name )
-            {
-                return name.endsWith( ".jar" );
-            }
-        } );
-
-        if ( jars != null )
-        {
-            // Add the jar files
-            for ( int i = 0; i < jars.length; ++i )
-            {
-                try
-                {
-                    addSubsystemFromJarFile( jars[i] );
-                }
-                catch ( Exception e )
-                {
-                    log.error( "Exception adding subsystem: "
-                               + jars[i].toString() + ":", e );
-                }
-            }
-        }
-
-    }
+//    public void addSubsystemJarsFromDirectory( String directory )
+//    {
+//        File root = new File( directory );
+//
+//        // Get list of all .jar files in the directory
+//        File[] jars = root.listFiles( new FilenameFilter() {
+//            public boolean accept( File dir, String name )
+//            {
+//                return name.endsWith( ".jar" );
+//            }
+//        } );
+//
+//        if ( jars != null )
+//        {
+//            // Add the jar files
+//            for ( int i = 0; i < jars.length; ++i )
+//            {
+//                try
+//                {
+//                    addSubsystemFromJarFile( jars[i] );
+//                }
+//                catch ( Exception e )
+//                {
+//                    log.error( "Exception adding subsystem: "
+//                               + jars[i].toString() + ":", e );
+//                }
+//            }
+//        }
+//
+//    }
 
 
     // ----------------------------------------------------------
@@ -147,9 +172,30 @@ public class SubsystemManager
      *
      * @return An iterator for the names of all loaded subsystems
      */
-    public Iterator subsystems()
+    public Iterator subsystemNames()
     {
         return subsystems.keySet().iterator();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get an iterator for all loaded subsystems by name.
+     *
+     * @return An iterator for the names of all loaded subsystems
+     */
+    public NSArray subsystems()
+    {
+        if ( subsystemArray == null )
+        {
+            NSMutableArray subs = new NSMutableArray();
+            for ( Iterator i = subsystems.entrySet().iterator(); i.hasNext(); )
+            {
+                subs.addObject( ( (Map.Entry)i.next() ).getValue() );
+            }
+            subsystemArray = subs;
+        }
+        return subsystemArray;
     }
 
 
@@ -160,11 +206,11 @@ public class SubsystemManager
      * @param name  The file name of the JAR file that contains the subsystem
      * @throws IOException
      */
-    public void addSubsystemFromJarFile( String name )
-        throws IOException
-    {
-        addSubsystemFromJarFile( new File( name ) );
-    }
+//    public void addSubsystemFromJarFile( String name )
+//        throws IOException
+//    {
+//        addSubsystemFromJarFile( new File( name ) );
+//    }
 
 
     // ----------------------------------------------------------
@@ -174,30 +220,33 @@ public class SubsystemManager
      * @param file  The file of the JAR file that contains the subsystem
      * @throws IOException
      */
-    public void addSubsystemFromJarFile( File file )
-         throws IOException
-    {
-        JarSubsystem s = JarSubsystem.initializeSubsystemFromJar( file );
-        if ( s != null )
-        {
-            addSubsystem( s );
-        }
-    }
+//    public void addSubsystemFromJarFile( File file )
+//         throws IOException
+//    {
+//        JarSubsystem s = JarSubsystem.initializeSubsystemFromJar( file );
+//        if ( s != null )
+//        {
+//            addSubsystem( s );
+//        }
+//    }
 
 
     // ----------------------------------------------------------
     /**
      * Add a Subsystem to the manager, given a class name.
      * 
-     * @param name the class name to load
+     * @param name the symbolic name to use for this subsystem
+     * @param className the class name to load
      */
-    public void addSubsystemFromClassName( String name )
+    public void addSubsystemFromClassName( String name, String className )
     {
-        log.debug( "attempting to load subsystem from class '" + name + "'");
+        log.debug( "attempting to load subsystem " + name + " using class '"
+            + className + "'");
         try
         {
-            addSubsystem( (Subsystem)DelegatingUrlClassLoader.getClassLoader()
-                            .loadClass( name ).newInstance() );
+            addSubsystem( name,
+                (Subsystem)DelegatingUrlClassLoader.getClassLoader()
+                    .loadClass( className ).newInstance() );
         }
         catch ( Exception e )
         {
@@ -208,21 +257,24 @@ public class SubsystemManager
 
     // ----------------------------------------------------------
     /**
-     * Add a Subsystem to the manager, given a subsystem object.
-     * 
-     * @param s  The subsystem object to add
+     * Add a Subsystem to the manager.
+     *
+     * @param name  The subsystem's name
+     * @param s     The subsystem object to add
      */
-    public void addSubsystem( Subsystem s )
+    public void addSubsystem( String name, Subsystem s )
     {
-        String className = s.getClass().getName();
-        if ( !subsystems.containsKey( className ) )
+        if ( name == null ) name = s.name();
+        if ( !subsystems.containsKey( name ) )
         {
-            log.info( "Registering subsystem: " + className );
-            subsystems.put( className, s );
+            log.info( "Registering subsystem " + s.name() + " as " + name );
+            s.setName( name );
+            subsystems.put( name, s );
+            subsystemArray = null;
         }
         else
         {
-            log.error( "Subsystem already registered: " + className );
+            log.error( "Subsystem already registered: " + name );
         }
     }
 
@@ -235,7 +287,7 @@ public class SubsystemManager
      */
     public void initializeSessionData( Session s )
     {
-        Iterator keys = subsystems();
+        Iterator keys = subsystemNames();
         while ( keys.hasNext() )
         {
             Object nextKey = keys.next();
@@ -260,7 +312,7 @@ public class SubsystemManager
     public void collectSubsystemFragments(
         String fragmentKey, StringBuffer htmlBuffer, StringBuffer wodBuffer )
     {
-        Iterator keys = subsystems();
+        Iterator keys = subsystemNames();
         while ( keys.hasNext() )
         {
             Object nextKey = keys.next();
@@ -275,6 +327,8 @@ public class SubsystemManager
 
     /** Map&lt;String, JarSubsystem&gt;: holds the loaded subsystems. */
     private Map subsystems = new HashMap();
+    private NSArray subsystemArray = null;
 
+    private static final String SUBSYSTEM_KEY_PREFIX = "subsystem.";
     static Logger log = Logger.getLogger( SubsystemManager.class );
 }

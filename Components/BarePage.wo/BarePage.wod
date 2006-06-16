@@ -42,11 +42,11 @@ StdStyleSheet: WOString {
 	escapeHTML = false;
 	// The value is placed here to keep the IE-directed comments from being
     // stripped out by WO.
-    value = "<style media=\"all\" type=\"text/css\">@import \"http://web-cat.cs.vt.edu/wc.css\";</style>
+    value = "<style media=\"all\" type=\"text/css\">@import \"http://localhost/wc.css\";</style>
 <!--[if IE 5]>
-<style media=\"all\" type=\"text/css\">@import \"http://web-cat.cs.vt.edu/wc-ie5.css\";</style>
+<style media=\"all\" type=\"text/css\">@import \"http://localhost/wc-ie5.css\";</style>
 <![endif]-->
 <!--[if IE 6]>
-<style media=\"all\" type=\"text/css\">@import \"http://web-cat.cs.vt.edu/wc-ie6.css\";</style>
+<style media=\"all\" type=\"text/css\">@import \"http://localhost/wc-ie6.css\";</style>
 <![endif]-->";
 }
