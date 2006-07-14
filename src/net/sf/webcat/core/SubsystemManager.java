@@ -83,6 +83,7 @@ public class SubsystemManager
 //                        (String)subs.objectAtIndex( i ) );
 //                }
 //            }
+            ArrayList subsystemNames = new ArrayList();
             // Have to look in the system properties, because that is where
             // all subsystem info will go, not in the config file
             for ( Enumeration e = System.getProperties().keys();
@@ -94,25 +95,19 @@ public class SubsystemManager
                 {
                     String name =
                         key.substring( SUBSYSTEM_KEY_PREFIX.length() );
-                    String className = properties.getProperty( key );
-
-                    // Use a default class if no class name is specified
-                    // in the property
-                    if ( className == null || className.equals( "" ) )
-                    {
-                        className = Subsystem.class.getName();
-                    }
-
-                    // TODO: need to add dependency support for proper
-                    // loading order
-                    addSubsystemFromClassName( name, className );
+                    subsystemNames.add( name );                    
                 }
             }
+            addSubsystemsInOrder(
+                subsystemNames, null, new HashMap(), properties );
+            initAllSubsystems();
         }
+        envp();
+        pluginProperties();
     }
 
 
-    //~ Methods ...............................................................
+    //~ Public Methods ........................................................
 
     // ----------------------------------------------------------
     /**
@@ -172,29 +167,8 @@ public class SubsystemManager
      *
      * @return An iterator for the names of all loaded subsystems
      */
-    public Iterator subsystemNames()
-    {
-        return subsystems.keySet().iterator();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get an iterator for all loaded subsystems by name.
-     *
-     * @return An iterator for the names of all loaded subsystems
-     */
     public NSArray subsystems()
     {
-        if ( subsystemArray == null )
-        {
-            NSMutableArray subs = new NSMutableArray();
-            for ( Iterator i = subsystems.entrySet().iterator(); i.hasNext(); )
-            {
-                subs.addObject( ( (Map.Entry)i.next() ).getValue() );
-            }
-            subsystemArray = subs;
-        }
         return subsystemArray;
     }
 
@@ -270,7 +244,8 @@ public class SubsystemManager
             log.info( "Registering subsystem " + s.name() + " as " + name );
             s.setName( name );
             subsystems.put( name, s );
-            subsystemArray = null;
+            subsystemArray.addObject( s );
+            clearSubsystemPropertyCache();
         }
         else
         {
@@ -287,11 +262,10 @@ public class SubsystemManager
      */
     public void initializeSessionData( Session s )
     {
-        Iterator keys = subsystemNames();
-        while ( keys.hasNext() )
+        NSArray subs = subsystems();
+        for ( int i = 0; i < subs.count(); i++ )
         {
-            Object nextKey = keys.next();
-            ( (Subsystem)subsystems.get( nextKey ) )
+            ( (Subsystem)subs.objectAtIndex( i ) )
                 .initializeSessionData( s );
         }
     }
@@ -312,14 +286,382 @@ public class SubsystemManager
     public void collectSubsystemFragments(
         String fragmentKey, StringBuffer htmlBuffer, StringBuffer wodBuffer )
     {
-        Iterator keys = subsystemNames();
-        while ( keys.hasNext() )
+        NSArray subs = subsystems();
+        for ( int i = 0; i < subs.count(); i++ )
         {
-            Object nextKey = keys.next();
-            ( (Subsystem)subsystems.get( nextKey ) )
+            ( (Subsystem)subs.objectAtIndex( i ) )
                 .collectSubsystemFragments(
                     fragmentKey, htmlBuffer, wodBuffer );
         }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the command line environment variables used for executing
+     * external commands.
+     * @return a dictionary of ENV bindings
+     */
+    public NSDictionary environment()
+    {
+        if ( envCache == null )
+        {
+            NSMutableDictionary env = inheritedEnvironment();
+            NSArray subs = subsystems();
+            for ( int i = 0; i < subs.count(); i++ )
+            {
+                ( (Subsystem)subs.objectAtIndex( i ) )
+                    .addEnvironmentBindings( env );
+            }
+            envCache = env;
+            if ( log.isDebugEnabled() )
+            {
+                log.debug( "plug-in ENV = " + env );
+            }
+        }
+        return envCache;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the command line environment variables used for executing
+     * external commands in a form suitable for passing to
+     * {@link Runtime#exec(String,String[])}.
+     * @return a string array of ENV bindings, each in the form:
+     * <i>NAME=value</i>.
+     */
+    public String[] envp()
+    {
+        if ( envpCache == null )
+        {
+            NSDictionary env = environment();
+            ArrayList envpList = new ArrayList();
+            for ( Enumeration e = env.keyEnumerator(); e.hasMoreElements(); )
+            {
+                String key = (String)e.nextElement();
+                String val = env.objectForKey( key ).toString();
+                envpList.add( key + "=" + val );
+            }
+            String[] envp =
+                (String[])envpList.toArray( new String[envpList.size()] );
+            envpCache = envp;
+            if ( log.isDebugEnabled() )
+            {
+                log.debug( "envp = " + arrayToString( envp ) );
+            }
+        }
+        return envpCache;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the plug-in property definitions to be passed to plug-ins.
+     * @return a dictionary of plug-in properties
+     */
+    public NSDictionary pluginProperties()
+    {
+        if ( pluginPropertiesCache == null )
+        {
+            NSMutableDictionary properties = new NSMutableDictionary();
+            NSArray subs = subsystems();
+            for ( int i = 0; i < subs.count(); i++ )
+            {
+                ( (Subsystem)subs.objectAtIndex( i ) )
+                    .addPluginPropertyBindings( properties );
+            }
+            pluginPropertiesCache = properties;
+            if ( log.isDebugEnabled() )
+            {
+                log.debug( "plug-in properties = " + properties );
+            }
+        }
+        return pluginPropertiesCache;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Clear the cache of any subsystem-provided environment definitions
+     * or plug-in property definitions.
+     */
+    public void clearSubsystemPropertyCache()
+    {
+        envCache = null;
+        envpCache = null;
+        pluginPropertiesCache = null;
+    }
+
+
+    //~ Private Methods .......................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Calls {@link Subsystem#init()} for all registered subsystems.
+     */
+    private void initAllSubsystems()
+    {
+        NSArray subs = subsystems();
+        for ( int i = 0; i < subs.count(); i++ )
+        {
+            ( (Subsystem)subs.objectAtIndex( i ) ).init();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Convert a (possibly null) comma-separated string into an array of
+     * strings.
+     * @param rawList the comma-separated string to split (can be null)
+     * @return an array of the items in rawList, after separating on commas;
+     * any whitespace surrounding commas are ignored; if rawList is null or
+     * empty, then null is returned.
+     */
+    private String[] featureList( String rawList )
+    {
+        String[] result = null;
+        if ( rawList != null )
+        {
+            rawList = rawList.trim();
+            if ( !rawList.equals( "" ) )
+            {
+                result = rawList.split( "\\s*,\\s*" );
+            }
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Check to see if any of the strings in the featureList are stored
+     * in theSet.  If theSet is null, returns true.  If featureList is
+     * null, returns false.
+     * @param featureList an array of strings to test
+     * @param theSet a set to check in
+     * @return true if any string in featureList is found in theSet, or if
+     * theSet is null
+     */
+    private boolean foundIn( String[] featureList, Map theSet )
+    {
+        if ( featureList == null ) return false;
+        if ( theSet == null ) return true;
+        for ( int i = 0; i < featureList.length; i++ )
+        {
+            if ( theSet.containsKey( featureList[i] ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Check to see if all of the strings in the featureList are stored
+     * in theSet.  If featureList is null, returns false.  Otherwise, if
+     * theSet is null, returns true.
+     * @param featureList an array of strings to test
+     * @param theSet a set to check in
+     * @return false if any string in featureList is missing in theSet
+     */
+    private boolean missingFrom( String[] featureList, Map theSet )
+    {
+        if ( featureList == null ) return false;
+        if ( theSet == null ) return true;
+        for ( int i = 0; i < featureList.length; i++ )
+        {
+            if ( !theSet.containsKey( featureList[i] ) )
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add all of the strings in featureList to theSet.
+     * @param featureList an array of strings to add
+     * @param theSet the map to add them to
+     */
+    private void addTo( String[] featureList, Map theSet )
+    {
+        if ( featureList == null ) return;
+        for ( int i = 0; i < featureList.length; i++ )
+        {
+            theSet.put( featureList[i], featureList[i] );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Generate a string from an array of strings.
+     * @param array the array to convert
+     */
+    private String arrayToString( String[] array )
+    {
+        if ( array == null ) return null;
+        StringBuffer buffer = new StringBuffer();
+        buffer.append( "[ " );
+        for ( int i = 0; i < array.length; i++ )
+        {
+            if ( i > 0 )
+            {
+                buffer.append( ", " );
+            }
+            buffer.append( array[i] );
+        }
+        buffer.append( " ]" );
+        return buffer.toString();
+    }
+
+    
+    // ----------------------------------------------------------
+    /**
+     * Install/load a list of subsystems, searching for dependencies and
+     * using them to install subsystems in the correct order.  Since
+     * dependencies are fairly rare, a dumb O(n^2) algorithm is used for
+     * the topological sort.
+     * @param names a list of subsystem names that need to be
+     *     loaded/installed
+     * @param pendingFeatures a map that contains the names of defined
+     *     features that have not yet been loaded, for dependency tracking
+     * @param addedFeatures a map that contains the names of defined features
+     *     that have been installed (or at least partially installed)
+     * @param properties The application's property settings
+     */
+    private void addSubsystemsInOrder(
+        ArrayList    names,
+        Map          pendingFeatures,
+        Map          addedFeatures,
+        WCProperties properties )
+    {
+        if ( names.size() == 0 ) return;
+        int oldSize = names.size();
+        Map incompleteFeatures = new HashMap();
+        log.debug( "starting subsystem list traversal: " + names );
+        for ( int i = 0; i < names.size(); i++ )
+        {
+            String name = (String)names.get( i );
+            String[] depends = featureList(
+                properties.getProperty( name + DEPENDS_SUFFIX ) );
+            String[] requires = featureList(
+                properties.getProperty( name + REQUIRES_SUFFIX ) );
+            if ( foundIn( depends, pendingFeatures )
+                 || foundIn( requires, pendingFeatures ) )
+            {
+                if ( log.isDebugEnabled() )
+                {
+                    log.debug( "skipping " + name + ": depends = "
+                        + arrayToString( depends ) + "; requires = "
+                        + arrayToString( requires ) );
+                }
+                incompleteFeatures.put( name, name );
+                addTo( featureList(
+                    properties.getProperty( name + PROVIDES_SUFFIX ) ),
+                    incompleteFeatures );
+            }
+            else
+            {
+                if ( log.isDebugEnabled() )
+                {
+                    log.debug( "loading " + name + ": depends = "
+                        + arrayToString( depends ) + "; requires = "
+                        + arrayToString( requires ) );
+                }
+                names.remove( i );
+                i--;
+                if ( missingFrom( requires, addedFeatures ) )
+                {
+                    log.error( "unable to load subsystem '" + name
+                        + "': one or more required subsystems are missing: "
+                        + arrayToString( requires ) );
+                }
+                else
+                {
+                    addedFeatures.put( name, name );
+                    addTo( featureList(
+                        properties.getProperty( name + PROVIDES_SUFFIX ) ),
+                        addedFeatures );
+                    String className =
+                        properties.getProperty( SUBSYSTEM_KEY_PREFIX + name );
+    
+                    // Use a default class if no class name is specified
+                    // in the property
+                    if ( className == null || className.equals( "" ) )
+                    {
+                        className = Subsystem.class.getName();
+                    }
+    
+                    addSubsystemFromClassName( name, className );
+                }
+            }
+        }
+        if ( oldSize == names.size() )
+        {
+            log.error( "cyclic dependencies among subsystems detected: "
+                + names );
+        }
+        else
+        {
+            addSubsystemsInOrder(
+                names, incompleteFeatures, addedFeatures, properties );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Load this application's current ENV bindings into a dictionary.
+     * @return the current ENV bindings
+     */
+    private NSMutableDictionary inheritedEnvironment()
+    {
+        if ( inheritedEnvCache == null )
+        {
+            NSMutableDictionary env = new NSMutableDictionary();
+            // Fill it up
+
+            // First, try Unix command
+            try
+            {
+                Process process = Runtime.getRuntime().exec( 
+                    Application.isRunningOnWindows()
+                        ? "cmd /c set" : "printenv" );
+                BufferedReader in = new BufferedReader(
+                    new InputStreamReader( process.getInputStream() ) );
+                String line = in.readLine();
+                while ( line != null )
+                {
+                    int pos = line.indexOf( '=' );
+                    if ( pos > 0 )
+                    {
+                        String key = line.substring( 0, pos );
+                        String val = line.substring( pos + 1 );
+                        env.takeValueForKey( val, key );
+                    }
+                    line = in.readLine();
+                }
+            }
+            catch ( java.io.IOException e )
+            {
+                log.error(
+                    "Error attempting to parse default ENV settings:", e );
+            }
+            
+            inheritedEnvCache = env;
+            if ( log.isDebugEnabled() )
+            {
+                log.debug( "inherited ENV = " + env );
+            }
+        }
+        return inheritedEnvCache.mutableClone();
     }
 
 
@@ -327,8 +669,16 @@ public class SubsystemManager
 
     /** Map&lt;String, JarSubsystem&gt;: holds the loaded subsystems. */
     private Map subsystems = new HashMap();
-    private NSArray subsystemArray = null;
+    private NSMutableArray subsystemArray = new NSMutableArray();
+    private NSDictionary inheritedEnvCache = null;
+    private NSDictionary envCache = null;
+    private NSDictionary pluginPropertiesCache = null;
+    private String[] envpCache = null;
 
     private static final String SUBSYSTEM_KEY_PREFIX = "subsystem.";
+    private static final String DEPENDS_SUFFIX       = ".depends";
+    private static final String REQUIRES_SUFFIX      = ".requires";
+    private static final String PROVIDES_SUFFIX      = ".provides";
+
     static Logger log = Logger.getLogger( SubsystemManager.class );
 }

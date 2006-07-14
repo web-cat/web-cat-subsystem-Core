@@ -242,6 +242,7 @@ public class Application
 //            }
 //        }
         log.info( "Using SMTP host " + SMTPHost() );
+        log.debug( "cmdShell = " + cmdShell() );
 
         // Remove all state login session data
         EOEditingContext ec = newPeerEditingContext();
@@ -771,6 +772,18 @@ public class Application
     {
         String s = System.getProperty( "os.name" );
         return s != null && s.equals( "Windows XP" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Check to see if we are running on any flavor of Windows.
+     * @return true when running on Windows
+     */
+    public static boolean isRunningOnWindows()
+    {
+        String s = System.getProperty( "os.name" );
+        return s != null  &&  s.indexOf( "Windows" ) >= 0;
     }
 
 
@@ -1379,10 +1392,13 @@ public class Application
     {
         if ( cmdShell == null )
         {
-            cmdShell = configurationProperties().getProperty( "coreCmdShell", "" );
-            if ( cmdShell.length() > 0 )
+            if ( isRunningOnWindows() )
             {
-                cmdShell += " ";
+                cmdShell = "cmd /c ";
+            }
+            else
+            {
+                cmdShell = "";
             }
         }
         return cmdShell;
@@ -1445,9 +1461,48 @@ public class Application
         if ( version == null )
         {
             WCConfigurationFile config = properties();
-            version =   config.getProperty( "Core.version.major", "x" )
-                + "." + config.getProperty( "Core.version.minor", "x" )
-                + "." + config.getProperty( "Core.version.date", "xxxxxxxx" );
+            int major = 0;
+            int minor = 0;
+            int revision = 0;
+            int date = 0;
+            for ( Enumeration keys = System.getProperties().keys();
+                  keys.hasMoreElements(); )
+            {
+                String key = keys.nextElement().toString();
+                if ( key.endsWith( "version.major" ) )
+                {
+                    int thisMajor = config.intForKey( key );
+                    if ( thisMajor > major )
+                    {
+                        major = thisMajor;
+                    }
+                }
+                else if ( key.endsWith( "version.minor" ) )
+                {
+                    int thisMinor = config.intForKey( key );
+                    if ( thisMinor > minor )
+                    {
+                        minor = thisMinor;
+                    }
+                }
+                else if ( key.endsWith( "version.revision" ) )
+                {
+                    int thisRevision = config.intForKey( key );
+                    if ( thisRevision > revision )
+                    {
+                        revision = thisRevision;
+                    }
+                }
+                else if ( key.endsWith( "version.date" ) )
+                {
+                    int thisDate = config.intForKey( key );
+                    if ( thisDate > date )
+                    {
+                        date = thisDate;
+                    }
+                }
+            }
+            version =   "" + major + "." + minor + "." + revision + "." + date;
         }
         return version;
     }

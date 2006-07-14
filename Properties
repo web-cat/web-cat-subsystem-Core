@@ -1,14 +1,14 @@
 #This file is automatically rewritten by ANT, so all formatting will be trashed.
-#Wed May 24 14:39:19 EDT 2006
+#Fri Jul 14 10:58:51 EDT 2006
 Core.info.url=http\://web-cat.cs.vt.edu/WCWiki/CoreSubsystem
 Core.provider.url=http\://web-cat.cs.vt.edu/updates
 Core.provider=Virginia Tech Computer Science
-Core.version.minor=2
+Core.version.minor=3
 Core.copyright=(c) 2006 Virginia Tech Department of Computer Science
-Core.version.revision=2
-Core.version.date=20060524
-Core.version.major=1
+Core.version.revision=0
 Core.history.url=http\://web-cat.cs.vt.edu/WCWiki/CoreSubsystem/ChangeHistory
+Core.version.major=1
+Core.version.date=20060714
 Core.license.url=http\://www.gnu.org/copyleft/gpl.html
 Core.description=This is the principal subsystem for Web-CAT, and provides all the capabilities necessary for loading and operating all other subsystems.  It also provides authentication services, and common UI elements used system-wide.
 Core.archive.handler.list=(net.sf.webcat.archives.internal.ZipArchiveHandler, net.sf.webcat.archives.internal.TarGzArchiveHandler, net.sf.webcat.archives.internal.TarArchiveHandler)

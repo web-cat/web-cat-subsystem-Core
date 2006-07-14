@@ -1,0 +1,56 @@
+CategoryList: WOPopUpButton {
+    list          = categories;
+    item          = category;
+    selection     = chosenCategory;
+    noSelectionString = "All Options";
+    onchange      = "submitForm()";
+}
+
+HasCategories: WOConditional {
+    condition = categories.count;
+}
+
+HasNoOptions: WOConditional {
+    condition = options.count;
+    negate    = true;
+}
+
+HasOptions: WOConditional {
+    condition = options.count;
+}
+
+OptionsAreTerse: WOConditional {
+    condition = terse;
+}
+
+OptionsAreVerbose: WOConditional {
+    condition = terse;
+    negate    = true;
+}
+
+OptionPanel: net.sf.webcat.core.OptionEditPanel {
+    option         = option;
+    optionValues   = optionValues;
+    terse          = terse;
+    browsePageName = browsePageName;
+    base           = base;
+}
+
+Repetition: WORepetition {
+    list = options;
+    item = option;
+}
+
+ShowThisOption: WOConditional {
+    condition = showThisOption;
+}
+
+TerseOptions: WOSubmitButton {
+    value  = "Hide";
+    action = toggleVerboseOptions;
+}
+
+VerboseOptions: WOSubmitButton {
+    value  = "Show";
+    action = toggleVerboseOptions;
+}

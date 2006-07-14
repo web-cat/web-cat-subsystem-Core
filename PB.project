@@ -149,8 +149,8 @@
            src/net/sf/webcat/core/_User.java, 
            src/enet/sf/webcat/core/AuthenticationDomain.java, 
            src/enet/sf/webcat/core/_AuthenticationDomain.java, 
-           src/edu/vt/cs/Web_CAT/Core/MutableArray.java, 
-           src/edu/vt/cs/Web_CAT/Core/MutableDictionary.java
+           src/net/sf/webcat/core/OptionEditPanel.java, 
+           src/net/sf/webcat/core/OptionSetEditor.java
         );
         WEBSERVER_RESOURCES = 
         (
@@ -237,7 +237,9 @@
            Components/InstallPage7.wo, 
            Components/InstallPageWrapper.wo, 
            Components/LicensePage.wo, 
-           Components/InstallPage8.wo
+           Components/InstallPage8.wo, 
+           Components/OptionEditPanel.wo, 
+           Components/OptionSetEditor.wo
         );
         SUBPROJECTS = 
         ();

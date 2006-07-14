@@ -248,8 +248,14 @@ public class WCComponent
     public WOComponent cancel()
     {
         cancelLocalChanges();
-        return pageWithName( wcSession().currentTab().parent()
-                             .selectDefaultSibling().pageName() );
+        TabDescriptor parent = wcSession().currentTab().parent();
+        if ( parent.parent().parent() != null )
+        {
+            // If we're on a third-level tab, jump up one level so that
+            // we move to the default second-level tab.
+            parent = parent.parent();
+        }
+        return pageWithName( parent.selectDefault().pageName() );
     }
 
 
@@ -452,8 +458,14 @@ public class WCComponent
     {
         if ( applyLocalChanges() )
         {
-            return pageWithName( wcSession().currentTab().parent()
-                             .selectDefaultSibling().pageName() );
+            TabDescriptor parent = wcSession().currentTab().parent();
+            if ( parent.parent().parent() != null )
+            {
+                // If we're on a third-level tab, jump up one level so that
+                // we move to the default second-level tab.
+                parent = parent.parent();
+            }
+            return pageWithName( parent.selectDefault().pageName() );
         }
         else
         {

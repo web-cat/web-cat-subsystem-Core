@@ -27,6 +27,8 @@ package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
+
+import java.io.*;
 import java.util.Iterator;
 import net.sf.webcat.FeatureDescriptor;
 import net.sf.webcat.WCServletAdaptor;
@@ -46,7 +48,13 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
-     * Creates a new Subsystem object.
+     * Creates a new Subsystem object.  The constructor is called when
+     * creating the subsystem, but subclasses should <b>NOT</b> include
+     * startup actions in their constructors--only basic data initialization.
+     * Instead, all startup actions should be placed in the subclass
+     * {@link #init()} method, which will be called to "start up" each
+     * subsystem <em>after</em> all subsystems have been created in the
+     * proper order.
      */
     public Subsystem()
     {
@@ -54,7 +62,7 @@ public class Subsystem
     }
 
 
-    //~ Methods ...............................................................
+    //~ Public Methods ........................................................
 
     // ----------------------------------------------------------
     /**
@@ -118,35 +126,6 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
-     * Get a list of names of the database tables required by
-     * this subsystem.  Tables from the Core are not listed.  If no
-     * tables from other subsystems are needed, this method returns
-     * null.
-     * 
-     * @return The list of names, as strings
-     */
-    public NSArray requiredTableNames()
-    {
-        return null;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get a list of names of the database tables provided by
-     * this subsystem.  If no tables are provided by EOModel(s) in
-     * this subsystem, this method returns null.
-     * 
-     * @return The list of names, as strings
-     */
-    public NSArray providedTableNames()
-    {
-        return null;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Get a list of WO components that should be instantiated and presented
      * on the front page.
      * 
@@ -169,6 +148,19 @@ public class Subsystem
     public NSArray EOModelPathsInJar()
     {
         return null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Carry out any subsystem-specific startup actions.  This method is
+     * called once all subsystems have been created, so any dependencies
+     * on services provided by other subsystems are fulfilled.  Subsystems
+     * are init'ed in the same order they are created.
+     */
+    public void init()
+    {
+        // Subclasses should override this as necessary
     }
 
 
@@ -207,6 +199,34 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
+     * Add any subsystem-specific command-line environment variable bindings
+     * to the given dictionary.  The default implementation does nothing,
+     * but subclasses can extend this behavior as needed.
+     * @param env the dictionary to add environment variable bindings to;
+     * the full set of currently available bindings are passed in.
+     */
+    public void addEnvironmentBindings( NSMutableDictionary env )
+    {
+        // Subclasses should override this as necessary
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add any subsystem-specific plug-in property bindings
+     * to the given dictionary.  The default implementation does nothing,
+     * but subclasses can extend this behavior as needed.
+     * @param properties the dictionary to add new properties to;
+     * individual plug-in information may override these later.
+     */
+    public void addPluginPropertyBindings( NSMutableDictionary properties )
+    {
+        // Subclasses should override this as necessary
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Handle a direct action request.  The user's login session will be
      * passed in as well.
      *
@@ -229,9 +249,120 @@ public class Subsystem
     }
 
 
+    //~ Protected Methods .....................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Get the string path name for this subsystem's Resources directory.
+     * This is designed for use by subclasses that want to locate internal
+     * resources for use in setting up environment variable or plug-in
+     * property values.
+     * 
+     * @return The Resources directory name as a string
+     */
+    protected String myResourcesDir()
+    {
+        if ( myResourceDir == null )
+        {
+            // First, look for an overriding property, like those that
+            // might be used for non-servlet deployment scenarios.
+            myResourceDir = Application.configurationProperties()
+                .getProperty( name() + ".Resources" );
+        }
+        if ( myResourceDir == null )
+        {
+            NSBundle myBundle = NSBundle.bundleForClass( getClass() );
+            // Note that the resourcePath() method is deprecated, but it
+            // is the best way to get what we need here, so we'll use it
+            // anyway, rather than re-implementing it.
+            myResourceDir = myBundle.resourcePath();
+        }
+        return myResourceDir;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a file resource definition to a dictionary, overridden by an
+     * optional user-specified value.  This method is a helper for subsystems
+     * that wish to add subsystem-specific file resources to ENV variable
+     * definitions or plug-in properties.
+     * @param map the dictionary to add the binding to
+     * @param key the key to define in the map
+     * @param userSettingKey the name of a property to look up in the
+     * application's configuration settings; if a value is found, this value
+     * will be bound to the key in the given map; if no value is found in
+     * the application configuration settings, then the relativePath
+     * will be resolved instead
+     * @param relativePath the relative path name for the file or directory
+     * to resolve in the current subsystem's framework
+     * @return true if the binding was added using either the userSettingKey
+     * or the relativePath, or false otherwise
+     */
+    protected boolean addFileBinding( NSMutableDictionary map,
+                                      String              key,
+                                      String              userSettingKey,
+                                      String              relativePath )
+    {
+        String userSetting = Application.configurationProperties()
+            .getProperty( userSettingKey );
+        if ( userSetting != null )
+        {
+            map.takeValueForKey( userSetting, key );
+            return true;
+        }
+        else
+        {
+            return addFileBinding( map, key, relativePath );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a file resource definition to a dictionary.  This method is a
+     * helper for subsystems that wish to add subsystem-specific file
+     * resources to ENV variable definitions or plug-in properties.
+     * @param map the dictionary to add the binding to
+     * @param key the key to define in the map
+     * @param relativePath the relative path name for the file or directory
+     * to resolve in the current subsystem's framework
+     * @return true if the relative path name exists and the binding was
+     * added, or false otherwise
+     */
+    protected boolean addFileBinding(
+        NSMutableDictionary map, String key, String relativePath )
+    {
+        String rawPath = myResourcesDir() + "/" + relativePath;
+        File file = new File( rawPath );
+        if ( file.exists() )
+        {
+            try
+            {
+                String path = file.getCanonicalPath();
+                map.takeValueForKey( path, key );
+                return true;
+            }
+            catch ( java.io.IOException e )
+            {
+                log.error( "Attempting to get canonical path for " + rawPath
+                    + " in " + getClass().getName(),
+                    e );
+            }
+        }
+        else
+        {
+            log.error( "Cannot locate " + relativePath
+                + " in Resources directory for " + getClass().getName() );
+        }
+        return false;
+    }
+
+
     //~ Instance/static variables .............................................
 
     private String name = getClass().getName();
+    private String myResourceDir;
     private FeatureDescriptor descriptor;
     static Logger log = Logger.getLogger( Subsystem.class );
 }
