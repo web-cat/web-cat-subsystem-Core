@@ -34,7 +34,12 @@ Time: WOString {
 
 WizardForm: WOForm {
     multipleSubmit = true;
-    enctype        = "multipart/form-data";
     action         = saveAndDone;
-    name           = "WizardForm";
+
+    // This works stand-alone, but not in a servlet
+//    enctype        = "multipart/form-data";
+//    name           = "WizardForm";
+
+    // So use this instead.
+    otherTagString = "enctype=\"multipart/form-data\" name=\"WizardForm\"";
 }

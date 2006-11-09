@@ -29,6 +29,7 @@ import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.*;
 import com.webobjects.foundation.NSValidation.ValidationException;
+import net.sf.webcat.dbupdate.*;
 import net.sf.webcat.dbupdate.Database;
 import net.sf.webcat.dbupdate.MySQLDatabase;
 import er.extensions.ERXConfigurationManager;
@@ -205,10 +206,24 @@ public class InstallPage3
             ( (Application)Application.application() )
                 .configurationProperties().updateToSystemProperties();
             updateEOModels();
-            ( (Application)Application.application() ).initializeApplication();
+            
+            // Instead of calling initializeApplication(), let's just repeat
+            // the first few steps so that we can get the database updates
+            // done.
+            WOEC.installWOECFactory();
+
+            // Apply any pending database updates for the core
+            UpdateEngine.instance().database().setConnectionInfoFromProperties(
+                            Application.configurationProperties() );
+            UpdateEngine.instance().applyNecessaryUpdates(
+                            new CoreDatabaseUpdates() );
+
+            // We'll do this later, once the admin account is set up
+//          ( (Application)Application.application() ).initializeApplication();
         }
         catch ( Exception e )
         {
+            log.error( "exception initializing application:", e );
             errorMessage( e.getMessage() );
         }
         finally

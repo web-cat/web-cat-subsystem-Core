@@ -136,6 +136,8 @@ public class Application
         setDefaultRequestHandler(
             requestHandlerForKey( directActionRequestHandlerKey() ) );
 
+        updateStaticHtmlResources();
+        
         if ( configurationProperties().hasUsableConfiguration() )
         {
             initializeApplication();
@@ -229,18 +231,18 @@ public class Application
         // log.debug( "models = " + EOModelGroup.defaultGroup() );
 
         //set up the SMTP server to use for sending Emails
-//        {
-//            // This is just support for legacy properties used by Web-CAT
-//            String host =
-//                configurationProperties().getProperty( "mail.smtp.host" );
-//            if ( host != null
-//                 && !host.equals( "" )
-//                 && "smtp".equals(
-//                     configurationProperties().getProperty( "SMTPHost" ) ) )
-//            {
-//                setSMTPHost( host );
-//            }
-//        }
+        {
+            // This is just support for legacy properties used by Web-CAT
+            String host =
+                configurationProperties().getProperty( "mail.smtp.host" );
+            if ( host != null
+                 && !host.equals( "" )
+                 && "smtp".equals(
+                     configurationProperties().getProperty( "SMTPHost" ) ) )
+            {
+                setSMTPHost( host );
+            }
+        }
         log.info( "Using SMTP host " + SMTPHost() );
         log.debug( "cmdShell = " + cmdShell() );
 
@@ -847,6 +849,22 @@ public class Application
             log.error( "handleException failed", t );
             return super.handleException( exception, context );
         }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replaces the default page restoration error page in WebObjects
+     * with {@link WCPageRestorationErrorPage}.
+     *
+     * @param context   the context in which the exception occurred
+     * @return          the error message page
+     */
+    public WOResponse handlePageRestorationErrorInContext( WOContext context )
+    {
+        return pageWithName(
+            WCPageRestorationErrorPage.class.getName(), context )
+            .generateResponse();
     }
 
 
@@ -1502,7 +1520,10 @@ public class Application
                     }
                 }
             }
-            version =   "" + major + "." + minor + "." + revision + "." + date;
+            version =   "" + config.intForKey( "webcat.version.major" ) + "."
+                + config.intForKey( "webcat.version.minor" ) + "."
+                + config.intForKey( "webcat.version.revision" ) + "/"
+                + major + "." + minor + "." + revision + "." + date;
         }
         return version;
     }
@@ -1519,10 +1540,101 @@ public class Application
 
 
     // ----------------------------------------------------------
+    public WOResourceManager createResourceManager()
+    {
+        return new WCResourceManager();
+    }
+
+
+    // ----------------------------------------------------------
+    private void updateStaticHtmlResources()
+    {
+        if ( net.sf.webcat.WCServletAdaptor.getInstance() == null )
+        {
+            // If we're not running as a servlet, then there's no updating
+            // to do
+            return;
+        }
+
+        File woaDir = configurationProperties().file().getParentFile();
+        File appBase = woaDir.getParentFile().getParentFile();
+        log.debug( "appBase = " + appBase );
+        log.debug( "appBase = " + appBase.getAbsolutePath() );
+        File frameworkDir =
+            new File( woaDir, "Contents/Frameworks/Library/Frameworks" );
+        File[] framework = frameworkDir.listFiles();
+        for ( int i = 0; i < framework.length; i++ )
+        {
+            log.debug( "Checking for static html resources in framework => "
+                + framework[i].getName() );
+            File webServerResources =
+                new File( framework[i], "WebServerResources" );
+            if ( webServerResources.isDirectory() )
+            {
+                log.debug( "Moving static html resources from framework => "
+                    + framework[i].getName() );
+                try
+                {
+                    File target = new File( appBase, framework[i].getName()
+                        + "/" + webServerResources.getName() );
+                    target.mkdirs();
+                    net.sf.webcat.archives.FileUtilities
+                        .copyDirectoryContentsIfNecessary(
+                            webServerResources, target );
+                }
+                catch ( java.io.IOException e )
+                {
+                    log.error( "Exception moving static html resource  from '"
+                        + webServerResources + "' to '" + appBase + "'", e );
+                }
+            }
+        }
+        
+        String staticHtmlBase = configurationProperties().getProperty(
+            "static.html.baseURL" );
+        if ( staticHtmlBase == null )
+        {
+            staticHtmlBase = configurationProperties().getProperty(
+                "base.url" );
+            if ( staticHtmlBase != null )
+            {
+                if ( staticHtmlBase.endsWith( ".woa" ) )
+                {
+                    int loc = staticHtmlBase.lastIndexOf( '/' );
+                    if ( loc > 0 )
+                    {
+                        staticHtmlBase = staticHtmlBase.substring( 0, loc );
+                    }
+                }
+                if ( staticHtmlBase.endsWith( "WebObjects" ) )
+                {
+                    int loc = staticHtmlBase.lastIndexOf( '/' );
+                    if ( loc > 0 )
+                    {
+                        staticHtmlBase = staticHtmlBase.substring( 0, loc );
+                    }
+                }
+            }
+            if ( !staticHtmlBase.endsWith( "/" ) )
+            {
+                staticHtmlBase = staticHtmlBase + "/";
+            }
+        }
+        if ( staticHtmlBase != null )
+        {
+            log.debug(
+                "attempting to set frameworks Base URL = " + staticHtmlBase );
+            setFrameworksBaseURL( staticHtmlBase );
+        }
+        log.debug( "frameworks Base URL = " + frameworksBaseURL() );
+    }
+
+
+    // ----------------------------------------------------------
     private static void loadArchiveManagers()
     {
         NSArray handlers = configurationProperties().arrayForKey(
-            "core.archive.handler.list" );
+            "Core.archive.handler.list" );
         if ( handlers != null )
         {
             ArchiveManager manager = ArchiveManager.getInstance();

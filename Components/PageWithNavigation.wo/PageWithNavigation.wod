@@ -36,7 +36,7 @@ FeedbackLink: WOHyperlink {
 }
 
 FeedbackBtn: WOActiveImage {
-	href     = feedback;
+	action = goToFeedback;
 	filename = "icons/feedback.gif";
 	width    = "20";
 	height   = "18";

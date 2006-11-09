@@ -1,0 +1,41 @@
+# ===================================================================
+# Core subsystem characteristics
+# ===================================================================
+subsystem.Core
+
+Core.version.major=1
+Core.version.minor=3
+Core.version.revision=4
+
+Core.copyright=(c) 2006 Virginia Tech Department of Computer Science
+Core.provider=Virginia Tech Computer Science
+Core.provider.url=http\://web-cat.cs.vt.edu/updates
+Core.info.url=http\://web-cat.cs.vt.edu/WCWiki/CoreSubsystem
+Core.history.url=http\://web-cat.cs.vt.edu/WCWiki/CoreSubsystem/ChangeHistory
+Core.license=GNU General Public License v.2
+Core.license.url=http\://www.gnu.org/copyleft/gpl.html
+
+Core.description=\
+    This is the principal subsystem for Web-CAT, and provides all the \
+    capabilities necessary for loading and operating all other subsystems.  \
+    It also provides authentication services, and common UI elements used \
+    system-wide.
+
+
+# -------------------------------------------------------------------
+# Core subsystem configuration property defaults
+# -------------------------------------------------------------------
+# see config.plist for docs on each property
+
+Core.archive.handler.list=(\
+    net.sf.webcat.archives.internal.ZipArchiveHandler,   \
+    net.sf.webcat.archives.internal.TarGzArchiveHandler, \
+    net.sf.webcat.archives.internal.TarArchiveHandler)
+help.baseURL = http://web-cat.cs.vt.edu/Web-CAT.help/
+
+
+# -------------------------------------------------------------------
+# Core logging defaults
+# -------------------------------------------------------------------
+log4j.logger.net.sf.webcat.core.Application = INFO
+log4j.logger.net.sf.webcat.core.install     = INFO

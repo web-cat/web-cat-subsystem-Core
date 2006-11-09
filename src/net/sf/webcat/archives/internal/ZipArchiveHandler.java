@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import net.sf.webcat.archives.*;
 import net.sf.webcat.archives.AbstractArchiveHandler;
 import net.sf.webcat.archives.ArchiveEntry;
 import net.sf.webcat.archives.IArchiveEntry;
@@ -94,7 +95,7 @@ public class ZipArchiveHandler
 				
 				if ( !destDir.exists() )
                 {
-					destDir.mkdir();
+					destDir.mkdirs();
                 }
 			}
 			else
@@ -107,7 +108,7 @@ public class ZipArchiveHandler
 					destParent.mkdirs();
                 }
 				
-				CopyUtil.copyStream( destFile, zipStream );
+				FileUtilities.copyStreamToFile( zipStream, destFile );
 			}
 
 			zipStream.closeEntry();

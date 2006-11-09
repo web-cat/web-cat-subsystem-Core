@@ -7,3 +7,4 @@ Properties
 **/*.strings
 Tabs.plist
 filetype.properties
+config.plist

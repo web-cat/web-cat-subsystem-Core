@@ -3,8 +3,14 @@
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>
 <meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
 <title><webobject name="PageTitle"/></title>
-<webobject name="IncludeStdStyleSheet"><webobject name="StdStyleSheet"/></webobject>
-<webobject name="StyleSheet"/><!--script type="text/javascript" src="http://web-cat.cs.vt.edu/overlib/Mini/overlib_mini.js"></script-->
+<webobject name="IncludeStdStyleSheet"><style media="all" type="text/css">@import "<webobject name="WCStyleSheet"/>";</style>
+<webobject name="BeforeIE5"/>
+<style media="all" type="text/css">@import "<webobject name="WCIE5StyleSheet"/>";</style>
+<webobject name="BeforeIE6"/>
+<style media="all" type="text/css">@import "<webobject name="WCIE6StyleSheet"/>";</style>
+<webobject name="AfterIE6"/>
+<webobject name="Overlib"/></webobject>
+<webobject name="StyleSheet"/>
 <webobject name="JavaScript"/><webobject name="InlineHeaderContents"/>
 </head><body class="<webobject name="BodyClass"></webobject>" onload="<webobject name="OnLoad"></webobject>">
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div></webobject>

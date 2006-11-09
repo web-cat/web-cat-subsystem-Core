@@ -10,6 +10,11 @@ StyleSheet: WOString {
 	escapeHTML = false;
 }
 
+Overlib: WOString {
+	value      = overlibLink;
+	escapeHTML = false;
+}
+
 JavaScript: WOString {
 	value      = javaScriptLink;
 	escapeHTML = false;
@@ -38,15 +43,36 @@ IncludeStdStyleSheet: WOConditional {
     negate    = true;
 }
 
-StdStyleSheet: WOString {
+WCStyleSheet: WOString {
+    value = wcStylesheet;
+}
+
+BeforeIE5: WOString {
 	escapeHTML = false;
 	// The value is placed here to keep the IE-directed comments from being
     // stripped out by WO.
-    value = "<style media=\"all\" type=\"text/css\">@import \"http://localhost/wc.css\";</style>
-<!--[if IE 5]>
-<style media=\"all\" type=\"text/css\">@import \"http://localhost/wc-ie5.css\";</style>
-<![endif]-->
-<!--[if IE 6]>
-<style media=\"all\" type=\"text/css\">@import \"http://localhost/wc-ie6.css\";</style>
-<![endif]-->";
+    value = "<!--[if IE 5]>";
+}
+
+WCIE5StyleSheet: WOString {
+    value = wcIE5Stylesheet;
+}
+
+BeforeIE6: WOString {
+	escapeHTML = false;
+	// The value is placed here to keep the IE-directed comments from being
+    // stripped out by WO.
+    value = "<![endif]-->
+<!--[if IE 6]>";
+}
+
+WCIE6StyleSheet: WOString {
+    value = wcIE6Stylesheet;
+}
+
+AfterIE6: WOString {
+	escapeHTML = false;
+	// The value is placed here to keep the IE-directed comments from being
+    // stripped out by WO.
+    value = "<![endif]-->";
 }

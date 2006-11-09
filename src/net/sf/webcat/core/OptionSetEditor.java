@@ -60,18 +60,18 @@ public class OptionSetEditor
     //~ KVC Attributes (must be public) .......................................
 
     // For clients to configure this component
-    public NSArray             options;
-    public NSMutableDictionary optionValues;
-    public NSArray             categories;
-    public String              verboseOptionsKey = "verboseOptions";
-    public String              browsePageName;
-    public java.io.File        base;
+    public NSArray                   options;
+    public NSKeyValueCodingAdditions optionValues;
+    public NSArray                   categories;
+    public String                    verboseOptionsKey = "verboseOptions";
+    public String                    browsePageName;
+    public java.io.File              base;
 
     // For communicating with subcomponents ...
-    public NSDictionary        option;
-    public String              category;
-    public String              chosenCategory;
-    public String              displayedCategory;
+    public NSDictionary              option;
+    public String                    category;
+    public String                    chosenCategory;
+    public String                    displayedCategory;
 
 
     //~ Methods ...............................................................

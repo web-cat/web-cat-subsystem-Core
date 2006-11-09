@@ -96,8 +96,16 @@ public class InstallPage8
         // configuration.setProperty( "configStep", "" + stepNo() );
         ( (Application)Application.application() )
             .setNeedsInstallation( false );
-        ( (Application)Application.application() )
-            .notifyAdminsOfStartup();
+        try
+        {
+            ( (Application)Application.application() ).initializeApplication();
+            ( (Application)Application.application() )
+                .notifyAdminsOfStartup();
+        }
+        catch ( Exception e )
+        {
+            log.error( "Exception initializing application:", e );
+        }
     }
 
 

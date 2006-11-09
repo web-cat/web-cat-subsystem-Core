@@ -298,6 +298,26 @@ public class SubsystemManager
 
     // ----------------------------------------------------------
     /**
+     * Take a list of subsystem names (typically, requirements needed to
+     * support some feature) and determine if they are present.
+     * @param names a list of subsystem names to look for
+     * @return true if all of the named subsystems are installed
+     */
+    public boolean subsystemsAreInstalled( NSArray names )
+    {
+        for ( int i = 0; i < names.count(); i++ )
+        {
+            if ( subsystems.get( names.objectAtIndex( i ) ) == null )
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Get the command line environment variables used for executing
      * external commands.
      * @return a dictionary of ENV bindings
@@ -605,7 +625,8 @@ public class SubsystemManager
         }
         if ( oldSize == names.size() )
         {
-            log.error( "cyclic dependencies among subsystems detected: "
+            log.error(
+                "cyclic or missing dependencies among subsystems detected: "
                 + names );
         }
         else

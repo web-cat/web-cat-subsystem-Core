@@ -58,14 +58,14 @@ public class OptionEditPanel
 
     //~ KVC Attributes (must be public) .......................................
 
-    public NSDictionary        option;
-    public NSMutableDictionary optionValues;
-    public Boolean             terse;
-    public int                 type = 0;
-    public String              property;
-    public NSDictionary        choice;
-    public String              browsePageName;
-    public java.io.File        base;
+    public NSDictionary              option;
+    public NSKeyValueCodingAdditions optionValues;
+    public Boolean                   terse;
+    public int                       type = 0;
+    public String                    property;
+    public NSDictionary              choice;
+    public String                    browsePageName;
+    public java.io.File              base;
 
 
     //~ Methods ...............................................................
@@ -196,7 +196,7 @@ public class OptionEditPanel
     // ----------------------------------------------------------
     public Object value()
     {
-        Object result = optionValues.objectForKey( property );
+        Object result = optionValues.valueForKey( property );
         if ( result == null )
         {
             result = option.objectForKey( "default" );
@@ -215,12 +215,25 @@ public class OptionEditPanel
                        !value().toString().equals( value.toString() ) ) )
         {
             log.debug( "storing value" );
-            optionValues.setObjectForKey( value, property );
+            optionValues.takeValueForKey( value, property );
         }
         else
         {
             log.debug( "removing value" );
-            optionValues.removeObjectForKey( property );
+            if ( optionValues instanceof NSMutableDictionary )
+            {
+                ( (NSMutableDictionary)optionValues )
+                    .removeObjectForKey( property );
+            }
+            else if ( optionValues instanceof java.util.Map )
+            {
+                ( (java.util.Map)optionValues ).remove( property );
+            }
+            else
+            {
+                log.error( "Unable to remove key from optionValues of class "
+                    + optionValues.getClass().getName() );
+            }
         }
     }
 
@@ -228,7 +241,7 @@ public class OptionEditPanel
     // ----------------------------------------------------------
     public boolean hasValue()
     {
-        Object oldValue = optionValues.objectForKey( property );
+        Object oldValue = optionValues.valueForKey( property );
         return oldValue != null;
     }
 

@@ -1,0 +1,270 @@
+{
+    optionCategories = ( "Administration", "Database", "Messages", "URLs" );
+    options = (
+    {
+        property    = "coreApplicationIdentifier";
+        type        = shortText;
+        size        = 70;
+        name        = "Application Identifier";
+        category    = "Administration";
+        description =
+  "This is the name for your Web-CAT instance.  This name is included in
+  the subject lines of e-mail messages sent out to administrators by Web-CAT.
+  If you administer more than one Web-CAT server, it is helpful to give
+  them different names; otherwise, accepting the default is recommended.";
+    },
+    {
+        property    = "coreAdminEmail";
+        type        = shortText;
+        size        = 70;
+        name        = "Administrator E-mail Address";
+        category    = "Administration";
+        description =
+  "The primary contact e-mail address for this Web-CAT server's administrator.
+  This is the address that will be shown to users in the page footer of
+  every page.  It is also the address where all administrative notices and
+  errors will be sent.  This address need not be associated with any particular
+  Web-CAT user account--it can be any e-mail address you want.";
+    },
+    {
+        property    = "AdminUsername";
+        type        = shortText;
+        size        = 70;
+        name        = "Administrator User Name";
+        category    = "Administration";
+        description =
+  "The user name of a Web-CAT account with administrative privileges.  The
+  Web-CAT account must already exist, and must already have administrative
+  access (just placing a different user name here won't change that user's
+  permissions--use the Administer-&gt;Edit Database tab for that).  This
+  user name is used to locate an appropriate user account to serve as \"owner\"
+  when performing various automated upgrade tasks.  If it is left blank, or
+  contains an invalid name, some automatic upgrades will not be carried out.";
+    },
+    {
+        property    = "adminNotifyAddrs";
+        type        = shortText;
+        size        = 70;
+        name        = "Additional E-mail Notification Addresses";
+        category    = "Administration";
+        description =
+  "During operation, Web-CAT may periodically need to notify an administrator
+  of some condition that has arisen.  It will send these notices to the
+  <b>Administrator E-mail Address</b> listed above.  If you would like
+  additional e-mail addresses to receive copies of these notifications, enter
+  them here.  If you list multiple addresses, use a comma-separated list.  All
+  of these addresses then will receive copies of all Web-CAT notifications.
+  If you leave this entry blank, then all such messages will be sent to
+  the administrator account e-mail address only.";
+    },
+    {
+        property    = "coreKillAction";
+        type        = shortText;
+        size        = 70;
+        name        = "Web-CAT Shutdown/Restart External Command";
+        category    = "Administration";
+        description =
+  "If Web-CAT determines that it must shut down and restart for any reason, it
+  needs to know how to perform this action on your system.  If you enter the
+  name of an external command or executable shell script here, then Web-CAT
+  will invoke that command to force an immediate shutdown/restart of its
+  process.  If you leave this entry blank, Web-CAT will simply call
+  <code>Systemexit(1);</code> and assume that a watchdog process or other
+  lifecycle management support will automatically restart the process once
+  it dies.";
+    },
+    {
+        property    = "mail.smtp.host";
+        type        = shortText;
+        size        = 70;
+        name        = "SMTP Host Name";
+        category    = "Administration";
+        description =
+  "This is the SMTP host that Web-CAT will use to send e-mail.  The host must
+  support e-mail relaying from the host on which Web-CAT is running.";
+    },
+    {
+        property    = "mail.default.domain";
+        type        = shortText;
+        size        = 70;
+        name        = "Default E-mail Domain";
+        category    = "Administration";
+        description =
+  "This is the default domain for resolving e-mail addresses, if none is
+  provided by a user's authenticator or institution.";
+    },
+
+
+    {
+        property    = "DBhostname";
+        type        = shortText;
+        size        = 70;
+        name        = "MySQL Server Host Name";
+        category    = "Database";
+        description =
+  "This is the host name for your MySQL server, which is usually
+  \"localhost\".";
+    },
+    {
+        property    = "DBhostport";
+        type        = shortText;
+        size        = 70;
+        name        = "MySQL Server Port";
+        category    = "Database";
+        description =
+  "This is the port number on which your MySQL server listens.  The default
+  port value for MySQL is port 3306.";
+    },
+    {
+        property    = "DBname";
+        type        = shortText;
+        size        = 70;
+        name        = "MySQL Database Name";
+        category    = "Database";
+        description =
+  "This is the name of the MySQL database to use.  If at all possible,
+  use a database that only contains Web-CAT tables.  If you run multiple
+  Web-CAT servers that share the same MySQL server, they must each have their
+  own unique database.";
+    },
+    {
+        property    = "dbConnectUserGLOBAL";
+        type        = shortText;
+        size        = 70;
+        name        = "MySQL User Name";
+        category    = "Database";
+        description =
+  "This is the MySQL user name that Web-CAT will use when connecting to
+  the MySQL server.  It can be 'root', or a username given to you by your
+  database adminnistrator.";
+    },
+    {
+        property    = "dbConnectPasswordGLOBAL";
+        type        = shortText;
+        size        = 70;
+        name        = "MySQL User Password";
+        category    = "Database";
+        description =
+  "This is password that will be used when connecting to MySQL under
+  the user name specified above.  A non-empty password is mandatory.";
+    },
+
+
+    {
+        property    = "coreMotd";
+        type        = longText;
+        name        = "Message of the Day";
+        category    = "Messages";
+        description =
+  "This optional message (usually brief) is posted on the <b>login page</b>,
+  just under the form fields that users manipulate.  HTML markup is allowed.";
+    },
+    {
+        property    = "coreAnnouncements";
+        type        = longText;
+        name        = "Announcements";
+        category    = "Messages";
+        description =
+  "If provided, this optional message (can be long) will be shown to users
+  once they login on their <b>home page</b>, under an \"Announcements\"
+  heading.  HTML markup is required (at least use &lt;p&gt;..&lt;/p&gt; tags,
+  for best formatting results).";
+    },
+    {
+        property    = "NOSUB.DatabaseAuthenticator.new.user.email.title";
+        type        = shortText;
+        size        = 70;
+        name        = "New User E-mail Subject";
+        category    = "Messages";
+        description =
+  "<p>If provided, this will be used as the subject line for the e-mail greeting
+  sent when new users are given random passwords (only if internal database
+  authentication is being used, of course).  If omitted, the subject
+  \"New Web-CAT Password\" will be used.  Property substitution is available
+  in this message.";
+    },
+    {
+        property    = "NOSUB.DatabaseAuthenticator.new.user.email.message";
+        type        = longText;
+        name        = "New User E-mail Message";
+        category    = "Messages";
+        description =
+  "<p>If provided, this will be used as the entire body for the e-mail greeting
+  sent when new users are given random passwords (only if internal database
+  authentication is being used, of course).  If omitted, a default
+  message will be used instead.  Property substitution is available
+  in this message.  Useful properties include:</p><ul>
+  <li>${login.url}</li><li>${user.userName}</li><li>${user.password}</li>
+  <li>${user.firstName}</li><li>${user.lastName}</li>
+  <li>Any other defined configuration properties</li></ul>";
+    },
+
+
+    {
+        property    = "base.url";
+        type        = shortText;
+        size        = 70;
+        name        = "Application Base URL";
+        category    = "URLs";
+        description =
+  "This is the base URL for the Web-CAT application.  It is normally set
+  by the self-installation wizard, usually by deduction
+  from the URL that was used to perform the installation.  This is the
+  URL where Web-CAT thinks it lives.";
+    },
+    {
+        property    = "login.url";
+        type        = shortText;
+        size        = 70;
+        name        = "User Login URL";
+        category    = "URLs";
+        description =
+  "This is the URL you would like users to visit in order to login to
+  Web-CAT.  It is used in e-mail messages generated by Web-CAT and sent
+  to new users.  If you leave it blank, the <b>Base URL</b> value above will
+  be used, and it will take users directly to the login page.  However,
+  if there is a different web page you have created yourself that you
+  wish to use as the entry point for Web-CAT, place its URL here.";
+    },
+    {
+        property    = "corePrivacyURL";
+        type        = shortText;
+        size        = 70;
+        name        = "Privacy Statement URL";
+        category    = "URLs";
+        description =
+  "The URL pointing to the privacy statement you want listed in the Web-CAT
+  footer.";
+    },
+    {
+        property    = "help.baseURL";
+        type        = shortText;
+        size        = 70;
+        name        = "Base URL for Help Pages";
+        category    = "URLs";
+        description =
+  "This is the URL to use as the base location for Web-CAT's help pages.
+  All help page links will be generated relative to this URL.  If you leave
+  it blank,
+  <a href=\"http://web-cat.cs.vt.edu/Web-CAT.help/\">http://web-cat.cs.vt.edu/Web-CAT.help/</a>
+  will be used as the default base location.  Only set this field if you
+  wish to point to a separate copy of the Web-CAT help pages.";
+    },
+    {
+        property    = "static.html.baseURL";
+        type        = shortText;
+        size        = 70;
+        name        = "Base URL for Static HTML Resources";
+        category    = "URLs";
+        description =
+  "This is the URL to use as the base location for accessing the static
+  web resources used by Web-CAT (images, stylesheet files, javascript files,
+  etc.).  If you leave it blank, these resources will be served directly from
+  within the web application using your servlet container's features.  By
+  setting this URL, you can have a separate web server provide this content,
+  rather than drawing it through the servlet container.  Be sure that the
+  URL you set provides all of the necessary resources, however.  Changes to
+  this value with take effect the next time Web-CAT is restarted.";
+    }
+    );
+}

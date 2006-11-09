@@ -32,7 +32,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import net.sf.webcat.archives.internal.CopyUtil;
 
 //-------------------------------------------------------------------------
 /**
@@ -236,12 +235,12 @@ public class ArchiveManager
 		{
 			if ( archiveFile.isDirectory() )
 			{
-				CopyUtil.recursiveCopy( destPath, archiveFile );
+				FileUtilities.copyDirectoryContents( archiveFile, destPath );
 			}
 			else
 			{
 				File destFile = new File( destPath, archiveFile.getName() );
-				CopyUtil.copyFile( destFile, archiveFile );
+				FileUtilities.copyFileToFile( archiveFile, destFile );
 			}
 		}
 	}
@@ -272,7 +271,7 @@ public class ArchiveManager
 		else
 		{
 			File destFile = new File( destPath, name );
-			CopyUtil.copyStream( destFile, stream );
+			FileUtilities.copyStreamToFile( stream, destFile );
 		}
 	}
 

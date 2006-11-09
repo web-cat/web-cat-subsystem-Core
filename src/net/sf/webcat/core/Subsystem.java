@@ -166,6 +166,70 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
+     * Access the set of parameter definitions that prescribe the
+     * configuration interface for this subsystem.  The default implementation
+     * attempts to read the config.plist file from the subsystem's
+     * resources directory.
+     * @return the parameter definitions as an NSDictionary, or
+     * null if none are found
+     */
+    public NSDictionary parameterDescriptions()
+    {
+        if ( options == null )
+        {
+            File configFile = new File( myResourcesDir() + "/config.plist" );
+            log.debug( "Atempting to locate parameter descriptions in: "
+                + configFile.getPath() );
+            if ( !configFile.exists() )
+            {
+                // If not found, try looking directly in the bundle, in case
+                // the resources dir was overridden by properties (like on
+                // the main development machine!).  This is purely to support
+                // development-mode hacks, and probably won't ever be used
+                // in production.  See the comments in myResourcesDir()
+                // regarding the resourcePath() method being deprecated.
+                NSBundle myBundle = myBundle();
+                if ( myBundle != null )
+                {
+                    configFile = new File(
+                        myBundle.resourcePath() + "/config.plist" );
+                    log.debug(
+                        "Atempting to locate parameter descriptions in: "
+                        + configFile.getPath() );
+                }
+            }
+            if ( configFile.exists() )
+            {
+                try
+                {
+                    log.debug( "loading parameter descriptions from: "
+                        + configFile.getPath() );
+                    FileInputStream in = new FileInputStream( configFile );
+                    NSData data = new NSData( in, (int)configFile.length() );
+                    options = (NSDictionary)NSPropertyListSerialization
+                        .propertyListFromData( data, "UTF-8" );
+                    in.close();
+                }
+                catch ( java.io.IOException e )
+                {
+                    log.error(
+                        "error reading from subsystem configuration file "
+                        + configFile.getPath(),
+                        e );
+                }
+            }
+            if ( log.isDebugEnabled() )
+            {
+                log.debug( "loaded parameter descriptions for subsystem "
+                    + name() + ":\n" + options );
+            }
+        }
+        return options;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Initialize the subsystem-specific session data in a newly created
      * session object.  This method is called once by the core for
      * each newly created session object.
@@ -253,6 +317,27 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
+     * Get the NSBundle for this subsystem.
+     * 
+     * @return This subsystem's NSBundle
+     */
+    protected NSBundle myBundle()
+    {
+        NSBundle result = NSBundle.bundleForName( name() );
+        if ( result == null  && getClass() != Subsystem.class )
+        {
+            result = NSBundle.bundleForClass( getClass() );
+        }
+        if ( result == null && !"webcat".equals( name() ) )
+        {
+            log.error( "cannot find bundle for subsystem " + name() );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Get the string path name for this subsystem's Resources directory.
      * This is designed for use by subclasses that want to locate internal
      * resources for use in setting up environment variable or plug-in
@@ -262,22 +347,25 @@ public class Subsystem
      */
     protected String myResourcesDir()
     {
-        if ( myResourceDir == null )
+        if ( myResourcesDir == null )
         {
             // First, look for an overriding property, like those that
             // might be used for non-servlet deployment scenarios.
-            myResourceDir = Application.configurationProperties()
+            myResourcesDir = Application.configurationProperties()
                 .getProperty( name() + ".Resources" );
         }
-        if ( myResourceDir == null )
+        if ( myResourcesDir == null )
         {
-            NSBundle myBundle = NSBundle.bundleForClass( getClass() );
-            // Note that the resourcePath() method is deprecated, but it
-            // is the best way to get what we need here, so we'll use it
-            // anyway, rather than re-implementing it.
-            myResourceDir = myBundle.resourcePath();
+            NSBundle myBundle = myBundle();
+            if ( myBundle != null )
+            {
+                // Note that the resourcePath() method is deprecated, but it
+                // is the best way to get what we need here, so we'll use it
+                // anyway, rather than re-implementing it.
+                myResourcesDir = myBundle.resourcePath();
+            }
         }
-        return myResourceDir;
+        return myResourcesDir;
     }
 
 
@@ -361,8 +449,10 @@ public class Subsystem
 
     //~ Instance/static variables .............................................
 
-    private String name = getClass().getName();
-    private String myResourceDir;
+    private String            name = getClass().getName();
+    private String            myResourcesDir;
     private FeatureDescriptor descriptor;
+    private NSDictionary      options;
+
     static Logger log = Logger.getLogger( Subsystem.class );
 }

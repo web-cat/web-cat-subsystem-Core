@@ -29,7 +29,7 @@ SubmissionDir: WOTextField {
 
 WOSMTPHost: WOTextField {
     value = application.properties.WOSMTPHost;
-    name  = "WOSMTPHost";
+    name  = "mail.smtp.host";
 }
 
 WorkDir: WOTextField {

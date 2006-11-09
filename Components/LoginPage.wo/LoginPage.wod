@@ -72,6 +72,21 @@ Errors: net.sf.webcat.core.ErrorDictionaryPanel {
 	shouldShowNewlineBelow = true;
 }
 
+PoweredByWOLink: WOHyperlink {
+    href = "http://www.apple.com/webobjects/";
+}
+
+PoweredByWO: WOImage {
+	alt       = "Powered By WebObjects";
+	title     = "Powered By WebObjects";
+	border    = "0";
+	filename  = "PoweredByWebObjects.gif";
+	framework = "JavaWOExtensions";
+	height    = "34";
+	name      = "Powered By WebObjects";
+	width     = "125";
+}
+
 Logo: WOImage {
 	filename = "images/Web-CAT-big2.gif";
 	width    = "100";

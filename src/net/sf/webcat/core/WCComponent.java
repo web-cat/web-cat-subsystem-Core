@@ -143,8 +143,8 @@ public class WCComponent
      */
     public static String helpBaseURL()
     {
-        return Application.configurationProperties()
-            .getProperty( "help.baseURL", "/Web-CAT.help/" );
+        return Application.configurationProperties().getProperty(
+            "help.baseURL", "http://web-cat.cs.vt.edu/Web-CAT.help/" );
     }
 
 

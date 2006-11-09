@@ -208,12 +208,16 @@ public class InstallPage6
             else
             {
                 String password =
-                    extractFormValue( formValues, "AdminPassword" );
+                    storeFormValueToConfig( formValues, "AdminPassword", 
+                    "An administrator password is required." );
                 if ( authDomainName.equals(
                     DatabaseAuthenticator.class.getName() )
                     && ( password == null || password.equals( "" ) ) )
                 {
-                    errorMessage( "An administrator password is required." );
+                    // Don't need this anymore, since the error message is
+                    // posted by storeFormValuesToConfig() above.
+
+                    // errorMessage( "An administrator password is required." );
                 }
                 else
                 {

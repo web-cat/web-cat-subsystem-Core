@@ -72,6 +72,30 @@ EditFile: WOActiveImage {
 	title     = "Edit this file";
 }
 
+EmptySpacer: WOImage {
+	filename  = "icons/emptyspacer.gif";
+	framework = "Core";
+	width     = 22;
+	height    = 17;
+	alt       = "";
+}
+
+ExpandBottomSpacer: WOImage {
+	filename  = "icons/expandbot.gif";
+	framework = "Core";
+	width     = 22;
+	height    = 17;
+	alt       = "";
+}
+
+ExpandSpacer: WOImage {
+	filename  = "icons/expand.gif";
+	framework = "Core";
+	width     = 22;
+	height    = 17;
+	alt       = "";
+}
+
 Expand1: WOActiveImage {
 	action    = toggleExpansion;
 	filename  = "icons/plus.gif";
@@ -228,4 +252,12 @@ SubFileRepetition : WORepetition {
 TR1 : net.sf.webcat.core.TableRow {
 	index     = index;
 	increment = true;
+}
+
+VerticalSpacer: WOImage {
+	filename  = "icons/vert.gif";
+	framework = "Core";
+	width     = 22;
+	height    = 17;
+	alt       = "";
 }

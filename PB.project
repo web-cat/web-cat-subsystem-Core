@@ -16,54 +16,24 @@
     NEXTSTEP_BUILDTOOL = /bin/gnumake;
     LANGUAGE = English;
     NEXTSTEP_JAVA_COMPILER = /usr/bin/javac;
-    DEPLOY_WITH_VERSION_NAME = A;
-    DYNAMIC_CODE_GEN = YES;
-    NEXTSTEP_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks";
     NEXTSTEP_OBJCPLUS_COMPILER = /usr/bin/cc;
+    NEXTSTEP_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+    DYNAMIC_CODE_GEN = YES;
+    DEPLOY_WITH_VERSION_NAME = A;
     PROJECTTYPE = JavaWebObjectsFramework;
     WINDOWS_JAVA_COMPILER = "$(JDKBINDIR)/javac.exe";
     PROJECTVERSION = 2.8;
     WINDOWS_OBJCPLUS_COMPILER = "$(DEVDIR)/gcc";
-    CURRENTLY_ACTIVE_VERSION = YES;
     FILESTABLE = 
     {
-        FRAMEWORKS = 
-        (
-           DBUpdateEngine.framework, 
-           EOJDBCPrototypes.framework, 
-           DBUpdateEngine.framework, 
-           EOJDBCPrototypes.framework, 
-           ERExtensions.framework, 
-           ERJars.framework, 
-           ERJars.framework, 
-           ERJars.framework, 
-           ERJars.framework, 
-           ERJars.framework, 
-           JavaWOExtensions.framework, 
-           WOUnitTest.framework, 
-           JavaEOAccess.framework, 
-           JavaEOControl.framework, 
-           JavaFoundation.framework, 
-           JavaJDBCAdaptor.framework, 
-           JavaWebObjects.framework, 
-           JavaWOJSPServlet.framework, 
-           JavaXML.framework, 
-           JDBCEOAdaptor.framework, 
-           JavaWOJSPServlet.framework
-        );
         CLASSES = 
         (
            src/net/sf/webcat/archives/AbstractArchiveHandler.java, 
            src/net/sf/webcat/archives/ArchiveEntry.java, 
            src/net/sf/webcat/archives/ArchiveManager.java, 
+           src/net/sf/webcat/archives/FileUtilities.java, 
            src/net/sf/webcat/archives/IArchiveEntry.java, 
            src/net/sf/webcat/archives/IArchiveHandler.java, 
-           src/net/sf/webcat/archives/internal/CopyUtil.java, 
-           src/net/sf/webcat/archives/internal/Main.java, 
-           src/net/sf/webcat/archives/internal/TarArchiveHandler.java, 
-           src/net/sf/webcat/archives/internal/TarGzArchiveHandler.java, 
-           src/net/sf/webcat/archives/internal/TarUtil.java, 
-           src/net/sf/webcat/archives/internal/ZipArchiveHandler.java, 
            src/net/sf/webcat/core/install/InstallPage.java, 
            src/net/sf/webcat/core/install/InstallPage1.java, 
            src/net/sf/webcat/core/install/InstallPage2.java, 
@@ -76,6 +46,11 @@
            src/net/sf/webcat/core/install/InstallPageWrapper.java, 
            src/net/sf/webcat/core/install/LicensePage.java, 
            src/net/sf/webcat/core/install/install.java, 
+           src/net/sf/webcat/archives/internal/Main.java, 
+           src/net/sf/webcat/archives/internal/TarArchiveHandler.java, 
+           src/net/sf/webcat/archives/internal/TarGzArchiveHandler.java, 
+           src/net/sf/webcat/archives/internal/TarUtil.java, 
+           src/net/sf/webcat/archives/internal/ZipArchiveHandler.java, 
            src/net/sf/webcat/core/tests/TabDescriptorTest.java, 
            src/net/sf/webcat/core/tests/WCPropertiesTest.java, 
            src/net/sf/webcat/core/Application.java, 
@@ -109,6 +84,8 @@
            src/net/sf/webcat/core/MutableContainer.java, 
            src/net/sf/webcat/core/MutableDictionary.java, 
            src/net/sf/webcat/core/MyProfilePage.java, 
+           src/net/sf/webcat/core/OptionEditPanel.java, 
+           src/net/sf/webcat/core/OptionSetEditor.java, 
            src/net/sf/webcat/core/PageWithNavigation.java, 
            src/net/sf/webcat/core/PopAuthenticator.java, 
            src/net/sf/webcat/core/Semester.java, 
@@ -147,87 +124,54 @@
            src/net/sf/webcat/core/_LoginSession.java, 
            src/net/sf/webcat/core/_Semester.java, 
            src/net/sf/webcat/core/_User.java, 
-           src/enet/sf/webcat/core/AuthenticationDomain.java, 
-           src/enet/sf/webcat/core/_AuthenticationDomain.java, 
-           src/net/sf/webcat/core/OptionEditPanel.java, 
-           src/net/sf/webcat/core/OptionSetEditor.java
+           src/net/sf/webcat/core/WCResourceManager.java, 
+           src/net/sf/webcat/core/WCPageRestorationErrorPage.java, 
+           src/net/sf/webcat/core/ConfirmPage.java
+        );
+        FRAMEWORKS = 
+        (
+           DBUpdateEngine.framework, 
+           EOJDBCPrototypes.framework, 
+           DBUpdateEngine.framework, 
+           EOJDBCPrototypes.framework, 
+           ERExtensions.framework, 
+           ERJars.framework, 
+           ERJars.framework, 
+           ERJars.framework, 
+           ERJars.framework, 
+           ERJars.framework, 
+           JavaWOExtensions.framework, 
+           WOUnitTest.framework, 
+           JavaEOAccess.framework, 
+           JavaEOControl.framework, 
+           JavaFoundation.framework, 
+           JavaJDBCAdaptor.framework, 
+           JavaWebObjects.framework, 
+           JavaWebObjects.framework, 
+           JavaWOJSPServlet.framework, 
+           JavaXML.framework, 
+           JDBCEOAdaptor.framework, 
+           JavaWOJSPServlet.framework
         );
         WEBSERVER_RESOURCES = 
         (
-           WebServerResources/icons/Ascending.gif, 
-           WebServerResources/icons/Descending.gif, 
-           WebServerResources/icons/Unsorted.gif, 
-           WebServerResources/icons/archive.gif, 
-           WebServerResources/icons/arrowDown.bmp, 
-           WebServerResources/icons/arrowDown.gif, 
-           WebServerResources/icons/arrowUp.bmp, 
-           WebServerResources/icons/arrowUp.gif, 
-           WebServerResources/icons/blank.gif, 
-           WebServerResources/icons/caution.bmp, 
-           WebServerResources/icons/caution.gif, 
-           WebServerResources/icons/check.gif, 
-           WebServerResources/icons/close.gif, 
-           WebServerResources/icons/dir.gif, 
-           WebServerResources/icons/diropen.gif, 
-           WebServerResources/icons/edit.gif, 
-           WebServerResources/icons/exclaim.gif, 
-           WebServerResources/icons/expand.gif, 
-           WebServerResources/icons/feedback.gif, 
-           WebServerResources/icons/file.gif, 
-           WebServerResources/icons/go.png, 
-           WebServerResources/icons/help.gif, 
-           WebServerResources/icons/info.gif, 
-           WebServerResources/icons/message_warning.bmp, 
-           WebServerResources/icons/minus.gif, 
-           WebServerResources/icons/newfile.gif, 
-           WebServerResources/icons/newfolder.gif, 
-           WebServerResources/icons/notready.gif, 
-           "WebServerResources/icons/old-caution.gif", 
-           "WebServerResources/icons/old-exclaim.gif", 
-           WebServerResources/icons/partially.gif, 
-           WebServerResources/icons/plus.gif, 
-           "WebServerResources/icons/rt-arrow-admin.gif", 
-           "WebServerResources/icons/rt-arrow-staff.gif", 
-           "WebServerResources/icons/rt-arrow.gif", 
-           WebServerResources/icons/suggestion.bmp, 
-           WebServerResources/icons/suggestion.gif, 
-           WebServerResources/icons/todo.bmp, 
-           WebServerResources/icons/todo.gif, 
-           WebServerResources/icons/trash.gif, 
-           WebServerResources/icons/upload.gif, 
-           WebServerResources/icons/vert.gif, 
-           WebServerResources/icons/download.gif, 
-           WebServerResources/icons/emptyspacer.gif, 
-           WebServerResources/icons/expandbot.gif, 
-           WebServerResources/icons/report.gif, 
            "WebServerResources/wc-ie5.css", 
            "WebServerResources/wc-ie6.css", 
            WebServerResources/wc.css, 
-           WebServerResources/wc.bak
+           WebServerResources/.cvsignore
         );
         WO_COMPONENTS = 
         (
            Components/BarePage.wo, 
+           Components/DeliverFile.wo, 
+           Components/EditFilePage.wo, 
            Components/ErrorDictionaryPanel.wo, 
            Components/ErrorPage.wo, 
-           Components/Footer.wo, 
-           Components/LoginPage.wo, 
-           Components/MyProfilePage.wo, 
-           Components/PageWithNavigation.wo, 
-           Components/StatusPage.wo, 
-           Components/SubmitDebug.wo, 
-           Components/TBDPage.wo, 
-           Components/TableRow.wo, 
-           Components/WCBatchNavigator.wo, 
-           Components/WCSortOrder.wo, 
-           Components/WizardPage.wo, 
-           Components/DeliverFile.wo, 
-           Components/SystemStatusBlock.wo, 
+           Components/FeedbackPage.wo, 
            Components/FileBrowser.wo, 
            Components/FileBrowserRow.wo, 
+           Components/Footer.wo, 
            Components/FormattedString.wo, 
-           Components/FeedbackPage.wo, 
-           Components/EditFilePage.wo, 
            Components/InstallPage1.wo, 
            Components/InstallPage2.wo, 
            Components/InstallPage3.wo, 
@@ -235,14 +179,25 @@
            Components/InstallPage5.wo, 
            Components/InstallPage6.wo, 
            Components/InstallPage7.wo, 
+           Components/InstallPage8.wo, 
            Components/InstallPageWrapper.wo, 
            Components/LicensePage.wo, 
-           Components/InstallPage8.wo, 
+           Components/LoginPage.wo, 
+           Components/MyProfilePage.wo, 
            Components/OptionEditPanel.wo, 
-           Components/OptionSetEditor.wo
+           Components/OptionSetEditor.wo, 
+           Components/PageWithNavigation.wo, 
+           Components/StatusPage.wo, 
+           Components/SubmitDebug.wo, 
+           Components/SystemStatusBlock.wo, 
+           Components/TBDPage.wo, 
+           Components/TableRow.wo, 
+           Components/WCBatchNavigator.wo, 
+           Components/WCSortOrder.wo, 
+           Components/WizardPage.wo, 
+           Components/WCPageRestorationErrorPage.wo, 
+           Components/ConfirmPage.wo
         );
-        SUBPROJECTS = 
-        ();
         OTHER_SOURCES = 
         (
            CustomInfo.plist, 
@@ -251,30 +206,33 @@
            Makefile.postamble, 
            Makefile.preamble
         );
+        SUBPROJECTS = 
+        ();
         WOAPP_RESOURCES = 
         (
            Core.eomodeld, 
            Tabs.plist, 
-           Components/DeliverFile.api, 
-           Components/SystemStatusBlock.api, 
-           Components/FileBrowser.api, 
-           Components/FileBrowserRow.api, 
+           config.plist, 
            filetype.properties, 
-           Components/FormattedString.api, 
-           Components/FeedbackPage.api, 
-           Properties, 
-           Components/TableRow.api, 
-           Components/LoginPage.api, 
-           Components/TBDPage.api, 
            Components/BarePage.api, 
-           Components/Footer.api, 
-           Components/PageWithNavigation.api, 
+           Components/DeliverFile.api, 
            Components/ErrorDictionaryPanel.api, 
            Components/ErrorPage.api, 
+           Components/FeedbackPage.api, 
+           Components/FileBrowser.api, 
+           Components/FileBrowserRow.api, 
+           Components/Footer.api, 
+           Components/FormattedString.api, 
+           Components/LoginPage.api, 
+           Components/PageWithNavigation.api, 
            Components/SubmitDebug.api, 
+           Components/SystemStatusBlock.api, 
+           Components/TBDPage.api, 
+           Components/TableRow.api, 
            Components/WCBatchNavigator.api, 
            Components/WCSortOrder.api, 
            Components/WizardPage.api
         );
     };
+    CURRENTLY_ACTIVE_VERSION = YES;
 }

@@ -125,7 +125,7 @@ DIV#menu LI.here A {
 }
 
 DIV#menu LI.here {
-	list-style: square url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow.gif) outside;
+	list-style: square url(icons/rt-arrow.gif) outside;
 }
 
 DIV#menu UL UL LI {
@@ -192,7 +192,7 @@ DIV#contents DIV.toolbar TABLE TD {
 }
 
 DIV#contents TABLE.srcView TD TABLE TD {
-	padding: 1;
+	padding: 1px;
 }
 
 DIV#contents TABLE TD.sm {
@@ -200,7 +200,7 @@ DIV#contents TABLE TD.sm {
 }
 
 DIV#contents TABLE TD.marker {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow.gif);
+	background-image: url(icons/rt-arrow.gif);
         background-repeat: no-repeat;
 	background-position: center left;
 }
@@ -225,8 +225,8 @@ DIV#contents TABLE TR#divider TD { border-top: 1px solid #363; }
 DIV#contents TABLE TR#divider TABLE.percentbar TD { border: none; }
 
 DIV.shadow {
-	background: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/images/shadowAlpha.png) no-repeat bottom right !important;
-	background: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/images/shadow.gif) no-repeat bottom right;
+	background: url(images/shadowAlpha.png) no-repeat bottom right !important;
+	background: url(images/shadow.gif) no-repeat bottom right;
 	float: left;
 	margin: 10px 0 0 10px !important;
 	margin: 10px 0 0 5px;
@@ -394,7 +394,7 @@ DIV.shadow TABLE {
 #globalsubnav LI.here2 A:link,
 #globalsubnav LI.here2 A:visited {
 	color:#363;
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow.gif);
+	background-image: url(icons/rt-arrow.gif);
         background-repeat: no-repeat;
 	background-position: center left;
 }
@@ -419,8 +419,8 @@ SPAN.hl {
 	padding: .2em .5em;
 }
 SPAN.sm { font-size: smaller }
-b.check { color: green; }
-b.warn  { color: red; }
+BODY.user b.check { color: green; }
+BODY.user b.warn  { color: red; }
 
 TR.o  { background-color: #fff; }
 TR.e  { background-color: #ffd; }
@@ -468,6 +468,8 @@ BODY.admin H5, BODY.admin H6, BODY.admin H7 {
 BODY.admin B, BODY.admin STRONG {
     color: #636;
 }
+BODY.admin b.check { color: green; }
+BODY.admin b.warn  { color: red; }
 
 BODY.admin DIV#contents TABLE {
 	border-color: #636;
@@ -510,7 +512,7 @@ BODY.admin #globalsubnav A:active,
 BODY.admin #globalsubnav LI.here2 A:link,
 BODY.admin #globalsubnav LI.here2 A:visited {
 	color:#303;
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-admin.gif);
+	background-image: url(icons/rt-arrow-admin.gif);
         background-repeat: no-repeat;
 	background-position: center left;
 }
@@ -537,11 +539,11 @@ BODY.admin DIV#menu LI.here A:visited {
 }
 
 BODY.admin DIV#menu LI.here {
-	list-style-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-admin.gif);
+	list-style-image: url(icons/rt-arrow-admin.gif);
 }
 
 BODY.admin DIV#contents TABLE TD.marker {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-admin.gif);
+	background-image: url(icons/rt-arrow-admin.gif);
 }
 
 BODY.admin DIV#contents TABLE TR#divider TD { border-top: 1px solid #636; }
@@ -563,6 +565,8 @@ BODY.staff H5, BODY.staff H6, BODY.staff H7 {
 BODY.staff B, BODY.staff STRONG {
     color: #336;
 }
+BODY.staff b.check { color: green; }
+BODY.staff b.warn  { color: red; }
 
 BODY.staff DIV#contents TABLE {
 	border-color: #336;
@@ -605,7 +609,7 @@ BODY.staff #globalsubnav A:active,
 BODY.staff #globalsubnav LI.here2 A:link,
 BODY.staff #globalsubnav LI.here2 A:visited {
 	color:#336;
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-staff.gif);
+	background-image: url(icons/rt-arrow-staff.gif);
         background-repeat: no-repeat;
 	background-position: center left;
 }
@@ -632,11 +636,11 @@ BODY.staff DIV#menu LI.here A:visited {
 }
 
 BODY.staff DIV#menu LI.here {
-	list-style-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-staff.gif);
+	list-style-image: url(icons/rt-arrow-staff.gif);
 }
 
 BODY.staff DIV#contents TABLE TD.marker {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Core.framework/WebServerResources/icons/rt-arrow-staff.gif);
+	background-image: url(icons/rt-arrow-staff.gif);
 }
 
 BODY.staff DIV#contents TABLE TR#divider TD { border-top: 1px solid #336; }
@@ -653,7 +657,7 @@ div#contents div.shadow table.distchart {
     background-color: white;
     empty-cells: show;
     table-layout: fixed;
-    width: 100;
+    width: 100px;
     display: table;
 }
 div#contents table.distchart td,
@@ -666,47 +670,47 @@ div#contents div.shadow table.distchart td {
 }
 div#contents table.distchart td.b0,
 div#contents div.shadow table.distchart td.b0 {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar00.gif);
+	background-image: url(images/bar00.gif);
 }
 div#contents table.distchart td.b1,
 div#contents div.shadow table.distchart td.b1 {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar01.gif);
+	background-image: url(images/bar01.gif);
 }
 div#contents table.distchart td.b2,
 div#contents div.shadow table.distchart td.b2 {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar02.gif);
+	background-image: url(images/bar02.gif);
 }
 div#contents table.distchart td.b3,
 div#contents div.shadow table.distchart td.b3 {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar03.gif);
+	background-image: url(images/bar03.gif);
 }
 div#contents table.distchart td.b4,
 div#contents div.shadow table.distchart td.b4 {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar04.gif);
+	background-image: url(images/bar04.gif);
 }
 div#contents table.distchart td.b5,
 div#contents div.shadow table.distchart td.b5 {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar05.gif);
+	background-image: url(images/bar05.gif);
 }
 div#contents table.distchart td.b6,
 div#contents div.shadow table.distchart td.b6 {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar06.gif);
+	background-image: url(images/bar06.gif);
 }
 div#contents table.distchart td.b7,
 div#contents div.shadow table.distchart td.b7 {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar07.gif);
+	background-image: url(images/bar07.gif);
 }
 div#contents table.distchart td.b8,
 div#contents div.shadow table.distchart td.b8 {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar08.gif);
+	background-image: url(images/bar08.gif);
 }
 div#contents table.distchart td.b9,
 div#contents div.shadow table.distchart td.b9 {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar09.gif);
+	background-image: url(images/bar09.gif);
 }
 div#contents table.distchart td.b10,
 div#contents div.shadow table.distchart td.b10 {
-	background-image: url(http://web-cat.cs.vt.edu/WebObjects/Frameworks/Grader.framework/WebServerResources/images/bar10.gif);
+	background-image: url(images/bar10.gif);
 }
 div#contents table.distchart td img.bar,
 div#contents div.shadow table.distchart td img.bar {

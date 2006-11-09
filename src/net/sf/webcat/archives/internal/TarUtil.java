@@ -84,7 +84,7 @@ public class TarUtil
 				
 				if ( !destDir.exists() )
                 {
-					destDir.mkdir();
+					destDir.mkdirs();
                 }
 			}
 			else
@@ -94,7 +94,7 @@ public class TarUtil
 				
 				if ( destParent != null  &&  !destParent.exists() )
                 {
-					destParent.mkdir();
+					destParent.mkdirs();
                 }
 
 				FileOutputStream destStream = new FileOutputStream( destFile );
