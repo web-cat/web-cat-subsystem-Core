@@ -32,6 +32,9 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import java.util.jar.*;
+
+import net.sf.webcat.*;
+
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -411,6 +414,28 @@ public class SubsystemManager
         envCache = null;
         envpCache = null;
         pluginPropertiesCache = null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Refreshes cached information about subsystems and their providers.
+     */
+    public void refreshSubsystemDescriptorsAndProviders()
+    {
+        for ( Iterator i = FeatureProvider.providers().iterator();
+            i.hasNext(); )
+        {
+            ( (FeatureProvider)i.next() ).refresh();
+        }
+        if ( subsystemArray != null )
+        {
+            for ( int i = 0; i < subsystemArray.count(); i++ )
+            {
+                ( (Subsystem)subsystemArray.objectAtIndex( i ) )
+                    .refreshDescriptor();
+            }
+        }
     }
 
 

@@ -126,6 +126,17 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
+     * Get the FeatureDescriptor for this subsystem.
+     * @return this subsystem's descriptor
+     */
+    public void refreshDescriptor()
+    {
+        descriptor = null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Get a list of WO components that should be instantiated and presented
      * on the front page.
      * 
