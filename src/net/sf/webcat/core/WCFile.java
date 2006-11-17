@@ -80,6 +80,12 @@ public class WCFile
                 {
                     fileName = fileName.substring( 1 );
                 }
+                // If we're on a Windows-style system, be sure to switch
+                // to forward slashes for path names inside the zip file
+                if ( System.getProperty( "file.separator" ).equals( "\\" ) )
+                {
+                    fileName = fileName.replace( '\\', '/' );
+                }
                 ZipEntry e = new ZipEntry( fileName );
                 e.setSize( file.length() );
                 zos.putNextEntry( e );
