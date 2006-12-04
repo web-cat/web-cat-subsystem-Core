@@ -126,8 +126,7 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
-     * Get the FeatureDescriptor for this subsystem.
-     * @return this subsystem's descriptor
+     * Clear the cached feature descriptor for this subsystem.
      */
     public void refreshDescriptor()
     {
