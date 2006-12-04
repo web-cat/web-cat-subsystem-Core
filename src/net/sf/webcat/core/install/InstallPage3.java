@@ -224,7 +224,7 @@ public class InstallPage3
         catch ( Exception e )
         {
             log.error( "exception initializing application:", e );
-            errorMessage( e.getMessage() );
+            error( e.getMessage() );
         }
         finally
         {

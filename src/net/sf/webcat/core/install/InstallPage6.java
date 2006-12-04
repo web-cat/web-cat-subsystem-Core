@@ -110,7 +110,7 @@ public class InstallPage6
                 {
                     if ( users.count() > 1 )
                     {
-                        errorMessage( "Multiple accounts with the user name '"
+                        error( "Multiple accounts with the user name '"
                             + username + "' detected!" );
                     }
                     User admin = (User)users.objectAtIndex( 0 );
@@ -166,10 +166,10 @@ public class InstallPage6
         }
         if ( authDomainName == null && authDomainName.equals( "" ) )
         {
-            errorMessage( "Cannot identify default institution's "
+            error( "Cannot identify default institution's "
                 + "authentication configuration." );
         }
-        else if ( username != null && !hasErrors() )
+        else if ( username != null && !hasMessages() )
         {
             EOEditingContext ec = Application.newPeerEditingContext();
             AuthenticationDomain domain =
@@ -244,7 +244,7 @@ public class InstallPage6
             log.debug( "takeFormValues(): near end = " );
             log.debug( configuration.configSettingsAsString() );
         }
-        if ( !hasErrors() )
+        if ( !hasMessages() )
         {
             configuration.remove( "AdminFirstName" );
             configuration.remove( "AdminLastName" );

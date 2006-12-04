@@ -120,7 +120,7 @@ public class InstallPage5
                         }
                         catch ( ClassNotFoundException e )
                         {
-                            errorMessage( e.getMessage() );
+                            error( e.getMessage() );
                         }
                     }
                 }
@@ -147,7 +147,7 @@ public class InstallPage5
             storeFormValueToConfig( formValues, "InstitutionEmailDomain",
                 "mail.default.domain",
                 null );
-            if ( !hasErrors() )
+            if ( !hasMessages() )
             {
                 net.sf.webcat.core.AuthenticationDomain.refreshAuthDomains();
             }

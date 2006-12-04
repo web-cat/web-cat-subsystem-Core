@@ -1,7 +1,6 @@
 <webobject name="Page">
 <p>You are <span class="hl"><webobject name="UserName"/></span> registered in
 the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
-<webobject name="Errors"/>
 <webobject name="Form">
 <table style="border: none;">
 <tr><td class="R">First name:</td><td><webobject name="FirstName"/></td></tr>
@@ -17,7 +16,7 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <tr><td></td>
     <td><webobject name="ApplyChanges"/></td></tr>
 </table>
-<webobject name="EnrolledInCourses"><div class="spacer">&nbsp;</div>
+<webobject name="EnrolledInCourses">
 <p>You are currently <b>enrolled in</b> these courses:</p>
 <div class="shadow"><table><tbody><tr><th>Course</th><th>Name</th><th>Instructor</th></tr>
 <webobject name="EnrollmentRepetition">
@@ -26,11 +25,11 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <td><webobject name="CourseName"/></td>
 <td><webobject name="InstructorRepetition"><webobject name="InstructorName"/>
 </webobject></td>
-</webobject></webobject></tbody></table></div>
+</webobject></webobject></tbody></table></div><div class="spacer">&nbsp;</div>
 </webobject><webobject name="NotEnrolledInCourses">
 <p>You are not currently <b>enrolled in</b> any courses.</p>
 </webobject>
-<webobject name="CanTA"><div class="spacer">&nbsp;</div>
+<webobject name="CanTA">
 <webobject name="TAInCourses">
 <p>You are a <b>TA</b> for these courses:</p>
 <div class="shadow"><table><tbody><tr><th>Course</th><th>Name</th><th>Instructor</th></tr>
@@ -40,11 +39,11 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <td><webobject name="CourseName"/></td>
 <td><webobject name="InstructorRepetition"><webobject name="InstructorName"/>
 </webobject></td>
-</webobject></webobject></tbody></table></div>
+</webobject></webobject></tbody></table></div><div class="spacer">&nbsp;</div>
 </webobject><webobject name="NotTAInCourses">
 <p>You are not currently registered as the <b>TA</b> for any courses.</p>
-</webobject></webobject>    
-<webobject name="CanTeach"><div class="spacer">&nbsp;</div>
+</webobject></webobject>
+<webobject name="CanTeach">
 <webobject name="TeachingCourses">
 <p>You are an <b>instructor</b> for these courses:</p>
 <div class="shadow"><table><tbody><tr><th>Course</th><th>Name</th><th>Instructor</th></tr>

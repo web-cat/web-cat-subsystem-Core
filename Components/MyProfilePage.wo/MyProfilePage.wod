@@ -53,12 +53,6 @@ ApplyChanges: WOSubmitButton {
 	value  = " Apply ";
 }
 
-Errors: net.sf.webcat.core.ErrorDictionaryPanel {
-	errorMessages          = errors;
-	shouldShowNewlineAbove = true;
-	shouldShowNewlineBelow = true;
-}
-
 EnrolledInCourses: WOConditional {
     condition = session.user.enrolledIn.count;
 }

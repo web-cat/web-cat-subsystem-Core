@@ -108,7 +108,7 @@ public class install
             InstallPage oldPage = (InstallPage)
                 pageWithName( InstallPage.class.getName() + step );
             oldPage.takeFormValues( request().formValues() );
-            if ( oldPage.hasErrors() )
+            if ( oldPage.hasMessages() )
             {
                 return oldPage;
             }

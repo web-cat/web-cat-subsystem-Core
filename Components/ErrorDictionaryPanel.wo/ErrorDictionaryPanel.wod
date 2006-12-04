@@ -1,20 +1,25 @@
+DictionaryCssClass: WOString {
+	value      = dictionaryCssClass;
+}
+
+ErrorMessageCssClass: WOString {
+	value      = errorMessageCssClass;
+}
+
 HasExtraMessage: WOConditional {
 	condition = extraErrorMessage.length;
 }
 
 ShowNewLineBelow: WOConditional {
-	condition = shouldShowNewLineBelow;
+	condition = ^shouldShowNewlineBelow;
 }
 
 ShowNewLineAbove: WOConditional {
-	condition = shouldShowNewLineAbove;
+	condition = ^shouldShowNewlineAbove;
 }
 
 DictionaryRepetition: WORepetition { 	
 	list = errorKeys;
-	//key = errorKey;
-	//item = errorMessageItem;
-	//dictionary = errorMessages;
 	item = errorKey;
 }
 
@@ -22,17 +27,13 @@ HasErrors: WOConditional {
 	condition = hasErrors;
 }
 
-Caution: WOImage
-{
-    filename  = "icons/caution.gif";
-    framework = "Core";
-    height    = "16";
-    width     = "16";
-    border    = 0;
-}
-
 Message: WOString {
 	value      = errorMessageItem;
+    escapeHTML = false;
+}
+
+MessageClass: WOString {
+	value      = errorMessageCssClass;
     escapeHTML = false;
 }
 

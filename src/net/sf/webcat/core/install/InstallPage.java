@@ -95,7 +95,7 @@ public abstract class InstallPage
         Object    value,
         String    keypath )
     {
-        errorMessage( e.getMessage() );
+        error( e.getMessage() );
     }
 
 
@@ -164,7 +164,7 @@ public abstract class InstallPage
                 {
                     if ( errMsgIfEmpty != null )
                     {
-                        errorMessage( errMsgIfEmpty );
+                        error( errMsgIfEmpty );
                     }
                     else if ( Application.configurationProperties()
                                   .get( configKey ) != null )
@@ -188,13 +188,13 @@ public abstract class InstallPage
             }
             else if ( errMsgIfEmpty != null )
             {
-                errorMessage( errMsgIfEmpty );
+                error( errMsgIfEmpty );
                 value = null;
             }
         }
         catch ( NSValidation.ValidationException e )
         {
-            errorMessage( e.getMessage() );
+            error( e.getMessage() );
             value = null;
         }
         return value;

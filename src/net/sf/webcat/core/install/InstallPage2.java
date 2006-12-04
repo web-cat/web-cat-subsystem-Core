@@ -99,7 +99,7 @@ public class InstallPage2
         if ( !ERXValueUtilities.booleanValue(
             extractFormValue( formValues, "AgreedToLicense" ) ) )
         {
-            errorMessage( "You must agree to the license terms and "
+            error( "You must agree to the license terms and "
                 + "conditions to proceed." );
         }
     }

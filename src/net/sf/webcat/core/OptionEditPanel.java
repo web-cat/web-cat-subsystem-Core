@@ -324,7 +324,7 @@ public class OptionEditPanel
     {
         if ( !canBrowse() )
         {
-            errorMessage( "File and directory configuration options are" +
+            error( "File and directory configuration options are" +
                     "not supported on this page!" );
             return null;
         }

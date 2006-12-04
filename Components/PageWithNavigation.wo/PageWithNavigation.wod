@@ -26,9 +26,7 @@ DeathTime: WOString {
 }
 
 Errors: net.sf.webcat.core.ErrorDictionaryPanel {
-	errorMessages          = thisPage.errors;
-//	shouldShowNewlineAbove = true;
-//	shouldShowNewlineBelow = true;
+	errorMessages          = thisPage.messages;
 }
 
 FeedbackLink: WOHyperlink {

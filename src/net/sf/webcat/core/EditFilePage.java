@@ -81,7 +81,7 @@ public class EditFilePage
             }
             catch ( java.io.IOException e )
             {
-                errorMessage( e.getMessage() );
+                error( e.getMessage() );
             }
         }
         super.appendToResponse( response, context );
@@ -126,7 +126,7 @@ public class EditFilePage
     public WOComponent cancelEdit()
     {
         log.debug( "cancelEdit(), nextPage = " + nextPage );
-        clearErrors();
+        clearMessages();
         return nextPage;
     }
 
@@ -134,7 +134,6 @@ public class EditFilePage
     // ----------------------------------------------------------
     public void save()
     {
-        clearErrors();
         try
         {
             ERXFileUtilities.stringToFile( fileContents, file );
@@ -146,7 +145,7 @@ public class EditFilePage
         catch ( Exception e )
         {
             log.debug( "save(): ", e );
-            errorMessage( e.getMessage() );
+            error( e.getMessage() );
         }
     }
 
@@ -156,7 +155,7 @@ public class EditFilePage
     {
         log.debug( "saveAndDone(), nextPage = " + nextPage );
         save();
-        if ( hasErrors() )
+        if ( hasMessages() )
         {
             return null;
         }

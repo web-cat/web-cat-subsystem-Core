@@ -400,6 +400,56 @@ DIV.shadow TABLE {
 }
 
 
+/* Notice panels ---------------------------------------------------------- */
+
+.NoticePanel {background: transparent;}
+.top, .bottom {display:block; background:transparent; font-size:1px;}
+.b1, .b2, .b3, .b4, .b1b, .b2b, .b3b, .b4b {display:block; overflow:hidden;}
+.b1, .b2, .b3, .b1b, .b2b, .b3b {height:1px;}
+.b2 {border-left:1px solid #ddd; border-right:1px solid #ccc;}
+.b3 {border-left:1px solid #ddd; border-right:1px solid #bbb;}
+.b4 {border-left:1px solid #ddd; border-right:1px solid #888;}
+.b4b {border-left:1px solid #ccc; border-right:1px solid #333;}
+.b3b {border-left:1px solid #bbb; border-right:1px solid #333;}
+.b2b {border-left:1px solid #888; border-right:1px solid #333;}
+
+.b1 {margin:0 5px; background:#ddd;}
+.b2, .b2b {margin:0 3px; border-width:0 2px;}
+.b3, .b3b {margin:0 2px;}
+.b4, .b4b {height:2px; margin:0 1px;}
+.b1b {margin:0 5px; background:#333;}
+.boxcontent {display:block; border-left:1px solid #ddd; border-right:1px solid #333; padding:0 4px; color:#333;}
+
+
+.NoticePanel.error .b2, .NoticePanel.error .b3, .NoticePanel.error .b4, .NoticePanel.error .b2b, .NoticePanel.error .b3b, .NoticePanel.error .b4b, .NoticePanel.error .boxcontent {
+    background-color: #fed;
+}
+
+.NoticePanel .b2, .NoticePanel .b3, .NoticePanel .b4, .NoticePanel .b2b, .NoticePanel .b3b, .NoticePanel .b4b, .NoticePanel .boxcontent {
+    background-color: #efd;
+}
+
+.NoticePanel ul {
+    list-style-type: none;
+    padding: 4px;
+    padding-bottom: 0;
+    margin: 0;
+    /* border: 1px solid blue; */
+}
+
+.NoticePanel li {
+    background: url(icons/info.gif) left top no-repeat;
+    padding-left: 24px;
+    padding-bottom: 4px;
+    /* border: 1px solid red; */
+}
+
+.NoticePanel li.error { background-image: url(icons/exclaim.gif); }
+.NoticePanel li.warning { background-image: url(icons/caution.gif); }
+.NoticePanel li.suggestion { background-image: url(icons/suggestion.gif); }
+.NoticePanel li.check { background-image: url(icons/check.gif); }
+
+
 /* Color-coding for generic user pages ------------------------------------ */
 
 BODY.user H1, BODY.user H2, BODY.user H3, BODY.user H4,

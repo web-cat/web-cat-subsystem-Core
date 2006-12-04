@@ -145,7 +145,7 @@ public class InstallPage7
                 }
                 catch ( java.text.ParseException e )
                 {
-                    errorMessage( "Invalid format for semester start date." );
+                    error( "Invalid format for semester start date." );
                 }
                 // EndDate = ("5/31/2006");
                 try
@@ -160,9 +160,9 @@ public class InstallPage7
                 }
                 catch ( java.text.ParseException e )
                 {
-                    errorMessage( "Invalid format for semester end date." );
+                    error( "Invalid format for semester end date." );
                 }
-                if ( !hasErrors() )
+                if ( !hasMessages() )
                 {
                     ec.insertObject( semester );
                 }
@@ -197,7 +197,7 @@ public class InstallPage7
             {
                 if ( deptAbbrev == null || deptAbbrev.equals( "" ) )
                 {
-                    errorMessage( "Please provide a department abbreviation." );
+                    error( "Please provide a department abbreviation." );
                 }
                 else
                 {
@@ -238,20 +238,20 @@ public class InstallPage7
                         }
                         catch ( NumberFormatException e )
                         {
-                            errorMessage( "Course no. \"" + num + "\" cannot "
+                            error( "Course no. \"" + num + "\" cannot "
                                 + "be parsed as an integer." );
                         }
                     }
                     else if ( num != null && !num.equals( "" )
                               && ( name == null || name.equals( "" ) ) )
                     {
-                        errorMessage(
+                        error(
                             "Course \"" + num + "\" needs a name."  );
                     }
                     else if ( name != null && !name.equals( "" )
                               && ( num == null || num.equals( "" ) ) )
                     {
-                        errorMessage(
+                        error(
                             "Course \"" + name + "\" needs a number."  );
                     }
                 }
@@ -263,14 +263,14 @@ public class InstallPage7
                     String str = (String)courseNos.objectAtIndex( i );
                     if ( str != null && !str.equals( "" ) )
                     {
-                        errorMessage(
+                        error(
                             "Cannot create courses without a department!" );
                         break;
                     }
                     str = (String)courseNames.objectAtIndex( i );
                     if ( str != null && !str.equals( "" ) )
                     {
-                        errorMessage(
+                        error(
                             "Cannot create courses without a department!" );
                         break;
                     }
