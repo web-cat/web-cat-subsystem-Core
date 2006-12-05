@@ -255,6 +255,10 @@ public class ErrorDictionaryPanel
     // ----------------------------------------------------------
     public String dictionaryCssClass()
     {
+        if ( extraErrorMessage() != null )
+        {
+            return " error";
+        }
         NSDictionary dict = errorMessages();
         for ( Enumeration e = dict.keyEnumerator(); e.hasMoreElements();) {
             byte category = errorMessageCategory(
