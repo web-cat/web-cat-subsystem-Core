@@ -16,17 +16,14 @@ Critical: WOImage {
     border    = 0;
 }
 
-DeathIsScheduled: WOConditional {
-    condition = application.deathIsScheduled;
-}
-
-DeathTime: WOString {
-	dateformat = "%I:%M%p";
-	value      = application.deathTime;
+DeathMessage: WOString {
+	value      = application.deathMessage;
+	escapeHTML = false;
 }
 
 Errors: net.sf.webcat.core.ErrorDictionaryPanel {
-	errorMessages          = thisPage.messages;
+	errorMessages     = thisPage.messages;
+	extraErrorMessage = application.deathMessage;
 }
 
 FeedbackLink: WOHyperlink {

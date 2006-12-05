@@ -1406,6 +1406,25 @@ public class Application
 
 
     // ----------------------------------------------------------
+    public String deathMessage()
+    {
+        if ( dieTime != null && deathMessage == null )
+        {
+            StringBuffer buffer = new StringBuffer( 200 );
+            buffer.append( "<span class=\"hl\">Immediate shutdown:</span> " );
+            buffer.append( "Web-CAT will be going off-line at " );
+            NSTimestampFormatter formatter =
+                new NSTimestampFormatter( "%I:%M%p" );
+            java.text.FieldPosition pos = new java.text.FieldPosition( 0 );
+            formatter.format( dieTime, buffer, pos );
+            buffer.append( ".  Save your work and logout." );
+            deathMessage = buffer.toString();
+        }
+        return deathMessage;
+    }
+
+
+    // ----------------------------------------------------------
     public static String cmdShell()
     {
         if ( cmdShell == null )
@@ -1678,6 +1697,7 @@ public class Application
     private static String version;
     private static NSTimestamp startTime = new NSTimestamp();
     private static NSTimestamp dieTime = null;
+    private static String deathMessage = null;
     private static WCConfigurationFile __properties;
     private static String __appIdentifier;
     private static SubsystemManager __subsystemManager;
