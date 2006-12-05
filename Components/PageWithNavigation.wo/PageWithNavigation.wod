@@ -22,8 +22,9 @@ DeathMessage: WOString {
 }
 
 Errors: net.sf.webcat.core.ErrorDictionaryPanel {
-	errorMessages     = thisPage.messages;
-	extraErrorMessage = application.deathMessage;
+	errorMessages          = thisPage.messages;
+	extraErrorMessage      = application.deathMessage;
+	shouldShowNewlineBelow = true;
 }
 
 FeedbackLink: WOHyperlink {

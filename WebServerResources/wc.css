@@ -448,6 +448,8 @@ DIV.shadow TABLE {
 .NoticePanel li.warning { background-image: url(icons/caution.gif); }
 .NoticePanel li.suggestion { background-image: url(icons/suggestion.gif); }
 .NoticePanel li.check { background-image: url(icons/check.gif); }
+.nlbefore { margin-top: 1em; }
+.nlafter  { margin-bottom: 1em; }
 
 
 /* Color-coding for generic user pages ------------------------------------ */

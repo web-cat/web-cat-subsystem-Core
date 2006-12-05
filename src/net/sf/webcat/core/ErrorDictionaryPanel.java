@@ -255,23 +255,37 @@ public class ErrorDictionaryPanel
     // ----------------------------------------------------------
     public String dictionaryCssClass()
     {
+        String style = "";
         if ( extraErrorMessage() != null )
         {
-            return " error";
+            style += " error"; // must include the space at start
         }
-        NSDictionary dict = errorMessages();
-        for ( Enumeration e = dict.keyEnumerator(); e.hasMoreElements();) {
-            byte category = errorMessageCategory(
-                errorMessages().objectForKey( e.nextElement() ) );
-            switch ( category )
-            {
-                case Status.ERROR:
-                case Status.WARNING:
-                case Status.UNFINISHED:
-                    return " error"; // must include the space at the beginning
+        else
+        {
+            NSDictionary dict = errorMessages();
+            for ( Enumeration e = dict.keyEnumerator(); e.hasMoreElements();) {
+                byte category = errorMessageCategory(
+                    errorMessages().objectForKey( e.nextElement() ) );
+                switch ( category )
+                {
+                    case Status.ERROR:
+                    case Status.WARNING:
+                    case Status.UNFINISHED:
+                        style += " error"; // must include the space at start
+                }
             }
         }
-        return null;
+        if ( er.extensions.ERXValueUtilities.booleanValue(
+            valueForBinding( "shouldShowNewlineAbove" ) ) )
+        {
+            style += " nlbefore";
+        }
+        if ( er.extensions.ERXValueUtilities.booleanValue(
+            valueForBinding( "shouldShowNewlineBelow" ) ) )
+        {
+            style += " nlafter";
+        }
+        return style;
     }
     
 

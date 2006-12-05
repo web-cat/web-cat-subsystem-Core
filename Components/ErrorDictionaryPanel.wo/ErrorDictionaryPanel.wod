@@ -10,14 +10,6 @@ HasExtraMessage: WOConditional {
 	condition = extraErrorMessage.length;
 }
 
-ShowNewLineBelow: WOConditional {
-	condition = ^shouldShowNewlineBelow;
-}
-
-ShowNewLineAbove: WOConditional {
-	condition = ^shouldShowNewlineAbove;
-}
-
 DictionaryRepetition: WORepetition { 	
 	list = errorKeys;
 	item = errorKey;
