@@ -215,7 +215,10 @@ public class ErrorDictionaryPanel
     // ----------------------------------------------------------
     public String errorMessageItem()
     {
-        String msg = errorMessages().objectForKey( errorKey ).toString();
+        Object obj = errorMessages().objectForKey( errorKey );
+        String msg = ( obj instanceof Throwable )
+            ? ( (Throwable) obj).getMessage()
+            : obj.toString();
         return massageErrorMessage( msg, errorKey );
     }
 

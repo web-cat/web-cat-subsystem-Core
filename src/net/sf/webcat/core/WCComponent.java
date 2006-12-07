@@ -398,6 +398,7 @@ public class WCComponent
         }
         try
         {
+            // TODO: fix this to handle general save validation failures
             wcSession().commitLocalChanges();
             return true;
         }

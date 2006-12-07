@@ -122,6 +122,17 @@ public class WCComponentWithErrorMessages
 
     // ----------------------------------------------------------
     /**
+     * Record an exception as an error message for this page.
+     * @param anException the exception to be posted
+     */
+    public void error( Throwable anException )
+    {
+        message( anException, null );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Record an error message for this page.
      * @param message the error message
      * @param id a unique id used to distinguish this message from others
@@ -289,6 +300,18 @@ public class WCComponentWithErrorMessages
     public NSMutableDictionary messagesIfPresent()
     {
         return messages;
+    }
+
+
+    // ----------------------------------------------------------
+    /* (non-Javadoc)
+     * @see com.webobjects.appserver.WOComponent#validationFailedWithException(java.lang.Throwable, java.lang.Object, java.lang.String)
+     */
+    public void validationFailedWithException( Throwable ex,
+                                               Object    value,
+                                               String    key )
+    {
+        message( ex, key );
     }
 
 

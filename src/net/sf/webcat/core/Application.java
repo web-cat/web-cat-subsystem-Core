@@ -1411,7 +1411,7 @@ public class Application
         if ( dieTime != null && deathMessage == null )
         {
             StringBuffer buffer = new StringBuffer( 200 );
-            buffer.append( "<span class=\"hl\">Immediate shutdown:</span> " );
+            buffer.append( "<b>Immediate shutdown:</b> " );
             buffer.append( "Web-CAT will be going off-line at " );
             NSTimestampFormatter formatter =
                 new NSTimestampFormatter( "%I:%M%p" );

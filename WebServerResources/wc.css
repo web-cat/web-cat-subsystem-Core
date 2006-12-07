@@ -404,28 +404,40 @@ DIV.shadow TABLE {
 
 .NoticePanel {background: transparent;}
 .top, .bottom {display:block; background:transparent; font-size:1px;}
-.b1, .b2, .b3, .b4, .b1b, .b2b, .b3b, .b4b {display:block; overflow:hidden;}
-.b1, .b2, .b3, .b1b, .b2b, .b3b {height:1px;}
-.b2 {border-left:1px solid #ddd; border-right:1px solid #ccc;}
-.b3 {border-left:1px solid #ddd; border-right:1px solid #bbb;}
-.b4 {border-left:1px solid #ddd; border-right:1px solid #888;}
-.b4b {border-left:1px solid #ccc; border-right:1px solid #333;}
-.b3b {border-left:1px solid #bbb; border-right:1px solid #333;}
-.b2b {border-left:1px solid #888; border-right:1px solid #333;}
+b.b1, b.b2, b.b3, b.b4, b.b1b, b.b2b, b.b3b, b.b4b {display:block; overflow:hidden;}
+b.b1, b.b2, b.b3, b.b1b, b.b2b, b.b3b {height:1px;}
+b.b2 {border-left:1px solid #ddd; border-right:1px solid #ccc;}
+b.b3 {border-left:1px solid #ddd; border-right:1px solid #bbb;}
+b.b4 {border-left:1px solid #ddd; border-right:1px solid #888;}
+b.b4b {border-left:1px solid #ccc; border-right:1px solid #333;}
+b.b3b {border-left:1px solid #bbb; border-right:1px solid #333;}
+b.b2b {border-left:1px solid #888; border-right:1px solid #333;}
 
-.b1 {margin:0 5px; background:#ddd;}
-.b2, .b2b {margin:0 3px; border-width:0 2px;}
-.b3, .b3b {margin:0 2px;}
-.b4, .b4b {height:2px; margin:0 1px;}
-.b1b {margin:0 5px; background:#333;}
+b.b1 {margin:0 5px; background:#ddd;}
+b.b2, b.b2b {margin:0 3px; border-width:0 2px;}
+b.b3, b.b3b {margin:0 2px;}
+b.b4, b.b4b {height:2px; margin:0 1px;}
+b.b1b {margin:0 5px; background:#333;}
 .boxcontent {display:block; border-left:1px solid #ddd; border-right:1px solid #333; padding:0 4px; color:#333;}
 
 
-.NoticePanel.error .b2, .NoticePanel.error .b3, .NoticePanel.error .b4, .NoticePanel.error .b2b, .NoticePanel.error .b3b, .NoticePanel.error .b4b, .NoticePanel.error .boxcontent {
+.NoticePanel.error b.b2,
+.NoticePanel.error b.b3,
+.NoticePanel.error b.b4,
+.NoticePanel.error b.b2b,
+.NoticePanel.error b.b3b,
+.NoticePanel.error b.b4b,
+.NoticePanel.error .boxcontent {
     background-color: #fed;
 }
 
-.NoticePanel .b2, .NoticePanel .b3, .NoticePanel .b4, .NoticePanel .b2b, .NoticePanel .b3b, .NoticePanel .b4b, .NoticePanel .boxcontent {
+.NoticePanel b.b2,
+.NoticePanel b.b3,
+.NoticePanel b.b4,
+.NoticePanel b.b2b,
+.NoticePanel b.b3b,
+.NoticePanel b.b4b,
+.NoticePanel .boxcontent {
     background-color: #efd;
 }
 
