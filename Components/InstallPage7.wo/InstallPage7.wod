@@ -33,7 +33,6 @@ SemesterPeriod: WOPopUpButton {
 	name              = "SemesterPeriod";
 }
 
-
 StartDate: WOTextField {
     value    = application.properties.StartDate;
     name     = "StartDate";
@@ -43,12 +42,13 @@ StartDate: WOTextField {
 }
 
 StartDateSelector: WOImage {
-	src      = "http://web-cat.cs.vt.edu/icons/cal.gif";
-	width    = 16;
-	height   = 16;
-	alt      = "Select start date";
-	title    = "Select start date";
-	id       = "StartDateSelector";
+	filename  = "icons/cal.gif";
+	framework = "Grader";
+	width     = 16;
+	height    = 16;
+	alt       = "Select start date";
+	title     = "Select start date";
+	id        = "StartDateSelector";
 }
 
 EndDate: WOTextField {
@@ -60,12 +60,13 @@ EndDate: WOTextField {
 }
 
 EndDateSelector: WOImage {
-	src      = "http://web-cat.cs.vt.edu/icons/cal.gif";
-	width    = 16;
-	height   = 16;
-	alt      = "Select end date";
-	title    = "Select end date";
-	id       = "EndDateSelector";
+	filename  = "icons/cal.gif";
+	framework = "Grader";
+	width     = 16;
+	height    = 16;
+	alt       = "Select end date";
+	title     = "Select end date";
+	id        = "EndDateSelector";
 }
 
 //  <input name="SemesterCreate" id="SemesterCreate" value="1" checked="true" type="checkbox">
@@ -73,7 +74,11 @@ EndDateSelector: WOImage {
 Page : net.sf.webcat.core.install.InstallPageWrapper {
     title  = "Create Supporting Data";
     stepNo = stepNo;
-    errors = errors;
-    stylesheet         = "http://web-cat.cs.vt.edu/jscalendar/skins/aqua/theme.css";
-    externalJavascript = "http://web-cat.cs.vt.edu/jscalendar/calendar.js,http://web-cat.cs.vt.edu/jscalendar/lang/calendar-en.js,http://web-cat.cs.vt.edu/jscalendar/calendar-setup.js"; 
+    errors = messages;
+//    stylesheet         = "Grader.framework/WebServerResources/jscalendar/skins/aqua/theme.css";
+    // Have to use an absolute external URL, since the static resources stuff has not
+    // been initialized yet (since the app hasn't been initialized yet), so the URL
+    // references in the CSS file won't resolve correctly.
+    stylesheet         = "http://web-cat.cs.vt.edu/wcstatic/Grader.framework/WebServerResources/jscalendar/skins/aqua/theme.css";
+    externalJavascript = "Grader.framework/WebServerResources/jscalendar/calendar.js,Grader.framework/WebServerResources/jscalendar/lang/calendar-en.js,Grader.framework/WebServerResources/jscalendar/calendar-setup.js"; 
 }

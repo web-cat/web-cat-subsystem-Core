@@ -47,7 +47,7 @@ OSName: WOString {
 Page : net.sf.webcat.core.install.InstallPageWrapper {
     title  = "Pre-installation Check";
     stepNo = stepNo;
-    errors = errors;
+    errors = messages;
 }
 
 Version: WOString {

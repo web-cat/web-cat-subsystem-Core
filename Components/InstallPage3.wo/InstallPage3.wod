@@ -27,5 +27,5 @@ DBusername: WOTextField {
 Page : net.sf.webcat.core.install.InstallPageWrapper {
     title  = "MySQL Database Configuration";
     stepNo = stepNo;
-    errors = errors;
+    errors = messages;
 }

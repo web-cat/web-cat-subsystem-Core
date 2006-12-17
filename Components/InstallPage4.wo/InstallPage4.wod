@@ -18,7 +18,7 @@ LoginURL: WOTextField {
 Page : net.sf.webcat.core.install.InstallPageWrapper {
     title  = "Set Site Parameters";
     stepNo = stepNo;
-    errors = errors;
+    errors = messages;
 }
 
 SubmissionDir: WOTextField {

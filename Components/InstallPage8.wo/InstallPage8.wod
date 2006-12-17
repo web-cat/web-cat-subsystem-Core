@@ -45,5 +45,5 @@ ConfigSaved: WOConditional {
 Page : net.sf.webcat.core.install.InstallPageWrapper {
     title  = "Congratulations! Web-CAT is Installed";
     stepNo = stepNo;
-    errors = errors;
+    errors = messages;
 }

@@ -34,5 +34,5 @@ UseDBAuth: WORadioButton {
 Page : net.sf.webcat.core.install.InstallPageWrapper {
     title  = "Authentication";
     stepNo = stepNo;
-    errors = errors;
+    errors = messages;
 }

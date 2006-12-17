@@ -35,7 +35,7 @@ coreAdminEmail: WOTextField {
 Page : net.sf.webcat.core.install.InstallPageWrapper {
     title  = "Administrator Account";
     stepNo = stepNo;
-    errors = errors;
+    errors = messages;
 }
 
 UsingDatabaseAuthentication: WOConditional {

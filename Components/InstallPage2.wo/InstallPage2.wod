@@ -5,5 +5,5 @@ LicenseURL: WOString {
 Page : net.sf.webcat.core.install.InstallPageWrapper {
     title  = "License";
     stepNo = stepNo;
-    errors = errors;
+    errors = messages;
 }
