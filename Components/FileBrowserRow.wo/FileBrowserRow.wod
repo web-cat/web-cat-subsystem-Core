@@ -120,8 +120,16 @@ Expanded : WOConditional {
     condition = isExpanded;
 }
 
-FileIcon: WOImage {
-	src = iconURL;
+FileIcon1: WOImage {
+	filename  = iconURL;
+	framework = "Core";
+}
+
+FileIcon2: WOActiveImage {
+	filename  = iconURL;
+	framework = "Core";
+	action    = viewFile;
+	target    = "viewFile";
 }
 
 IsArchive : WOConditional {
