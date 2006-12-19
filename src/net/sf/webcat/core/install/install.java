@@ -64,11 +64,11 @@ public class install
     public static final String[] steps = new String[] {
         "pre-check",    // 1
         "license",      // 2
-        "step 1",       // 3
-        "step 2",       // 4
-        "step 3",       // 5
-        "step 4",       // 6
-        "step 5",       // 7
+        "step&nbsp;1",  // 3
+        "step&nbsp;2",  // 4
+        "step&nbsp;3",  // 5
+        "step&nbsp;4",  // 6
+        "step&nbsp;5",  // 7
         "done!"         // 8
         };
 
