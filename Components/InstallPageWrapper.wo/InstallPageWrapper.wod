@@ -126,7 +126,8 @@ StepImage: WOImage {
 }
 
 StepName: WOString {
-    value = step;
+    value      = step;
+    escapeHTML = false;
 }
 
 Title: WOString {
