@@ -8,9 +8,9 @@
             userInfo = {
                 scalarConversionMethodName = byteValue; 
                 isScalar = true;
-		scalarDefault = 0;
+                scalarDefault = 0;
                 type = byte;
-		valueClassName = Byte;
+                valueClassName = Byte;
             }; 
         }, 
         {
