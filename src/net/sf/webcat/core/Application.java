@@ -121,9 +121,9 @@ public class Application
         }
         if ( log.isDebugEnabled() )
         {
-            File here = new File( "." );
             try
             {
+                File here = new File( "." );
                 log.debug( "current dir = " + here.getCanonicalPath() );
             }
             catch ( java.io.IOException e )
@@ -136,10 +136,9 @@ public class Application
         setDefaultRequestHandler(
             requestHandlerForKey( directActionRequestHandlerKey() ) );
 
-        updateStaticHtmlResources();
-        
         if ( configurationProperties().hasUsableConfiguration() )
         {
+            log.debug( "initializing application" );
             initializeApplication();
             setNeedsInstallation( false );
             notifyAdminsOfStartup();
@@ -205,6 +204,8 @@ public class Application
      */
     public void initializeApplication()
     {
+        updateStaticHtmlResources();
+        
         loadArchiveManagers();
         WOEC.installWOECFactory();
 
@@ -764,6 +765,17 @@ public class Application
             isAdditionalForeignSupportedDevelopmentPlatform();
     }
 
+    // ----------------------------------------------------------
+    /**
+     * Overrides default WO version to force deployment-mode behavior
+     * until valid configuration has been reached.
+     * @see com.webobjects.appserver.WOApplication#_rapidTurnaroundActiveForAnyProject()
+     */
+    public boolean _rapidTurnaroundActiveForAnyProject()
+    {
+        return staticHtmlResourcesNeedInitializing
+            || super._rapidTurnaroundActiveForAnyProject();
+    }
 
     // ----------------------------------------------------------
     /**
@@ -1576,6 +1588,8 @@ public class Application
         }
 
         File woaDir = configurationProperties().file().getParentFile();
+        String lastUpdated = configurationProperties().getProperty(
+            "static.HTML.date", "00000000" );
         File appBase = woaDir.getParentFile().getParentFile();
         log.debug( "appBase = " + appBase );
         log.debug( "appBase = " + appBase.getAbsolutePath() );
@@ -1590,25 +1604,58 @@ public class Application
                 new File( framework[i], "WebServerResources" );
             if ( webServerResources.isDirectory() )
             {
-                log.debug( "Moving static html resources from framework => "
-                    + framework[i].getName() );
-                try
+                String frameworkName = framework[i].getName();
+                frameworkName = frameworkName.substring( 0,
+                    frameworkName.length() - ".framework".length() );
+                String frameworkLastUpdated = configurationProperties().
+                    getProperty( frameworkName + ".version.date", "00000000" );
+                if ( lastUpdated.compareTo( frameworkLastUpdated ) <= 0 )
                 {
-                    File target = new File( appBase, framework[i].getName()
-                        + "/" + webServerResources.getName() );
-                    target.mkdirs();
-                    net.sf.webcat.archives.FileUtilities
-                        .copyDirectoryContentsIfNecessary(
-                            webServerResources, target );
-                }
-                catch ( java.io.IOException e )
-                {
-                    log.error( "Exception moving static html resource  from '"
-                        + webServerResources + "' to '" + appBase + "'", e );
+                    log.info(
+                        "Copying static html resources from framework => "
+                        + framework[i].getName() );
+                    try
+                    {
+                        File target = new File( appBase, framework[i].getName()
+                            + "/" + webServerResources.getName() );
+                        if ( target.exists() )
+                        {
+                            if ( target.isDirectory() )
+                            {
+                                net.sf.webcat.archives.FileUtilities
+                                    .deleteDirectory( target );
+                            }
+                            else
+                            {
+                                target.delete();
+                            }
+                        }
+                        target.mkdirs();
+                        net.sf.webcat.archives.FileUtilities
+                            .copyDirectoryContentsIfNecessary(
+                                webServerResources, target );
+                    }
+                    catch ( java.io.IOException e )
+                    {
+                        log.error(
+                            "Exception copying static html resource from '"
+                            + webServerResources + "' to '" + appBase + "'",
+                            e );
+                    }
                 }
             }
         }
-        
+
+        // Attempt to update the "last saved" info
+        NSTimestampFormatter formatter = new NSTimestampFormatter( "%Y%m%d" );
+        configurationProperties().setProperty( "static.HTML.date",
+            formatter.format( new NSTimestamp() ) );
+        if ( !configurationProperties().attemptToSave() )
+        {
+            log.warn( "Could not save configuration settings to "
+                + configurationProperties().file() );
+        }
+
         String staticHtmlBase = configurationProperties().getProperty(
             "static.html.baseURL" );
         if ( staticHtmlBase == null )
@@ -1633,10 +1680,10 @@ public class Application
                         staticHtmlBase = staticHtmlBase.substring( 0, loc );
                     }
                 }
-            }
-            if ( !staticHtmlBase.endsWith( "/" ) )
-            {
-                staticHtmlBase = staticHtmlBase + "/";
+                if ( !staticHtmlBase.endsWith( "/" ) )
+                {
+                    staticHtmlBase = staticHtmlBase + "/";
+                }
             }
         }
         if ( staticHtmlBase != null )
@@ -1644,6 +1691,9 @@ public class Application
             log.debug(
                 "attempting to set frameworks Base URL = " + staticHtmlBase );
             setFrameworksBaseURL( staticHtmlBase );
+            staticHtmlResourcesNeedInitializing = false;
+            // Dump any cached data using the previous frameworks base url
+            resourceManager().flushDataCache();
         }
         log.debug( "frameworks Base URL = " + frameworksBaseURL() );
     }
@@ -1704,6 +1754,7 @@ public class Application
     private static String cmdShell;
     
     private boolean needsInstallation = true;
+    private boolean staticHtmlResourcesNeedInitializing = true;
 
     static Logger log = Logger.getLogger( Application.class );
 }

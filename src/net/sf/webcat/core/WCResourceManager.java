@@ -87,8 +87,29 @@ public class WCResourceManager
 
 
     // ----------------------------------------------------------
-    public String urlForFrameworkPrefixedResourceNamed( String aResourceName )
+    public String urlForFrameworkPrefixedResourceNamed(
+        String aResourceName, WORequest aRequest )
     {
+        if ( Application.application()._rapidTurnaroundActiveForAnyProject() )
+        {
+            // Skip all caching and other processing here.  This should
+            // only arise when (a) requesting CSS and Javascript-style
+            // resources, when (b) no base.url has been set yet (e.g.,
+            // only during the self-installation wizard).  In that case,
+            // we want to use absolute external URLs, since internal
+            // URLs based on /wr requests will not allow relative references
+            // within CSS or Javascript files to be resolved correctly.
+            // The default developmentBaseURL should provide this for us
+            // until static HTML resources have been initialized correctly
+            // after the self-installation wizard completes.
+            int pos = aResourceName.indexOf( FRAMEWORK_SUFFIX );
+            if ( pos >= 0 )
+            {
+                aResourceName = aResourceName.substring(
+                    pos + FRAMEWORK_SUFFIX.length() );
+            }
+            return developmentBaseURL + aResourceName;
+        }
         String result =
             (String)frameworkPrefixedCache.valueForKey( aResourceName );
         if ( result == null )
@@ -100,12 +121,12 @@ public class WCResourceManager
                     pos + FRAMEWORK_SUFFIX.length() );
                 String frameworkName = aResourceName.substring( 0, pos );
                 result = urlForStaticHtmlResourceNamed(
-                    resourceName, frameworkName, null, null );
+                    resourceName, frameworkName, null, aRequest );
             }
             else
             {
                 result = urlForStaticHtmlResourceNamed(
-                    aResourceName, null, null, null );
+                    aResourceName, null, null, aRequest );
             }
             frameworkPrefixedCache.takeValueForKey( result, aResourceName );
         }
@@ -128,11 +149,11 @@ public class WCResourceManager
 
     // ----------------------------------------------------------
     public static String frameworkPrefixedResourceURLFor(
-        String aResourceName )
+        String aResourceName, WORequest aRequest )
     {
         return ( (WCResourceManager) Application.application()
             .resourceManager() ).urlForFrameworkPrefixedResourceNamed(
-                aResourceName );
+                aResourceName, aRequest );
     }
 
 
@@ -143,13 +164,26 @@ public class WCResourceManager
         {
             developmentBaseURL = Application.configurationProperties()
                 .getProperty( "WCResourceManager.developmentBaseURL",
-                    "http://web-cat.cs.vt.edu/");
+                    "http://web-cat.cs.vt.edu/wcstatic/");
             if ( !developmentBaseURL.endsWith( "/" ) )
             {
                 developmentBaseURL += "/";
             }
         }
         return developmentBaseURL;
+    }
+
+
+    // ----------------------------------------------------------
+    /* (non-Javadoc)
+     * @see com.webobjects.appserver.WOResourceManager#flushDataCache()
+     */
+    public void flushDataCache()
+    {
+        frameworkCache = new NSMutableDictionary();
+        appCache = new NSMutableDictionary();
+        frameworkPrefixedCache = new NSMutableDictionary();
+        super.flushDataCache();
     }
 
 

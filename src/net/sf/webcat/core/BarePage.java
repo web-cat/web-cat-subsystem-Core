@@ -169,7 +169,8 @@ public class BarePage
     {
         buffer.append( "<script type=\"text/javascript\" src=\"" );
         buffer.append( 
-            WCResourceManager.frameworkPrefixedResourceURLFor( url ) );
+            WCResourceManager.frameworkPrefixedResourceURLFor( url,
+                context().request() ) );
         buffer.append( "\"></script>" );
     }
 
@@ -179,7 +180,8 @@ public class BarePage
     {
         buffer.append( "<link rel=\"stylesheet\" type=\"text/css\" href=\"" );
         buffer.append(
-            WCResourceManager.frameworkPrefixedResourceURLFor( url ) );
+            WCResourceManager.frameworkPrefixedResourceURLFor(
+                url, context().request() ) );
         buffer.append( "\"/>" );
     }
 
@@ -188,7 +190,7 @@ public class BarePage
     public String wcStylesheet()
     {
         return WCResourceManager.frameworkPrefixedResourceURLFor(
-            "Core.framework/WebServerResources/wc.css" );
+            "Core.framework/WebServerResources/wc.css", context().request() );
     }
 
 
@@ -196,7 +198,8 @@ public class BarePage
     public String wcIE5Stylesheet()
     {
         return WCResourceManager.frameworkPrefixedResourceURLFor(
-            "Core.framework/WebServerResources/wc-ie5.css" );
+            "Core.framework/WebServerResources/wc-ie5.css",
+            context().request() );
     }
 
 
@@ -204,7 +207,8 @@ public class BarePage
     public String wcIE6Stylesheet()
     {
         return WCResourceManager.frameworkPrefixedResourceURLFor(
-            "Core.framework/WebServerResources/wc-ie6.css" );
+            "Core.framework/WebServerResources/wc-ie6.css",
+            context().request() );
     }
 
 
@@ -215,7 +219,8 @@ public class BarePage
         {
             overlibLink = "<script type=\"text/javascript\" src=\""
                 + WCResourceManager.frameworkPrefixedResourceURLFor(
-            "Core.framework/WebServerResources/overlib/Mini/overlib_mini.js" )
+            "Core.framework/WebServerResources/overlib/Mini/overlib_mini.js",
+            context().request() )
                 + "\"></script>";
         }
         return overlibLink;
