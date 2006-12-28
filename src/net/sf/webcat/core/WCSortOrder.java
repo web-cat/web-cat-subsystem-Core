@@ -27,6 +27,8 @@ package net.sf.webcat.core;
 
 
 import com.webobjects.appserver.WOContext;
+import com.webobjects.foundation.NSSelector;
+import com.webobjects.eocontrol.EOSortOrdering;
 
 
 // -------------------------------------------------------------------------
@@ -54,7 +56,7 @@ public class WCSortOrder
     }
 
 
-    //~ Methods ...............................................................
+    //~ Public Methods ........................................................
 
     // ----------------------------------------------------------
     /**
@@ -68,7 +70,23 @@ public class WCSortOrder
      */
     public String imageName()
     {
-        return "icons/" + super.imageName();
+        String anImageName = "Unsorted.gif";
+        if ( _isCurrentKeyPrimary() )
+        {
+            NSSelector aCurrentState = _primaryKeySortOrderingSelector();
+            if ( aCurrentState == EOSortOrdering.CompareAscending
+                 || aCurrentState ==
+                     EOSortOrdering.CompareCaseInsensitiveAscending )
+            {
+                anImageName = "Ascending.gif";
+            }
+            else if ( aCurrentState == EOSortOrdering.CompareDescending
+                      || aCurrentState ==
+                          EOSortOrdering.CompareCaseInsensitiveDescending )
+            {
+                anImageName = "Descending.gif";
+            }
+        }
+        return "icons/" + anImageName;
     }
-
 }
