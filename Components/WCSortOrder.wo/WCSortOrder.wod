@@ -1,17 +1,14 @@
 Toggle: WOHyperlink {
 	action = toggleClicked;
-	align  = "absmiddle";
-	border = "0";
 	name   = helpString;
 }
 
 ToggleImage: WOImage {
-	align     = "absmiddle";
 	border    = "0";
 	alt       = helpString;
 	title     = helpString;
 	filename  = imageName;
 	framework = "Core";
 	height    = "11";
-	width     = "9";
+	width     = "11";
 }
