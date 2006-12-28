@@ -3,12 +3,10 @@ BODY {
 	background-color: #fff;
 	padding: 0;
 	margin: 4px 6px;
-	font-family: verdana, lucida, helvetica, arial, geneva, sans-serif;
-	font-size: 14px;
+	font-family: "Lucida Grande", Geneva, Verdana, Arial, Helvetica, sans-serif;
 }
 
 H1#title {
-	font-size: x-large;
 	margin-top: 0;
 	padding-top: 0;
 }
@@ -201,7 +199,7 @@ DIV#contents TABLE TD.sm {
 
 DIV#contents TABLE TD.marker {
 	background-image: url(icons/rt-arrow.gif);
-        background-repeat: no-repeat;
+	background-repeat: no-repeat;
 	background-position: center left;
 }
 
@@ -268,7 +266,7 @@ DIV.shadow TABLE {
 #globalsubnav LI.uid {
 	font-size: smaller;
 	float: right;
-        display: block;
+	display: block;
 	margin: 1px 4px 0 0;
 }
 
@@ -344,18 +342,18 @@ DIV.shadow TABLE {
 	float:left;
 	width:100%;
 /*
-        position: absolute;
+	position: absolute;
 	left:0;
 	top:1.5em;
 */
 	background:#fc9;
-        color: #000;
+	color: #000;
 	margin:0;
 	list-style:none;
 	border-top:1px solid #ffc;
 	border-left:1px solid #fc9;
 	border-right:1px solid #fc9;
-        display: block;
+	display: block;
 	padding:0.25em 0 0.25em 0;
 }
 
@@ -395,7 +393,7 @@ DIV.shadow TABLE {
 #globalsubnav LI.here2 A:visited {
 	color:#363;
 	background-image: url(icons/rt-arrow.gif);
-        background-repeat: no-repeat;
+	background-repeat: no-repeat;
 	background-position: center left;
 }
 
@@ -428,7 +426,7 @@ b.b1b {margin:0 5px; background:#333;}
 .NoticePanel.error b.b3b,
 .NoticePanel.error b.b4b,
 .NoticePanel.error .boxcontent {
-    background-color: #fed;
+	background-color: #fed;
 }
 
 .NoticePanel b.b2,
@@ -438,22 +436,22 @@ b.b1b {margin:0 5px; background:#333;}
 .NoticePanel b.b3b,
 .NoticePanel b.b4b,
 .NoticePanel .boxcontent {
-    background-color: #efd;
+	background-color: #efd;
 }
 
 .NoticePanel ul {
-    list-style-type: none;
-    padding: 4px;
-    padding-bottom: 0;
-    margin: 0;
-    /* border: 1px solid blue; */
+	list-style-type: none;
+	padding: 4px;
+	padding-bottom: 0;
+	margin: 0;
+	/* border: 1px solid blue; */
 }
 
 .NoticePanel li {
-    background: url(icons/info.gif) left top no-repeat;
-    padding-left: 24px;
-    padding-bottom: 4px;
-    /* border: 1px solid red; */
+	background: url(icons/info.gif) left top no-repeat;
+	padding-left: 24px;
+	padding-bottom: 4px;
+	/* border: 1px solid red; */
 }
 
 .NoticePanel li.error { background-image: url(icons/exclaim.gif); }
@@ -466,18 +464,28 @@ b.b1b {margin:0 5px; background:#333;}
 
 /* Color-coding for generic user pages ------------------------------------ */
 
+h1, h2, h3, h4, h5, h6, th {
+  font-family: "Century Gothic", "Trebuchet MS", Helvetica, Arial, Geneva,
+    SunSans-Regular, Verdana, sans-serif;
+}
+
+h1 { font-size: 1.6em; }
+h2 { font-size: 1.3em; }
+h3 { font-size: 1.2em; }
+h4, h5, h6 { font-size: 1em; }
+
 BODY.user H1, BODY.user H2, BODY.user H3, BODY.user H4,
 BODY.user H5, BODY.user H6, BODY.user H7 {
-    color: #363;
+	color: #363;
 }
 
 BODY.user B, BODY.user STRONG {
-    color: #363;
+	color: #363;
 }
 
 SPAN.hl {
 	/* background-color: #fc9; */
-        background-color: #ffd;
+	background-color: #ffd;
 	color: #363;
 	font-weight: bold;
 	padding: .2em .5em;
@@ -501,19 +509,19 @@ TD.nowrap { white-space: nowrap; }
 DIV#contents TABLE.ErrorDictionaryPanel,
 BODY.admin DIV#contents TABLE.ErrorDictionaryPanel,
 BODY.staff DIV#contents TABLE.ErrorDictionaryPanel {
-    border: 1px solid #ff6600;
-    margin-top: .5em;
-    margin-bottom: .5em;
+	border: 1px solid #ff6600;
+	margin-top: .5em;
+	margin-bottom: .5em;
 }
 
 DIV#contents TABLE.ErrorDictionaryPanel TD {
-    padding: 0.25em;
+	padding: 0.25em;
 }
 
 TABLE.FullBox {
-    border: 1px solid #f96;
-    width: 100%;
-    border-collapse: collapse;
+	border: 1px solid #f96;
+	width: 100%;
+	border-collapse: collapse;
 }
 
 
@@ -526,11 +534,11 @@ BODY.admin DIV#page {
 
 BODY.admin H1, BODY.admin H2, BODY.admin H3, BODY.admin H4,
 BODY.admin H5, BODY.admin H6, BODY.admin H7 {
-    color: #636;
+	color: #636;
 }
 
 BODY.admin B, BODY.admin STRONG {
-    color: #636;
+	color: #636;
 }
 BODY.admin b.check { color: green; }
 BODY.admin b.warn  { color: red; }
@@ -577,7 +585,7 @@ BODY.admin #globalsubnav LI.here2 A:link,
 BODY.admin #globalsubnav LI.here2 A:visited {
 	color:#303;
 	background-image: url(icons/rt-arrow-admin.gif);
-        background-repeat: no-repeat;
+	background-repeat: no-repeat;
 	background-position: center left;
 }
 
@@ -623,11 +631,11 @@ BODY.staff DIV#page {
 
 BODY.staff H1, BODY.staff H2, BODY.staff H3, BODY.staff H4,
 BODY.staff H5, BODY.staff H6, BODY.staff H7 {
-    color: #336;
+	color: #336;
 }
 
 BODY.staff B, BODY.staff STRONG {
-    color: #336;
+	color: #336;
 }
 BODY.staff b.check { color: green; }
 BODY.staff b.warn  { color: red; }
@@ -674,7 +682,7 @@ BODY.staff #globalsubnav LI.here2 A:link,
 BODY.staff #globalsubnav LI.here2 A:visited {
 	color:#336;
 	background-image: url(icons/rt-arrow-staff.gif);
-        background-repeat: no-repeat;
+	background-repeat: no-repeat;
 	background-position: center left;
 }
 
@@ -717,20 +725,20 @@ SPAN.meta {
 
 div#contents table.distchart,
 div#contents div.shadow table.distchart {
-    margin: 0;
-    background-color: white;
-    empty-cells: show;
-    table-layout: fixed;
-    width: 100px;
-    display: table;
+	margin: 0;
+	background-color: white;
+	empty-cells: show;
+	table-layout: fixed;
+	width: 100px;
+	display: table;
 }
 div#contents table.distchart td,
 div#contents div.shadow table.distchart td {
-    padding: 0px;
-    margin:  0px;
-    width:  10px;
-    height: 10px;
-    line-height: 10px;
+	padding: 0px;
+	margin:  0px;
+	width:  10px;
+	height: 10px;
+	line-height: 10px;
 }
 div#contents table.distchart td.b0,
 div#contents div.shadow table.distchart td.b0 {
@@ -778,7 +786,7 @@ div#contents div.shadow table.distchart td.b10 {
 }
 div#contents table.distchart td img.bar,
 div#contents div.shadow table.distchart td img.bar {
-    width:  10px;
-    height: 10px;
-    border: 0px;
+	width:  10px;
+	height: 10px;
+	border: 0px;
 }
