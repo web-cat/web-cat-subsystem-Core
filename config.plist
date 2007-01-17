@@ -68,7 +68,7 @@
 I/O redirection, it must use an external command shell in order to parse
 the command.  If you leave this setting blank, Web-CAT will used a default
 shell--cmd.exe (e.g., 'cmd.exe /c') on Windows-based systems, and the Bourne
-shell on others (e.g., 'sh -c "').  If you add a double-quote as the last
+shell on others (e.g., 'sh -c \"').  If you add a double-quote as the last
 character of this setting, then Web-CAT will assume you intend for the
 command line to be passed as a single double-quoted argument to the specified
 external shell.  Otherwise, it will pass the command line as an unquoted
