@@ -221,6 +221,10 @@ public class BarePage
                 + WCResourceManager.frameworkPrefixedResourceURLFor(
             "Core.framework/WebServerResources/overlib/Mini/overlib_mini.js",
             context().request() )
+                + "\"></script><script type=\"text/javascript\" src=\""
+                + WCResourceManager.frameworkPrefixedResourceURLFor(
+                    "Core.framework/WebServerResources/wc.js",
+                    context().request() )
                 + "\"></script>";
         }
         return overlibLink;
