@@ -473,6 +473,8 @@ h1 { font-size: 1.6em; }
 h2 { font-size: 1.3em; }
 h3 { font-size: 1.2em; }
 h4, h5, h6 { font-size: 1em; }
+b.check { color: green; }
+b.warn { color: #d00; }
 
 BODY.user H1, BODY.user H2, BODY.user H3, BODY.user H4,
 BODY.user H5, BODY.user H6, BODY.user H7 {
@@ -492,7 +494,7 @@ SPAN.hl {
 }
 SPAN.sm { font-size: smaller }
 BODY.user b.check { color: green; }
-BODY.user b.warn  { color: red; }
+BODY.user b.warn  { color: #d00; }
 
 TR.o  { background-color: #fff; }
 TR.e  { background-color: #ffd; }
@@ -524,6 +526,18 @@ TABLE.FullBox {
 	border-collapse: collapse;
 }
 
+.expboxcontent {
+    border-left: 1px solid #363; margin:0 0 0 4px; padding:4px 4px 0 0.5em;}
+.collapsible {
+    border-bottom: 2px solid #363;
+    margin-bottom:0;
+    padding-bottom:0
+}
+.collapsible a { color: #363; text-decoration: none; }
+.collapsible img { border: none; }
+h3.collapsible { border-bottom-style: dotted; }
+.expboxcontent .expboxcontent { border-left-style: dotted; }
+
 
 /* Color-coding for admin pages ------------------------------------------- */
 
@@ -541,7 +555,7 @@ BODY.admin B, BODY.admin STRONG {
 	color: #636;
 }
 BODY.admin b.check { color: green; }
-BODY.admin b.warn  { color: red; }
+BODY.admin b.warn  { color: #d00; }
 
 BODY.admin DIV#contents TABLE {
 	border-color: #636;
@@ -621,6 +635,10 @@ BODY.admin DIV#contents TABLE TD.marker {
 BODY.admin DIV#contents TABLE TR#divider TD { border-top: 1px solid #636; }
 BODY.admin DIV#contents TABLE TR#divider TABLE.percentbar TD { border: none; }
 
+BODY.admin .expboxcontent { border-color: #636; }
+BODY.admin .collapsible { border-color: #636; }
+BODY.admin .collapsible a { color: #636; }
+
 
 /* Color-coding for staff pages ------------------------------------------- */
 
@@ -638,7 +656,7 @@ BODY.staff B, BODY.staff STRONG {
 	color: #336;
 }
 BODY.staff b.check { color: green; }
-BODY.staff b.warn  { color: red; }
+BODY.staff b.warn  { color: #d00; }
 
 BODY.staff DIV#contents TABLE {
 	border-color: #336;
@@ -717,6 +735,10 @@ BODY.staff DIV#contents TABLE TD.marker {
 
 BODY.staff DIV#contents TABLE TR#divider TD { border-top: 1px solid #336; }
 BODY.staf DIV#contents TABLE TR#divider TABLE.percentbar TD { border: none; }
+
+BODY.staff .expboxcontent { border-color: #336; }
+BODY.staff .collapsible { border-color: #336; }
+BODY.staff .collapsible a { color: #336; }
 
 SPAN.meta {
 	font-size: small;
