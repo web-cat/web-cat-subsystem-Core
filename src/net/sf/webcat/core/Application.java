@@ -1441,13 +1441,24 @@ public class Application
     {
         if ( cmdShell == null )
         {
-            if ( isRunningOnWindows() )
+            cmdShell = configurationProperties().getProperty( "cmdShell" );
+            if ( cmdShell == null )
             {
-                cmdShell = "cmd /c ";
+                if ( isRunningOnWindows() )
+                {
+                    cmdShell = "cmd /c";
+                }
+                else
+                {
+                    cmdShell = "sh -c \"";
+                }
             }
-            else
+            int len = cmdShell.length();
+            if ( len > 0
+                 && cmdShell.charAt( len - 1 ) != ' '
+                 && cmdShell.charAt( len - 1 ) != '"' )
             {
-                cmdShell = "";
+                cmdShell += " ";
             }
         }
         return cmdShell;
