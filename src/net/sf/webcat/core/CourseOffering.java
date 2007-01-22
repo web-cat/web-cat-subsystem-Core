@@ -91,7 +91,11 @@ public class CourseOffering
      */
     public String compactName()
     {
-        return course().deptNumber() + "(" + crn() + ")";
+        if ( cachedCompactName == null )
+        {
+            cachedCompactName = course().deptNumber() + "(" + crn() + ")";
+        }
+        return cachedCompactName;
     }
 
 
@@ -103,7 +107,11 @@ public class CourseOffering
      */
     public String deptNumberAndName()
     {
-        return compactName() + ": " + course().name();
+        if ( cachedDeptNumberAndName == null )
+        {
+            cachedDeptNumberAndName = compactName() + ": " + course().name();
+        }
+        return cachedDeptNumberAndName;
     }
 
 
@@ -138,6 +146,18 @@ public class CourseOffering
 
 
     // ----------------------------------------------------------
+    /* (non-Javadoc)
+     * @see net.sf.webcat.core._CourseOffering#setCourse(net.sf.webcat.core.Course)
+     */
+    public void setCourse( Course value )
+    {
+        cachedCompactName = null;
+        cachedDeptNumberAndName = null;
+        super.setCourse( value );
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Change the value of this object's <code>crn</code>
      * property.
@@ -147,6 +167,8 @@ public class CourseOffering
     public void setCrn( String value )
     {
         cachedSubdirName = null;
+        cachedCompactName = null;
+        cachedDeptNumberAndName = null;
         super.setCrn( value );
     }
 
@@ -248,5 +270,7 @@ public class CourseOffering
 
     //~ Instance/static variables .............................................
 
-    private String cachedSubdirName   = null;
+    private String cachedSubdirName        = null;
+    private String cachedCompactName       = null;
+    private String cachedDeptNumberAndName = null;
 }
