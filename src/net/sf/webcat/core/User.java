@@ -141,19 +141,56 @@ public class User
      */
     public String name_LF()
     {
-        String last  = lastName();
-        String first = firstName();
-        boolean lastIsEmpty = ( last == null || last.equals( "" ) );
-        boolean firstIsEmpty = ( first == null || first.equals( "" ) );
+        if ( name_LF_cache == null )
+        {
+            String last  = lastName();
+            String first = firstName();
+            boolean lastIsEmpty = ( last == null || last.equals( "" ) );
+            boolean firstIsEmpty = ( first == null || first.equals( "" ) );
+    
+            if ( lastIsEmpty && firstIsEmpty )
+                name_LF_cache = userName();
+            else if ( lastIsEmpty )
+                name_LF_cache = first;
+            else if ( firstIsEmpty )
+                name_LF_cache = last;
+            else
+                name_LF_cache = last + ", " + first;
+        }
+        return name_LF_cache;
+    }
 
-        if ( lastIsEmpty && firstIsEmpty )
-            return userName();
-        else if ( lastIsEmpty )
-            return first;
-        else if ( firstIsEmpty )
-            return last;
-        else
-            return last + ", " + first;
+
+    // ----------------------------------------------------------
+    /* (non-Javadoc)
+     * @see net.sf.webcat.core._User#setFirstName(java.lang.String)
+     */
+    public void setFirstName( String value )
+    {
+        super.setFirstName( value );
+        name_LF_cache = null;
+    }
+
+
+    // ----------------------------------------------------------
+    /* (non-Javadoc)
+     * @see net.sf.webcat.core._User#setLastName(java.lang.String)
+     */
+    public void setLastName( String value )
+    {
+        super.setLastName( value );
+        name_LF_cache = null;
+    }
+
+
+    // ----------------------------------------------------------
+    /* (non-Javadoc)
+     * @see net.sf.webcat.core._User#setUserName(java.lang.String)
+     */
+    public void setUserName( String value )
+    {
+        super.setUserName( value );
+        name_LF_cache = null;
     }
 
 
@@ -644,6 +681,7 @@ public class User
     private NSArray staffFor_cache;
     private NSArray adminForButNotStaff_cache;
     private NSArray adminForButNoOtherRelationships_cache;
+    private String  name_LF_cache;
     
     private NSDictionary userIsMe;
 
