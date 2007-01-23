@@ -141,6 +141,10 @@ DIV#contents TABLE {
 	border-collapse: collapse;
 }
 
+DIV#contents table.d2w table {
+	border: none;
+}
+
 DIV#contents TABLE.nowrap {
 	white-space: nowrap;
 }
@@ -496,6 +500,8 @@ SPAN.sm { font-size: smaller }
 BODY.user b.check { color: green; }
 BODY.user b.warn  { color: #d00; }
 
+.batchnav { background-color: #cfc; }
+
 TR.o  { background-color: #fff; }
 TR.e  { background-color: #ffd; }
 TR.oe { background-color: #faa; }
@@ -557,9 +563,15 @@ BODY.admin B, BODY.admin STRONG {
 BODY.admin b.check { color: green; }
 BODY.admin b.warn  { color: #d00; }
 
-BODY.admin DIV#contents TABLE {
+BODY.admin DIV#contents table {
 	border-color: #636;
 }
+
+BODY.admin DIV#contents table.d2w table {
+	border: none;
+}
+
+BODY.admin .batchnav { background-color: #fcf; }
 
 BODY.admin TABLE.FullBox {
 	border-color: #636;
@@ -658,9 +670,15 @@ BODY.staff B, BODY.staff STRONG {
 BODY.staff b.check { color: green; }
 BODY.staff b.warn  { color: #d00; }
 
-BODY.staff DIV#contents TABLE {
+BODY.staff DIV#contents table {
 	border-color: #336;
 }
+
+BODY.staff DIV#contents table.d2w table {
+	border: none;
+}
+
+BODY.staff .batchnav { background-color: #ccf; }
 
 BODY.staff TABLE.FullBox {
 	border-color: #336;
