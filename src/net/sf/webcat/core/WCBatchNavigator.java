@@ -26,8 +26,12 @@
 package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
+import com.webobjects.eoaccess.*;
+import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.ERXConstant;
 import java.util.*;
+import org.apache.log4j.Logger;
 
 //-------------------------------------------------------------------------
 /**
@@ -55,6 +59,28 @@ public class WCBatchNavigator
 
 
     //~ Methods ...............................................................
+
+
+    // ----------------------------------------------------------
+    /* (non-Javadoc)
+     * @see net.sf.webcat.core.WCComponentWithErrorMessages#appendToResponse(com.webobjects.appserver.WOResponse, com.webobjects.appserver.WOContext)
+     */
+    public void appendToResponse( WOResponse response, WOContext context )
+    {
+        if ( hasBinding( "persistentKey" )
+             && hasSession() )
+        {
+            String key = (String)valueForBinding( "persistentKey" );
+            Object o = ( (Session)session() ).user().preferences()
+                .valueForKey( key );
+            if ( o != null && o instanceof Integer )
+            {
+                setNumberOfObjectsPerBatch( (Integer)o );
+            }
+        }
+        super.appendToResponse( response, context );
+    }
+
 
     // ----------------------------------------------------------
     /**
@@ -93,6 +119,25 @@ public class WCBatchNavigator
                       : 0;
         ( (WODisplayGroup)valueForBinding( "displayGroup" ) ).
             setNumberOfObjectsPerBatch( num );
+        if ( hasBinding( "persistentKey" )
+             && hasSession() )
+        {
+            String key = (String)valueForBinding( "persistentKey" );
+            User user = ( (Session)session() ).user();
+            EOEditingContext ec = Application.newPeerEditingContext();
+            ec.lock();
+            try
+            {
+                User me = (User)EOUtilities.localInstanceOfObject( ec, user );
+                me.preferences().takeValueForKey(
+                    ERXConstant.integerForInt( num ), key );
+                ec.saveChanges();
+            }
+            finally
+            {
+                ec.unlock();
+            }
+        }
     }
 
 
@@ -127,4 +172,58 @@ public class WCBatchNavigator
         return ( (WODisplayGroup)valueForBinding( "displayGroup" ) ).
             numberOfObjectsPerBatch();
     }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Action for the "go" button in the batch navigator, which simply
+     * returns true to reload the current page.  It also takes care of
+     * storing the batch navigation settings if an appropriate key is
+     * defined.
+     * @return null, to reload the current page
+     */
+    public WOComponent go()
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Action for the "fewer" button in the batch navigator, which simply
+     * returns true to reload the current page.  It also takes care of
+     * setting the batch size to less than the total number of objects
+     * displayed, to force paging.
+     * @return null, to reload the current page
+     */
+    public WOComponent fewer()
+    {
+        int num = ( (WODisplayGroup)valueForBinding( "displayGroup" ) ).
+            allObjects().count() / 2;
+        if ( num == 0 )
+        {
+            num++;
+        }
+        setNumberOfObjectsPerBatch( ERXConstant.integerForInt( num ) );
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Determine if the batch navigator should be able to show a button
+     * for reducing the batch size.
+     * @return true if the associated display group can show more than
+     * 1 object
+     */
+    public boolean canShowFewer()
+    {
+        return ( (WODisplayGroup)valueForBinding( "displayGroup" ) ).
+            allObjects().count() > 1;
+    }
+
+
+    //~ Instance/static variables .............................................
+
+    static Logger log = Logger.getLogger( WCBatchNavigator.class );
 }

@@ -4,12 +4,38 @@ BatchNumber: WOTextField {
 	value = batchIndex;
 }
 
+CanShowFewer: WOConditional {
+    condition = canShowFewer;
+}
+
 Count: WOString {
 	value = ^displayGroup.allObjects.count;
 }
 
+Fewer: WOSubmitButton {
+    value  = "Show Fewer Per Page";
+    action = fewer;
+}
+
+Go: WOImageButton {
+	alt       = "Set page size/jump to page";
+	border    = "0";
+	filename  = "icons/go.gif";
+	framework = "Core";
+	height    = "19";
+	title     = "Set page size/jump to page";
+	width     = "40";
+	style     = "vertical-align:middle;";
+	action    = go;
+}
+
 IsBatchedDisplay: WOConditional {
 	condition = ^displayGroup.hasMultipleBatches;
+}
+
+IsNotBatchedDisplay: WOConditional {
+	condition = ^displayGroup.hasMultipleBatches;
+	negate    = true;
 }
 
 ItemsPerBatch: WOTextField {
@@ -19,35 +45,30 @@ ItemsPerBatch: WOTextField {
 	value = numberOfObjectsPerBatch;
 }
 
-LeftArrow: WOImage {
-	alt = "Left Arrow";
-	border = "0";
-	filename = "lft-OSarw.gif";
+LeftArrow: WOImageButton {
+	alt       = "Show previous batch";
+	border    = "0";
+	filename  = "lft-OSarw.gif";
 	framework = "JavaWOExtensions";
-	height = "16";
-	name = "Left Arrow";
-	width = "11";
+	height    = "16";
+	title     = "Show previous batch";
+	width     = "11";
+	style     = "vertical-align:middle;";
+	action    = ^displayGroup.displayPreviousBatch;
 }
 
-NextBatchLink: WOHyperlink {
-	action = ^displayGroup.displayNextBatch;
-}
-
-PreviousBatchLink: WOHyperlink {
-	action = ^displayGroup.displayPreviousBatch;
-}
-
-RightArrow: WOImage {
-	alt = "Right Arrow";
-	border = "0";
-	filename = "rt-OSarw.gif";
+RightArrow: WOImageButton {
+	alt       = "Show next batch";
+	border    = "0";
+	filename  = "rt-OSarw.gif";
 	framework = "JavaWOExtensions";
-	height = "16";
-	name = "Right Arrow";
-	width = "11";
+	height    = "16";
+	title     = "Show next batch";
+	width     = "11";
+	style     = "vertical-align:middle;";
+	action    = ^displayGroup.displayNextBatch;
 }
 
 TotalBatches: WOString {
 	value = ^displayGroup.batchCount;
 }
-
