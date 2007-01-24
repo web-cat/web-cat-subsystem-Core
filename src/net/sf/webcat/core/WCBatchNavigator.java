@@ -75,7 +75,9 @@ public class WCBatchNavigator
                 .valueForKey( key );
             if ( o != null && o instanceof Integer )
             {
-                setNumberOfObjectsPerBatch( (Integer)o );
+                log.debug( "appendToResponse(): key " + key + " = " + o );
+                setNumberOfObjectsPerBatchIfNecessary(
+                    ( (Integer)o ).intValue() );
             }
         }
         super.appendToResponse( response, context );
@@ -90,6 +92,7 @@ public class WCBatchNavigator
      */
     public void setBatchIndex( Integer index )
     {
+        log.debug( "setBatchIndex(" + index + ")" );
         int batchIndex;
 
         //Treat a null index as a 0 index. Negative numbers are handled
@@ -103,6 +106,28 @@ public class WCBatchNavigator
 
 
     // ----------------------------------------------------------
+    private void setNumberOfObjectsPerBatchIfNecessary( int number )
+    {
+        WODisplayGroup group =
+            ( (WODisplayGroup)valueForBinding( "displayGroup" ) );
+        int curSize = group.numberOfObjectsPerBatch();
+        log.debug( "setNumberOfObjectsPerBatchIfNecessary(" + number
+            + "), was " + curSize );
+        if ( curSize != number )
+        {
+            // index is the one-based index of the first object shown in
+            // the current batch
+            int index = ( group.currentBatchIndex() - 1 ) * curSize + 1;
+            // newPage is the one-based batch number that will show
+            // the object at the given index
+            int newBatch = index / number + 1;
+            group.setNumberOfObjectsPerBatch( number );
+            group.setCurrentBatchIndex( newBatch );
+        }
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Set the number of objects shown on each page/batch.
      * 
@@ -110,6 +135,7 @@ public class WCBatchNavigator
      */
     public void setNumberOfObjectsPerBatch( Integer number )
     {
+        log.debug( "setNumberOfObjectsPerBatch(" + number + ")" );
         int num;
 
         //If a negative number is provided we default the number
@@ -117,21 +143,28 @@ public class WCBatchNavigator
         num = ( ( number != null ) && ( number.intValue() > 0 ) )
                       ? number.intValue()
                       : 0;
-        ( (WODisplayGroup)valueForBinding( "displayGroup" ) ).
-            setNumberOfObjectsPerBatch( num );
+        setNumberOfObjectsPerBatchIfNecessary( num );
         if ( hasBinding( "persistentKey" )
              && hasSession() )
         {
             String key = (String)valueForBinding( "persistentKey" );
             User user = ( (Session)session() ).user();
             EOEditingContext ec = Application.newPeerEditingContext();
+            log.debug( "setNumberOfObjectsPerBatch(): key " + key + " <- "
+                + num + "(" + number + ")" );
             ec.lock();
             try
             {
+                // Use a separate EC to store the changed preferences
                 User me = (User)EOUtilities.localInstanceOfObject( ec, user );
                 me.preferences().takeValueForKey(
-                    ERXConstant.integerForInt( num ), key );
+                    ( number == null )
+                    ? ERXConstant.integerForInt( num )
+                    : number, key );
                 ec.saveChanges();
+                // Now refresh the session's user object so that it loads
+                // this saved preferences value
+                user.editingContext().refreshObject( user );
             }
             finally
             {
@@ -184,6 +217,11 @@ public class WCBatchNavigator
      */
     public WOComponent go()
     {
+        if ( log.isDebugEnabled() )
+        {
+            log.debug( "go(): batch = " + batchIndex() + ", size = "
+                + numberOfObjectsPerBatch() );
+        }
         return null;
     }
 
@@ -205,6 +243,11 @@ public class WCBatchNavigator
             num++;
         }
         setNumberOfObjectsPerBatch( ERXConstant.integerForInt( num ) );
+        if ( log.isDebugEnabled() )
+        {
+            log.debug( "fewer(): now, batch = " + batchIndex() + ", size = "
+                + numberOfObjectsPerBatch() );
+        }
         return null;
     }
 

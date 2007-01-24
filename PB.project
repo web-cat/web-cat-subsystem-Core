@@ -1,29 +1,8 @@
 
 {
-    PDO_UNIX_JAVA_COMPILER = "$(JDKBINDIR)/javac";
-    PDO_UNIX_OBJCPLUS_COMPILER = "$(NEXTDEV_BIN)/gcc";
-    PDO_UNIX_BUILDTOOL = $NEXT_ROOT/Developer/bin/make;
-    WINDOWS_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-    PROJECTNAME = Core;
-    MAKEFILEDIR = "$(MAKEFILEPATH)/java_makefiles";
-    PBPROJECTTYPEVERSION = 4.0;
-    WINDOWS_BUILDTOOL = $NEXT_ROOT/Developer/Executables/make;
-    PDO_UNIX_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-    FRAMEWORKSEARCH = 
-    (
-       "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks"
-    );
-    NEXTSTEP_BUILDTOOL = /bin/gnumake;
-    LANGUAGE = English;
-    NEXTSTEP_JAVA_COMPILER = /usr/bin/javac;
-    NEXTSTEP_OBJCPLUS_COMPILER = /usr/bin/cc;
-    NEXTSTEP_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-    DYNAMIC_CODE_GEN = YES;
+    CURRENTLY_ACTIVE_VERSION = YES;
     DEPLOY_WITH_VERSION_NAME = A;
-    PROJECTTYPE = JavaWebObjectsFramework;
-    WINDOWS_JAVA_COMPILER = "$(JDKBINDIR)/javac.exe";
-    PROJECTVERSION = 2.8;
-    WINDOWS_OBJCPLUS_COMPILER = "$(DEVDIR)/gcc";
+    DYNAMIC_CODE_GEN = YES;
     FILESTABLE = 
     {
         CLASSES = 
@@ -34,28 +13,15 @@
            src/net/sf/webcat/archives/FileUtilities.java, 
            src/net/sf/webcat/archives/IArchiveEntry.java, 
            src/net/sf/webcat/archives/IArchiveHandler.java, 
-           src/net/sf/webcat/core/install/InstallPage.java, 
-           src/net/sf/webcat/core/install/InstallPage1.java, 
-           src/net/sf/webcat/core/install/InstallPage2.java, 
-           src/net/sf/webcat/core/install/InstallPage3.java, 
-           src/net/sf/webcat/core/install/InstallPage4.java, 
-           src/net/sf/webcat/core/install/InstallPage5.java, 
-           src/net/sf/webcat/core/install/InstallPage6.java, 
-           src/net/sf/webcat/core/install/InstallPage7.java, 
-           src/net/sf/webcat/core/install/InstallPage8.java, 
-           src/net/sf/webcat/core/install/InstallPageWrapper.java, 
-           src/net/sf/webcat/core/install/LicensePage.java, 
-           src/net/sf/webcat/core/install/install.java, 
            src/net/sf/webcat/archives/internal/Main.java, 
            src/net/sf/webcat/archives/internal/TarArchiveHandler.java, 
            src/net/sf/webcat/archives/internal/TarGzArchiveHandler.java, 
            src/net/sf/webcat/archives/internal/TarUtil.java, 
            src/net/sf/webcat/archives/internal/ZipArchiveHandler.java, 
-           src/net/sf/webcat/core/tests/TabDescriptorTest.java, 
-           src/net/sf/webcat/core/tests/WCPropertiesTest.java, 
            src/net/sf/webcat/core/Application.java, 
            src/net/sf/webcat/core/AuthenticationDomain.java, 
            src/net/sf/webcat/core/BarePage.java, 
+           src/net/sf/webcat/core/ConfirmPage.java, 
            src/net/sf/webcat/core/CoreDatabaseUpdates.java, 
            src/net/sf/webcat/core/CoreSelections.java, 
            src/net/sf/webcat/core/Course.java, 
@@ -110,7 +76,9 @@
            src/net/sf/webcat/core/WCConfigurationFile.java, 
            src/net/sf/webcat/core/WCFile.java, 
            src/net/sf/webcat/core/WCFileProperties.java, 
+           src/net/sf/webcat/core/WCPageRestorationErrorPage.java, 
            src/net/sf/webcat/core/WCProperties.java, 
+           src/net/sf/webcat/core/WCResourceManager.java, 
            src/net/sf/webcat/core/WCSortOrder.java, 
            src/net/sf/webcat/core/WOEC.java, 
            src/net/sf/webcat/core/WOForcedForm.java, 
@@ -124,46 +92,86 @@
            src/net/sf/webcat/core/_LoginSession.java, 
            src/net/sf/webcat/core/_Semester.java, 
            src/net/sf/webcat/core/_User.java, 
-           src/net/sf/webcat/core/WCResourceManager.java, 
-           src/net/sf/webcat/core/WCPageRestorationErrorPage.java, 
-           src/net/sf/webcat/core/ConfirmPage.java
+           src/net/sf/webcat/core/install/InstallPage.java, 
+           src/net/sf/webcat/core/install/InstallPage1.java, 
+           src/net/sf/webcat/core/install/InstallPage2.java, 
+           src/net/sf/webcat/core/install/InstallPage3.java, 
+           src/net/sf/webcat/core/install/InstallPage4.java, 
+           src/net/sf/webcat/core/install/InstallPage5.java, 
+           src/net/sf/webcat/core/install/InstallPage6.java, 
+           src/net/sf/webcat/core/install/InstallPage7.java, 
+           src/net/sf/webcat/core/install/InstallPage8.java, 
+           src/net/sf/webcat/core/install/InstallPageWrapper.java, 
+           src/net/sf/webcat/core/install/LicensePage.java, 
+           src/net/sf/webcat/core/install/install.java, 
+           src/net/sf/webcat/core/tests/TabDescriptorTest.java, 
+           src/net/sf/webcat/core/tests/WCPropertiesTest.java
         );
         FRAMEWORKS = 
         (
            DBUpdateEngine.framework, 
            EOJDBCPrototypes.framework, 
-           DBUpdateEngine.framework, 
-           EOJDBCPrototypes.framework, 
            ERExtensions.framework, 
            ERJars.framework, 
-           ERJars.framework, 
-           ERJars.framework, 
-           ERJars.framework, 
-           ERJars.framework, 
-           JavaWOExtensions.framework, 
-           WOUnitTest.framework, 
+           JDBCEOAdaptor.framework, 
            JavaEOAccess.framework, 
            JavaEOControl.framework, 
            JavaFoundation.framework, 
            JavaJDBCAdaptor.framework, 
-           JavaWebObjects.framework, 
-           JavaWebObjects.framework, 
+           JavaWOExtensions.framework, 
            JavaWOJSPServlet.framework, 
+           JavaWebObjects.framework, 
            JavaXML.framework, 
-           JDBCEOAdaptor.framework, 
-           JavaWOJSPServlet.framework
+           WOUnitTest.framework
         );
+        OTHER_SOURCES = 
+        (
+           CustomInfo.plist, 
+           Makefile, 
+           Makefile.postamble, 
+           Makefile.preamble, 
+           java.template
+        );
+        SUBPROJECTS = 
+        ();
         WEBSERVER_RESOURCES = 
         (
+           WebServerResources/.cvsignore, 
            "WebServerResources/wc-ie5.css", 
            "WebServerResources/wc-ie6.css", 
            WebServerResources/wc.css, 
-           WebServerResources/.cvsignore, 
            WebServerResources/wc.js
+        );
+        WOAPP_RESOURCES = 
+        (
+           Components/BarePage.api, 
+           Components/DeliverFile.api, 
+           Components/ErrorDictionaryPanel.api, 
+           Components/ErrorPage.api, 
+           Components/FeedbackPage.api, 
+           Components/FileBrowser.api, 
+           Components/FileBrowserRow.api, 
+           Components/Footer.api, 
+           Components/FormattedString.api, 
+           Components/LoginPage.api, 
+           Components/PageWithNavigation.api, 
+           Components/SubmitDebug.api, 
+           Components/SystemStatusBlock.api, 
+           Components/TBDPage.api, 
+           Components/TableRow.api, 
+           Components/WCBatchNavigator.api, 
+           Components/WCSortOrder.api, 
+           Components/WizardPage.api, 
+           Core.eomodeld, 
+           Properties, 
+           Tabs.plist, 
+           config.plist, 
+           filetype.properties
         );
         WO_COMPONENTS = 
         (
            Components/BarePage.wo, 
+           Components/ConfirmPage.wo, 
            Components/DeliverFile.wo, 
            Components/EditFilePage.wo, 
            Components/ErrorDictionaryPanel.wo, 
@@ -194,47 +202,31 @@
            Components/TBDPage.wo, 
            Components/TableRow.wo, 
            Components/WCBatchNavigator.wo, 
-           Components/WCSortOrder.wo, 
-           Components/WizardPage.wo, 
            Components/WCPageRestorationErrorPage.wo, 
-           Components/ConfirmPage.wo
-        );
-        OTHER_SOURCES = 
-        (
-           CustomInfo.plist, 
-           java.template, 
-           Makefile, 
-           Makefile.postamble, 
-           Makefile.preamble
-        );
-        SUBPROJECTS = 
-        ();
-        WOAPP_RESOURCES = 
-        (
-           Core.eomodeld, 
-           Tabs.plist, 
-           config.plist, 
-           filetype.properties, 
-           Components/BarePage.api, 
-           Components/DeliverFile.api, 
-           Components/ErrorDictionaryPanel.api, 
-           Components/ErrorPage.api, 
-           Components/FeedbackPage.api, 
-           Components/FileBrowser.api, 
-           Components/FileBrowserRow.api, 
-           Components/Footer.api, 
-           Components/FormattedString.api, 
-           Components/LoginPage.api, 
-           Components/PageWithNavigation.api, 
-           Components/SubmitDebug.api, 
-           Components/SystemStatusBlock.api, 
-           Components/TBDPage.api, 
-           Components/TableRow.api, 
-           Components/WCBatchNavigator.api, 
-           Components/WCSortOrder.api, 
-           Components/WizardPage.api, 
-           Properties
+           Components/WCSortOrder.wo, 
+           Components/WizardPage.wo
         );
     };
-    CURRENTLY_ACTIVE_VERSION = YES;
+    FRAMEWORKSEARCH = 
+    (
+       "$(NEXT_ROOT)$(LOCAL_LIBRARY_DIR)/Frameworks"
+    );
+    LANGUAGE = English;
+    MAKEFILEDIR = "$(MAKEFILEPATH)/java_makefiles";
+    NEXTSTEP_BUILDTOOL = /bin/gnumake;
+    NEXTSTEP_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+    NEXTSTEP_JAVA_COMPILER = /usr/bin/javac;
+    NEXTSTEP_OBJCPLUS_COMPILER = /usr/bin/cc;
+    PBPROJECTTYPEVERSION = 4.0;
+    PDO_UNIX_BUILDTOOL = $NEXT_ROOT/Developer/bin/make;
+    PDO_UNIX_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+    PDO_UNIX_JAVA_COMPILER = "$(JDKBINDIR)/javac";
+    PDO_UNIX_OBJCPLUS_COMPILER = "$(NEXTDEV_BIN)/gcc";
+    PROJECTNAME = Core;
+    PROJECTTYPE = JavaWebObjectsFramework;
+    PROJECTVERSION = 2.8;
+    WINDOWS_BUILDTOOL = $NEXT_ROOT/Developer/Executables/make;
+    WINDOWS_INSTALLDIR = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+    WINDOWS_JAVA_COMPILER = "$(JDKBINDIR)/javac.exe";
+    WINDOWS_OBJCPLUS_COMPILER = "$(DEVDIR)/gcc";
 }
