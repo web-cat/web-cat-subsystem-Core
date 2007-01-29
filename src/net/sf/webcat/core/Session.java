@@ -293,10 +293,11 @@ public class Session
             catch ( Exception e )
             {
                 Application.emailExceptionToAdmins( e, context(), null );
-                loginSession.editingContext().revert();
-                loginSession.editingContext().refaultAllObjects();
-                loginSession.editingContext().unlock();
+                EOEditingContext ec = loginSession.editingContext();
                 loginSession = null;
+                ec.revert();
+                ec.invalidateAllObjects();
+                ec.unlock();
             }
         }
         finally
