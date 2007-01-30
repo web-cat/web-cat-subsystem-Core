@@ -177,7 +177,7 @@ public class MutableDictionary
                 exception = new ClassCastException( "objectWithArchiveData(): "
                     + "cannot cast " + o.getClass().getName() + " to "
                     + MutableDictionary.class.getName() );
-                result = null;
+                // result is already null
             }
         }
         catch ( IOException ioe )

@@ -259,7 +259,7 @@ public class MutableArray
                 exception = new ClassCastException( "objectWithArchiveData(): "
                     + "cannot cast " + o.getClass().getName() + " to "
                     + MutableArray.class.getName() );
-                result = null;
+                // result is already null
             }
         }
         catch ( IOException ioe )

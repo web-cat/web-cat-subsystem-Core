@@ -189,7 +189,7 @@ public abstract class InstallPage
             else if ( errMsgIfEmpty != null )
             {
                 error( errMsgIfEmpty );
-                value = null;
+                // value is already null
             }
         }
         catch ( NSValidation.ValidationException e )

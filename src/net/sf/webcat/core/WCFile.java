@@ -327,6 +327,7 @@ public class WCFile
 
     //~ Instance/static variables .............................................
 
+    @SuppressWarnings( "deprecation" )
     private static WCFileProperties fileProperties =
         new WCFileProperties(
             Application.configurationProperties().getProperty(

@@ -164,7 +164,7 @@ public class InstallPage6
             log.debug( "takeFormValues(): middle = " );
             log.debug( configuration.configSettingsAsString() );
         }
-        if ( authDomainName == null && authDomainName.equals( "" ) )
+        if ( authDomainName == null || authDomainName.equals( "" ) )
         {
             error( "Cannot identify default institution's "
                 + "authentication configuration." );

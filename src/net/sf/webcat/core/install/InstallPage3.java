@@ -228,10 +228,7 @@ public class InstallPage3
         }
         finally
         {
-            if ( db != null )
-            {
-                db.close();
-            }
+            db.close();
         }
     }
 

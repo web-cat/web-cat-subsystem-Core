@@ -322,11 +322,8 @@ public class Application
             // you might want to re-think something in your code or model
             if ( dbContext.registeredChannels().count() < 5 )
             {
-                if ( dbChannel != null )
-                {
-                    log.debug( "createAdditionalDatabaseChannel()" );
-                    dbContext.registerChannel( dbChannel );
-                }
+                log.debug( "createAdditionalDatabaseChannel()" );
+                dbContext.registerChannel( dbChannel );
             }
             else
             {
@@ -439,9 +436,7 @@ public class Application
                 isSecure,
                 somePort
             );
-        WORequest request = ( context != null )
-            ? context.request()
-            : null;
+        WORequest request = context.request();
         if ( request != null )
         {
             String host = hostName( request );
@@ -1387,6 +1382,7 @@ public class Application
 
 
     // ----------------------------------------------------------
+    @SuppressWarnings( "deprecation" )
     public void refuseNewSessions( boolean arg0 )
     {
         boolean isDirectConnectEnabled = isDirectConnectEnabled();
@@ -1747,7 +1743,9 @@ public class Application
 
     // Force the ERXExtensions bundle to be initialized before this class by
     // referencing it here.
+    @SuppressWarnings( "unused" )
     private static er.extensions.ERXExtensions forcedInitialization1 = null;
+    @SuppressWarnings( "unused" )
     private static er.extensions.ERXProperties forcedInitialization2 = null;
 
     public static int userCount = 0;

@@ -183,6 +183,7 @@ public class Subsystem
      * @return the parameter definitions as an NSDictionary, or
      * null if none are found
      */
+    @SuppressWarnings( "deprecation" )
     public NSDictionary parameterDescriptions()
     {
         if ( options == null )
@@ -355,6 +356,7 @@ public class Subsystem
      * 
      * @return The Resources directory name as a string
      */
+    @SuppressWarnings( "deprecation" )
     protected String myResourcesDir()
     {
         if ( myResourcesDir == null )

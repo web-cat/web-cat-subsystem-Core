@@ -153,13 +153,6 @@ public class Session
             loginSession = LoginSession.getLoginSessionForUser( ec, user() );
             if ( loginSession != null )
             {
-                if ( u == null )
-                {
-                    // m_project = null;
-                    loginSession.setExpirationTime( new NSTimestamp( 0, 0 ) );
-                    loginSession.editingContext().saveChanges();
-                    return this.sessionID();
-                }
                 NSTimestamp now = new NSTimestamp();
                 if ( loginSession.expirationTime().after( now ) )
                 {

@@ -198,7 +198,10 @@ public class DirectAction
                 "authDomain" );                
         }
 
-        if ( errors.count() == 0 )
+        // The second half of this condition is here just to satisfy the
+        // null pointer error detection in Java 6, since we know it can't
+        // be null from the error count
+        if ( errors.count() == 0 && userName != null )
         {
             userName = userName.toLowerCase();
             EOEditingContext ec = Application.newPeerEditingContext();
@@ -318,18 +321,18 @@ public class DirectAction
     public WOSession session()
     {
         log.debug( "session()" );
-        Session session = (Session)existingSession();
-        if ( session == null )
+        Session mySession = (Session)existingSession();
+        if ( mySession == null )
         {
             log.debug( "session(): calling super.session()" );
-            session = (Session)context().session();
+            mySession = (Session)context().session();
         }
 
-        if ( session == null )
+        if ( mySession == null )
         {
             log.debug( "session(): null session" );
         }
-        else if ( !session.isLoggedIn() )
+        else if ( !mySession.isLoggedIn() )
         {
             if ( user == null )
             {
@@ -338,10 +341,10 @@ public class DirectAction
             else
             {
                 log.debug( "session(): no user associated with session" );
-                EOEditingContext ec = session.defaultEditingContext();
+                EOEditingContext ec = mySession.defaultEditingContext();
                 ec.lock();
                 user = (User)EOUtilities.localInstanceOfObject( ec, user );
-                String sessionID = session.setUser( user );
+                String sessionID = mySession.setUser( user );
                 Application.userCount++;
                 log.info( "login: "
                           + user.userName()
@@ -350,21 +353,21 @@ public class DirectAction
                           + ") (now "
                           + Application.userCount
                           + " users)" );
-                if ( !sessionID.equals( session.sessionID() ) )
+                if ( !sessionID.equals( mySession.sessionID() ) )
                 {
                     log.error( "session(): mismatched session IDs: have "
-                               + session.sessionID()
+                               + mySession.sessionID()
                                + " but expected " + sessionID );
                 }
                 ec.unlock();
                 if ( this.session == null )
                 {
-                    this.session = session;
+                    this.session = mySession;
                 }
 //              log.debug( "session(): session is now " + session );
             }
         }
-        return session;
+        return mySession;
     }
 
 

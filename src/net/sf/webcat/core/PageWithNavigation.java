@@ -98,23 +98,26 @@ public class PageWithNavigation
             log.error( "context = " + context() );
             log.error( Application.extraInfoForContext( context() ) );
         }
-        if ( tabs.selectedDescendant() == null )
+        else
         {
-            log.error( "session.tabs.selectedDescendant = null" );
-            log.error( "tabs = " + tabs );
-            log.error( "context = " + context() );
-            log.error( Application.extraInfoForContext( context() ) );
+            if ( tabs.selectedDescendant() == null )
+            {
+                log.error( "session.tabs.selectedDescendant = null" );
+                log.error( "tabs = " + tabs );
+                log.error( "context = " + context() );
+                log.error( Application.extraInfoForContext( context() ) );
+            }
+            if ( tabs.selectedChild() == null )
+            {
+                log.error( "session.tabs.selectedChild = null" );
+                log.error( "tabs = " + tabs );
+                log.error( "context = " + context() );
+                log.error( Application.extraInfoForContext( context() ) );
+            }
+            bodyClass = tabs.selectedDescendant().cssClass();
+            secondLevelSelection = tabs.selectedChild().selectedChild();
+            log.debug( "second level = " + secondLevelSelection.label() );
         }
-        if ( tabs.selectedChild() == null )
-        {
-            log.error( "session.tabs.selectedChild = null" );
-            log.error( "tabs = " + tabs );
-            log.error( "context = " + context() );
-            log.error( Application.extraInfoForContext( context() ) );
-        }
-        bodyClass = tabs.selectedDescendant().cssClass();
-        secondLevelSelection = tabs.selectedChild().selectedChild();
-        log.debug( "second level = " + secondLevelSelection.label() );
         if ( thisPage == null )
         {
             WOComponent comp = context().page();
