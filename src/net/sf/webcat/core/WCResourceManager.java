@@ -102,12 +102,6 @@ public class WCResourceManager
             // The default developmentBaseURL should provide this for us
             // until static HTML resources have been initialized correctly
             // after the self-installation wizard completes.
-            int pos = aResourceName.indexOf( FRAMEWORK_SUFFIX );
-            if ( pos >= 0 )
-            {
-                aResourceName = aResourceName.substring(
-                    pos + FRAMEWORK_SUFFIX.length() );
-            }
             return developmentBaseURL + aResourceName;
         }
         String result =
