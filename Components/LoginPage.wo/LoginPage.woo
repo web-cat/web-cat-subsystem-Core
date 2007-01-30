@@ -1,6 +1,6 @@
 {
     "WebObjects Release" = "WebObjects 5.0"; 
-    encoding = NSMacOSRomanStringEncoding; 
+    encoding = NSUTF8StringEncoding; 
     variables = {
         domainDisplayGroup = {
             class = WODisplayGroup; 
