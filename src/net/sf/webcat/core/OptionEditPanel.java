@@ -27,6 +27,10 @@ package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
+
+import java.io.*;
+import java.util.zip.*;
+
 import er.extensions.ERXConstant;
 import org.apache.log4j.*;
 
@@ -173,6 +177,13 @@ public class OptionEditPanel
 
 
     // ----------------------------------------------------------
+    public boolean isAntBoolean()
+    {
+        return type == ANT_BOOLEAN_TYPE;
+    }
+
+
+    // ----------------------------------------------------------
     public Object fieldSize()
     {
         Object result = option.objectForKey( "size" );
@@ -210,6 +221,14 @@ public class OptionEditPanel
     {
         Object oldValue = value();
         log.debug( "set " + property + " = " + value );
+        if ( isAntBoolean()
+             && value != null
+             && !( (Boolean)value ).booleanValue() )
+        {
+            // For ANT-style booleans, any set value = true, and false means
+            // unset, so convert false values into nulls
+            value = null;
+        }
         if ( value != null
                   && ( oldValue == null ||
                        !value().toString().equals( value.toString() ) ) )
@@ -329,13 +348,16 @@ public class OptionEditPanel
             return null;
         }
         WOComponent newPage = pageWithName( browsePageName );
-        newPage.takeValueForKey( context().page(), "nextPage" );
+        myPage = context().page();
+        newPage.takeValueForKey( myPage, "nextPage" );
         newPage.takeValueForKey( Boolean.TRUE, "isEditable" );
         if ( ! base.exists() )
         {
             base.mkdirs();
         }
         newPage.takeValueForKey( base, "base" );
+        newPage.takeValueForKey( value(), "currentSelection" );
+        log.debug( "browse(): current selection = " + value() );
         newPage.takeValueForKey( this, "fileSelectionListener" );
         newPage.takeValueForKey( Boolean.valueOf( type == FILE_OR_DIR_TYPE ),
                                  "allowSelectDir" );
@@ -346,6 +368,49 @@ public class OptionEditPanel
 
 
     // ----------------------------------------------------------
+    /**
+     * View or download the selected file.
+     * @return a download page for the selected file
+     * @throws java.io.IOException if an error occurs reading the file
+     */
+    public WOComponent downloadFile()
+        throws java.io.IOException
+    {
+        DeliverFile downloadPage = (DeliverFile)pageWithName(
+            DeliverFile.class.getName() );
+        // Remember that the attribute value has "Institution/user/..."
+        // as a prefix, and base has the same thing as a suffix
+        File file = new File( base,  "../../" + value().toString() );
+        if ( log.isDebugEnabled() )
+        {
+            log.debug( "downloadFile(): downloading " + file );
+        }
+        if ( file.isDirectory() )
+        {
+            File zipFile = new File( file.getName() + ".zip" );
+            downloadPage.setFileName( zipFile );
+            downloadPage.setContentType( WCFile.mimeType( zipFile ) );
+            ByteArrayOutputStream boas = new ByteArrayOutputStream();
+            ZipOutputStream       zos  = new ZipOutputStream( boas );
+            WCFile.appendToZip(
+                file,
+                zos,
+                file.getCanonicalPath().length() );
+            zos.close();
+            downloadPage.setFileData( new NSData( boas.toByteArray() ) );
+            boas.close();
+        }
+        else
+        {
+            downloadPage.setFileName( file );
+            downloadPage.setContentType( WCFile.mimeType( file ) );
+        }
+        downloadPage.setStartDownload( true );
+        return downloadPage;
+    }
+
+    
+    // ----------------------------------------------------------
     public WOComponent selectFile( String filePath )
     {
         setValue( wcSession().user().authenticationDomain().subdirName()
@@ -354,13 +419,14 @@ public class OptionEditPanel
         {
             log.debug( "new option values:\n" + optionValues );
         }
-        return context().page();
+        return myPage; // context().page();
     }
 
 
     //~ Instance/static variables .............................................
 
     private NSDictionary theSelectedChoice = null;
+    private WOComponent myPage;
 
     // private static int UNKNOWN_TYPE      = 0;
     private static final int BOOLEAN_TYPE      = 1;
@@ -372,7 +438,8 @@ public class OptionEditPanel
     private static final int FILE_TYPE         = 7;
     private static final int FILE_OR_DIR_TYPE  = 8;
     private static final int SHORT_TEXT_TYPE   = 9;
-    private static final int LONG_TEXT_TYPE   = 10;
+    private static final int LONG_TEXT_TYPE    = 10;
+    private static final int ANT_BOOLEAN_TYPE  = 11;
     private static final String[] types = new String[] {
         "unknown",
         "boolean",
@@ -384,7 +451,8 @@ public class OptionEditPanel
         "file",
         "fileOrDir",
         "shortText",
-        "longText"
+        "longText",
+        "antBoolean"
     };
     static Logger log = Logger.getLogger( OptionEditPanel.class );
 }

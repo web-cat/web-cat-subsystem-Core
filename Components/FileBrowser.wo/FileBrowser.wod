@@ -19,6 +19,7 @@ Row : net.sf.webcat.core.FileBrowserRow {
 	fileSelectionListener = fileSelectionListener;
 	fileEditListener      = fileEditListener;
     applyChangesOnMod     = applyChangesOnMod;
+    currentSelection      = currentSelection;
 }
 
 

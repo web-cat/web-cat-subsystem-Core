@@ -69,6 +69,7 @@ public class FileBrowser
     public FileSelectionListener fileSelectionListener = null;
     public boolean               allowSelectDir        = false;
     public NSArray               allowSelectExtensions = null;
+    public String                currentSelection;
 
     public EditFilePage.FileEditListener fileEditListener = null;
 

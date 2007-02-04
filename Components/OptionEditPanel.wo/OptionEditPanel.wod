@@ -31,6 +31,17 @@ DoubleBox: WOTextField {
     value = value;
 }
 
+Download: WOActiveImage {
+	action   = downloadFile;
+	filename = "icons/download.gif";
+	framework = "Core";
+	alt      = "[Download]";
+	title    = "Download";
+	width    = "18";
+	height   = "18";
+	style     = "vertical-align:middle;";
+}
+
 File: WOString {
     value = fileValue;
 }
@@ -47,6 +58,10 @@ IntegerBox: WOTextField {
     numberformat = "0";
     size  = fieldSize;
     value = value;
+}
+
+IsAntBoolean: WOConditional {
+    condition = isAntBoolean;
 }
 
 IsBoolean: WOConditional {

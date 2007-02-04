@@ -1,6 +1,8 @@
 <webobject name="ShowOption"><webobject name="HideDescription">
 <webobject name="IsBoolean">
 <p><webobject name="CheckBox"/> <webobject name="OptionName"/></p>
+</webobject><webobject name="IsAntBoolean">
+<p><webobject name="CheckBox"/> <webobject name="OptionName"/></p>
 </webobject><webobject name="IsInteger">
 <p><webobject name="OptionName"/>: <webobject name="IntegerBox"/></p>
 </webobject><webobject name="IsDouble">
@@ -14,10 +16,10 @@
 </tr></webobject></table>
 </webobject><webobject name="IsFile">
 <p><webobject name="OptionName"/>: <webobject name="File"/>
-<webobject name="CanBrowse"><webobject name="Browse"/><webobject name="HasValue"> <webobject name="UseDefault"/></webobject></webobject><webobject name="CannotBrowse"><b class="warn">Cannot browse files</b></webobject></p>
+<webobject name="CanBrowse"><webobject name="HasValue"> <webobject name="Download"/></webobject><webobject name="Browse"/><webobject name="HasValue"> <webobject name="UseDefault"/></webobject></webobject><webobject name="CannotBrowse"><b class="warn">Cannot browse files</b></webobject></p>
 </webobject><webobject name="IsFileOrDir">
 <p><webobject name="OptionName"/>: <webobject name="File"/>
-<webobject name="CanBrowse"><webobject name="Browse"/><webobject name="HasValue"> <webobject name="UseDefault"/></webobject></webobject><webobject name="CannotBrowse"><b class="warn">Cannot browse files</b></webobject></p>
+<webobject name="CanBrowse"><webobject name="HasValue"> <webobject name="Download"/></webobject><webobject name="Browse"/><webobject name="HasValue"> <webobject name="UseDefault"/></webobject></webobject><webobject name="CannotBrowse"><b class="warn">Cannot browse files</b></webobject></p>
 </webobject><webobject name="IsShortText">
 <p><webobject name="OptionName"/>: <webobject name="TextBox"/></p>
 </webobject><webobject name="IsLongText">
@@ -25,6 +27,8 @@
 </webobject>
 </webobject><webobject name="ShowDescription">
 <webobject name="IsBoolean">
+<p style="margin-bottom:0"><webobject name="CheckBox"/> <b><webobject name="OptionName"/></b></p>
+</webobject><webobject name="IsAntBoolean">
 <p style="margin-bottom:0"><webobject name="CheckBox"/> <b><webobject name="OptionName"/></b></p>
 </webobject><webobject name="IsInteger">
 <p style="margin-bottom:0"><b><webobject name="OptionName"/></b>: <webobject name="IntegerBox"/></p>
@@ -39,10 +43,10 @@
 </tr></webobject></table>
 </webobject><webobject name="IsFile">
 <p style="margin-bottom:0"><b><webobject name="OptionName"/></b>: <webobject name="File"/>
-<webobject name="CanBrowse"><webobject name="Browse"/><webobject name="HasValue"> <webobject name="UseDefault"/></webobject></webobject><webobject name="CannotBrowse"><b class="warn">Cannot browse files</b></webobject></p>
+<webobject name="CanBrowse"><webobject name="HasValue"> <webobject name="Download"/></webobject><webobject name="Browse"/><webobject name="HasValue"> <webobject name="UseDefault"/></webobject></webobject><webobject name="CannotBrowse"><b class="warn">Cannot browse files</b></webobject></p>
 </webobject><webobject name="IsFileOrDir">
 <p style="margin-bottom:0"><b><webobject name="OptionName"/></b>: <webobject name="File"/>
-<webobject name="CanBrowse"><webobject name="Browse"/><webobject name="HasValue"> <webobject name="UseDefault"/></webobject></webobject><webobject name="CannotBrowse"><b class="warn">Cannot browse files</b></webobject></p>
+<webobject name="CanBrowse"><webobject name="HasValue"> <webobject name="Download"/></webobject><webobject name="Browse"/><webobject name="HasValue"> <webobject name="UseDefault"/></webobject></webobject><webobject name="CannotBrowse"><b class="warn">Cannot browse files</b></webobject></p>
 </webobject><webobject name="IsShortText">
 <p style="margin-bottom:0"><b><webobject name="OptionName"/></b>: <webobject name="TextBox"/></p>
 </webobject><webobject name="IsLongText">

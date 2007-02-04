@@ -249,6 +249,7 @@ SubFileBrowser : net.sf.webcat.core.FileBrowserRow {
 	fileSelectionListener = fileSelectionListener;
 	fileEditListener      = fileEditListener;
     applyChangesOnMod     = applyChangesOnMod;
+    currentSelection      = currentSelection;
 }
 
 SubFileRepetition : WORepetition {
@@ -258,8 +259,9 @@ SubFileRepetition : WORepetition {
 }
 
 TR1 : net.sf.webcat.core.TableRow {
-	index     = index;
-	increment = true;
+	index       = index;
+	increment   = true;
+	showCaution = isSelected;
 }
 
 VerticalSpacer: WOImage {

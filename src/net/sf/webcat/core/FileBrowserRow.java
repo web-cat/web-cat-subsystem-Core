@@ -74,6 +74,7 @@ public class FileBrowserRow
     public boolean allowSelectDir        = false;
     public NSArray allowSelectExtensions = null;
     public boolean applyChangesOnMod     = false;
+    public String  currentSelection;
 
     // For the spacer repetition
     public int     spacerIndex;
@@ -669,10 +670,29 @@ public class FileBrowserRow
 
     
     // ----------------------------------------------------------
+    public boolean isSelected()
+    {
+        boolean result = false;
+        if ( currentSelection != null )
+        {
+            String myPath = file.getPath().replaceAll( "\\\\", "/" );
+            result = myPath.endsWith( currentSelection );
+            log.debug( "comparing " + myPath + " with " + currentSelection
+                + " = " + result );
+        }
+        else
+        {
+            log.debug( "isSelected(): current selection is null" );
+        }
+        return result;
+    }
+
+    
+    // ----------------------------------------------------------
     public boolean canSelectThis()
     {
         boolean result = false;
-        if ( allowSelection )
+        if ( allowSelection && !isSelected() )
         {
             if ( file.isDirectory() )
             {
