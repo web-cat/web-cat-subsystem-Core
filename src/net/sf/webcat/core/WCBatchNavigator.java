@@ -118,11 +118,18 @@ public class WCBatchNavigator
             // index is the one-based index of the first object shown in
             // the current batch
             int index = ( group.currentBatchIndex() - 1 ) * curSize + 1;
-            // newPage is the one-based batch number that will show
-            // the object at the given index
-            int newBatch = index / number + 1;
-            group.setNumberOfObjectsPerBatch( number );
-            group.setCurrentBatchIndex( newBatch );
+            if ( number < 0 )
+            {
+                group.setNumberOfObjectsPerBatch( number );
+            }
+            else
+            {
+                // newPage is the one-based batch number that will show
+                // the object at the given index
+                int newBatch = index / number + 1;
+                group.setNumberOfObjectsPerBatch( number );
+                group.setCurrentBatchIndex( newBatch );
+            }
         }
     }
 
