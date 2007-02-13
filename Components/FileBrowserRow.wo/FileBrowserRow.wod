@@ -54,12 +54,16 @@ DeleteFile: WOActiveImage {
 	onClick   = deleteFileOnClick;
 }
 
-DownloadFile: WOActiveImage {
+DownloadFile: WOHyperlink {
 	action   = downloadFile;
+}
+
+DownloadFileIcon: WOImage {
 	filename = downloadIcon;
 	framework = "Core";
 	alt      = "[Download]";
 	title    = "Download";
+	border   = "0";
 }
 
 EditFile: WOActiveImage {
@@ -125,9 +129,15 @@ FileIcon1: WOImage {
 	framework = "Core";
 }
 
-FileIcon2: WOActiveImage {
+FileIcon2: WOImage {
 	filename  = iconURL;
 	framework = "Core";
+	alt       = "View File";
+	title     = "View File";
+	border    = "0";
+}
+
+FileIcon2ViewFile: WOHyperlink {
 	action    = viewFile;
 	target    = "viewFile";
 }
