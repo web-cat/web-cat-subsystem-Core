@@ -117,6 +117,18 @@ public class CoreDatabaseUpdates
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Changes login session ids to text.
+     * @throws SQLException on error
+     */
+    public void updateIncrement4() throws SQLException
+    {
+        database().executeSQL(
+            "alter table TLOGINSESSION change CSESSIONID CSESSIONID TINYTEXT" );
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------

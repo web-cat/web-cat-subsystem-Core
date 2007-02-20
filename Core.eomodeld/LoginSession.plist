@@ -5,7 +5,7 @@
         {
             allowsNull = Y; 
             columnName = CSESSIONID; 
-            externalType = TINYBLOB; 
+            externalType = TINYTEXT; 
             name = sessionId; 
             valueClassName = NSString; 
         }, 
