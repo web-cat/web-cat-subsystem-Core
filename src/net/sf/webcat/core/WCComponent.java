@@ -28,6 +28,7 @@ package net.sf.webcat.core;
 import com.webobjects.appserver.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import com.webobjects.foundation.NSValidation.*;
 
 import org.apache.log4j.Logger;
 
@@ -513,6 +514,18 @@ public class WCComponent
         }
         else
             return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public void pushValuesToParent()
+    {
+        // Make sure to handle logout actions on form pages correctly
+        // by blocking value pushing if the session is terminating
+        if ( hasSession() && !session().isTerminating() )
+        {
+            super.pushValuesToParent();
+        }
     }
 
 

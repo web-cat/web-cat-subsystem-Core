@@ -408,6 +408,18 @@ public class PageWithNavigation
     }
 
 
+    // ----------------------------------------------------------
+    public void pushValuesToParent()
+    {
+        // Make sure to handle logout actions on form pages correctly
+        // by blocking value pushing if the session is terminating
+        if ( hasSession() && !session().isTerminating() )
+        {
+            super.pushValuesToParent();
+        }
+    }
+
+
     //~ Instance/static variables .............................................
 
     private TabDescriptor myTab;
