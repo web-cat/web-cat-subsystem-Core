@@ -118,7 +118,7 @@ public class WCBatchNavigator
             // index is the one-based index of the first object shown in
             // the current batch
             int index = ( group.currentBatchIndex() - 1 ) * curSize + 1;
-            if ( number < 0 )
+            if ( number <= 0 )
             {
                 group.setNumberOfObjectsPerBatch( number );
             }
