@@ -369,9 +369,16 @@ public class Application
     public WORedirect gotoLoginPage( WOContext context )
     {
         WORedirect redirect = (WORedirect)pageWithName( "WORedirect", context );
-        // TODO: fix this
-        String dest = completeURLWithRequestHandlerKey(
-            context, null, null, null, false, 0 );
+        String dest = configurationProperties().getProperty(  "login.url" );
+        if ( dest == null )
+        {
+            dest = configurationProperties().getProperty( "base.url" );
+        }
+        if ( dest == null )
+        {
+            dest = completeURLWithRequestHandlerKey(
+                context, null, null, null, false, 0 );
+        }
         log.debug( "gotoLoginPage: " + dest );
         redirect.setUrl( dest );
         return redirect;
