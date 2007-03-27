@@ -295,6 +295,32 @@ public class PageWithNavigation
 
     // ----------------------------------------------------------
     /**
+     * Determine if the current primary tab can be seen by this user
+     * (enforce tab hiding when user has toggled to student-only view).
+     * @return True if this primary tab can be seen
+     */
+    public boolean primaryTabIsVisible()
+    {
+        return primaryTabItem.accessLevel() == 0
+            || !( (Session)session() ).user().restrictToStudentView();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Determine if the current secondary tab can be seen by this user
+     * (enforce tab hiding when user has toggled to student-only view).
+     * @return True if this secondary tab can be seen
+     */
+    public boolean secondaryTabIsVisible()
+    {
+        return secondaryTabItem.accessLevel() == 0
+            || !( (Session)session() ).user().restrictToStudentView();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve the CSS class to use for the list item for a secondary tab.
      * @return The CSS class
      */
@@ -417,6 +443,48 @@ public class PageWithNavigation
         {
             super.pushValuesToParent();
         }
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean hasVisibleSecondaryTabs()
+    {
+        boolean result = false;
+        if ( ( (Session)session() ).user().restrictToStudentView() )
+        {
+            NSArray secondaries = ( (Session)session() ).tabs.selectedChild()
+                .children();
+            for ( int i = 0; i < secondaries.count(); i++ )
+            {
+                TabDescriptor secondary =
+                    (TabDescriptor)secondaries.objectAtIndex( i );
+                if ( secondary.accessLevel() == 0 )
+                {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            result = ( (Session)session() ).tabs.selectedChild().children()
+                .count() > 0;
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Toggle the student view setting for this user.
+     * @return Returns null, to force reloading of the calling page
+     * (if desired)
+     */
+    public WOComponent toggleStudentView()
+    {
+        ( (Session)session() ).toggleStudentView();
+        return pageWithName(
+            ( (Session)session() ).tabs.selectedDescendant().pageName() );
     }
 
 

@@ -26,6 +26,7 @@
 package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
+import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 
@@ -362,12 +363,104 @@ public class User
 
     // ----------------------------------------------------------
     /**
+     * Find out if this user can switch between student and staff views.
+     * @return true if this user can switch
+     */
+    public boolean canChangeViews()
+    {
+        return accessLevel() > STUDENT_PRIVILEGES;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Toggle the student view setting for this user.  This only affect's
+     * the state within the user object, and does not affect any session
+     * navigation or other UI features.  It is intended to be called from
+     * {@link Session#toggleStudentView()}, which handles updating the
+     * corresponding session navigation data.
+     * @return Returns null, to force reloading of the calling page
+     * (if desired)
+     */
+    public WOComponent toggleStudentView()
+    {
+        if ( canChangeViews() )
+        {
+            studentView = !studentView;
+            taFor_cache = null;
+            teaching_cache = null;
+            taForButNotStudent_cache = null;
+            instructorForButNotTAOrStudent_cache = null;
+            staffFor_cache = null;
+            adminForButNotStaff_cache = null;
+            adminForButNoOtherRelationships_cache = null;
+        }
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the string label for the "toggle view" button for this user.
+     * @return The button label text, indicating what view the user will
+     * toggle to next
+     */
+    public String toggleViewLabel()
+    {
+        String result = "Student View";
+        if ( studentView )
+        {
+            if ( accessLevel() > INSTRUCTOR_PRIVILEGES )
+            {
+                result = "Admin View";
+            }
+            else if ( accessLevel() > GTA_PRIVILEGES )
+            {
+                result = "Instructor View";
+            }
+            else
+            {
+                result = "Grader View";
+            }
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Determine if this user's view should be restricted to student-only
+     * features.
+     * @return true if this user's view is restricted
+     */
+    public boolean restrictToStudentView()
+    {
+        return studentView;
+    }
+
+
+    // ----------------------------------------------------------
+    public NSArray TAFor()
+    {
+        return studentView ? emptyArray : super.TAFor();
+    }
+
+
+    // ----------------------------------------------------------
+    public NSArray teaching()
+    {
+        return studentView ? emptyArray : super.teaching();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Returns true if the user has TA privileges for Web-CAT.
      * @return true if user has at least TA access level
      */
     public boolean hasTAPrivileges()
     {
-        return accessLevel() >= GTA_PRIVILEGES;
+        return !studentView && accessLevel() >= GTA_PRIVILEGES;
     }
 
 
@@ -378,7 +471,7 @@ public class User
      */
     public boolean hasFacultyPrivileges()
     {
-        return accessLevel() >= INSTRUCTOR_PRIVILEGES;
+        return !studentView && accessLevel() >= INSTRUCTOR_PRIVILEGES;
     }
 
 
@@ -389,7 +482,7 @@ public class User
      */
     public boolean hasAdminPrivileges()
     {
-        return accessLevel() >= WEBCAT_RW_PRIVILEGES;
+        return !studentView && accessLevel() >= WEBCAT_RW_PRIVILEGES;
     }
 
 
@@ -684,6 +777,8 @@ public class User
     private String  name_LF_cache;
     
     private NSDictionary userIsMe;
+
+    private boolean studentView = false;
 
     private static final String PREFIX = "user.";
     private static final NSArray emptyArray = new NSArray();

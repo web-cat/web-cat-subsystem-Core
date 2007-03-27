@@ -274,6 +274,14 @@ DIV.shadow TABLE {
 	margin: 1px 4px 0 0;
 }
 
+#globalsubnav li.uid a {
+	background: #363;
+	font-weight:bold;
+	color:#9c9;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
 #globalnav A {
 	display:block;
 	color:#9c9;
@@ -651,6 +659,14 @@ BODY.admin .expboxcontent { border-color: #636; }
 BODY.admin .collapsible { border-color: #636; }
 BODY.admin .collapsible a { color: #636; }
 
+BODY.admin #globalsubnav li.uid a {
+	background: #636;
+	font-weight:bold;
+	color:#c9c;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
 
 /* Color-coding for staff pages ------------------------------------------- */
 
@@ -757,6 +773,15 @@ BODY.staf DIV#contents TABLE TR#divider TABLE.percentbar TD { border: none; }
 BODY.staff .expboxcontent { border-color: #336; }
 BODY.staff .collapsible { border-color: #336; }
 BODY.staff .collapsible a { color: #336; }
+
+BODY.staff #globalsubnav li.uid a {
+	background: #336;
+	font-weight:bold;
+	color:#ccf;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
 
 SPAN.meta {
 	font-size: small;

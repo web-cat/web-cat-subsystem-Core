@@ -681,6 +681,33 @@ public class Session
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Toggle the student view setting for this user, resetting tabs
+     * as appropriate.  This method uses {@link User#toggleStudentView()}
+     * to toggle the user state, and then resets the session's tab navigation
+     * as appropriate.  It is intended to be called from within a page,
+     * such as in {@link PageWithNavigation#toggleStudentView()}.
+     */
+    public void toggleStudentView()
+    {
+        user().toggleStudentView();
+        if ( user().restrictToStudentView() )
+        {
+            TabDescriptor td = tabs;
+            while ( td != null && td.selectedChild() != null )
+            {
+                if ( td.selectedChild().accessLevel() > 0 )
+                {
+                    td.selectDefault();
+                    break;
+                }
+                td = td.selectedChild();
+            }
+        }
+    }
+
+
     //~ Instance/static variables .............................................
 
     private User             primeUser      = null;

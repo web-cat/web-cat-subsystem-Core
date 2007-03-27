@@ -49,7 +49,7 @@ HasMenu: WOConditional {
 }
 
 HasSecondTabs: WOConditional {
-    condition = session.tabs.selectedChild.children.count;
+    condition = hasVisibleSecondaryTabs;
 }
 
 HasTitle: WOConditional {
@@ -116,7 +116,7 @@ NoMenu: WOConditional {
 }
 
 NoSecondTabs: WOConditional {
-    condition = session.tabs.selectedChild.children.count;
+    condition = hasVisibleSecondaryTabs;
     negate    = true;
 }
 
@@ -130,6 +130,10 @@ PageContent: WOComponentContent {
 
 PrimaryTabClass: WOString {
 	value = primaryTabClass;
+}
+
+PrimaryTabIsVisible: WOConditional {
+    condition = primaryTabIsVisible;
 }
 
 PrimaryTabLabel: WOString {
@@ -147,6 +151,10 @@ PrimaryTabs: WORepetition {
 
 SecondaryTabClass: WOString {
 	value = secondaryTabClass;
+}
+
+SecondaryTabIsVisible: WOConditional {
+    condition = secondaryTabIsVisible;
 }
 
 SecondaryTabLabel: WOString {
@@ -195,6 +203,15 @@ StepLink: WOHyperlink {
 StepWithoutLink: WOConditional {
 	condition = stepUsesLink;
 	negate    = true;
+}
+
+CanToggleView: WOConditional {
+	condition = session.user.canChangeViews;
+}
+
+StudentView: WOHyperlink {
+    action = toggleStudentView;
+    string = session.user.toggleViewLabel;
 }
 
 Title: WOString {
