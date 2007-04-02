@@ -11,14 +11,14 @@ function showHide( link, id )
 {
     var img = link.getElementsByTagName("img")[0];
     var d = $(id);
-    if (img.src.indexOf("/expanded.gif") >= 0)
+    if (img.src.endsWith("expanded.gif"))
     {
-        img.src = img.src.replace("/expanded.gif", "/collapsed.gif");
+        img.src = img.src.replace("expanded.gif", "collapsed.gif");
         d.style.display = "none";
     }
     else
     {
-        img.src = img.src.replace("/collapsed.gif", "/expanded.gif");
+        img.src = img.src.replace("collapsed.gif", "expanded.gif");
         d.style.display = "block";
     }
     link.blur();
