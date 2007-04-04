@@ -855,3 +855,26 @@ div#contents div.shadow table.distchart td img.bar {
 	height: 10px;
 	border: 0px;
 }
+
+.progressbar {
+  height: 22px;
+  display: block;
+  border: none;
+}
+
+.progressbarback {
+  border: 1px solid silver;
+  background: transparent;
+  width: 200px;
+  padding: 2px;
+  display: block;
+}
+
+.progresslabel {
+  padding: 4px;
+  display: inline;
+  position: relative;
+  top: -22px;
+  left: +208px;
+}
+

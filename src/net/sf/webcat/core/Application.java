@@ -1481,19 +1481,28 @@ public class Application
      */
     public void killInstance()
     {
-        String killAction = configurationProperties().getProperty( "coreKillAction" );
+        String killAction =
+            configurationProperties().getProperty( "coreKillAction" );
         if ( killAction == null )
         {
+            log.fatal( "Using default kill action",
+                new Exception( "from here" ) );
             super.killInstance();            
         }
         else
         {
             String cmd = cmdShell() + killAction;
+            log.fatal( "Killing application using: " + cmd,
+                new Exception( "from here" ) );
             Process proc = null;
             try
             {
                 proc = Runtime.getRuntime().exec( cmd );
                 proc.waitFor();
+                // wait for ten seconds to give the kill command time to
+                // work externally, since immediate return of the process
+                // may not always mean its work is complete
+                Thread.currentThread().sleep( 10000 );
             }
             catch ( Exception e )
             {
@@ -1502,7 +1511,8 @@ public class Application
                 {
                     proc.destroy();
                 }
-                log.fatal( "exception executing kill action '" + cmd + "'", e );
+                log.fatal( "exception executing kill action '" + cmd + "'",
+                    e );
                 super.killInstance();
             }
         }

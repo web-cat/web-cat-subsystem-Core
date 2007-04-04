@@ -1,0 +1,19 @@
+Bar: WOImage {
+    framework = "Core";
+    filename  = "images/progressBar.gif";
+    width     = width;
+    alt       = percentLabel;
+    class     = "progressbar";
+}
+
+Indicator: WOImage {
+    framework = "Core";
+    filename  = "icons/indicator.gif";
+    width     = "16";
+    height    = "16";
+    alt       = "Working...";
+}
+
+Percent: WOString {
+    value = percent;
+}
