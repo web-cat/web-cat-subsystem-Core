@@ -1,0 +1,11 @@
+Message : WOString {
+    value = message;
+}
+
+InfoImage : WOImage {
+    framework = "Core";
+    filename  = "icons/info.gif";
+    width     = 16;
+    height    = 16;
+    border    = 0;
+}
