@@ -63,6 +63,10 @@ public class MyProfilePage
     public WODisplayGroup      teachingDisplayGroup;
     public CourseOffering      courseOffering;
     public int                 index;
+    public AuthenticationDomain.TimeZoneDescriptor zone;
+    public AuthenticationDomain.TimeZoneDescriptor selectedZone;
+    public String              aFormat;
+    public NSTimestamp         now;
 
 
     //~ Methods ...............................................................
@@ -70,16 +74,50 @@ public class MyProfilePage
     // ----------------------------------------------------------
     public void appendToResponse( WOResponse response, WOContext context )
     {
+        now = new NSTimestamp();
         enrolledInDisplayGroup.setMasterObject( wcSession().user() );
         teachingDisplayGroup.setMasterObject( wcSession().user() );
         TADisplayGroup.setMasterObject( wcSession().user() );
+        if ( selectedZone == null )
+        {
+            selectedZone = AuthenticationDomain.descriptorForZone(
+                wcSession().user().timeZoneName() );
+            if ( selectedZone == null )
+            {
+                // !!!
+                selectedZone = AuthenticationDomain.descriptorForZone(
+                    NSTimeZone.getDefault().getID() );
+            }
+        }
         super.appendToResponse( response, context );
+    }
+
+
+    // ----------------------------------------------------------
+    public WOComponent applyTimeFormats()
+    {
+        log.debug( "applyTimeFormats()" );
+        wcSession().user().setTimeZoneName( selectedZone.id );
+        wcSession().commitLocalChanges();
+        wcSession().clearCachedTimeFormatter();
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public String formattedCurrentTime()
+    {
+        NSTimestampFormatter formatter = new NSTimestampFormatter( aFormat );
+        formatter.setDefaultFormatTimeZone(
+            wcSession().timeFormatter().defaultFormatTimeZone() );
+        return formatter.format( now );
     }
 
 
     // ----------------------------------------------------------
     public boolean applyLocalChanges()
     {
+        log.debug( "applyLocalChanges()" );
         User u = wcSession().localUser();
         String lcPassword = ( newPassword1 == null )
             ? null

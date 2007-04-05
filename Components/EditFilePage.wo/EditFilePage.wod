@@ -28,8 +28,8 @@ SaveAndDone: WOSubmitButton {
 }
 
 Time: WOString {
-    value      = lastModified;
-	dateformat = "%m/%d/%Y %I:%M%p";
+    value     = lastModified;
+    formatter = session.timeFormatter;
 }
 
 WizardForm: WOForm {

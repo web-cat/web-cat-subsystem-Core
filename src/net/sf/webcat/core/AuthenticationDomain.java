@@ -30,6 +30,8 @@ import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 
+import er.extensions.*;
+
 import java.io.File;
 import java.util.*;
 
@@ -258,6 +260,275 @@ public class AuthenticationDomain
 
     // ----------------------------------------------------------
     /**
+     * Get the list of available time formats for users to choose from.
+     * This value is loaded/parsed from the <code>timeFormats</code>
+     * configuration property, set under the Core subsystem's configuration
+     * settings.  The list should be a list of strings containing patterns
+     * acceptable by {@link NSTimestampFormatter}.
+     * @return an NSArray of strings representing the time formats available
+     */
+    public static NSArray availableTimeFormats()
+    {
+        if ( timeFormats == null )
+        {
+            try
+            {
+                timeFormats = Application.configurationProperties()
+                    .arrayForKey( "timeFormats" );
+            }
+            catch ( Exception e )
+            {
+                log.error( "Exception parsing \"timeFormats\" property "
+                    + "setting as an NSArray:", e );
+            }
+            if ( timeFormats == null )
+            {
+                timeFormats = new NSArray( new String[]{"%I:%M%p", "%H:%M"} );
+            }
+        }
+        return timeFormats;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * An instance method wrapper for {@link #availableTimeFormats()} to
+     * provide KVC access to that static method.
+     * @return an NSArray of strings representing the time formats available
+     */
+    public NSArray timeFormats()
+    {
+        return availableTimeFormats();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the default time format pattern for users to choose from.
+     * The default is the first entry in the {@link #availableTimeFormats()}
+     * list.
+     * @return the default time format pattern
+     */
+    public static String globalDefaultTimeFormat()
+    {
+        return (String)availableTimeFormats().objectAtIndex( 0 );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the list of available date formats for users to choose from.
+     * This value is loaded/parsed from the <code>dateFormats</code>
+     * configuration property, set under the Core subsystem's configuration
+     * settings.  The list should be a list of strings containing patterns
+     * acceptable by {@link NSTimestampFormatter}.
+     * @return an NSArray of strings representing the date formats available
+     */
+    public static NSArray availableDateFormats()
+    {
+        if ( dateFormats == null )
+        {
+            try
+            {
+                dateFormats = Application.configurationProperties()
+                    .arrayForKey( "dateFormats" );
+            }
+            catch ( Exception e )
+            {
+                log.error( "Exception parsing \"dateFormats\" property "
+                    + "setting as an NSArray:", e );
+            }
+            if ( dateFormats == null )
+            {
+                dateFormats = new NSArray( new String[]{
+                    "%m/%d/%y", "%m/%d/%Y", "%d.%m.%Y", "%d.%m.%y",
+                    "%y-%m-%d", "%Y-%m-%d", "%d-%b-%y", "%d-%b-%Y" } );
+            }
+        }
+        return dateFormats;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * An instance method wrapper for {@link #availableDateFormats()} to
+     * provide KVC access to that static method.
+     * @return an NSArray of strings representing the date formats available
+     */
+    public NSArray dateFormats()
+    {
+        return availableDateFormats();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the default date format pattern for users to choose from.
+     * The default is the first entry in the {@link #availableDateFormats()}
+     * list.
+     * @return the default date format pattern
+     */
+    public static String globalDefaultDateFormat()
+    {
+        return (String)availableDateFormats().objectAtIndex( 0 );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the time format pattern associated with this authentication
+     * domain.
+     * @return the time format pattern
+     */
+    public String timeFormat()
+    {
+        String result = super.timeFormat();
+        if ( result == null || result.equals( "" ) )
+        {
+            result = globalDefaultTimeFormat();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the date format pattern associated with this authentication
+     * domain.
+     * @return the date format pattern
+     */
+    public String dateFormat()
+    {
+        String result = super.dateFormat();
+        if ( result == null || result.equals( "" ) )
+        {
+            result = globalDefaultDateFormat();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * A simple class that combines a time zone ID with a printable
+     * time zone name.
+     */
+    public static class TimeZoneDescriptor
+    {
+        public String id;
+        public String printableName;
+        
+        public TimeZoneDescriptor( String id )
+        {
+            this.id = id;
+            printableName = id.replaceAll( "_", " " ).replaceAll( "/", ": " );
+        }
+        
+        public NSTimeZone timeZone()
+        {
+            return NSTimeZone.timeZoneWithName( id, true );
+        }
+
+        public boolean equals( Object obj )
+        {
+            boolean result = false;
+            if ( obj instanceof TimeZoneDescriptor )
+            {
+                TimeZoneDescriptor rhs = (TimeZoneDescriptor)obj;
+                result = ( id == null )
+                    ? ( rhs.id == null )
+                    : ( id.equals( rhs.id ) );
+                result = result && ( ( printableName == null )
+                    ? ( rhs.printableName == null )
+                    : ( printableName.equals( rhs.printableName ) ) );
+            }
+            return result;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the list of available date formats for users to choose from.
+     * This value is loaded/parsed from the <code>dateFormats</code>
+     * configuration property, set under the Core subsystem's configuration
+     * settings.  The list should be a list of strings containing patterns
+     * acceptable by {@link NSTimestampFormatter}.
+     * @return an NSArray of strings representing the date formats available
+     */
+    public static NSArray availableTimeZones()
+    {
+        if ( timeZones == null )
+        {
+            NSMutableArray zones =
+                new NSMutableArray( NSTimeZone.knownTimeZoneNames() );
+            for ( int i = 0; i < zones.count(); i++ )
+            {
+                zones.replaceObjectAtIndex(
+                    new TimeZoneDescriptor( (String)zones.objectAtIndex( i ) ),
+                    i );
+            }
+            ERXArrayUtilities.sortArrayWithKey( zones, "printableName" );
+            timeZones = zones;
+        }
+        return timeZones;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the {@link TimeZoneDescriptor} associated with the specified
+     * time zone name (id).
+     * @return The matching descriptor from the {@link #availableTimeZones()}
+     * list
+     */
+    public static TimeZoneDescriptor descriptorForZone( String id )
+    {
+        NSArray zones = availableTimeZones();
+        for ( int i = 0; i < zones.count(); i++ )
+        {
+            TimeZoneDescriptor tzd =
+                (TimeZoneDescriptor)zones.objectAtIndex( i );
+            if ( tzd.id.equals( id ) )
+            {
+                return tzd;
+            }
+        }
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * An instance method wrapper for {@link #availableTimeZones()} to
+     * provide KVC access to that static method.
+     * @return an NSArray of strings representing the date formats available
+     */
+    public NSArray timeZones()
+    {
+        return availableTimeZones();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the time zone name associated with this authentication
+     * domain.
+     * @return the time zone name
+     */
+    public String timeZoneName()
+    {
+        String result = super.timeZoneName();
+        if ( result == null || result.equals( "" ) )
+        {
+            result = NSTimeZone.getDefault().getID();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Generate a name usable as a subdirectory name from this
      * objects property name.
      * @return a subdirectory name
@@ -404,6 +675,9 @@ public class AuthenticationDomain
     private static NSArray authDomains;
     private static Map theAuthenticatorMap;
     private String cachedSubdirName = null;
+    private static NSArray timeFormats;
+    private static NSArray dateFormats;
+    private static NSArray timeZones;
 
     static Logger log = Logger.getLogger( AuthenticationDomain.class );
 }

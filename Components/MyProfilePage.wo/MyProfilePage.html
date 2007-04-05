@@ -1,7 +1,7 @@
 <webobject name="Page">
 <p>You are <span class="hl"><webobject name="UserName"/></span> registered in
 the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
-<webobject name="Form">
+<webobject name="Form1">
 <table style="border: none;">
 <tr><td class="R">First name:</td><td><webobject name="FirstName"/></td></tr>
 <tr><td class="R">Last name:</td><td><webobject name="LastName"/></td></tr>
@@ -15,7 +15,18 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 </webobject>
 <tr><td></td>
     <td><webobject name="ApplyChanges"/></td></tr>
-</table>
+</table></webobject>
+
+<h2>Time Formats</h2>
+<webobject name="Form2"><table style="border: none;">
+<tr><td class="R">Time zone:</td><td><webobject name="TimeZone"/></td></tr>
+<tr><td class="R">Format:</td><td><webobject name="DateFormat"/>
+  <webobject name="TimeFormat"/></td></tr>
+<tr><td></td>
+    <td><webobject name="ApplyTimeFormats"/></td></tr>
+</table></webobject>
+
+<h2>Courses</h2>
 <webobject name="EnrolledInCourses">
 <p>You are currently <b>enrolled in</b> these courses:</p>
 <div class="shadow"><table><tbody><tr><th>Course</th><th>Name</th><th>Instructor</th></tr>
@@ -57,4 +68,4 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 </webobject><webobject name="NotTeachingCourses">
 <p>You are not currently registered as the <b>instructor</b> for any courses.</p>
 </webobject></webobject>
-</webobject></webobject>
+</webobject>

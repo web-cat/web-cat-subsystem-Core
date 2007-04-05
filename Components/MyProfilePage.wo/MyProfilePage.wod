@@ -1,27 +1,42 @@
-Page : net.sf.webcat.core.PageWithNavigation {
-	title = "Manage Your Profile";
+ApplyChanges: WOSubmitButton {
+	action = apply;
+	value  = " Apply ";
 }
 
-UserName: WOString {
-    value = session.user.userName;
+ApplyTimeFormats: WOSubmitButton {
+	action = applyTimeFormats;
+	value  = " Apply ";
+}
+
+CanChangePassword: WOConditional {
+    condition = session.localUser.canChangePassword;
+}
+
+CanTA: WOConditional {
+	condition = session.user.hasTAPrivileges;
+}
+
+CanTeach: WOConditional {
+	condition = session.user.hasFacultyPrivileges;
+}
+
+CompactName: WOString {
+	value = courseOffering.compactName;
+}
+
+CourseName: WOString {
+	value = courseOffering.course.name;
+}
+
+DateFormat: WOPopUpButton {
+    list		  = session.user.authenticationDomain.dateFormats;
+    item   		  = aFormat;
+    selection     = session.user.dateFormat;
+    displayString = formattedCurrentTime;
 }
 
 DomainName: WOString {
     value = session.user.authenticationDomain.displayableName;
-}
-
-Form: WOForm {
-	action = applyChanges;
-}
-
-FirstName: WOTextField {
-    value = session.localUser.firstName;
-    size = 40;
-}
-
-LastName: WOTextField {
-    value = session.localUser.lastName;
-    size = 40;
 }
 
 Email: WOTextField {
@@ -29,13 +44,42 @@ Email: WOTextField {
     size = 40;
 }
 
-URL: WOTextField {
-    value = session.localUser.url;
+EnrolledInCourses: WOConditional {
+    condition = session.user.enrolledIn.count;
+}
+
+EnrollmentRepetition: WORepetition {
+	item  = courseOffering;
+	list  = enrolledInDisplayGroup.displayedObjects;
+	index = index;
+}
+
+FirstName: WOTextField {
+    value = session.localUser.firstName;
     size = 40;
 }
 
-CanChangePassword: WOConditional {
-    condition = session.localUser.canChangePassword;
+Form1: WOForm {
+	action = apply;
+}
+
+Form2: WOForm {
+	action = applyTimeFormats;
+}
+
+InstructorName: WOHyperlink {
+	href   = instructor.url;
+    string = instructor.shortName;
+}
+
+InstructorRepetition: WORepetition {
+    item = instructor;
+    list = courseOffering.instructors;
+}
+
+LastName: WOTextField {
+    value = session.localUser.lastName;
+    size = 40;
 }
 
 NewPassword1: WOPasswordField {
@@ -48,59 +92,27 @@ NewPassword2: WOPasswordField {
 	size  = 40;
 }
 
-ApplyChanges: WOSubmitButton {
-	action = apply;
-	value  = " Apply ";
-}
-
-EnrolledInCourses: WOConditional {
-    condition = session.user.enrolledIn.count;
-}
-
 NotEnrolledInCourses: WOConditional {
     condition = session.user.enrolledIn.count;
     negate    = true;
 }
 
-EnrollmentRepetition: WORepetition {
-	item  = courseOffering;
-	list  = enrolledInDisplayGroup.displayedObjects;
-	index = index;
+NotTAInCourses: WOConditional {
+    condition = session.user.TAFor.count;
+    negate    = true;
 }
 
-TR: net.sf.webcat.core.TableRow {
-    index = index;
+NotTeachingCourses: WOConditional {
+    condition = session.user.teaching.count;
+    negate    = true;
 }
 
-CompactName: WOString {
-	value = courseOffering.compactName;
-}
-
-CourseName: WOString {
-	value = courseOffering.course.name;
-}
-
-InstructorRepetition: WORepetition {
-    item = instructor;
-    list = courseOffering.instructors;
-}
-
-InstructorName: WOHyperlink {
-	href   = instructor.url;
-    string = instructor.shortName;
-}
-
-CanTA: WOConditional {
-	condition = session.user.hasTAPrivileges;
+Page : net.sf.webcat.core.PageWithNavigation {
+	title = "Manage Your Profile";
 }
 
 TAInCourses: WOConditional {
     condition = session.user.TAFor.count;
-}
-
-NotTAInCourses: WOConditional {
-    condition = session.user.TAFor.count;
-    negate    = true;
 }
 
 TARepetition: WORepetition {
@@ -109,21 +121,39 @@ TARepetition: WORepetition {
 	index = index;
 }
 
-CanTeach: WOConditional {
-	condition = session.user.hasFacultyPrivileges;
-}
-
 TeachingCourses: WOConditional {
     condition = session.user.teaching.count;
-}
-
-NotTeachingCourses: WOConditional {
-    condition = session.user.teaching.count;
-    negate    = true;
 }
 
 TeachingRepetition: WORepetition {
 	item  = courseOffering;
 	list  = teachingDisplayGroup.displayedObjects;
 	index = index;
+}
+
+TimeFormat: WOPopUpButton {
+    list		  = session.user.authenticationDomain.timeFormats;
+    item   		  = aFormat;
+    selection     = session.user.timeFormat;
+    displayString = formattedCurrentTime;
+}
+
+TimeZone: WOPopUpButton {
+    list		  = session.user.authenticationDomain.timeZones;
+    item   		  = zone;
+    selection     = selectedZone;
+    displayString = zone.printableName;
+}
+
+TR: net.sf.webcat.core.TableRow {
+    index = index;
+}
+
+URL: WOTextField {
+    value = session.localUser.url;
+    size = 40;
+}
+
+UserName: WOString {
+    value = session.user.userName;
 }

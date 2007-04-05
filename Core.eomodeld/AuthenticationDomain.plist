@@ -13,22 +13,28 @@
         }, 
         {name = id; prototypeName = id; }, 
         {columnName = CPROPERTYNAME; name = propertyName; prototypeName = tinyText; }, 
-        {columnName = CTIMEZONENAME; name = timeZoneName; prototypeName = tinyText; }
+        {columnName = CTIMEZONENAME; name = timeZoneName; prototypeName = tinyText; },
+        {columnName = CTIMEFORMAT; name = timeFormat; prototypeName = tinyText; },
+        {columnName = CDATEFORMAT; name = dateFormat; prototypeName = tinyText; }
     ); 
     attributesUsedForLocking = (
-        propertyName, 
-        displayableName, 
-        defaultEmailDomain, 
-        timeZoneName, 
-        defaultURLPattern
+        dateFormat,
+        displayableName,
+        defaultEmailDomain,
+        defaultURLPattern,
+        propertyName,
+        timeFormat,
+        timeZoneName
     ); 
     className = net.sf.webcat.core.AuthenticationDomain; 
     classProperties = (
-        propertyName, 
-        displayableName, 
-        defaultEmailDomain, 
-        timeZoneName, 
-        defaultURLPattern
+        dateFormat,
+        displayableName,
+        defaultEmailDomain,
+        defaultURLPattern,
+        propertyName,
+        timeFormat,
+        timeZoneName
     ); 
     externalName = TAUTHENTICATIONDOMAIN; 
     name = AuthenticationDomain; 

@@ -129,6 +129,20 @@ public class CoreDatabaseUpdates
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Adds timeFormat and dateFormat keys to AuthenticationDomain.
+     * @throws SQLException on error
+     */
+    public void updateIncrement5() throws SQLException
+    {
+        database().executeSQL(
+            "alter table TAUTHENTICATIONDOMAIN add CTIMEFORMAT TINYTEXT" );
+        database().executeSQL(
+            "alter table TAUTHENTICATIONDOMAIN add CDATEFORMAT TINYTEXT" );
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
@@ -162,7 +176,7 @@ public class CoreDatabaseUpdates
                 "CREATE TABLE TAUTHENTICATIONDOMAIN "
                 + "(CDEFAULTEMAILDOMAIN TINYTEXT , CTINYTEXT TINYTEXT , "
                 + "CDISPLAYABLENAME TINYTEXT , OID INTEGER NOT NULL, "
-                + "CPROPERTYNAME TINYTEXT , CTIMEZONENAME TINYTEXT )" );
+                + "CPROPERTYNAME TINYTEXT , c )" );
             database().executeSQL(
                 "ALTER TABLE TAUTHENTICATIONDOMAIN ADD PRIMARY KEY (OID)" );
 

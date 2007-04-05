@@ -59,10 +59,12 @@ public abstract class _AuthenticationDomain
     //~ Constants (for key names) .............................................
 
     // Attributes ---
+    public static final String DATE_FORMAT_KEY = "dateFormat";
     public static final String DEFAULT_EMAIL_DOMAIN_KEY = "defaultEmailDomain";
     public static final String DEFAULT_URLPATTERN_KEY = "defaultURLPattern";
     public static final String DISPLAYABLE_NAME_KEY = "displayableName";
     public static final String PROPERTY_NAME_KEY = "propertyName";
+    public static final String TIME_FORMAT_KEY = "timeFormat";
     public static final String TIME_ZONE_NAME_KEY = "timeZoneName";
     // To-one relationships ---
     // To-many relationships ---
@@ -70,6 +72,30 @@ public abstract class _AuthenticationDomain
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>dateFormat</code> value.
+     * @return the value of the attribute
+     */
+    public String dateFormat()
+    {
+        return (String)storedValueForKey( "dateFormat" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>dateFormat</code>
+     * property.
+     * 
+     * @param value The new value for this property
+     */
+    public void setDateFormat( String value )
+    {
+        takeStoredValueForKey( value, "dateFormat" );
+    }
+
 
     // ----------------------------------------------------------
     /**
@@ -164,6 +190,30 @@ public abstract class _AuthenticationDomain
     public void setPropertyName( String value )
     {
         takeStoredValueForKey( value, "propertyName" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>timeFormat</code> value.
+     * @return the value of the attribute
+     */
+    public String timeFormat()
+    {
+        return (String)storedValueForKey( "timeFormat" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>timeFormat</code>
+     * property.
+     * 
+     * @param value The new value for this property
+     */
+    public void setTimeFormat( String value )
+    {
+        takeStoredValueForKey( value, "timeFormat" );
     }
 
 

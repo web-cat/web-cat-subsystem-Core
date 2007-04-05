@@ -79,6 +79,10 @@ public class User
     public static final byte WEBCAT_READ_PRIVILEGES = 80;
     public static final byte WEBCAT_RW_PRIVILEGES   = 90;
 
+    public static final String TIME_ZONE_NAME_KEY = "timeZoneName";
+    public static final String TIME_FORMAT_KEY    = "timeFormat";
+    public static final String DATE_FORMAT_KEY    = "dateFormat";
+
 
     //~ Methods ...............................................................
 
@@ -264,6 +268,104 @@ public class User
     public String emailHref()
     {
         return "mailto:" + email();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the time format this user prefers.  If the user has not set a
+     * preference, the default time format for the user's authentication
+     * domain will be used.  The value should be a format string
+     * acceptable by {@link NSTimestampFormatter}.
+     * @see {@link AuthenticationDomain#timeFormat()}
+     * @return the time format pattern
+     */
+    public String timeFormat()
+    {
+        String result =
+            (String)preferences().objectForKey( TIME_FORMAT_KEY );
+        if ( result == null || result.equals( "" ) )
+        {
+            result = authenticationDomain().timeFormat();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the time format pattern for this user.
+     * 
+     * @param value The new value for this property
+     */
+    public void setTimeFormat( String value )
+    {
+        preferences().setObjectForKey( value, TIME_FORMAT_KEY );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the time zone name of this user's preferred time zone.  If the
+     * user has not set a time zone preference, the default time zone for
+     * the user's authentication domain is used instead.
+     * @see {@link AuthenticationDomain#timeZoneName()}
+     * @return the time zone name
+     */
+    public String timeZoneName()
+    {
+        String result =
+            (String)preferences().objectForKey( TIME_ZONE_NAME_KEY );
+        if ( result == null || result.equals( "" ) )
+        {
+            result = authenticationDomain().timeZoneName();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the time zone name for this user's preferred time zone.
+     * 
+     * @param value The new value for this property
+     */
+    public void setTimeZoneName( String value )
+    {
+        preferences().setObjectForKey( value, TIME_ZONE_NAME_KEY );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the date format this user prefers.  If the user has not set a
+     * preference, the default date format for the user's authentication
+     * domain will be used.  The value should be a format string
+     * acceptable by {@link NSTimestampFormatter}.
+     * @see {@link AuthenticationDomain#dateFormat()}
+     * @return the date format pattern
+     */
+    public String dateFormat()
+    {
+        String result =
+            (String)preferences().objectForKey( DATE_FORMAT_KEY );
+        if ( result == null || result.equals( "" ) )
+        {
+            result = authenticationDomain().dateFormat();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the date format pattern for this user.
+     * 
+     * @param value The new value for this property
+     */
+    public void setDateFormat( String value )
+    {
+        preferences().setObjectForKey( value, DATE_FORMAT_KEY );
     }
 
 

@@ -4,8 +4,8 @@ SubsystemRows: net.sf.webcat.core.SubsystemFragmentCollector {
 }
 
 StartTime: WOString {
-	dateformat = "%m/%d/%y %I:%M%p";
-	value      = application.startTime;
+    formatter = session.timeFormatter;
+	value     = application.startTime;
 }
 
 TR : net.sf.webcat.core.TableRow {
