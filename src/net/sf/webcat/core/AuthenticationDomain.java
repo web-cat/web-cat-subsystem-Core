@@ -479,6 +479,7 @@ public class AuthenticationDomain
     /**
      * Get the {@link TimeZoneDescriptor} associated with the specified
      * time zone name (id).
+     * @param id the time zone name (id) to look for
      * @return The matching descriptor from the {@link #availableTimeZones()}
      * list
      */
