@@ -122,10 +122,10 @@ sequence of multiple arguments.";
   choices will be shown in the order listed.  The first choice in the
   list will be the default value for use by authentication domains that
   do not specify their own default values.    You can use either the
-  <a href="http://developer.apple.com/documentation/WebObjects/Reference/API/com/webobjects/foundation/NSTimestampFormatter.html">WebObjects
+  <a href=\"http://developer.apple.com/documentation/WebObjects/Reference/API/com/webobjects/foundation/NSTimestampFormatter.html\">WebObjects
   NSTimestamp formatting codes</a> (similar to those used by the standard C
   <code>strtotime()</code> function), or the codes supported by the
-  <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
+  <a href=\"http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html\">SimpleDateFormat</a>
   class.  Changes to this property will take effect on the next Web-CAT
   restart.";
     },
@@ -150,10 +150,10 @@ sequence of multiple arguments.";
   choices will be shown in the order listed.  The first choice in the
   list will be the default value for use by authentication domains that
   do not specify their own default values.  You can use either the
-  <a href="http://developer.apple.com/documentation/WebObjects/Reference/API/com/webobjects/foundation/NSTimestampFormatter.html">WebObjects
+  <a href=\"http://developer.apple.com/documentation/WebObjects/Reference/API/com/webobjects/foundation/NSTimestampFormatter.html\">WebObjects
   NSTimestamp formatting codes</a> (similar to those used by the standard C
   <code>strtotime()</code> function), or the codes supported by the
-  <a href="http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html">SimpleDateFormat</a>
+  <a href=\"http://java.sun.com/j2se/1.5.0/docs/api/java/text/SimpleDateFormat.html\">SimpleDateFormat</a>
   class.  Changes to this property will take effect on the next Web-CAT
   restart.";
     },
