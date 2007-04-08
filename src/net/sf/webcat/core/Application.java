@@ -243,10 +243,15 @@ public class Application
             // This is just support for legacy properties used by Web-CAT
             String host =
                 configurationProperties().getProperty( "mail.smtp.host" );
-            if ( host != null
-                 && !host.equals( "" )
-                 && "smtp".equals(
-                     configurationProperties().getProperty( "SMTPHost" ) ) )
+            if ( host == null || "".equals( host ) )
+            {
+                log.info( "attempting to set mail.smtp.host from WOSMTPHost" );
+                configurationProperties().setProperty(
+                    "mail.smtp.host", SMTPHost() );
+                configurationProperties().attemptToSave();
+                configurationProperties().updateToSystemProperties();
+            }
+            else
             {
                 setSMTPHost( host );
             }
@@ -282,6 +287,7 @@ public class Application
         // Ensure subsystems are all loaded
         subsystemManager();
         startTime = new NSTimestamp();
+        checkBootstrapVersion();
     }
 
 
@@ -346,16 +352,7 @@ public class Application
             WOContext context
         )
     {
-        if ( log.isDebugEnabled() )
-        {
-            log.debug( "restoreSessionWithID( " + sessionID + " )" );
-            log.debug( "from  here", new Exception( "here" ) );
-        }
         WOSession result = super.restoreSessionWithID( sessionID, context );
-        if ( log.isDebugEnabled() )
-        {
-            log.debug( "restored session = " + result );
-        }
         return result;
     }
 
@@ -576,13 +573,13 @@ public class Application
      */
     public WOComponent pageWithName( String name, WOContext context )
     {
-        if ( log.isDebugEnabled() )
+        if ( requestLog.isDebugEnabled() )
         {
-            log.debug( "pageWithName( "
-                     + ( ( name == null ) ? "<null>" : name )
-                     + ", "
-                     + context
-                     + " )" );
+            requestLog.debug( "pageWithName( "
+                + ( ( name == null ) ? "<null>" : name )
+                + ", "
+                + context
+                + " )" );
         }
         return super.pageWithName( name, context );
     }
@@ -637,7 +634,7 @@ public class Application
                                     "Cannot force GC to free more than "
                                     + freeLimit + " bytes.  Terminating.",
                                     null );
-                    ERXApplication.erxApplication().killInstance();
+                    killInstance();
                 }
                 else
                 {
@@ -652,7 +649,7 @@ public class Application
         {
             if ( dieTime.before( new NSTimestamp() ) )
             {
-                ERXApplication.erxApplication().killInstance();
+                killInstance();
             }
         }
         else if ( isRefusingNewSessions() )
@@ -667,19 +664,22 @@ public class Application
                     0   // seconds
                 );
         }
-        if ( log.isDebugEnabled() )
+        if ( requestLog.isDebugEnabled() )
         {
-            log.debug( "dispatchRequest():\n\tmethod = " + aRequest.method() );
-            log.debug( "\tqueryString = " + aRequest.queryString() );
-            log.debug( "\trequestHandlerKey = " + aRequest.requestHandlerKey() );
-            log.debug( "\trequestHandlerPath = " + aRequest.requestHandlerPath() );
-            log.debug( "\turi = " + aRequest.uri() );
-            log.debug( "\tcookies = " + aRequest.cookies() );
+            requestLog.debug( "dispatchRequest():\n\tmethod = "
+                + aRequest.method() );
+            requestLog.debug( "\tqueryString = " + aRequest.queryString() );
+            requestLog.debug( "\trequestHandlerKey = "
+                + aRequest.requestHandlerKey() );
+            requestLog.debug( "\trequestHandlerPath = "
+                + aRequest.requestHandlerPath() );
+            requestLog.debug( "\turi = " + aRequest.uri() );
+            requestLog.debug( "\tcookies = " + aRequest.cookies() );
         }
         WOResponse result = super.dispatchRequest( aRequest );
-        if ( log.isDebugEnabled() )
+        if ( requestLog.isDebugEnabled() )
         {
-            log.debug( "dispatchRequest() result:\n" + result  );
+            requestLog.debug( "dispatchRequest() result:\n" + result  );
         }
         return result;
     }
@@ -1613,19 +1613,77 @@ public class Application
     {
         if ( net.sf.webcat.WCServletAdaptor.getInstance() == null )
         {
-            // If we're not running as a servlet, then there's no updating
-            // to do
+            // If we're not running as a servlet, there's no updating to do
+            log.debug( "Skipping static HTML resource updates" );
             return;
         }
 
         File woaDir = configurationProperties().file().getParentFile();
-        String lastUpdated = configurationProperties().getProperty(
-            "static.HTML.date", "00000000" );
         File appBase = woaDir.getParentFile().getParentFile();
-        log.debug( "appBase = " + appBase );
-        log.debug( "appBase = " + appBase.getAbsolutePath() );
+        File staticResourceBaseDir = appBase;
         File frameworkDir =
             new File( woaDir, "Contents/Frameworks/Library/Frameworks" );
+        String lastUpdated = configurationProperties().getProperty(
+            "static.HTML.date", "00000000" );
+        String staticHtmlDirName = configurationProperties()
+            .getProperty( "static.html.dir" );
+        String lastStaticHtmlDirName = configurationProperties()
+            .getProperty( "last.static.html.dir" );
+        String staticHtmlBase = configurationProperties().getProperty(
+        "static.html.baseURL" );
+
+        if ( staticHtmlDirName != null && staticHtmlBase != null )
+        {
+            // Only use the static HTML dir parameter if the app is also
+            // configured to use an external static HTML base URL for
+            // resources.
+            staticHtmlDirName = staticHtmlDirName.replace( '\\', '/' );
+            File dir = new File( staticHtmlDirName );
+            if ( !dir.exists() )
+            {
+                try
+                {
+                    dir.mkdirs();
+                }
+                catch ( Exception e )
+                {
+                    log.error( "Exception attempting to create static HTML "
+                        + "resource dir '" + staticHtmlDirName + "':", e );
+                }
+            }
+            if ( dir.exists() )
+            {
+                staticResourceBaseDir = dir;
+            }
+        }
+        else
+        {
+            // If there is no static HTML dir specified, or if there is
+            // no base URL given, then the servlet will have to serve all
+            // these resources, and therefore we need to store static
+            // resources in the app base dir.
+
+            // But we still need a value we can use to compare against the
+            // previous value, to see if the location has changed
+            staticHtmlDirName = appBase.getAbsolutePath().replace( '\\', '/' );
+        }
+        if ( lastStaticHtmlDirName == null
+            || !staticHtmlDirName.equals( lastStaticHtmlDirName ) )
+        {
+            // Force entire update
+            lastUpdated = "00000000";
+        }
+
+        if ( log.isDebugEnabled() )
+        {
+            log.debug( "updateStaticHtmlResources: staticHtmlDir = "
+                + staticHtmlDirName );
+            log.debug( "updateStaticHtmlResources: lastStaticHtmlDir = "
+                + lastStaticHtmlDirName );
+            log.debug( "appBase = " + appBase.getAbsolutePath() );
+            log.debug( "staticResourceBase = " + staticResourceBaseDir );
+        }
+
         File[] framework = frameworkDir.listFiles();
         for ( int i = 0; i < framework.length; i++ )
         {
@@ -1647,7 +1705,8 @@ public class Application
                         + framework[i].getName() );
                     try
                     {
-                        File target = new File( appBase, framework[i].getName()
+                        File target = new File( staticResourceBaseDir,
+                            framework[i].getName()
                             + "/" + webServerResources.getName() );
                         if ( target.exists() )
                         {
@@ -1663,7 +1722,7 @@ public class Application
                         }
                         target.mkdirs();
                         net.sf.webcat.archives.FileUtilities
-                            .copyDirectoryContentsIfNecessary(
+                            .copyDirectoryContents(
                                 webServerResources, target );
                     }
                     catch ( java.io.IOException e )
@@ -1681,14 +1740,10 @@ public class Application
         NSTimestampFormatter formatter = new NSTimestampFormatter( "%Y%m%d" );
         configurationProperties().setProperty( "static.HTML.date",
             formatter.format( new NSTimestamp() ) );
-        if ( !configurationProperties().attemptToSave() )
-        {
-            log.warn( "Could not save configuration settings to "
-                + configurationProperties().file() );
-        }
+        configurationProperties().setProperty( "last.static.html.dir",
+            staticResourceBaseDir.getAbsolutePath().replace( '\\', '/' ) );
+        configurationProperties().attemptToSave();
 
-        String staticHtmlBase = configurationProperties().getProperty(
-            "static.html.baseURL" );
         if ( staticHtmlBase == null )
         {
             staticHtmlBase = configurationProperties().getProperty(
@@ -1727,6 +1782,87 @@ public class Application
             resourceManager().flushDataCache();
         }
         log.debug( "frameworks Base URL = " + frameworksBaseURL() );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * If the app is running as a servlet, this method checks the version
+     * stamp stored in the {@link net.sf.webcat.WCServletAdaptor} to see if
+     * it is the same as the "expected" version number stored in the Core
+     * subsystem's properties file.  The "expected" version is captured at
+     * subsystem build time from the most recent Bootstrap.jar build.
+     * But because the Bootstrap.jar file performs the automatic update
+     * operations, it cannot automatically update itself--instead, it must
+     * be updated manually.  This check detects when a new release is
+     * available, and notifies the administrator that a manual update is
+     * needed.
+     * 
+     * Instructions for performing a manual update are provided at:
+     * <a href="http://web-cat.cs.vt.edu/WCWiki/UpdateBootstrapJar">
+     * http://web-cat.cs.vt.edu/WCWiki/UpdateBootstrapJar</a>
+     */
+    private void checkBootstrapVersion()
+    {
+        String expectedVersion = configurationProperties().getProperty(
+            "bootstrap.project.version" );
+        if ( expectedVersion != null )
+        {
+            net.sf.webcat.WCServletAdaptor adaptor =
+                net.sf.webcat.WCServletAdaptor.getInstance();
+            // Bootstrapping is only enabled when running as a servlet,
+            // so we can only check the version at that time
+            if ( adaptor != null )
+            {
+                String currentVersion = null;
+                // Use reflection to get the current version, in case the
+                // current bootstrap version is so old it doesn't even
+                // support version retrieval!
+                try
+                {
+                    currentVersion = (String)adaptor.getClass()
+                        .getMethod( "version" ).invoke( adaptor );
+                }
+                catch ( Exception e )
+                {
+                    log.error( "exception retrieving Bootstrap.jar version:",
+                        e );
+                }
+                
+                if ( !expectedVersion.equals( currentVersion ) )
+                {
+                    log.error( "Bootstrap.jar is out of date: expected '"
+                        + expectedVersion + "' but found '" + currentVersion
+                        + "'");
+                    sendAdminEmail( null,null, true,
+                        "Please update your Bootstrap.jar",
+                        "During startup, Web-CAT detected that an older "
+                        + "version of Bootstrap.jar\nis installed.  Web-CAT "
+                        + "expected version '"
+                        + expectedVersion
+                        + "', but found '"
+                        + currentVersion
+                        + "'.\nThis jar provides Web-CAT's automatic update "
+                        + "support and it can only be\nupdated manually.\n\n"
+                        + "Please follow these instructions to download and "
+                        + "install the latest\navailable version:\n\n"
+                        + "http://web-cat.cs.vt.edu/WCWiki/"
+                        + "UpdateBootstrapJar\n",
+                        null );
+                }
+            }
+        }
+        else
+        {
+            log.error( "Unable to read expected bootstrap.project.version" );
+            sendAdminEmail( null,null, true,
+                "Unable to verify bootstrap version",
+                "During startup, Web-CAT was unable to read the expected\n"
+                + "bootstrap.project.version.  Your Web-CAT instance will "
+                + "continue\nrunning normally.  Please contact the Web-CAT "
+                + "team for assistance\nresolving this problem.\n",
+                null );
+        }
     }
 
 
@@ -1790,4 +1926,6 @@ public class Application
     private boolean staticHtmlResourcesNeedInitializing = true;
 
     static Logger log = Logger.getLogger( Application.class );
+    static Logger requestLog = Logger.getLogger( Application.class.getName()
+        + ".requests" );
 }
