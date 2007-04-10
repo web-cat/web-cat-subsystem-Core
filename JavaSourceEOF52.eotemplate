@@ -314,7 +314,7 @@ $><$foreach FetchSpec javaBeautifiedFetchSpecificationDictionaries.@sortedNameAr
     {
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "<$FetchSpec.fetchName$>", "<$name$>" );
-<$if FetchSpec.bindings.count > 0$>
+<$if FetchSpec.bindings.@count > 0$>
         NSMutableDictionary bindings = new NSMutableDictionary();
 <$foreach Binding FetchSpec.bindings do2$>
         if ( <$Binding.name$>Binding != null )
