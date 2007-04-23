@@ -6,6 +6,9 @@
 		<project>Bootstrap</project>
 		<project>DBUpdateEngine</project>
 		<project>EOJDBCPrototypes</project>
+		<project>ExternalJars</project>
+		<project>WebObjectsUpdater</project>
+		<project>WonderUpdater</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

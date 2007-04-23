@@ -4,10 +4,12 @@
 	<classpathentry kind="src" path="/DBUpdateEngine"/>
 	<classpathentry kind="src" path="/EOJDBCPrototypes"/>
 	<classpathentry kind="src" path="/Bootstrap"/>
-	<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/DBUpdateEngine/EOJDBCPrototypes/ERExtensions/ERJars/JavaWOExtensions/WOUnitTest/JavaEOAccess/JavaEOControl/JavaFoundation/JavaJDBCAdaptor/JavaWebObjects/JavaWOJSPServlet/JavaXML/JDBCEOAdaptor"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Web-CAT-externals"/>
+	<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/DBUpdateEngine/EOJDBCPrototypes/ERExtensions/ERJars/ExternalJars/JavaWOExtensions/WebObjectsUpdater/WonderUpdater/WOUnitTest/JavaEOAccess/JavaEOControl/JavaFoundation/JavaJDBCAdaptor/JavaWebObjects/JavaWOJSPServlet/JavaXML/JDBCEOAdaptor"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="C:/Apple/Library/Frameworks/JavaWOJSPServlet.framework/WebServerResources/Java/JavaWOJSPServlet_client.jar"/>
 	<classpathentry kind="lib" path="C:/www/Tomcat5/common/lib/servlet-api.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/ExternalJars"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WebObjectsUpdater"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/WonderUpdater"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
