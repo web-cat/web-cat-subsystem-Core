@@ -101,6 +101,7 @@ public class TarUtil
 				tarStream.copyEntryContents( destStream );
 				destStream.flush();
 				destStream.close();
+                destFile.setLastModified( tarEntry.getModTime().getTime() );
 			}
 
 			tarEntry = tarStream.getNextEntry();

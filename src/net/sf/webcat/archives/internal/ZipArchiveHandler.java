@@ -107,8 +107,9 @@ public class ZipArchiveHandler
                 {
 					destParent.mkdirs();
                 }
-				
-				FileUtilities.copyStreamToFile( zipStream, destFile );
+
+				FileUtilities.copyStreamToFile(
+                    zipStream, destFile, zipEntry.getTime() );
 			}
 
 			zipStream.closeEntry();

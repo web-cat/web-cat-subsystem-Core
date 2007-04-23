@@ -56,7 +56,8 @@ public class FileUtilities
 		throws IOException
 	{
 		FileInputStream stream = new FileInputStream( srcFile );
-		FileUtilities.copyStreamToFile( stream, destFile );
+		FileUtilities.copyStreamToFile(
+            stream, destFile, srcFile.lastModified() );
 		stream.close();
 	}
 
@@ -73,12 +74,12 @@ public class FileUtilities
         throws IOException
     {
         FileInputStream  in  = new FileInputStream( oldFile );
-        FileOutputStream out = new FileOutputStream(
-            new File( outputDir, oldFile.getName() )
-        );
+        File destFile = new File( outputDir, oldFile.getName() );
+        FileOutputStream out = new FileOutputStream( destFile );
         copyStream( in, out );
         in.close();
         out.close();
+        destFile.setLastModified( oldFile.lastModified() );
     }
 
 
@@ -103,6 +104,7 @@ public class FileUtilities
             copyStream( in, out );
             in.close();
             out.close();
+            target.setLastModified( oldFile.lastModified() );
         }
     }
 
@@ -319,5 +321,29 @@ public class FileUtilities
         copyStream( stream, outStream );
         outStream.flush();
         outStream.close();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Copies data from the specified input stream to a file and sets the
+     * file's timestamp.
+     * 
+     * @param stream An InputStream containing the data to be copied.
+     * @param destFile A File object representing the path (and name) of the
+     * destination file.
+     * @param fileTime The timestamp to use for the destination file
+     * 
+     * @throws IOException
+     */
+    public static void copyStreamToFile(
+        InputStream stream, File destFile, long fileTime )
+        throws IOException
+    {
+        copyStreamToFile( stream, destFile );
+        if ( fileTime != -1 )
+        {
+            destFile.setLastModified( fileTime );
+        }
     }
 }
