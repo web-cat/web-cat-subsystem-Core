@@ -143,6 +143,21 @@ public class CoreDatabaseUpdates
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Adds timeZoneName keys to AuthenticationDomain.
+     * @throws SQLException on error
+     */
+    public void updateIncrement6() throws SQLException
+    {
+        database().executeSQL(
+            "alter table TAUTHENTICATIONDOMAIN add CTIMEZONENAME TINYTEXT" );
+        database().executeSQL(
+            "alter table TAUTHENTICATIONDOMAIN "
+            + "change CTINYTEXT CDEFAULTURLPATTERN TINYTEXT" );
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
@@ -176,7 +191,7 @@ public class CoreDatabaseUpdates
                 "CREATE TABLE TAUTHENTICATIONDOMAIN "
                 + "(CDEFAULTEMAILDOMAIN TINYTEXT , CTINYTEXT TINYTEXT , "
                 + "CDISPLAYABLENAME TINYTEXT , OID INTEGER NOT NULL, "
-                + "CPROPERTYNAME TINYTEXT , c )" );
+                + "CPROPERTYNAME TINYTEXT )" );
             database().executeSQL(
                 "ALTER TABLE TAUTHENTICATIONDOMAIN ADD PRIMARY KEY (OID)" );
 

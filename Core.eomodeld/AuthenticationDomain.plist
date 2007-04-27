@@ -5,7 +5,11 @@
             name = defaultEmailDomain; 
             prototypeName = tinyText; 
         }, 
-        {name = defaultURLPattern; prototypeName = tinyText; }, 
+        {
+        	columnName = CDEFAULTURLPATTERN;
+        	name = defaultURLPattern;
+        	prototypeName = tinyText;
+       	},
         {
             columnName = CDISPLAYABLENAME; 
             name = displayableName; 
