@@ -29,10 +29,10 @@ import com.webobjects.foundation.NSTimestamp;
 
 //-------------------------------------------------------------------------
 /**
- * A version of the {@link LongResponseWithProgress} that supports discrete
- * "steps" in the action to be performed, automatically updates progress
- * bar information, and uses elapsed time for each step to "interpolate"
- * progress bar information between long-running steps.
+ * A version of the {@link LongResponseTaskWithProgress} that supports
+ * discrete "steps" in the action to be performed, automatically updates
+ * progress bar information, and uses elapsed time for each step to
+ * "interpolate" progress bar information between long-running steps.
  *
  * @author Stephen Edwards
  * @version $Id$

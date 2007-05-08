@@ -277,7 +277,7 @@ public class User
      * preference, the default time format for the user's authentication
      * domain will be used.  The value should be a format string
      * acceptable by {@link NSTimestampFormatter}.
-     * @see {@link AuthenticationDomain#timeFormat()}
+     * @see AuthenticationDomain#timeFormat()
      * @return the time format pattern
      */
     public String timeFormat()
@@ -309,7 +309,7 @@ public class User
      * Get the time zone name of this user's preferred time zone.  If the
      * user has not set a time zone preference, the default time zone for
      * the user's authentication domain is used instead.
-     * @see {@link AuthenticationDomain#timeZoneName()}
+     * @see AuthenticationDomain#timeZoneName()
      * @return the time zone name
      */
     public String timeZoneName()
@@ -342,7 +342,7 @@ public class User
      * preference, the default date format for the user's authentication
      * domain will be used.  The value should be a format string
      * acceptable by {@link NSTimestampFormatter}.
-     * @see {@link AuthenticationDomain#dateFormat()}
+     * @see AuthenticationDomain#dateFormat()
      * @return the date format pattern
      */
     public String dateFormat()

@@ -180,7 +180,7 @@ public class MutableArray
      */
     public Object clone()
     {
-        return new MutableArray( (NSArray)this );
+        return new MutableArray( this );
     }
 
 

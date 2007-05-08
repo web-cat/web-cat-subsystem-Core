@@ -226,6 +226,15 @@ public class BarePage
                     "Core.framework/WebServerResources/wc.js",
                     context().request() )
                 + "\"></script>";
+            if ( !Application.configurationProperties()
+                            .booleanForKey( "installComplete" ) )
+            {
+                // Prevent self-installation wizard values from being
+                // cached here; only cache when installation is complete.
+                String result = overlibLink;
+                overlibLink = null;
+                return result;
+            }
         }
         return overlibLink;
     }

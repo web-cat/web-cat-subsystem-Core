@@ -64,7 +64,8 @@ public class Session
      */
     public Session( String sessionID )
     {
-        super( sessionID );
+        super();
+        _setSessionID( sessionID );
         initSession();
     }
 

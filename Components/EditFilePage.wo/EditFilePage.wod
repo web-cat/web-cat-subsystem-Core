@@ -37,9 +37,9 @@ WizardForm: WOForm {
     action         = saveAndDone;
 
     // This works stand-alone, but not in a servlet
-//    enctype        = "multipart/form-data";
-//    name           = "WizardForm";
+    enctype        = "multipart/form-data";
+    name           = "WizardForm";
 
     // So use this instead.
-    otherTagString = "enctype=\"multipart/form-data\" name=\"WizardForm\"";
+//    otherTagString = "enctype=\"multipart/form-data\" name=\"WizardForm\"";
 }

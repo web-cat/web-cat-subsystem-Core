@@ -30,9 +30,10 @@ import com.webobjects.eocontrol.*;
 
 // -------------------------------------------------------------------------
 /**
- * TODO: place a real description here.
+ * This class represents persistent navigation choices a user has made
+ * for entities in the Core subsystem.
  *
- * @author 
+ * @author stedwar2
  * @version $Id$
  */
 public class CoreSelections

@@ -55,8 +55,6 @@ public class WCResourceManager
     public WCResourceManager()
     {
         super();
-        // Force evaluation of this field
-        developmentBaseURL();
     }
 
 
@@ -102,7 +100,7 @@ public class WCResourceManager
             // The default developmentBaseURL should provide this for us
             // until static HTML resources have been initialized correctly
             // after the self-installation wizard completes.
-            return developmentBaseURL + aResourceName;
+            return developmentBaseURL() + aResourceName;
         }
         String result =
             (String)frameworkPrefixedCache.valueForKey( aResourceName );
@@ -158,7 +156,7 @@ public class WCResourceManager
         {
             developmentBaseURL = Application.configurationProperties()
                 .getProperty( "WCResourceManager.developmentBaseURL",
-                    "http://web-cat.cs.vt.edu/wcstatic/");
+                    "http://web-cat.cs.vt.edu/wcstatic/" );
             if ( !developmentBaseURL.endsWith( "/" ) )
             {
                 developmentBaseURL += "/";
@@ -214,7 +212,7 @@ public class WCResourceManager
             if ( useDevelopmentURLsIfNecessary &&
                  net.sf.webcat.WCServletAdaptor.getInstance() == null )
             {
-                result = developmentBaseURL + aResourceName;
+                result = developmentBaseURL() + aResourceName;
             }
             else
             {

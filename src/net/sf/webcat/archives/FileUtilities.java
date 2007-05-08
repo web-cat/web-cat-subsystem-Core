@@ -290,7 +290,7 @@ public class FileUtilities
     public static void copyStream( InputStream in, OutputStream out )
         throws IOException
     {
-        final int BUFFER_SIZE = 8192;
+        final int BUFFER_SIZE = 65536;
 
         // read in increments of BUFFER_SIZE
         byte[] b = new byte[BUFFER_SIZE];

@@ -57,9 +57,9 @@ public class TableRow
     //~ KVC Attributes (must be public) .......................................
 
     public  int     index;
-    public  boolean showError   = false;
-    public  boolean showCaution = false;
-    public  boolean increment   = false;
+    public  Boolean showError   = Boolean.FALSE;
+    public  Boolean showCaution = Boolean.FALSE;
+    public  Boolean increment   = Boolean.FALSE;
     public  String  id;
 
 
@@ -85,8 +85,8 @@ public class TableRow
     public String cssClass()
     {
         int tag = index % 2;
-        if ( showCaution ) tag += 2;
-        if ( showError   ) tag += 4;
+        if ( Boolean.TRUE.equals( showCaution ) ) tag += 2;
+        if ( Boolean.TRUE.equals( showError   ) ) tag += 4;
         return cssTag[tag];
     }
 
@@ -108,9 +108,9 @@ public class TableRow
     // ----------------------------------------------------------
     public void reset()
     {
-        showError   = false;
-        showCaution = false;
-        increment   = false;
+        showError   = Boolean.FALSE;
+        showCaution = Boolean.FALSE;
+        increment   = Boolean.FALSE;
         id          = null;
     }
 
