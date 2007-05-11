@@ -89,16 +89,16 @@ public class Application
         // ERXApplication.main(), which isn't executed for servlets, but
         // that is broken.
         NSNotificationCenter.defaultCenter().addObserver(
-            this, 
-            new NSSelector( "logNotification", 
-                            new Class[] { NSNotification.class } ), 
+            this,
+            new NSSelector( "logNotification",
+                            new Class[] { NSNotification.class } ),
             NSBundle.BundleDidLoadNotification,
             null
         );
         NSNotificationCenter.defaultCenter().addObserver(
-            this, 
-            new NSSelector( "logNotification", 
-                            new Class[] { NSNotification.class } ), 
+            this,
+            new NSSelector( "logNotification",
+                            new Class[] { NSNotification.class } ),
             NSBundle.LoadedClassesNotification,
             null
         );
@@ -219,7 +219,7 @@ public class Application
     public void initializeApplication()
     {
         updateStaticHtmlResources();
-        
+
         loadArchiveManagers();
         WOEC.installWOECFactory();
 
@@ -236,10 +236,10 @@ public class Application
 
         // register for database channel needed notification
         NSNotificationCenter.defaultCenter().addObserver(
-                this, 
-                new NSSelector( "createAdditionalDatabaseChannel", 
-                                new Class[] { NSNotification.class } ), 
-                EODatabaseContext.DatabaseChannelNeededNotification, 
+                this,
+                new NSSelector( "createAdditionalDatabaseChannel",
+                                new Class[] { NSNotification.class } ),
+                EODatabaseContext.DatabaseChannelNeededNotification,
                 null
             );
 
@@ -290,7 +290,7 @@ public class Application
         NSLog.debug.setAllowedDebugLevel( NSLog.DebugLevelInformational );
         NSLog.allowDebugLoggingForGroups( NSLog.DebugGroupMultithreading );
         setAllowsConcurrentRequestHandling( true );
-        
+
         // Ensure subsystems are all loaded
         subsystemManager();
         startTime = new NSTimestamp();
@@ -301,7 +301,7 @@ public class Application
     // ----------------------------------------------------------
     /**
      * Access the application's subsystem manager.
-     * 
+     *
      * @return The subsystem manager
      */
     public SubsystemManager subsystemManager()
@@ -322,7 +322,7 @@ public class Application
     /**
      * This notification callback is registered to respond when a
      * new database channel is needed.
-     * 
+     *
      * @param notification The notification received
      */
     public void createAdditionalDatabaseChannel( NSNotification notification )
@@ -349,7 +349,7 @@ public class Application
     // ----------------------------------------------------------
     /**
      * Restores a given session in context.
-     * 
+     *
      * @param sessionID  The ID of the session to restore
      * @param context    The context for the retrieval
      * @return        The session object
@@ -480,11 +480,11 @@ public class Application
 
     // ----------------------------------------------------------
     /**
-     * Returns <code>true</code> if the request was made via https/SSL, 
+     * Returns <code>true</code> if the request was made via https/SSL,
      * <code>false</code> otherwise.  It makes the rather grand assumption that
      * all HTTPS connections are on port 443.
      * @param request the request being processed
-     * @return <code>true</code> if the request was made via https/SSL, 
+     * @return <code>true</code> if the request was made via https/SSL,
      * <code>false</code> otherwise.
      */
     static public boolean isSecure( WORequest request )
@@ -493,9 +493,9 @@ public class Application
 
         boolean isSecure = false;
 
-        // The method of determining whether the request was via HTTPS depends 
-        // on the adaptor / the web server.  
-        
+        // The method of determining whether the request was via HTTPS depends
+        // on the adaptor / the web server.
+
         // First we try and see if the request was made on the standard
         // https port
         String serverPort = null;
@@ -505,12 +505,12 @@ public class Application
             serverPort = request.headerForKey(
                 SERVER_PORT_KEYS.objectAtIndex( i ) );
         }
-        
+
         // Apache and some other web servers use this to indicate HTTPS mode.
         // This is much better as it does not depend on the port number used.
         String httpsMode = request.headerForKey( "https" );
 
-        // If either the https header is 'on' or the server port is 443 then 
+        // If either the https header is 'on' or the server port is 443 then
         // we consider this to be an HTTP request.
         isSecure = ( httpsMode != null  &&  httpsMode.equalsIgnoreCase( "on" ) )
                 || ( serverPort != null  &&  serverPort.equals( "443" ) );
@@ -521,8 +521,8 @@ public class Application
 
     // ----------------------------------------------------------
     /**
-     * Returns the host name (a.k.a. server name, domain name) used in 
-     * this request.  The request headers are examined for the keys in 
+     * Returns the host name (a.k.a. server name, domain name) used in
+     * this request.  The request headers are examined for the keys in
      * HOST_NAME_KEYS to determine the name.
      *
      * @param request the request to get the hostname from
@@ -573,7 +573,7 @@ public class Application
     // ----------------------------------------------------------
     /**
      * Returns the given component by name.
-     * 
+     *
      * @param name    The name of the component to find
      * @param context The context for the retrieval
      * @return        The component
@@ -928,7 +928,7 @@ public class Application
      * property mail.default.domain is used.  If the To: address
      * is null or if toAdmins is true, then the message is also
      * sent to the administrator notification list.
-     * 
+     *
      * @param to          the To: address
      * @param users       Additional list of User objects to add to the
      *                    recipient list
@@ -941,7 +941,7 @@ public class Application
     static public void sendAdminEmail( String  to,
                                        NSArray users,
                                        boolean toAdmins,
-                                       String  subject, 
+                                       String  subject,
                                        String  body,
                                        Vector  attachments )
     {
@@ -962,7 +962,7 @@ public class Application
                 {
                     to += "@" + defaultDomain;
                 }
-                message.addRecipient( javax.mail.Message.RecipientType.TO, 
+                message.addRecipient( javax.mail.Message.RecipientType.TO,
                                       new InternetAddress( to ) );
             }
             if ( to == null || toAdmins )
@@ -985,7 +985,7 @@ public class Application
                 for ( int i = 0; i < admins.length; i++ )
                 {
                     message.addRecipient(
-                            javax.mail.Message.RecipientType.TO, 
+                            javax.mail.Message.RecipientType.TO,
                             new InternetAddress( admins[i] )
                         );
                 }
@@ -996,7 +996,7 @@ public class Application
                 {
                     User thisUser = (User)users.objectAtIndex( i );
                     message.addRecipient(
-                            javax.mail.Message.RecipientType.TO, 
+                            javax.mail.Message.RecipientType.TO,
                             new InternetAddress( thisUser.email() )
                         );
                 }
@@ -1082,13 +1082,13 @@ public class Application
     // ----------------------------------------------------------
     /**
      * Sends a text e-mail message to the specified recipient.
-     * 
+     *
      * @param to          the to address
      * @param subject     the subject line
      * @param messageText the body of the message
      */
     static public void sendSimpleEmail( String to,
-                                        String subject, 
+                                        String subject,
                                         String messageText )
     {
         sendAdminEmail( to, null, false, subject, messageText, null );
@@ -1099,7 +1099,7 @@ public class Application
     /**
      * Sends an exception notification report by e-mail to the
      * administor notification list.
-     * 
+     *
      * @param anException the exception that occurred
      * @param aContext    the context in which the exception occurred
      * @param msg         the text message accompanying the exception info
@@ -1135,7 +1135,7 @@ public class Application
             buffer.append( "CurrentPage = " );
             buffer.append( context.page().name() );
             buffer.append( "\n" );
-            
+
             if ( context.component() != null )
             {
                 buffer.append( "CurrentComponent = " );
@@ -1191,7 +1191,7 @@ public class Application
     /**
      * Sends an exception notification report by e-mail to the
      * administor notification list.
-     * 
+     *
      * @param anException the exception that occurred
      * @param extraInfo   dictionary of extra information about what was
      *                    happening when the exception was thrown
@@ -1251,7 +1251,7 @@ public class Application
                        : null;
        // Set up a buffer for the content
        StringBuffer errorBuffer = new StringBuffer();
-       
+
        if ( s != null  &&  s.primeUser() != null )
        {
            // Get the pid of the user of the session
@@ -1260,7 +1260,7 @@ public class Application
        }
 
        // Get the date and time for the exception
-       errorBuffer.append( "\nDate/Time:   " );
+       errorBuffer.append( "\nDate/time:   " );
        errorBuffer.append( ( new NSTimestamp() ).toString() );
 
        if ( aContext != null &&
@@ -1279,12 +1279,10 @@ public class Application
 
        // Get the session associated (if any)
        if ( s != null ) {
-           errorBuffer.append(
-                "\n\nSession Information:\n--------------------\n" );
-           errorBuffer.append( "SessionID: " + s.sessionID() );
+           errorBuffer.append( "\nSessionID: " + s.sessionID() );
            // Add anything else you need here ...
        }
-       
+
        if ( anException != null )
        {
            // Get the full message for the exception
@@ -1296,7 +1294,7 @@ public class Application
            if ( extraInfo != null )
            {
                errorBuffer.append(
-                   "\n\nExtra Information:\n--------------------\n" );
+                   "\n\nExtra information:\n--------------------\n" );
                for ( Enumeration e = extraInfo.keyEnumerator();
                      e.hasMoreElements(); )
                {
@@ -1310,30 +1308,9 @@ public class Application
            }
 
            // Get the stack trace for the exception
-           errorBuffer.append( "\n\nAbbreviated Stack Trace:\n"
-                               + "------------------------" );
+           errorBuffer.append( "\nStack trace:\n-----------------" );
            WOExceptionParser exParser = new WOExceptionParser( anException );
            Enumeration traceEnum =
-               ( exParser.stackTrace() ).objectEnumerator();
-
-           // Append each trace line
-           while ( traceEnum.hasMoreElements() )
-           {
-               WOParsedErrorLine aLine =
-                   (WOParsedErrorLine)traceEnum.nextElement();
-               String fileName = aLine.fileName();
-               if ( ! fileName.startsWith( "WO" ) &&
-                    ! fileName.startsWith( "NS" ) )
-               {
-                   errorBuffer.append( "\nat " + aLine.methodName() + "("
-                                       + aLine.fileName() + ":"
-                                       + aLine.lineNumber() + ")" );
-               }
-           }
-
-           // Get the stack trace for the exception
-           errorBuffer.append( "\n\nFull Stack Trace:\n-----------------" );
-           traceEnum =
                ( exParser.stackTrace() ).objectEnumerator();
 
            // Append each trace line
@@ -1351,7 +1328,7 @@ public class Application
            if ( extraInfo != null )
            {
                errorBuffer.append(
-                   "\n\nExtra Information:\n--------------------\n" );
+                   "\n\nExtra information:\n--------------------\n" );
                for ( Enumeration e = extraInfo.keyEnumerator();
                      e.hasMoreElements(); )
                {
@@ -1494,7 +1471,7 @@ public class Application
         {
             log.fatal( "Using default kill action",
                 new Exception( "from here" ) );
-            super.killInstance();            
+            super.killInstance();
         }
         else
         {
@@ -1809,7 +1786,7 @@ public class Application
      * be updated manually.  This check detects when a new release is
      * available, and notifies the administrator that a manual update is
      * needed.
-     * 
+     *
      * Instructions for performing a manual update are provided at:
      * <a href="http://web-cat.cs.vt.edu/WCWiki/UpdateBootstrapJar">
      * http://web-cat.cs.vt.edu/WCWiki/UpdateBootstrapJar</a>
@@ -1840,7 +1817,7 @@ public class Application
                     log.error( "exception retrieving Bootstrap.jar version:",
                         e );
                 }
-                
+
                 if ( !expectedVersion.equals( currentVersion ) )
                 {
                     log.error( "Bootstrap.jar is out of date: expected '"
@@ -1920,7 +1897,7 @@ public class Application
     // Add more options here (e.g. for IIS, NSAPI, etc.), if neccessary...
     private static final NSArray HOST_NAME_KEYS = new NSArray(new Object[]
         {"x-webobjects-server-name", "server_name", "Host", "http_host"});
-        
+
     // Add more options here (e.g. for IIS, NSAPI, etc.), if neccessary...
     private static final NSArray SERVER_PORT_KEYS = new NSArray(new Object[]
         {"x-webobjects-server-port", "SERVER_PORT"});
@@ -1933,7 +1910,7 @@ public class Application
     private static String __appIdentifier;
     private static SubsystemManager __subsystemManager;
     private static String cmdShell;
-    
+
     private boolean needsInstallation = true;
     private boolean staticHtmlResourcesNeedInitializing = true;
 
