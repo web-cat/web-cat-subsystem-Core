@@ -37,7 +37,7 @@ import org.apache.log4j.Logger;
  *  scheme.  Note that although such a niavigational element may nominally
  *  be called a "tab", it may be rendered in different ways depending on
  *  what level it is at in hierarchical navigation.
- * 
+ *
  *  @author Stephen Edwards
  *  @version $Id$
  */
@@ -94,7 +94,7 @@ public class TabDescriptor
         // selectDefault();
         // log.debug( "created, after selection:" + this );
     }
-    
+
 
     // ----------------------------------------------------------
     /**
@@ -104,7 +104,7 @@ public class TabDescriptor
      * @param label       The text label (description) associated with this tab
      * @param accessLevel The accessLevel needed to access this tab
      * @param priority    The order priority for this tab (larger numbers come
-     *                    later in the sequence of sibling tabs) 
+     *                    later in the sequence of sibling tabs)
      * @param wantsStart  True if this tab wants to be the default starting
      *                    subtab for its parent
      */
@@ -118,7 +118,7 @@ public class TabDescriptor
         this( pageName, label, accessLevel, priority, wantsStart,
               null, null, null );
     }
-    
+
 
     // ----------------------------------------------------------
     /**
@@ -128,7 +128,7 @@ public class TabDescriptor
      * @param label       The text label (description) associated with this tab
      * @param accessLevel The accessLevel needed to access this tab
      * @param priority    The order priority for this tab (larger numbers come
-     *                    later in the sequence of sibling tabs) 
+     *                    later in the sequence of sibling tabs)
      */
     public TabDescriptor( String pageName,
                           String label,
@@ -139,7 +139,7 @@ public class TabDescriptor
         this( pageName, label, accessLevel, priority, false,
               null, null, null );
     }
-    
+
 
     // ----------------------------------------------------------
     /**
@@ -157,7 +157,7 @@ public class TabDescriptor
         this( pageName, label, accessLevel, 1000, false,
               null, null, null );
     }
-    
+
 
     // ----------------------------------------------------------
     /**
@@ -173,7 +173,7 @@ public class TabDescriptor
         this( pageName, label, 0, 1000, false,
               null, null, null );
     }
-    
+
 
     //~ Methods ...............................................................
 
@@ -752,13 +752,24 @@ public class TabDescriptor
     /**
      * Generate a string representation of this tab's state.
      * @param buffer the StringBuffer to append the description to
+     */
+    public void appendToStringBuffer( StringBuffer buffer )
+    {
+        buffer.append( label );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Generate a string representation of this tab's state.
+     * @param buffer the StringBuffer to append the description to
      * @param appendChildren if true, then recursively append all
      *        child tab descriptions as well
      * @param indentLevel the number of spaces to indent this description
      */
-    public void appendToStringBuffer( StringBuffer buffer,
-                                      boolean appendChildren,
-                                      int indentLevel )
+    public void appendDetailsToStringBuffer( StringBuffer buffer,
+                                             boolean appendChildren,
+                                             int indentLevel )
     {
         StringBuffer indent = new StringBuffer( indentLevel + 4 );
         for ( int i = 0; i < indentLevel; i++ )
@@ -817,7 +828,7 @@ public class TabDescriptor
             {
                 TabDescriptor child =
                     (TabDescriptor)children.objectAtIndex( i );
-                child.appendToStringBuffer(
+                child.appendDetailsToStringBuffer(
                     buffer, appendChildren, indent.length() );
                 if ( i == children.count() - 1)
                 {
@@ -825,7 +836,7 @@ public class TabDescriptor
                 }
                 else
                 {
-                    buffer.append( ",\n" );                    
+                    buffer.append( ",\n" );
                 }
             }
             buffer.append( indent );
@@ -845,7 +856,7 @@ public class TabDescriptor
     public String toString()
     {
         StringBuffer buffer = new StringBuffer( 200 );
-        appendToStringBuffer( buffer, true, 0 );
+        appendToStringBuffer( buffer );
         return buffer.toString();
     }
 
@@ -859,13 +870,34 @@ public class TabDescriptor
     public String printableTabLocation()
     {
         StringBuffer buffer = new StringBuffer( 200 );
-        appendToStringBuffer( buffer, true, 0 );
+        appendToStringBuffer( buffer );
+        TabDescriptor p = parent;
+        while ( p != null )
+        {
+            buffer.append( " <-- " );
+            p.appendToStringBuffer( buffer );
+            p = p.parent;
+        }
+        return buffer.toString();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Generate a string representation of this tab's state, including
+     * all its ancestor tabs.
+     * @return A human-readable description of this tab
+     */
+    public String printableTabLocationDetails()
+    {
+        StringBuffer buffer = new StringBuffer( 200 );
+        appendDetailsToStringBuffer( buffer, true, 0 );
         buffer.append( '\n' );
         TabDescriptor p = parent;
         while ( p != null )
         {
             buffer.append( "---------------------\n" );
-            p.appendToStringBuffer( buffer, false, 0 );
+            p.appendDetailsToStringBuffer( buffer, false, 0 );
             buffer.append( '\n' );
             p = p.parent;
         }
@@ -1049,7 +1081,7 @@ public class TabDescriptor
     //~ Instance/static variables .............................................
 
     public static final String TAB_DEFINITIONS = "Tabs.plist";
-    
+
     private String              pageName;
     private String              label;
     private String              lcLabel;
