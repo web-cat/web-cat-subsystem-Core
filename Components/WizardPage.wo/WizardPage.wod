@@ -14,25 +14,12 @@ CancelButton: WOSubmitButton {
 	value    = " Cancel ";
 }
 
-DebugRepetition: WORepetition {
-	item = debugKey;
-	list = thisPage.session.attributeKeys;
-}
-
 DefaultButton: WOImageButton {
     action   = defaultAction;
     filename = "images/blank.gif";
     width    = 1;
     height   = 1;
     name     = "DefaultButton";
-}
-
-DefaultFocus: WOString {
-    value = initialFocusTo;
-}
-
-EODescription: WOString {
-	value = thisPage.toString;
 }
 
 FinishButton: WOSubmitButton {
@@ -65,14 +52,6 @@ HasNextButton: WOConditional {
 	condition = nextEnabled;
 }
 
-HasStateDebug: WOConditional {
-	condition = debugState;
-}
-
-KeyString: WOString {
-	value = debugKey;
-}
-
 NextButton: WOSubmitButton {
     action   = next;
     value    = " Next > ";
@@ -95,10 +74,6 @@ Spacer: WOImage {
     width    = 8;
     height   = 1;
     alt      = "";
-}
-
-ValString: WOString {
-	value = debugKeyValue;
 }
 
 WizardContent: WOComponentContent {
