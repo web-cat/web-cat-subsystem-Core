@@ -212,7 +212,12 @@ public class WCResourceManager
             if ( useDevelopmentURLsIfNecessary &&
                  net.sf.webcat.WCServletAdaptor.getInstance() == null )
             {
-                result = developmentBaseURL() + aResourceName;
+                result = developmentBaseURL();
+                if ( aFrameworkName != null )
+                {
+                    result += aFrameworkName + ".framework/WebServerResources/";
+                }
+                result += aResourceName;
             }
             else
             {
