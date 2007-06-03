@@ -117,6 +117,30 @@ public class User
 
     // ----------------------------------------------------------
     /**
+     * Get a short (no longer than 60 characters) description of this user,
+     * which currently returns {@link #name()}.
+     * @return the description
+     */
+    public String userPresentableDescription()
+    {
+        return name();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a human-readable representation of this user, which is
+     * the same as {@link #userPresentableDescription()}.
+     * @return this user's name
+     */
+    public String toString()
+    {
+        return userPresentableDescription();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Return the user's full name as a string, in the format "First Last".
      * @return the name
      */
@@ -152,7 +176,7 @@ public class User
             String first = firstName();
             boolean lastIsEmpty = ( last == null || last.equals( "" ) );
             boolean firstIsEmpty = ( first == null || first.equals( "" ) );
-    
+
             if ( lastIsEmpty && firstIsEmpty )
                 name_LF_cache = userName();
             else if ( lastIsEmpty )
@@ -295,7 +319,7 @@ public class User
     // ----------------------------------------------------------
     /**
      * Set the time format pattern for this user.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setTimeFormat( String value )
@@ -327,7 +351,7 @@ public class User
     // ----------------------------------------------------------
     /**
      * Set the time zone name for this user's preferred time zone.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setTimeZoneName( String value )
@@ -360,7 +384,7 @@ public class User
     // ----------------------------------------------------------
     /**
      * Set the date format pattern for this user.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setDateFormat( String value )
@@ -374,7 +398,7 @@ public class User
      * Validate the user with the given password.
      * Internally, it uses the <code>CurrentUserAuthenticator</code>
      * class to perform authentication.
-     * 
+     *
      * @param userName The user id to validate
      * @param password The password to check
      * @param domain   The domain to which this user belongs
@@ -439,7 +463,7 @@ public class User
             UserAuthenticator authenticator = ad.authenticator();
             return authenticator != null
                 && authenticator.changePassword( this, newPassword );
-        }        
+        }
     }
 
 
@@ -459,7 +483,7 @@ public class User
             UserAuthenticator authenticator = ad.authenticator();
             return authenticator != null
                 && authenticator.newRandomPassword( this );
-        }        
+        }
     }
 
 
@@ -877,7 +901,7 @@ public class User
     private NSArray adminForButNotStaff_cache;
     private NSArray adminForButNoOtherRelationships_cache;
     private String  name_LF_cache;
-    
+
     private NSDictionary userIsMe;
 
     private boolean studentView = false;

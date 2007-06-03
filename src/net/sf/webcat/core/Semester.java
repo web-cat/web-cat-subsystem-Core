@@ -55,7 +55,7 @@ public class Semester
     // ----------------------------------------------------------
     /**
      * Returns the "season" portion of a semester name as a string.
-     * 
+     *
      * @return The season name as a string
      */
     public String seasonName()
@@ -67,7 +67,7 @@ public class Semester
     // ----------------------------------------------------------
     /**
      * Set the season by number.
-     * 
+     *
      * @param value The season number
      */
     public void setSeason( int value )
@@ -79,7 +79,7 @@ public class Semester
     // ----------------------------------------------------------
     /**
      * Returns the name of this semester as a string.
-     * 
+     *
      * @return The semester name as a string
      */
     public String name()
@@ -90,9 +90,33 @@ public class Semester
 
     // ----------------------------------------------------------
     /**
+     * Get a short (no longer than 60 characters) description of this semester,
+     * which currently returns {@link #name()}.
+     * @return the description
+     */
+    public String userPresentableDescription()
+    {
+        return name();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a human-readable representation of this semester, which is
+     * the same as {@link #userPresentableDescription()}.
+     * @return this semester's name
+     */
+    public String toString()
+    {
+        return userPresentableDescription();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Returns the name of this semester in a form usable as a
      * subdirectory name.
-     * 
+     *
      * @return The semester name as a string
      */
     public String dirName()
@@ -190,7 +214,7 @@ public class Semester
 //    {
 //    }
 
-    
+
     //~ Instance/static variables .............................................
 
     public static final int SPRING  = 0;

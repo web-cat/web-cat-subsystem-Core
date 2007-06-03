@@ -77,6 +77,30 @@ public class Course
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Get a short (no longer than 60 characters) description of this coursse,
+     * which currently returns {@link #deptNumber()}.
+     * @return the description
+     */
+    public String userPresentableDescription()
+    {
+        return deptNumber();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a human-readable representation of this course, which is
+     * the same as {@link #userPresentableDescription()}.
+     * @return this course's short name
+     */
+    public String toString()
+    {
+        return userPresentableDescription();
+    }
+
+
 // If you add instance variables to store property values you
 // should add empty implementions of the Serialization methods
 // to avoid unnecessary overhead (the properties will be

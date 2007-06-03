@@ -25,6 +25,7 @@
 
 package net.sf.webcat.core;
 
+import com.sun.org.apache.xml.internal.serializer.*;
 import com.webobjects.foundation.*;
 import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
@@ -70,8 +71,8 @@ public class AuthenticationDomain
      * (partial) property name.  If you use a property called
      * <code>authenticator.<i>MyAuthenticator</i></code> to define
      * an authentication domain in a property file, then you can retrieve
-     * this authenticator using the name "<i>MyAuthenticator</i>". 
-     * 
+     * this authenticator using the name "<i>MyAuthenticator</i>".
+     *
      * @param name the property name of the authenticator
      * @return an array of all AuthenticationDomain objects
      */
@@ -210,7 +211,7 @@ public class AuthenticationDomain
                         if ( domain != null )
                         {
                             String emailDomain = properties.getProperty( base + "."
-                                + AuthenticationDomain.DEFAULT_EMAIL_DOMAIN_KEY ); 
+                                + AuthenticationDomain.DEFAULT_EMAIL_DOMAIN_KEY );
                             if ( emailDomain != null )
                             {
                                 domain.setDefaultEmailDomain( emailDomain );
@@ -239,11 +240,11 @@ public class AuthenticationDomain
         log.debug( "refreshing shared authentication domain objects" );
         authDomains = objectsForFetchAll(
             EOSharedEditingContext.defaultSharedEditingContext() );
-        
+
         // TODO: can't do this yet, since the domain's authenticator class
         // and config settings are not stored in the database!
         // We'll need to change that, eventually.
-        
+
         // confirm that  all domains are registered in the map
 //        for ( int i = 0; i < authDomains.count(); i++ )
 //        {
@@ -252,7 +253,7 @@ public class AuthenticationDomain
 //            String name = domain.propertyName();
 //            if ( theAuthenticatorMap.get( name ) == null )
 //            {
-//                
+//
 //            }
 //        }
     }
@@ -417,13 +418,13 @@ public class AuthenticationDomain
     {
         public String id;
         public String printableName;
-        
+
         public TimeZoneDescriptor( String id )
         {
             this.id = id;
             printableName = id.replaceAll( "_", " " ).replaceAll( "/", ": " );
         }
-        
+
         public NSTimeZone timeZone()
         {
             return NSTimeZone.timeZoneWithName( id, true );
@@ -530,13 +531,13 @@ public class AuthenticationDomain
 
     // ----------------------------------------------------------
     /**
-     * Generate a name usable as a subdirectory name from this
-     * objects property name.
-     * @return a subdirectory name
+     * Get the name of this authenticator (the property name, without the
+     * "authenticator." prefix).
+     * @return the name as a string
      */
-    public String subdirName()
+    public String name()
     {
-        if ( cachedSubdirName == null )
+        if ( cachedName == null )
         {
             String name = propertyName();
             final String propertyPrefix = "authenticator.";
@@ -547,7 +548,27 @@ public class AuthenticationDomain
                 {
                     name = name.substring( propertyPrefix.length() );
                 }
-                // Now strip out irregular characters
+            }
+            cachedName = name;
+        }
+        return cachedName;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Generate a name usable as a subdirectory name from this
+     * objects property name.
+     * @return a subdirectory name
+     */
+    public String subdirName()
+    {
+        if ( cachedSubdirName == null )
+        {
+            String name = name();
+            if ( name != null )
+            {
+                // strip out irregular characters
                 char[] chars = new char[ name.length() ];
                 int  pos   = 0;
                 for ( int i = 0; i < name.length(); i++ )
@@ -573,7 +594,7 @@ public class AuthenticationDomain
      * Change the value of this object's <code>propertyName</code>
      * property.  Takes care of renaming the associated subdirectories
      * for this domain as well.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setPropertyName( String value )
@@ -582,6 +603,7 @@ public class AuthenticationDomain
              && !value.equals( propertyName() ) )
         {
             String oldSubdir = subdirName();
+            cachedName = null;
             cachedSubdirName = null;
             super.setPropertyName( value );
             String newSubdir = subdirName();
@@ -642,6 +664,30 @@ public class AuthenticationDomain
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Get a human-readable representation of this authenticator, which is
+     * the same as {@link #name()}.
+     * @return this authenticator's property name
+     */
+    public String userPresentableDescription()
+    {
+        return name();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a human-readable representation of this authenticator, which is
+     * the same as {@link #userPresentableDescription()}.
+     * @return this authenticator's property name
+     */
+    public String toString()
+    {
+        return userPresentableDescription();
+    }
+
+
 // If you add instance variables to store property values you
 // should add empty implementions of the Serialization methods
 // to avoid unnecessary overhead (the properties will be
@@ -676,6 +722,7 @@ public class AuthenticationDomain
     private static NSArray authDomains;
     private static Map theAuthenticatorMap;
     private String cachedSubdirName = null;
+    private String cachedName = null;
     private static NSArray timeFormats;
     private static NSArray dateFormats;
     private static NSArray timeZones;

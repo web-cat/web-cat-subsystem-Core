@@ -117,9 +117,33 @@ public class CourseOffering
 
     // ----------------------------------------------------------
     /**
+     * Get a short (no longer than 60 characters) description of this coursse
+     * offering, which currently returns {@link #compactName()}.
+     * @return the description
+     */
+    public String userPresentableDescription()
+    {
+        return compactName();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a human-readable representation of this course offering, which is
+     * the same as {@link #userPresentableDescription()}.
+     * @return this course offering's short name
+     */
+    public String toString()
+    {
+        return userPresentableDescription();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Returns true if the given user is an instructor of this
      * course offering
-     * 
+     *
      * @param user     The user to check
      * @return true if the user is an instructor of the offering
      */
@@ -134,7 +158,7 @@ public class CourseOffering
     /**
      * Returns true if the given user is a TA for this
      * course offering
-     * 
+     *
      * @param user     The user to check
      * @return true if the user is a TA for the offering
      */
@@ -161,7 +185,7 @@ public class CourseOffering
     /**
      * Change the value of this object's <code>crn</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setCrn( String value )
