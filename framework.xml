@@ -1,0 +1,292 @@
+<project name="common">
+  <!-- ==============================================================
+       Common Web-CAT framework build.xml file
+       ==============================================================
+       This ANT build file is the master template for use by all
+       Web-CAT subsystems.  Those subsystems import this common
+       file and then specialize some targets as necessary.
+  -->
+
+  <echo
+    message="----------------- project ${ant.project.name} -----------------"/>
+
+
+  <!-- ==============================================================  -->
+  <!-- main targets                                                    -->
+  <!-- ==============================================================  -->
+
+  <!-- install ......................................................
+    Build the framework (using the build target) and then install
+    the result to the desired location (usually WOLOCALROOT).  Also
+    builds a jar suitable for updating a Web-CAT server, and installs
+    it in a specified pending updates dir, if desired."
+  -->
+  <target name="install"
+    depends="setProps, init.install, build.woframework, export.jar,
+             install.pending.updates"
+    description="Build and install the framework, then export a jar."/>
+
+
+  <!-- ...............................................................
+    Build a local copy of the framework.  Note that this step does not
+    yet include compiling the Java source, which is done automatically
+    by Eclipse.  It just combines all the necessary elements into a
+    complete framework stored locally inside the workspace."
+  -->
+  <target name="build"
+     depends="setProps, init.build, build.woframework"
+     description="Build an uninstalled copy of the framework."/>
+
+
+  <!-- ...............................................................
+    Compile and build a local copy of the framework.  This is exactly
+    the same as "build", but with the compile directive added.
+  -->
+  <target name="compileAndBuild"
+    depends="setProps,init.build,compile,build.woframework"
+    description="Compile and build an uninstalled copy of the framework."/>
+
+
+  <!-- ............................................................... -->
+  <target name="clean" depends="setProps"
+    description="Delete the framework built by build or install.">
+    <delete dir="${framework.name}.framework"/>
+  </target>
+
+
+  <!-- ==============================================================  -->
+  <!-- initialization/setup targets                                    -->
+  <!-- ==============================================================  -->
+
+  <!-- ...............................................................
+    A macro to compose the ${project.version} property from its
+    component properties.
+  -->
+  <property name="project.name.for.version" value="${ant.project.name}"/>
+  <macrodef name="compose.project.version">
+    <attribute name="project" default="${project.name.for.version}"/>
+      <sequential>
+        <property name="project.version"
+          value="${@{project}.version.major}.${@{project}.version.minor}.${@{project}.version.revision}"/>
+      </sequential>
+  </macrodef>
+
+
+  <!-- ...............................................................
+    A macro to derive the ${external.resource.dir} property from the project
+    name, or use a default.
+  -->
+  <macrodef name="compose.external.resource.dir">
+    <attribute name="project" default="${ant.project.name}"/>
+      <sequential>
+        <condition property="external.resource.dir"
+          value="${@{project}.Resources}">
+          <isset property="@{project}.Resources"/>
+        </condition>
+        <property name="external.resource.dir" value="."/>
+      </sequential>
+  </macrodef>
+
+
+  <!-- property determination ........................................ -->
+  <target name="setProps">
+    <property file="build.properties"/>
+    <property file="${user.home}/Library/wobuild.properties"/>
+    <condition property="wo.properties.check.failed">
+      <not><and>
+        <isset property="wo.wosystemroot"/>
+        <isset property="wo.wolocalroot"/>
+      </and></not>
+    </condition>
+    <fail message="Could not find ${user.home}/Library/wobuild.properties."
+      if="wo.properties.check.failed"/>
+    <property name="install.dir"
+      value="${wo.wolocalroot}/Library/Frameworks"/>
+    <tstamp/>
+    <copy file="Properties.master" tofile="Properties"/>
+    <propertyfile
+      file="Properties"
+      comment="This file is automatically rewritten by ANT, so all formatting will be trashed.">
+      <entry key="${framework.name}.version.date" value="${DSTAMP}"/>
+    </propertyfile>
+    <property file="Properties"/>
+    <compose.project.version/>
+    <compose.external.resource.dir/>
+    <condition property="external.resource.msg"
+      value="Including external resources from: ${external.resource.dir}"
+      else="">
+      <isset property="external.resource.includes"/>
+    </condition>
+    <property name="external.resource.includes"
+      value="nothing-included-by-default"/>
+    <property name="external.resource.excludes" value=""/>
+    <echo message="${external.resource.msg}"/>
+    <available property="has.internal.resources.dir"
+      file="Resources" type="dir"/>
+    <available property="has.internal.wsresources.dir"
+      file="WebServerResources" type="dir"/>
+    <available property="has.internal.libraries.dir"
+      file="Libraries" type="dir"/>
+  </target>
+
+
+  <!-- basic initializations  ........................................ -->
+  <target name="init.install" depends="setProps">
+    <property name="dest.dir" value="${install.dir}"/>
+  </target>
+
+
+  <!-- basic initializations  ........................................ -->
+  <target name="init.build" depends="setProps">
+    <property name="dest.dir" value="."/>
+  </target>
+
+
+  <!-- ==============================================================  -->
+  <!-- Lower-level targets                                             -->
+  <!-- ==============================================================  -->
+
+  <!-- compile ....................................................... -->
+  <target name="compile" depends="setProps,init.build">
+    <mkdir dir="bin"/>
+    <javac srcdir="src" destdir="bin">
+      <classpath>
+        <fileset dir="${wo.dir.user.home.library.frameworks}"
+          includesfile="woproject/ant.frameworks.user.home">
+          <include name="**/*.jar"/>
+        </fileset>
+        <fileset dir="${wo.wolocalroot}"
+          includesfile="woproject/ant.frameworks.wo.wolocalroot">
+          <include name = "**/*.jar"/>
+        </fileset>
+        <fileset dir="${wo.wosystemroot}"
+          includesfile="woproject/ant.frameworks.wo.wosystemroot">
+          <include name = "**/*.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
+
+
+  <!-- ............................................................... -->
+  <target name="build.woframework"
+      depends="build.basic.woframework, copy.woframework.resources,
+               copy.woframework.wsresources, copy.woframework.libraries">
+  </target>
+
+
+  <!-- ............................................................... -->
+  <target name="build.basic.woframework">
+    <fail unless="dest.dir"/>
+
+    <taskdef name="woframework"
+      classname="org.objectstyle.woproject.ant.WOFramework"/>
+
+    <woframework name="${framework.name}"
+      destDir="${dest.dir}"
+      customInfoPListContent="${customInfoPListContent}"
+      principalClass="${principalClass}"
+      eoAdaptorClassName="${eoAdaptorClassName}"
+      version="${project.version}">
+      <classes dir="${classes.dir}"><patternset>
+          <includesfile name="woproject/classes.include.patternset"/>
+          <excludesfile name="woproject/classes.exclude.patternset"/>
+      </patternset></classes>
+      <wsresources dir="."><patternset>
+          <includesfile name="woproject/wsresources.include.patternset"/>
+          <excludesfile name="woproject/wsresources.exclude.patternset"/>
+      </patternset></wsresources>
+      <resources dir="."><patternset>
+        <includesfile name="woproject/resources.include.patternset"/>
+        <excludesfile name="woproject/resources.exclude.patternset"/>
+      </patternset></resources>
+      <resources dir="${external.resource.dir}">
+        <patternset
+          includes="${external.resource.includes}"
+          excludes="${external.resource.excludes}"/>
+      </resources>
+      <lib dir=".">
+        <include
+          name="Add .jar's that should be copied in the framework."/>
+        <exclude name="**/*.framework/**"/>
+      </lib>
+    </woframework>
+  </target>
+
+
+  <!-- copy (unflattened) Resources into framework ................... -->
+  <target name="copy.woframework.resources" if="has.internal.resources.dir">
+    <fail unless="dest.dir"/>
+    <copy todir="${dest.dir}/${framework.name}.framework">
+      <fileset dir=".">
+        <include name="Resources/"/>
+        <exclude name="**/CVS/"/>
+        <exclude name="**/*~"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <!-- copy (unflattened) WebServerResources into framework .......... -->
+  <target name="copy.woframework.wsresources" if="has.internal.wsresources.dir">
+    <fail unless="dest.dir"/>
+    <copy todir="${dest.dir}/${framework.name}.framework">
+      <fileset dir=".">
+        <include name="WebServerResources/"/>
+        <exclude name="**/CVS/"/>
+        <exclude name="**/*~"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <!-- copy Libraries/*.jar into framework ........................... -->
+  <target name="copy.woframework.libraries" if="has.internal.libraries.dir">
+    <fail unless="dest.dir"/>
+    <copy todir="${dest.dir}/${framework.name}.framework/Resources/Java">
+      <fileset dir="Libraries">
+        <include name="**/*.jar"/>
+        <exclude name="**/CVS/"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <!-- copy strings files ............................................ -->
+  <target name="copy.strings">
+    <copy todir="${dest.dir}/${framework.name}.framework/Resources">
+      <fileset dir="." casesensitive="yes">
+       <include name="*.strings"/>
+       <include name="**/*.strings"/>
+      </fileset>
+      <mapper type="flatten"/>
+    </copy>
+  </target>
+
+
+  <!-- ...............................................................
+    Jars up the framework that was built in a form that can be used
+    for Web-CAT server updates.
+  -->
+  <target name="export.jar" depends="build.woframework">
+    <!-- need to jar framework up somewhere, based on version number -->
+    <property name="export.jar.name"
+      value="../${framework.name}_${project.version}.jar"/>
+      <jar destfile="${export.jar.name}"
+        basedir="${install.dir}"
+        includes="${framework.name}.framework/**"/>
+  </target>
+
+
+  <!-- ...............................................................
+    Copies the exported jar file to a servlet's pending updates
+    directory.  Set the pending.updates.dir property in your
+    ~/Library/wobuild.properties file to enable this action.
+  -->
+  <target name="install.pending.updates"
+    depends="export.jar"
+    if="pending.updates.dir">
+    <copy todir="${pending.updates.dir}" file="${export.jar.name}"/>
+  </target>
+
+</project>
