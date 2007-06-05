@@ -550,6 +550,7 @@ TABLE.FullBox {
 .collapsible a { color: #363; text-decoration: none; }
 .collapsible img { border: none; }
 h3.collapsible { border-bottom-style: dotted; }
+p.collapsible { border-bottom: none; }
 .expboxcontent .expboxcontent { border-left-style: dotted; }
 
 
