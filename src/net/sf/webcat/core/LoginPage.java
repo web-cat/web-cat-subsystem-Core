@@ -46,7 +46,7 @@ public class LoginPage
     // ----------------------------------------------------------
     /**
      * Creates a new LoginPage object.
-     * 
+     *
      * @param context The context to use
      */
     public LoginPage( WOContext context )
@@ -124,145 +124,54 @@ public class LoginPage
     }
 
 
-//    // ----------------------------------------------------------
-//    /**
-//     * Adds to the response of the page
-//     * 
-//     * @param response The response being built
-//     * @param context  The context of the request
-//     */
-//    public void appendToResponse( WOResponse response, WOContext context )
-//    {
-//        super.appendToResponse( response, context );
-//    }
+    // ----------------------------------------------------------
+    public boolean multipleAuthDomains()
+    {
+        return domainDisplayGroup.allObjects().count() > 1;
+    }
 
 
-//    // ----------------------------------------------------------
-//    /**
-//     * Return the URL for a direct action to process this form
-//     * submission.
-//     */
-//    public String loginDirectAction()
-//    {
-//        return "";
-//    }
+    // ----------------------------------------------------------
+    public boolean hasSpecificAuthDomain()
+    {
+        WORequest request = context().request();
+        String auth = request.stringFormValueForKey( "institution" );
+        if ( auth == null )
+        {
+            auth = request.stringFormValueForKey( "d" );
+        }
+        if ( auth != null )
+        {
+            try
+            {
+                log.debug( "looking up domain: " + auth );
+                domain = AuthenticationDomain.authDomainByName( auth );
+                specificAuthDomainName = auth;
+            }
+            catch ( EOObjectNotAvailableException e )
+            {
+                log.error( "Unrecognized institution parameter provided: '"
+                    + auth + "'", e );
+            }
+            catch ( EOUtilities.MoreThanOneException e )
+            {
+                log.error( "Ambiguous institution parameter provided: '"
+                    + auth + "'", e );
+            }
+        }
+        return specificAuthDomainName != null;
+    }
 
 
-//    // ----------------------------------------------------------
-//    /**
-//     * Clears the login form.
-//     */
-//    public void clear()
-//    {
-//        pidname  = null;
-//        password = null;
-//	domain   = null;
-//        errMsg   = null;
-//    }
-//
-//
-//    // ----------------------------------------------------------
-//    /**
-//     * Returns to page title.
-//     * 
-//     * @return The title to use
-//     */
-//    public String title()
-//    {
-//        return super.title() + ": Login";
-//    }
-//
-//
-//    // ----------------------------------------------------------
-//    /**
-//     * Response function to attempt a login.  It tries to authenticate
-//     * the entered username and password.  If successful, it checks
-//     * for an existing session to connect with and logs the user in.
-//     * 
-//     * @return The page to go to after logging in
-//     */
-//    public WOComponent tryLogin()
-//    {
-//	log.debug( "authlist: "
-//		   + domainDisplayGroup.allObjects().count()
-//		   + " entries" );
-//	for ( int i = 0; i < domainDisplayGroup.allObjects().count(); i++ )
-//	{
-//	    log.debug( ( (AuthenticationDomain)
-//			 domainDisplayGroup.allObjects().objectAtIndex( i )
-//		       ).displayableName() );
-//	}
-//	
-//	if ( pidname == null )
-//	{
-//	    errMsg = "Please enter your PID/user name.";
-//	    return null;
-//	}
-//	if ( password == null )
-//	{
-//	    errMsg = "Please enter your password.";
-//	    return null;
-//	}
-//	if ( domain == null )
-//	{
-//	    errMsg = "Please select your institution.";
-//	    return null;
-//	}
-//
-//	pidname = pidname.toLowerCase();
-//	User user = User.validate(
-//		pidname,
-//		password,
-//		domain,
-//		session().defaultEditingContext()
-//	    );
-//	if ( user == null )
-//	{
-//	    log.info( "Failed login attempt: " + pidname
-//		      + " (" + domain.displayableName() + ")" );
-//	    password = null;
-//	    errMsg = "Your login information could not be validated.  "
-//		+ "Be sure you typed your user name/pid and password "
-//		+ "correctly.";
-//	    return null;
-//	}
-//	else
-//	{
-//	    String sessionID = wcSession().setUser( user );
-//	    Application.userCount++;
-//	    log.info( "login: "
-//		      + pidname
-//		      + " (" + domain.displayableName() + ")"
-//		      + " (now "
-//		      + Application.userCount
-//		      + " users)" );
-//	    if ( sessionID.equals( session().sessionID() ) )
-//            {
-//		log.debug( "re-entering " + sessionID );
-//		return context().page();
-//	    }
-//	    else
-//            {
-//		log.info( "redirecting to " + sessionID );
-//		wcSession().userLogout();
-//		WORedirect redirect = (WORedirect)pageWithName( "WORedirect" );
-//		String dest = Application.completeURLWithRequestHandlerKey(
-//			context(),
-//			"wa",
-//			"default",
-//			"wosid=" + sessionID,
-//			false,
-//			0
-//		    );
-//		log.debug( "destination = " + dest );
-//		redirect.setUrl( dest );
-//		return redirect;
-//	    }
-//	}
-//    }
+    // ----------------------------------------------------------
+    public String specificAuthDomainName()
+    {
+        return specificAuthDomainName;
+    }
 
 
     //~ Instance/static variables .............................................
 
+    private String specificAuthDomainName;
     static Logger log = Logger.getLogger( LoginPage.class );
 }

@@ -23,12 +23,21 @@ body.user table#form { border: none }
 
 Footer: net.sf.webcat.core.Footer {}
 
+HasSpecificAuthDomain: WOConditional {
+    condition = hasSpecificAuthDomain;
+}
+
 HasLangList: WOConditional {
     condition = application.properties.graderLangList;
 }
 
 HasMOTD: WOConditional {
     condition = application.properties.coreMotd;
+}
+
+HiddenAuthDomain: WOHiddenField {
+	name  = "d";
+	value = specificAuthDomainName;
 }
 
 LangList: WOString {
@@ -43,6 +52,10 @@ LoginForm: WOForm {
 MOTD: WOString {
     value = application.properties.coreMotd;
     escapeHTML = false;
+}
+
+NeedsAuthList: WOConditional {
+    condition = multipleAuthDomains;
 }
 
 UserName: WOTextField {

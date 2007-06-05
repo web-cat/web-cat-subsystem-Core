@@ -110,7 +110,7 @@ public class DirectAction
      * logs the user in.  The existing session is left in the private
      * <code>session</code> field.  Leaves the authentication domain object that
      * was used for this attempt in the private <code>domain</code> field.
-     * 
+     *
      * @param request The request containing the form values to inspect
      * @param errors  An empty dictionary which will be filled with any
      *                validation errors to report back to the user on failure
@@ -121,11 +121,13 @@ public class DirectAction
         boolean result = false;
         if ( request.formValues().count() == 0
              || ( request.formValues().count() == 1
-                  && request.stringFormValueForKey( "next" ) != null ) )
+                  && request.stringFormValueForKey( "next" ) != null )
+             || ( request.formValues().count() == 1
+                  && request.stringFormValueForKey( "institution" ) != null ) )
         {
             return result;
         }
-        
+
         String userName = request.stringFormValueForKey( "UserName" );
         if ( userName == null )
             userName = request.stringFormValueForKey( "u" );
@@ -143,12 +145,12 @@ public class DirectAction
         if ( userName == null )
         {
             errors.setObjectForKey( "Please enter your user name.",
-                                    "userName" );                
+                                    "userName" );
         }
         if ( password == null )
         {
             errors.setObjectForKey( "Please enter your password.",
-                                    "password" );                
+                                    "password" );
         }
         try
         {
@@ -191,11 +193,18 @@ public class DirectAction
                     );
             }
         }
+        else if ( AuthenticationDomain.authDomains().count() == 1 )
+        {
+            // If there is just one authentication domain, then use it, since
+            // no choice will appear on the login page
+            domain = (AuthenticationDomain)AuthenticationDomain
+                .authDomains().objectAtIndex( 0 );
+        }
         else
         {
             errors.setObjectForKey(
                 "Please select your institution/affiliation.",
-                "authDomain" );                
+                "authDomain" );
         }
 
         // The second half of this condition is here just to satisfy the
@@ -440,7 +449,7 @@ public class DirectAction
      * This action is designed for use by content management systems
      * interacting with Web-CAT, its grades database, and its submission
      * front-end.
-     * 
+     *
      * @return The results page for the submission just made
      */
     public WOActionResults cmsRequestAction()
@@ -463,7 +472,7 @@ public class DirectAction
     /**
      * This action is designed for use with BlueJ's submission
      * extension.
-     * 
+     *
      * @return The results page for the submission just made
      */
     public WOActionResults submitAction()
@@ -506,7 +515,7 @@ public class DirectAction
     /**
      * This action is designed for use with BlueJ's submission
      * extension.
-     * 
+     *
      * @return The results page for the submission just made
      */
     public WOActionResults reportAction()
@@ -563,7 +572,7 @@ public class DirectAction
      * This action hides the default ut direct action class in the WOUnitTest
      * framework for security.  The same ability is provided via the
      * Administer tab instead.
-     * 
+     *
      * @return The results page for the submission just made
      */
     public WOActionResults utAction()
@@ -577,7 +586,7 @@ public class DirectAction
      * This action hides the default uta direct action class in the WOUnitTest
      * framework for security.  The same ability is provided via the
      * Administer tab instead.
-     * 
+     *
      * @return The results page for the submission just made
      */
     public WOActionResults utaAction()
