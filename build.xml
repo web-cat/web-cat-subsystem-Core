@@ -2,4 +2,14 @@
 
   <import file="framework.xml"/>
 
+  <target name="setProps" depends="common.setProps">
+    <property file="../Bootstrap/build.properties" prefix="bootstrap."/>
+    <propertyfile
+      file="Properties"
+      comment="This file is automatically rewritten by ANT, so all formatting will be trashed.">
+      <entry key="bootstrap.project.version"
+        value="${bootstrap.project.version}"/>
+    </propertyfile>
+  </target>
+
 </project>
