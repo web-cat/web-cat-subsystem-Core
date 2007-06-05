@@ -49,13 +49,18 @@ public class WCBatchNavigator
     // ----------------------------------------------------------
     /**
      * Creates a new WOBatchNavigationBar object.
-     * 
+     *
      * @param aContext the context
      */
     public WCBatchNavigator( WOContext aContext )
     {
         super( aContext );
     }
+
+
+    //~ KVC Properties ........................................................
+
+    public AuthenticationDomain authDomain;
 
 
     //~ Methods ...............................................................
@@ -87,7 +92,7 @@ public class WCBatchNavigator
     // ----------------------------------------------------------
     /**
      * Set the page number (batch number) to display.
-     * 
+     *
      * @param index The page number
      */
     public void setBatchIndex( Integer index )
@@ -137,7 +142,7 @@ public class WCBatchNavigator
     // ----------------------------------------------------------
     /**
      * Set the number of objects shown on each page/batch.
-     * 
+     *
      * @param number The number of objects to show
      */
     public void setNumberOfObjectsPerBatch( Integer number )
@@ -191,7 +196,7 @@ public class WCBatchNavigator
     // ----------------------------------------------------------
     /**
      * Access the bound display group's current batch position.
-     * 
+     *
      * @return The current batch index
      */
     public int batchIndex()
@@ -204,7 +209,7 @@ public class WCBatchNavigator
     // ----------------------------------------------------------
     /**
      * The current number of objects displayed for each page/batch.
-     * 
+     *
      * @return The number of objects per batch
      */
     public int numberOfObjectsPerBatch()
@@ -228,6 +233,17 @@ public class WCBatchNavigator
         {
             log.debug( "go(): batch = " + batchIndex() + ", size = "
                 + numberOfObjectsPerBatch() );
+        }
+        WODisplayGroup dg = (WODisplayGroup)valueForBinding( "displayGroup" );
+        if ( dg != null ) {
+            if ( hasUserFilter() )
+            {
+                // Save an unused tag in the operator dictionary so we can
+                // tell that this display group is being actively filtered
+                // and what kind of entity it contains
+                dg.queryOperator().takeValueForKey( "user", "entityType" );
+            }
+            dg.qualifyDataSource();
         }
         return null;
     }
@@ -273,7 +289,132 @@ public class WCBatchNavigator
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Check to see if a filter for User objects should be displayed.
+     *
+     * @return True if this batch control operates on a group of User objects
+     */
+    public boolean hasUserFilter()
+    {
+        WODisplayGroup dg = (WODisplayGroup)valueForBinding( "displayGroup" );
+        return dg != null
+
+            // If this display group is known to contain users (but might
+            // be filtered so none are showing right now!)
+            && ( "user".equals( dg.queryOperator().valueForKey( "entityType" ) )
+
+            // Or if this display group's first object is a user
+                 || ( dg.allObjects().count() > 0
+                      && dg.allObjects().objectAtIndex( 0 ) instanceof User ) );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Reset the display group's queryMatch binding.
+     * @return null, to reload the current page
+     */
+    public WOComponent clearFilter()
+    {
+        WODisplayGroup dg = (WODisplayGroup)valueForBinding( "displayGroup" );
+        if ( dg != null )
+        {
+            dg.queryMatch().removeAllObjects();
+            dg.queryOperator().removeAllObjects();
+            dg.qualifyDataSource();
+        }
+        selectedAuthDomain = null;
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public String divId()
+    {
+        if ( divId == null )
+        {
+            divId = "s" + context().elementID();
+        }
+        return divId;
+    }
+
+
+    // ----------------------------------------------------------
+    public void reset()
+    {
+        divId = null;
+        authDomain = null;
+        selectedAuthDomain = null;
+        super.reset();
+    }
+
+
+    // ----------------------------------------------------------
+    public NSArray authDomains()
+    {
+        return AuthenticationDomain.authDomains();
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean multipleInstitutions()
+    {
+        return true; // AuthenticationDomain.authDomains().count() > 1;
+    }
+
+
+    // ----------------------------------------------------------
+    public AuthenticationDomain selectedAuthDomain()
+    {
+        if ( selectedAuthDomain == null )
+        {
+            WODisplayGroup dg =
+                (WODisplayGroup)valueForBinding( "displayGroup" );
+            if ( dg != null )
+            {
+                String prop = (String)dg.queryMatch().valueForKey(
+                    "authenticationDomain.propertyName" );
+                if ( prop != null )
+                {
+                    NSArray domains = AuthenticationDomain.authDomains();
+                    for ( int i = 0; i < domains.count(); i++ )
+                    {
+                        AuthenticationDomain ad =
+                            (AuthenticationDomain)domains.objectAtIndex( i );
+                        if ( prop.equals( ad.propertyName() ) )
+                        {
+                            selectedAuthDomain = ad;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        return selectedAuthDomain;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setSelectedAuthDomain( AuthenticationDomain value )
+    {
+        selectedAuthDomain = value;
+        if ( value != null )
+        {
+            WODisplayGroup dg =
+                (WODisplayGroup)valueForBinding( "displayGroup" );
+            if ( dg != null )
+            {
+                dg.queryMatch().takeValueForKey( value.propertyName(),
+                    "authenticationDomain.propertyName" );
+            }
+        }
+    }
+
+
     //~ Instance/static variables .............................................
 
+    private String divId;
+    private AuthenticationDomain selectedAuthDomain;
     static Logger log = Logger.getLogger( WCBatchNavigator.class );
 }

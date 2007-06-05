@@ -1,3 +1,11 @@
+InstitutionPattern: WOPopUpButton {
+	list              = authDomains;
+	selection         = selectedAuthDomain;
+	item              = authDomain;
+	displayString     = authDomain.displayableName;
+	noSelectionString = "All institutions";
+}
+
 BatchNumber: WOTextField {
 	numberformat = "0";
 	size = 3;
@@ -8,13 +16,67 @@ CanShowFewer: WOConditional {
     condition = canShowFewer;
 }
 
+Clear: WOImageButton {
+	alt       = "Clear filter settings";
+	border    = "0";
+	filename  = "images/clear.gif";
+	framework = "Core";
+	height    = "19";
+	title     = "Clear filter settings";
+	width     = "48";
+	style     = "vertical-align:middle;";
+	action    = clearFilter;
+}
+
+Collapsed : WOImage {
+	width     = "16";
+	height    = "16";
+	title     = "show/hide";
+	alt       = "show/hide";
+	filename  = "icons/collapsed.gif";
+	framework = "Core";
+}
+
+CollapsibleDiv : WOGenericContainer {
+	elementName = "div";
+	class       = "expboxcontent";
+	id          = divId;
+	style       = "display:none";
+}
+
 Count: WOString {
 	value = ^displayGroup.allObjects.count;
+}
+
+DivId: WOString {
+    value = divId;
 }
 
 Fewer: WOSubmitButton {
     value  = "Show Fewer Per Page";
     action = fewer;
+}
+
+Filter: WOImageButton {
+	alt       = "Apply filters";
+	border    = "0";
+	filename  = "images/filter.gif";
+	framework = "Core";
+	height    = "19";
+	title     = "Apply filters";
+	width     = "48";
+	style     = "vertical-align:middle;";
+	action    = go;
+}
+
+FirstNamePattern: WOTextField {
+    value = ^displayGroup.queryMatch.firstName;
+    width = 20;
+}
+
+FirstOp: WOPopUpButton {
+	list          = ^displayGroup.stringQualifierOperators;
+	selection     = ^displayGroup.queryOperator.firstName;
 }
 
 Go: WOImageButton {
@@ -27,6 +89,10 @@ Go: WOImageButton {
 	width     = "40";
 	style     = "vertical-align:middle;";
 	action    = go;
+}
+
+HasUserFilter: WOConditional {
+    condition = hasUserFilter;
 }
 
 IsBatchedDisplay: WOConditional {
@@ -45,6 +111,16 @@ ItemsPerBatch: WOTextField {
 	value = numberOfObjectsPerBatch;
 }
 
+LastNamePattern: WOTextField {
+    value = ^displayGroup.queryMatch.lastName;
+    width = 20;
+}
+
+LastOp: WOPopUpButton {
+	list          = ^displayGroup.stringQualifierOperators;
+	selection     = ^displayGroup.queryOperator.lastName;
+}
+
 LeftArrow: WOImageButton {
 	alt       = "Show previous batch";
 	border    = "0";
@@ -55,6 +131,10 @@ LeftArrow: WOImageButton {
 	width     = "11";
 	style     = "vertical-align:middle;";
 	action    = ^displayGroup.displayPreviousBatch;
+}
+
+MultipleInstitutions: WOConditional {
+    condition = multipleInstitutions;
 }
 
 RightArrow: WOImageButton {
@@ -71,4 +151,14 @@ RightArrow: WOImageButton {
 
 TotalBatches: WOString {
 	value = ^displayGroup.batchCount;
+}
+
+UserNamePattern: WOTextField {
+    value = ^displayGroup.queryMatch.userName;
+    width = 20;
+}
+
+UserNameOp: WOPopUpButton {
+	list          = ^displayGroup.stringQualifierOperators;
+	selection     = ^displayGroup.queryOperator.userName;
 }
