@@ -207,6 +207,12 @@ DIV#contents TABLE TD.marker {
 	background-position: center left;
 }
 
+DIV#contents TABLE.colborder TD,
+DIV#contents TABLE.colborder TH {
+	padding: 0.1em .3em;
+    border: 1px solid #363;
+}
+
 DIV#contents TABLE.percentbar {
 	border-width: 0;
 	padding: 0;
@@ -591,6 +597,12 @@ BODY.admin DIV#contents TABLE TH {
 	color: #fcf;
 }
 
+BODY.admin DIV#contents TABLE.colborder TD,
+BODY.admin DIV#contents TABLE.colborder TH {
+	padding: 0.1em .3em;
+    border: 1px solid #636;
+}
+
 BODY.admin #globalnav LI.here1 A:link,
 BODY.admin #globalnav LI.here1 A:visited {
 	background: #c9c;
@@ -704,6 +716,12 @@ BODY.staff TABLE.FullBox {
 BODY.staff DIV#contents TABLE TH {
 	background-color: #336;
 	color: #ccf;
+}
+
+BODY.staff DIV#contents TABLE.colborder TD,
+BODY.staff DIV#contents TABLE.colborder TH {
+	padding: 0.1em .3em;
+    border: 1px solid #336;
 }
 
 BODY.staff #globalnav LI.here1 A:link,
