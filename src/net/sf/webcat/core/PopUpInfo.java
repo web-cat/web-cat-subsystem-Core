@@ -44,18 +44,13 @@ public class PopUpInfo
     // ----------------------------------------------------------
     /**
      * Creates a new object.
-     * 
+     *
      * @param context The page's context
      */
     public PopUpInfo( WOContext context )
     {
         super( context );
     }
-
-
-    //~ KVC Attributes (must be public) .......................................
-
-    public  String message;
 
 
     //~ Methods ...............................................................
@@ -68,8 +63,20 @@ public class PopUpInfo
 
 
     // ----------------------------------------------------------
-    public boolean synchronizesVariablesWithBindings()
+    public String message()
     {
-        return true;
+        return (String)valueForBinding( "message" );
+    }
+
+
+    // ----------------------------------------------------------
+    public String title()
+    {
+        String title = "Information";
+        if ( hasBinding( "title" ) )
+        {
+            title = (String)valueForBinding( "title" );
+        }
+        return title;
     }
 }

@@ -479,6 +479,8 @@ b.b1b {margin:0 5px; background:#333;}
 .nlbefore { margin-top: 1em; }
 .nlafter  { margin-bottom: 1em; }
 
+#overDiv { line-height: .9em; }
+
 
 /* Color-coding for generic user pages ------------------------------------ */
 

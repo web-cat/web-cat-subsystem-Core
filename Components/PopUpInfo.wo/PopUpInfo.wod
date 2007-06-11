@@ -1,5 +1,7 @@
-Message : WOString {
-    value = message;
+Link: WOHyperlink {
+    href        = "javascript:void(0);";
+	onmouseover = "~\"return overlib('\" + message + \"', STICKY, BELOW, RIGHT, CAPTION, '\" + title + \"');\"";
+    onmouseout  = "return nd();";
 }
 
 InfoImage : WOImage {
