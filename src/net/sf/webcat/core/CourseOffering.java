@@ -93,7 +93,17 @@ public class CourseOffering
     {
         if ( cachedCompactName == null )
         {
-            cachedCompactName = course().deptNumber() + "(" + crn() + ")";
+            if ( course() == null )
+            {
+                // !!!
+                log.error(
+                    "course offering with no associated course: " + this );
+                cachedCompactName = course() + "(" + crn() + ")";
+            }
+            else
+            {
+                cachedCompactName = course().deptNumber() + "(" + crn() + ")";
+            }
         }
         return cachedCompactName;
     }
