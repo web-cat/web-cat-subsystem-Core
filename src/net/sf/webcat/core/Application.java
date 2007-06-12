@@ -1693,53 +1693,37 @@ public class Application
             log.debug( "staticResourceBase = " + staticResourceBaseDir );
         }
 
+        // Note: we can't use the subsystem manager yet, since the
+        // application has not been fully initialized yet and that data
+        // isn't available at this point.
         File[] framework = frameworkDir.listFiles();
         for ( int i = 0; i < framework.length; i++ )
         {
-            log.debug( "Checking for static html resources in framework => "
+            log.debug( "Checking for static html resources in => "
                 + framework[i].getName() );
-            File webServerResources =
-                new File( framework[i], "WebServerResources" );
-            if ( webServerResources.isDirectory() )
+            String frameworkName = framework[i].getName();
+            if ( !frameworkName.endsWith( ".framework" ) ) continue;
+            frameworkName = frameworkName.substring( 0,
+                frameworkName.length() - ".framework".length() );
+            String frameworkLastUpdated = configurationProperties().
+                getProperty( frameworkName + ".version.date" );
+            // frameworkLastUpdated will be null for frameworks that are
+            // not packaged subsytems
+            if ( frameworkLastUpdated != null
+                 && lastUpdated.compareTo( frameworkLastUpdated ) <= 0 )
             {
-                String frameworkName = framework[i].getName();
-                frameworkName = frameworkName.substring( 0,
-                    frameworkName.length() - ".framework".length() );
-                String frameworkLastUpdated = configurationProperties().
-                    getProperty( frameworkName + ".version.date", "00000000" );
-                if ( lastUpdated.compareTo( frameworkLastUpdated ) <= 0 )
+                updateStaticHtmlResourcesForFramework(
+                    framework[i], staticResourceBaseDir );
+                // Now check the additional included frameworks too
+                String alsoContainsList = configurationProperties()
+                    .getProperty( frameworkName + ".alsoContains" );
+                if ( alsoContainsList != null )
                 {
-                    log.info(
-                        "Copying static html resources from framework => "
-                        + framework[i].getName() );
-                    try
+                    for ( String fw : alsoContainsList.split( ",\\s*" ) )
                     {
-                        File target = new File( staticResourceBaseDir,
-                            framework[i].getName()
-                            + "/" + webServerResources.getName() );
-                        if ( target.exists() )
-                        {
-                            if ( target.isDirectory() )
-                            {
-                                net.sf.webcat.archives.FileUtilities
-                                    .deleteDirectory( target );
-                            }
-                            else
-                            {
-                                target.delete();
-                            }
-                        }
-                        target.mkdirs();
-                        net.sf.webcat.archives.FileUtilities
-                            .copyDirectoryContents(
-                                webServerResources, target );
-                    }
-                    catch ( java.io.IOException e )
-                    {
-                        log.error(
-                            "Exception copying static html resource from '"
-                            + webServerResources + "' to '" + appBase + "'",
-                            e );
+                        File otherFramework = new File( frameworkDir, fw );
+                        updateStaticHtmlResourcesForFramework(
+                            otherFramework, staticResourceBaseDir );
                     }
                 }
             }
@@ -1791,6 +1775,51 @@ public class Application
             resourceManager().flushDataCache();
         }
         log.debug( "frameworks Base URL = " + frameworksBaseURL() );
+    }
+
+
+    // ----------------------------------------------------------
+    private void updateStaticHtmlResourcesForFramework(
+        File framework, File staticResourceBaseDir )
+    {
+        File webServerResources =
+            new File( framework, "WebServerResources" );
+        if ( webServerResources.isDirectory() )
+        {
+            log.info(
+                "Copying static html resources from => "
+                + framework.getName() );
+            try
+            {
+                File target = new File( staticResourceBaseDir,
+                        framework.getName()
+                        + "/" + webServerResources.getName() );
+                if ( target.exists() )
+                {
+                    if ( target.isDirectory() )
+                    {
+                        net.sf.webcat.archives.FileUtilities
+                            .deleteDirectory( target );
+                    }
+                    else
+                    {
+                        target.delete();
+                    }
+                }
+                target.mkdirs();
+                net.sf.webcat.archives.FileUtilities
+                    .copyDirectoryContents(
+                        webServerResources, target );
+            }
+            catch ( java.io.IOException e )
+            {
+                log.error(
+                    "Exception copying static html resource from '"
+                    + webServerResources + "' to '"
+                    + staticResourceBaseDir + "'",
+                    e );
+            }
+        }
     }
 
 
