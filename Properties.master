@@ -5,7 +5,7 @@ subsystem.Core
 
 Core.version.major=1
 Core.version.minor=4
-Core.version.revision=1
+Core.version.revision=2
 
 Core.copyright=(c) 2006, 2007 Virginia Tech Department of Computer Science
 Core.provider=Virginia Tech Computer Science
@@ -48,3 +48,12 @@ log4j.logger.net.sf.webcat.core.install              = INFO
 # since this dumps high volumes of info that is only desirable in special
 # circumstances.
 log4j.logger.net.sf.webcat.core.Application.requests = WARN
+
+# These duplicate settings in the main app properties file, but are
+# placed here for the near term to avoid an update of the main app bundle
+# for a while.
+ognl.active          = true
+ognl.helperFunctions = true
+ognl.inlineBindings  = true
+er.extensions.ERXNSLogLog4jBridge.ignoreNSLogSettings = true
+log4j.logger.NSLog = WARN
