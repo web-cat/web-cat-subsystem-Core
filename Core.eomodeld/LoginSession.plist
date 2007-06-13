@@ -1,29 +1,69 @@
+
 {
-    attributes = (
-        {columnName = CEXPIRETIME; name = expirationTime; prototypeName = dateTime; }, 
-        {name = id; prototypeName = id; }, 
-        {
-            allowsNull = Y; 
-            columnName = CSESSIONID; 
-            externalType = TINYTEXT; 
-            name = sessionId; 
-            valueClassName = NSString; 
-        }, 
-        {columnName = CUSERID; name = userId; prototypeName = foreignId; }
-    ); 
-    attributesUsedForLocking = (userId, sessionId); 
-    className = net.sf.webcat.core.LoginSession; 
-    classProperties = (sessionId, user, expirationTime); 
-    externalName = TLOGINSESSION; 
-    name = LoginSession; 
-    primaryKeyAttributes = (id); 
-    relationships = (
-        {
-            destination = User; 
-            isToMany = N; 
-            joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = id; sourceAttribute = userId; }); 
-            name = user; 
-        }
-    ); 
+    attributes = 
+    (
+       
+       {
+           columnName = CEXPIRETIME;
+           name = expirationTime;
+           prototypeName = dateTime;
+       }, 
+       
+       {
+           name = id;
+           prototypeName = id;
+       }, 
+       
+       {
+           allowsNull = Y;
+           columnName = CSESSIONID;
+           externalType = TINYTEXT;
+           name = sessionId;
+           valueClassName = NSString;
+       }, 
+       
+       {
+           columnName = CUSERID;
+           name = userId;
+           prototypeName = foreignId;
+       }
+    );
+    attributesUsedForLocking = 
+    (
+       sessionId, 
+       userId
+    );
+    className = net.sf.webcat.core.LoginSession;
+    classProperties = 
+    (
+       expirationTime, 
+       sessionId, 
+       user
+    );
+    externalName = TLOGINSESSION;
+    internalInfo = 
+    {};
+    name = LoginSession;
+    primaryKeyAttributes = 
+    (
+       id
+    );
+    relationships = 
+    (
+       
+       {
+           destination = User;
+           isToMany = N;
+           joinSemantic = EOInnerJoin;
+           joins = 
+           (
+              
+              {
+                  destinationAttribute = id;
+                  sourceAttribute = userId;
+              }
+           );
+           name = user;
+       }
+    );
 }

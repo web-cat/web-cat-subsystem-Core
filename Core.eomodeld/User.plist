@@ -1,151 +1,241 @@
+
 {
-    attributes = (
-        {
-            allowsNull = N; 
-            columnName = CACCESSLEVEL; 
-            name = accessLevel; 
-            prototypeName = tinyInteger; 
-            userInfo = {
-                scalarConversionMethodName = byteValue; 
-                isScalar = true;
-                scalarDefault = 0;
-                type = byte;
-                valueClassName = Byte;
-            }; 
-        }, 
-        {
-            allowsNull = N; 
-            columnName = CAUTHENTICATIONDOMAINID; 
-            name = authenticationDomainId; 
-            prototypeName = foreignId; 
-        }, 
-        {columnName = CEMAIL; name = email; prototypeName = tinyText; }, 
-        {columnName = CFIRSTNAME; name = firstName; prototypeName = tinyText; }, 
-        {name = id; prototypeName = id; }, 
-        {columnName = CLASTNAME; name = lastName; prototypeName = tinyText; }, 
-        {name = password; prototypeName = password; }, 
-        {
-            columnName = CPREFERENCES; 
-            name = preferences; 
-            prototypeName = mutableDictionary; 
-            userInfo = {
-                adaptorValueConversionMethodName = archiveData; 
-                valueFactoryMethodName = objectWithArchiveData; 
-                isMutable = true; 
-                valueClassName = net.sf.webcat.core.MutableDictionary; 
-            }; 
-        },
-        {
-            name = updateMutableFields; 
-            prototypeName = updateMutableFields; 
-            userInfo = {
-                isScalar = true;
-                scalarDefault = false;
-                type = boolean; 
-            }; 
-        }, 
-        {
-            columnName = CUNIVERSITYIDNO; 
-            name = universityIDNo; 
-            prototypeName = tinyText; 
-        }, 
-        {columnName = URL; name = url; prototypeName = tinyText; }, 
-        {name = userName; prototypeName = userName; }
-    ); 
-    attributesUsedForLocking = (
-        accessLevel, 
-        authenticationDomainId, 
-        email, 
-        firstName, 
-        lastName, 
-        password, 
-        userName, 
-        universityIDNo, 
-        url, 
-        preferences,
-        updateMutableFields
-    ); 
-    className = net.sf.webcat.core.User; 
-    classProperties = (
-        userName, 
-        password, 
-        accessLevel, 
-        lastName, 
-        url, 
-        enrolledIn, 
-        teaching, 
-        TAFor, 
-        firstName, 
-        universityIDNo, 
-        email, 
-        authenticationDomain, 
-        coreSelections, 
-        preferences,
-        updateMutableFields
-    ); 
-    externalName = TUSER; 
-    name = User; 
-    primaryKeyAttributes = (id); 
-    relationships = (
-        {
-            definition = courseOfferingUsers2.courseOffering; 
-            joinSemantic = EOInnerJoin; 
-            name = TAFor; 
-            numberOfToManyFaultsToBatchFetch = 10; 
-        }, 
-        {
-            destination = AuthenticationDomain; 
-            isMandatory = Y; 
-            isToMany = N; 
-            joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = id; sourceAttribute = authenticationDomainId; }); 
-            name = authenticationDomain; 
-        }, 
-        {
-            destination = CoreSelections; 
-            isToMany = Y; 
-            joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = userId; sourceAttribute = id; }); 
-            name = coreSelections; 
-        }, 
-        {
-            deleteRule = EODeleteRuleCascade; 
-            destination = CourseStudent; 
-            isToMany = Y; 
-            joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = id1; sourceAttribute = id; }); 
-            name = courseOfferingUsers; 
-            propagatesPrimaryKey = Y; 
-        }, 
-        {
-            deleteRule = EODeleteRuleCascade; 
-            destination = InstructorCourse; 
-            isToMany = Y; 
-            joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = id1; sourceAttribute = id; }); 
-            name = courseOfferingUsers1; 
-            propagatesPrimaryKey = Y; 
-        }, 
-        {
-            deleteRule = EODeleteRuleCascade; 
-            destination = CourseTA; 
-            isToMany = Y; 
-            joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = id1; sourceAttribute = id; }); 
-            name = courseOfferingUsers2; 
-            propagatesPrimaryKey = Y; 
-        }, 
-        {
-            definition = courseOfferingUsers.courseOffering; 
-            joinSemantic = EOInnerJoin; 
-            name = enrolledIn; 
-            numberOfToManyFaultsToBatchFetch = 10; 
-        }, 
-        {
-            definition = courseOfferingUsers1.courseOffering; 
-            joinSemantic = EOInnerJoin; 
-            name = teaching; 
-            numberOfToManyFaultsToBatchFetch = 10; 
-        }
-    ); 
+    attributes = 
+    (
+       
+       {
+           allowsNull = N;
+           columnName = CACCESSLEVEL;
+           name = accessLevel;
+           prototypeName = tinyInteger;
+           userInfo = 
+           {
+               isScalar = true;
+               scalarConversionMethodName = byteValue;
+               scalarDefault = 0;
+               type = byte;
+               valueClassName = Byte;
+           };
+       }, 
+       
+       {
+           allowsNull = N;
+           columnName = CAUTHENTICATIONDOMAINID;
+           name = authenticationDomainId;
+           prototypeName = foreignId;
+       }, 
+       
+       {
+           columnName = CEMAIL;
+           name = email;
+           prototypeName = tinyText;
+       }, 
+       
+       {
+           columnName = CFIRSTNAME;
+           name = firstName;
+           prototypeName = tinyText;
+       }, 
+       
+       {
+           name = id;
+           prototypeName = id;
+       }, 
+       
+       {
+           columnName = CLASTNAME;
+           name = lastName;
+           prototypeName = tinyText;
+       }, 
+       
+       {
+           name = password;
+           prototypeName = password;
+       }, 
+       
+       {
+           columnName = CPREFERENCES;
+           name = preferences;
+           prototypeName = mutableDictionary;
+           userInfo = 
+           {
+               adaptorValueConversionMethodName = archiveData;
+               isMutable = true;
+               valueClassName = net.sf.webcat.core.MutableDictionary;
+               valueFactoryMethodName = objectWithArchiveData;
+           };
+       }, 
+       
+       {
+           columnName = CUNIVERSITYIDNO;
+           name = universityIDNo;
+           prototypeName = tinyText;
+       }, 
+       
+       {
+           name = updateMutableFields;
+           prototypeName = updateMutableFields;
+           userInfo = 
+           {
+               isScalar = true;
+               scalarDefault = false;
+               type = boolean;
+           };
+       }, 
+       
+       {
+           columnName = URL;
+           name = url;
+           prototypeName = tinyText;
+       }, 
+       
+       {
+           name = userName;
+           prototypeName = userName;
+       }
+    );
+    attributesUsedForLocking = 
+    (
+       accessLevel, 
+       authenticationDomainId, 
+       email, 
+       firstName, 
+       lastName, 
+       password, 
+       preferences, 
+       universityIDNo, 
+       updateMutableFields, 
+       url, 
+       userName
+    );
+    className = net.sf.webcat.core.User;
+    classProperties = 
+    (
+       TAFor, 
+       accessLevel, 
+       authenticationDomain, 
+       coreSelections, 
+       email, 
+       enrolledIn, 
+       firstName, 
+       lastName, 
+       password, 
+       preferences, 
+       teaching, 
+       universityIDNo, 
+       updateMutableFields, 
+       url, 
+       userName
+    );
+    externalName = TUSER;
+    internalInfo = 
+    {};
+    name = User;
+    primaryKeyAttributes = 
+    (
+       id
+    );
+    relationships = 
+    (
+       
+       {
+           definition = courseOfferingUsers2.courseOffering;
+           name = TAFor;
+           numberOfToManyFaultsToBatchFetch = 10;
+       }, 
+       
+       {
+           destination = AuthenticationDomain;
+           isMandatory = Y;
+           isToMany = N;
+           joinSemantic = EOInnerJoin;
+           joins = 
+           (
+              
+              {
+                  destinationAttribute = id;
+                  sourceAttribute = authenticationDomainId;
+              }
+           );
+           name = authenticationDomain;
+       }, 
+       
+       {
+           destination = CoreSelections;
+           isToMany = Y;
+           joinSemantic = EOInnerJoin;
+           joins = 
+           (
+              
+              {
+                  destinationAttribute = userId;
+                  sourceAttribute = id;
+              }
+           );
+           name = coreSelections;
+       }, 
+       
+       {
+           deleteRule = EODeleteRuleCascade;
+           destination = CourseStudent;
+           isToMany = Y;
+           joinSemantic = EOInnerJoin;
+           joins = 
+           (
+              
+              {
+                  destinationAttribute = id1;
+                  sourceAttribute = id;
+              }
+           );
+           name = courseOfferingUsers;
+           propagatesPrimaryKey = Y;
+       }, 
+       
+       {
+           deleteRule = EODeleteRuleCascade;
+           destination = InstructorCourse;
+           isToMany = Y;
+           joinSemantic = EOInnerJoin;
+           joins = 
+           (
+              
+              {
+                  destinationAttribute = id1;
+                  sourceAttribute = id;
+              }
+           );
+           name = courseOfferingUsers1;
+           propagatesPrimaryKey = Y;
+       }, 
+       
+       {
+           deleteRule = EODeleteRuleCascade;
+           destination = CourseTA;
+           isToMany = Y;
+           joinSemantic = EOInnerJoin;
+           joins = 
+           (
+              
+              {
+                  destinationAttribute = id1;
+                  sourceAttribute = id;
+              }
+           );
+           name = courseOfferingUsers2;
+           propagatesPrimaryKey = Y;
+       }, 
+       
+       {
+           definition = courseOfferingUsers.courseOffering;
+           name = enrolledIn;
+           numberOfToManyFaultsToBatchFetch = 10;
+       }, 
+       
+       {
+           definition = courseOfferingUsers1.courseOffering;
+           name = teaching;
+           numberOfToManyFaultsToBatchFetch = 10;
+       }
+    );
 }

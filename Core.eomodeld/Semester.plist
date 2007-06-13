@@ -1,41 +1,70 @@
+
 {
-    attributes = (
-        {name = id; prototypeName = id; }, 
-        {columnName = CSEASON; name = season; prototypeName = tinyInteger; }, 
-        {
-            allowsNull = Y; 
-            columnName = CSEMESTERENDDATE; 
-            externalType = DATE; 
-            name = semesterEndDate; 
-            valueClassName = NSCalendarDate; 
-        }, 
-        {
-            allowsNull = Y; 
-            columnName = CSEMESTERSTARTDATE; 
-            externalType = DATE; 
-            name = semesterStartDate; 
-            valueClassName = NSCalendarDate; 
-        }, 
-        {
-            columnName = CYEAR; 
-            externalType = SMALLINT; 
-            name = year; 
-            userInfo = {
-                scalarConversionMethodName = intValue; 
-                isScalar = true;
-                scalarDefault = 0;
-                type = int;
-                valueClassName = Integer;
-            }; 
-            valueClassName = NSNumber; 
-            valueType = i; 
-        }
-    ); 
-    attributesUsedForLocking = (year, season); 
-    className = net.sf.webcat.core.Semester; 
-    classProperties = (year, season, semesterStartDate, semesterEndDate); 
-    externalName = TSEMESTER; 
-    fetchSpecificationDictionary = {}; 
-    name = Semester; 
-    primaryKeyAttributes = (id); 
+    attributes = 
+    (
+       
+       {
+           name = id;
+           prototypeName = id;
+       }, 
+       
+       {
+           columnName = CSEASON;
+           name = season;
+           prototypeName = tinyInteger;
+       }, 
+       
+       {
+           allowsNull = Y;
+           columnName = CSEMESTERENDDATE;
+           externalType = DATE;
+           name = semesterEndDate;
+           valueClassName = NSCalendarDate;
+       }, 
+       
+       {
+           allowsNull = Y;
+           columnName = CSEMESTERSTARTDATE;
+           externalType = DATE;
+           name = semesterStartDate;
+           valueClassName = NSCalendarDate;
+       }, 
+       
+       {
+           columnName = CYEAR;
+           externalType = SMALLINT;
+           name = year;
+           userInfo = 
+           {
+               isScalar = true;
+               scalarConversionMethodName = intValue;
+               scalarDefault = 0;
+               type = int;
+               valueClassName = Integer;
+           };
+           valueClassName = NSNumber;
+           valueType = i;
+       }
+    );
+    attributesUsedForLocking = 
+    (
+       season, 
+       year
+    );
+    className = net.sf.webcat.core.Semester;
+    classProperties = 
+    (
+       season, 
+       semesterEndDate, 
+       semesterStartDate, 
+       year
+    );
+    externalName = TSEMESTER;
+    internalInfo = 
+    {};
+    name = Semester;
+    primaryKeyAttributes = 
+    (
+       id
+    );
 }

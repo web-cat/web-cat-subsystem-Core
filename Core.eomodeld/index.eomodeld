@@ -1,42 +1,102 @@
+
 {
-    EOModelVersion = 2.1; 
-    adaptorName = JDBC; 
-    connectionDictionary = {
-        URL = ""; 
-        driver = com.mysql.jdbc.Driver; 
-        password = ""; 
-        plugin = MySQL; 
-        username = ""; 
-    }; 
-    entities = (
+    EOModelVersion = 2.1;
+    adaptorName = JDBC;
+    connectionDictionary = 
+    {
+        username = "";
+        driver = com.mysql.jdbc.Driver;
+        URL = "";
+        password = "";
+        plugin = MySQL;
+    };
+    entities = 
+    (
+       
+       {
+           className = net.sf.webcat.core.AuthenticationDomain;
+           name = AuthenticationDomain;
+       }, 
+       
+       {
+           className = net.sf.webcat.core.CoreSelections;
+           name = CoreSelections;
+       }, 
+       
+       {
+           className = net.sf.webcat.core.Course;
+           name = Course;
+       }, 
+       
+       {
+           className = net.sf.webcat.core.CourseOffering;
+           name = CourseOffering;
+       }, 
+       
+       {
+           className = EOGenericRecord;
+           name = CourseStudent;
+       }, 
+       
+       {
+           className = EOGenericRecord;
+           name = CourseTA;
+       }, 
+       
+       {
+           className = net.sf.webcat.core.Department;
+           name = Department;
+       }, 
+       
+       {
+           className = EOGenericRecord;
+           name = InstructorCourse;
+       }, 
+       
+       {
+           className = net.sf.webcat.core.Language;
+           name = Language;
+       }, 
+       
+       {
+           className = net.sf.webcat.core.LoginSession;
+           name = LoginSession;
+       }, 
+       
+       {
+           className = net.sf.webcat.core.Semester;
+           name = Semester;
+       }, 
+       
+       {
+           className = net.sf.webcat.core.User;
+           name = User;
+       }
+    );
+    entitiesWithSharedObjects = 
+    (
+       Language
+    );
+    userInfo = 
+    {
+        _EntityModeler = 
         {
-            className = net.sf.webcat.core.AuthenticationDomain; 
-            name = AuthenticationDomain; 
-        }, 
-        {className = net.sf.webcat.core.CoreSelections; name = CoreSelections; }, 
-        {className = net.sf.webcat.core.Course; name = Course; }, 
-        {className = net.sf.webcat.core.CourseOffering; name = CourseOffering; }, 
-        {className = EOGenericRecord; name = CourseStudent; }, 
-        {className = EOGenericRecord; name = CourseTA; }, 
-        {className = net.sf.webcat.core.Department; name = Department; }, 
-        {className = EOGenericRecord; name = InstructorCourse; }, 
-        {className = net.sf.webcat.core.Language; name = Language; }, 
-        {className = net.sf.webcat.core.LoginSession; name = LoginSession; }, 
-        {className = net.sf.webcat.core.Semester; name = Semester; }, 
-        {className = net.sf.webcat.core.User; name = User; }
-    ); 
-    entitiesWithSharedObjects = (Language); 
-    internalInfo = {
-        _deletedEntityNamesInObjectStore = (
-            T_CST_STUDENTCOURSE, 
-            T_CST_INSTRUCTORCOURSE, 
-            TCourseUser, 
-            TStudentCourse, 
-            TTASK, 
-            TFILE, 
-            TCORETASK, 
-            CTASKCLASS, 
-            TSUBSYSTEM
-        ); 
-    }; 
+            activeDatabaseConfigName = Default;
+            databaseConfigs = 
+            {
+                Default = 
+                {
+                    adaptorName = JDBC;
+                    connectionDictionary = 
+                    {
+                        username = "";
+                        driver = com.mysql.jdbc.Driver;
+                        URL = "";
+                        password = "";
+                        plugin = MySQL;
+                    };
+                };
+            };
+        };
+    };
 }

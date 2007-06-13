@@ -1,29 +1,69 @@
+
 {
-    attributes = (
-        {
-            allowsNull = N; 
-            columnName = CABBREVIATION; 
-            name = abbreviation; 
-            prototypeName = tinyText; 
-        }, 
-        {name = id; prototypeName = id; }, 
-        {columnName = CNAME; name = name; prototypeName = tinyText; },
-        {columnName = CINSTITUTIONID; name = institutionId; prototypeName = foreignId; }
-    ); 
-    attributesUsedForLocking = (abbreviation, name, institutionId); 
-    className = net.sf.webcat.core.Department; 
-    classProperties = (abbreviation, name, institution); 
-    externalName = TDEPARTMENT; 
-    fetchSpecificationDictionary = {}; 
-    name = Department; 
-    primaryKeyAttributes = (id); 
-    relationships = (
-        {
-            destination = AuthenticationDomain; 
-            isToMany = N; 
-            joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = id; sourceAttribute = institutionId; }); 
-            name = institution; 
-        }
-    ); 
+    attributes = 
+    (
+       
+       {
+           allowsNull = N;
+           columnName = CABBREVIATION;
+           name = abbreviation;
+           prototypeName = tinyText;
+       }, 
+       
+       {
+           name = id;
+           prototypeName = id;
+       }, 
+       
+       {
+           columnName = CINSTITUTIONID;
+           name = institutionId;
+           prototypeName = foreignId;
+       }, 
+       
+       {
+           columnName = CNAME;
+           name = name;
+           prototypeName = tinyText;
+       }
+    );
+    attributesUsedForLocking = 
+    (
+       abbreviation, 
+       institutionId, 
+       name
+    );
+    className = net.sf.webcat.core.Department;
+    classProperties = 
+    (
+       abbreviation, 
+       institution, 
+       name
+    );
+    externalName = TDEPARTMENT;
+    internalInfo = 
+    {};
+    name = Department;
+    primaryKeyAttributes = 
+    (
+       id
+    );
+    relationships = 
+    (
+       
+       {
+           destination = AuthenticationDomain;
+           isToMany = N;
+           joinSemantic = EOInnerJoin;
+           joins = 
+           (
+              
+              {
+                  destinationAttribute = id;
+                  sourceAttribute = institutionId;
+              }
+           );
+           name = institution;
+       }
+    );
 }

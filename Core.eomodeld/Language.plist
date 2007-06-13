@@ -1,15 +1,54 @@
+
 {
-    attributes = (
-        {columnName = CCOMPILER; name = compiler; prototypeName = tinyText; }, 
-        {name = id; prototypeName = id; }, 
-        {columnName = CNAME; name = name; prototypeName = tinyText; }, 
-        {columnName = CVERSION; name = version; prototypeName = tinyText; }
-    ); 
-    attributesUsedForLocking = (name, compiler, version); 
-    className = net.sf.webcat.core.Language; 
-    classProperties = (name, compiler, version); 
-    externalName = TLANGUAGE; 
-    name = Language; 
-    primaryKeyAttributes = (id); 
-    sharedObjectFetchSpecificationNames = (FetchAll); 
+    attributes = 
+    (
+       
+       {
+           columnName = CCOMPILER;
+           name = compiler;
+           prototypeName = tinyText;
+       }, 
+       
+       {
+           name = id;
+           prototypeName = id;
+       }, 
+       
+       {
+           columnName = CNAME;
+           name = name;
+           prototypeName = tinyText;
+       }, 
+       
+       {
+           columnName = CVERSION;
+           name = version;
+           prototypeName = tinyText;
+       }
+    );
+    attributesUsedForLocking = 
+    (
+       compiler, 
+       name, 
+       version
+    );
+    className = net.sf.webcat.core.Language;
+    classProperties = 
+    (
+       compiler, 
+       name, 
+       version
+    );
+    externalName = TLANGUAGE;
+    internalInfo = 
+    {};
+    name = Language;
+    primaryKeyAttributes = 
+    (
+       id
+    );
+    sharedObjectFetchSpecificationNames = 
+    (
+       FetchAll
+    );
 }
