@@ -675,7 +675,7 @@ public class User
                     ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
                         taFor_cache,
                         CourseOffering.ENTITY_NAME,
-                        "withoutStudent",
+                        CourseOffering.WITHOUT_STUDENT_FSPEC,
                         userFilteringDictionary()
                         );
             }
@@ -720,7 +720,7 @@ public class User
                     ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
                         teaching_cache,
                         CourseOffering.ENTITY_NAME,
-                        "withoutStudentOrTA",
+                        CourseOffering.WITHOUT_STUDENT_OR_TA_FSPEC,
                         userFilteringDictionary()
                         );
             }
@@ -789,7 +789,7 @@ public class User
                     EOUtilities.objectsForEntityNamed( editingContext(),
                         CourseOffering.ENTITY_NAME ),
                     CourseOffering.ENTITY_NAME,
-                    "withoutUserAsStaff",
+                    CourseOffering.WITHOUT_USER_AS_STAFF_FSPEC,
                     userFilteringDictionary()
                     );
         }
@@ -834,7 +834,7 @@ public class User
                     EOUtilities.objectsForEntityNamed( editingContext(),
                         CourseOffering.ENTITY_NAME ),
                     CourseOffering.ENTITY_NAME,
-                    "withoutAnyRelationshipToUser",
+                    CourseOffering.WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC,
                     userFilteringDictionary()
                     );
         }
