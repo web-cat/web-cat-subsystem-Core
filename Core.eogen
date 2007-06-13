@@ -1,0 +1,1 @@
+C:/Apple/eogenerator/eogenerator.exe -destination src -java -javaTemplate JavaSourceEOF52.eotemplate -model Core.eomodeld -packagedirs -refmodel ../EOJDBCPrototypes/EOJDBCPrototypes.eomodeld -subclassDestination src -subclassJavaTemplate JavaSubclassSourceEOF5.eotemplate -templatedir .
