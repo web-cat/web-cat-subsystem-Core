@@ -64,6 +64,7 @@ public abstract class _CoreSelections
     public static final String COURSE_OFFERING_KEY = "courseOffering";
     public static final String USER_KEY = "user";
     // To-many relationships ---
+    // Fetch specifications ---
     public static final String ENTITY_NAME = "CoreSelections";
 
 
@@ -87,7 +88,7 @@ public abstract class _CoreSelections
      * relationship (DO NOT USE--instead, use
      * <code>setCourseRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setCourse( net.sf.webcat.core.Course value )
@@ -101,7 +102,7 @@ public abstract class _CoreSelections
      * Set the entity pointed to by the <code>authenticationDomain</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setCourseRelationship(
@@ -138,7 +139,7 @@ public abstract class _CoreSelections
      * relationship (DO NOT USE--instead, use
      * <code>setCourseOfferingRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setCourseOffering( net.sf.webcat.core.CourseOffering value )
@@ -152,7 +153,7 @@ public abstract class _CoreSelections
      * Set the entity pointed to by the <code>authenticationDomain</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setCourseOfferingRelationship(
@@ -189,7 +190,7 @@ public abstract class _CoreSelections
      * relationship (DO NOT USE--instead, use
      * <code>setUserRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setUser( net.sf.webcat.core.User value )
@@ -203,7 +204,7 @@ public abstract class _CoreSelections
      * Set the entity pointed to by the <code>authenticationDomain</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setUserRelationship(

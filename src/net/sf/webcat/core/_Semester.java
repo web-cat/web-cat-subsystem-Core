@@ -65,6 +65,7 @@ public abstract class _Semester
     public static final String YEAR_KEY = "year";
     // To-one relationships ---
     // To-many relationships ---
+    // Fetch specifications ---
     public static final String ENTITY_NAME = "Semester";
 
 
@@ -85,7 +86,7 @@ public abstract class _Semester
     /**
      * Change the value of this object's <code>season</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setSeason( Number value )
@@ -109,7 +110,7 @@ public abstract class _Semester
     /**
      * Change the value of this object's <code>semesterEndDate</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setSemesterEndDate( NSTimestamp value )
@@ -133,7 +134,7 @@ public abstract class _Semester
     /**
      * Change the value of this object's <code>semesterStartDate</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setSemesterStartDate( NSTimestamp value )
@@ -161,7 +162,7 @@ public abstract class _Semester
     /**
      * Change the value of this object's <code>year</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setYear( int value )
@@ -187,7 +188,7 @@ public abstract class _Semester
     /**
      * Change the value of this object's <code>year</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setYearRaw( Number value )

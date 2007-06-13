@@ -64,6 +64,7 @@ public abstract class _Department
     // To-one relationships ---
     public static final String INSTITUTION_KEY = "institution";
     // To-many relationships ---
+    // Fetch specifications ---
     public static final String ENTITY_NAME = "Department";
 
 
@@ -84,7 +85,7 @@ public abstract class _Department
     /**
      * Change the value of this object's <code>abbreviation</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setAbbreviation( String value )
@@ -108,7 +109,7 @@ public abstract class _Department
     /**
      * Change the value of this object's <code>name</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setName( String value )
@@ -135,7 +136,7 @@ public abstract class _Department
      * relationship (DO NOT USE--instead, use
      * <code>setInstitutionRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setInstitution( net.sf.webcat.core.AuthenticationDomain value )
@@ -149,7 +150,7 @@ public abstract class _Department
      * Set the entity pointed to by the <code>authenticationDomain</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setInstitutionRelationship(

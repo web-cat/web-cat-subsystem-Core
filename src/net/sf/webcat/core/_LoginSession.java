@@ -64,6 +64,8 @@ public abstract class _LoginSession
     // To-one relationships ---
     public static final String USER_KEY = "user";
     // To-many relationships ---
+    // Fetch specifications ---
+    public static final String USER_PID_FSPEC = "userPid";
     public static final String ENTITY_NAME = "LoginSession";
 
 
@@ -84,7 +86,7 @@ public abstract class _LoginSession
     /**
      * Change the value of this object's <code>expirationTime</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setExpirationTime( NSTimestamp value )
@@ -108,7 +110,7 @@ public abstract class _LoginSession
     /**
      * Change the value of this object's <code>sessionId</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setSessionId( String value )
@@ -121,7 +123,7 @@ public abstract class _LoginSession
     /**
      * Retrieve object according to the <code>UserPid</code>
      * fetch specification.
-     * 
+     *
      * @param context The editing context to use
      * @param userNameBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
@@ -163,7 +165,7 @@ public abstract class _LoginSession
      * relationship (DO NOT USE--instead, use
      * <code>setUserRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setUser( net.sf.webcat.core.User value )
@@ -177,7 +179,7 @@ public abstract class _LoginSession
      * Set the entity pointed to by the <code>authenticationDomain</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setUserRelationship(

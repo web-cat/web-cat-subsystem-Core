@@ -59,41 +59,17 @@ public abstract class _Course
     //~ Constants (for key names) .............................................
 
     // Attributes ---
-    public static final String DEPARTMENT_ID_KEY = "departmentId";
     public static final String NAME_KEY = "name";
     public static final String NUMBER_KEY = "number";
     // To-one relationships ---
     public static final String DEPARTMENT_KEY = "department";
     // To-many relationships ---
     public static final String OFFERINGS_KEY = "offerings";
+    // Fetch specifications ---
     public static final String ENTITY_NAME = "Course";
 
 
     //~ Methods ...............................................................
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve this object's <code>departmentId</code> value.
-     * @return the value of the attribute
-     */
-    public Number departmentId()
-    {
-        return (Number)storedValueForKey( "departmentId" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Change the value of this object's <code>departmentId</code>
-     * property.
-     * 
-     * @param value The new value for this property
-     */
-    public void setDepartmentId( Number value )
-    {
-        takeStoredValueForKey( value, "departmentId" );
-    }
-
 
     // ----------------------------------------------------------
     /**
@@ -110,7 +86,7 @@ public abstract class _Course
     /**
      * Change the value of this object's <code>name</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setName( String value )
@@ -138,7 +114,7 @@ public abstract class _Course
     /**
      * Change the value of this object's <code>number</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setNumber( int value )
@@ -164,7 +140,7 @@ public abstract class _Course
     /**
      * Change the value of this object's <code>number</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setNumberRaw( Number value )
@@ -191,7 +167,7 @@ public abstract class _Course
      * relationship (DO NOT USE--instead, use
      * <code>setDepartmentRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setDepartment( net.sf.webcat.core.Department value )
@@ -205,7 +181,7 @@ public abstract class _Course
      * Set the entity pointed to by the <code>authenticationDomain</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setDepartmentRelationship(
@@ -240,7 +216,7 @@ public abstract class _Course
     /**
      * Replace the list of entities pointed to by the
      * <code>offerings</code> relationship.
-     * 
+     *
      * @param value The new set of entities to relate to
      */
     public void setOfferings( NSMutableArray value )
@@ -255,7 +231,7 @@ public abstract class _Course
      * relationship (DO NOT USE--instead, use
      * <code>addToOfferingsRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void addToOfferings( net.sf.webcat.core.CourseOffering value )
@@ -272,7 +248,7 @@ public abstract class _Course
      * relationship (DO NOT USE--instead, use
      * <code>removeFromOfferingsRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The entity to remove from the relationship
      */
     public void removeFromOfferings( net.sf.webcat.core.CourseOffering value )
@@ -287,7 +263,7 @@ public abstract class _Course
     /**
      * Add a new entity to the <code>offerings</code>
      * relationship.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void addToOfferingsRelationship( net.sf.webcat.core.CourseOffering value )
@@ -301,7 +277,7 @@ public abstract class _Course
     /**
      * Remove a specific entity from the <code>offerings</code>
      * relationship.
-     * 
+     *
      * @param value The entity to remove from the relationship
      */
     public void removeFromOfferingsRelationship( net.sf.webcat.core.CourseOffering value )
@@ -315,7 +291,7 @@ public abstract class _Course
     /**
      * Create a brand new object that is a member of the
      * <code>offerings</code> relationship.
-     * 
+     *
      * @return The new entity
      */
     public net.sf.webcat.core.CourseOffering createOfferingsRelationship()
@@ -335,7 +311,7 @@ public abstract class _Course
     /**
      * Remove and then delete a specific entity that is a member of the
      * <code>offerings</code> relationship.
-     * 
+     *
      * @param value The entity to remove from the relationship and then delete
      */
     public void deleteOfferingsRelationship( net.sf.webcat.core.CourseOffering value )

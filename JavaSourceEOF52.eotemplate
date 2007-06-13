@@ -74,6 +74,8 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
     public static final String <$rel.name.uppercaseUnderbarString$>_KEY = "<$rel.name$>";<$endforeach$>
     // To-many relationships ---<$foreach rel classToManyRelationships.@sortedNameArray do$>
     public static final String <$rel.name.uppercaseUnderbarString$>_KEY = "<$rel.name$>";<$endforeach$>
+    // Fetch specifications ---<$foreach FetchSpec javaBeautifiedFetchSpecificationDictionaries.@sortedNameArray fetchspec$>
+    public static final String <$FetchSpec.fetchName.uppercaseUnderbarString$>_FSPEC = "<$FetchSpec.fetchName$>";<$endforeach fetchspec$>
     public static final String ENTITY_NAME = "<$name$>";
 
 
@@ -90,7 +92,7 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
      */
     public <$Attribute.userInfo.valueClassName$> <$Attribute.name$>()
     {
-    	<$Attribute.javaValueClassName$> dbValue = 
+    	<$Attribute.javaValueClassName$> dbValue =
             (<$Attribute.javaValueClassName$>)storedValueForKey( "<$Attribute.name$>" );
         if ( <$Attribute.name$>RawCache != dbValue )
         {
@@ -121,8 +123,8 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
             }
         }
         else if ( dbValue == null && <$Attribute.name$>Cache == null )
-        { 
-            <$Attribute.name$>Cache = 
+        {
+            <$Attribute.name$>Cache =
                 <$Attribute.userInfo.valueClassName$>
                 .<$Attribute.userInfo.valueFactoryMethodName$>( dbValue );
              <$Attribute.name$>Cache.setOwner( this );
@@ -136,7 +138,7 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
     /**
      * Change the value of this object's <code><$Attribute.name$></code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void set<$Attribute.name.initialCapitalString$>( <$Attribute.userInfo.valueClassName$> value )
@@ -192,7 +194,7 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
     /**
      * Change the value of this object's <code><$Attribute.name$></code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void set<$Attribute.name.initialCapitalString$>( <$Attribute.userInfo.type$> value )
@@ -222,7 +224,7 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
     /**
      * Change the value of this object's <code><$Attribute.name$></code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void set<$Attribute.name.initialCapitalString$><$if Attribute.userInfo.isScalar == 'true'$>Raw<$endif$>( <$Attribute.javaValueClassName$> value )
@@ -302,7 +304,7 @@ $><$foreach FetchSpec javaBeautifiedFetchSpecificationDictionaries.@sortedNameAr
     /**
      * Retrieve object according to the <code><$FetchSpec.niceName$></code>
      * fetch specification.
-     * 
+     *
      * @param context The editing context to use<$foreach Binding FetchSpec.bindings do2$>
      * @param <$Binding.name$>Binding fetch spec parameter<$endforeach do2$>
      * @return an NSArray of the entities retrieved
@@ -344,7 +346,7 @@ $><$foreach FetchSpec javaBeautifiedFetchSpecificationDictionaries.@sortedNameAr
      * relationship (DO NOT USE--instead, use
      * <code>set<$ToOneRelationship.name.initialCapitalString$>Relationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void set<$ToOneRelationship.name.initialCapitalString$>( <$ToOneRelationship.destinationEntity.referenceJavaClassName$> value )
@@ -364,7 +366,7 @@ $>    // ----------------------------------------------------------
      * Set the entity pointed to by the <code>authenticationDomain</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void set<$ToOneRelationship.name.initialCapitalString$>Relationship(
@@ -399,7 +401,7 @@ $>    // ----------------------------------------------------------
     /**
      * Replace the list of entities pointed to by the
      * <code><$ToManyRelationship.name$></code> relationship.
-     * 
+     *
      * @param value The new set of entities to relate to
      */
     public void set<$ToManyRelationship.name.initialCapitalString$>( NSMutableArray value )
@@ -414,7 +416,7 @@ $>    // ----------------------------------------------------------
      * relationship (DO NOT USE--instead, use
      * <code>addTo<$ToManyRelationship.name.initialCapitalString$>Relationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void addTo<$ToManyRelationship.name.initialCapitalString$>( <$ToManyRelationship.destinationEntity.referenceJavaClassName$> value )
@@ -431,7 +433,7 @@ $>    // ----------------------------------------------------------
      * relationship (DO NOT USE--instead, use
      * <code>removeFrom<$ToManyRelationship.name.initialCapitalString$>Relationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The entity to remove from the relationship
      */
     public void removeFrom<$ToManyRelationship.name.initialCapitalString$>( <$ToManyRelationship.destinationEntity.referenceJavaClassName$> value )
@@ -452,7 +454,7 @@ $>    // ----------------------------------------------------------
     /**
      * Add a new entity to the <code><$ToManyRelationship.name$></code>
      * relationship.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void addTo<$ToManyRelationship.name.initialCapitalString$>Relationship( <$ToManyRelationship.destinationEntity.referenceJavaClassName$> value )
@@ -466,7 +468,7 @@ $>    // ----------------------------------------------------------
     /**
      * Remove a specific entity from the <code><$ToManyRelationship.name$></code>
      * relationship.
-     * 
+     *
      * @param value The entity to remove from the relationship
      */
     public void removeFrom<$ToManyRelationship.name.initialCapitalString$>Relationship( <$ToManyRelationship.destinationEntity.referenceJavaClassName$> value )
@@ -487,7 +489,7 @@ $>    // ----------------------------------------------------------
     /**
      * Create a brand new object that is a member of the
      * <code><$ToManyRelationship.name$></code> relationship.
-     * 
+     *
      * @return The new entity
      */
     public <$ToManyRelationship.destinationEntity.referenceJavaClassName$> create<$ToManyRelationship.name.initialCapitalString$>Relationship()
@@ -507,7 +509,7 @@ $>    // ----------------------------------------------------------
     /**
      * Remove<$ if !ToManyRelationship.ownsDestination$> and then delete<$endif$> a specific entity that is a member of the
      * <code><$ToManyRelationship.name$></code> relationship.
-     * 
+     *
      * @param value The entity to remove from the relationship<$ if !ToManyRelationship.ownsDestination$> and then delete<$endif$>
      */
     public void delete<$ToManyRelationship.name.initialCapitalString$>Relationship( <$ToManyRelationship.destinationEntity.referenceJavaClassName$> value )

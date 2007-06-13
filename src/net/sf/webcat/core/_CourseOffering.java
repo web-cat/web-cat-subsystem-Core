@@ -70,6 +70,11 @@ public abstract class _CourseOffering
     public static final String TAS_KEY = "TAs";
     public static final String INSTRUCTORS_KEY = "instructors";
     public static final String STUDENTS_KEY = "students";
+    // Fetch specifications ---
+    public static final String WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC = "withoutAnyRelationshipToUser";
+    public static final String WITHOUT_STUDENT_FSPEC = "withoutStudent";
+    public static final String WITHOUT_STUDENT_OR_TA_FSPEC = "withoutStudentOrTA";
+    public static final String WITHOUT_USER_AS_STAFF_FSPEC = "withoutUserAsStaff";
     public static final String ENTITY_NAME = "CourseOffering";
 
 
@@ -90,7 +95,7 @@ public abstract class _CourseOffering
     /**
      * Change the value of this object's <code>crn</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setCrn( String value )
@@ -114,7 +119,7 @@ public abstract class _CourseOffering
     /**
      * Change the value of this object's <code>moodleGroupId</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setMoodleGroupId( Number value )
@@ -138,7 +143,7 @@ public abstract class _CourseOffering
     /**
      * Change the value of this object's <code>moodleId</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setMoodleId( Number value )
@@ -162,7 +167,7 @@ public abstract class _CourseOffering
     /**
      * Change the value of this object's <code>url</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setUrl( String value )
@@ -175,7 +180,7 @@ public abstract class _CourseOffering
     /**
      * Retrieve object according to the <code>WithoutAnyRelationshipToUser</code>
      * fetch specification.
-     * 
+     *
      * @param context The editing context to use
      * @param userBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
@@ -203,7 +208,7 @@ public abstract class _CourseOffering
     /**
      * Retrieve object according to the <code>WithoutStudent</code>
      * fetch specification.
-     * 
+     *
      * @param context The editing context to use
      * @param userBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
@@ -231,7 +236,7 @@ public abstract class _CourseOffering
     /**
      * Retrieve object according to the <code>WithoutStudentOrTA</code>
      * fetch specification.
-     * 
+     *
      * @param context The editing context to use
      * @param userBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
@@ -259,7 +264,7 @@ public abstract class _CourseOffering
     /**
      * Retrieve object according to the <code>WithoutUserAsStaff</code>
      * fetch specification.
-     * 
+     *
      * @param context The editing context to use
      * @param userBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
@@ -301,7 +306,7 @@ public abstract class _CourseOffering
      * relationship (DO NOT USE--instead, use
      * <code>setCourseRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setCourse( net.sf.webcat.core.Course value )
@@ -315,7 +320,7 @@ public abstract class _CourseOffering
      * Set the entity pointed to by the <code>authenticationDomain</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setCourseRelationship(
@@ -352,7 +357,7 @@ public abstract class _CourseOffering
      * relationship (DO NOT USE--instead, use
      * <code>setSemesterRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setSemester( net.sf.webcat.core.Semester value )
@@ -366,7 +371,7 @@ public abstract class _CourseOffering
      * Set the entity pointed to by the <code>authenticationDomain</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void setSemesterRelationship(
@@ -401,7 +406,7 @@ public abstract class _CourseOffering
     /**
      * Replace the list of entities pointed to by the
      * <code>TAs</code> relationship.
-     * 
+     *
      * @param value The new set of entities to relate to
      */
     public void setTAs( NSMutableArray value )
@@ -416,7 +421,7 @@ public abstract class _CourseOffering
      * relationship (DO NOT USE--instead, use
      * <code>addToTAsRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void addToTAs( net.sf.webcat.core.User value )
@@ -433,7 +438,7 @@ public abstract class _CourseOffering
      * relationship (DO NOT USE--instead, use
      * <code>removeFromTAsRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The entity to remove from the relationship
      */
     public void removeFromTAs( net.sf.webcat.core.User value )
@@ -448,7 +453,7 @@ public abstract class _CourseOffering
     /**
      * Add a new entity to the <code>TAs</code>
      * relationship.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void addToTAsRelationship( net.sf.webcat.core.User value )
@@ -462,7 +467,7 @@ public abstract class _CourseOffering
     /**
      * Remove a specific entity from the <code>TAs</code>
      * relationship.
-     * 
+     *
      * @param value The entity to remove from the relationship
      */
     public void removeFromTAsRelationship( net.sf.webcat.core.User value )
@@ -476,7 +481,7 @@ public abstract class _CourseOffering
     /**
      * Create a brand new object that is a member of the
      * <code>TAs</code> relationship.
-     * 
+     *
      * @return The new entity
      */
     public net.sf.webcat.core.User createTAsRelationship()
@@ -496,7 +501,7 @@ public abstract class _CourseOffering
     /**
      * Remove and then delete a specific entity that is a member of the
      * <code>TAs</code> relationship.
-     * 
+     *
      * @param value The entity to remove from the relationship and then delete
      */
     public void deleteTAsRelationship( net.sf.webcat.core.User value )
@@ -537,7 +542,7 @@ public abstract class _CourseOffering
     /**
      * Replace the list of entities pointed to by the
      * <code>instructors</code> relationship.
-     * 
+     *
      * @param value The new set of entities to relate to
      */
     public void setInstructors( NSMutableArray value )
@@ -552,7 +557,7 @@ public abstract class _CourseOffering
      * relationship (DO NOT USE--instead, use
      * <code>addToInstructorsRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void addToInstructors( net.sf.webcat.core.User value )
@@ -569,7 +574,7 @@ public abstract class _CourseOffering
      * relationship (DO NOT USE--instead, use
      * <code>removeFromInstructorsRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The entity to remove from the relationship
      */
     public void removeFromInstructors( net.sf.webcat.core.User value )
@@ -584,7 +589,7 @@ public abstract class _CourseOffering
     /**
      * Add a new entity to the <code>instructors</code>
      * relationship.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void addToInstructorsRelationship( net.sf.webcat.core.User value )
@@ -598,7 +603,7 @@ public abstract class _CourseOffering
     /**
      * Remove a specific entity from the <code>instructors</code>
      * relationship.
-     * 
+     *
      * @param value The entity to remove from the relationship
      */
     public void removeFromInstructorsRelationship( net.sf.webcat.core.User value )
@@ -612,7 +617,7 @@ public abstract class _CourseOffering
     /**
      * Create a brand new object that is a member of the
      * <code>instructors</code> relationship.
-     * 
+     *
      * @return The new entity
      */
     public net.sf.webcat.core.User createInstructorsRelationship()
@@ -632,7 +637,7 @@ public abstract class _CourseOffering
     /**
      * Remove and then delete a specific entity that is a member of the
      * <code>instructors</code> relationship.
-     * 
+     *
      * @param value The entity to remove from the relationship and then delete
      */
     public void deleteInstructorsRelationship( net.sf.webcat.core.User value )
@@ -673,7 +678,7 @@ public abstract class _CourseOffering
     /**
      * Replace the list of entities pointed to by the
      * <code>students</code> relationship.
-     * 
+     *
      * @param value The new set of entities to relate to
      */
     public void setStudents( NSMutableArray value )
@@ -688,7 +693,7 @@ public abstract class _CourseOffering
      * relationship (DO NOT USE--instead, use
      * <code>addToStudentsRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void addToStudents( net.sf.webcat.core.User value )
@@ -705,7 +710,7 @@ public abstract class _CourseOffering
      * relationship (DO NOT USE--instead, use
      * <code>removeFromStudentsRelationship()</code>.
      * This method is provided for WebObjects use.
-     * 
+     *
      * @param value The entity to remove from the relationship
      */
     public void removeFromStudents( net.sf.webcat.core.User value )
@@ -720,7 +725,7 @@ public abstract class _CourseOffering
     /**
      * Add a new entity to the <code>students</code>
      * relationship.
-     * 
+     *
      * @param value The new entity to relate to
      */
     public void addToStudentsRelationship( net.sf.webcat.core.User value )
@@ -734,7 +739,7 @@ public abstract class _CourseOffering
     /**
      * Remove a specific entity from the <code>students</code>
      * relationship.
-     * 
+     *
      * @param value The entity to remove from the relationship
      */
     public void removeFromStudentsRelationship( net.sf.webcat.core.User value )
@@ -748,7 +753,7 @@ public abstract class _CourseOffering
     /**
      * Create a brand new object that is a member of the
      * <code>students</code> relationship.
-     * 
+     *
      * @return The new entity
      */
     public net.sf.webcat.core.User createStudentsRelationship()
@@ -768,7 +773,7 @@ public abstract class _CourseOffering
     /**
      * Remove and then delete a specific entity that is a member of the
      * <code>students</code> relationship.
-     * 
+     *
      * @param value The entity to remove from the relationship and then delete
      */
     public void deleteStudentsRelationship( net.sf.webcat.core.User value )

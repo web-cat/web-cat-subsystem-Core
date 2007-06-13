@@ -68,6 +68,8 @@ public abstract class _AuthenticationDomain
     public static final String TIME_ZONE_NAME_KEY = "timeZoneName";
     // To-one relationships ---
     // To-many relationships ---
+    // Fetch specifications ---
+    public static final String FETCH_ALL_FSPEC = "FetchAll";
     public static final String ENTITY_NAME = "AuthenticationDomain";
 
 
@@ -88,7 +90,7 @@ public abstract class _AuthenticationDomain
     /**
      * Change the value of this object's <code>dateFormat</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setDateFormat( String value )
@@ -112,7 +114,7 @@ public abstract class _AuthenticationDomain
     /**
      * Change the value of this object's <code>defaultEmailDomain</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setDefaultEmailDomain( String value )
@@ -136,7 +138,7 @@ public abstract class _AuthenticationDomain
     /**
      * Change the value of this object's <code>defaultURLPattern</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setDefaultURLPattern( String value )
@@ -160,7 +162,7 @@ public abstract class _AuthenticationDomain
     /**
      * Change the value of this object's <code>displayableName</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setDisplayableName( String value )
@@ -184,7 +186,7 @@ public abstract class _AuthenticationDomain
     /**
      * Change the value of this object's <code>propertyName</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setPropertyName( String value )
@@ -208,7 +210,7 @@ public abstract class _AuthenticationDomain
     /**
      * Change the value of this object's <code>timeFormat</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setTimeFormat( String value )
@@ -232,7 +234,7 @@ public abstract class _AuthenticationDomain
     /**
      * Change the value of this object's <code>timeZoneName</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setTimeZoneName( String value )
@@ -245,7 +247,7 @@ public abstract class _AuthenticationDomain
     /**
      * Retrieve object according to the <code>FetchAll</code>
      * fetch specification.
-     * 
+     *
      * @param context The editing context to use
      * @return an NSArray of the entities retrieved
      */

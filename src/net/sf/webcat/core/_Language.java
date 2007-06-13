@@ -64,6 +64,8 @@ public abstract class _Language
     public static final String VERSION_KEY = "version";
     // To-one relationships ---
     // To-many relationships ---
+    // Fetch specifications ---
+    public static final String FETCH_ALL_FSPEC = "FetchAll";
     public static final String ENTITY_NAME = "Language";
 
 
@@ -84,7 +86,7 @@ public abstract class _Language
     /**
      * Change the value of this object's <code>compiler</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setCompiler( String value )
@@ -108,7 +110,7 @@ public abstract class _Language
     /**
      * Change the value of this object's <code>name</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setName( String value )
@@ -132,7 +134,7 @@ public abstract class _Language
     /**
      * Change the value of this object's <code>version</code>
      * property.
-     * 
+     *
      * @param value The new value for this property
      */
     public void setVersion( String value )
@@ -145,7 +147,7 @@ public abstract class _Language
     /**
      * Retrieve object according to the <code>FetchAll</code>
      * fetch specification.
-     * 
+     *
      * @param context The editing context to use
      * @return an NSArray of the entities retrieved
      */
