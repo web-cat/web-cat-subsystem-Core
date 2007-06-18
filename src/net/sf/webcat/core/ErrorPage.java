@@ -30,6 +30,9 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import com.webobjects.woextensions.*;
+
+import java.io.*;
+
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -48,7 +51,7 @@ public class ErrorPage
      // ----------------------------------------------------------
    /**
      * Creates a new ErrorPage object.
-     * 
+     *
      * @param context The context
      */
     public ErrorPage( WOContext context )
@@ -75,15 +78,35 @@ public class ErrorPage
                      + ( (Session)session() ).getUser().pid()
                      + " logging out" );
                ( (Session)session() ).userLogout();
-           }        
+           }
            WORedirect new_login = new WORedirect( context() );
            new_login.setUrl( "/cgi-bin/WebObjects.exe/Main.woa" );
                return new_login;
          */
-        String pageName = 
+        String pageName =
             ( (Session)session() ).tabs.selectDefault().pageName();
         log.debug( "returning to " + pageName );
         return pageWithName( pageName );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Determine whether the user (if there is one) has admin privileges.
+     * @return True if the user is an admin
+     */
+    public boolean isAdminUser()
+    {
+        if ( hasSession() )
+        {
+            Session session = (Session)session();
+            User user = session.primeUser();
+            return user != null && user.hasAdminPrivileges();
+        }
+        else
+        {
+            return false;
+        }
     }
 
 
@@ -110,6 +133,31 @@ public class ErrorPage
         {
             return false;
         }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a formatted reason and stack trace message from the given
+     * exception.
+     * @return The exception details and stack trace as a string
+     */
+    public String exceptionStackTrace()
+    {
+        Throwable reason = exception;
+        if ( reason == null ) return null;
+        StringWriter sw = new StringWriter();
+        PrintWriter out = new PrintWriter( sw );
+        reason.printStackTrace( out );
+        reason = reason.getCause();
+        while ( reason != null )
+        {
+            out.println( "\nCaused by:\n" );
+            reason.printStackTrace( out );
+            reason = reason.getCause();
+        }
+        out.close();
+        return sw.toString();
     }
 
 

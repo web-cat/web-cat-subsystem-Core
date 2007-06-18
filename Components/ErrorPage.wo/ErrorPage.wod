@@ -1,10 +1,16 @@
-MyForm: WOForcedForm {
-    multipleSubmit = true;
+Footer: net.sf.webcat.core.Footer {}
+
+IsLoggedIn: WOConditional {
+	condition = isLoggedIn;
 }
 
-SubmitButton: WOSubmitButton {
-	action = gotoMainPage;
-	value = " Back to Web-CAT Home ";
+Logo: WOImage {
+	filename = "images/Web-CAT-big2.gif";
+	width    = "100";
+	height   = "40";
+	alt      = "Web-CAT";
+	border   = "0";
+	align    = "middle";
 }
 
 LogoutButton: WOSubmitButton {
@@ -12,8 +18,8 @@ LogoutButton: WOSubmitButton {
 	value = " Logout ";
 }
 
-IsLoggedIn: WOConditional {
-	condition = isLoggedIn;
+MyForm: WOForcedForm {
+    multipleSubmit = true;
 }
 
 Page: net.sf.webcat.core.BarePage {
@@ -29,16 +35,37 @@ td#logo {
 td#form {
     padding: 10px;
 }
+
+th {
+    background-color: #363;
+	color: #cfc;
+	padding: 0.1em .6em;
+    text-align: left;
+}
 </style>";
 }
 
-Logo: WOImage {
-	filename = "images/Web-CAT-big2.gif";
-	width    = "100";
-	height   = "40";
-	alt      = "Web-CAT";
-	border   = "0";
-	align    = "middle";
+PoweredByWOLink: WOHyperlink {
+    href = "http://www.apple.com/webobjects/";
 }
 
-Footer: net.sf.webcat.core.Footer {}
+PoweredByWO: WOImage {
+	alt       = "Powered By WebObjects";
+	title     = "Powered By WebObjects";
+	border    = "0";
+	filename  = "PoweredByWebObjects.gif";
+	framework = "JavaWOExtensions";
+	height    = "34";
+	name      = "Powered By WebObjects";
+	width     = "125";
+}
+
+ReasonRepetition: WORepetition {
+	item = errorline;
+	list = error.stackTrace;
+}
+
+SubmitButton: WOSubmitButton {
+	action = gotoMainPage;
+	value = " Back to Web-CAT Home ";
+}

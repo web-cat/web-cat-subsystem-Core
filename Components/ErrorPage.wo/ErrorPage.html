@@ -3,9 +3,10 @@
 <tr><td id="logo">
   <h1>Web-CAT</h1>
   <p><webobject name="Logo"/></p>
-  <p><b>Automatic Grading Using Student-written Tests</b></p>
-</td><td id="foo">
-<h1 id="title">Unexpected Exception</h3>
+  <p><b>Automatic Grading Using Student-written Tests</b></p><br/>
+  <p><webobject name="PoweredByWOLink"><webobject name="PoweredByWO"/></webobject></p>
+</td><td id="form">
+<h1 id="title">Unexpected Exception</h1>
 <p>
 An unexpected exception has occured while trying to process your request.
 The details of the exception have been e-mailed to the Web-CAT
@@ -18,6 +19,16 @@ If you continnue to experience problems, you should logout.
 <webobject name="MyForm">
 <center><webobject name="SubmitButton"/><webobject name="IsLoggedIn"> <webobject name="LogoutButton"/></webobject></center>
 </webobject>
+<wo:if condition="$isAdminUser"><h3>Exception Details</h3><table>
+<p><b>Error:</b> <wo:str value="$exception.getClass.getName"/></p>
+<p><b>Reason:</b> <wo:str value="$exception.getMessage"/></p>
+<tr><th>File</th><th>Method</th><th>Line</th></tr>
+<wo name="ReasonRepetition"><tr>
+  <td><wo:str value="$errorline.fileName"/></td>
+  <td><wo:str value="$errorline.lineNumber"/></td>
+  <td><wo:str value="$errorline.methodName"/></td>
+</tr></wo>
+</table></wo:if>
 </td></tr></table>
 <webobject name="Footer"/>
 </webobject>
