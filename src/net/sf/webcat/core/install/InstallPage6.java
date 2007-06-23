@@ -49,7 +49,7 @@ public class InstallPage6
     // ----------------------------------------------------------
     /**
      * Creates a new PreCheckPage object.
-     * 
+     *
      * @param context The context to use
      */
     public InstallPage6( WOContext context )
@@ -138,6 +138,7 @@ public class InstallPage6
             }
             Application.releasePeerEditingContext( ec );
         }
+        setConfigDefault( configuration, "adminNotifyAddrs", "webcat@vt.edu" );
     }
 
 
@@ -157,7 +158,7 @@ public class InstallPage6
         String authDomainName =
             configuration.getProperty( "authenticator.default" );
         String username =
-            storeFormValueToConfig( formValues, "AdminUsername", 
+            storeFormValueToConfig( formValues, "AdminUsername",
                 "Please specify the administrator's user name." );
         if ( log.isDebugEnabled() )
         {
@@ -208,7 +209,7 @@ public class InstallPage6
             else
             {
                 String password =
-                    storeFormValueToConfig( formValues, "AdminPassword", 
+                    storeFormValueToConfig( formValues, "AdminPassword",
                     "An administrator password is required." );
                 if ( authDomainName.equals(
                     DatabaseAuthenticator.class.getName() )
@@ -237,7 +238,7 @@ public class InstallPage6
                     ec.saveChanges();
                 }
             }
-            Application.releasePeerEditingContext( ec );            
+            Application.releasePeerEditingContext( ec );
         }
         if ( log.isDebugEnabled() )
         {
