@@ -151,8 +151,6 @@ public class CoreDatabaseUpdates
     public void updateIncrement6() throws SQLException
     {
         database().executeSQL(
-            "alter table TAUTHENTICATIONDOMAIN add CTIMEZONENAME TINYTEXT" );
-        database().executeSQL(
             "alter table TAUTHENTICATIONDOMAIN "
             + "change CTINYTEXT CDEFAULTURLPATTERN TINYTEXT" );
     }
@@ -191,7 +189,7 @@ public class CoreDatabaseUpdates
                 "CREATE TABLE TAUTHENTICATIONDOMAIN "
                 + "(CDEFAULTEMAILDOMAIN TINYTEXT , CTINYTEXT TINYTEXT , "
                 + "CDISPLAYABLENAME TINYTEXT , OID INTEGER NOT NULL, "
-                + "CPROPERTYNAME TINYTEXT )" );
+                + "CPROPERTYNAME TINYTEXT , CTIMEZONENAME TINYTEXT )" );
             database().executeSQL(
                 "ALTER TABLE TAUTHENTICATIONDOMAIN ADD PRIMARY KEY (OID)" );
 
