@@ -973,7 +973,18 @@ public class Application
                     configurationProperties().getProperty( "adminNotifyAddrs" );
                 if ( adminList == null )
                 {
-                    adminList = configurationProperties().getProperty( "coreAdminEmail" );
+                    adminList = configurationProperties()
+                        .getProperty( "coreAdminEmail" );
+                }
+                else
+                {
+                    String primaryAdmin = configurationProperties()
+                        .getProperty( "coreAdminEmail" );
+                    if ( primaryAdmin != null
+                         && !adminList.contains( primaryAdmin ) )
+                    {
+                        adminList = primaryAdmin + "," + adminList;
+                    }
                 }
                 if ( adminList == null )
                 {
