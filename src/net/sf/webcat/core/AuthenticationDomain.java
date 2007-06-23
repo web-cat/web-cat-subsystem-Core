@@ -177,14 +177,17 @@ public class AuthenticationDomain
                             String displayableName =
                                 properties.getProperty( base + "."
                                     + AuthenticationDomain.DISPLAYABLE_NAME_KEY );
-                            if ( domain.displayableName() != displayableName )
+                            if ( displayableName != null
+                                 && domain.displayableName()
+                                    != displayableName )
                             {
                                 domain.setDisplayableName( displayableName );
                             }
                             String emailDomain =
                                 properties.getProperty( base + "."
                                     + AuthenticationDomain.DEFAULT_EMAIL_DOMAIN_KEY );
-                            if ( domain.defaultEmailDomain() != emailDomain )
+                            if ( emailDomain != null
+                                 && domain.defaultEmailDomain() != emailDomain )
                             {
                                 domain.setDefaultEmailDomain( emailDomain );
                             }
