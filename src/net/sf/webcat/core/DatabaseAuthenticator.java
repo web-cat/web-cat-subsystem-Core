@@ -27,6 +27,8 @@ package net.sf.webcat.core;
 
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.foundation.*;
+
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -52,7 +54,7 @@ public class DatabaseAuthenticator
     // ----------------------------------------------------------
     /**
      * Create a new <code>DatabaseAuthenticator</code> object.
-     * 
+     *
      */
     public DatabaseAuthenticator()
     {
@@ -69,7 +71,7 @@ public class DatabaseAuthenticator
      * instance-specific settings from properties named
      * "baseName.<property>".  This operation should only be called once,
      * before any authenticate requests.
-     * 
+     *
      * @param baseName   The base property name for this authenticator object
      * @param properties The property collection from which the object
      *                   should read its configuration settings
@@ -81,7 +83,19 @@ public class DatabaseAuthenticator
                             )
     {
         addIfNotFound = properties.booleanForKey( baseName + ".addIfNotFound" );
-        log.debug( "addIfNotFound = " + addIfNotFound );
+        skipPasswordChecks =
+            properties.booleanForKey( baseName + ".skipPasswordChecks" );
+        log.debug( baseName + ".addIfNotFound = " + addIfNotFound );
+        if ( skipPasswordChecks )
+        {
+            log.warn(
+                baseName + ".skipPasswordChecks = " + skipPasswordChecks );
+        }
+        else
+        {
+            log.debug(
+                baseName + ".skipPasswordChecks = " + skipPasswordChecks );
+        }
         return true;
     }
 
@@ -90,7 +104,7 @@ public class DatabaseAuthenticator
     /**
      * Validate the user `username' with the password `password'.
      * Should not be called until the authenticator has been configured.
-     * 
+     *
      * @param userName The user id to validate
      * @param password The password to check
      * @param domain   The authentication domain associated with this check
@@ -106,15 +120,14 @@ public class DatabaseAuthenticator
         User user = null;
         try
         {
-            // FIXME: need to add the auth domain as an extra parameter
-            // in this search
-            User u = (User)EOUtilities.objectMatchingKeyAndValue(
-                    ec,
-                    User.ENTITY_NAME,
-                    User.USER_NAME_KEY,
-                    userName
-                );
-            if ( password.equals( u.password() ) )
+            User u = (User)EOUtilities.objectMatchingValues(
+                ec, User.ENTITY_NAME,
+                new NSDictionary(
+                    new Object[]{ userName , domain              },
+                    new Object[]{ User.USER_NAME_KEY,
+                                  User.AUTHENTICATION_DOMAIN_KEY }
+                ) );
+            if ( skipPasswordChecks || password.equals( u.password() ) )
             {
                 log.debug( "user " + userName + " validated" );
                 user = u;
@@ -183,7 +196,7 @@ public class DatabaseAuthenticator
      * change their password.  For authentication mechanisms using
      * external databases or servers where no changes are allowed, the
      * authenticator should return false.
-     * 
+     *
      * @return True if users associated with this authenticator can
      *         change their password
      */
@@ -198,7 +211,7 @@ public class DatabaseAuthenticator
      * Change the user's password.  For authentication mechanisms using
      * external databases or servers where no changes are allowed, an
      * authenticator may simply return false for all requests.
-     * 
+     *
      * @param user        The user
      * @param newPassword The password to change to
      * @return True if the password change was successful
@@ -252,7 +265,7 @@ public class DatabaseAuthenticator
      * the user their new password.  For authentication mechanisms using
      * external databases or servers where no changes are allowed, an
      * authenticator may simply return false for all requests.
-     * 
+     *
      * @param user        The user
      * @return True if the password change was successful
      */
@@ -296,6 +309,7 @@ public class DatabaseAuthenticator
     //~ Instance/static variables .............................................
 
     private boolean addIfNotFound = false;
+    private boolean skipPasswordChecks = false;
 
     private static final java.util.Random randGen = new java.util.Random();
     private static final int DEFAULT_GENERATED_LENGTH = 8;

@@ -28,6 +28,8 @@ package net.sf.webcat.core;
 import java.io.*;
 import java.net.*;
 import com.webobjects.eoaccess.*;
+import com.webobjects.foundation.*;
+
 import org.apache.log4j.Logger;
 import edu.vt.middleware.eddo.*;
 
@@ -69,7 +71,7 @@ public class EdAuthAuthenticator
      * instance-specific settings from properties named
      * "baseName.<property>".  This operation should only be called once,
      * before any authenticate requests.
-     * 
+     *
      * @param baseName   The base property name for this authenticator object
      * @param properties The property collection from which the object
      *                   should read its configuration settings
@@ -110,7 +112,7 @@ public class EdAuthAuthenticator
     /**
      * Validate the user `username' with the password `password'.
      * Should not be called until the authenticator has been configured.
-     * 
+     *
      * @param username The user id to validate
      * @param password The password to check
      * @param domain   The authentication domain associated with this check
@@ -129,12 +131,13 @@ public class EdAuthAuthenticator
             log.debug( "user " + username + " validated" );
             try
             {
-                user = (User)EOUtilities.objectMatchingKeyAndValue(
-                        ec,
-                        User.ENTITY_NAME,
-                        User.USER_NAME_KEY,
-                        username
-                    );
+                user = (User)EOUtilities.objectMatchingValues(
+                    ec, User.ENTITY_NAME,
+                    new NSDictionary(
+                        new Object[]{ username , domain              },
+                        new Object[]{ User.USER_NAME_KEY,
+                                      User.AUTHENTICATION_DOMAIN_KEY }
+                    ) );
                 if ( user.authenticationDomain() != domain )
                 {
                     if ( user.authenticationDomain() == null )
@@ -214,7 +217,7 @@ public class EdAuthAuthenticator
      * change their password.  For authentication mechanisms using
      * external databases or servers where no changes are allowed, the
      * authenticator should return false.
-     * 
+     *
      * @return True if users associated with this authenticator can
      *         change their password
      */
@@ -229,7 +232,7 @@ public class EdAuthAuthenticator
      * Change the user's password.  For authentication mechanisms using
      * external databases or servers where no changes are allowed, an
      * authenticator may simply return false for all requests.
-     * 
+     *
      * @param user        The user
      * @param newPassword The password to change to
      * @return True if the password change was successful
@@ -247,7 +250,7 @@ public class EdAuthAuthenticator
      * the user their new password.  For authentication mechanisms using
      * external databases or servers where no changes are allowed, an
      * authenticator may simply return false for all requests.
-     * 
+     *
      * @param user        The user
      * @return True if the password change was successful
      */
