@@ -21,12 +21,13 @@ If you continnue to experience problems, you should logout.
 </webobject>
 <wo:if condition="$isAdminUser"><h3>Exception Details</h3><table>
 <p><b>Error:</b> <wo:str value="$exception.getClass.getName"/></p>
-<p><b>Reason:</b> <wo:str value="$exception.getMessage"/></p>
-<tr><th>File</th><th>Method</th><th>Line</th></tr>
+<wo:if condition="$exception.getMessage">
+<p><b>Reason:</b> <wo:str value="$exception.getMessage"/></p></wo:if>
+<tr><th>Class</th><th>Method</th><th>Line</th></tr>
 <wo name="ReasonRepetition"><tr>
-  <td><wo:str value="$errorline.fileName"/></td>
-  <td><wo:str value="$errorline.lineNumber"/></td>
+  <td><wo:str value="$errorline.className"/></td>
   <td><wo:str value="$errorline.methodName"/></td>
+  <td><wo:str value="$errorline.lineNumber"/></td>
 </tr></wo>
 </table></wo:if>
 </td></tr></table>
