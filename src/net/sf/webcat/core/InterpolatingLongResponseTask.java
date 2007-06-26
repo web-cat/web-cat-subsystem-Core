@@ -145,7 +145,7 @@ public abstract class InterpolatingLongResponseTask
                     additionalTime = System.currentTimeMillis() -
                         timeCurrent.getTime();
                 }
-                int additionalUnits = 
+                int additionalUnits =
                     (int)( additionalTime / timePerWeightedUnit );
                 if ( additionalUnits < 0 )
                 {
@@ -203,7 +203,7 @@ public abstract class InterpolatingLongResponseTask
             timeCurrent = new NSTimestamp();
             currentStep++;
         }
-        tearDownTask();
+        result = tearDownTask( result );
         return result;
     }
 
@@ -256,10 +256,14 @@ public abstract class InterpolatingLongResponseTask
      * task.  This base implementation does nothing.  Subclasses that wish
      * to use this feature can override this method to do something
      * appropriate.
+     * @param resultSoFar The working result returned by the last call
+     * to nextStep()
+     * @return The final result
      */
-    protected void tearDownTask()
+    protected Object tearDownTask( Object resultSoFar )
     {
         // Nothing to do as the default; subclasses can override as necessary
+        return resultSoFar;
     }
 
 
