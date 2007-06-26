@@ -192,16 +192,6 @@ public class CoreDatabaseUpdates
                 + "CPROPERTYNAME TINYTEXT , CTIMEZONENAME TINYTEXT )" );
             database().executeSQL(
                 "ALTER TABLE TAUTHENTICATIONDOMAIN ADD PRIMARY KEY (OID)" );
-
-            // need to populate with a default authentication domain
-//            log.info( "creating default authentication domain for "
-//                      + "\"Support Personnel\"" );
-//            database().executeSQL(
-//                "INSERT INTO TAUTHENTICATIONDOMAIN VALUES ('vt.edu', NULL, "
-//                + "'Support Personnel', 1, 'authenticator.DBAuth', NULL)" );
-//            database().executeSQL(
-//                "INSERT INTO EO_PK_TABLE VALUES ('TAUTHENTICATIONDOMAIN', 1)" );
-//            finishInitializingDefaultDomain = true;
         }
     }
 
@@ -242,14 +232,6 @@ public class CoreDatabaseUpdates
                 + "CNAME TINYTEXT NOT NULL, CNUMBER SMALLINT NOT NULL)" );
             database().executeSQL(
                 "ALTER TABLE TCOURSE ADD PRIMARY KEY (OID)" );
-
-            // add default sandbox course?
-//            log.info( "creating default course \"CS 1: Sandbox\"" );
-//            database().executeSQL(
-//                "INSERT INTO TCOURSE VALUES "
-//                + "(1, 1, 'Sandbox', 1)" );
-//            database().executeSQL(
-//                "INSERT INTO EO_PK_TABLE VALUES ('TCOURSE', 1)" );
         }
     }
 
@@ -271,8 +253,6 @@ public class CoreDatabaseUpdates
                 + "CMOODLEID INTEGER , CSEMESTER INTEGER , URL TINYTEXT )" );
             database().executeSQL(
                 "ALTER TABLE TCOURSEOFFERING ADD PRIMARY KEY (OID)" );
-
-            // add default sandbox course?
         }
     }
 
@@ -331,14 +311,6 @@ public class CoreDatabaseUpdates
                 + "CNAME TINYTEXT )" );
             database().executeSQL(
                 "ALTER TABLE TDEPARTMENT ADD PRIMARY KEY (OID)" );
-
-            // add default department
-//            log.info( "creating default department \"CS: Computer Science\"" );
-//            database().executeSQL(
-//                "INSERT INTO TDEPARTMENT VALUES "
-//                + "('CS', 1, 'Computer Science')" );
-//            database().executeSQL(
-//                "INSERT INTO EO_PK_TABLE VALUES ('TDEPARTMENT', 1)" );
         }
     }
 
@@ -358,8 +330,6 @@ public class CoreDatabaseUpdates
                 + "(CID INT NOT NULL, CID1 INT NOT NULL)" );
             database().executeSQL(
                 "ALTER TABLE TINSTRUCTORCOURSE ADD PRIMARY KEY (CID, CID1)" );
-
-            // make admin the instructor for the sandbox course?
         }
     }
 
@@ -421,38 +391,6 @@ public class CoreDatabaseUpdates
                 + "CYEAR SMALLINT NOT NULL)" );
             database().executeSQL(
                 "ALTER TABLE TSEMESTER ADD PRIMARY KEY (OID)" );
-
-            // create default semester
-//            java.util.Calendar now = new java.util.GregorianCalendar();
-//            int thisYear = now.get( java.util.Calendar.YEAR );
-//            int thisMonth = now.get( java.util.Calendar.MONTH ) + 1;
-//            int semester = Semester.defaultSemesterFor( now );
-//            int startMonth = Semester.defaultStartingMonth( semester );
-//            int startYear = thisYear;
-//            if ( startMonth > thisMonth ) startYear--;
-//            int endMonth = Semester.defaultEndingMonth( semester );
-//            int endYear = thisYear;
-//            if ( endMonth < thisMonth ) endYear++;
-//            int startDay = 1;
-//            int endDay = 30;
-//            switch ( endMonth )
-//            {
-//                case 2: endDay = 28; break;
-//                case 1:
-//                case 3:
-//                case 5:
-//                case 7:
-//                case 8:
-//                case 10:
-//                case 12: endDay = 31; break;
-//            }
-//            database().executeSQL(
-//                "INSERT INTO TSEMESTER VALUES "
-//                + "(1, " + semester + ", '" + endYear + "-" + endMonth
-//                + "-" + endDay + "', '" + startYear + "-" + startMonth
-//                + "-" + startDay + "', " + thisYear + ")" );
-//            database().executeSQL(
-//                "INSERT INTO EO_PK_TABLE VALUES ('TSEMESTER', 1)" );
         }
     }
 
@@ -478,15 +416,6 @@ public class CoreDatabaseUpdates
                 + "CUSERNAME TINYTEXT NOT NULL)" );
             database().executeSQL(
                 "ALTER TABLE TUSER ADD PRIMARY KEY (OID)" );
-
-            // create default user
-//            log.info( "creating default admin account" );
-//            database().executeSQL(
-//                "INSERT INTO TUSER VALUES "
-//                + "(100, 1, NULL, NULL, 1, NULL, 'admin', "
-//                + "NULL, NULL, 0, NULL, 'admin')" );
-//            database().executeSQL(
-//                "INSERT INTO EO_PK_TABLE VALUES ('TUSER', 1)" );
         }
     }
 
