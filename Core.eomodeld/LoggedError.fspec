@@ -1,0 +1,61 @@
+
+{
+    exceptionLocation = 
+    {
+        class = EOFetchSpecification;
+        entityName = LoggedError;
+        prefetchingRelationshipKeyPaths = 
+        ();
+        qualifier = 
+        {
+            class = EOAndQualifier;
+            qualifiers = 
+            (
+               
+               {
+                   class = EOKeyValueQualifier;
+                   key = exceptionName;
+                   selectorName = isEqualTo:;
+                   value = 
+                   {
+                       _key = name;
+                       class = EOQualifierVariable;
+                   };
+               }, 
+               
+               {
+                   class = EOKeyValueQualifier;
+                   key = inClass;
+                   selectorName = isEqualTo:;
+                   value = 
+                   {
+                       _key = class;
+                       class = EOQualifierVariable;
+                   };
+               }, 
+               
+               {
+                   class = EOKeyValueQualifier;
+                   key = inMethod;
+                   selectorName = isEqualTo:;
+                   value = 
+                   {
+                       _key = method;
+                       class = EOQualifierVariable;
+                   };
+               }, 
+               
+               {
+                   class = EOKeyValueQualifier;
+                   key = line;
+                   selectorName = isEqualTo:;
+                   value = 
+                   {
+                       _key = line;
+                       class = EOQualifierVariable;
+                   };
+               }
+            );
+        };
+    };
+}

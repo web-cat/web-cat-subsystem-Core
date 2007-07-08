@@ -1216,9 +1216,10 @@ public class Application
                                                WOContext    aContext,
                                                String       msg )
     {
-        String body = informationForExceptionInContext( anException,
-                                                        extraInfo,
-                                                        aContext );
+        String body = ( (Application)application() )
+            .informationForExceptionInContext( anException,
+                                               extraInfo,
+                                               aContext );
         if ( msg != null )
         {
             body = msg + "\n\n" + body;
@@ -1248,133 +1249,196 @@ public class Application
      * Method to assemble information on the exception, including the
      * message, stack trace, the name of the component which contained
      * the error (or caused it), and any session information required.
+     * This is an instance method instead of being static to ensure that
+     * it is synchronized.
      * @param anException the exception that occurred
      * @param extraInfo   dictionary of extra information about what was
      *                    happening when the exception was thrown
      * @param aContext    the context in which the exception occurred
      * @return a printable description of the error
      */
-    public static String informationForExceptionInContext(
+    public synchronized String informationForExceptionInContext(
             Throwable    anException,
             NSDictionary extraInfo,
             WOContext    aContext )
     {
-       Session s = ( aContext != null  &&  aContext.hasSession() )
-                       ? (Session)aContext.session()
-                       : null;
-       // Set up a buffer for the content
-       StringBuffer errorBuffer = new StringBuffer();
+        Session s = ( aContext != null  &&  aContext.hasSession() )
+        ? (Session)aContext.session()
+        : null;
 
-       if ( s != null  &&  s.primeUser() != null )
-       {
-           // Get the pid of the user of the session
-           errorBuffer.append( "User     :   " );
-           errorBuffer.append( s.primeUser().nameAndUid() );
-       }
+        // Set up a buffer for the content
+        StringBuffer errorBuffer = new StringBuffer();
 
-       // Get the date and time for the exception
-       errorBuffer.append( "\nDate/time:   " );
-       errorBuffer.append( ( new NSTimestamp() ).toString() );
+        if ( s != null  &&  s.primeUser() != null )
+        {
+            // Get the pid of the user of the session
+            errorBuffer.append( "User     :   " );
+            errorBuffer.append( s.primeUser().nameAndUid() );
+        }
 
-       if ( aContext != null &&
-            aContext.component() != null
-            )
-       {
-           // Get the current component
-           errorBuffer.append( "\nComponent:   " );
-           String name = aContext.component().name();
-           if ( name == null )
-           {
-               name = aContext.component().getClass().getName();
-           }
-           errorBuffer.append( name );
-       }
+        // Get the date and time for the exception
+        NSTimestamp now = new NSTimestamp();
+        errorBuffer.append( "\nDate/time:   " );
+        errorBuffer.append(  now.toString() );
 
-       // Get the session associated (if any)
-       if ( s != null ) {
-           errorBuffer.append( "\nSessionID: " + s.sessionID() );
-           // Add anything else you need here ...
-       }
+        if ( errorLoggingContext == null )
+        {
+            errorLoggingContext = newPeerEditingContext();
+        }
+        try
+        {
+            errorLoggingContext.lock();
+            LoggedError loggedError = LoggedError.objectForException(
+                errorLoggingContext, anException );
 
-       if ( anException != null )
-       {
-           // Get the full message for the exception
-           errorBuffer.append( "\n\nException:\n----------\n" );
-           errorBuffer.append( anException.getClass().getName() );
-           errorBuffer.append( ":\n" );
-           errorBuffer.append( anException.getMessage() );
+            if ( loggedError != null )
+            {
+                loggedError.setOccurrences( loggedError.occurrences() + 1 );
+                loggedError.setMostRecent( now );
+                errorBuffer.append( "\nOccurrences: " );
+                errorBuffer.append( loggedError.occurrences() );
+            }
+            if ( aContext != null
+                 && aContext.component() != null )
+            {
+                // Get the current component
+                errorBuffer.append( "\nComponent:   " );
+                String name = aContext.component().name();
+                if ( name == null )
+                {
+                    name = aContext.component().getClass().getName();
+                }
+                if ( loggedError != null )
+                {
+                    loggedError.setComponent( name );
+                }
+                errorBuffer.append( name );
+            }
+            if ( aContext != null && aContext.page() != null
+                 && loggedError != null )
+            {
+                loggedError.setPage( aContext.page().name() );
+            }
 
-           if ( extraInfo != null )
-           {
-               errorBuffer.append(
-                   "\n\nExtra information:\n--------------------\n" );
-               for ( Enumeration e = extraInfo.keyEnumerator();
-                     e.hasMoreElements(); )
-               {
-                   Object key = e.nextElement();
-                   Object value = extraInfo.objectForKey( key );
-                   errorBuffer.append( key );
-                   errorBuffer.append( "\t= " );
-                   errorBuffer.append( value );
-                   errorBuffer.append( '\n' );
-               }
-           }
+            // Get the session associated (if any)
+            if ( s != null )
+            {
+                errorBuffer.append( "\nSessionID: " + s.sessionID() );
+            }
 
-           // Get the stack trace for the exception
-           errorBuffer.append( "\nStack trace:\n-----------------\n" );
-           if ( net.sf.webcat.WCServletAdaptor.getInstance() == null )
-           {
-               // If we're not running as a servlet, then assume we're in
-               // a developer environment and generate fully compliant
-               // stack trace info for IDE parsing:
-               StringWriter writer = new StringWriter();
-               PrintWriter pwriter = new PrintWriter( writer );
-               anException.printStackTrace( pwriter );
-               pwriter.close();
-               errorBuffer.append( writer.getBuffer() );
-           }
-           else
-           {
-               // For deployment, use a simplified stack trace presentation
-               // to make e-mail messages lighter (and also somewhat more
-               // readable).
-               WOExceptionParser exParser =
-                   new WOExceptionParser( anException );
-               Enumeration traceEnum =
-                   ( exParser.stackTrace() ).objectEnumerator();
+            if ( anException != null )
+            {
+                // Get the full message for the exception
+                errorBuffer.append( "\n\nException:\n----------\n" );
+                errorBuffer.append( anException.getClass().getName() );
+                errorBuffer.append( ":\n" );
+                errorBuffer.append( anException.getMessage() );
+                if ( anException.getMessage() != null && loggedError != null )
+                {
+                    loggedError.setMessage( anException.getMessage() );
+                }
 
-               // Append each trace line
-               while ( traceEnum.hasMoreElements() )
-               {
-                   WOParsedErrorLine aLine =
-                       (WOParsedErrorLine)traceEnum.nextElement();
-                   errorBuffer.append( "at " + aLine.methodName() + "("
-                                       + aLine.fileName() + ":"
-                                       + aLine.lineNumber() + ")\n" );
-               }
-           }
-       }
-       else
-       {
-           if ( extraInfo != null )
-           {
-               errorBuffer.append(
-                   "\n\nExtra information:\n--------------------\n" );
-               for ( Enumeration e = extraInfo.keyEnumerator();
-                     e.hasMoreElements(); )
-               {
-                   Object key = e.nextElement();
-                   Object value = extraInfo.objectForKey( key );
-                   errorBuffer.append( key );
-                   errorBuffer.append( "\t= " );
-                   errorBuffer.append( value );
-                   errorBuffer.append( '\n' );
-               }
-           }
-       }
+                if ( extraInfo != null )
+                {
+                    errorBuffer.append(
+                        "\n\nExtra information:\n--------------------\n" );
+                    for ( Enumeration e = extraInfo.keyEnumerator();
+                          e.hasMoreElements(); )
+                    {
+                        Object key = e.nextElement();
+                        Object value = extraInfo.objectForKey( key );
+                        errorBuffer.append( key );
+                        errorBuffer.append( "\t= " );
+                        errorBuffer.append( value );
+                        errorBuffer.append( '\n' );
+                    }
+                }
 
-       // Return the information
-       return errorBuffer.toString();
+                // Get the stack trace for the exception
+                errorBuffer.append( "\nStack trace:\n-----------------\n" );
+                if ( loggedError != null )
+                {
+                    StringWriter writer = new StringWriter();
+                    PrintWriter pwriter = new PrintWriter( writer );
+                    anException.printStackTrace( pwriter );
+                    pwriter.close();
+                    loggedError.setStackTrace( writer.getBuffer().toString() );
+                }
+                if ( net.sf.webcat.WCServletAdaptor.getInstance() == null )
+                {
+                    // If we're not running as a servlet, then assume we're in
+                    // a developer environment and generate fully compliant
+                    // stack trace info for IDE parsing:
+                    StringWriter writer = new StringWriter();
+                    PrintWriter pwriter = new PrintWriter( writer );
+                    anException.printStackTrace( pwriter );
+                    pwriter.close();
+                    errorBuffer.append( writer.getBuffer() );
+                }
+                else
+                {
+                    // For deployment, use a simplified stack trace
+                    // presentation to make e-mail messages lighter (and also
+                    // somewhat more readable).
+                    WOExceptionParser exParser =
+                        new WOExceptionParser( anException );
+                    Enumeration traceEnum =
+                        ( exParser.stackTrace() ).objectEnumerator();
+
+                    // Append each trace line
+                    while ( traceEnum.hasMoreElements() )
+                    {
+                        WOParsedErrorLine aLine =
+                            (WOParsedErrorLine)traceEnum.nextElement();
+                        errorBuffer.append( "at " + aLine.methodName() + "("
+                            + aLine.fileName() + ":"
+                            + aLine.lineNumber() + ")\n" );
+                    }
+                }
+            }
+            else
+            {
+                if ( extraInfo != null )
+                {
+                    errorBuffer.append(
+                        "\n\nExtra information:\n--------------------\n" );
+                    for ( Enumeration e = extraInfo.keyEnumerator();
+                          e.hasMoreElements(); )
+                    {
+                        Object key = e.nextElement();
+                        Object value = extraInfo.objectForKey( key );
+                        errorBuffer.append( key );
+                        errorBuffer.append( "\t= " );
+                        errorBuffer.append( value );
+                        errorBuffer.append( '\n' );
+                    }
+                }
+            }
+            errorLoggingContext.saveChanges();
+        }
+        catch ( Exception e )
+        {
+            EOEditingContext old = errorLoggingContext;
+            errorLoggingContext = null;
+            try
+            {
+                releasePeerEditingContext( old );
+            }
+            catch ( Exception e2 )
+            {
+                log.fatal( "error releasing error logging editing context",
+                           e2 );
+                log.fatal( "original exception causing error logging context "
+                           + "to be released", e );
+            }
+        }
+        finally
+        {
+            errorLoggingContext.unlock();
+        }
+
+        // Return the information
+        return errorBuffer.toString();
     }
 
 
@@ -1973,6 +2037,8 @@ public class Application
 
     private boolean needsInstallation = true;
     private boolean staticHtmlResourcesNeedInitializing = true;
+
+    private EOEditingContext errorLoggingContext;
 
     static Logger log = Logger.getLogger( Application.class );
     static Logger requestLog = Logger.getLogger( Application.class.getName()
