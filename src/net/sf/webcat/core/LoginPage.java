@@ -74,38 +74,20 @@ public class LoginPage
     public void awake()
     {
         super.awake();
-        log.debug( "hasSession = " + hasSession() );
-        if ( hasSession() )
-            log.debug( "session = " + session().sessionID() );
-        log.debug( "errors = " + errors );
+        if ( log.isDebugEnabled() )
+        {
+            log.debug( "hasSession = " + hasSession() );
+            if ( hasSession() )
+                log.debug( "session = " + session().sessionID() );
+            log.debug( "errors = " + errors );
+            log.debug( "domain = " + domain );
+        }
 
         domainDisplayGroup.setObjectArray(
             AuthenticationDomain.authDomains() );
-        log.debug( "domain = " + domain );
         if ( domain == null )
         {
-            // Set up a default domain, if possible
-            String defaultDomain = Application.configurationProperties()
-                .getProperty( "authenticator.default" );
-            if ( defaultDomain != null )
-            {
-                try
-                {
-                    log.debug( "looking up default domain" );
-                    domain =
-                        AuthenticationDomain.authDomainByName( defaultDomain );
-                }
-                catch ( EOObjectNotAvailableException e )
-                {
-                    log.error( "Default authentication domain ("
-                             + defaultDomain + ") does not exist." );
-                }
-                catch ( EOUtilities.MoreThanOneException e )
-                {
-                    log.error( "Multiple entries for default authentication "
-                             + "domain (" + defaultDomain + ")" );
-                }
-            }
+            domain = AuthenticationDomain.defaultDomain();
         }
         log.debug( "domain = " + domain );
     }
@@ -167,6 +149,24 @@ public class LoginPage
     public String specificAuthDomainName()
     {
         return specificAuthDomainName;
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean showForgotPasswordLink()
+    {
+        boolean result = false;
+        for ( int i = 0; i < domainDisplayGroup.allObjects().count(); i++ )
+        {
+            AuthenticationDomain aDomain = (AuthenticationDomain)
+                domainDisplayGroup.allObjects().objectAtIndex( i );
+            if ( aDomain.authenticator().canChangePassword() )
+            {
+                result = true;
+                break;
+            }
+        }
+        return result;
     }
 
 
