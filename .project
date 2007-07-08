@@ -36,4 +36,11 @@
 		<nature>org.eclipse.jdt.core.javanature</nature>
 		<nature>org.objectstyle.wolips.incrementalframeworknature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>ERExtensionssrc</name>
+			<type>2</type>
+			<locationURI>ERExtensionssrc</locationURI>
+		</link>
+	</linkedResources>
 </projectDescription>
