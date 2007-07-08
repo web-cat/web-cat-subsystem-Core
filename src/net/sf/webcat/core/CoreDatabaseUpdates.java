@@ -168,6 +168,18 @@ public class CoreDatabaseUpdates
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Adds label key to CourseOffering.
+     * @throws SQLException on error
+     */
+    public void updateIncrement8() throws SQLException
+    {
+        database().executeSQL(
+            "alter table TCOURSEOFFERING add CLABEL TINYTEXT" );
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------

@@ -60,6 +60,7 @@ public abstract class _CourseOffering
 
     // Attributes ---
     public static final String CRN_KEY = "crn";
+    public static final String LABEL_KEY = "label";
     public static final String MOODLE_GROUP_ID_KEY = "moodleGroupId";
     public static final String MOODLE_ID_KEY = "moodleId";
     public static final String URL_KEY = "url";
@@ -101,6 +102,30 @@ public abstract class _CourseOffering
     public void setCrn( String value )
     {
         takeStoredValueForKey( value, "crn" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>label</code> value.
+     * @return the value of the attribute
+     */
+    public String label()
+    {
+        return (String)storedValueForKey( "label" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>label</code>
+     * property.
+     *
+     * @param value The new value for this property
+     */
+    public void setLabel( String value )
+    {
+        takeStoredValueForKey( value, "label" );
     }
 
 

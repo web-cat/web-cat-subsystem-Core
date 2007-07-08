@@ -93,16 +93,21 @@ public class CourseOffering
     {
         if ( cachedCompactName == null )
         {
+            String label = label();
+            if ( label == null || label.equals( "" ) )
+            {
+                label = crn();
+            }
             if ( course() == null )
             {
                 // !!!
                 log.error(
                     "course offering with no associated course: " + this );
-                cachedCompactName = course() + "(" + crn() + ")";
+                cachedCompactName = course() + "(" + label + ")";
             }
             else
             {
-                cachedCompactName = course().deptNumber() + "(" + crn() + ")";
+                cachedCompactName = course().deptNumber() + "(" + label + ")";
             }
         }
         return cachedCompactName;
@@ -204,6 +209,21 @@ public class CourseOffering
         cachedCompactName = null;
         cachedDeptNumberAndName = null;
         super.setCrn( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>label</code>
+     * property.
+     *
+     * @param value The new value for this property
+     */
+    public void setLabel( String value )
+    {
+        cachedCompactName = null;
+        cachedDeptNumberAndName = null;
+        super.setLabel( value );
     }
 
 
