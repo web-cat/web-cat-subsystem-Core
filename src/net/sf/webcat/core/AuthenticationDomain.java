@@ -103,6 +103,48 @@ public class AuthenticationDomain
 
     // ----------------------------------------------------------
     /**
+     * Get a list of shared authentication domain objects that have
+     * already been loaded into the shared editing context.
+     * @return an array of all AuthenticationDomain objects
+     */
+    public static AuthenticationDomain defaultDomain()
+    {
+        if ( defaultDomain == null )
+        {
+            ensureAuthDomainsLoaded();
+            // Set up a default domain, if possible
+            String defaultDomainName = Application.configurationProperties()
+                .getProperty( "authenticator.default" );
+            if ( defaultDomainName != null )
+            {
+                try
+                {
+                    log.debug( "looking up default domain" );
+                    defaultDomain = authDomainByName( defaultDomainName );
+                }
+                catch ( EOObjectNotAvailableException e )
+                {
+                    log.error( "Default authentication domain ("
+                        + defaultDomainName + ") does not exist." );
+                }
+                catch ( EOUtilities.MoreThanOneException e )
+                {
+                    log.error( "Multiple entries for default authentication "
+                        + "domain (" + defaultDomainName + ")" );
+                }
+            }
+            if ( defaultDomain == null )
+            {
+                defaultDomain = (AuthenticationDomain)authDomains()
+                    .objectAtIndex( 0 );
+            }
+        }
+        return defaultDomain;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Load the list of shared authentication domain objects, if it hasn't
      * been done already.
      */
@@ -123,6 +165,7 @@ public class AuthenticationDomain
     {
         log.debug( "refreshAuthDomains()" );
         theAuthenticatorMap = new TreeMap();
+        defaultDomain = null;
 
         WCProperties     properties    = Application.configurationProperties();
         Enumeration      propertyNames = properties.propertyNames();
@@ -691,38 +734,10 @@ public class AuthenticationDomain
     }
 
 
-// If you add instance variables to store property values you
-// should add empty implementions of the Serialization methods
-// to avoid unnecessary overhead (the properties will be
-// serialized for you in the superclass).
-
-//    // ----------------------------------------------------------
-//    /**
-//     * Serialize this object (an empty implementation, since the
-//     * superclass handles this responsibility).
-//     * @param out the stream to write to
-//     */
-//    private void writeObject( java.io.ObjectOutputStream out )
-//        throws java.io.IOException
-//    {
-//    }
-//
-//
-//    // ----------------------------------------------------------
-//    /**
-//     * Read in a serialized object (an empty implementation, since the
-//     * superclass handles this responsibility).
-//     * @param in the stream to read from
-//     */
-//    private void readObject( java.io.ObjectInputStream in )
-//        throws java.io.IOException, java.lang.ClassNotFoundException
-//    {
-//    }
-
-
     //~ Instance/static variables .............................................
 
     private static NSArray authDomains;
+    private static AuthenticationDomain defaultDomain;
     private static Map theAuthenticatorMap;
     private String cachedSubdirName = null;
     private String cachedName = null;
