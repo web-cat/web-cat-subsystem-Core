@@ -116,7 +116,7 @@ public class DirectAction
      *                validation errors to report back to the user on failure
      * @return True on success
      */
-    public boolean tryLogin( WORequest request, NSMutableDictionary errors )
+    protected boolean tryLogin( WORequest request, NSMutableDictionary errors )
     {
         boolean result = false;
         if ( request.formValues().count() == 0
@@ -441,6 +441,102 @@ public class DirectAction
         WOActionResults result = super.performActionNamed( actionName );
         saveSession();
         return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Attempt to validate a user's password change request code, taken from
+     * the form values.  If successful, it checks for an existing session to
+     * connect with and logs the user in.  The existing session is left in the
+     * private <code>session</code> field.
+     *
+     * @param request The request containing the form values to inspect
+     * @param errors  An empty dictionary which will be filled with any
+     *                validation errors to report back to the user on failure
+     * @return True on success
+     */
+    protected boolean tryPasswordReset(
+        WORequest request, NSMutableDictionary errors )
+    {
+        boolean result = false;
+        EOEditingContext ec = Application.newPeerEditingContext();
+        String code = request().stringFormValueForKey( "code" );
+        if ( code == null ) { return result; }
+        try
+        {
+            ec.lock();
+            log.debug( "tryPasswordReset(): looking up code" );
+            PasswordChangeRequest pcr =
+                PasswordChangeRequest.requestForCode( ec, code );
+            if ( pcr == null )
+            {
+                log.info( "Invalid password change code: " + code );
+                errors.setObjectForKey(
+                    "The password change link you used has expired or is "
+                    + "invalid.  You may request another one.",
+                    "invalidCode" );
+            }
+            else
+            {
+                result = true;
+                LoginSession ls =
+                    LoginSession.getLoginSessionForUser( ec, pcr.user() );
+                if ( ls != null )
+                {
+                    // Remember the existing session id for restoration
+                    wosid = ls.sessionId();
+                }
+                session = (Session)session();
+                session.setUser(
+                    (User)EOUtilities.localInstanceOfObject(
+                        session.defaultEditingContext(), pcr.user() ) );
+                pcr.delete();
+                ec.saveChanges();
+            }
+        }
+        finally
+        {
+            ec.unlock();
+            Application.releasePeerEditingContext( ec );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * This action presents a password reset request page (without creating a
+     * session).  Also, note that the password reset request page actually
+     * uses this action again with appropriate form values to initiate the
+     * password change request.
+     *
+     * @return A PasswordChangeRequestPage, unless valid password change
+     * request info comes along with the request, in which case a password
+     * change request is registered and the user is e-mailed a password
+     * change code.
+     */
+    public WOActionResults passwordChangeRequestAction()
+    {
+        NSMutableDictionary errors = new NSMutableDictionary();
+
+        if ( tryPasswordReset( request(), errors ) )
+        {
+            WCComponent result = (WCComponent)pageWithName(
+                session.tabs.selectById( "Profile" ).pageName() );
+            result.confirmationMessage( "To change your password, enter a "
+                + "new password and confirm it below." );
+            return result.generateResponse();
+        }
+        else
+        {
+            PasswordChangeRequestPage page =
+                (PasswordChangeRequestPage)pageWithName(
+                net.sf.webcat.core.PasswordChangeRequestPage.class.getName() );
+            // careful: don't clobber any errors that are already there!
+            page.errors.addEntriesFromDictionary( errors );
+            return page;
+        }
     }
 
 

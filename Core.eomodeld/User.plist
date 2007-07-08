@@ -1,14 +1,14 @@
 
 {
-    attributes = 
+    attributes =
     (
-       
+
        {
            allowsNull = N;
            columnName = CACCESSLEVEL;
            name = accessLevel;
            prototypeName = tinyInteger;
-           userInfo = 
+           userInfo =
            {
                isScalar = true;
                scalarConversionMethodName = byteValue;
@@ -16,173 +16,174 @@
                type = byte;
                valueClassName = Byte;
            };
-       }, 
-       
+       },
+
        {
            allowsNull = N;
            columnName = CAUTHENTICATIONDOMAINID;
            name = authenticationDomainId;
            prototypeName = foreignId;
-       }, 
-       
+       },
+
        {
            columnName = CEMAIL;
            name = email;
            prototypeName = tinyText;
-       }, 
-       
+       },
+
        {
            columnName = CFIRSTNAME;
            name = firstName;
            prototypeName = tinyText;
-       }, 
-       
+       },
+
        {
            name = id;
            prototypeName = id;
-       }, 
-       
+       },
+
        {
            columnName = CLASTNAME;
            name = lastName;
            prototypeName = tinyText;
-       }, 
-       
+       },
+
        {
            name = password;
            prototypeName = password;
-       }, 
-       
+       },
+
        {
            columnName = CPREFERENCES;
            name = preferences;
            prototypeName = mutableDictionary;
-           userInfo = 
+           userInfo =
            {
                adaptorValueConversionMethodName = archiveData;
                isMutable = true;
                valueClassName = net.sf.webcat.core.MutableDictionary;
                valueFactoryMethodName = objectWithArchiveData;
            };
-       }, 
-       
+       },
+
        {
            columnName = CUNIVERSITYIDNO;
            name = universityIDNo;
            prototypeName = tinyText;
-       }, 
-       
+       },
+
        {
            name = updateMutableFields;
            prototypeName = updateMutableFields;
-           userInfo = 
+           userInfo =
            {
                isScalar = true;
                scalarDefault = false;
                type = boolean;
            };
-       }, 
-       
+       },
+
        {
            columnName = URL;
            name = url;
            prototypeName = tinyText;
-       }, 
-       
+       },
+
        {
            name = userName;
            prototypeName = userName;
        }
     );
-    attributesUsedForLocking = 
+    attributesUsedForLocking =
     (
-       accessLevel, 
-       authenticationDomainId, 
-       email, 
-       firstName, 
-       lastName, 
-       password, 
-       preferences, 
-       universityIDNo, 
-       updateMutableFields, 
-       url, 
+       accessLevel,
+       authenticationDomainId,
+       email,
+       firstName,
+       lastName,
+       password,
+       preferences,
+       universityIDNo,
+       updateMutableFields,
+       url,
        userName
     );
     className = net.sf.webcat.core.User;
-    classProperties = 
+    classProperties =
     (
-       TAFor, 
-       accessLevel, 
-       authenticationDomain, 
-       coreSelections, 
-       email, 
-       enrolledIn, 
-       firstName, 
-       lastName, 
-       password, 
-       preferences, 
-       teaching, 
-       universityIDNo, 
-       updateMutableFields, 
-       url, 
+       TAFor,
+       accessLevel,
+       authenticationDomain,
+       coreSelections,
+       email,
+       enrolledIn,
+       firstName,
+       lastName,
+       password,
+       passwordChangeRequest,
+       preferences,
+       teaching,
+       universityIDNo,
+       updateMutableFields,
+       url,
        userName
     );
     externalName = TUSER;
-    internalInfo = 
+    internalInfo =
     {};
     name = User;
-    primaryKeyAttributes = 
+    primaryKeyAttributes =
     (
        id
     );
-    relationships = 
+    relationships =
     (
-       
+
        {
            definition = courseOfferingUsers2.courseOffering;
            name = TAFor;
            numberOfToManyFaultsToBatchFetch = 10;
-       }, 
-       
+       },
+
        {
            destination = AuthenticationDomain;
            isMandatory = Y;
            isToMany = N;
            joinSemantic = EOInnerJoin;
-           joins = 
+           joins =
            (
-              
+
               {
                   destinationAttribute = id;
                   sourceAttribute = authenticationDomainId;
               }
            );
            name = authenticationDomain;
-       }, 
-       
+       },
+
        {
            destination = CoreSelections;
            isToMany = Y;
            joinSemantic = EOInnerJoin;
-           joins = 
+           joins =
            (
-              
+
               {
                   destinationAttribute = userId;
                   sourceAttribute = id;
               }
            );
            name = coreSelections;
-       }, 
-       
+       },
+
        {
            deleteRule = EODeleteRuleCascade;
            destination = CourseStudent;
            isToMany = Y;
            joinSemantic = EOInnerJoin;
-           joins = 
+           joins =
            (
-              
+
               {
                   destinationAttribute = id1;
                   sourceAttribute = id;
@@ -190,16 +191,16 @@
            );
            name = courseOfferingUsers;
            propagatesPrimaryKey = Y;
-       }, 
-       
+       },
+
        {
            deleteRule = EODeleteRuleCascade;
            destination = InstructorCourse;
            isToMany = Y;
            joinSemantic = EOInnerJoin;
-           joins = 
+           joins =
            (
-              
+
               {
                   destinationAttribute = id1;
                   sourceAttribute = id;
@@ -207,16 +208,16 @@
            );
            name = courseOfferingUsers1;
            propagatesPrimaryKey = Y;
-       }, 
-       
+       },
+
        {
            deleteRule = EODeleteRuleCascade;
            destination = CourseTA;
            isToMany = Y;
            joinSemantic = EOInnerJoin;
-           joins = 
+           joins =
            (
-              
+
               {
                   destinationAttribute = id1;
                   sourceAttribute = id;
@@ -224,14 +225,30 @@
            );
            name = courseOfferingUsers2;
            propagatesPrimaryKey = Y;
-       }, 
-       
+       },
+
        {
            definition = courseOfferingUsers.courseOffering;
            name = enrolledIn;
            numberOfToManyFaultsToBatchFetch = 10;
-       }, 
-       
+       },
+
+       {
+           deleteRule = EODeleteRuleCascade;
+           destination = PasswordChangeRequest;
+           isToMany = Y;
+           joinSemantic = EOInnerJoin;
+           joins =
+           (
+
+              {
+                  destinationAttribute = userId;
+                  sourceAttribute = id;
+              }
+           );
+           name = passwordChangeRequest;
+       },
+
        {
            definition = courseOfferingUsers1.courseOffering;
            name = teaching;

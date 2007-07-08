@@ -94,4 +94,50 @@
             value = {_key = name; class = EOQualifierVariable; };
         };
     };
+    nameAndDomain = {
+        class = EOFetchSpecification;
+        entityName = User;
+        fetchLimit = 0;
+        isDeep = YES;
+        qualifier = {
+            class = EOAndQualifier;
+            qualifiers = (
+                {
+            		class = EOKeyValueQualifier;
+            		key = userName;
+            		selectorName = "isEqualTo:";
+            		value = {_key = userName; class = EOQualifierVariable; };
+            	},
+                {
+            		class = EOKeyValueQualifier;
+            		key = authenticationDomain;
+            		selectorName = "isEqualTo:";
+            		value = {_key = domain; class = EOQualifierVariable; };
+            	}
+            );
+        };
+    };
+    emailAndDomain = {
+        class = EOFetchSpecification;
+        entityName = User;
+        fetchLimit = 0;
+        isDeep = YES;
+        qualifier = {
+            class = EOAndQualifier;
+            qualifiers = (
+                {
+            		class = EOKeyValueQualifier;
+            		key = email;
+            		selectorName = "isEqualTo:";
+            		value = {_key = email; class = EOQualifierVariable; };
+            	},
+                {
+            		class = EOKeyValueQualifier;
+            		key = authenticationDomain;
+            		selectorName = "isEqualTo:";
+            		value = {_key = domain; class = EOQualifierVariable; };
+            	}
+            );
+        };
+    };
 }

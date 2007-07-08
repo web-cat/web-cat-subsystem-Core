@@ -1,24 +1,6 @@
-AdminEmail: WOString {
-	value = application.properties.coreAdminEmail;
-}
-
 BarePage : net.sf.webcat.core.BarePage {
 	title = "Login";
 	bodyClass = "user";
-	inlineHeaderContents = "<style type=\"text/css\">
-td#logo {
-    width: 30%;
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #f96;
-}
-
-td#form {
-    padding: 10px;
-}
-
-body.user table#form { border: none }
-</style>";
 }
 
 Footer: net.sf.webcat.core.Footer {}

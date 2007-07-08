@@ -76,9 +76,12 @@ public abstract class _User
     public static final String TAFOR_KEY = "TAFor";
     public static final String CORE_SELECTIONS_KEY = "coreSelections";
     public static final String ENROLLED_IN_KEY = "enrolledIn";
+    public static final String PASSWORD_CHANGE_REQUEST_KEY = "passwordChangeRequest";
     public static final String TEACHING_KEY = "teaching";
     // Fetch specifications ---
     public static final String COURSE_PARTICIPANTS_FSPEC = "courseParticipants";
+    public static final String EMAIL_AND_DOMAIN_FSPEC = "emailAndDomain";
+    public static final String NAME_AND_DOMAIN_FSPEC = "nameAndDomain";
     public static final String STAFF_FOR_COURSE_FSPEC = "staffForCourse";
     public static final String STUDENTS_FOR_COURSE_FSPEC = "studentsForCourse";
     public static final String USER_WITH_NAME_FSPEC = "userWithName";
@@ -547,6 +550,72 @@ public abstract class _User
         if ( accessLevelBinding != null )
             bindings.setObjectForKey( accessLevelBinding,
                                       "accessLevel" );
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        return context.objectsWithFetchSpecification( spec );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code>EmailAndDomain</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param emailBinding fetch spec parameter
+     * @param domainBinding fetch spec parameter
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray objectsForEmailAndDomain(
+            EOEditingContext context,
+            String emailBinding,
+            net.sf.webcat.core.AuthenticationDomain domainBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "emailAndDomain", "User" );
+
+        NSMutableDictionary bindings = new NSMutableDictionary();
+
+        if ( emailBinding != null )
+            bindings.setObjectForKey( emailBinding,
+                                      "email" );
+        if ( domainBinding != null )
+            bindings.setObjectForKey( domainBinding,
+                                      "domain" );
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        return context.objectsWithFetchSpecification( spec );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code>NameAndDomain</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param userNameBinding fetch spec parameter
+     * @param domainBinding fetch spec parameter
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray objectsForNameAndDomain(
+            EOEditingContext context,
+            String userNameBinding,
+            net.sf.webcat.core.AuthenticationDomain domainBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "nameAndDomain", "User" );
+
+        NSMutableDictionary bindings = new NSMutableDictionary();
+
+        if ( userNameBinding != null )
+            bindings.setObjectForKey( userNameBinding,
+                                      "userName" );
+        if ( domainBinding != null )
+            bindings.setObjectForKey( domainBinding,
+                                      "domain" );
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         return context.objectsWithFetchSpecification( spec );
@@ -1093,6 +1162,142 @@ public abstract class _User
         while ( objects.hasMoreElements() )
             deleteEnrolledInRelationship(
                 (net.sf.webcat.core.CourseOffering)objects.nextElement() );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the entities pointed to by the <code>passwordChangeRequest</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    public NSArray passwordChangeRequest()
+    {
+        return (NSArray)storedValueForKey( "passwordChangeRequest" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>passwordChangeRequest</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setPasswordChangeRequest( NSMutableArray value )
+    {
+        takeStoredValueForKey( value, "passwordChangeRequest" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>passwordChangeRequest</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToPasswordChangeRequestRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToPasswordChangeRequest( net.sf.webcat.core.PasswordChangeRequest value )
+    {
+        NSMutableArray array = (NSMutableArray)passwordChangeRequest();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>passwordChangeRequest</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromPasswordChangeRequestRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromPasswordChangeRequest( net.sf.webcat.core.PasswordChangeRequest value )
+    {
+        NSMutableArray array = (NSMutableArray)passwordChangeRequest();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>passwordChangeRequest</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToPasswordChangeRequestRelationship( net.sf.webcat.core.PasswordChangeRequest value )
+    {
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "passwordChangeRequest" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>passwordChangeRequest</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromPasswordChangeRequestRelationship( net.sf.webcat.core.PasswordChangeRequest value )
+    {
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "passwordChangeRequest" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>passwordChangeRequest</code> relationship.
+     *
+     * @return The new entity
+     */
+    public net.sf.webcat.core.PasswordChangeRequest createPasswordChangeRequestRelationship()
+    {
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "PasswordChangeRequest" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "passwordChangeRequest" );
+        return (net.sf.webcat.core.PasswordChangeRequest)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>passwordChangeRequest</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deletePasswordChangeRequestRelationship( net.sf.webcat.core.PasswordChangeRequest value )
+    {
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "passwordChangeRequest" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>passwordChangeRequest</code> relationship.
+     */
+    public void deleteAllPasswordChangeRequestRelationships()
+    {
+        Enumeration objects = passwordChangeRequest().objectEnumerator();
+        while ( objects.hasMoreElements() )
+            deletePasswordChangeRequestRelationship(
+                (net.sf.webcat.core.PasswordChangeRequest)objects.nextElement() );
     }
 
 

@@ -1,16 +1,16 @@
 <webobject name="BarePage">
 <table class="FullBox">
-<tr><td id="logo">
+<tr><td style="width:30%;padding:10px;text-align:center;border:1px solid #f96">
   <h1>Web-CAT</h1>
   <p><webobject name="Logo"/></p>
   <p><b>Automatic Grading Using Student-written Tests</b></p><br/>
   <p><webobject name="PoweredByWOLink"><webobject name="PoweredByWO"/></webobject></p>
-</td><td id="form"><webobject name="LoginForm">
+</td><td style="padding:10px"><webobject name="LoginForm">
   <p>Welcome to the <b>Web Center for Automated Testing</b> (Web-CAT).</p>
 
   <p>Only registered users may use Web-CAT.  Please login:</p>
   <webobject name="Errors"/>
-  <table id="form">
+  <table style="border:none">
   <tr><td class="R"><b>User Name:</b></td>
       <td><webobject name="UserName"/></td></tr>
   <tr><td class="R"><b>Password:</b></td>
@@ -18,7 +18,7 @@
   <webobject name="NeedsAuthList">
   <tr><td class="R"><b>Institution:</b></td>
       <td><webobject name="AuthList"/></td></tr></webobject>
-  <tr><td></td><td><input type="submit" value=" Login "><webobject name="HasSpecificAuthDomain"><webobject name="HiddenAuthDomain"/></webobject></td></tr>
+  <tr><td></td><td><input type="submit" value=" Login "><wo:if condition="$showForgotPasswordLink"> <wo:link directActionName="passwordChangeRequest">Forgot your password?</wo:link></wo:if><webobject name="HasSpecificAuthDomain"><webobject name="HiddenAuthDomain"/></webobject></td></tr>
     </table>
   <webobject name="HasMOTD"><p><webobjects name="MOTD"/></p></webobject>
   <p>View <span class="hl">system status</span> using your <b>Home</b> tab
@@ -29,6 +29,6 @@
   <webobject name="HasLangList"><p>This Web-CAT server currently has the following languages installed:</p>
   <p><webobject name="LangList"/></p></webobject>
   <p>If you teach at another university and are interested in using
-     Web-CAT, please contact <a href="mailto:<webobject NAME="AdminEmail"></webobject>"><webobject name="AdminEmail"/></a>.</p>
+     Web-CAT, please contact <wo:er.extensions.ERXMailTo email="$application.properties.coreAdminEmail"/>.</p>
 </webobject>
 </td></tr></table><webobject name="Footer"/></webobject>
