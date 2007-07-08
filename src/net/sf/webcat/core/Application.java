@@ -273,6 +273,17 @@ public class Application
         try
         {
             ec.lock();
+            // First, attempt to force the initial JNDI exception because
+            // the name jdbc is not bound
+            try
+            {
+                EOUtilities.objectsForEntityNamed(
+                    ec, LoginSession.ENTITY_NAME );
+            }
+            catch ( Exception e )
+            {
+                // Silently swallow it, then retry on the next line
+            }
             NSArray old_sessions = EOUtilities.objectsForEntityNamed(
                 ec, LoginSession.ENTITY_NAME );
             for ( int i = 0; i < old_sessions.count(); i++ )
