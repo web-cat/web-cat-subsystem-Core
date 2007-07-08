@@ -117,6 +117,103 @@ public class User
 
     // ----------------------------------------------------------
     /**
+     * An exception to indicate that multiple users were found for the
+     * given search.
+     */
+    public static class MultipleUsersFoundException
+        extends RuntimeException
+    {
+        public MultipleUsersFoundException( String msg )
+        {
+            super( msg );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Looks up an existing user by user name and domain.
+     *
+     * @param ec          The editing context in which to lookup the user
+     * @param userName    The username to look up
+     * @param domain      The domain the user comes from
+     * @return            The user object, or null if none is found
+     * @throws MultipleUsersFoundException if multiple users matching the
+     * search criteria are found.
+     */
+    public static User lookupUser( EOEditingContext     ec,
+                                   String               userName,
+                                   AuthenticationDomain domain )
+    {
+        NSArray results = objectsForNameAndDomain( ec, userName, domain );
+        if ( results == null || results.count() == 0 )
+        {
+            return null;
+        }
+        else if ( results.count() > 1 )
+        {
+            throw new MultipleUsersFoundException( "Multiple users found when "
+                + "searching for userName = " + userName + " and domain = "
+                + domain );
+        }
+        return (User)results.objectAtIndex( 0 );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Looks up an existing user by email address and domain.
+     *
+     * @param ec          The editing context in which to lookup the user
+     * @param email       The email address to look up
+     * @param domain      The domain the user comes from
+     * @return            The user object, or null if none is found
+     * @throws MultipleUsersFoundException if multiple users matching the
+     * search criteria are found.
+     */
+    public static User lookupUserByEmail( EOEditingContext     ec,
+                                          String               email,
+                                          AuthenticationDomain domain )
+    {
+        // First, try a raw database lookup
+        NSArray results = objectsForEmailAndDomain( ec, email, domain );
+        if ( results.count() == 1 )
+        {
+            return (User)results.objectAtIndex( 0 );
+        }
+        else if ( results.count() > 1 )
+        {
+            throw new MultipleUsersFoundException( "Multiple users found when "
+                + "searching for email = " + email + " and domain = "
+                + domain );
+        }
+
+        // But if that gives no results, it may be because the user does
+        // not have an explicit e-mail address stored in the database,
+        // and is instead using <username>@<domain.default> as their
+        // e-mail address.  So extract the user name from the e-mail address
+        // and check it instead.
+        String userName = email;
+        int pos = email.indexOf( '@' );
+        if ( pos >= 0 )
+        {
+            userName = userName.substring( 0, pos );
+        }
+
+        // Look up by user name
+        User user = lookupUser( ec, userName, domain );
+        // Check that the located user has the correct e-mail address
+        if ( !email.equals( user.email() ) )
+        {
+            // What? e-mail addresses didn't match, so ignore that user
+            user = null;
+        }
+        return user;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Get a short (no longer than 60 characters) description of this user,
      * which currently returns {@link #name()}.
      * @return the description
