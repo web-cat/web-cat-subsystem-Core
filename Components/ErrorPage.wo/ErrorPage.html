@@ -1,11 +1,11 @@
 <webobject name="Page">
 <table class="FullBox">
-<tr><td id="logo">
+<tr><td style="width:30%;padding:10px;text-align:center;border:1px solid #f96">
   <h1>Web-CAT</h1>
   <p><webobject name="Logo"/></p>
   <p><b>Automatic Grading Using Student-written Tests</b></p><br/>
   <p><webobject name="PoweredByWOLink"><webobject name="PoweredByWO"/></webobject></p>
-</td><td id="form">
+</td><td style="padding:10px">
 <h1 id="title">Unexpected Exception</h1>
 <p>
 An unexpected exception has occured while trying to process your request.
@@ -23,7 +23,9 @@ If you continnue to experience problems, you should logout.
 <p><b>Error:</b> <wo:str value="$exception.getClass.getName"/></p>
 <wo:if condition="$exception.getMessage">
 <p><b>Reason:</b> <wo:str value="$exception.getMessage"/></p></wo:if>
-<tr><th>Class</th><th>Method</th><th>Line</th></tr>
+<tr><th style="background-color:#363;color:#cfc;padding:0.1em .6em;text-align:left">Class</th>
+<th style="background-color:#363;color:#cfc;padding:0.1em .6em;text-align:left">Method</th>
+<th style="background-color:#363;color:#cfc;padding:0.1em .6em;text-align:left">Line</th></tr>
 <wo name="ReasonRepetition"><tr>
   <td><wo:str value="$errorline.className"/></td>
   <td><wo:str value="$errorline.methodName"/></td>

@@ -24,25 +24,6 @@ MyForm: WOForcedForm {
 
 Page: net.sf.webcat.core.BarePage {
     title = "Unexpected Exception";
-	inlineHeaderContents = "<style type=\"text/css\">
-td#logo {
-    width: 30%;
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #f96;
-}
-
-td#form {
-    padding: 10px;
-}
-
-th {
-    background-color: #363;
-	color: #cfc;
-	padding: 0.1em .6em;
-    text-align: left;
-}
-</style>";
 }
 
 PoweredByWOLink: WOHyperlink {
