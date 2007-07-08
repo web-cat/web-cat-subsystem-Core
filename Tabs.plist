@@ -11,6 +11,7 @@
             "My Profile" = {
                 pageName = net.sf.webcat.core.MyProfilePage;
                 priority = 1001;
+                id       = Profile;
             };
             Feedback = {
                 pageName = net.sf.webcat.core.FeedbackPage;
