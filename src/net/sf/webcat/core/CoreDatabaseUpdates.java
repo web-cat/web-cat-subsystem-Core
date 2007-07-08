@@ -156,6 +156,18 @@ public class CoreDatabaseUpdates
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Adds LoggedError and PasswordChangeRequest tables.
+     * @throws SQLException on error
+     */
+    public void updateIncrement7() throws SQLException
+    {
+        createLoggedErrorTable();
+        createPasswordChangeRequestTable();
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
@@ -394,6 +406,7 @@ public class CoreDatabaseUpdates
         }
     }
 
+
     // ----------------------------------------------------------
     /**
      * Create the TUSER table, if needed.
@@ -416,6 +429,50 @@ public class CoreDatabaseUpdates
                 + "CUSERNAME TINYTEXT NOT NULL)" );
             database().executeSQL(
                 "ALTER TABLE TUSER ADD PRIMARY KEY (OID)" );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create the LoggedError table, if needed.
+     * @throws SQLException on error
+     */
+    private void createLoggedErrorTable() throws SQLException
+    {
+        if ( !database().hasTable( "LoggedError" ) )
+        {
+            log.info( "creating table LoggedError" );
+            database().executeSQL(
+                "CREATE TABLE LoggedError "
+                + "(component TINYTEXT , exceptionName TINYTEXT , "
+                + "OID INTEGER NOT NULL, inClass TINYTEXT , "
+                + "inMethod TINYTEXT , line INTEGER NOT NULL, "
+                + "message TINYTEXT , mostRecent DATETIME , "
+                + "occurrences INTEGER NOT NULL, page TINYTEXT , "
+                + "stackTrace MEDIUMTEXT)" );
+            database().executeSQL(
+                "ALTER TABLE LoggedError ADD PRIMARY KEY (OID)" );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create the PasswordChangeRequest table, if needed.
+     * @throws SQLException on error
+     */
+    private void createPasswordChangeRequestTable() throws SQLException
+    {
+        if ( !database().hasTable( "PasswordChangeRequest" ) )
+        {
+            log.info( "creating table PasswordChangeRequest" );
+            database().executeSQL(
+                "CREATE TABLE PasswordChangeRequest "
+                + "(code TINYTEXT , expireTime DATETIME , "
+                + "OID INTEGER NOT NULL, userId INTEGER NOT NULL)" );
+            database().executeSQL(
+                "ALTER TABLE PasswordChangeRequest ADD PRIMARY KEY (OID)" );
         }
     }
 
