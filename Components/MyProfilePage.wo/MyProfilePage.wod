@@ -8,6 +8,11 @@ ApplyTimeFormats: WOSubmitButton {
 	value  = " Apply ";
 }
 
+BlueJLinkInfo: net.sf.webcat.core.PopUpInfo {
+    title   = "BlueJ Submission URL";
+    message = "Web-CAT uses this URL to publish assignment definitions for use with the <a href=&quot;http://www.bluej.org/extensions/submitter/submitter.html&quot;>BlueJ submitter extension</a>. See the &quot;Configure BlueJ&quot; section of the <a href=&quot;http://web-cat.cs.vt.edu/WCWiki/ConfigureBlueJsSubmitter&quot;>ConfigureBlueJsSubmitter</a> recipe in the Web-CAT Cookbook.";
+}
+
 CanChangePassword: WOConditional {
     condition = session.localUser.canChangePassword;
 }
@@ -39,6 +44,11 @@ DomainName: WOString {
     value = session.user.authenticationDomain.displayableName;
 }
 
+EclipseLinkInfo: net.sf.webcat.core.PopUpInfo {
+    title   = "Eclipse Submission URL";
+    message = "Web-CAT uses this URL to publish assignment definitions for use with the <a href=&quot;http://web-cat.cs.vt.edu/WCWiki/EclipsePlugins/SubmissionPlugin&quot;>Eclipse submitter plug-in</a>. See the &quot;Configure Eclipse&quot; section of the <a href=&quot;http://web-cat.cs.vt.edu/WCWiki/ConfigureEclipseSubmitter&quot>ConfigureEclipseSubmitter</a> recipe in the Web-CAT Cookbook.";
+}
+
 Email: WOTextField {
     value = session.localUser.email;
     size = 40;
@@ -65,6 +75,21 @@ Form1: WOForm {
 
 Form2: WOForm {
 	action = applyTimeFormats;
+}
+
+iCal: WOImage {
+	filename  = "icons/cal.gif";
+	framework = "Grader";
+	width     = 16;
+	height    = 16;
+	alt       = "Subscribe to your ical dates";
+	title     = "Subscribe to your ical dates";
+	border    = 0;
+}
+
+iCalLinkInfo: net.sf.webcat.core.PopUpInfo {
+    title   = "iCalendar Export URL";
+    message = "Web-CAT uses this URL to publish assignment due date information for use by iCal-capable calendaring programs.  You can copy-and-paste this link into your calendar program to subscribe.  Alternately, if your browser and/or operating system supports the webcal protocol, use the subscription link below.";
 }
 
 InstructorName: WOHyperlink {
@@ -156,4 +181,9 @@ URL: WOTextField {
 
 UserName: WOString {
     value = session.user.userName;
+}
+
+WebcalLinkInfo: net.sf.webcat.core.PopUpInfo {
+    title   = "Webcal Subscription";
+    message = "If your browser and/or operating system supports the webcal protocol, click this link to subscribe to the calendar events for your courses.";
 }
