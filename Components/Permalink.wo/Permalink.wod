@@ -1,0 +1,7 @@
+LinkImage : WOImage {
+    framework = "Core";
+    filename  = "icons/permalink.gif";
+    width     = 16;
+    height    = 15;
+    border    = 0;
+}

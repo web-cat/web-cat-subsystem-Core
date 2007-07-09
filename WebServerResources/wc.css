@@ -481,6 +481,7 @@ b.b1b {margin:0 5px; background:#333;}
 
 #overDiv { line-height: .9em; }
 
+.permalink { float: right; font-size: x-small; padding: 0 1em .5em .5em; }
 
 /* Color-coding for generic user pages ------------------------------------ */
 
