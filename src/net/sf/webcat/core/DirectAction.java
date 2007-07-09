@@ -32,7 +32,6 @@ import com.webobjects.foundation.*;
 import er.extensions.ERXDirectAction;
 import er.extensions.ERXValueUtilities;
 import net.sf.webcat.core.install.*;
-
 import org.apache.log4j.Logger;
 
 //-------------------------------------------------------------------------
@@ -80,19 +79,60 @@ public class DirectAction
             return ( new install( request() ) ).defaultAction();
         }
         NSMutableDictionary errors = new NSMutableDictionary();
+        NSMutableDictionary extra = request().formValues().mutableClone();
+        for ( String key : keysToScreen )
+        {
+            extra.removeObjectForKey( key );
+        }
+        if ( log.isDebugEnabled() )
+        {
+            log.debug( "defaultAction(): extra keys = " + extra );
+            log.debug( "formValues = " + request().formValues());
+        }
 
         if ( tryLogin( request(), errors ) )
         {
-            WOActionResults result =
-                pageWithName( session.currentPageName() ).generateResponse();
+            String pageId = request().stringFormValueForKey( "page" );
+            log.debug( "target page = " + pageId );
+            WOComponent startPage = null;
+            if ( pageId != null )
+            {
+                TabDescriptor previousPage = session.tabs.selectedDescendant();
+
+                // Try to go to the targeted page, if possible
+                if ( session.tabs.selectById( pageId ) != null
+                     && session.tabs.selectedDescendant().accessLevel() <=
+                         session.user().accessLevel() )
+                {
+                    log.debug( "found target page, validating ..." );
+                    startPage = pageWithName( session.currentPageName() );
+                    // Try to configure the targeted page with the given
+                    // parameters, if possible
+                    if ( ! ( startPage instanceof WCComponent
+                         && ( (WCComponent)startPage ).startWith( extra ) ) )
+                    {
+                        // If we can't jump to this page successfully
+                        startPage = null;
+                        previousPage.select();
+                        log.debug( "target page validation failed" );
+                    }
+                }
+            }
+            if ( startPage == null )
+            {
+                startPage = pageWithName( session.currentPageName() );
+            }
+            WOActionResults result = startPage.generateResponse();
             return result;
         }
         else
         {
+            log.debug( "login failed" );
             LoginPage loginPage = (LoginPage)pageWithName(
                 net.sf.webcat.core.LoginPage.class.getName() );
             loginPage.errors   = errors;
             loginPage.userName = request().stringFormValueForKey( "UserName" );
+            loginPage.extraKeys = extra;
             if ( domain != null )
             {
                 loginPage.domain   = domain;
@@ -123,7 +163,12 @@ public class DirectAction
              || ( request.formValues().count() == 1
                   && request.stringFormValueForKey( "next" ) != null )
              || ( request.formValues().count() == 1
-                  && request.stringFormValueForKey( "institution" ) != null ) )
+                  && request.stringFormValueForKey( "institution" ) != null )
+             || ( request.formValues().count() > 0
+                  && request.formValueForKey( "UserName" ) == null
+                  && request.formValueForKey( "UserPassword" ) == null
+                  && request.formValueForKey( "AuthenticationDomain" ) == null
+                ) )
         {
             return result;
         }
@@ -692,10 +737,21 @@ public class DirectAction
 
 
     //~ Instance/static variables .............................................
+
     private Session              session = null;
     private String               wosid   = null;
     private User                 user    = null;
     private AuthenticationDomain domain  = null;
+
+    private static String[] keysToScreen = new String[] {
+        "u",
+        "UserName",
+        "p",
+        "UserPassword",
+        "d",
+        "institution",
+        "AuthenticationDomain"
+    };
 
     static Logger log = Logger.getLogger( DirectAction.class );
 }

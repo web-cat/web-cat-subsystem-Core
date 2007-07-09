@@ -63,6 +63,8 @@ public class LoginPage
     public WODisplayGroup       domainDisplayGroup;
     public AuthenticationDomain domain;
     public AuthenticationDomain domainItem;
+    public NSDictionary         extraKeys;
+    public String               aKey;
 
 
     //~ Methods ...............................................................
@@ -167,6 +169,22 @@ public class LoginPage
             }
         }
         return result;
+    }
+
+
+    // ----------------------------------------------------------
+    public Object aKeyValue()
+    {
+        Object value = extraKeys.valueForKey( aKey );
+        if ( value instanceof NSArray )
+        {
+            NSArray array = (NSArray)value;
+            if ( array.count() == 1 )
+            {
+                value = array.objectAtIndex( 0 );
+            }
+        }
+        return value;
     }
 
 

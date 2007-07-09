@@ -71,7 +71,7 @@ public class WCComponent
     // ----------------------------------------------------------
     /**
      * Creates a new WCComponent object.
-     * 
+     *
      * @param context The page's context
      */
     public WCComponent( WOContext context )
@@ -85,7 +85,7 @@ public class WCComponent
     public WCComponent          nextPage;
 
 
-    //~ Methods ...............................................................
+    //~ Public Methods ........................................................
 
     // ----------------------------------------------------------
     /**
@@ -123,7 +123,7 @@ public class WCComponent
      * use of the default title "Web-CAT", which will be used for pages
      * that do not provide their own title.  Ideally, subsystems will
      * override this default.
-     * 
+     *
      * @return The page title
      */
     public String title()
@@ -139,7 +139,7 @@ public class WCComponent
      *
      * The generic implementation returns the root for all of this
      * installation's Web-CAT documentation.
-     * 
+     *
      * @return The base URL
      */
     public static String helpBaseURL()
@@ -158,7 +158,7 @@ public class WCComponent
      * class name, with "net.sf.webcat." stripped from the front,
      * with periods transformed to slashes (/), and with ".html" appended
      * on the end.
-     * 
+     *
      * @return The page URL
      */
     public String helpRelativeURL()
@@ -170,7 +170,7 @@ public class WCComponent
         {
             url = url.substring( base.length() );
         }
-        
+
         return url.replace( '.', '/' ) + ".php";
     }
 
@@ -181,7 +181,7 @@ public class WCComponent
      *
      * The URL is formed by concatenating <code>helpBaseURL</code> and
      * <code>helpRelativeURL</code>.
-     * 
+     *
      * @return The URL
      */
     public String helpURL()
@@ -197,7 +197,7 @@ public class WCComponent
      *
      * This generic implementation returns the fully qualified class name
      * of the current page.
-     * 
+     *
      * @return The feedback ID
      */
     public String feedbackId()
@@ -214,7 +214,7 @@ public class WCComponent
      * This generic implementation returns true.  This callback is
      * not used by {@link PageWithNavigation}; it is only meaningful inside
      * a {@link WizardPage} container.
-     * 
+     *
      * @return True if "Cancel" should appear
      */
     public boolean cancelEnabled()
@@ -240,10 +240,10 @@ public class WCComponent
      *
      * This generic implementation moves to the default sibling of the
      * currently selected tab.
-     * 
+     *
      * This callback is not used by {@link PageWithNavigation}; it is only
      * meaningful inside a {@link WizardPage} container.
-     * 
+     *
      * @return The page to go to
      */
     public WOComponent cancel()
@@ -264,11 +264,11 @@ public class WCComponent
     // ----------------------------------------------------------
     /**
      * Determines whether the wizard page's "Back" button is visible.
-     * 
+     *
      * This generic implementation looks at the currently selected tab
      * and calls its {@link TabDescriptor#hasPreviousSibling()} method to
      * get the name of the page to create.
-     * 
+     *
      * This callback is not used by {@link PageWithNavigation}; it is only
      * meaningful inside a {@link WizardPage} container.
      *
@@ -284,14 +284,14 @@ public class WCComponent
     // ----------------------------------------------------------
     /**
      * Returns the page to go to when "Back" is pressed.
-     * 
+     *
      * This generic implementation looks at the current tab
      * and calls its {@link TabDescriptor#previousSibling()} method to
      * get the name of the page to create.
-     * 
+     *
      * This callback is not used by {@link PageWithNavigation}; it is only
      * meaningful inside a {@link WizardPage} container.
-     * 
+     *
      * @return The page to go to
      */
     public WOComponent back()
@@ -315,14 +315,14 @@ public class WCComponent
     // ----------------------------------------------------------
     /**
      * Determines whether the wizard page's "Next" button is visible.
-     * 
+     *
      * This generic implementation looks at the currently selected tab
      * and calls its {@link TabDescriptor#hasNextSibling()} method to
      * get the name of the page to create.
-     * 
+     *
      * This callback is not used by {@link PageWithNavigation}; it is only
      * meaningful inside a {@link WizardPage} container.
-     * 
+     *
      * @return True if "Next" should appear
      */
     public boolean nextEnabled()
@@ -336,14 +336,14 @@ public class WCComponent
     // ----------------------------------------------------------
     /**
      * Returns the page to go to when "Next" is pressed.
-     * 
+     *
      * This generic implementation looks at the current tab
      * and calls its {@link TabDescriptor#nextSibling()} method to
      * get the name of the page to create.
-     * 
+     *
      * This callback is not used by {@link PageWithNavigation}; it is only
      * meaningful inside a {@link WizardPage} container.
-     * 
+     *
      * @return The page to go to
      */
     public WOComponent next()
@@ -367,13 +367,13 @@ public class WCComponent
     // ----------------------------------------------------------
     /**
      * Determines whether the wizard page's "Apply All" button is visible.
-     * 
+     *
      * This generic implementation returns false, but should be overridden
      * by wizard pages that have recordable settings on them.
-     * 
+     *
      * This callback is not used by {@link PageWithNavigation}; it is only
      * meaningful inside a {@link WizardPage} container.
-     * 
+     *
      * @return True if "Apply All" should appear
      */
     public boolean applyEnabled()
@@ -422,13 +422,13 @@ public class WCComponent
     // ----------------------------------------------------------
     /**
      * Returns the page to go to when "Apply All" is pressed.
-     * 
+     *
      * This generic implementation commits changes but remains on the
      * same page.
-     * 
+     *
      * This callback is not used by {@link PageWithNavigation}; it is only
      * meaningful inside a {@link WizardPage} container.
-     * 
+     *
      * @return The page to go to (always null in this default implementation)
      */
     public WOComponent apply()
@@ -441,12 +441,12 @@ public class WCComponent
     // ----------------------------------------------------------
     /**
      * Determines whether the wizard page's "Finish" button is visible.
-     * 
+     *
      * This generic implementation returns true.
-     * 
+     *
      * This callback is not used by {@link PageWithNavigation}; it is only
      * meaningful inside a {@link WizardPage} container.
-     * 
+     *
      * @return True if "Finish" should appear
      */
     public boolean finishEnabled()
@@ -458,13 +458,13 @@ public class WCComponent
     // ----------------------------------------------------------
     /**
      * Returns the page to go to when "Finish" is pressed.
-     * 
+     *
      * This generic implementation commits changes, then moves to the
      * default sibling page.
-     * 
+     *
      * This callback is not used by {@link PageWithNavigation}; it is only
      * meaningful inside a {@link WizardPage} container.
-     * 
+     *
      * @return The page to go to
      */
     public WOComponent finish()
@@ -494,7 +494,7 @@ public class WCComponent
      * calls next (if enabled) or else applyChanges (if enabled) or simply
      * remains on this page.  Subclasses can override this to
      * provide their own desired behavior.
-     * 
+     *
      * @return The page to go to
      */
     public WOComponent defaultAction()
@@ -518,6 +518,21 @@ public class WCComponent
 
 
     // ----------------------------------------------------------
+    /**
+     * Attempt to set any session-specific local data for this page from
+     * the given dictionary so that this page can be rendered successfully.
+     * @param params a dictionary of key/value pairs specifying local
+     * data for this page
+     * @return True if the page can be rendered using the info from params,
+     * or false if required parameters are missing.
+     */
+    public boolean startWith( NSDictionary params )
+    {
+        return true;
+    }
+
+
+    // ----------------------------------------------------------
     public void pushValuesToParent()
     {
         // Make sure to handle logout actions on form pages correctly
@@ -526,6 +541,24 @@ public class WCComponent
         {
             super.pushValuesToParent();
         }
+    }
+
+
+    //~ Protected Methods .....................................................
+
+    // ----------------------------------------------------------
+    protected String stringValueForKey( NSDictionary dict, String key )
+    {
+        Object value = dict.valueForKey( key );
+        if ( value != null && value instanceof NSArray )
+        {
+            NSArray values = (NSArray)value;
+            if ( values.count() == 1 )
+            {
+                value = values.objectAtIndex( 0 );
+            }
+        }
+        return value == null ? null : value.toString();
     }
 
 
