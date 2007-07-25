@@ -8,17 +8,10 @@ BarePage: net.sf.webcat.core.BarePage {
     omitStdStyleSheet    = omitStdStyleSheet;
 }
 
-Critical: WOImage {
-    filename  = "icons/exclaim.gif";
-    framework = "Core";
-    height    = "16";
-    width     = "16";
-    border    = 0;
-}
-
-DeathMessage: WOString {
-	value      = application.deathMessage;
-	escapeHTML = false;
+DivContents: WOGenericContainer {
+	elementName = "div";
+	id          = "contents";
+	class       = "~(hasSteps && includePageWrapping) ? \"\" : \"nomenu\"";
 }
 
 Errors: net.sf.webcat.core.ErrorDictionaryPanel {
@@ -46,10 +39,6 @@ Footer: net.sf.webcat.core.Footer {}
 
 HasMenu: WOConditional {
     condition = hasSteps;
-}
-
-HasSecondTabs: WOConditional {
-    condition = hasVisibleSecondaryTabs;
 }
 
 HasTitle: WOConditional {
@@ -110,51 +99,16 @@ MenuHeader: WOString {
 	value = secondLevelSelection.label;
 }
 
-NoMenu: WOConditional {
-    condition = hasSteps;
-    negate    = true;
-}
-
-NoSecondTabs: WOConditional {
-    condition = hasVisibleSecondaryTabs;
-    negate    = true;
-}
-
-OmitPageWrapping: WOConditional {
-    condition = includePageWrapping;
-    negate    = true;
-}
-
 PageContent: WOComponentContent {
-}
-
-PrimaryTabClass: WOString {
-	value = primaryTabClass;
-}
-
-PrimaryTabIsVisible: WOConditional {
-    condition = primaryTabIsVisible;
 }
 
 PrimaryTabLabel: WOString {
 	value = primaryTabItem.label;
 }
 
-PrimaryTabLink: WOHyperlink {
-	action = primaryTabLink;
-}
-
 PrimaryTabs: WORepetition {
 	list = session.tabs.children;
 	item = primaryTabItem;
-}
-
-SecondaryTabClass: WOString {
-	value = secondaryTabClass;
-}
-
-SecondaryTabIsVisible: WOConditional {
-    condition = secondaryTabIsVisible;
 }
 
 SecondaryTabLabel: WOString {
@@ -186,10 +140,6 @@ StepNumber: WOString {
 
 StepLabel: WOString {
 	value = tertiaryTabItem.lcLabel;
-}
-
-StepIsSelected: WOConditional {
-	condition = stepIsSelected;
 }
 
 StepUsesLink: WOConditional {
