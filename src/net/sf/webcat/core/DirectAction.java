@@ -165,7 +165,9 @@ public class DirectAction
              || ( request.formValues().count() == 1
                   && request.stringFormValueForKey( "institution" ) != null )
              || ( request.formValues().count() > 0
+                  && request.formValueForKey( "u" ) == null
                   && request.formValueForKey( "UserName" ) == null
+                  && request.formValueForKey( "p" ) == null
                   && request.formValueForKey( "UserPassword" ) == null
                   && request.formValueForKey( "AuthenticationDomain" ) == null
                 ) )
