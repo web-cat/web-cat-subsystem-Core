@@ -53,7 +53,7 @@ LangList: WOString {
 }
 
 LoginForm: WOForm {
-    href = "./"; //loginDirectAction;
+    href = application.properties.base.url; // VALID // loginDirectAction;
 }
 
 Logo: WOImage {
