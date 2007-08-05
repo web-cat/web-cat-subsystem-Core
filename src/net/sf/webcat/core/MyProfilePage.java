@@ -194,7 +194,8 @@ public class MyProfilePage
                                 ? "&staff=true" : "" ),
             null,
             false,
-            0
+            0,
+            true // force to use http, not https
             );
     }
 
@@ -214,7 +215,7 @@ public class MyProfilePage
         return Application.completeURLWithRequestHandlerKey(
             context(),
             Application.application().directActionRequestHandlerKey(),
-            "assignments/bluej?institution=" + institution
+            "assignments/eclipse?institution=" + institution
                 + ( ( wcSession().user().accessLevel() > 0 )
                                 ? "&staff=true" : "" ),
             null,
