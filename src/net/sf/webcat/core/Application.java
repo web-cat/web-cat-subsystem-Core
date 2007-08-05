@@ -38,6 +38,8 @@ import java.io.PrintWriter;
 import java.net.*;
 import java.util.Enumeration;
 import java.util.Vector;
+import java.util.regex.*;
+
 import javax.activation.*;
 import javax.mail.internet.*;
 import net.sf.webcat.archives.*;
@@ -453,6 +455,7 @@ public class Application
             int       somePort,
             boolean   forceSecureSetting )
     {
+        WORequest request = context.request();
         String dest = context.completeURLWithRequestHandlerKey(
                 requestHandlerKey,
                 aRequestHandlerPath,
@@ -460,7 +463,6 @@ public class Application
                 isSecure,
                 somePort
             );
-        WORequest request = context.request();
         if ( request != null )
         {
             String host = hostName( request );
@@ -473,21 +475,52 @@ public class Application
                         ? "s" : "" )
                     + "://" + host );
         }
-        // TODO: find a way to fix this
-//        String prefix1 = "http://WEB-CAT:";
-//        if ( dest.startsWith( prefix1 ) )
-//        {
-//            dest = "http://web-cat.cs.vt.edu:"
-//                + dest.substring( prefix1.length() );
-//        }
-//        String prefix2 = "http://web-cat:";
-//        if ( dest.startsWith( prefix2 ) )
-//        {
-//            dest = "http://web-cat.cs.vt.edu:"
-//                + dest.substring( prefix2.length() );
-//        }
+        else
+        {
+            if ( urlHostPrefix == null )
+            {
+                String result =
+                    configurationProperties().getProperty( "base.url" );
+                if ( result != null )
+                {
+                    Matcher matcher = Pattern.compile( "^http(s)?://[^/]*",
+                        Pattern.CASE_INSENSITIVE ).matcher( result );
+                    if ( matcher.find() )
+                    {
+                        urlHostPrefix = matcher.group();
+                    }
+                }
+            }
+            if ( urlHostPrefix != null )
+            {
+                dest = dest.replaceFirst( "^http(s)?://[^/]*", urlHostPrefix );
+            }
+        }
         log.debug( "link = " + dest );
         return dest;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns <code>true</code> if the server prefers SSL connections.
+     * @return <code>true</code> if SSL should be used by default.
+     */
+    static public boolean useSecureConnectionsByDefault()
+    {
+        if ( defaultsToSecure == null )
+        {
+            String base = configurationProperties().getProperty( "base.url" );
+            if ( base != null )
+            {
+                defaultsToSecure = Boolean.valueOf(
+                    base.startsWith( "https" )
+                    || base.startsWith(  "HTTPS" ) );
+            }
+        }
+        return defaultsToSecure == null
+            ? false
+            : defaultsToSecure.booleanValue();
     }
 
 
@@ -526,7 +559,10 @@ public class Application
         // If either the https header is 'on' or the server port is 443 then
         // we consider this to be an HTTP request.
         isSecure = ( httpsMode != null  &&  httpsMode.equalsIgnoreCase( "on" ) )
-                || ( serverPort != null  &&  serverPort.equals( "443" ) );
+                || ( serverPort != null  &&  serverPort.equals( "443" ) )
+                || ( httpsMode == null
+                     && serverPort == null
+                     && useSecureConnectionsByDefault() );
 
         return isSecure;
     }
@@ -2045,6 +2081,8 @@ public class Application
     private static String __appIdentifier;
     private static SubsystemManager __subsystemManager;
     private static String cmdShell;
+    private static Boolean defaultsToSecure;
+    private static String urlHostPrefix;
 
     private boolean needsInstallation = true;
     private boolean staticHtmlResourcesNeedInitializing = true;
