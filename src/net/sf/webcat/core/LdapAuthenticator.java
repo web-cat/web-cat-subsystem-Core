@@ -27,28 +27,27 @@ package net.sf.webcat.core;
 
 import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.NSDictionary;
-import edu.vt.middleware.eddo.*;
+import edu.vt.middleware.ldap.*;
 import org.apache.log4j.Logger;
 
 // --------------------------------------------------------------------------
 /**
  *  A concrete implementation of <code>UserAuthenticator</code> that
- *  tests user ids/passwords against the Virginia Tech ED-Auth service
- *  using LDAP.
+ *  tests user ids/passwords using LDAP.
  *
  *  @author edwards
  *  @version $Id$
  */
-public class EdAuthAuthenticator
+public class LdapAuthenticator
     implements UserAuthenticator
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
     /**
-     * Create a new EdAuthAuthenticator object.
+     * Create a new object.
      */
-    public EdAuthAuthenticator()
+    public LdapAuthenticator()
     {
         // Initialization happens in configure()
     }
@@ -71,32 +70,95 @@ public class EdAuthAuthenticator
      *              ready for service
      */
     public boolean configure( String       baseName,
-                              WCProperties properties
-                            )
+                              WCProperties properties )
     {
-        try
+        boolean result = true;
+        String host = properties.getProperty( baseName + ".ldap.hostUrl" );
+        if ( host == null || host.equals("") )
         {
-            dm = new DirectoryManager();
-            pm = dm.createPersonManager();
-        }
-        catch ( Exception e )
-        {
-            log.error( "failure connecting to EdAuth service", e );
+            log.error( "a required property is not set: "
+                       + baseName + ".ldap.hostUrl" );
+            result = false;
         }
 
-//        Provider[] providers = Security.getProviders();
-//        for (int i = 0; i < providers.length; i++) {
-//            Provider provider = providers[i];
-//            log.warn("Provider name: " + provider.getName());
-//            log.warn("Provider information: " + provider.getInfo());
-//            log.warn("Provider version: " + provider.getVersion());
-//            Set entries = provider.entrySet();
-//            Iterator iterator = entries.iterator();
-//            while ( iterator.hasNext() ) {
-//                log.warn("Property entry: " + iterator.next());
-//            }
-//        }
-        return true;
+        String base = properties.getProperty( baseName + ".ldap.context" );
+        if ( base == null || base.equals("") )
+        {
+            log.error( "a required property is not set: "
+                       + baseName + ".ldap.context" );
+            result = false;
+        }
+
+        if (!result) return result;
+
+
+        String userField =
+            properties.getProperty( baseName + ".ldap.userField" );
+        if ( userField == null || userField.equals("") )
+        {
+            userField = "cn";
+        }
+
+        log.debug(baseName + ": host = " + host + ", context = " + base
+            + ", user field = " + userField);
+
+        LdapConfig config = new LdapConfig(host, base);
+
+        String bindDN =  properties.getProperty( baseName + ".ldap.bindDN" );
+        String bindPassword =
+            properties.getProperty( baseName + ".ldap.bindPassword" );
+        if ("".equals(bindDN)) { bindDN = null; }
+        if ("".equals(bindPassword)) { bindPassword = null; }
+        if (bindDN == null && bindPassword != null)
+        {
+            log.error( baseName + ".ldap.bindPassword was set without"
+                + "setting " + baseName + ".ldap.bindDN" );
+            result = false;
+        }
+        else if (bindPassword == null && bindDN != null)
+        {
+            log.error( baseName + ".ldap.bindDN was set without"
+                + "setting " + baseName + ".ldap.bindPassword" );
+            result = false;
+        }
+        if (bindDN != null)
+        {
+            config.setServiceUser(bindDN);
+            log.debug(baseName + ": bindDN = " + bindDN);
+        }
+        if (bindPassword != null)
+        {
+            config.setServiceCredential(bindPassword);
+            log.debug(baseName + ": bindPassword = " + bindPassword);
+        }
+
+        authenticator = new Authenticator(config);
+        authenticator.setUserField(userField);
+
+        if (properties.booleanForKey(baseName + ".useTLS"))
+        {
+            try
+            {
+                log.debug(baseName + ": turning TLS on");
+                authenticator.useTls(true);
+            }
+            catch (Exception e)
+            {
+                log.error("Cannot use TLS:", e);
+            }
+        }
+
+        authenticator.setSubtreeSearch(
+            properties.booleanForKey( baseName + ".ldap.searchSubtrees" ) );
+
+        String authFilter =
+            properties.getProperty( baseName + ".ldap.authFilter" );
+        if (authFilter != null && !authFilter.equals(""))
+        {
+            authenticator.setAuthorizationFilter(authFilter);
+        }
+
+        return result;
     }
 
 
@@ -114,8 +176,7 @@ public class EdAuthAuthenticator
     public User authenticate( String               username,
                               String               password,
                               AuthenticationDomain domain,
-                              com.webobjects.eocontrol.EOEditingContext ec
-                            )
+                              com.webobjects.eocontrol.EOEditingContext ec )
     {
         User user = null;
         if ( authenticate( username, password ) )
@@ -192,7 +253,7 @@ public class EdAuthAuthenticator
         boolean result = false;
         try
         {
-            result = pm.authenticatePerson( username, password );
+            result = authenticator.authenticate( username, password );
         }
         catch ( Exception e )
         {
@@ -254,8 +315,6 @@ public class EdAuthAuthenticator
 
     //~ Instance/static variables .............................................
 
-    static Logger log = Logger.getLogger( EdAuthAuthenticator.class );
-
-    private DirectoryManager dm;
-    private PersonManager    pm;
+    static Logger log = Logger.getLogger( LdapAuthenticator.class );
+    private Authenticator authenticator;
 }

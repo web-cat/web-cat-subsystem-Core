@@ -33,6 +33,10 @@ import er.extensions.*;
 
 import java.io.*;
 import java.net.*;
+
+import javax.net.*;
+import javax.net.ssl.*;
+
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -83,8 +87,9 @@ public class PopAuthenticator
                             )
     {
         boolean result = true;
+
         server = properties.getProperty( baseName + ".POPserver.name" );
-        if ( server == null || server == "" )
+        if ( server == null || server.equals("") )
         {
             log.error( "a required property is not set: "
                        + baseName + ".POPserver.name" );
@@ -98,6 +103,16 @@ public class PopAuthenticator
                        + baseName + ".POPserver.port\n" );
             result = false;
         }
+
+        boolean secure = properties.booleanForKey(
+            baseName + ".POPserver.useSSL" );
+        socketFactory = secure
+            ? SSLSocketFactory.getDefault()
+            : SocketFactory.getDefault();
+
+        addIfNotFound = properties.booleanForKeyWithDefault(
+            baseName + ".addIfNotFound", true );
+
         return result;
     }
 
@@ -154,20 +169,32 @@ public class PopAuthenticator
             }
             catch ( EOObjectNotAvailableException e )
             {
-                user = User.createUser(
-                         userName,
-                         null,  // DO NOT MIRROR PASSWORD IN DATABASE
-                                // for security reasons
-                         domain,
-                         User.STUDENT_PRIVILEGES,
-                         ec
-                    );
-                log.info( "new user '"
-                          + userName
-                          + "' ("
-                          + domain.displayableName()
-                          + ") created"
+                if ( addIfNotFound )
+                {
+                    user = User.createUser(
+                             userName,
+                             null,  // DO NOT MIRROR PASSWORD IN DATABASE
+                                    // for security reasons
+                             domain,
+                             User.STUDENT_PRIVILEGES,
+                             ec
                         );
+                    log.info( "new user '"
+                              + userName
+                              + "' ("
+                              + domain.displayableName()
+                              + ") created"
+                            );
+                }
+                else
+                {
+                    log.info(
+                        "user " + userName
+                        + " successfully validated in '"
+                        + domain.displayableName()
+                        + "' but does not exist (not created)"
+                    );
+                }
             }
             catch ( EOUtilities.MoreThanOneException e )
             {
@@ -220,20 +247,22 @@ public class PopAuthenticator
     public int validatePid( String pid, String password )
     {
         // exit code
-        int ValidatedFlag = rAbnormalTermination;
+        int result = rAbnormalTermination;
 
-        if ( server == null ) return ValidatedFlag;
+        if ( server == null ) return result;
+
+        Socket socket = null;
 
         try
         {
             // create socket connection to pop server
-            Socket socketServer = new Socket( server, port );
+            socket = socketFactory.createSocket( server, port );
             // stream which comes from server
             BufferedReader serverIn = new BufferedReader(
-                new InputStreamReader( socketServer.getInputStream() ) );
+                new InputStreamReader( socket.getInputStream() ) );
             //stream which goes out to server
             PrintStream meOut =
-                new PrintStream( socketServer.getOutputStream() );
+                new PrintStream( socket.getOutputStream() );
 
             // converse with server... doing authentication
 
@@ -256,25 +285,40 @@ public class PopAuthenticator
 
                 // close the connection
                 meOut.println( "quit" );
-                ValidatedFlag = rPswdBad;
+                result = rPswdBad;
 
                 if ( serverSaid.indexOf( "+OK" ) != -1 )
                 {
-                    ValidatedFlag = rPidPswdGood;
+                    result = rPidPswdGood;
                 }
 
-                if ( serverSaid.indexOf( "Can't find your PID." ) != -1 )
+                if ( serverSaid.indexOf( "Can't find your" ) != -1 )
                 {
-                    ValidatedFlag = rPidBad;
+                    result = rPidBad;
                 }
             }
             serverIn.close();    //close connection to server
         }
         catch ( IOException ioe )
         {
-            return rServerError;
+            log.error( "Error talking to pop server", ioe );
+            result = rServerError;
         }
-        return ValidatedFlag;
+        finally
+        {
+            if ( socket != null )
+            {
+                try
+                {
+                    socket.close();
+                }
+                catch ( IOException ioe )
+                {
+                    log.info( "Error closing pop server socket", ioe );
+                }
+            }
+        }
+        return result;
     }
 
 
@@ -331,8 +375,10 @@ public class PopAuthenticator
 
     static Logger log = Logger.getLogger( PopAuthenticator.class );
 
-    private int    port;
-    private String server;
+    private int           port;
+    private String        server;
+    private SocketFactory socketFactory;
+    private boolean       addIfNotFound;
 
     // return codes
     static final int rAbnormalTermination  = -1;
