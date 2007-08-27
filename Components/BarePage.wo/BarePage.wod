@@ -62,8 +62,7 @@ BeforeIE6: WOString {
 	escapeHTML = false;
 	// The value is placed here to keep the IE-directed comments from being
     // stripped out by WO.
-    value = "<![endif]-->
-<!--[if IE 6]>";
+    value = "<![endif]--><!--[if IE 6]>";
 }
 
 WCIE6StyleSheet: WOString {
