@@ -146,8 +146,10 @@ public class MyProfilePage
                     "Your password must be at least six characters long." );
             }
             else if (  lcPassword.equals( u.userName().toLowerCase() )
-                    || lcPassword.equals( u.firstName().toLowerCase() )
-                    || lcPassword.equals( u.lastName().toLowerCase() ) )
+                    || ( u.firstName() != null
+                         && lcPassword.equals( u.firstName().toLowerCase() ) )
+                    || ( u.lastName() != null
+                         && lcPassword.equals( u.lastName().toLowerCase() ) ) )
             {
                 error(
                     "You may not use your name as a password.  "
