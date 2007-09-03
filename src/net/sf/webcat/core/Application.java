@@ -1481,7 +1481,10 @@ public class Application
         }
         finally
         {
-            errorLoggingContext.unlock();
+            if (errorLoggingContext != null)
+            {
+                errorLoggingContext.unlock();
+            }
         }
 
         // Return the information
