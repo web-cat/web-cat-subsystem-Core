@@ -27,10 +27,10 @@ package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
-
 import java.io.*;
+import java.util.Map;
+import java.util.Set;
 import java.util.zip.*;
-
 import er.extensions.ERXConstant;
 import org.apache.log4j.*;
 
@@ -77,9 +77,6 @@ public class OptionEditPanel
     // ----------------------------------------------------------
     public void appendToResponse( WOResponse response, WOContext context )
     {
-        log.debug( "option = " + option.objectForKey( "property" )
-                        + ", type = " + option.objectForKey( "type" )
-                        + ", type = " + type );
         // if ( type == 0 )
         {
             String typeName = (String)option.objectForKey( "type" );
@@ -93,15 +90,17 @@ public class OptionEditPanel
             }
         }
         theSelectedChoice = null;
-        log.debug( "option = " + option.objectForKey( "property" )
-                   + ", type = " + option.objectForKey( "type" )
-                   + ", type = " + type );
         if ( property == null )
         {
             property = (String)option.objectForKey( "property" );
         }
-//        log.debug( "appendToResponse(): type = " + type + ", property = "
-//                   + property );
+        log.debug( "option = " + property
+            + ", type = " + option.objectForKey( "type" )
+            + ", type = " + type );
+        if (optionValues != null)
+        {
+            log.debug("option values hash id = " + optionValues.hashCode());
+        }
         super.appendToResponse( response, context );
     }
 
@@ -244,9 +243,9 @@ public class OptionEditPanel
                 ( (NSMutableDictionary)optionValues )
                     .removeObjectForKey( property );
             }
-            else if ( optionValues instanceof java.util.Map )
+            else if ( optionValues instanceof Map )
             {
-                ( (java.util.Map)optionValues ).remove( property );
+                ( (Map)optionValues ).remove( property );
             }
             else
             {
@@ -409,15 +408,37 @@ public class OptionEditPanel
         return downloadPage;
     }
 
-    
+
     // ----------------------------------------------------------
     public WOComponent selectFile( String filePath )
     {
-        setValue( wcSession().user().authenticationDomain().subdirName()
-                  + "/" + filePath );
         if ( log.isDebugEnabled() )
         {
-            log.debug( "new option values:\n" + optionValues );
+            log.debug("selectFile(" + filePath + ")");
+        }
+
+        // Force enclosing option editor to pull new value for optionValues,
+        // in case the file operations caused a MutableDictionary to be
+        // flushed and re-read.
+        if (parent() != null && parent() instanceof OptionSetEditor)
+        {
+            OptionSetEditor parent = (OptionSetEditor)parent();
+            parent.takeValueForKey(
+                parent.valueForBinding("optionValues"), "optionValues");
+        }
+        // Now pull the new value from the parent, but just for this
+        // binding.
+        optionValues =
+            (NSKeyValueCodingAdditions)valueForBinding("optionValues");
+
+        setValue( wcSession().user().authenticationDomain().subdirName()
+                + "/" + filePath );
+        if ( log.isDebugEnabled() )
+        {
+            log.debug("selectFile(" + filePath + ")");
+            log.debug( "new option values: ("
+                + (optionValues == null ? "null" : optionValues.hashCode())
+                + ")\n" + optionValues );
         }
         return myPage; // context().page();
     }
