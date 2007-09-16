@@ -79,7 +79,6 @@ public class OptionSetEditor
     // ----------------------------------------------------------
     public void appendToResponse( WOResponse response, WOContext context )
     {
-        log.debug( "appendToResponse()" );
         if ( isFirstView
              && categories != null
              && categories.count() > 0 )
@@ -89,6 +88,21 @@ public class OptionSetEditor
         isFirstView = false;
         terse = null;
         displayedCategory = chosenCategory;
+        if (log.isDebugEnabled())
+        {
+            log.debug( "appendToResponse()" );
+            if (optionValues == null)
+            {
+                log.debug("option values = null");
+            }
+            else
+            {
+                log.debug( "option values ("
+                    + optionValues.hashCode()
+                    + ") =\n" + optionValues );
+
+            }
+        }
         super.appendToResponse( response, context );
     }
 
