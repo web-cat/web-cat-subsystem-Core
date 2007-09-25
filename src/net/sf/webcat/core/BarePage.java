@@ -78,6 +78,8 @@ public class BarePage
                    + context.request().stringFormValueForKey( "nowrap" ) );
         includePageWrapping =
             ( context.request().stringFormValueForKey( "nowrap" ) == null );
+        response.appendHeader("no-cache", "pragma");
+        response.appendHeader("no-cache", "cache-control");
         super.appendToResponse( response, context );
     }
 
@@ -168,7 +170,7 @@ public class BarePage
     private void oneJavaScriptLink( StringBuffer buffer, String url )
     {
         buffer.append( "<script type=\"text/javascript\" src=\"" );
-        buffer.append( 
+        buffer.append(
             WCResourceManager.frameworkPrefixedResourceURLFor( url,
                 context().request() ) );
         buffer.append( "\"></script>" );
