@@ -884,7 +884,9 @@ public class Application
         Throwable t = exception instanceof NSForwardException
             ? ( (NSForwardException) exception ).originalException()
             : exception;
+
         emailExceptionToAdmins( t, extraInfo, context, null );
+
         // Return a "clean" error page
         WOComponent errorPage =
             pageWithName( ErrorPage.class.getName(), context );
@@ -1327,6 +1329,13 @@ public class Application
         NSTimestamp now = new NSTimestamp();
         errorBuffer.append( "\nDate/time:   " );
         errorBuffer.append(  now.toString() );
+        if ( aContext != null && aContext.request() != null)
+        {
+            errorBuffer.append( "\nRequest: " );
+            errorBuffer.append(aContext.request().uri());
+            errorBuffer.append( "\nReferer: " );
+            errorBuffer.append(aContext.request().headerForKey("referer"));
+        }
 
         if ( errorLoggingContext == null )
         {
