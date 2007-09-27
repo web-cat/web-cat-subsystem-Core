@@ -885,13 +885,33 @@ public class Application
             ? ( (NSForwardException) exception ).originalException()
             : exception;
 
-        emailExceptionToAdmins( t, extraInfo, context, null );
+        if (t != null
+            && t instanceof java.lang.IllegalStateException
+            && t.getMessage() != null
+            && t.getMessage().contains("Couldn't locate action class"))
+        {
+            // Then don't e-mail this, because it is really just a bad
+            // client-side request with a bad action class name
+        }
+        else
+        {
+            emailExceptionToAdmins( t, extraInfo, context, null );
+        }
 
-        // Return a "clean" error page
-        WOComponent errorPage =
-            pageWithName( ErrorPage.class.getName(), context );
-        errorPage.takeValueForKey( t, "exception" );
-        return errorPage.generateResponse();
+        if (context != null)
+        {
+            // Return a "clean" error page
+            WOComponent errorPage =
+                pageWithName( ErrorPage.class.getName(), context );
+            errorPage.takeValueForKey( t, "exception" );
+            return errorPage.generateResponse();
+        }
+        else
+        {
+            // No context, so we cannot generate a real error page.  Instead,
+            // return null, which should force a trivial error message
+            return null;
+        }
     }
 
 
@@ -919,7 +939,7 @@ public class Application
                 extraInformationForExceptionInContext( exception, context );
             WOResponse response =
                 reportException( exception, extraInfo, context );
-            if ( response == null )
+            if ( response == null && context != null)
                 response = super.handleException( exception, context );
             return response;
         }
