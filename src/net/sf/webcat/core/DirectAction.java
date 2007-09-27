@@ -485,7 +485,25 @@ public class DirectAction
         String actionName )
     {
         log.debug( "performSynchronousActionNamed( " + actionName + " )" );
-        WOActionResults result = super.performActionNamed( actionName );
+        WOActionResults result = null;
+        try
+        {
+            result = super.performActionNamed( actionName );
+        }
+        catch (NSForwardException e)
+        {
+            if (e.originalException() instanceof
+                java.lang.NoSuchMethodException)
+            {
+                // assume this was a bad request with an invalid action
+                // name, and just go to the login page instead.
+                result = defaultAction();
+            }
+            else
+            {
+                throw e;
+            }
+        }
         saveSession();
         return result;
     }
