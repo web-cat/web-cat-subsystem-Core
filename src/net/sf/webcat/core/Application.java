@@ -36,8 +36,7 @@ import java.io.File;
 import java.io.StringWriter;
 import java.io.PrintWriter;
 import java.net.*;
-import java.util.Enumeration;
-import java.util.Vector;
+import java.util.*;
 import java.util.regex.*;
 
 import javax.activation.*;
@@ -1767,6 +1766,77 @@ public class Application
 
 
     // ----------------------------------------------------------
+    /**
+     * Execute an external command, using the appropriate command shell
+     * setting from the app configuration data.  If subsystems have
+     * already been initialized, their exported ENV settings will be passed
+     * to the command as well.
+     * @param commandLine The command to execute
+     * @param cwd The (optional) working directory in which the command
+     * should be executed.  If null, the application's cwd will be used.
+     * @throws java.io.IOException if an error occurs communicating with
+     * the child process
+     * @throws InterruptedException if the child process gets interrupted
+     */
+    public void executeExternalCommand(String commandLine, File cwd)
+        throws java.io.IOException, InterruptedException
+    {
+        String[] cmdArray = null;
+        Process proc = null;
+
+        // Tack on the command shell prefix to the beginning, quoting the
+        // whole argument sequence if necessary
+        {
+            String shell = net.sf.webcat.core.Application.cmdShell();
+            if ( shell != null && shell.length() > 0 )
+            {
+                if ( shell.charAt( shell.length() - 1 ) == '"' )
+                {
+                    cmdArray = shell.split( "\\s+" );
+                    cmdArray[cmdArray.length - 1] = commandLine;
+                }
+                else
+                {
+                    commandLine = shell + commandLine;
+                }
+            }
+        }
+
+        try
+        {
+            String[] envp = null;
+            // If subsystems are already loaded, get their ENV info:
+            if ( __subsystemManager != null )
+            {
+                envp = subsystemManager().envp();
+            }
+            if ( cmdArray != null )
+            {
+                log.debug("executeExternalCommand(): "
+                    + Arrays.toString(cmdArray));
+                proc = Runtime.getRuntime().exec( cmdArray, envp, cwd );
+            }
+            else
+            {
+                log.debug("executeExternalCommand(): " + commandLine);
+                proc = Runtime.getRuntime().exec( commandLine, envp, cwd );
+            }
+            int exitCode = proc.waitFor();
+            log.debug( "external command returned exit code: " + exitCode );
+        }
+        catch ( InterruptedException e )
+        {
+            // stopped by timeout
+            if ( proc != null )
+            {
+                proc.destroy();
+            }
+            throw e;
+        }
+    }
+
+
+    // ----------------------------------------------------------
     private void updateStaticHtmlResources()
     {
         if ( net.sf.webcat.WCServletAdaptor.getInstance() == null )
@@ -1866,6 +1936,8 @@ public class Application
             if ( frameworkLastUpdated != null
                  && lastUpdated.compareTo( frameworkLastUpdated ) <= 0 )
             {
+                updateExecutablePermissionsForFramework(
+                    frameworkName, framework[i] );
                 updateStaticHtmlResourcesForFramework(
                     framework[i], staticResourceBaseDir );
                 // Now check the additional included frameworks too
@@ -1972,6 +2044,61 @@ public class Application
                     + webServerResources + "' to '"
                     + staticResourceBaseDir + "'",
                     e );
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    private void updateExecutablePermissionsForFramework(
+        String frameworkName, File frameworkDir )
+    {
+        // No need for file perms on windows
+        if (isRunningOnWindows()) return;
+
+        // Otherwise, attempt to add executable permissions to necessary
+        // files
+        String execFileList = configurationProperties()
+            .getProperty( frameworkName + ".chmodx" );
+        if ( execFileList != null )
+        {
+            for ( String fileName : execFileList.split( ",\\s*" ) )
+            {
+                File file = new File( frameworkDir, fileName );
+                if ( file.exists() )
+                {
+                    // Make it executable, if possible.
+                    // First, build the chmod command line.  Start with
+                    // file name, and escape any space chars (other shell-
+                    // special chars are not escaped!)
+                    String cmd = file.toString();
+                    cmd = cmd.replaceAll( " ", "\\\\ " );
+
+                    // Now add the chmod part
+                    cmd = "chmod a+x " + cmd;
+
+                    // And any configured shell prefix
+                    String shell = net.sf.webcat.core.Application.cmdShell();
+                    if ( shell != null && shell.length() > 0 )
+                    {
+                        cmd = shell + cmd;
+                        if ( shell.charAt( shell.length() - 1 ) == '"' )
+                        {
+                            cmd += "\"";
+                        }
+                    }
+
+                    // Execute this command
+                    try
+                    {
+                        log.info(cmd);
+                        executeExternalCommand( cmd, file.getParentFile() );
+                    }
+                    catch (Exception e)
+                    {
+                        log.error("attempting to execute command:\n" + cmd, e);
+                    }
+                }
             }
         }
     }
