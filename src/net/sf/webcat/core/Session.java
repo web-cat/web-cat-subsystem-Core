@@ -496,8 +496,8 @@ public class Session
         log.debug( "commitLocalChanges()" );
 //        childContext.saveChanges();
         defaultEditingContext().saveChanges();
-//        defaultEditingContext().revert();
-//        defaultEditingContext().refaultAllObjects();
+        defaultEditingContext().revert();
+        defaultEditingContext().refaultAllObjects();
     }
 
 
@@ -511,8 +511,8 @@ public class Session
 //        childContext.revert();
 //        childContext.refaultAllObjects();
         defaultEditingContext().revert();
-//        defaultEditingContext().refaultAllObjects();
         defaultEditingContext().invalidateAllObjects();
+        defaultEditingContext().refaultAllObjects();
     }
 
 
