@@ -511,7 +511,6 @@ public class Session
 //        childContext.revert();
 //        childContext.refaultAllObjects();
         defaultEditingContext().revert();
-        defaultEditingContext().invalidateAllObjects();
         defaultEditingContext().refaultAllObjects();
     }
 
