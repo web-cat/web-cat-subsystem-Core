@@ -161,27 +161,13 @@ public class WCBatchNavigator
         {
             String key = (String)valueForBinding( "persistentKey" );
             User user = ( (Session)session() ).user();
-            EOEditingContext ec = Application.newPeerEditingContext();
             log.debug( "setNumberOfObjectsPerBatch(): key " + key + " <- "
                 + num + "(" + number + ")" );
-            ec.lock();
-            try
-            {
-                // Use a separate EC to store the changed preferences
-                User me = (User)EOUtilities.localInstanceOfObject( ec, user );
-                me.preferences().takeValueForKey(
-                    ( number == null )
-                    ? ERXConstant.integerForInt( num )
-                    : number, key );
-                ec.saveChanges();
-                // Now refresh the session's user object so that it loads
-                // this saved preferences value
-                user.editingContext().refreshObject( user );
-            }
-            finally
-            {
-                ec.unlock();
-            }
+            user.preferences().takeValueForKey(
+                ( number == null )
+                ? ERXConstant.integerForInt( num )
+                : number, key );
+            user.savePreferences();
         }
     }
 
