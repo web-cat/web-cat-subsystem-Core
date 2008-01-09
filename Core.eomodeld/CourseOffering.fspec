@@ -1,4 +1,17 @@
 {
+    forSemester = {
+        class = EOFetchSpecification;
+        entityName = CourseOffering;
+        fetchLimit = 0;
+        isDeep = YES;
+        qualifier = {
+            class = EOKeyValueQualifier;
+            key = semester;
+            selectorName = "isEqualTo:";
+            value = {_key = semester; class = EOQualifierVariable; };
+        };
+        sortOrderings = ({class = EOSortOrdering; key = course.number; selectorName = "compareAscending:"; }, {class = EOSortOrdering; key = crn; selectorName = "compareAscending:"; });
+    };
     withoutStudent = {
         class = EOFetchSpecification;
         entityName = CourseOffering;
