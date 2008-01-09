@@ -670,9 +670,61 @@ public class User
 
 
     // ----------------------------------------------------------
+    /**
+     * Returns a sorted list of course offerings that this user is a TA for.
+     * @param semester Only return courses for this semester.  A value of null
+     * means all courses (same as staffFor()).
+     * @return a sorted array of the matching course offerings.
+     */
+    public NSArray TAFor( Semester semester )
+    {
+        NSArray result = TAFor();
+        if ( semester != null )
+        {
+            result = ERXArrayUtilities
+                .filteredArrayWithEntityFetchSpecification(
+                    result,
+                    CourseOffering.ENTITY_NAME,
+                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    new NSDictionary(
+                        new Object[]{ semester                    },
+                        new Object[]{ CourseOffering.SEMESTER_KEY }
+                    ) );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
     public NSArray teaching()
     {
         return studentView ? emptyArray : super.teaching();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns a sorted list of course offerings that this user is teaching.
+     * @param semester Only return courses for this semester.  A value of null
+     * means all courses (same as staffFor()).
+     * @return a sorted array of the matching course offerings.
+     */
+    public NSArray teaching( Semester semester )
+    {
+        NSArray result = teaching();
+        if ( semester != null )
+        {
+            result = ERXArrayUtilities
+                .filteredArrayWithEntityFetchSpecification(
+                    result,
+                    CourseOffering.ENTITY_NAME,
+                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    new NSDictionary(
+                        new Object[]{ semester                    },
+                        new Object[]{ CourseOffering.SEMESTER_KEY }
+                    ) );
+        }
+        return result;
     }
 
 
@@ -783,6 +835,33 @@ public class User
 
     // ----------------------------------------------------------
     /**
+     * Returns a sorted list of course offerings that this user is a TA for,
+     * without including any courses where this user is also a student.
+     * @param semester Only return courses for this semester.  A value of null
+     * means all courses (same as staffFor()).
+     * @return a sorted array of the matching course offerings.
+     */
+    public NSArray TAForButNotStudent(Semester semester)
+    {
+        NSArray result = TAForButNotStudent();
+        if ( semester != null )
+        {
+            result = ERXArrayUtilities
+                .filteredArrayWithEntityFetchSpecification(
+                    result,
+                    CourseOffering.ENTITY_NAME,
+                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    new NSDictionary(
+                        new Object[]{ semester                    },
+                        new Object[]{ CourseOffering.SEMESTER_KEY }
+                    ) );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Returns a sorted list of course offerings that this user is an
      * instructor for, without including any courses where this user is also
      * a student or a TA.
@@ -828,6 +907,34 @@ public class User
 
     // ----------------------------------------------------------
     /**
+     * Returns a sorted list of course offerings that this user is an
+     * instructor for, without including any courses where this user is also
+     * a student or a TA.
+     * @param semester Only return courses for this semester.  A value of null
+     * means all courses (same as staffFor()).
+     * @return a sorted array of the matching course offerings.
+     */
+    public NSArray instructorForButNotTAOrStudent(Semester semester)
+    {
+        NSArray result = instructorForButNotTAOrStudent();
+        if ( semester != null )
+        {
+            result = ERXArrayUtilities
+                .filteredArrayWithEntityFetchSpecification(
+                    result,
+                    CourseOffering.ENTITY_NAME,
+                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    new NSDictionary(
+                        new Object[]{ semester                    },
+                        new Object[]{ CourseOffering.SEMESTER_KEY }
+                    ) );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Returns a sorted list of course offerings that this user is either
      * an instructor or TA for.
      * @return a sorted array of the matching course offerings.
@@ -851,6 +958,33 @@ public class User
                 courseSortOrderings );
         }
         return staffFor_cache;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns a sorted list of course offerings that this user is either
+     * an instructor or TA for.
+     * @param semester Only return courses for this semester.  A value of null
+     * means all courses (same as staffFor()).
+     * @return a sorted array of the matching course offerings.
+     */
+    public NSArray staffFor( Semester semester )
+    {
+        NSArray result = staffFor();
+        if ( semester != null )
+        {
+            result = ERXArrayUtilities
+                .filteredArrayWithEntityFetchSpecification(
+                    result,
+                    CourseOffering.ENTITY_NAME,
+                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    new NSDictionary(
+                        new Object[]{ semester                    },
+                        new Object[]{ CourseOffering.SEMESTER_KEY }
+                    ) );
+        }
+        return result;
     }
 
 
@@ -897,6 +1031,34 @@ public class User
     // ----------------------------------------------------------
     /**
      * Returns a sorted list of course offerings that this user has
+     * administrative access to, but is not an instructor or TA
+     * for.
+     * @param semester Only return courses for this semester.  A value of null
+     * means all courses (same as staffFor()).
+     * @return a sorted array of the matching course offerings.
+     */
+    public NSArray adminForButNotStaff( Semester semester )
+    {
+        NSArray result = adminForButNotStaff();
+        if ( semester != null )
+        {
+            result = ERXArrayUtilities
+                .filteredArrayWithEntityFetchSpecification(
+                    result,
+                    CourseOffering.ENTITY_NAME,
+                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    new NSDictionary(
+                        new Object[]{ semester                    },
+                        new Object[]{ CourseOffering.SEMESTER_KEY }
+                    ) );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns a sorted list of course offerings that this user has
      * administrative access to, but is not an instructor, TA, or student
      * for.
      * @return a sorted array of the matching course offerings.
@@ -936,6 +1098,64 @@ public class User
                     );
         }
         return adminForButNoOtherRelationships_cache;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns a sorted list of course offerings that this user has
+     * administrative access to, but is not an instructor, TA, or student
+     * for.
+     * @param semester Only return courses for this semester.  A value of null
+     * means all courses (same as staffFor()).
+     * @return a sorted array of the matching course offerings.
+     */
+    public NSArray adminForButNoOtherRelationships(Semester semester)
+    {
+        NSArray result = adminForButNoOtherRelationships();
+        if ( semester != null )
+        {
+            result = ERXArrayUtilities
+                .filteredArrayWithEntityFetchSpecification(
+                    result,
+                    CourseOffering.ENTITY_NAME,
+                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    new NSDictionary(
+                        new Object[]{ semester                    },
+                        new Object[]{ CourseOffering.SEMESTER_KEY }
+                    ) );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Use a separate editing context to save this user's preferences data,
+     * if possible.
+     */
+    public void savePreferences()
+    {
+        EOEditingContext ec = Application.newPeerEditingContext();
+        log.debug( "savePreferences(): before: " + preferences().hashCode()
+            + ": " + preferences() );
+        ec.lock();
+        try
+        {
+            // Use a separate EC to store the changed preferences
+            User me = (User)EOUtilities.localInstanceOfObject( ec, this );
+            me.setPreferences(preferences());
+            ec.saveChanges();
+            // Now refresh the session's user object so that it loads
+            // this saved preferences value
+            editingContext().refreshObject( this );
+        }
+        finally
+        {
+            ec.unlock();
+        }
+        log.debug( "savePreferences(): after: " + preferences().hashCode()
+            + ": " + preferences() );
     }
 
 

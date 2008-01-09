@@ -26,6 +26,7 @@
 package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
+import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 
 // -------------------------------------------------------------------------
@@ -47,6 +48,47 @@ public class Semester
     public Semester()
     {
         super();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up a Semester by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The semester, or null if no such id exists
+     */
+    public static Semester semesterForId( EOEditingContext ec, int id )
+    {
+        Semester semester = null;
+        NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
+            ENTITY_NAME, "id", new Integer( id ) );
+        if ( results != null && results.count() > 0 )
+        {
+            semester = (Semester)results.objectAtIndex( 0 );
+        }
+        return semester;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up a Semester by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The semester, or null if no such id exists
+     */
+    public static Semester semesterForId( EOEditingContext ec, String id )
+    {
+        Semester semester = null;
+        int idNumber = er.extensions.ERXValueUtilities.intValue( id );
+        if ( idNumber > 0 )
+        {
+            semester = semesterForId( ec, idNumber );
+        }
+        return semester;
     }
 
 
@@ -183,6 +225,25 @@ public class Semester
             case WINTER:  result = 2; break;
         }
         return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
     }
 
 

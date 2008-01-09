@@ -66,6 +66,7 @@ public abstract class _Semester
     // To-one relationships ---
     // To-many relationships ---
     // Fetch specifications ---
+    public static final String FETCH_ALL_FSPEC = "FetchAll";
     public static final String ENTITY_NAME = "Semester";
 
 
@@ -194,6 +195,25 @@ public abstract class _Semester
     public void setYearRaw( Number value )
     {
         takeStoredValueForKey( value, "year" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code>FetchAll</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray objectsForFetchAll(
+            EOEditingContext context
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "FetchAll", "Semester" );
+
+        return context.objectsWithFetchSpecification( spec );
     }
 
 

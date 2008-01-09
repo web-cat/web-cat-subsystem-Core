@@ -72,6 +72,7 @@ public abstract class _CourseOffering
     public static final String INSTRUCTORS_KEY = "instructors";
     public static final String STUDENTS_KEY = "students";
     // Fetch specifications ---
+    public static final String FOR_SEMESTER_FSPEC = "forSemester";
     public static final String WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC = "withoutAnyRelationshipToUser";
     public static final String WITHOUT_STUDENT_FSPEC = "withoutStudent";
     public static final String WITHOUT_STUDENT_OR_TA_FSPEC = "withoutStudentOrTA";
@@ -198,6 +199,34 @@ public abstract class _CourseOffering
     public void setUrl( String value )
     {
         takeStoredValueForKey( value, "url" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code>ForSemester</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param semesterBinding fetch spec parameter
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray objectsForForSemester(
+            EOEditingContext context,
+            net.sf.webcat.core.Semester semesterBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "forSemester", "CourseOffering" );
+
+        NSMutableDictionary bindings = new NSMutableDictionary();
+
+        if ( semesterBinding != null )
+            bindings.setObjectForKey( semesterBinding,
+                                      "semester" );
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        return context.objectsWithFetchSpecification( spec );
     }
 
 
