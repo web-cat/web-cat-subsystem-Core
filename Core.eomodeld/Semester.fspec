@@ -1,0 +1,19 @@
+{
+    FetchAll =
+    {
+        class = EOFetchSpecification;
+        entityName = Semester;
+        fetchLimit = 0;
+        isDeep = YES;
+        refreshesRefetchedObjects = YES;
+        sortOrderings =
+        (
+
+           {
+               class = EOSortOrdering;
+               key = semesterStartDate;
+               selectorName = compareDescending:;
+           }
+        );
+    };
+}
