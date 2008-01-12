@@ -26,8 +26,13 @@
 package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
+import com.webobjects.foundation.NSValidation.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
+
+import java.io.*;
+
+import org.apache.log4j.*;
 
 // -------------------------------------------------------------------------
 /**
@@ -96,6 +101,25 @@ public class Semester
 
     // ----------------------------------------------------------
     /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Returns the "season" portion of a semester name as a string.
      *
      * @return The season name as a string
@@ -115,6 +139,81 @@ public class Semester
     public void setSeason( int value )
     {
         setSeason( integers[value] );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>season</code>
+     * property.
+     *
+     * @param value The new value for this property
+     */
+    public void setSeason( Number value )
+    {
+        if (dirNeedingRenaming == null)
+        {
+            dirNeedingRenaming = dirName();
+        }
+        super.setSeason(value);
+    }
+
+
+    // ----------------------------------------------------------
+    public Object validateSeason( Object value )
+    {
+        if ( value == null || value.equals("") || ! (value instanceof Number) )
+        {
+            throw new ValidationException(
+                "Please provide a season." );
+        }
+        int ival = ((Number)value).intValue();
+        if (ival < 0 || ival > WINTER)
+        {
+            throw new ValidationException(
+                "The season must be between 0 and " + WINTER + ", inclusive." );
+        }
+        return value;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>year</code>
+     * property.
+     *
+     * @param value The new value for this property
+     */
+    public void setYearRaw( Number value )
+    {
+        if (dirNeedingRenaming == null)
+        {
+            dirNeedingRenaming = dirName();
+        }
+        takeStoredValueForKey( value, "year" );
+    }
+
+
+    // ----------------------------------------------------------
+    public void validateForSave()
+        throws ValidationException
+    {
+        super.validateForSave();
+        // Make sure the season is not a duplicate
+        NSArray others = EOUtilities.objectsMatchingValues(
+            editingContext(),
+            ENTITY_NAME,
+            new NSDictionary(
+                new Object[] {  year(),   season()   },
+                new Object[] {  YEAR_KEY, SEASON_KEY }
+                ) );
+        if (others.count() > 1
+            || (others.count() == 1
+                && others.objectAtIndex(0) != this))
+        {
+            throw new ValidationException(
+                "Another semester for this season and year already exists." );
+        }
     }
 
 
@@ -164,6 +263,21 @@ public class Semester
     public String dirName()
     {
         return ( seasonName() + year() ).replaceAll( "\\s", "" );
+    }
+
+
+    // ----------------------------------------------------------
+    /* (non-Javadoc)
+     * @see er.extensions.ERXGenericRecord#didUpdate()
+     */
+    public void didUpdate()
+    {
+        super.didUpdate();
+        if ( dirNeedingRenaming != null )
+        {
+            renameSubdirs( dirNeedingRenaming, dirName() );
+            dirNeedingRenaming = null;
+        }
     }
 
 
@@ -228,52 +342,42 @@ public class Semester
     }
 
 
+    //~ Private Methods .......................................................
+
     // ----------------------------------------------------------
-    /**
-     * Retrieve this object's <code>id</code> value.
-     * @return the value of the attribute
-     */
-    public Number id()
+    private void renameSubdirs( String oldSubdir, String newSubdir )
     {
-        try
+        NSArray domains = AuthenticationDomain.authDomains();
+        String msgs = null;
+        for ( int i = 0; i < domains.count(); i++ )
         {
-            return (Number)EOUtilities.primaryKeyForObject(
-                editingContext() , this ).objectForKey( "id" );
+            AuthenticationDomain domain =
+                (AuthenticationDomain)domains.objectAtIndex( i );
+            StringBuffer dir = domain.submissionBaseDirBuffer();
+            dir.append('/');
+            int baseDirLen = dir.length();
+            dir.append( oldSubdir );
+            File oldDir = new File( dir.toString() );
+            log.debug("Checking for: " + oldDir);
+            if ( oldDir.exists() )
+            {
+                dir.delete( baseDirLen, dir.length() );
+                dir.append( newSubdir );
+                File newDir = new File( dir.toString() );
+                log.debug("Renaming: " + oldDir + " => " + newDir);
+                if (!oldDir.renameTo( newDir ))
+                {
+                    msgs = (msgs == null ? "" : (msgs + "  "))
+                        + "Failed to rename directory: "
+                        + oldDir + " => " + newDir;
+                }
+            }
         }
-        catch (Exception e)
+        if (msgs != null)
         {
-            return er.extensions.ERXConstant.ZeroInteger;
+            throw new RuntimeException(msgs);
         }
     }
-
-
-// If you add instance variables to store property values you
-// should add empty implementions of the Serialization methods
-// to avoid unnecessary overhead (the properties will be
-// serialized for you in the superclass).
-
-//    // ----------------------------------------------------------
-//    /**
-//     * Serialize this object (an empty implementation, since the
-//     * superclass handles this responsibility).
-//     * @param out the stream to write to
-//     */
-//    private void writeObject( java.io.ObjectOutputStream out )
-//        throws java.io.IOException
-//    {
-//    }
-//
-//
-//    // ----------------------------------------------------------
-//    /**
-//     * Read in a serialized object (an empty implementation, since the
-//     * superclass handles this responsibility).
-//     * @param in the stream to read from
-//     */
-//    private void readObject( java.io.ObjectInputStream in )
-//        throws java.io.IOException, java.lang.ClassNotFoundException
-//    {
-//    }
 
 
     //~ Instance/static variables .............................................
@@ -299,4 +403,8 @@ public class Semester
             "Fall",
             "Winter"
         });
+
+    private String dirNeedingRenaming      = null;
+
+    static Logger log = Logger.getLogger( Semester.class );
 }
