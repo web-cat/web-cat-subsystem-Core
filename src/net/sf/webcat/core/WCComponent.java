@@ -403,6 +403,12 @@ public class WCComponent
             wcSession().commitLocalChanges();
             return true;
         }
+        catch ( com.webobjects.foundation.NSValidation.ValidationException e )
+        {
+            wcSession().cancelLocalChanges();
+            warning( e.getMessage() );
+            return false;
+        }
         catch ( Exception e )
         {
             ( (Application)application() ).emailExceptionToAdmins(
