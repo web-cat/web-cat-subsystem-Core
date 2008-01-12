@@ -26,8 +26,12 @@
 package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
+import com.webobjects.foundation.NSValidation.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
+import er.extensions.*;
+import java.io.*;
+import org.apache.log4j.*;
 
 
 // -------------------------------------------------------------------------
@@ -228,10 +232,33 @@ public class CourseOffering
      */
     public void setCrn( String value )
     {
+        saveOldDirComponents();
         cachedSubdirName = null;
         cachedCompactName = null;
         cachedDeptNumberAndName = null;
-        super.setCrn( value );
+        super.setCrn( value.trim() );
+    }
+
+
+    // ----------------------------------------------------------
+    public Object validateCrn( Object value )
+    {
+        if ( value == null || value.equals("") )
+        {
+            throw new ValidationException(
+                "Please provide a unique CRN to identify your course "
+                + "offering." );
+        }
+        NSArray others = EOUtilities.objectsMatchingKeyAndValue(
+            editingContext(), ENTITY_NAME, CRN_KEY, value );
+        if (others.count() > 1
+            || (others.count() == 1
+                && others.objectAtIndex(0) != this))
+        {
+            throw new ValidationException(
+                "Another course offering with that CRN already exists." );
+        }
+        return value;
     }
 
 
@@ -256,7 +283,7 @@ public class CourseOffering
         if ( cachedSubdirName == null )
         {
             String name = crn();
-            cachedSubdirName = subdirNameOf( name );
+            cachedSubdirName = AuthenticationDomain.subdirNameOf( name );
             log.debug( "trimmed name '" + name + "' to '"
                        + cachedSubdirName + "'" );
         }
@@ -265,89 +292,155 @@ public class CourseOffering
 
 
     // ----------------------------------------------------------
-    public static String subdirNameOf( String name )
+    /**
+     * Set the entity pointed to by the <code>semester</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>setSemesterRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void setSemester( Semester value )
     {
-        String result = null;
-        if ( name != null )
-        {
-            char[] chars = new char[ name.length() ];
-            int  pos   = 0;
-            for ( int i = 0; i < name.length(); i++ )
-            {
-                char c = name.charAt( i );
-                if ( Character.isLetterOrDigit( c ) ||
-                     c == '_'                       ||
-                     c == '-' )
-                {
-                    chars[ pos ] = c;
-                    pos++;
-                }
-            }
-            result = new String( chars, 0, pos );
-        }
-        return result;
+        log.debug("setSemester(" + value + ")");
+        saveOldDirComponents();
+        cachedSubdirName = null;
+        super.setSemester(value);
     }
 
 
     // ----------------------------------------------------------
-//    /**
-//     * Creates a string containing a comma-separated list of
-//     * instructor e-mail addresses.  Returns null if no instructors
-//     * for this course offering have been defined.
-//     *
-//     * @return the e-mail address(es) as a string
-//     */
-//    public String instructorEmailString()
-//    {
-//     NSArray instructors = instructors();
-//     StringBuffer instructorEmailAddrs = new StringBuffer( 20 );
-//     for ( int i = 0; i < instructors.count(); i++ )
-//     {
-//         if ( i > 0 )
-//         {
-//             instructorEmailAddrs.append( ", " );
-//         }
-//         instructorEmailAddrs.append(
-//             ( (WCUser)instructors.objectAtIndex( i ) ).email() );
-//     }
-
-//     return ( instructors.count() != 0 )
-//         ? instructorEmailAddrs.toString()
-//         : null;
-//    }
+    public void takeValueForKey( Object value, String key )
+    {
+        log.debug("takeValueForKey(" + value + ", " + key + ")");
+        if (SEMESTER_KEY.equals(key))
+        {
+            saveOldDirComponents();
+            cachedSubdirName = null;
+        }
+        super.takeValueForKey( value, key );
+    }
 
 
-// If you add instance variables to store property values you
-// should add empty implementions of the Serialization methods
-// to avoid unnecessary overhead (the properties will be
-// serialized for you in the superclass).
+    // ----------------------------------------------------------
+    /* (non-Javadoc)
+     * @see er.extensions.ERXGenericRecord#didUpdate()
+     */
+    public void didUpdate()
+    {
+        super.didUpdate();
+        if ( crnDirNeedingRenaming != null || semesterDirNeedingRenaming != null)
+        {
+            renameSubdirs(
+                semesterDirNeedingRenaming,
+                ( semester() == null ? null : semester().dirName() ),
+                crnDirNeedingRenaming,
+                crnSubdirName() );
+            crnDirNeedingRenaming = null;
+            semesterDirNeedingRenaming = null;
+        }
+    }
 
-//    // ----------------------------------------------------------
-//    /**
-//     * Serialize this object (an empty implementation, since the
-//     * superclass handles this responsibility).
-//     * @param out the stream to write to
-//     */
-//    private void writeObject( java.io.ObjectOutputStream out )
-//        throws java.io.IOException
-//    {
-//    }
-//
-//
-//    // ----------------------------------------------------------
-//    /**
-//     * Read in a serialized object (an empty implementation, since the
-//     * superclass handles this responsibility).
-//     * @param in the stream to read from
-//     */
-//    private void readObject( java.io.ObjectInputStream in )
-//        throws java.io.IOException, java.lang.ClassNotFoundException
-//    {
-//    }
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the name of the subdirectory where all submissions for this
+     * course offering are stored.  This subdirectory is relative to
+     * the base submission directory for some authentication domain, such
+     * as the value returned by
+     * {@link #submissionBaseDirName(AuthenticationDomain)}.
+     * @param dir the string buffer to add the requested subdirectory to
+     *        (a / is added to this buffer, followed by the subdirectory name
+     *        generated here)
+     * @param course the course whose subdir should be added (may not be null).
+     */
+    public void addSubdirTo( StringBuffer dir )
+    {
+        dir.append( '/' );
+        dir.append( semester().dirName() );
+        dir.append( '/' );
+        dir.append( crnSubdirName() );
+    }
+
+
+    //~ Private Methods .......................................................
+
+    // ----------------------------------------------------------
+    private void renameSubdirs(
+        String oldSemesterSubdir, String newSemesterSubdir,
+        String oldCrnSubdir,      String newCrnSubdir )
+    {
+        NSArray domains = AuthenticationDomain.authDomains();
+        String msgs = null;
+        for ( int i = 0; i < domains.count(); i++ )
+        {
+            AuthenticationDomain domain =
+                (AuthenticationDomain)domains.objectAtIndex( i );
+            StringBuffer dir = domain.submissionBaseDirBuffer();
+            dir.append('/');
+            int baseDirLen = dir.length();
+            dir.append(oldSemesterSubdir);
+            dir.append('/');
+            dir.append( oldCrnSubdir );
+            File oldDir = new File( dir.toString() );
+            log.debug("Checking for: " + oldDir);
+            if ( oldDir.exists() )
+            {
+                dir.delete( baseDirLen, dir.length() );
+                dir.append(newSemesterSubdir);
+
+                // First, make sure that the new dir exists!
+                File newDir = new File( dir.toString() );
+                if (!newDir.exists())
+                {
+                    newDir.mkdirs();
+                }
+
+                dir.append('/');
+                dir.append( newCrnSubdir );
+                newDir = new File( dir.toString() );
+
+                // Do the renaming
+                log.debug("Renaming: " + oldDir + " => " + newDir);
+                if (!oldDir.renameTo( newDir ))
+                {
+                    msgs = (msgs == null ? "" : (msgs + "  "))
+                        + "Failed to rename directory: "
+                        + oldDir + " => " + newDir;
+                }
+            }
+        }
+        if (msgs != null)
+        {
+            throw new RuntimeException(msgs);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    private void saveOldDirComponents()
+    {
+        if (crnDirNeedingRenaming == null || semesterDirNeedingRenaming == null)
+        {
+            if ( crnDirNeedingRenaming == null && crn() != null )
+            {
+                crnDirNeedingRenaming = crnSubdirName();
+            }
+            if ( semesterDirNeedingRenaming == null && semester() != null )
+            {
+                semesterDirNeedingRenaming = semester().dirName();
+            }
+        }
+    }
+
 
     //~ Instance/static variables .............................................
 
-    private String cachedSubdirName        = null;
-    private String cachedCompactName       = null;
-    private String cachedDeptNumberAndName = null;
+    private String cachedSubdirName           = null;
+    private String cachedCompactName          = null;
+    private String cachedDeptNumberAndName    = null;
+    private String semesterDirNeedingRenaming = null;
+    private String crnDirNeedingRenaming      = null;
+
+    static Logger log = Logger.getLogger( CourseOffering.class );
 }
