@@ -132,7 +132,7 @@ public abstract class _Department
 
     // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code>institution</code>
      * relationship (DO NOT USE--instead, use
      * <code>setInstitutionRelationship()</code>.
      * This method is provided for WebObjects use.
@@ -147,7 +147,7 @@ public abstract class _Department
 
     // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code>institution</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
      *

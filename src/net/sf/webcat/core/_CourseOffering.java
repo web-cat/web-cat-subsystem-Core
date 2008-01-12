@@ -356,7 +356,7 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code>course</code>
      * relationship (DO NOT USE--instead, use
      * <code>setCourseRelationship()</code>.
      * This method is provided for WebObjects use.
@@ -371,7 +371,7 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code>course</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
      *
@@ -407,7 +407,7 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code>semester</code>
      * relationship (DO NOT USE--instead, use
      * <code>setSemesterRelationship()</code>.
      * This method is provided for WebObjects use.
@@ -422,7 +422,7 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code>semester</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
      *

@@ -120,7 +120,7 @@ public abstract class _Course
     {
         Number actual =
             er.extensions.ERXConstant.integerForInt( value );
-        takeStoredValueForKey( actual, "number" );
+        setNumberRaw( actual );
     }
 
 
@@ -162,7 +162,7 @@ public abstract class _Course
 
     // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code>department</code>
      * relationship (DO NOT USE--instead, use
      * <code>setDepartmentRelationship()</code>.
      * This method is provided for WebObjects use.
@@ -177,7 +177,7 @@ public abstract class _Course
 
     // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code>department</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
      *

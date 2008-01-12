@@ -200,7 +200,7 @@ public abstract class _LoggedError
     {
         Number actual =
             er.extensions.ERXConstant.integerForInt( value );
-        takeStoredValueForKey( actual, "line" );
+        setLineRaw( actual );
     }
 
 
@@ -302,7 +302,7 @@ public abstract class _LoggedError
     {
         Number actual =
             er.extensions.ERXConstant.integerForInt( value );
-        takeStoredValueForKey( actual, "occurrences" );
+        setOccurrencesRaw( actual );
     }
 
 

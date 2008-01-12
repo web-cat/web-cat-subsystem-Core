@@ -161,7 +161,7 @@ public abstract class _LoginSession
 
     // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code>user</code>
      * relationship (DO NOT USE--instead, use
      * <code>setUserRelationship()</code>.
      * This method is provided for WebObjects use.
@@ -176,7 +176,7 @@ public abstract class _LoginSession
 
     // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code>user</code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
      *

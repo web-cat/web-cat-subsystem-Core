@@ -116,7 +116,7 @@ public abstract class _User
     {
         Number actual =
             er.extensions.ERXConstant.integerForInt( value );
-        takeStoredValueForKey( actual, "accessLevel" );
+        setAccessLevelRaw( actual );
     }
 
 
@@ -384,7 +384,7 @@ public abstract class _User
     {
         Number actual =
             er.extensions.ERXConstant.integerForInt( value ? 1 : 0 );
-        takeStoredValueForKey( actual, "updateMutableFields" );
+        setUpdateMutableFieldsRaw( actual );
     }
 
 

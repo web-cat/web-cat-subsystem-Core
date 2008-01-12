@@ -170,7 +170,7 @@ public abstract class _Semester
     {
         Number actual =
             er.extensions.ERXConstant.integerForInt( value );
-        takeStoredValueForKey( actual, "year" );
+        setYearRaw( actual );
     }
 
 

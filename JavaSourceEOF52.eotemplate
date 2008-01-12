@@ -205,7 +205,7 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
       || Attribute.userInfo.type == 'byte'
       || Attribute.userInfo.type == 'short'$>            er.extensions.ERXConstant.integerForInt( value );
 <$else$>            new <$Attribute.userInfo.valueClassName$>( value );
-<$endif$>        takeStoredValueForKey( actual, "<$Attribute.name$>" );
+<$endif$>        set<$Attribute.name.initialCapitalString$>Raw( actual );
     }
 
 
@@ -342,7 +342,7 @@ $><$foreach FetchSpec javaBeautifiedFetchSpecificationDictionaries.@sortedNameAr
 
     // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code><$ToOneRelationship.name$></code>
      * relationship (DO NOT USE--instead, use
      * <code>set<$ToOneRelationship.name.initialCapitalString$>Relationship()</code>.
      * This method is provided for WebObjects use.
@@ -363,7 +363,7 @@ checking instead of runtime checking (plus you don't risk typos in
 constant strings of key names).
 $>    // ----------------------------------------------------------
     /**
-     * Set the entity pointed to by the <code>authenticationDomain</code>
+     * Set the entity pointed to by the <code><$ToOneRelationship.name$></code>
      * relationship.  This method is a type-safe version of
      * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
      *
