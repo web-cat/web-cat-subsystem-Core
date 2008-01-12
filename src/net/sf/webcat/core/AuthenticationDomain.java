@@ -67,6 +67,257 @@ public class AuthenticationDomain
 
     // ----------------------------------------------------------
     /**
+     * Get a human-readable representation of this authenticator, which is
+     * the same as {@link #name()}.
+     * @return this authenticator's property name
+     */
+    public String userPresentableDescription()
+    {
+        return name();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a human-readable representation of this authenticator, which is
+     * the same as {@link #userPresentableDescription()}.
+     * @return this authenticator's property name
+     */
+    public String toString()
+    {
+        return userPresentableDescription();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>propertyName</code>
+     * property.  Takes care of renaming the associated subdirectories
+     * for this domain as well.
+     *
+     * @param value The new value for this property
+     */
+    public void setPropertyName( String value )
+    {
+        if ( value != null && propertyName() != null
+             && !value.equals( propertyName() ) )
+        {
+            String oldSubdir = subdirName();
+            cachedName = null;
+            cachedSubdirName = null;
+            super.setPropertyName( value );
+            String newSubdir = subdirName();
+            // rename the three key directories
+            {
+                File parent = new File( Application.configurationProperties()
+                                        .getProperty( "grader.submissiondir" ) );
+                File oldDir = new File( parent, oldSubdir );
+                oldDir.renameTo( new File( parent, newSubdir ) );
+            }
+            {
+                File parent = new File( Application.configurationProperties()
+                                        .getProperty( "grader.workarea" ) );
+                File oldDir = new File( parent, oldSubdir );
+                oldDir.renameTo( new File( parent, newSubdir ) );
+            }
+            {
+                String scriptRoot = Application.configurationProperties()
+                    .getProperty( "grader.scriptsroot" );
+                if ( scriptRoot == null )
+                {
+                    scriptRoot = net.sf.webcat.core.Application.configurationProperties()
+                        .getProperty( "grader.submissiondir" )
+                        + "/UserScripts";
+                }
+                File parent = new File( scriptRoot );
+                File oldDir = new File( parent, oldSubdir );
+                oldDir.renameTo( new File( parent, newSubdir ) );
+
+                String scriptDataRoot = Application.configurationProperties()
+                    .getProperty( "grader.scriptsdataroot" );
+                if ( scriptDataRoot == null )
+                {
+                    scriptDataRoot = scriptRoot + "Data";
+                }
+                parent = new File( scriptDataRoot );
+                oldDir = new File( parent, oldSubdir );
+                oldDir.renameTo( new File( parent, newSubdir ) );
+            }
+        }
+        else
+        {
+            cachedSubdirName = null;
+            super.setPropertyName( value );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the user authenticator associated with this domain.
+     * @return an authenticator object to use when validating credentials
+     *         for users in this authentication domain
+     */
+    public UserAuthenticator authenticator()
+    {
+        return (UserAuthenticator)theAuthenticatorMap.get( propertyName() );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the name of this authenticator (the property name, without the
+     * "authenticator." prefix).
+     * @return the name as a string
+     */
+    public String name()
+    {
+        if ( cachedName == null )
+        {
+            String name = propertyName();
+            final String propertyPrefix = "authenticator.";
+            if ( name != null )
+            {
+                // strip the prefix on the property name
+                if ( name.startsWith( propertyPrefix ) )
+                {
+                    name = name.substring( propertyPrefix.length() );
+                }
+            }
+            cachedName = name;
+        }
+        return cachedName;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Generate a name usable as a subdirectory name from this
+     * objects property name.
+     * @return a subdirectory name
+     */
+    public String subdirName()
+    {
+        if ( cachedSubdirName == null )
+        {
+            cachedSubdirName = subdirNameOf(name());
+        }
+        return cachedSubdirName;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the name of the directory where all submissions for any
+     * user in this authentication domain are stored.
+     * @return the directory name as a string buffer, so that additional
+     *     subdir components can be appended easily.
+     */
+    public StringBuffer submissionBaseDirBuffer()
+    {
+        StringBuffer dir = new StringBuffer( 50 );
+        // Strictly speaking, this info is associated with the Grader
+        // subsystem and should be located there, but it has leaked into
+        // core because it is needed in too many places.
+        dir.append( net.sf.webcat.core.Application
+            .configurationProperties().getProperty( "grader.submissiondir" ) );
+        dir.append( '/' );
+        dir.append( subdirName() );
+        return dir;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the time zone name associated with this authentication
+     * domain.
+     * @return the time zone name
+     */
+    public String timeZoneName()
+    {
+        String result = super.timeZoneName();
+        if ( result == null || result.equals( "" ) )
+        {
+            result = NSTimeZone.getDefault().getID();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * An instance method wrapper for {@link #availableTimeZones()} to
+     * provide KVC access to that static method.
+     * @return an NSArray of strings representing the date formats available
+     */
+    public NSArray timeZones()
+    {
+        return availableTimeZones();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the time format pattern associated with this authentication
+     * domain.
+     * @return the time format pattern
+     */
+    public String timeFormat()
+    {
+        String result = super.timeFormat();
+        if ( result == null || result.equals( "" ) )
+        {
+            result = globalDefaultTimeFormat();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * An instance method wrapper for {@link #availableTimeFormats()} to
+     * provide KVC access to that static method.
+     * @return an NSArray of strings representing the time formats available
+     */
+    public NSArray timeFormats()
+    {
+        return availableTimeFormats();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the date format pattern associated with this authentication
+     * domain.
+     * @return the date format pattern
+     */
+    public String dateFormat()
+    {
+        String result = super.dateFormat();
+        if ( result == null || result.equals( "" ) )
+        {
+            result = globalDefaultDateFormat();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * An instance method wrapper for {@link #availableDateFormats()} to
+     * provide KVC access to that static method.
+     * @return an NSArray of strings representing the date formats available
+     */
+    public NSArray dateFormats()
+    {
+        return availableDateFormats();
+    }
+
+
+    //~ Public Static Methods .................................................
+
+    // ----------------------------------------------------------
+    /**
      * Look up and return an authentication domain object by its
      * (partial) property name.  If you use a property called
      * <code>authenticator.<i>MyAuthenticator</i></code> to define
@@ -339,18 +590,6 @@ public class AuthenticationDomain
 
     // ----------------------------------------------------------
     /**
-     * An instance method wrapper for {@link #availableTimeFormats()} to
-     * provide KVC access to that static method.
-     * @return an NSArray of strings representing the time formats available
-     */
-    public NSArray timeFormats()
-    {
-        return availableTimeFormats();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Get the default time format pattern for users to choose from.
      * The default is the first entry in the {@link #availableTimeFormats()}
      * list.
@@ -398,18 +637,6 @@ public class AuthenticationDomain
 
     // ----------------------------------------------------------
     /**
-     * An instance method wrapper for {@link #availableDateFormats()} to
-     * provide KVC access to that static method.
-     * @return an NSArray of strings representing the date formats available
-     */
-    public NSArray dateFormats()
-    {
-        return availableDateFormats();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Get the default date format pattern for users to choose from.
      * The default is the first entry in the {@link #availableDateFormats()}
      * list.
@@ -418,40 +645,6 @@ public class AuthenticationDomain
     public static String globalDefaultDateFormat()
     {
         return (String)availableDateFormats().objectAtIndex( 0 );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get the time format pattern associated with this authentication
-     * domain.
-     * @return the time format pattern
-     */
-    public String timeFormat()
-    {
-        String result = super.timeFormat();
-        if ( result == null || result.equals( "" ) )
-        {
-            result = globalDefaultTimeFormat();
-        }
-        return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get the date format pattern associated with this authentication
-     * domain.
-     * @return the date format pattern
-     */
-    public String dateFormat()
-    {
-        String result = super.dateFormat();
-        if ( result == null || result.equals( "" ) )
-        {
-            result = globalDefaultDateFormat();
-        }
-        return result;
     }
 
 
@@ -547,190 +740,27 @@ public class AuthenticationDomain
 
 
     // ----------------------------------------------------------
-    /**
-     * An instance method wrapper for {@link #availableTimeZones()} to
-     * provide KVC access to that static method.
-     * @return an NSArray of strings representing the date formats available
-     */
-    public NSArray timeZones()
+    public static String subdirNameOf( String name )
     {
-        return availableTimeZones();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get the time zone name associated with this authentication
-     * domain.
-     * @return the time zone name
-     */
-    public String timeZoneName()
-    {
-        String result = super.timeZoneName();
-        if ( result == null || result.equals( "" ) )
+        String result = null;
+        if ( name != null )
         {
-            result = NSTimeZone.getDefault().getID();
+            char[] chars = new char[ name.length() ];
+            int  pos   = 0;
+            for ( int i = 0; i < name.length(); i++ )
+            {
+                char c = name.charAt( i );
+                if ( Character.isLetterOrDigit( c ) ||
+                     c == '_'                       ||
+                     c == '-' )
+                {
+                    chars[ pos ] = c;
+                    pos++;
+                }
+            }
+            result = new String( chars, 0, pos );
         }
         return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get the name of this authenticator (the property name, without the
-     * "authenticator." prefix).
-     * @return the name as a string
-     */
-    public String name()
-    {
-        if ( cachedName == null )
-        {
-            String name = propertyName();
-            final String propertyPrefix = "authenticator.";
-            if ( name != null )
-            {
-                // strip the prefix on the property name
-                if ( name.startsWith( propertyPrefix ) )
-                {
-                    name = name.substring( propertyPrefix.length() );
-                }
-            }
-            cachedName = name;
-        }
-        return cachedName;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Generate a name usable as a subdirectory name from this
-     * objects property name.
-     * @return a subdirectory name
-     */
-    public String subdirName()
-    {
-        if ( cachedSubdirName == null )
-        {
-            String name = name();
-            if ( name != null )
-            {
-                // strip out irregular characters
-                char[] chars = new char[ name.length() ];
-                int  pos   = 0;
-                for ( int i = 0; i < name.length(); i++ )
-                {
-                    char c = name.charAt( i );
-                    if ( Character.isLetterOrDigit( c ) ||
-                         c == '_'                       ||
-                         c == '-' )
-                    {
-                        chars[ pos ] = c;
-                        pos++;
-                    }
-                }
-                cachedSubdirName = new String( chars, 0, pos );
-            }
-        }
-        return cachedSubdirName;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Change the value of this object's <code>propertyName</code>
-     * property.  Takes care of renaming the associated subdirectories
-     * for this domain as well.
-     *
-     * @param value The new value for this property
-     */
-    public void setPropertyName( String value )
-    {
-        if ( value != null && propertyName() != null
-             && !value.equals( propertyName() ) )
-        {
-            String oldSubdir = subdirName();
-            cachedName = null;
-            cachedSubdirName = null;
-            super.setPropertyName( value );
-            String newSubdir = subdirName();
-            // rename the three key directories
-            {
-                File parent = new File( Application.configurationProperties()
-                                        .getProperty( "grader.submissiondir" ) );
-                File oldDir = new File( parent, oldSubdir );
-                oldDir.renameTo( new File( parent, newSubdir ) );
-            }
-            {
-                File parent = new File( Application.configurationProperties()
-                                        .getProperty( "grader.workarea" ) );
-                File oldDir = new File( parent, oldSubdir );
-                oldDir.renameTo( new File( parent, newSubdir ) );
-            }
-            {
-                String scriptRoot = Application.configurationProperties()
-                    .getProperty( "grader.scriptsroot" );
-                if ( scriptRoot == null )
-                {
-                    scriptRoot = net.sf.webcat.core.Application.configurationProperties()
-                        .getProperty( "grader.submissiondir" )
-                        + "/UserScripts";
-                }
-                File parent = new File( scriptRoot );
-                File oldDir = new File( parent, oldSubdir );
-                oldDir.renameTo( new File( parent, newSubdir ) );
-
-                String scriptDataRoot = Application.configurationProperties()
-                    .getProperty( "grader.scriptsdataroot" );
-                if ( scriptDataRoot == null )
-                {
-                    scriptDataRoot = scriptRoot + "Data";
-                }
-                parent = new File( scriptDataRoot );
-                oldDir = new File( parent, oldSubdir );
-                oldDir.renameTo( new File( parent, newSubdir ) );
-            }
-        }
-        else
-        {
-            cachedSubdirName = null;
-            super.setPropertyName( value );
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve the user authenticator associated with this domain.
-     * @return an authenticator object to use when validating credentials
-     *         for users in this authentication domain
-     */
-    public UserAuthenticator authenticator()
-    {
-        return (UserAuthenticator)theAuthenticatorMap.get( propertyName() );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get a human-readable representation of this authenticator, which is
-     * the same as {@link #name()}.
-     * @return this authenticator's property name
-     */
-    public String userPresentableDescription()
-    {
-        return name();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get a human-readable representation of this authenticator, which is
-     * the same as {@link #userPresentableDescription()}.
-     * @return this authenticator's property name
-     */
-    public String toString()
-    {
-        return userPresentableDescription();
     }
 
 
