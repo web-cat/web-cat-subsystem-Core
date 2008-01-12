@@ -1,6 +1,6 @@
 Link: WOHyperlink {
     href        = "javascript:void(0);";
-	onmouseover = "~\"return overlib('\" + message + \"', STICKY, BELOW, RIGHT, CAPTION, '\" + title + \"');\"";
+	onclick     = "~\"return overlib('\" + message + \"', STICKY, BELOW, RIGHT, CAPTION, '\" + title + \"');\"";
     onmouseout  = "return nd();";
 }
 
