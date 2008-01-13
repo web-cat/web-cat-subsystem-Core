@@ -126,7 +126,13 @@ public class Semester
      */
     public String seasonName()
     {
-        return (String)names.objectAtIndex( season().intValue() );
+        String result = "none";
+        Number season = season();
+        if (season != null)
+        {
+            result = (String)names.objectAtIndex( season().intValue() );
+        }
+        return result;
     }
 
 
@@ -263,6 +269,66 @@ public class Semester
     public String dirName()
     {
         return ( seasonName() + year() ).replaceAll( "\\s", "" );
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void willUpdate()
+    {
+        java.util.GregorianCalendar now = new java.util.GregorianCalendar();
+        int thisMonth = now.get(now.MONTH) + 1;
+        if (year() == 0)
+        {
+            setYear(now.get(now.YEAR));
+        }
+        if (season() == null)
+        {
+            setSeason(defaultSemesterFor(now));
+        }
+        if (semesterStartDate() == null)
+        {
+            // remember, these months start at 1, while those stored
+            // in "now" start at zero ...
+            int month = defaultStartingMonth( season().intValue() );
+            int startYear = year();
+            if (month > thisMonth)
+            {
+                startYear--;
+            }
+            NSTimestamp start = new NSTimestamp(
+                startYear, month, 1, 0, 0, 0, java.util.TimeZone.getDefault()
+                );
+            if (semesterEndDate() == null || semesterEndDate().after( start ))
+            {
+                setSemesterStartDate(start);
+            }
+            else
+            {
+                setSemesterStartDate(semesterEndDate());
+            }
+        }
+        if (semesterEndDate() == null)
+        {
+            int month = defaultEndingMonth( season().intValue() );
+            int endYear = year();
+            if (month < thisMonth)
+            {
+                endYear++;
+            }
+            NSTimestamp end = new NSTimestamp(
+                endYear, month, 1, 23, 59, 59, java.util.TimeZone.getDefault()
+                );
+            if (semesterStartDate() == null || semesterStartDate().before(end))
+            {
+                setSemesterEndDate(end);
+            }
+            else
+            {
+                setSemesterEndDate(semesterStartDate());
+            }
+        }
+        super.willUpdate();
     }
 
 
