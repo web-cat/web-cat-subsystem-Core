@@ -52,6 +52,13 @@ public class Course
     }
 
 
+    //~ Constants (for key names) .............................................
+
+    // Derived Attributes ---
+    public static final String iNSTITUTION_KEY  =
+        DEPARTMENT_KEY + "." + Department.INSTITUTION_KEY;
+
+
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
