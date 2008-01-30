@@ -214,6 +214,25 @@ public class User
 
     // ----------------------------------------------------------
     /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Get a short (no longer than 60 characters) description of this user,
      * which currently returns {@link #name()}.
      * @return the description
