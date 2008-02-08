@@ -129,8 +129,10 @@ public class CourseOffering
             {
                 // !!!
                 log.error(
-                    "course offering with no associated course: " + this );
-                cachedCompactName = course() + "(" + label + ")";
+                    "course offering with no associated course: " + crn()
+                    + ((label() == null) ? "" : ("(" + label() + ")")));
+                // don't cache!
+                return "null(" + label + ")";
             }
             else
             {
