@@ -1150,71 +1150,102 @@ public class User
 
     // ----------------------------------------------------------
     /**
+     * Retrieve the CoreSelections object associated with this user,
+     * creating one if necessary.
+     * @return This user's core selections object
+     */
+    public CoreSelections getCoreSelections()
+    {
+        NSArray cs = coreSelections();
+        if (cs.count() == 0)
+        {
+            EOEditingContext ec = Application.newPeerEditingContext();
+            try
+            {
+                ec.lock();
+                CoreSelections newCoreSelections = new CoreSelections();
+                ec.insertObject( newCoreSelections );
+                newCoreSelections.setUserRelationship(
+                    (User)EOUtilities.localInstanceOfObject( ec, this ) );
+                ec.saveChanges();
+                editingContext().refreshObject( this );
+                cs = coreSelections();
+            }
+            finally
+            {
+                ec.unlock();
+                Application.releasePeerEditingContext( ec );
+            }
+        }
+        return (CoreSelections)cs.objectAtIndex(0);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Use a separate editing context to save this user's preferences data,
      * if possible.
      */
     public void savePreferences()
     {
-        EOEditingContext ec = Application.newPeerEditingContext();
-        log.debug( "savePreferences(): before: " + preferences().hashCode()
-            + ": " + preferences() );
+        boolean usingFreshEC = (ecForPrefs == null);
+        if (usingFreshEC)
+        {
+            ecForPrefs = Application.newPeerEditingContext();
+        }
+        EOEditingContext ec = ecForPrefs;
         ec.lock();
         try
         {
             // Use a separate EC to store the changed preferences
-            User me = (User)EOUtilities.localInstanceOfObject( ec, this );
+            User me = (User)EOUtilities.localInstanceOfObject(ec, this);
             me.setPreferences(preferences());
             ec.saveChanges();
             // Now refresh the session's user object so that it loads
             // this saved preferences value
             editingContext().refreshObject( this );
         }
+        catch (Exception e)
+        {
+            // If there was an error saving ...
+            ecForPrefs = null;
+            try
+            {
+                // Try to unlock first, if possible
+                try
+                {
+                    ec.unlock();
+                }
+                catch (Exception eee)
+                {
+                    // nothing
+                }
+                // Try to clean up the broken editing context, if possible
+                Application.releasePeerEditingContext(ec);
+            }
+            catch (Exception ee)
+            {
+                // if there is an error, ignore it since we're not going to
+                // use this ec any more anyway
+            }
+            ec = null;
+            if (!usingFreshEC)
+            {
+                savePreferences();
+            }
+        }
         finally
         {
-            ec.unlock();
+            if (ec != null)
+            {
+                ec.unlock();
+            }
         }
-        log.debug( "savePreferences(): after: " + preferences().hashCode()
-            + ": " + preferences() );
     }
 
 
-//    // ----------------------------------------------------------
-//    public void willUpdate()
-//    {
-//        dict = null;
-//        super.willUpdate();
-//    }
-
-//  If you add instance variables to store property values you
-//  should add empty implementions of the Serialization methods
-//  to avoid unnecessary overhead (the properties will be
-//  serialized for you in the superclass).
-
-//     // ----------------------------------------------------------
-//     /**
-//      * Serialize this object (an empty implementation, since the
-//      * superclass handles this responsibility).
-//      * @param out the stream to write to
-//      */
-//     private void writeObject( java.io.ObjectOutputStream out )
-//         throws java.io.IOException
-//     {
-//     }
- //
- //
-//     // ----------------------------------------------------------
-//     /**
-//      * Read in a serialized object (an empty implementation, since the
-//      * superclass handles this responsibility).
-//      * @param in the stream to read from
-//      */
-//     private void readObject( java.io.ObjectInputStream in )
-//         throws java.io.IOException, java.lang.ClassNotFoundException
-//     {
-//     }
-
-
     //~ Private Methods .......................................................
+
     // ----------------------------------------------------------
     private NSDictionary userFilteringDictionary()
     {
@@ -1238,6 +1269,7 @@ public class User
     private NSArray adminForButNoOtherRelationships_cache;
     private String  name_LF_cache;
 
+    private EOEditingContext ecForPrefs;
     private NSDictionary userIsMe;
 
     private boolean studentView = false;

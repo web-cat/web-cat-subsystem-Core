@@ -25,8 +25,9 @@
 
 package net.sf.webcat.core;
 
-import com.webobjects.foundation.*;
+import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
+import org.apache.log4j.*;
 
 // -------------------------------------------------------------------------
 /**
@@ -76,54 +77,132 @@ public class CoreSelections
     }
 
 
+    public void setCourse( Course value )
+    {
+        log.debug("setCourse(" + value + ")");
+        super.setCourse( value );
+    }
+
+
+    public void setCourseOffering( CourseOffering value )
+    {
+        log.debug("setCourseOffering(" + value + ")");
+        super.setCourseOffering( value );
+    }
+
+
     // ----------------------------------------------------------
     /**
      * Retrieve the entity pointed to by the <code>courseOffering</code>
      * relationship.
      * @return the entity in the relationship
      */
-    public net.sf.webcat.core.CourseOffering courseOffering()
+    public CourseOffering courseOffering()
     {
         try
         {
             CourseOffering result = super.courseOffering();
             if ( result != null )
                 result.course();  // Force access of this object
+            log.debug("courseOffering() = " + result);
             return result;
         }
         catch ( com.webobjects.eoaccess.EOObjectNotAvailableException e )
         {
+            log.debug("courseOffering(): attempting to force null after " + e);
             super.setCourseOfferingRelationship( null );
             return super.courseOffering();
         }
     }
 
 
-// If you add instance variables to store property values you
-// should add empty implementions of the Serialization methods
-// to avoid unnecessary overhead (the properties will be
-// serialized for you in the superclass).
+    // ----------------------------------------------------------
+    /**
+     * Use a separate editing context to save this object's data,
+     * if possible.
+     */
+    public void save()
+    {
+        log.debug("save(): course = " + course() + ", offering = "
+            + courseOffering());
+        boolean usingFreshEC = (ecForPrefs == null);
+        if (usingFreshEC)
+        {
+            ecForPrefs = Application.newPeerEditingContext();
+        }
+        ecForPrefs.lock();
+        try
+        {
+            // Use a separate EC to store the changed preferences
+            CoreSelections me = (CoreSelections)EOUtilities
+                .localInstanceOfObject(ecForPrefs, this);
+            // Transfer the course setting
+            {
+                Course course = course();
+                if (course != null)
+                {
+                    course = (Course)EOUtilities
+                        .localInstanceOfObject(ecForPrefs, course);
+                }
+                me.setCourseRelationship( course );
+            }
+            // Transfer the courseOffering setting
+            {
+                CourseOffering offering = courseOffering();
+                if (offering != null)
+                {
+                    offering = (CourseOffering)EOUtilities
+                        .localInstanceOfObject(ecForPrefs, offering);
+                }
+                me.setCourseOfferingRelationship( offering );
+            }
+            ecForPrefs.saveChanges();
+            // Now refresh the session's copy of this object so that it loads
+            // this saved preferences value
+            editingContext().refreshObject( this );
+            log.debug("save(): after refresh: course = " + course()
+                + ", offering = " + courseOffering());
+        }
+        catch (Exception e)
+        {
+            // If there was an error saving ...
+            try
+            {
+                // Try to unlock first, if possible
+                try
+                {
+                    ecForPrefs.unlock();
+                }
+                catch (Exception eee)
+                {
+                    // nothing
+                }
+                // Try to clean up the broken editing context, if possible
+                Application.releasePeerEditingContext(ecForPrefs);
+            }
+            catch (Exception ee)
+            {
+                // if there is an error, ignore it since we're not going to
+                // use this ec any more anyway
+            }
+            ecForPrefs = null;
+            if (!usingFreshEC)
+            {
+                save();
+            }
+        }
+        finally
+        {
+            if (ecForPrefs != null)
+            {
+                ecForPrefs.unlock();
+            }
+        }
+    }
 
-//    // ----------------------------------------------------------
-//    /**
-//     * Serialize this object (an empty implementation, since the
-//     * superclass handles this responsibility).
-//     * @param out the stream to write to
-//     */
-//    private void writeObject( java.io.ObjectOutputStream out )
-//        throws java.io.IOException
-//    {
-//    }
-//
-//
-//    // ----------------------------------------------------------
-//    /**
-//     * Read in a serialized object (an empty implementation, since the
-//     * superclass handles this responsibility).
-//     * @param in the stream to read from
-//     */
-//    private void readObject( java.io.ObjectInputStream in )
-//        throws java.io.IOException, java.lang.ClassNotFoundException
-//    {
-//    }
+
+    //~ Instance/static variables .............................................
+    private EOEditingContext ecForPrefs;
+
+    static Logger log = Logger.getLogger( CoreSelections.class );
 }

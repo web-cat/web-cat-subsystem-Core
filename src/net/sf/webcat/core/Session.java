@@ -470,6 +470,19 @@ public class Session
         }
         primeUser = null;
         localUser = null;
+        if (transientState != null)
+        {
+            NSArray values = transientState.allValues();
+            for (int i = 0; i < values.count(); i++)
+            {
+                Object value = values.objectAtIndex(i);
+                if (value instanceof IndependentEOManager.ECManager)
+                {
+                    ((IndependentEOManager.ECManager)value).dispose();
+                }
+            }
+            transientState = null;
+        }
         terminate();
     }
 
@@ -584,6 +597,7 @@ public class Session
     /**
      * Get the user's currently selected course.
      * @return the currently selected course
+     * @deprecated
      */
     public Course course()
     {
@@ -595,6 +609,7 @@ public class Session
     /**
      * Get the user's currently selected course offering.
      * @return the currently selected course offering
+     * @deprecated
      */
     public CourseOffering courseOffering()
     {
@@ -606,79 +621,11 @@ public class Session
     /**
      * Get the user's currently selected tab.
      * @return the currently selected tab
+     * @deprecated
      */
     public TabDescriptor currentTab()
     {
         return tabs.selectedDescendant();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Set the user's currently selected course.
-     * @param course the currently selected course
-     */
-    public void setCourse( Course course )
-    {
-        setCourseRelationship( course );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Set the user's currently selected course.
-     * @param course the currently selected course
-     */
-    public void setCourseRelationship( Course course )
-    {
-        CourseOffering co = courseOffering();
-        if ( co != null && co.course() != course )
-            setCourseOfferingRelationship( null );
-        coreSelections.setCourseRelationship( course );
-
-        Enumeration values = subsystemData.objectEnumerator();
-        while ( values.hasMoreElements() )
-        {
-            Object x = values.nextElement();
-            if ( x instanceof SubsystemSessionState )
-            {
-                SubsystemSessionState sss = (SubsystemSessionState)x;
-                sss.selectCourse( course );
-            }
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Set the user's currently selected course offering.
-     * @param courseOffering the currently selected courseOffering
-     */
-    public void setCourseOffering( CourseOffering courseOffering )
-    {
-        setCourseOfferingRelationship( courseOffering );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Set the user's currently selected course offering.
-     * @param courseOffering the currently selected courseOffering
-     */
-    public void setCourseOfferingRelationship( CourseOffering courseOffering )
-    {
-        coreSelections.setCourseOfferingRelationship( courseOffering );
-
-        Enumeration values = subsystemData.objectEnumerator();
-        while ( values.hasMoreElements() )
-        {
-            Object x = values.nextElement();
-            if ( x instanceof SubsystemSessionState )
-            {
-                SubsystemSessionState sss = (SubsystemSessionState)x;
-                sss.selectCourseOffering( courseOffering );
-            }
-        }
     }
 
 
@@ -750,14 +697,31 @@ public class Session
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Retrieve an NSMutableDictionary used to hold transient settings for
+     * this session (data that is not database-backed).
+     * @return A map of transient settings
+     */
+    public NSMutableDictionary transientState()
+    {
+        if (transientState == null)
+        {
+            transientState = new NSMutableDictionary();
+        }
+        return transientState;
+    }
+
+
     //~ Instance/static variables .............................................
 
-    private User             primeUser         = null;
-    private User             localUser         = null;
-    private LoginSession     loginSession      = null;
-//    private EOEditingContext childContext   = null;
-    private CoreSelections   coreSelections    = null;
-    private NSTimestampFormatter timeFormatter = null;
+    private User                 primeUser      = null;
+    private User                 localUser      = null;
+    private LoginSession         loginSession   = null;
+//    private EOEditingContext   childContext   = null;
+    private CoreSelections       coreSelections = null;
+    private NSTimestampFormatter timeFormatter  = null;
+    private NSMutableDictionary  transientState;
 
     private static final Integer zero = new Integer( 0 );
     private static final Integer one  = new Integer( 1 );
