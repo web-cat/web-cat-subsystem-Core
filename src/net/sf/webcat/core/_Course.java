@@ -30,7 +30,9 @@ package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.eoaccess.*;
 import java.util.Enumeration;
+import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -56,6 +58,90 @@ public abstract class _Course
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new
+     * _Course object given required
+     * attributes and relationships.
+     * @param editingContext The context in which the new object will be
+     * inserted
+     * @param name
+     * @param number
+     * @return The newly created object
+     */
+    public static Course createCourse(
+        EOEditingContext editingContext,
+        String name,
+        int number
+        )
+    {
+        Course eoObject = (Course)
+            EOUtilities.createAndInsertInstance(
+                editingContext,
+                _Course.ENTITY_NAME);
+        eoObject.setName(name);
+        eoObject.setNumber(number);
+        return eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of the given object in another editing context.
+     * @param editingContext The target editing context
+     * @param eo The object to import
+     * @return An instance of the given object in the target editing context
+     */
+    public static Course localInstance(
+        EOEditingContext editingContext, Course eo)
+    {
+        return (eo == null)
+            ? null
+            : (Course)EOUtilities.localInstanceOfObject(
+                editingContext, eo);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static Course forId(
+        EOEditingContext ec, int id )
+    {
+        Course obj = null;
+        if (id > 0)
+        {
+            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
+                ENTITY_NAME, "id", new Integer( id ) );
+            if ( results != null && results.count() > 0 )
+            {
+                obj = (Course)results.objectAtIndex( 0 );
+            }
+        }
+        return obj;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static Course forId(
+        EOEditingContext ec, String id )
+    {
+        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
+    }
+
+
     //~ Constants (for key names) .............................................
 
     // Attributes ---
@@ -69,6 +155,50 @@ public abstract class _Course
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of this object in another editing context.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public Course localInstance(EOEditingContext editingContext)
+    {
+        return (Course)EOUtilities.localInstanceOfObject(
+            editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a list of changes between this object's current state and the
+     * last committed version.
+     * @return a dictionary of the changes that have not yet been committed
+     */
+    public NSDictionary changedProperties()
+    {
+        return changesFromSnapshot(
+            editingContext().committedSnapshotForObject(this) );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
+    }
 
     // ----------------------------------------------------------
     /**
@@ -90,6 +220,11 @@ public abstract class _Course
      */
     public void setName( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setName("
+                + value + "): was " + name() );
+        }
         takeStoredValueForKey( value, "name" );
     }
 
@@ -118,6 +253,11 @@ public abstract class _Course
      */
     public void setNumber( int value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setNumber("
+                + value + "): was " + number() );
+        }
         Number actual =
             er.extensions.ERXConstant.integerForInt( value );
         setNumberRaw( actual );
@@ -144,6 +284,11 @@ public abstract class _Course
      */
     public void setNumberRaw( Number value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setNumberRaw("
+                + value + "): was " + numberRaw() );
+        }
         takeStoredValueForKey( value, "number" );
     }
 
@@ -171,6 +316,11 @@ public abstract class _Course
      */
     public void setDepartment( net.sf.webcat.core.Department value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setDepartment("
+                + value + "): was " + department() );
+        }
         takeStoredValueForKey( value, "department" );
     }
 
@@ -186,6 +336,11 @@ public abstract class _Course
     public void setDepartmentRelationship(
         net.sf.webcat.core.Department value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setDepartmentRelationship("
+                + value + "): was " + department() );
+        }
         if ( value == null )
         {
             net.sf.webcat.core.Department object = department();
@@ -199,4 +354,7 @@ public abstract class _Course
     }
 
 
+    //~ Instance/static variables .............................................
+
+    static Logger log = Logger.getLogger( Course.class );
 }

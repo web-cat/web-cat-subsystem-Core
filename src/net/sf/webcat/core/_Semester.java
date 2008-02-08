@@ -30,7 +30,9 @@ package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.eoaccess.*;
 import java.util.Enumeration;
+import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -56,6 +58,87 @@ public abstract class _Semester
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new
+     * _Semester object given required
+     * attributes and relationships.
+     * @param editingContext The context in which the new object will be
+     * inserted
+     * @param year
+     * @return The newly created object
+     */
+    public static Semester createSemester(
+        EOEditingContext editingContext,
+        int year
+        )
+    {
+        Semester eoObject = (Semester)
+            EOUtilities.createAndInsertInstance(
+                editingContext,
+                _Semester.ENTITY_NAME);
+        eoObject.setYear(year);
+        return eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of the given object in another editing context.
+     * @param editingContext The target editing context
+     * @param eo The object to import
+     * @return An instance of the given object in the target editing context
+     */
+    public static Semester localInstance(
+        EOEditingContext editingContext, Semester eo)
+    {
+        return (eo == null)
+            ? null
+            : (Semester)EOUtilities.localInstanceOfObject(
+                editingContext, eo);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static Semester forId(
+        EOEditingContext ec, int id )
+    {
+        Semester obj = null;
+        if (id > 0)
+        {
+            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
+                ENTITY_NAME, "id", new Integer( id ) );
+            if ( results != null && results.count() > 0 )
+            {
+                obj = (Semester)results.objectAtIndex( 0 );
+            }
+        }
+        return obj;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static Semester forId(
+        EOEditingContext ec, String id )
+    {
+        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
+    }
+
+
     //~ Constants (for key names) .............................................
 
     // Attributes ---
@@ -71,6 +154,50 @@ public abstract class _Semester
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of this object in another editing context.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public Semester localInstance(EOEditingContext editingContext)
+    {
+        return (Semester)EOUtilities.localInstanceOfObject(
+            editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a list of changes between this object's current state and the
+     * last committed version.
+     * @return a dictionary of the changes that have not yet been committed
+     */
+    public NSDictionary changedProperties()
+    {
+        return changesFromSnapshot(
+            editingContext().committedSnapshotForObject(this) );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
+    }
 
     // ----------------------------------------------------------
     /**
@@ -92,6 +219,11 @@ public abstract class _Semester
      */
     public void setSeason( Number value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setSeason("
+                + value + "): was " + season() );
+        }
         takeStoredValueForKey( value, "season" );
     }
 
@@ -116,6 +248,11 @@ public abstract class _Semester
      */
     public void setSemesterEndDate( NSTimestamp value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setSemesterEndDate("
+                + value + "): was " + semesterEndDate() );
+        }
         takeStoredValueForKey( value, "semesterEndDate" );
     }
 
@@ -140,6 +277,11 @@ public abstract class _Semester
      */
     public void setSemesterStartDate( NSTimestamp value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setSemesterStartDate("
+                + value + "): was " + semesterStartDate() );
+        }
         takeStoredValueForKey( value, "semesterStartDate" );
     }
 
@@ -168,6 +310,11 @@ public abstract class _Semester
      */
     public void setYear( int value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setYear("
+                + value + "): was " + year() );
+        }
         Number actual =
             er.extensions.ERXConstant.integerForInt( value );
         setYearRaw( actual );
@@ -194,6 +341,11 @@ public abstract class _Semester
      */
     public void setYearRaw( Number value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setYearRaw("
+                + value + "): was " + yearRaw() );
+        }
         takeStoredValueForKey( value, "year" );
     }
 
@@ -213,8 +365,18 @@ public abstract class _Semester
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "FetchAll", "Semester" );
 
-        return context.objectsWithFetchSpecification( spec );
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForFetchAll(ec"
+            
+                + "): " + result );
+        }
+        return result;
     }
 
 
+    //~ Instance/static variables .............................................
+
+    static Logger log = Logger.getLogger( Semester.class );
 }

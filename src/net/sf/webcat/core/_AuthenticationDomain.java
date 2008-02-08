@@ -30,7 +30,9 @@ package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.eoaccess.*;
 import java.util.Enumeration;
+import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -56,6 +58,84 @@ public abstract class _AuthenticationDomain
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new
+     * _AuthenticationDomain object given required
+     * attributes and relationships.
+     * @param editingContext The context in which the new object will be
+     * inserted
+     * @return The newly created object
+     */
+    public static AuthenticationDomain createAuthenticationDomain(
+        EOEditingContext editingContext
+        )
+    {
+        AuthenticationDomain eoObject = (AuthenticationDomain)
+            EOUtilities.createAndInsertInstance(
+                editingContext,
+                _AuthenticationDomain.ENTITY_NAME);
+        return eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of the given object in another editing context.
+     * @param editingContext The target editing context
+     * @param eo The object to import
+     * @return An instance of the given object in the target editing context
+     */
+    public static AuthenticationDomain localInstance(
+        EOEditingContext editingContext, AuthenticationDomain eo)
+    {
+        return (eo == null)
+            ? null
+            : (AuthenticationDomain)EOUtilities.localInstanceOfObject(
+                editingContext, eo);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static AuthenticationDomain forId(
+        EOEditingContext ec, int id )
+    {
+        AuthenticationDomain obj = null;
+        if (id > 0)
+        {
+            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
+                ENTITY_NAME, "id", new Integer( id ) );
+            if ( results != null && results.count() > 0 )
+            {
+                obj = (AuthenticationDomain)results.objectAtIndex( 0 );
+            }
+        }
+        return obj;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static AuthenticationDomain forId(
+        EOEditingContext ec, String id )
+    {
+        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
+    }
+
+
     //~ Constants (for key names) .............................................
 
     // Attributes ---
@@ -77,6 +157,50 @@ public abstract class _AuthenticationDomain
 
     // ----------------------------------------------------------
     /**
+     * Get a local instance of this object in another editing context.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public AuthenticationDomain localInstance(EOEditingContext editingContext)
+    {
+        return (AuthenticationDomain)EOUtilities.localInstanceOfObject(
+            editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a list of changes between this object's current state and the
+     * last committed version.
+     * @return a dictionary of the changes that have not yet been committed
+     */
+    public NSDictionary changedProperties()
+    {
+        return changesFromSnapshot(
+            editingContext().committedSnapshotForObject(this) );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
+    }
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve this object's <code>dateFormat</code> value.
      * @return the value of the attribute
      */
@@ -95,6 +219,11 @@ public abstract class _AuthenticationDomain
      */
     public void setDateFormat( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setDateFormat("
+                + value + "): was " + dateFormat() );
+        }
         takeStoredValueForKey( value, "dateFormat" );
     }
 
@@ -119,6 +248,11 @@ public abstract class _AuthenticationDomain
      */
     public void setDefaultEmailDomain( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setDefaultEmailDomain("
+                + value + "): was " + defaultEmailDomain() );
+        }
         takeStoredValueForKey( value, "defaultEmailDomain" );
     }
 
@@ -143,6 +277,11 @@ public abstract class _AuthenticationDomain
      */
     public void setDefaultURLPattern( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setDefaultURLPattern("
+                + value + "): was " + defaultURLPattern() );
+        }
         takeStoredValueForKey( value, "defaultURLPattern" );
     }
 
@@ -167,6 +306,11 @@ public abstract class _AuthenticationDomain
      */
     public void setDisplayableName( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setDisplayableName("
+                + value + "): was " + displayableName() );
+        }
         takeStoredValueForKey( value, "displayableName" );
     }
 
@@ -191,6 +335,11 @@ public abstract class _AuthenticationDomain
      */
     public void setPropertyName( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setPropertyName("
+                + value + "): was " + propertyName() );
+        }
         takeStoredValueForKey( value, "propertyName" );
     }
 
@@ -215,6 +364,11 @@ public abstract class _AuthenticationDomain
      */
     public void setTimeFormat( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setTimeFormat("
+                + value + "): was " + timeFormat() );
+        }
         takeStoredValueForKey( value, "timeFormat" );
     }
 
@@ -239,6 +393,11 @@ public abstract class _AuthenticationDomain
      */
     public void setTimeZoneName( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setTimeZoneName("
+                + value + "): was " + timeZoneName() );
+        }
         takeStoredValueForKey( value, "timeZoneName" );
     }
 
@@ -258,8 +417,18 @@ public abstract class _AuthenticationDomain
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "FetchAll", "AuthenticationDomain" );
 
-        return context.objectsWithFetchSpecification( spec );
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForFetchAll(ec"
+            
+                + "): " + result );
+        }
+        return result;
     }
 
 
+    //~ Instance/static variables .............................................
+
+    static Logger log = Logger.getLogger( AuthenticationDomain.class );
 }

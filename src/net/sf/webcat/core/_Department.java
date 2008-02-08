@@ -30,7 +30,9 @@ package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.eoaccess.*;
 import java.util.Enumeration;
+import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -56,6 +58,87 @@ public abstract class _Department
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new
+     * _Department object given required
+     * attributes and relationships.
+     * @param editingContext The context in which the new object will be
+     * inserted
+     * @param abbreviation
+     * @return The newly created object
+     */
+    public static Department createDepartment(
+        EOEditingContext editingContext,
+        String abbreviation
+        )
+    {
+        Department eoObject = (Department)
+            EOUtilities.createAndInsertInstance(
+                editingContext,
+                _Department.ENTITY_NAME);
+        eoObject.setAbbreviation(abbreviation);
+        return eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of the given object in another editing context.
+     * @param editingContext The target editing context
+     * @param eo The object to import
+     * @return An instance of the given object in the target editing context
+     */
+    public static Department localInstance(
+        EOEditingContext editingContext, Department eo)
+    {
+        return (eo == null)
+            ? null
+            : (Department)EOUtilities.localInstanceOfObject(
+                editingContext, eo);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static Department forId(
+        EOEditingContext ec, int id )
+    {
+        Department obj = null;
+        if (id > 0)
+        {
+            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
+                ENTITY_NAME, "id", new Integer( id ) );
+            if ( results != null && results.count() > 0 )
+            {
+                obj = (Department)results.objectAtIndex( 0 );
+            }
+        }
+        return obj;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static Department forId(
+        EOEditingContext ec, String id )
+    {
+        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
+    }
+
+
     //~ Constants (for key names) .............................................
 
     // Attributes ---
@@ -69,6 +152,50 @@ public abstract class _Department
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of this object in another editing context.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public Department localInstance(EOEditingContext editingContext)
+    {
+        return (Department)EOUtilities.localInstanceOfObject(
+            editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a list of changes between this object's current state and the
+     * last committed version.
+     * @return a dictionary of the changes that have not yet been committed
+     */
+    public NSDictionary changedProperties()
+    {
+        return changesFromSnapshot(
+            editingContext().committedSnapshotForObject(this) );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
+    }
 
     // ----------------------------------------------------------
     /**
@@ -90,6 +217,11 @@ public abstract class _Department
      */
     public void setAbbreviation( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setAbbreviation("
+                + value + "): was " + abbreviation() );
+        }
         takeStoredValueForKey( value, "abbreviation" );
     }
 
@@ -114,6 +246,11 @@ public abstract class _Department
      */
     public void setName( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setName("
+                + value + "): was " + name() );
+        }
         takeStoredValueForKey( value, "name" );
     }
 
@@ -141,6 +278,11 @@ public abstract class _Department
      */
     public void setInstitution( net.sf.webcat.core.AuthenticationDomain value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setInstitution("
+                + value + "): was " + institution() );
+        }
         takeStoredValueForKey( value, "institution" );
     }
 
@@ -156,6 +298,11 @@ public abstract class _Department
     public void setInstitutionRelationship(
         net.sf.webcat.core.AuthenticationDomain value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setInstitutionRelationship("
+                + value + "): was " + institution() );
+        }
         if ( value == null )
         {
             net.sf.webcat.core.AuthenticationDomain object = institution();
@@ -169,4 +316,7 @@ public abstract class _Department
     }
 
 
+    //~ Instance/static variables .............................................
+
+    static Logger log = Logger.getLogger( Department.class );
 }

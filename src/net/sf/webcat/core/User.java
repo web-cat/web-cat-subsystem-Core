@@ -214,25 +214,6 @@ public class User
 
     // ----------------------------------------------------------
     /**
-     * Retrieve this object's <code>id</code> value.
-     * @return the value of the attribute
-     */
-    public Number id()
-    {
-        try
-        {
-            return (Number)EOUtilities.primaryKeyForObject(
-                editingContext() , this ).objectForKey( "id" );
-        }
-        catch (Exception e)
-        {
-            return er.extensions.ERXConstant.ZeroInteger;
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Get a short (no longer than 60 characters) description of this user,
      * which currently returns {@link #name()}.
      * @return the description
@@ -1165,8 +1146,7 @@ public class User
                 ec.lock();
                 CoreSelections newCoreSelections = new CoreSelections();
                 ec.insertObject( newCoreSelections );
-                newCoreSelections.setUserRelationship(
-                    (User)EOUtilities.localInstanceOfObject( ec, this ) );
+                newCoreSelections.setUserRelationship( localInstance( ec ) );
                 ec.saveChanges();
                 editingContext().refreshObject( this );
                 cs = coreSelections();
@@ -1198,7 +1178,7 @@ public class User
         try
         {
             // Use a separate EC to store the changed preferences
-            User me = (User)EOUtilities.localInstanceOfObject(ec, this);
+            User me = localInstance(ec);
             me.setPreferences(preferences());
             ec.saveChanges();
             // Now refresh the session's user object so that it loads

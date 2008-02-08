@@ -251,8 +251,7 @@ public class Session
             try
             {
                 ec.lock();
-                User loginUser =
-                    (User)EOUtilities.localInstanceOfObject( ec, primeUser );
+                User loginUser = primeUser.localInstance( ec );
                 loginSession =
                     LoginSession.getLoginSessionForUser( ec, loginUser );
                 if ( loginSession == null )
@@ -432,8 +431,7 @@ public class Session
                     try
                     {
                         ec.lock();
-                        User u = (User)EOUtilities
-                            .localInstanceOfObject( ec, primeUser );
+                        User u = primeUser.localInstance( ec );
                         NSArray items = EOUtilities.objectsMatchingKeyAndValue(
                                 ec,
                                 LoginSession.ENTITY_NAME,
@@ -579,10 +577,10 @@ public class Session
                 CoreSelections newCoreSelections = new CoreSelections();
                 ec.insertObject( newCoreSelections );
                 newCoreSelections.setUserRelationship(
-                    (User)EOUtilities.localInstanceOfObject( ec, localUser ) );
+                    localUser.localInstance( ec ) );
                 ec.saveChanges();
-                coreSelections = (CoreSelections)EOUtilities
-                    .localInstanceOfObject( localContext(), newCoreSelections );
+                coreSelections =
+                    newCoreSelections.localInstance( localContext() );
             }
             finally
             {

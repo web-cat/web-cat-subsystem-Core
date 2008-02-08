@@ -224,8 +224,7 @@ public class DatabaseAuthenticator
         try
         {
             ec.lock();
-            User localUser =
-                (User)EOUtilities.localInstanceOfObject( ec, user );
+            User localUser = user.localInstance(ec);
             localUser.setPassword( newPassword );
             ec.saveChanges();
             result = true;

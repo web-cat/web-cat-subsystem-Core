@@ -30,7 +30,9 @@ package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.eoaccess.*;
 import java.util.Enumeration;
+import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -56,6 +58,84 @@ public abstract class _CoreSelections
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new
+     * _CoreSelections object given required
+     * attributes and relationships.
+     * @param editingContext The context in which the new object will be
+     * inserted
+     * @return The newly created object
+     */
+    public static CoreSelections createCoreSelections(
+        EOEditingContext editingContext
+        )
+    {
+        CoreSelections eoObject = (CoreSelections)
+            EOUtilities.createAndInsertInstance(
+                editingContext,
+                _CoreSelections.ENTITY_NAME);
+        return eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of the given object in another editing context.
+     * @param editingContext The target editing context
+     * @param eo The object to import
+     * @return An instance of the given object in the target editing context
+     */
+    public static CoreSelections localInstance(
+        EOEditingContext editingContext, CoreSelections eo)
+    {
+        return (eo == null)
+            ? null
+            : (CoreSelections)EOUtilities.localInstanceOfObject(
+                editingContext, eo);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static CoreSelections forId(
+        EOEditingContext ec, int id )
+    {
+        CoreSelections obj = null;
+        if (id > 0)
+        {
+            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
+                ENTITY_NAME, "id", new Integer( id ) );
+            if ( results != null && results.count() > 0 )
+            {
+                obj = (CoreSelections)results.objectAtIndex( 0 );
+            }
+        }
+        return obj;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static CoreSelections forId(
+        EOEditingContext ec, String id )
+    {
+        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
+    }
+
+
     //~ Constants (for key names) .............................................
 
     // Attributes ---
@@ -69,6 +149,50 @@ public abstract class _CoreSelections
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of this object in another editing context.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public CoreSelections localInstance(EOEditingContext editingContext)
+    {
+        return (CoreSelections)EOUtilities.localInstanceOfObject(
+            editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a list of changes between this object's current state and the
+     * last committed version.
+     * @return a dictionary of the changes that have not yet been committed
+     */
+    public NSDictionary changedProperties()
+    {
+        return changesFromSnapshot(
+            editingContext().committedSnapshotForObject(this) );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
+    }
 
     // ----------------------------------------------------------
     /**
@@ -93,6 +217,11 @@ public abstract class _CoreSelections
      */
     public void setCourse( net.sf.webcat.core.Course value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setCourse("
+                + value + "): was " + course() );
+        }
         takeStoredValueForKey( value, "course" );
     }
 
@@ -108,6 +237,11 @@ public abstract class _CoreSelections
     public void setCourseRelationship(
         net.sf.webcat.core.Course value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setCourseRelationship("
+                + value + "): was " + course() );
+        }
         if ( value == null )
         {
             net.sf.webcat.core.Course object = course();
@@ -144,6 +278,11 @@ public abstract class _CoreSelections
      */
     public void setCourseOffering( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setCourseOffering("
+                + value + "): was " + courseOffering() );
+        }
         takeStoredValueForKey( value, "courseOffering" );
     }
 
@@ -159,6 +298,11 @@ public abstract class _CoreSelections
     public void setCourseOfferingRelationship(
         net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setCourseOfferingRelationship("
+                + value + "): was " + courseOffering() );
+        }
         if ( value == null )
         {
             net.sf.webcat.core.CourseOffering object = courseOffering();
@@ -195,6 +339,11 @@ public abstract class _CoreSelections
      */
     public void setUser( net.sf.webcat.core.User value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setUser("
+                + value + "): was " + user() );
+        }
         takeStoredValueForKey( value, "user" );
     }
 
@@ -210,6 +359,11 @@ public abstract class _CoreSelections
     public void setUserRelationship(
         net.sf.webcat.core.User value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setUserRelationship("
+                + value + "): was " + user() );
+        }
         if ( value == null )
         {
             net.sf.webcat.core.User object = user();
@@ -223,4 +377,7 @@ public abstract class _CoreSelections
     }
 
 
+    //~ Instance/static variables .............................................
+
+    static Logger log = Logger.getLogger( CoreSelections.class );
 }

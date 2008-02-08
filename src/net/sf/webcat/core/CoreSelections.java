@@ -134,15 +134,13 @@ public class CoreSelections
         try
         {
             // Use a separate EC to store the changed preferences
-            CoreSelections me = (CoreSelections)EOUtilities
-                .localInstanceOfObject(ecForPrefs, this);
+            CoreSelections me = localInstance(ecForPrefs);
             // Transfer the course setting
             {
                 Course course = course();
                 if (course != null)
                 {
-                    course = (Course)EOUtilities
-                        .localInstanceOfObject(ecForPrefs, course);
+                    course = course.localInstance(ecForPrefs);
                 }
                 me.setCourseRelationship( course );
             }
@@ -151,8 +149,7 @@ public class CoreSelections
                 CourseOffering offering = courseOffering();
                 if (offering != null)
                 {
-                    offering = (CourseOffering)EOUtilities
-                        .localInstanceOfObject(ecForPrefs, offering);
+                    offering = offering.localInstance(ecForPrefs);
                 }
                 me.setCourseOfferingRelationship( offering );
             }

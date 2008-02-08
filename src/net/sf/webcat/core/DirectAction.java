@@ -399,7 +399,7 @@ public class DirectAction
                 log.debug( "session(): no user associated with session" );
                 EOEditingContext ec = mySession.defaultEditingContext();
                 ec.lock();
-                user = (User)EOUtilities.localInstanceOfObject( ec, user );
+                user = user.localInstance( ec );
                 String sessionID = mySession.setUser( user );
                 Application.userCount++;
                 log.info( "login: "
@@ -553,9 +553,8 @@ public class DirectAction
                     wosid = ls.sessionId();
                 }
                 session = (Session)session();
-                session.setUser(
-                    (User)EOUtilities.localInstanceOfObject(
-                        session.defaultEditingContext(), pcr.user() ) );
+                session.setUser( pcr.user().localInstance(
+                        session.defaultEditingContext() ) );
                 pcr.delete();
                 ec.saveChanges();
             }

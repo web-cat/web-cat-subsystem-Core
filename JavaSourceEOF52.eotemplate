@@ -32,7 +32,9 @@ BE SURE NOT TO INCLUDE DATES IN THIS FILE.$>/*==================================
 <$endforeach do$>
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.eoaccess.*;
 import java.util.Enumeration;
+import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -61,6 +63,90 @@ $>public abstract class <$GEN_PREFIX$><$classNameWithoutPackage$>
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new
+     * <$GEN_PREFIX$><$classNameWithoutPackage$> object given required
+     * attributes and relationships.
+     * @param editingContext The context in which the new object will be
+     * inserted<$foreach Attribute classAttributes.@sortedNameArray do$><$if !Attribute.allowsNull$>
+     * @param <$Attribute.name$><$endif$><$endforeach do$><$foreach ToOneRelationship classToOneRelationships.@sortedNameArray do$><$if ToOneRelationship.isMandatory$>
+     * @param <$ToOneRelationship.name$><$endif$><$endforeach do$>
+     * @return The newly created object
+     */
+    public static <$classNameWithoutPackage$> create<$classNameWithoutPackage$>(
+        EOEditingContext editingContext<$foreach Attribute classAttributes.@sortedNameArray do$><$if !Attribute.allowsNull$>,
+        <$if Attribute.userInfo.isScalar == 'true'$><$Attribute.userInfo.type$><$else$><$Attribute.javaValueClassName$><$endif$> <$Attribute.name$><$endif$><$endforeach do$><$foreach ToOneRelationship classToOneRelationships.@sortedNameArray do$><$if ToOneRelationship.isMandatory$>,
+        <$ToOneRelationship.destinationEntity.referenceJavaClassName$> <$ToOneRelationship.name$><$endif$><$endforeach do$>
+        )
+    {
+        <$classNameWithoutPackage$> eoObject = (<$classNameWithoutPackage$>)
+            EOUtilities.createAndInsertInstance(
+                editingContext,
+                <$GEN_PREFIX$><$classNameWithoutPackage$>.ENTITY_NAME);<$foreach Attribute classAttributes.@sortedNameArray do$><$if !Attribute.allowsNull$>
+        eoObject.set<$Attribute.name.initialCapitalString$>(<$Attribute.name$>);<$endif$><$endforeach do$><$foreach ToOneRelationship classToOneRelationships.@sortedNameArray do$><$if ToOneRelationship.isMandatory$>
+        eoObject.set<$ToOneRelationship.name.initialCapitalString$>Relationship(<$ToOneRelationship.name$>);<$endif$><$endforeach do$>
+        return eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of the given object in another editing context.
+     * @param editingContext The target editing context
+     * @param eo The object to import
+     * @return An instance of the given object in the target editing context
+     */
+    public static <$classNameWithoutPackage$> localInstance(
+        EOEditingContext editingContext, <$classNameWithoutPackage$> eo)
+    {
+        return (eo == null)
+            ? null
+            : (<$classNameWithoutPackage$>)EOUtilities.localInstanceOfObject(
+                editingContext, eo);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static <$classNameWithoutPackage$> forId(
+        EOEditingContext ec, int id )
+    {
+        <$classNameWithoutPackage$> obj = null;
+        if (id > 0)
+        {
+            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
+                ENTITY_NAME, "id", new Integer( id ) );
+            if ( results != null && results.count() > 0 )
+            {
+                obj = (<$classNameWithoutPackage$>)results.objectAtIndex( 0 );
+            }
+        }
+        return obj;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static <$classNameWithoutPackage$> forId(
+        EOEditingContext ec, String id )
+    {
+        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
+    }
+
+
     //~ Constants (for key names) .............................................
 
 <$comment
@@ -80,6 +166,50 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of this object in another editing context.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public <$classNameWithoutPackage$> localInstance(EOEditingContext editingContext)
+    {
+        return (<$classNameWithoutPackage$>)EOUtilities.localInstanceOfObject(
+            editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a list of changes between this object's current state and the
+     * last committed version.
+     * @return a dictionary of the changes that have not yet been committed
+     */
+    public NSDictionary changedProperties()
+    {
+        return changesFromSnapshot(
+            editingContext().committedSnapshotForObject(this) );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
+    }
 
 <$foreach Attribute classAttributes.@sortedNameArray do$><$if Attribute.userInfo.isMutable == 'true'$>    //-- Local mutable cache --
     private <$Attribute.userInfo.valueClassName$> <$Attribute.name$>Cache;
@@ -143,6 +273,11 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
      */
     public void set<$Attribute.name.initialCapitalString$>( <$Attribute.userInfo.valueClassName$> value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "set<$Attribute.name.initialCapitalString$>("
+                + value + ")" );
+        }
         if ( <$Attribute.name$>Cache == null )
         {
             <$Attribute.name$>Cache = value;
@@ -169,6 +304,10 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
      */
     public void clear<$Attribute.name.initialCapitalString$>()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "clear<$Attribute.name.initialCapitalString$>()" );
+        }
         takeStoredValueForKey( null, "<$Attribute.name$>" );
         <$Attribute.name$>RawCache = null;
         <$Attribute.name$>Cache = null;
@@ -199,6 +338,11 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
      */
     public void set<$Attribute.name.initialCapitalString$>( <$Attribute.userInfo.type$> value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "set<$Attribute.name.initialCapitalString$>("
+                + value + "): was " + <$Attribute.name$>() );
+        }
         <$Attribute.javaValueClassName$> actual =
 <$if Attribute.userInfo.type == 'boolean'$>            er.extensions.ERXConstant.integerForInt( value ? 1 : 0 );
 <$elseif Attribute.userInfo.type == 'int'
@@ -229,6 +373,11 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
      */
     public void set<$Attribute.name.initialCapitalString$><$if Attribute.userInfo.isScalar == 'true'$>Raw<$endif$>( <$Attribute.javaValueClassName$> value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "set<$Attribute.name.initialCapitalString$><$if Attribute.userInfo.isScalar == 'true'$>Raw<$endif$>("
+                + value + "): was " + <$Attribute.name$><$if Attribute.userInfo.isScalar == 'true'$>Raw<$endif$>() );
+        }
         takeStoredValueForKey( value, "<$Attribute.name$>" );
     }
 
@@ -239,6 +388,7 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
      */
     public void saveMutables()
     {
+        log.debug("saveMutables()");
 <$foreach Attribute classAttributes.@sortedNameArray willUpdate$><$if Attribute.userInfo.isMutable == 'true'$>        if ( <$Attribute.name$>Cache != null
             && <$Attribute.name$>Cache.hasChanged() )
         {
@@ -257,6 +407,7 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
      */
     public void willUpdate()
     {
+        log.debug("willUpdate()");
         saveMutables();
         super.willUpdate();
     }
@@ -268,6 +419,7 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
      */
     public void willInsert()
     {
+        log.debug("willInsert()");
         saveMutables();
         super.willInsert();
     }
@@ -279,6 +431,7 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
      */
     public void flushCaches()
     {
+        log.debug("flushCaches()");
 <$foreach Attribute classAttributes.@sortedNameArray flushCache$><$if Attribute.userInfo.isMutable == 'true'$>        <$Attribute.name$>Cache = null;
         <$Attribute.name$>RawCache  = null;
 <$endif$><$endforeach flushCache$>        setUpdateMutableFields( false );
@@ -300,35 +453,7 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
 Add methods to call named fetch specifications, with any qualifier bindings having typed
 parameters.
 
-$><$foreach FetchSpec javaBeautifiedFetchSpecificationDictionaries.@sortedNameArray fetchspec$>    // ----------------------------------------------------------
-    /**
-     * Retrieve object according to the <code><$FetchSpec.niceName$></code>
-     * fetch specification.
-     *
-     * @param context The editing context to use<$foreach Binding FetchSpec.bindings do2$>
-     * @param <$Binding.name$>Binding fetch spec parameter<$endforeach do2$>
-     * @return an NSArray of the entities retrieved
-     */
-    public static NSArray objectsFor<$FetchSpec.niceName$>(
-            EOEditingContext context<$foreach Binding FetchSpec.bindings do2$>,
-            <$Binding.codeType$><$Binding.name$>Binding<$endforeach do2$>
-        )
-    {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "<$FetchSpec.fetchName$>", "<$name$>" );
-<$if FetchSpec.bindings.@count > 0$>
-        NSMutableDictionary bindings = new NSMutableDictionary();
-<$foreach Binding FetchSpec.bindings do2$>
-        if ( <$Binding.name$>Binding != null )
-            bindings.setObjectForKey( <$Binding.name$>Binding,
-                                      "<$Binding.name$>" );<$endforeach do2$>
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
-<$endif$>
-        return context.objectsWithFetchSpecification( spec );
-    }
-
-
-<$endforeach fetchspec$><$foreach ToOneRelationship classToOneRelationships.@sortedNameArray toonerels$>    // ----------------------------------------------------------
+$><$foreach ToOneRelationship classToOneRelationships.@sortedNameArray toonerels$>    // ----------------------------------------------------------
     /**
      * Retrieve the entity pointed to by the <code><$ToOneRelationship.name$></code>
      * relationship.
@@ -351,6 +476,11 @@ $><$foreach FetchSpec javaBeautifiedFetchSpecificationDictionaries.@sortedNameAr
      */
     public void set<$ToOneRelationship.name.initialCapitalString$>( <$ToOneRelationship.destinationEntity.referenceJavaClassName$> value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "set<$ToOneRelationship.name.initialCapitalString$>("
+                + value + "): was " + <$ToOneRelationship.name$>() );
+        }
         takeStoredValueForKey( value, "<$ToOneRelationship.name$>" );
     }
 
@@ -372,6 +502,11 @@ $>    // ----------------------------------------------------------
     public void set<$ToOneRelationship.name.initialCapitalString$>Relationship(
         <$ToOneRelationship.destinationEntity.referenceJavaClassName$> value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "set<$ToOneRelationship.name.initialCapitalString$>Relationship("
+                + value + "): was " + <$ToOneRelationship.name$>() );
+        }
         if ( value == null )
         {
             <$ToOneRelationship.destinationEntity.referenceJavaClassName$> object = <$ToOneRelationship.name$>();
@@ -406,6 +541,11 @@ $>    // ----------------------------------------------------------
      */
     public void set<$ToManyRelationship.name.initialCapitalString$>( NSMutableArray value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "set<$ToManyRelationship.name.initialCapitalString$>("
+                + value + "): was " + <$ToManyRelationship.name$>() );
+        }
         takeStoredValueForKey( value, "<$ToManyRelationship.name$>" );
     }
 
@@ -421,6 +561,11 @@ $>    // ----------------------------------------------------------
      */
     public void addTo<$ToManyRelationship.name.initialCapitalString$>( <$ToManyRelationship.destinationEntity.referenceJavaClassName$> value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addTo<$ToManyRelationship.name.initialCapitalString$>("
+                + value + "): was " + <$ToManyRelationship.name$>() );
+        }
         NSMutableArray array = (NSMutableArray)<$ToManyRelationship.name$>();
         willChange();
         array.addObject( value );
@@ -438,6 +583,11 @@ $>    // ----------------------------------------------------------
      */
     public void removeFrom<$ToManyRelationship.name.initialCapitalString$>( <$ToManyRelationship.destinationEntity.referenceJavaClassName$> value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFrom<$ToManyRelationship.name.initialCapitalString$>("
+                + value + "): was " + <$ToManyRelationship.name$>() );
+        }
         NSMutableArray array = (NSMutableArray)<$ToManyRelationship.name$>();
         willChange();
         array.removeObject( value );
@@ -459,6 +609,11 @@ $>    // ----------------------------------------------------------
      */
     public void addTo<$ToManyRelationship.name.initialCapitalString$>Relationship( <$ToManyRelationship.destinationEntity.referenceJavaClassName$> value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addTo<$ToManyRelationship.name.initialCapitalString$>Relationship("
+                + value + "): was " + <$ToManyRelationship.name$>() );
+        }
         addObjectToBothSidesOfRelationshipWithKey(
             value, "<$ToManyRelationship.name$>" );
     }
@@ -473,6 +628,11 @@ $>    // ----------------------------------------------------------
      */
     public void removeFrom<$ToManyRelationship.name.initialCapitalString$>Relationship( <$ToManyRelationship.destinationEntity.referenceJavaClassName$> value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFrom<$ToManyRelationship.name.initialCapitalString$>Relationship("
+                + value + "): was " + <$ToManyRelationship.name$>() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "<$ToManyRelationship.name$>" );
     }
@@ -494,6 +654,10 @@ $>    // ----------------------------------------------------------
      */
     public <$ToManyRelationship.destinationEntity.referenceJavaClassName$> create<$ToManyRelationship.name.initialCapitalString$>Relationship()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "create<$ToManyRelationship.name.initialCapitalString$>Relationship()" );
+        }
         EOClassDescription eoClassDesc = EOClassDescription
             .classDescriptionForEntityName( "<$ToManyRelationship.destinationEntity.name$>" );
         EOEnterpriseObject eoObject = eoClassDesc
@@ -514,6 +678,11 @@ $>    // ----------------------------------------------------------
      */
     public void delete<$ToManyRelationship.name.initialCapitalString$>Relationship( <$ToManyRelationship.destinationEntity.referenceJavaClassName$> value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "delete<$ToManyRelationship.name.initialCapitalString$>Relationship("
+                + value + "): was " + <$ToManyRelationship.name$>() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "<$ToManyRelationship.name$>" );<$
 if !ToManyRelationship.ownsDestination$>
@@ -528,6 +697,11 @@ if !ToManyRelationship.ownsDestination$>
      */
     public void deleteAll<$ToManyRelationship.name.initialCapitalString$>Relationships()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAll<$ToManyRelationship.name.initialCapitalString$>Relationships(): was "
+                + <$ToManyRelationship.name$>() );
+        }
         Enumeration objects = <$ToManyRelationship.name$>().objectEnumerator();
         while ( objects.hasMoreElements() )
             delete<$ToManyRelationship.name.initialCapitalString$>Relationship(
@@ -535,4 +709,43 @@ if !ToManyRelationship.ownsDestination$>
     }
 
 
-<$endforeach tomanyrels$>}
+<$endforeach tomanyrels$><$foreach FetchSpec javaBeautifiedFetchSpecificationDictionaries.@sortedNameArray fetchspec$>    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code><$FetchSpec.niceName$></code>
+     * fetch specification.
+     *
+     * @param context The editing context to use<$foreach Binding FetchSpec.bindings do2$>
+     * @param <$Binding.name$>Binding fetch spec parameter<$endforeach do2$>
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray objectsFor<$FetchSpec.niceName$>(
+            EOEditingContext context<$foreach Binding FetchSpec.bindings do2$>,
+            <$Binding.codeType$><$Binding.name$>Binding<$endforeach do2$>
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "<$FetchSpec.fetchName$>", "<$name$>" );
+<$if FetchSpec.bindings.@count > 0$>
+        NSMutableDictionary bindings = new NSMutableDictionary();
+<$foreach Binding FetchSpec.bindings do2$>
+        if ( <$Binding.name$>Binding != null )
+            bindings.setObjectForKey( <$Binding.name$>Binding,
+                                      "<$Binding.name$>" );<$endforeach do2$>
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+<$endif$>
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsFor<$FetchSpec.niceName$>(ec"
+            <$foreach Binding FetchSpec.bindings do2$>
+                + ", " + <$Binding.name$>Binding<$endforeach do2$>
+                + "): " + result );
+        }
+        return result;
+    }
+
+
+<$endforeach fetchspec$>    //~ Instance/static variables .............................................
+
+    static Logger log = Logger.getLogger( <$classNameWithoutPackage$>.class );
+}

@@ -30,7 +30,9 @@ package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.eoaccess.*;
 import java.util.Enumeration;
+import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -54,6 +56,96 @@ public abstract class _User
     public _User()
     {
         super();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new
+     * _User object given required
+     * attributes and relationships.
+     * @param editingContext The context in which the new object will be
+     * inserted
+     * @param accessLevel
+     * @param updateMutableFields
+     * @param userName
+     * @param authenticationDomain
+     * @return The newly created object
+     */
+    public static User createUser(
+        EOEditingContext editingContext,
+        byte accessLevel,
+        boolean updateMutableFields,
+        String userName,
+        net.sf.webcat.core.AuthenticationDomain authenticationDomain
+        )
+    {
+        User eoObject = (User)
+            EOUtilities.createAndInsertInstance(
+                editingContext,
+                _User.ENTITY_NAME);
+        eoObject.setAccessLevel(accessLevel);
+        eoObject.setUpdateMutableFields(updateMutableFields);
+        eoObject.setUserName(userName);
+        eoObject.setAuthenticationDomainRelationship(authenticationDomain);
+        return eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of the given object in another editing context.
+     * @param editingContext The target editing context
+     * @param eo The object to import
+     * @return An instance of the given object in the target editing context
+     */
+    public static User localInstance(
+        EOEditingContext editingContext, User eo)
+    {
+        return (eo == null)
+            ? null
+            : (User)EOUtilities.localInstanceOfObject(
+                editingContext, eo);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static User forId(
+        EOEditingContext ec, int id )
+    {
+        User obj = null;
+        if (id > 0)
+        {
+            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
+                ENTITY_NAME, "id", new Integer( id ) );
+            if ( results != null && results.count() > 0 )
+            {
+                obj = (User)results.objectAtIndex( 0 );
+            }
+        }
+        return obj;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static User forId(
+        EOEditingContext ec, String id )
+    {
+        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
     }
 
 
@@ -92,6 +184,50 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
+     * Get a local instance of this object in another editing context.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public User localInstance(EOEditingContext editingContext)
+    {
+        return (User)EOUtilities.localInstanceOfObject(
+            editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a list of changes between this object's current state and the
+     * last committed version.
+     * @return a dictionary of the changes that have not yet been committed
+     */
+    public NSDictionary changedProperties()
+    {
+        return changesFromSnapshot(
+            editingContext().committedSnapshotForObject(this) );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
+    }
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve this object's <code>accessLevel</code> value.
      * @return the value of the attribute
      */
@@ -114,6 +250,11 @@ public abstract class _User
      */
     public void setAccessLevel( byte value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setAccessLevel("
+                + value + "): was " + accessLevel() );
+        }
         Number actual =
             er.extensions.ERXConstant.integerForInt( value );
         setAccessLevelRaw( actual );
@@ -140,6 +281,11 @@ public abstract class _User
      */
     public void setAccessLevelRaw( Number value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setAccessLevelRaw("
+                + value + "): was " + accessLevelRaw() );
+        }
         takeStoredValueForKey( value, "accessLevel" );
     }
 
@@ -164,6 +310,11 @@ public abstract class _User
      */
     public void setEmail( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setEmail("
+                + value + "): was " + email() );
+        }
         takeStoredValueForKey( value, "email" );
     }
 
@@ -188,6 +339,11 @@ public abstract class _User
      */
     public void setFirstName( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setFirstName("
+                + value + "): was " + firstName() );
+        }
         takeStoredValueForKey( value, "firstName" );
     }
 
@@ -212,6 +368,11 @@ public abstract class _User
      */
     public void setLastName( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setLastName("
+                + value + "): was " + lastName() );
+        }
         takeStoredValueForKey( value, "lastName" );
     }
 
@@ -236,6 +397,11 @@ public abstract class _User
      */
     public void setPassword( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setPassword("
+                + value + "): was " + password() );
+        }
         takeStoredValueForKey( value, "password" );
     }
 
@@ -302,6 +468,11 @@ public abstract class _User
      */
     public void setPreferences( net.sf.webcat.core.MutableDictionary value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setPreferences("
+                + value + ")" );
+        }
         if ( preferencesCache == null )
         {
             preferencesCache = value;
@@ -328,6 +499,10 @@ public abstract class _User
      */
     public void clearPreferences()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "clearPreferences()" );
+        }
         takeStoredValueForKey( null, "preferences" );
         preferencesRawCache = null;
         preferencesCache = null;
@@ -354,6 +529,11 @@ public abstract class _User
      */
     public void setUniversityIDNo( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setUniversityIDNo("
+                + value + "): was " + universityIDNo() );
+        }
         takeStoredValueForKey( value, "universityIDNo" );
     }
 
@@ -382,6 +562,11 @@ public abstract class _User
      */
     public void setUpdateMutableFields( boolean value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setUpdateMutableFields("
+                + value + "): was " + updateMutableFields() );
+        }
         Number actual =
             er.extensions.ERXConstant.integerForInt( value ? 1 : 0 );
         setUpdateMutableFieldsRaw( actual );
@@ -408,6 +593,11 @@ public abstract class _User
      */
     public void setUpdateMutableFieldsRaw( Number value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setUpdateMutableFieldsRaw("
+                + value + "): was " + updateMutableFieldsRaw() );
+        }
         takeStoredValueForKey( value, "updateMutableFields" );
     }
 
@@ -432,6 +622,11 @@ public abstract class _User
      */
     public void setUrl( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setUrl("
+                + value + "): was " + url() );
+        }
         takeStoredValueForKey( value, "url" );
     }
 
@@ -456,6 +651,11 @@ public abstract class _User
      */
     public void setUserName( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setUserName("
+                + value + "): was " + userName() );
+        }
         takeStoredValueForKey( value, "userName" );
     }
 
@@ -466,6 +666,7 @@ public abstract class _User
      */
     public void saveMutables()
     {
+        log.debug("saveMutables()");
         if ( preferencesCache != null
             && preferencesCache.hasChanged() )
         {
@@ -484,6 +685,7 @@ public abstract class _User
      */
     public void willUpdate()
     {
+        log.debug("willUpdate()");
         saveMutables();
         super.willUpdate();
     }
@@ -495,6 +697,7 @@ public abstract class _User
      */
     public void willInsert()
     {
+        log.debug("willInsert()");
         saveMutables();
         super.willInsert();
     }
@@ -506,6 +709,7 @@ public abstract class _User
      */
     public void flushCaches()
     {
+        log.debug("flushCaches()");
         preferencesCache = null;
         preferencesRawCache  = null;
         setUpdateMutableFields( false );
@@ -520,189 +724,6 @@ public abstract class _User
     public void mutableContainerHasChanged()
     {
         setUpdateMutableFields( true );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve object according to the <code>CourseParticipants</code>
-     * fetch specification.
-     *
-     * @param context The editing context to use
-     * @param courseOfferingBinding fetch spec parameter
-     * @param accessLevelBinding fetch spec parameter
-     * @return an NSArray of the entities retrieved
-     */
-    public static NSArray objectsForCourseParticipants(
-            EOEditingContext context,
-            net.sf.webcat.core.CourseOffering courseOfferingBinding,
-            Number accessLevelBinding
-        )
-    {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "courseParticipants", "User" );
-
-        NSMutableDictionary bindings = new NSMutableDictionary();
-
-        if ( courseOfferingBinding != null )
-            bindings.setObjectForKey( courseOfferingBinding,
-                                      "courseOffering" );
-        if ( accessLevelBinding != null )
-            bindings.setObjectForKey( accessLevelBinding,
-                                      "accessLevel" );
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
-
-        return context.objectsWithFetchSpecification( spec );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve object according to the <code>EmailAndDomain</code>
-     * fetch specification.
-     *
-     * @param context The editing context to use
-     * @param emailBinding fetch spec parameter
-     * @param domainBinding fetch spec parameter
-     * @return an NSArray of the entities retrieved
-     */
-    public static NSArray objectsForEmailAndDomain(
-            EOEditingContext context,
-            String emailBinding,
-            net.sf.webcat.core.AuthenticationDomain domainBinding
-        )
-    {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "emailAndDomain", "User" );
-
-        NSMutableDictionary bindings = new NSMutableDictionary();
-
-        if ( emailBinding != null )
-            bindings.setObjectForKey( emailBinding,
-                                      "email" );
-        if ( domainBinding != null )
-            bindings.setObjectForKey( domainBinding,
-                                      "domain" );
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
-
-        return context.objectsWithFetchSpecification( spec );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve object according to the <code>NameAndDomain</code>
-     * fetch specification.
-     *
-     * @param context The editing context to use
-     * @param userNameBinding fetch spec parameter
-     * @param domainBinding fetch spec parameter
-     * @return an NSArray of the entities retrieved
-     */
-    public static NSArray objectsForNameAndDomain(
-            EOEditingContext context,
-            String userNameBinding,
-            net.sf.webcat.core.AuthenticationDomain domainBinding
-        )
-    {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "nameAndDomain", "User" );
-
-        NSMutableDictionary bindings = new NSMutableDictionary();
-
-        if ( userNameBinding != null )
-            bindings.setObjectForKey( userNameBinding,
-                                      "userName" );
-        if ( domainBinding != null )
-            bindings.setObjectForKey( domainBinding,
-                                      "domain" );
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
-
-        return context.objectsWithFetchSpecification( spec );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve object according to the <code>StaffForCourse</code>
-     * fetch specification.
-     *
-     * @param context The editing context to use
-     * @param courseOfferingBinding fetch spec parameter
-     * @return an NSArray of the entities retrieved
-     */
-    public static NSArray objectsForStaffForCourse(
-            EOEditingContext context,
-            net.sf.webcat.core.CourseOffering courseOfferingBinding
-        )
-    {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "staffForCourse", "User" );
-
-        NSMutableDictionary bindings = new NSMutableDictionary();
-
-        if ( courseOfferingBinding != null )
-            bindings.setObjectForKey( courseOfferingBinding,
-                                      "courseOffering" );
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
-
-        return context.objectsWithFetchSpecification( spec );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve object according to the <code>StudentsForCourse</code>
-     * fetch specification.
-     *
-     * @param context The editing context to use
-     * @param courseOfferingBinding fetch spec parameter
-     * @return an NSArray of the entities retrieved
-     */
-    public static NSArray objectsForStudentsForCourse(
-            EOEditingContext context,
-            net.sf.webcat.core.CourseOffering courseOfferingBinding
-        )
-    {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "studentsForCourse", "User" );
-
-        NSMutableDictionary bindings = new NSMutableDictionary();
-
-        if ( courseOfferingBinding != null )
-            bindings.setObjectForKey( courseOfferingBinding,
-                                      "courseOffering" );
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
-
-        return context.objectsWithFetchSpecification( spec );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve object according to the <code>UserWithName</code>
-     * fetch specification.
-     *
-     * @param context The editing context to use
-     * @param nameBinding fetch spec parameter
-     * @return an NSArray of the entities retrieved
-     */
-    public static NSArray objectsForUserWithName(
-            EOEditingContext context,
-            String nameBinding
-        )
-    {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "userWithName", "User" );
-
-        NSMutableDictionary bindings = new NSMutableDictionary();
-
-        if ( nameBinding != null )
-            bindings.setObjectForKey( nameBinding,
-                                      "name" );
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
-
-        return context.objectsWithFetchSpecification( spec );
     }
 
 
@@ -729,6 +750,11 @@ public abstract class _User
      */
     public void setAuthenticationDomain( net.sf.webcat.core.AuthenticationDomain value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setAuthenticationDomain("
+                + value + "): was " + authenticationDomain() );
+        }
         takeStoredValueForKey( value, "authenticationDomain" );
     }
 
@@ -744,6 +770,11 @@ public abstract class _User
     public void setAuthenticationDomainRelationship(
         net.sf.webcat.core.AuthenticationDomain value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setAuthenticationDomainRelationship("
+                + value + "): was " + authenticationDomain() );
+        }
         if ( value == null )
         {
             net.sf.webcat.core.AuthenticationDomain object = authenticationDomain();
@@ -778,6 +809,11 @@ public abstract class _User
      */
     public void setTAFor( NSMutableArray value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setTAFor("
+                + value + "): was " + TAFor() );
+        }
         takeStoredValueForKey( value, "TAFor" );
     }
 
@@ -793,6 +829,11 @@ public abstract class _User
      */
     public void addToTAFor( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToTAFor("
+                + value + "): was " + TAFor() );
+        }
         NSMutableArray array = (NSMutableArray)TAFor();
         willChange();
         array.addObject( value );
@@ -810,6 +851,11 @@ public abstract class _User
      */
     public void removeFromTAFor( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromTAFor("
+                + value + "): was " + TAFor() );
+        }
         NSMutableArray array = (NSMutableArray)TAFor();
         willChange();
         array.removeObject( value );
@@ -825,6 +871,11 @@ public abstract class _User
      */
     public void addToTAForRelationship( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToTAForRelationship("
+                + value + "): was " + TAFor() );
+        }
         addObjectToBothSidesOfRelationshipWithKey(
             value, "TAFor" );
     }
@@ -839,6 +890,11 @@ public abstract class _User
      */
     public void removeFromTAForRelationship( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromTAForRelationship("
+                + value + "): was " + TAFor() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "TAFor" );
     }
@@ -853,6 +909,10 @@ public abstract class _User
      */
     public net.sf.webcat.core.CourseOffering createTAForRelationship()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createTAForRelationship()" );
+        }
         EOClassDescription eoClassDesc = EOClassDescription
             .classDescriptionForEntityName( "CourseOffering" );
         EOEnterpriseObject eoObject = eoClassDesc
@@ -873,6 +933,11 @@ public abstract class _User
      */
     public void deleteTAForRelationship( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteTAForRelationship("
+                + value + "): was " + TAFor() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "TAFor" );
         editingContext().deleteObject( value );
@@ -886,6 +951,11 @@ public abstract class _User
      */
     public void deleteAllTAForRelationships()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllTAForRelationships(): was "
+                + TAFor() );
+        }
         Enumeration objects = TAFor().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteTAForRelationship(
@@ -914,6 +984,11 @@ public abstract class _User
      */
     public void setCoreSelections( NSMutableArray value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setCoreSelections("
+                + value + "): was " + coreSelections() );
+        }
         takeStoredValueForKey( value, "coreSelections" );
     }
 
@@ -929,6 +1004,11 @@ public abstract class _User
      */
     public void addToCoreSelections( net.sf.webcat.core.CoreSelections value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToCoreSelections("
+                + value + "): was " + coreSelections() );
+        }
         NSMutableArray array = (NSMutableArray)coreSelections();
         willChange();
         array.addObject( value );
@@ -946,6 +1026,11 @@ public abstract class _User
      */
     public void removeFromCoreSelections( net.sf.webcat.core.CoreSelections value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromCoreSelections("
+                + value + "): was " + coreSelections() );
+        }
         NSMutableArray array = (NSMutableArray)coreSelections();
         willChange();
         array.removeObject( value );
@@ -961,6 +1046,11 @@ public abstract class _User
      */
     public void addToCoreSelectionsRelationship( net.sf.webcat.core.CoreSelections value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToCoreSelectionsRelationship("
+                + value + "): was " + coreSelections() );
+        }
         addObjectToBothSidesOfRelationshipWithKey(
             value, "coreSelections" );
     }
@@ -975,6 +1065,11 @@ public abstract class _User
      */
     public void removeFromCoreSelectionsRelationship( net.sf.webcat.core.CoreSelections value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromCoreSelectionsRelationship("
+                + value + "): was " + coreSelections() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "coreSelections" );
     }
@@ -989,6 +1084,10 @@ public abstract class _User
      */
     public net.sf.webcat.core.CoreSelections createCoreSelectionsRelationship()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createCoreSelectionsRelationship()" );
+        }
         EOClassDescription eoClassDesc = EOClassDescription
             .classDescriptionForEntityName( "CoreSelections" );
         EOEnterpriseObject eoObject = eoClassDesc
@@ -1009,6 +1108,11 @@ public abstract class _User
      */
     public void deleteCoreSelectionsRelationship( net.sf.webcat.core.CoreSelections value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteCoreSelectionsRelationship("
+                + value + "): was " + coreSelections() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "coreSelections" );
         editingContext().deleteObject( value );
@@ -1022,6 +1126,11 @@ public abstract class _User
      */
     public void deleteAllCoreSelectionsRelationships()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllCoreSelectionsRelationships(): was "
+                + coreSelections() );
+        }
         Enumeration objects = coreSelections().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteCoreSelectionsRelationship(
@@ -1050,6 +1159,11 @@ public abstract class _User
      */
     public void setEnrolledIn( NSMutableArray value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setEnrolledIn("
+                + value + "): was " + enrolledIn() );
+        }
         takeStoredValueForKey( value, "enrolledIn" );
     }
 
@@ -1065,6 +1179,11 @@ public abstract class _User
      */
     public void addToEnrolledIn( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToEnrolledIn("
+                + value + "): was " + enrolledIn() );
+        }
         NSMutableArray array = (NSMutableArray)enrolledIn();
         willChange();
         array.addObject( value );
@@ -1082,6 +1201,11 @@ public abstract class _User
      */
     public void removeFromEnrolledIn( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromEnrolledIn("
+                + value + "): was " + enrolledIn() );
+        }
         NSMutableArray array = (NSMutableArray)enrolledIn();
         willChange();
         array.removeObject( value );
@@ -1097,6 +1221,11 @@ public abstract class _User
      */
     public void addToEnrolledInRelationship( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToEnrolledInRelationship("
+                + value + "): was " + enrolledIn() );
+        }
         addObjectToBothSidesOfRelationshipWithKey(
             value, "enrolledIn" );
     }
@@ -1111,6 +1240,11 @@ public abstract class _User
      */
     public void removeFromEnrolledInRelationship( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromEnrolledInRelationship("
+                + value + "): was " + enrolledIn() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "enrolledIn" );
     }
@@ -1125,6 +1259,10 @@ public abstract class _User
      */
     public net.sf.webcat.core.CourseOffering createEnrolledInRelationship()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createEnrolledInRelationship()" );
+        }
         EOClassDescription eoClassDesc = EOClassDescription
             .classDescriptionForEntityName( "CourseOffering" );
         EOEnterpriseObject eoObject = eoClassDesc
@@ -1145,6 +1283,11 @@ public abstract class _User
      */
     public void deleteEnrolledInRelationship( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteEnrolledInRelationship("
+                + value + "): was " + enrolledIn() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "enrolledIn" );
         editingContext().deleteObject( value );
@@ -1158,6 +1301,11 @@ public abstract class _User
      */
     public void deleteAllEnrolledInRelationships()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllEnrolledInRelationships(): was "
+                + enrolledIn() );
+        }
         Enumeration objects = enrolledIn().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteEnrolledInRelationship(
@@ -1186,6 +1334,11 @@ public abstract class _User
      */
     public void setPasswordChangeRequest( NSMutableArray value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setPasswordChangeRequest("
+                + value + "): was " + passwordChangeRequest() );
+        }
         takeStoredValueForKey( value, "passwordChangeRequest" );
     }
 
@@ -1201,6 +1354,11 @@ public abstract class _User
      */
     public void addToPasswordChangeRequest( net.sf.webcat.core.PasswordChangeRequest value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToPasswordChangeRequest("
+                + value + "): was " + passwordChangeRequest() );
+        }
         NSMutableArray array = (NSMutableArray)passwordChangeRequest();
         willChange();
         array.addObject( value );
@@ -1218,6 +1376,11 @@ public abstract class _User
      */
     public void removeFromPasswordChangeRequest( net.sf.webcat.core.PasswordChangeRequest value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromPasswordChangeRequest("
+                + value + "): was " + passwordChangeRequest() );
+        }
         NSMutableArray array = (NSMutableArray)passwordChangeRequest();
         willChange();
         array.removeObject( value );
@@ -1233,6 +1396,11 @@ public abstract class _User
      */
     public void addToPasswordChangeRequestRelationship( net.sf.webcat.core.PasswordChangeRequest value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToPasswordChangeRequestRelationship("
+                + value + "): was " + passwordChangeRequest() );
+        }
         addObjectToBothSidesOfRelationshipWithKey(
             value, "passwordChangeRequest" );
     }
@@ -1247,6 +1415,11 @@ public abstract class _User
      */
     public void removeFromPasswordChangeRequestRelationship( net.sf.webcat.core.PasswordChangeRequest value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromPasswordChangeRequestRelationship("
+                + value + "): was " + passwordChangeRequest() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "passwordChangeRequest" );
     }
@@ -1261,6 +1434,10 @@ public abstract class _User
      */
     public net.sf.webcat.core.PasswordChangeRequest createPasswordChangeRequestRelationship()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createPasswordChangeRequestRelationship()" );
+        }
         EOClassDescription eoClassDesc = EOClassDescription
             .classDescriptionForEntityName( "PasswordChangeRequest" );
         EOEnterpriseObject eoObject = eoClassDesc
@@ -1281,6 +1458,11 @@ public abstract class _User
      */
     public void deletePasswordChangeRequestRelationship( net.sf.webcat.core.PasswordChangeRequest value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deletePasswordChangeRequestRelationship("
+                + value + "): was " + passwordChangeRequest() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "passwordChangeRequest" );
         editingContext().deleteObject( value );
@@ -1294,6 +1476,11 @@ public abstract class _User
      */
     public void deleteAllPasswordChangeRequestRelationships()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllPasswordChangeRequestRelationships(): was "
+                + passwordChangeRequest() );
+        }
         Enumeration objects = passwordChangeRequest().objectEnumerator();
         while ( objects.hasMoreElements() )
             deletePasswordChangeRequestRelationship(
@@ -1322,6 +1509,11 @@ public abstract class _User
      */
     public void setTeaching( NSMutableArray value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setTeaching("
+                + value + "): was " + teaching() );
+        }
         takeStoredValueForKey( value, "teaching" );
     }
 
@@ -1337,6 +1529,11 @@ public abstract class _User
      */
     public void addToTeaching( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToTeaching("
+                + value + "): was " + teaching() );
+        }
         NSMutableArray array = (NSMutableArray)teaching();
         willChange();
         array.addObject( value );
@@ -1354,6 +1551,11 @@ public abstract class _User
      */
     public void removeFromTeaching( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromTeaching("
+                + value + "): was " + teaching() );
+        }
         NSMutableArray array = (NSMutableArray)teaching();
         willChange();
         array.removeObject( value );
@@ -1369,6 +1571,11 @@ public abstract class _User
      */
     public void addToTeachingRelationship( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToTeachingRelationship("
+                + value + "): was " + teaching() );
+        }
         addObjectToBothSidesOfRelationshipWithKey(
             value, "teaching" );
     }
@@ -1383,6 +1590,11 @@ public abstract class _User
      */
     public void removeFromTeachingRelationship( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromTeachingRelationship("
+                + value + "): was " + teaching() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "teaching" );
     }
@@ -1397,6 +1609,10 @@ public abstract class _User
      */
     public net.sf.webcat.core.CourseOffering createTeachingRelationship()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createTeachingRelationship()" );
+        }
         EOClassDescription eoClassDesc = EOClassDescription
             .classDescriptionForEntityName( "CourseOffering" );
         EOEnterpriseObject eoObject = eoClassDesc
@@ -1417,6 +1633,11 @@ public abstract class _User
      */
     public void deleteTeachingRelationship( net.sf.webcat.core.CourseOffering value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteTeachingRelationship("
+                + value + "): was " + teaching() );
+        }
         removeObjectFromBothSidesOfRelationshipWithKey(
             value, "teaching" );
         editingContext().deleteObject( value );
@@ -1430,6 +1651,11 @@ public abstract class _User
      */
     public void deleteAllTeachingRelationships()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllTeachingRelationships(): was "
+                + teaching() );
+        }
         Enumeration objects = teaching().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteTeachingRelationship(
@@ -1437,4 +1663,241 @@ public abstract class _User
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code>CourseParticipants</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param courseOfferingBinding fetch spec parameter
+     * @param accessLevelBinding fetch spec parameter
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray objectsForCourseParticipants(
+            EOEditingContext context,
+            net.sf.webcat.core.CourseOffering courseOfferingBinding,
+            Number accessLevelBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "courseParticipants", "User" );
+
+        NSMutableDictionary bindings = new NSMutableDictionary();
+
+        if ( courseOfferingBinding != null )
+            bindings.setObjectForKey( courseOfferingBinding,
+                                      "courseOffering" );
+        if ( accessLevelBinding != null )
+            bindings.setObjectForKey( accessLevelBinding,
+                                      "accessLevel" );
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForCourseParticipants(ec"
+            
+                + ", " + courseOfferingBinding
+                + ", " + accessLevelBinding
+                + "): " + result );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code>EmailAndDomain</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param emailBinding fetch spec parameter
+     * @param domainBinding fetch spec parameter
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray objectsForEmailAndDomain(
+            EOEditingContext context,
+            String emailBinding,
+            net.sf.webcat.core.AuthenticationDomain domainBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "emailAndDomain", "User" );
+
+        NSMutableDictionary bindings = new NSMutableDictionary();
+
+        if ( emailBinding != null )
+            bindings.setObjectForKey( emailBinding,
+                                      "email" );
+        if ( domainBinding != null )
+            bindings.setObjectForKey( domainBinding,
+                                      "domain" );
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForEmailAndDomain(ec"
+            
+                + ", " + emailBinding
+                + ", " + domainBinding
+                + "): " + result );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code>NameAndDomain</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param userNameBinding fetch spec parameter
+     * @param domainBinding fetch spec parameter
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray objectsForNameAndDomain(
+            EOEditingContext context,
+            String userNameBinding,
+            net.sf.webcat.core.AuthenticationDomain domainBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "nameAndDomain", "User" );
+
+        NSMutableDictionary bindings = new NSMutableDictionary();
+
+        if ( userNameBinding != null )
+            bindings.setObjectForKey( userNameBinding,
+                                      "userName" );
+        if ( domainBinding != null )
+            bindings.setObjectForKey( domainBinding,
+                                      "domain" );
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForNameAndDomain(ec"
+            
+                + ", " + userNameBinding
+                + ", " + domainBinding
+                + "): " + result );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code>StaffForCourse</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param courseOfferingBinding fetch spec parameter
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray objectsForStaffForCourse(
+            EOEditingContext context,
+            net.sf.webcat.core.CourseOffering courseOfferingBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "staffForCourse", "User" );
+
+        NSMutableDictionary bindings = new NSMutableDictionary();
+
+        if ( courseOfferingBinding != null )
+            bindings.setObjectForKey( courseOfferingBinding,
+                                      "courseOffering" );
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForStaffForCourse(ec"
+            
+                + ", " + courseOfferingBinding
+                + "): " + result );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code>StudentsForCourse</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param courseOfferingBinding fetch spec parameter
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray objectsForStudentsForCourse(
+            EOEditingContext context,
+            net.sf.webcat.core.CourseOffering courseOfferingBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "studentsForCourse", "User" );
+
+        NSMutableDictionary bindings = new NSMutableDictionary();
+
+        if ( courseOfferingBinding != null )
+            bindings.setObjectForKey( courseOfferingBinding,
+                                      "courseOffering" );
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForStudentsForCourse(ec"
+            
+                + ", " + courseOfferingBinding
+                + "): " + result );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code>UserWithName</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param nameBinding fetch spec parameter
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray objectsForUserWithName(
+            EOEditingContext context,
+            String nameBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "userWithName", "User" );
+
+        NSMutableDictionary bindings = new NSMutableDictionary();
+
+        if ( nameBinding != null )
+            bindings.setObjectForKey( nameBinding,
+                                      "name" );
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForUserWithName(ec"
+            
+                + ", " + nameBinding
+                + "): " + result );
+        }
+        return result;
+    }
+
+
+    //~ Instance/static variables .............................................
+
+    static Logger log = Logger.getLogger( User.class );
 }

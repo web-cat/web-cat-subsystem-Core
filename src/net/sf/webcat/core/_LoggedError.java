@@ -30,7 +30,9 @@ package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.eoaccess.*;
 import java.util.Enumeration;
+import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -53,6 +55,90 @@ public abstract class _LoggedError
     public _LoggedError()
     {
         super();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new
+     * _LoggedError object given required
+     * attributes and relationships.
+     * @param editingContext The context in which the new object will be
+     * inserted
+     * @param line
+     * @param occurrences
+     * @return The newly created object
+     */
+    public static LoggedError createLoggedError(
+        EOEditingContext editingContext,
+        int line,
+        int occurrences
+        )
+    {
+        LoggedError eoObject = (LoggedError)
+            EOUtilities.createAndInsertInstance(
+                editingContext,
+                _LoggedError.ENTITY_NAME);
+        eoObject.setLine(line);
+        eoObject.setOccurrences(occurrences);
+        return eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of the given object in another editing context.
+     * @param editingContext The target editing context
+     * @param eo The object to import
+     * @return An instance of the given object in the target editing context
+     */
+    public static LoggedError localInstance(
+        EOEditingContext editingContext, LoggedError eo)
+    {
+        return (eo == null)
+            ? null
+            : (LoggedError)EOUtilities.localInstanceOfObject(
+                editingContext, eo);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static LoggedError forId(
+        EOEditingContext ec, int id )
+    {
+        LoggedError obj = null;
+        if (id > 0)
+        {
+            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
+                ENTITY_NAME, "id", new Integer( id ) );
+            if ( results != null && results.count() > 0 )
+            {
+                obj = (LoggedError)results.objectAtIndex( 0 );
+            }
+        }
+        return obj;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static LoggedError forId(
+        EOEditingContext ec, String id )
+    {
+        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
     }
 
 
@@ -80,6 +166,50 @@ public abstract class _LoggedError
 
     // ----------------------------------------------------------
     /**
+     * Get a local instance of this object in another editing context.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public LoggedError localInstance(EOEditingContext editingContext)
+    {
+        return (LoggedError)EOUtilities.localInstanceOfObject(
+            editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a list of changes between this object's current state and the
+     * last committed version.
+     * @return a dictionary of the changes that have not yet been committed
+     */
+    public NSDictionary changedProperties()
+    {
+        return changesFromSnapshot(
+            editingContext().committedSnapshotForObject(this) );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
+    }
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve this object's <code>component</code> value.
      * @return the value of the attribute
      */
@@ -98,6 +228,11 @@ public abstract class _LoggedError
      */
     public void setComponent( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setComponent("
+                + value + "): was " + component() );
+        }
         takeStoredValueForKey( value, "component" );
     }
 
@@ -122,6 +257,11 @@ public abstract class _LoggedError
      */
     public void setExceptionName( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setExceptionName("
+                + value + "): was " + exceptionName() );
+        }
         takeStoredValueForKey( value, "exceptionName" );
     }
 
@@ -146,6 +286,11 @@ public abstract class _LoggedError
      */
     public void setInClass( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setInClass("
+                + value + "): was " + inClass() );
+        }
         takeStoredValueForKey( value, "inClass" );
     }
 
@@ -170,6 +315,11 @@ public abstract class _LoggedError
      */
     public void setInMethod( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setInMethod("
+                + value + "): was " + inMethod() );
+        }
         takeStoredValueForKey( value, "inMethod" );
     }
 
@@ -198,6 +348,11 @@ public abstract class _LoggedError
      */
     public void setLine( int value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setLine("
+                + value + "): was " + line() );
+        }
         Number actual =
             er.extensions.ERXConstant.integerForInt( value );
         setLineRaw( actual );
@@ -224,6 +379,11 @@ public abstract class _LoggedError
      */
     public void setLineRaw( Number value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setLineRaw("
+                + value + "): was " + lineRaw() );
+        }
         takeStoredValueForKey( value, "line" );
     }
 
@@ -248,6 +408,11 @@ public abstract class _LoggedError
      */
     public void setMessage( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setMessage("
+                + value + "): was " + message() );
+        }
         takeStoredValueForKey( value, "message" );
     }
 
@@ -272,6 +437,11 @@ public abstract class _LoggedError
      */
     public void setMostRecent( NSTimestamp value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setMostRecent("
+                + value + "): was " + mostRecent() );
+        }
         takeStoredValueForKey( value, "mostRecent" );
     }
 
@@ -300,6 +470,11 @@ public abstract class _LoggedError
      */
     public void setOccurrences( int value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setOccurrences("
+                + value + "): was " + occurrences() );
+        }
         Number actual =
             er.extensions.ERXConstant.integerForInt( value );
         setOccurrencesRaw( actual );
@@ -326,6 +501,11 @@ public abstract class _LoggedError
      */
     public void setOccurrencesRaw( Number value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setOccurrencesRaw("
+                + value + "): was " + occurrencesRaw() );
+        }
         takeStoredValueForKey( value, "occurrences" );
     }
 
@@ -350,6 +530,11 @@ public abstract class _LoggedError
      */
     public void setPage( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setPage("
+                + value + "): was " + page() );
+        }
         takeStoredValueForKey( value, "page" );
     }
 
@@ -374,6 +559,11 @@ public abstract class _LoggedError
      */
     public void setStackTrace( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setStackTrace("
+                + value + "): was " + stackTrace() );
+        }
         takeStoredValueForKey( value, "stackTrace" );
     }
 
@@ -417,8 +607,22 @@ public abstract class _LoggedError
                                       "name" );
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        return context.objectsWithFetchSpecification( spec );
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForExceptionLocation(ec"
+            
+                + ", " + lineBinding
+                + ", " + methodBinding
+                + ", " + classBinding
+                + ", " + nameBinding
+                + "): " + result );
+        }
+        return result;
     }
 
 
+    //~ Instance/static variables .............................................
+
+    static Logger log = Logger.getLogger( LoggedError.class );
 }

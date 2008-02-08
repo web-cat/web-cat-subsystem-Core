@@ -30,7 +30,9 @@ package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.eoaccess.*;
 import java.util.Enumeration;
+import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -56,6 +58,87 @@ public abstract class _PasswordChangeRequest
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new
+     * _PasswordChangeRequest object given required
+     * attributes and relationships.
+     * @param editingContext The context in which the new object will be
+     * inserted
+     * @param user
+     * @return The newly created object
+     */
+    public static PasswordChangeRequest createPasswordChangeRequest(
+        EOEditingContext editingContext,
+        net.sf.webcat.core.User user
+        )
+    {
+        PasswordChangeRequest eoObject = (PasswordChangeRequest)
+            EOUtilities.createAndInsertInstance(
+                editingContext,
+                _PasswordChangeRequest.ENTITY_NAME);
+        eoObject.setUserRelationship(user);
+        return eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of the given object in another editing context.
+     * @param editingContext The target editing context
+     * @param eo The object to import
+     * @return An instance of the given object in the target editing context
+     */
+    public static PasswordChangeRequest localInstance(
+        EOEditingContext editingContext, PasswordChangeRequest eo)
+    {
+        return (eo == null)
+            ? null
+            : (PasswordChangeRequest)EOUtilities.localInstanceOfObject(
+                editingContext, eo);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static PasswordChangeRequest forId(
+        EOEditingContext ec, int id )
+    {
+        PasswordChangeRequest obj = null;
+        if (id > 0)
+        {
+            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
+                ENTITY_NAME, "id", new Integer( id ) );
+            if ( results != null && results.count() > 0 )
+            {
+                obj = (PasswordChangeRequest)results.objectAtIndex( 0 );
+            }
+        }
+        return obj;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static PasswordChangeRequest forId(
+        EOEditingContext ec, String id )
+    {
+        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
+    }
+
+
     //~ Constants (for key names) .............................................
 
     // Attributes ---
@@ -72,6 +155,50 @@ public abstract class _PasswordChangeRequest
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Get a local instance of this object in another editing context.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public PasswordChangeRequest localInstance(EOEditingContext editingContext)
+    {
+        return (PasswordChangeRequest)EOUtilities.localInstanceOfObject(
+            editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a list of changes between this object's current state and the
+     * last committed version.
+     * @return a dictionary of the changes that have not yet been committed
+     */
+    public NSDictionary changedProperties()
+    {
+        return changesFromSnapshot(
+            editingContext().committedSnapshotForObject(this) );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
+    {
+        try
+        {
+            return (Number)EOUtilities.primaryKeyForObject(
+                editingContext() , this ).objectForKey( "id" );
+        }
+        catch (Exception e)
+        {
+            return er.extensions.ERXConstant.ZeroInteger;
+        }
+    }
 
     // ----------------------------------------------------------
     /**
@@ -93,6 +220,11 @@ public abstract class _PasswordChangeRequest
      */
     public void setCode( String value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setCode("
+                + value + "): was " + code() );
+        }
         takeStoredValueForKey( value, "code" );
     }
 
@@ -117,7 +249,73 @@ public abstract class _PasswordChangeRequest
      */
     public void setExpireTime( NSTimestamp value )
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setExpireTime("
+                + value + "): was " + expireTime() );
+        }
         takeStoredValueForKey( value, "expireTime" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the entity pointed to by the <code>user</code>
+     * relationship.
+     * @return the entity in the relationship
+     */
+    public net.sf.webcat.core.User user()
+    {
+        return (net.sf.webcat.core.User)storedValueForKey( "user" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the entity pointed to by the <code>user</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>setUserRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void setUser( net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setUser("
+                + value + "): was " + user() );
+        }
+        takeStoredValueForKey( value, "user" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the entity pointed to by the <code>user</code>
+     * relationship.  This method is a type-safe version of
+     * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
+     *
+     * @param value The new entity to relate to
+     */
+    public void setUserRelationship(
+        net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setUserRelationship("
+                + value + "): was " + user() );
+        }
+        if ( value == null )
+        {
+            net.sf.webcat.core.User object = user();
+            if ( object != null )
+                removeObjectFromBothSidesOfRelationshipWithKey( object, "user" );
+        }
+        else
+        {
+            addObjectToBothSidesOfRelationshipWithKey( value, "user" );
+        }
     }
 
 
@@ -145,7 +343,15 @@ public abstract class _PasswordChangeRequest
                                       "code" );
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        return context.objectsWithFetchSpecification( spec );
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForCode(ec"
+            
+                + ", " + codeBinding
+                + "): " + result );
+        }
+        return result;
     }
 
 
@@ -173,7 +379,15 @@ public abstract class _PasswordChangeRequest
                                       "time" );
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        return context.objectsWithFetchSpecification( spec );
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForExpiredBefore(ec"
+            
+                + ", " + timeBinding
+                + "): " + result );
+        }
+        return result;
     }
 
 
@@ -201,59 +415,19 @@ public abstract class _PasswordChangeRequest
                                       "user" );
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        return context.objectsWithFetchSpecification( spec );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve the entity pointed to by the <code>user</code>
-     * relationship.
-     * @return the entity in the relationship
-     */
-    public net.sf.webcat.core.User user()
-    {
-        return (net.sf.webcat.core.User)storedValueForKey( "user" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Set the entity pointed to by the <code>user</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>setUserRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The new entity to relate to
-     */
-    public void setUser( net.sf.webcat.core.User value )
-    {
-        takeStoredValueForKey( value, "user" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Set the entity pointed to by the <code>user</code>
-     * relationship.  This method is a type-safe version of
-     * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
-     *
-     * @param value The new entity to relate to
-     */
-    public void setUserRelationship(
-        net.sf.webcat.core.User value )
-    {
-        if ( value == null )
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
         {
-            net.sf.webcat.core.User object = user();
-            if ( object != null )
-                removeObjectFromBothSidesOfRelationshipWithKey( object, "user" );
+            log.debug( "objectsForUser(ec"
+            
+                + ", " + userBinding
+                + "): " + result );
         }
-        else
-        {
-            addObjectToBothSidesOfRelationshipWithKey( value, "user" );
-        }
+        return result;
     }
 
 
+    //~ Instance/static variables .............................................
+
+    static Logger log = Logger.getLogger( PasswordChangeRequest.class );
 }
