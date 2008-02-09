@@ -82,7 +82,7 @@ public class WCComponent
 
     //~ KVC Attributes (must be public) .......................................
 
-    public WCComponent          nextPage;
+    public WCComponent   nextPage;
 
 
     //~ Public Methods ........................................................
@@ -202,8 +202,33 @@ public class WCComponent
      */
     public String feedbackId()
     {
-        // TODO:
         return this.getClass().getName();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get the selected tab that corresponds to this component's page.
+     * @return this page's navigation tab
+     */
+    public TabDescriptor currentTab()
+    {
+        if (currentTab == null)
+        {
+            currentTab = wcSession().tabs.selectedDescendant();
+        }
+        return currentTab;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the tab that corresponds to this component's page.
+     * @param current this page's navigation tab
+     */
+    public void currentTab(TabDescriptor current)
+    {
+        currentTab = current;
     }
 
 
@@ -250,7 +275,7 @@ public class WCComponent
     {
         clearMessages();
         cancelLocalChanges();
-        TabDescriptor parent = wcSession().currentTab().parent();
+        TabDescriptor parent = currentTab().parent();
         if ( parent.parent().parent() != null )
         {
             // If we're on a third-level tab, jump up one level so that
@@ -276,8 +301,7 @@ public class WCComponent
      */
     public boolean backEnabled()
     {
-        return nextPage != null
-            || wcSession().currentTab().hasPreviousSibling();
+        return nextPage != null || currentTab().hasPreviousSibling();
     }
 
 
@@ -306,8 +330,8 @@ public class WCComponent
         }
         else
         {
-            return pageWithName( wcSession().currentTab().previousSibling()
-                .select().pageName() );
+            return pageWithName(
+                currentTab().previousSibling().select().pageName() );
         }
     }
 
@@ -328,8 +352,7 @@ public class WCComponent
     public boolean nextEnabled()
     {
         return !hasBlockingErrors()
-            && ( nextPage != null
-               || wcSession().currentTab().hasNextSibling() );
+            && ( nextPage != null || currentTab().hasNextSibling() );
     }
 
 
@@ -358,8 +381,8 @@ public class WCComponent
         }
         else
         {
-            return pageWithName( wcSession().currentTab().nextSibling()
-                                 .select().pageName() );
+            return pageWithName(
+                currentTab().nextSibling().select().pageName() );
         }
     }
 
@@ -477,7 +500,7 @@ public class WCComponent
     {
         if ( applyLocalChanges() && !hasMessages() )
         {
-            TabDescriptor parent = wcSession().currentTab().parent();
+            TabDescriptor parent = currentTab().parent();
             if ( parent.parent().parent() != null )
             {
                 // If we're on a third-level tab, jump up one level so that
@@ -550,6 +573,14 @@ public class WCComponent
     }
 
 
+    // ----------------------------------------------------------
+    public void awake()
+    {
+        // Force currentTab to be initialized
+        currentTab();
+    }
+
+
     //~ Protected Methods .....................................................
 
     // ----------------------------------------------------------
@@ -570,5 +601,6 @@ public class WCComponent
 
     //~ Instance/static variables .............................................
 
+    private TabDescriptor currentTab;
     static Logger log = Logger.getLogger( WCComponent.class );
 }

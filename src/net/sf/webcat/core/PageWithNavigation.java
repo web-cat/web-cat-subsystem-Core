@@ -83,41 +83,6 @@ public class PageWithNavigation
     {
         log.debug( "awake()" );
         super.awake();
-        TabDescriptor tabs = ( (Session)session() ).tabs;
-        if ( myTab == null )
-        {
-            myTab = tabs.selectedDescendant();
-        }
-        else
-        {
-            myTab.select();
-        }
-        if ( tabs == null )
-        {
-            log.error( "session.tabs = null" );
-            log.error( "context = " + context() );
-            log.error( Application.extraInfoForContext( context() ) );
-        }
-        else
-        {
-            if ( tabs.selectedDescendant() == null )
-            {
-                log.error( "session.tabs.selectedDescendant = null" );
-                log.error( "tabs = " + tabs );
-                log.error( "context = " + context() );
-                log.error( Application.extraInfoForContext( context() ) );
-            }
-            if ( tabs.selectedChild() == null )
-            {
-                log.error( "session.tabs.selectedChild = null" );
-                log.error( "tabs = " + tabs );
-                log.error( "context = " + context() );
-                log.error( Application.extraInfoForContext( context() ) );
-            }
-            bodyClass = tabs.selectedDescendant().cssClass();
-            secondLevelSelection = tabs.selectedChild().selectedChild();
-            log.debug( "second level = " + secondLevelSelection.label() );
-        }
         if ( thisPage == null )
         {
             WOComponent comp = context().page();
@@ -141,29 +106,41 @@ public class PageWithNavigation
                 }
             }
         }
+        if ( myTab == null )
+        {
+            if (thisPage != null)
+            {
+                myTab = thisPage.currentTab();
+                myTab.select();
+                secondLevelSelection =
+                    ( (Session)session() ).tabs.selectedChild().selectedChild();
+            }
+            if (myTab == null)
+            {
+                myTab = ( (Session)session() ).tabs.selectedDescendant();
+                secondLevelSelection =
+                    ( (Session)session() ).tabs.selectedChild().selectedChild();
+            }
+            bodyClass = myTab.cssClass();
+        }
+        else
+        {
+            myTab.select();
+        }
         if ( title == null && thisPage != null )
         {
             title = thisPage.title();
         }
         if ( title == null )
         {
-            title = ( (Session)session() ).currentTab().label();
+            title = myTab.label();
         }
     }
-
-
-//    // ----------------------------------------------------------
-//    public WOActionResults invokeAction( WORequest arg0, WOContext arg1 )
-//    {
-//        log.debug( "invokeAction()" );
-//        return super.invokeAction( arg0, arg1 );
-//    }
 
 
     // ----------------------------------------------------------
     public void appendToResponse( WOResponse arg0, WOContext arg1 )
     {
-//        log.debug( "appendToResponse()" );
         if ( sideStepTitle != null )
         {
             title = sideStepTitle;
@@ -229,7 +206,7 @@ public class PageWithNavigation
                 helpURL += "?t1=" + secondLevelSelection.parent().parent()
                                     .selectedChildIndex()
                         + "&t2="
-                        + secondLevelSelection.parent().selectedChildIndex();                        
+                        + secondLevelSelection.parent().selectedChildIndex();
                 hasQ = true;
                 if ( hasSteps() )
                 {
@@ -408,7 +385,7 @@ public class PageWithNavigation
     {
         return tertiaryTabIndex < secondLevelSelection.selectedChildIndex()
             || ( tertiaryTabIndex == secondLevelSelection.selectedChildIndex()
-                 && isSideStep() ); 
+                 && isSideStep() );
     }
 
 

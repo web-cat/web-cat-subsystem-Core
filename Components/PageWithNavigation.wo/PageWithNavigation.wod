@@ -4,7 +4,7 @@ BarePage: net.sf.webcat.core.BarePage {
     externalJavascript   = externalJavascript;
     inlineHeaderContents = inlineHeaderContents;
     onLoad               = onLoad;
-    bodyClass            = session.currentTab.cssClass;
+    bodyClass            = bodyClass;
     omitStdStyleSheet    = omitStdStyleSheet;
 }
 

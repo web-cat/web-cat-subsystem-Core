@@ -127,19 +127,10 @@ public class Session
         log.debug( "setUser( " + u.userName() + " )" );
         primeUser = u;
         localUser = u;
-//        localUser = ( u == null )
-//            ? null
-//            : (User)EOUtilities.localInstanceOfObject( childContext, u );
-        setCoreSelectionsForLocalUser();
         userPreferences = ( primeUser == null )
            ? null
            : primeUser.preferences();
         log.debug( "setUser: userPreferences = " + userPreferences );
-//        if ( userPreferences == null )
-//        {
-//            userPreferences = new ERXMutableDictionary();
-//        }
-        log.debug( "preferences = " + userPreferences );
         ( (Application)Application.application() ).subsystemManager().
             initializeSessionData( this );
         if ( ! properties().booleanForKey( "core.suppressAccessControl" ) )
@@ -556,79 +547,6 @@ public class Session
 
     // ----------------------------------------------------------
     /**
-     * Undo the effects of #setLocalUser(User) and revert back to
-     * single-user mode.
-     */
-    protected void setCoreSelectionsForLocalUser()
-    {
-        try
-        {
-            coreSelections =
-                (CoreSelections)EOUtilities.objectMatchingKeyAndValue(
-                    localContext(), CoreSelections.ENTITY_NAME,
-                    CoreSelections.USER_KEY, localUser );
-        }
-        catch ( EOObjectNotAvailableException e )
-        {
-            EOEditingContext ec = Application.newPeerEditingContext();
-            try
-            {
-                ec.lock();
-                CoreSelections newCoreSelections = new CoreSelections();
-                ec.insertObject( newCoreSelections );
-                newCoreSelections.setUserRelationship(
-                    localUser.localInstance( ec ) );
-                ec.saveChanges();
-                coreSelections =
-                    newCoreSelections.localInstance( localContext() );
-            }
-            finally
-            {
-                ec.unlock();
-                Application.releasePeerEditingContext( ec );
-            }
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get the user's currently selected course.
-     * @return the currently selected course
-     * @deprecated
-     */
-    public Course course()
-    {
-        return coreSelections.course();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get the user's currently selected course offering.
-     * @return the currently selected course offering
-     * @deprecated
-     */
-    public CourseOffering courseOffering()
-    {
-        return coreSelections.courseOffering();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get the user's currently selected tab.
-     * @return the currently selected tab
-     * @deprecated
-     */
-    public TabDescriptor currentTab()
-    {
-        return tabs.selectedDescendant();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Toggle the student view setting for this user, resetting tabs
      * as appropriate.  This method uses {@link User#toggleStudentView()}
      * to toggle the user state, and then resets the session's tab navigation
@@ -717,7 +635,6 @@ public class Session
     private User                 localUser      = null;
     private LoginSession         loginSession   = null;
 //    private EOEditingContext   childContext   = null;
-    private CoreSelections       coreSelections = null;
     private NSTimestampFormatter timeFormatter  = null;
     private NSMutableDictionary  transientState;
 
