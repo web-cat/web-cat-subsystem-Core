@@ -46,6 +46,7 @@
     className = net.sf.webcat.core.Course;
     classProperties =
     (
+       coreSelections,
        department,
        name,
        number,
@@ -75,6 +76,21 @@
               }
            );
            name = department;
+       },
+
+       {
+           destination = CoreSelections;
+           isToMany = Y;
+           joinSemantic = EOInnerJoin;
+           joins =
+           (
+
+              {
+                  destinationAttribute = courseId;
+                  sourceAttribute = id;
+              }
+           );
+           name = coreSelections;
        },
 
        {

@@ -64,6 +64,7 @@
     classProperties =
     (
        TAs,
+       coreSelections,
        course,
        crn,
        instructors,
@@ -154,6 +155,21 @@
            );
            name = courseOfferingUsers2;
            propagatesPrimaryKey = Y;
+       },
+
+       {
+           destination = CoreSelections;
+           isToMany = Y;
+           joinSemantic = EOInnerJoin;
+           joins =
+           (
+
+              {
+                  destinationAttribute = courseOfferingId;
+                  sourceAttribute = id;
+              }
+           );
+           name = coreSelections;
        },
 
        {

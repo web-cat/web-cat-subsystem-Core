@@ -149,6 +149,7 @@ public abstract class _CourseOffering
     public static final String SEMESTER_KEY = "semester";
     // To-many relationships ---
     public static final String TAS_KEY = "TAs";
+    public static final String CORE_SELECTIONS_KEY = "coreSelections";
     public static final String INSTRUCTORS_KEY = "instructors";
     public static final String STUDENTS_KEY = "students";
     // Fetch specifications ---
@@ -645,6 +646,181 @@ public abstract class _CourseOffering
         while ( objects.hasMoreElements() )
             deleteTAsRelationship(
                 (net.sf.webcat.core.User)objects.nextElement() );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the entities pointed to by the <code>coreSelections</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    public NSArray coreSelections()
+    {
+        return (NSArray)storedValueForKey( "coreSelections" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>coreSelections</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setCoreSelections( NSMutableArray value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setCoreSelections("
+                + value + "): was " + coreSelections() );
+        }
+        takeStoredValueForKey( value, "coreSelections" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>coreSelections</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToCoreSelectionsRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToCoreSelections( net.sf.webcat.core.CoreSelections value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToCoreSelections("
+                + value + "): was " + coreSelections() );
+        }
+        NSMutableArray array = (NSMutableArray)coreSelections();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>coreSelections</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromCoreSelectionsRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromCoreSelections( net.sf.webcat.core.CoreSelections value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromCoreSelections("
+                + value + "): was " + coreSelections() );
+        }
+        NSMutableArray array = (NSMutableArray)coreSelections();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>coreSelections</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToCoreSelectionsRelationship( net.sf.webcat.core.CoreSelections value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToCoreSelectionsRelationship("
+                + value + "): was " + coreSelections() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "coreSelections" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>coreSelections</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromCoreSelectionsRelationship( net.sf.webcat.core.CoreSelections value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromCoreSelectionsRelationship("
+                + value + "): was " + coreSelections() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "coreSelections" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>coreSelections</code> relationship.
+     *
+     * @return The new entity
+     */
+    public net.sf.webcat.core.CoreSelections createCoreSelectionsRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createCoreSelectionsRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "CoreSelections" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "coreSelections" );
+        return (net.sf.webcat.core.CoreSelections)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>coreSelections</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteCoreSelectionsRelationship( net.sf.webcat.core.CoreSelections value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteCoreSelectionsRelationship("
+                + value + "): was " + coreSelections() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "coreSelections" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>coreSelections</code> relationship.
+     */
+    public void deleteAllCoreSelectionsRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllCoreSelectionsRelationships(): was "
+                + coreSelections() );
+        }
+        Enumeration objects = coreSelections().objectEnumerator();
+        while ( objects.hasMoreElements() )
+            deleteCoreSelectionsRelationship(
+                (net.sf.webcat.core.CoreSelections)objects.nextElement() );
     }
 
 
