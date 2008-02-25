@@ -67,7 +67,7 @@ public abstract class _Language
      * inserted
      * @return The newly created object
      */
-    public static Language createLanguage(
+    public static Language create(
         EOEditingContext editingContext
         )
     {

@@ -67,7 +67,7 @@ public abstract class _AuthenticationDomain
      * inserted
      * @return The newly created object
      */
-    public static AuthenticationDomain createAuthenticationDomain(
+    public static AuthenticationDomain create(
         EOEditingContext editingContext
         )
     {

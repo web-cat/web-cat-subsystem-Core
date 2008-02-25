@@ -68,7 +68,7 @@ public abstract class _PasswordChangeRequest
      * @param user
      * @return The newly created object
      */
-    public static PasswordChangeRequest createPasswordChangeRequest(
+    public static PasswordChangeRequest create(
         EOEditingContext editingContext,
         net.sf.webcat.core.User user
         )

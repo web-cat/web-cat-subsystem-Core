@@ -68,7 +68,7 @@ public abstract class _Semester
      * @param year
      * @return The newly created object
      */
-    public static Semester createSemester(
+    public static Semester create(
         EOEditingContext editingContext,
         int year
         )

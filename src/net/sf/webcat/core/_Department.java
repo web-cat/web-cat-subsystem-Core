@@ -68,7 +68,7 @@ public abstract class _Department
      * @param abbreviation
      * @return The newly created object
      */
-    public static Department createDepartment(
+    public static Department create(
         EOEditingContext editingContext,
         String abbreviation
         )

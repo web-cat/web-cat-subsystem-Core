@@ -67,7 +67,7 @@ public abstract class _CoreSelections
      * inserted
      * @return The newly created object
      */
-    public static CoreSelections createCoreSelections(
+    public static CoreSelections create(
         EOEditingContext editingContext
         )
     {

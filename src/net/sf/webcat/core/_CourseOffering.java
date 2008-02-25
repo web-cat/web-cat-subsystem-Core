@@ -67,7 +67,7 @@ public abstract class _CourseOffering
      * inserted
      * @return The newly created object
      */
-    public static CourseOffering createCourseOffering(
+    public static CourseOffering create(
         EOEditingContext editingContext
         )
     {

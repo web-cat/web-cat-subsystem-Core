@@ -72,7 +72,7 @@ public abstract class _User
      * @param authenticationDomain
      * @return The newly created object
      */
-    public static User createUser(
+    public static User create(
         EOEditingContext editingContext,
         byte accessLevel,
         boolean updateMutableFields,

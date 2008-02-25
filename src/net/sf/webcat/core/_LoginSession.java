@@ -67,7 +67,7 @@ public abstract class _LoginSession
      * inserted
      * @return The newly created object
      */
-    public static LoginSession createLoginSession(
+    public static LoginSession create(
         EOEditingContext editingContext
         )
     {

@@ -69,7 +69,7 @@ public abstract class _LoggedError
      * @param occurrences
      * @return The newly created object
      */
-    public static LoggedError createLoggedError(
+    public static LoggedError create(
         EOEditingContext editingContext,
         int line,
         int occurrences

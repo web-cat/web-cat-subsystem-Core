@@ -69,7 +69,7 @@ public abstract class _Course
      * @param number
      * @return The newly created object
      */
-    public static Course createCourse(
+    public static Course create(
         EOEditingContext editingContext,
         String name,
         int number
