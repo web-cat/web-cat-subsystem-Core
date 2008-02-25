@@ -1,93 +1,93 @@
 
 {
-    attributes = 
+    attributes =
     (
-       
+
        {
            columnName = CCOURSEID;
            name = courseId;
            prototypeName = foreignId;
-       }, 
-       
+       },
+
        {
            columnName = CCOURSEOFFERINGID;
            name = courseOfferingId;
            prototypeName = foreignId;
-       }, 
-       
+       },
+
        {
            name = id;
            prototypeName = id;
-       }, 
-       
+       },
+
        {
            columnName = CUSERID;
            name = userId;
            prototypeName = foreignId;
        }
     );
-    attributesUsedForLocking = 
+    attributesUsedForLocking =
     (
-       courseId, 
-       courseOfferingId, 
-       id, 
+       courseId,
+       courseOfferingId,
+       id,
        userId
     );
     className = net.sf.webcat.core.CoreSelections;
-    classProperties = 
+    classProperties =
     (
-       course, 
-       courseOffering, 
+       course,
+       courseOffering,
        user
     );
     externalName = TCORESELECTIONS;
-    internalInfo = 
+    internalInfo =
     {};
     name = CoreSelections;
-    primaryKeyAttributes = 
+    primaryKeyAttributes =
     (
        id
     );
-    relationships = 
+    relationships =
     (
-       
+
        {
            destination = Course;
            isToMany = N;
            joinSemantic = EOInnerJoin;
-           joins = 
+           joins =
            (
-              
+
               {
                   destinationAttribute = id;
                   sourceAttribute = courseId;
               }
            );
            name = course;
-       }, 
-       
+       },
+
        {
            destination = CourseOffering;
            isToMany = N;
            joinSemantic = EOInnerJoin;
-           joins = 
+           joins =
            (
-              
+
               {
                   destinationAttribute = id;
                   sourceAttribute = courseOfferingId;
               }
            );
            name = courseOffering;
-       }, 
-       
+       },
+
        {
            destination = User;
            isToMany = N;
            joinSemantic = EOInnerJoin;
-           joins = 
+           joins =
            (
-              
+
               {
                   destinationAttribute = id;
                   sourceAttribute = userId;
