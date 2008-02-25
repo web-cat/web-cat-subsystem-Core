@@ -57,3 +57,9 @@ ognl.helperFunctions = true
 ognl.inlineBindings  = true
 er.extensions.ERXNSLogLog4jBridge.ignoreNSLogSettings = true
 log4j.logger.NSLog = WARN
+
+# Force these into the next Core update, although they duplicate settings
+# in the web-cat subsystem:
+er.extensions.ERXApplication.useEditingContextUnlocker=true
+er.extensions.ERXEC.defaultAutomaticLockUnlock = true
+er.extensions.ERXEC.defaultCoalesceAutoLocks=true
