@@ -1135,7 +1135,7 @@ public class User
      * creating one if necessary.
      * @return This user's core selections object
      */
-    public CoreSelections getCoreSelections()
+    public CoreSelections getMyCoreSelections()
     {
         NSArray cs = coreSelections();
         if (cs.count() == 0)
