@@ -120,4 +120,30 @@ public class Course
         return value;
     }
 
+    // ----------------------------------------------------------
+    @Override
+    public void mightDelete()
+    {
+        log.debug("mightDelete()");
+        if (offerings().count() > 0)
+        {
+            log.debug("mightDelete(): course has offerings");
+            throw new ValidationException("You may not delete a course "
+                + "offering that has course offerings.");
+        }
+        super.mightDelete();
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public boolean canDelete()
+    {
+        boolean result = (editingContext() == null
+            || offerings().count() == 0);
+        log.debug("canDelete() = " + result);
+        return result;
+    }
+
+
 }
