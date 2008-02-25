@@ -162,6 +162,7 @@
        },
 
        {
+           deleteRule = EODeleteRuleCascade;
            destination = CoreSelections;
            isToMany = Y;
            joinSemantic = EOInnerJoin;
