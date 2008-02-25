@@ -84,6 +84,7 @@ public class WCComponent
 
     public WCComponent   nextPage;
 
+    public static final String ALL_TASKS = "all";
 
     //~ Public Methods ........................................................
 
@@ -250,17 +251,6 @@ public class WCComponent
 
     // ----------------------------------------------------------
     /**
-     * Cancels any editing in progress.  Typically called when pressing
-     * a cancel button or using a tab to transfer to a different page.
-     */
-    public void cancelLocalChanges()
-    {
-        wcSession().cancelLocalChanges();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Returns the page to go to when "Cancel" is pressed.
      *
      * This generic implementation moves to the default sibling of the
@@ -282,7 +272,9 @@ public class WCComponent
             // we move to the default second-level tab.
             parent = parent.parent();
         }
-        return pageWithName( parent.selectDefault().pageName() );
+        changeWorkflow();
+        WOComponent result = pageWithName( parent.selectDefault().pageName() );
+        return result;
     }
 
 
@@ -326,6 +318,16 @@ public class WCComponent
         }
         if ( nextPage != null )
         {
+            if (breakWorkflow)
+            {
+                breakWorkflow = false;
+            }
+            else if (nextPage.peerContextManager == null
+                     && peerContextManager != null)
+            {
+                nextPage.peerContextManager = peerContextManager;
+                nextPage.alreadyGrabbed = true;
+            }
             return nextPage;
         }
         else
@@ -377,6 +379,16 @@ public class WCComponent
         }
         else if ( nextPage != null )
         {
+            if (breakWorkflow)
+            {
+                breakWorkflow = false;
+            }
+            else if (nextPage.peerContextManager == null
+                     && peerContextManager != null)
+            {
+                nextPage.peerContextManager = peerContextManager;
+                nextPage.alreadyGrabbed = true;
+            }
             return nextPage;
         }
         else
@@ -410,7 +422,7 @@ public class WCComponent
      * Saves all local changes.  This is the core "save" behavior that
      * is called by both {@link #apply()} and {@link #finish()}.  Override
      * this (and call super) if you need to extend these actions.  This
-     * method calls {@link Session#commitLocalChanges()}.
+     * method calls {@link Session#commitSessionChanges()}.
      * @return True if the commit action succeeds, or false if some error
      *     occurred
      */
@@ -422,13 +434,12 @@ public class WCComponent
         }
         try
         {
-            // TODO: fix this to handle general save validation failures
-            wcSession().commitLocalChanges();
+            commitLocalChanges();
             return true;
         }
         catch ( com.webobjects.foundation.NSValidation.ValidationException e )
         {
-            wcSession().cancelLocalChanges();
+            cancelLocalChanges();
             warning( e.getMessage() );
             return false;
         }
@@ -439,11 +450,30 @@ public class WCComponent
                 context(),
                 "Exception trying to save component's local changes" );
             // forces revert and refaultAllObjects
-            wcSession().cancelLocalChanges();
+            cancelLocalChanges();
             warning( "An exception occurred while trying to save your "
                 + "changes: " + e + ".  As a result, your changes were "
                 + "canceled.  Please try again." );
             return false;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Cancel all local changes and revert to the default editing context
+     * state.
+     */
+    public void cancelLocalChanges()
+    {
+        if (peerContextManager != null)
+        {
+            peerContextManager.editingContext().revert();
+            peerContextManager.editingContext().refaultAllObjects();
+        }
+        else
+        {
+            wcSession().cancelSessionChanges();
         }
     }
 
@@ -507,6 +537,7 @@ public class WCComponent
                 // we move to the default second-level tab.
                 parent = parent.parent();
             }
+            changeWorkflow();
             return pageWithName( parent.selectDefault().pageName() );
         }
         else
@@ -576,8 +607,136 @@ public class WCComponent
     // ----------------------------------------------------------
     public void awake()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug("awake(): " + getClass().getName());
+        }
+        grabTaskECManagerIfNecessary();
+        super.awake();
         // Force currentTab to be initialized
         currentTab();
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void sleep()
+    {
+        if (peerContextManager != null)
+        {
+            peerContextManager.sleep();
+        }
+        super.sleep();
+    }
+
+
+    // ----------------------------------------------------------
+    public void willCachePermanently()
+    {
+        //
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Access this session's child editing context for storing multi-page
+     * changes.
+     * @return The child editing context
+     */
+    public EOEditingContext localContext()
+    {
+        return peerContextManager().editingContext();
+
+        // To turn off the use of peer editing context and revert to
+        // performing all modifications in the single, shared session
+        // default editing context, comment out the line above and
+        // uncommet this line instead:
+
+        // return wcSession().sessionContext();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns the current user, or null if one is not logged in.
+     * This object lives in the page's child editing context.
+     * @return The current user
+     */
+    public User user()
+    {
+        if (user == null && wcSession().user() != null)
+        {
+            user = wcSession().user().localInstance( localContext() );
+        }
+        return user;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the local user for the session, to support impersonation of
+     * students by administrators and instructors.
+     * @param u the new user to impersonate
+     */
+    public void setLocalUser( User u )
+    {
+        user = null;
+        wcSession().setLocalUser(
+            u.localInstance( wcSession().sessionContext() ));
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public WOComponent pageWithName( String name )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug("pageWithName(" + name + ") from "
+                + getClass().getName());
+        }
+        String managerKey  = null;
+        if (breakWorkflow)
+        {
+            breakWorkflow = false;
+        }
+        else if (peerContextManager != null)
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("storing " + peerContextManager
+                    + " on manager tag = "
+                    + Thread.currentThread().toString());
+            }
+            managerKey = Thread.currentThread().toString();
+            wcSession().transientState().takeValueForKey(
+                peerContextManager, managerKey);
+        }
+        WOComponent result = super.pageWithName( name );
+        if (managerKey != null)
+        {
+            wcSession().transientState().removeObjectForKey(managerKey);
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    public void changeWorkflow()
+    {
+        breakWorkflow = true;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve an NSMutableDictionary used to hold transient settings for
+     * this page (data that is not database-backed).
+     * @return A map of transient settings
+     */
+    public NSMutableDictionary transientState()
+    {
+        return peerContextManager().transientState();
     }
 
 
@@ -599,8 +758,99 @@ public class WCComponent
     }
 
 
+    //~ Private Methods .......................................................
+
+    // ----------------------------------------------------------
+    private void grabTaskECManagerIfNecessary()
+    {
+        if (alreadyGrabbed)
+        {
+            log.debug("grabTaskECManagerIfNecessary(): "
+                + getClass().getName() + "(" + hashCode() + ") "
+                + "has already grabbed");
+        }
+        else
+        {
+            String managerKey  = Thread.currentThread().toString();
+
+            // set up nested ec for this task, if there is one
+            peerContextManager = (WOEC.PeerManager)wcSession()
+                .transientState().valueForKey(managerKey);
+            if (log.isDebugEnabled())
+            {
+                log.debug("manager tag = " + managerKey );
+                log.debug("grabTaskECManagerIfNecessary(): "
+                    + getClass().getName() + "(" + hashCode() + ") "
+                    + "childContextManager = " + peerContextManager);
+            }
+            alreadyGrabbed = true;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    private WOEC.PeerManager peerContextManager()
+    {
+        if (peerContextManager == null)
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("localContext(): attempting to grab from "
+                    + getClass().getName() + "(" + hashCode() + ")");
+            }
+            grabTaskECManagerIfNecessary();
+            if (peerContextManager == null)
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("localContext(): creating manager for "
+                        + getClass().getName() + "(" + hashCode() + ")");
+                }
+                peerContextManager =
+                    wcSession().createManagedPeerEditingContext();
+            }
+        }
+        return peerContextManager;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Save all child context changes to the default editing context, then
+     * commit them to the database.
+     */
+    private void commitLocalChanges()
+    {
+        log.debug( "commitLocalChanges()" );
+      if (peerContextManager != null)
+      {
+          peerContextManager.editingContext().saveChanges();
+          peerContextManager.editingContext().revert();
+          peerContextManager.editingContext().refaultAllObjects();
+      }
+      else
+      {
+          wcSession().commitSessionChanges();
+      }
+//        if (childContextManager != null)
+//        {
+//            childContextManager.editingContext().saveChanges();
+//        }
+//        wcSession().commitSessionChanges();
+//        if (childContextManager != null)
+//        {
+//            childContextManager.editingContext().revert();
+//            childContextManager.editingContext().refaultAllObjects();
+//        }
+    }
+
+
     //~ Instance/static variables .............................................
 
-    private TabDescriptor currentTab;
+    private TabDescriptor     currentTab;
+    private WOEC.PeerManager  peerContextManager;
+    private User              user;
+    private boolean           alreadyGrabbed;
+    private boolean           breakWorkflow;
     static Logger log = Logger.getLogger( WCComponent.class );
 }

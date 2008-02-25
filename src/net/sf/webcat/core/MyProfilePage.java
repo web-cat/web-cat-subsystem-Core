@@ -78,13 +78,13 @@ public class MyProfilePage
     public void appendToResponse( WOResponse response, WOContext context )
     {
         now = new NSTimestamp();
-        enrolledInDisplayGroup.setMasterObject( wcSession().user() );
-        teachingDisplayGroup.setMasterObject( wcSession().user() );
-        TADisplayGroup.setMasterObject( wcSession().user() );
+        enrolledInDisplayGroup.setMasterObject( user() );
+        teachingDisplayGroup.setMasterObject( user() );
+        TADisplayGroup.setMasterObject( user() );
         if ( selectedZone == null )
         {
             selectedZone = AuthenticationDomain.descriptorForZone(
-                wcSession().user().timeZoneName() );
+                user().timeZoneName() );
             if ( selectedZone == null )
             {
                 // !!!
@@ -100,8 +100,8 @@ public class MyProfilePage
     public WOComponent applyTimeFormats()
     {
         log.debug( "applyTimeFormats()" );
-        wcSession().user().setTimeZoneName( selectedZone.id );
-        wcSession().commitLocalChanges();
+        user().setTimeZoneName( selectedZone.id );
+        applyLocalChanges();
         wcSession().clearCachedTimeFormatter();
         return null;
     }
@@ -121,7 +121,7 @@ public class MyProfilePage
     public boolean applyLocalChanges()
     {
         log.debug( "applyLocalChanges()" );
-        User u = wcSession().localUser();
+        User u = user();
         String lcPassword = ( newPassword1 == null )
             ? null
             : newPassword1.toLowerCase();
@@ -179,7 +179,7 @@ public class MyProfilePage
     // ----------------------------------------------------------
     public String bluejUrl()
     {
-        String institution = wcSession().user().authenticationDomain().name();
+        String institution = user().authenticationDomain().name();
         try
         {
             institution = URLEncoder.encode( institution, "UTF-8" );
@@ -192,8 +192,7 @@ public class MyProfilePage
             context(),
             Application.application().directActionRequestHandlerKey(),
             "assignments/bluej?institution=" + institution
-                + ( ( wcSession().user().accessLevel() > 0 )
-                                ? "&staff=true" : "" ),
+                + ( ( user().accessLevel() > 0 ) ? "&staff=true" : "" ),
             null,
             false,
             0,
@@ -205,7 +204,7 @@ public class MyProfilePage
     // ----------------------------------------------------------
     public String eclipseUrl()
     {
-        String institution = wcSession().user().authenticationDomain().name();
+        String institution = user().authenticationDomain().name();
         try
         {
             institution = URLEncoder.encode( institution, "UTF-8" );
@@ -218,8 +217,7 @@ public class MyProfilePage
             context(),
             Application.application().directActionRequestHandlerKey(),
             "assignments/eclipse?institution=" + institution
-                + ( ( wcSession().user().accessLevel() > 0 )
-                                ? "&staff=true" : "" ),
+                + ( ( user().accessLevel() > 0 ) ? "&staff=true" : "" ),
             null,
             true,
             0
@@ -233,7 +231,7 @@ public class MyProfilePage
         if ( icalUrl == null )
         {
             String crnList = null;
-            User me = wcSession().user();
+            User me = user();
             NSMutableArray offerings = me.enrolledIn().mutableClone();
             ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates( offerings,
                 me.TAFor() );

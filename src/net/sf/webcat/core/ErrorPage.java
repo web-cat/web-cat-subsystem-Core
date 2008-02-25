@@ -122,11 +122,7 @@ public class ErrorPage
         if ( hasSession() )
         {
             Session session = (Session)session();
-            session.cancelLocalChanges();
-//            session.defaultEditingContext().reset();
-//            session.localContext().reset();
-            session.defaultEditingContext().refaultAllObjects();
-            session.localContext().refaultAllObjects();
+            session.cancelSessionChanges();
             return session.isLoggedIn();
         }
         else

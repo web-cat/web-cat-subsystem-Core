@@ -431,7 +431,7 @@ public class OptionEditPanel
         optionValues =
             (NSKeyValueCodingAdditions)valueForBinding("optionValues");
 
-        setValue( wcSession().user().authenticationDomain().subdirName()
+        setValue( user().authenticationDomain().subdirName()
                 + "/" + filePath );
         if ( log.isDebugEnabled() )
         {

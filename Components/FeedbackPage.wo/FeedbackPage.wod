@@ -33,5 +33,5 @@ Text: WOText {
 }
 
 UserName: WOString {
-	value = session.user.nameAndUid;
+	value = user.nameAndUid;
 }

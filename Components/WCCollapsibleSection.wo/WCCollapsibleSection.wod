@@ -1,0 +1,30 @@
+Anchor: WOGenericContainer {
+	elementName = "a";
+	name = anchor;
+}
+
+ArrowActiveImage: WOActiveImage {
+	action = toggleVisibilityClicked;
+	align = "ABSTOP";
+	alt = helpString;
+	border = "0";
+	disabled = ^disabled;
+	filename = currentArrowImageName;
+	fragmentIdentifier = anchor;
+	framework = framework;
+}
+
+ArrowImage: WOImage {
+	align = "ABSMDIDDLE";
+	alt = helpString;
+	border = "0";
+	filename = currentArrowImageName;
+	framework = framework;
+	name = helpString;
+}
+
+ArrowLink: WOHyperlink {
+	action = toggleVisibilityClicked;
+	disabled = ^disabled;
+	fragmentIdentifier = anchor;
+}

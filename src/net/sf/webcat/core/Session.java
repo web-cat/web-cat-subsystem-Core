@@ -31,6 +31,9 @@ import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.ERXMutableDictionary;
 import java.util.*;
+
+import net.sf.webcat.core.WOEC.*;
+
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
 
@@ -80,20 +83,15 @@ public class Session
         defaultEditingContext().setUndoManager( null );
 //        defaultEditingContext().setSharedEditingContext( null );
 
-//        childContext = er.extensions.ERXEC
-//            .newEditingContext( defaultEditingContext() );
-//        childContext.setUndoManager( null );
-
         tabs.mergeClonedChildren( subsystemTabTemplate );
         tabs.selectDefault();
+        childManagerPool = new WOEC.PeerManagerPool();
     }
 
 
     //~ KVC Attributes (must be public) .......................................
 
     public TabDescriptor tabs = new TabDescriptor( "TBDPage", "root" );
-    public NSMutableDictionary  subsystemData = new NSMutableDictionary();
-    public MutableDictionary userPreferences = null;
 
 
     //~ Methods ...............................................................
@@ -127,10 +125,9 @@ public class Session
         log.debug( "setUser( " + u.userName() + " )" );
         primeUser = u;
         localUser = u;
-        userPreferences = ( primeUser == null )
-           ? null
-           : primeUser.preferences();
-        log.debug( "setUser: userPreferences = " + userPreferences );
+        log.debug( "setUser: userPreferences = "
+            + (primeUser == null
+                ? null : primeUser.preferences() ) );
         ( (Application)Application.application() ).subsystemManager().
             initializeSessionData( this );
         if ( ! properties().booleanForKey( "core.suppressAccessControl" ) )
@@ -224,17 +221,6 @@ public class Session
     private void updateLoginSession()
     {
         log.debug( "updateLoginSession()" );
-//        Number n = (Number)userPreferences.objectForKey( "count" );
-//        if ( n == null )
-//        {
-//            n = new Integer( 1 );
-//        }
-//        else
-//        {
-//            n = new Integer( n.intValue() + 1 );
-//        }
-//        userPreferences.setObjectForKey( n, "count" );
-        log.debug( "preferences = " + userPreferences );
         if ( primeUser == null ) return;
         if ( loginSession == null )
         {
@@ -391,6 +377,18 @@ public class Session
 
 
     // ----------------------------------------------------------
+    @Override
+    public void savePageInPermanentCache( WOComponent page )
+    {
+        if (page instanceof WCComponent)
+        {
+            ( (WCComponent)page ).willCachePermanently();
+        }
+        super.savePageInPermanentCache( page );
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Set the user to null and erase the login session info from
      * the database.
@@ -469,6 +467,18 @@ public class Session
                 {
                     ((IndependentEOManager.ECManager)value).dispose();
                 }
+                else if (value instanceof EOEditingContext)
+                {
+                    ((EOEditingContext)value).dispose();
+                }
+                else if (value instanceof WOEC.PeerManager)
+                {
+                    ((PeerManager)value).dispose();
+                }
+                else if (value instanceof WOEC.PeerManagerPool)
+                {
+                    ((PeerManagerPool)value).dispose();
+                }
             }
             transientState = null;
         }
@@ -482,9 +492,21 @@ public class Session
      * changes.
      * @return The child editing context
      */
-    public EOEditingContext localContext()
+    public EOEditingContext sessionContext()
     {
         return defaultEditingContext(); // childContext;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a new child editing context within the session's default
+     * context.
+     * @return The child editing context, encapsulated in a manager wrapper
+     */
+    public WOEC.PeerManager createManagedPeerEditingContext()
+    {
+        return new WOEC.PeerManager(childManagerPool);
     }
 
 
@@ -493,10 +515,9 @@ public class Session
      * Save all child context changes to the default editing context, then
      * commit them to the database.
      */
-    public void commitLocalChanges()
+    public void commitSessionChanges()
     {
         log.debug( "commitLocalChanges()" );
-//        childContext.saveChanges();
         defaultEditingContext().saveChanges();
         defaultEditingContext().revert();
         defaultEditingContext().refaultAllObjects();
@@ -508,10 +529,8 @@ public class Session
      * Cancel all local changes and revert to the default editing context
      * state.
      */
-    public void cancelLocalChanges()
+    public void cancelSessionChanges()
     {
-//        childContext.revert();
-//        childContext.refaultAllObjects();
         defaultEditingContext().revert();
         defaultEditingContext().refaultAllObjects();
     }
@@ -631,12 +650,12 @@ public class Session
 
     //~ Instance/static variables .............................................
 
-    private User                 primeUser      = null;
-    private User                 localUser      = null;
-    private LoginSession         loginSession   = null;
-//    private EOEditingContext   childContext   = null;
-    private NSTimestampFormatter timeFormatter  = null;
-    private NSMutableDictionary  transientState;
+    private User                  primeUser      = null;
+    private User                  localUser      = null;
+    private LoginSession          loginSession   = null;
+    private NSTimestampFormatter  timeFormatter  = null;
+    private NSMutableDictionary   transientState;
+    private WOEC.PeerManagerPool childManagerPool;
 
     private static final Integer zero = new Integer( 0 );
     private static final Integer one  = new Integer( 1 );

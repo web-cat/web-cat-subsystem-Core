@@ -131,9 +131,10 @@ public class OptionSetEditor
     public void toggleVerboseOptions()
     {
         boolean verboseOptions = ERXValueUtilities.booleanValue(
-            wcSession().userPreferences.objectForKey( verboseOptionsKey ) );
+            user().preferences()
+                .objectForKey( verboseOptionsKey ) );
         verboseOptions = !verboseOptions;
-        wcSession().userPreferences.setObjectForKey(
+        user().preferences().setObjectForKey(
             Boolean.valueOf( verboseOptions ), verboseOptionsKey );
     }
 
@@ -150,7 +151,7 @@ public class OptionSetEditor
         if ( terse == null )
         {
             terse = ERXValueUtilities.booleanValue(
-                wcSession().userPreferences.objectForKey( verboseOptionsKey ) )
+                user().preferences().objectForKey( verboseOptionsKey ) )
                 ? Boolean.TRUE : Boolean.FALSE;
         }
         return terse;

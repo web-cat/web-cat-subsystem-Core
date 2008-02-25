@@ -1,0 +1,12 @@
+<wo name="Anchor"/>
+<wo:if condition="$hasSubmitAction">
+    <wo name="ArrowActiveImage"/>&nbsp;<wo:str value="$label" escapeHTML="~false"/>
+</wo:if>
+<wo:else>
+    <wo name="ArrowLink">
+        <wo name="ArrowImage"/>
+        <wo:not condition="$isVisible">&nbsp;</wo:not>
+        <wo:str value="$label" escapeHTML="~false"/>
+    </wo>
+</wo:else>
+<wo:if condition="$isVisible"><wo:WOComponentContent/></wo:if>

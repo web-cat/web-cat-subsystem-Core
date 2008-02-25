@@ -4,7 +4,7 @@ Announcements: WOString {
 }
 
 CanSeeStatus: WOConditional {
-    condition = true; // session.user.accessLevel;
+    condition = true; // user.accessLevel;
 }
 
 HasAnnouncements: WOConditional {

@@ -14,15 +14,15 @@ BlueJLinkInfo: net.sf.webcat.core.PopUpInfo {
 }
 
 CanChangePassword: WOConditional {
-    condition = session.localUser.canChangePassword;
+    condition = user.canChangePassword;
 }
 
 CanTA: WOConditional {
-	condition = session.user.hasTAPrivileges;
+	condition = user.hasTAPrivileges;
 }
 
 CanTeach: WOConditional {
-	condition = session.user.hasFacultyPrivileges;
+	condition = user.hasFacultyPrivileges;
 }
 
 CompactName: WOString {
@@ -34,14 +34,14 @@ CourseName: WOString {
 }
 
 DateFormat: WOPopUpButton {
-    list		  = session.user.authenticationDomain.dateFormats;
+    list		  = user.authenticationDomain.dateFormats;
     item   		  = aFormat;
-    selection     = session.user.dateFormat;
+    selection     = user.dateFormat;
     displayString = formattedCurrentTime;
 }
 
 DomainName: WOString {
-    value = session.user.authenticationDomain.displayableName;
+    value = user.authenticationDomain.displayableName;
 }
 
 EclipseLinkInfo: net.sf.webcat.core.PopUpInfo {
@@ -50,12 +50,12 @@ EclipseLinkInfo: net.sf.webcat.core.PopUpInfo {
 }
 
 Email: WOTextField {
-    value = session.localUser.email;
+    value = user.email;
     size = 40;
 }
 
 EnrolledInCourses: WOConditional {
-    condition = session.user.enrolledIn.count;
+    condition = user.enrolledIn.count;
 }
 
 EnrollmentRepetition: WORepetition {
@@ -65,7 +65,7 @@ EnrollmentRepetition: WORepetition {
 }
 
 FirstName: WOTextField {
-    value = session.localUser.firstName;
+    value = user.firstName;
     size = 40;
 }
 
@@ -103,7 +103,7 @@ InstructorRepetition: WORepetition {
 }
 
 LastName: WOTextField {
-    value = session.localUser.lastName;
+    value = user.lastName;
     size = 40;
 }
 
@@ -118,17 +118,17 @@ NewPassword2: WOPasswordField {
 }
 
 NotEnrolledInCourses: WOConditional {
-    condition = session.user.enrolledIn.count;
+    condition = user.enrolledIn.count;
     negate    = true;
 }
 
 NotTAInCourses: WOConditional {
-    condition = session.user.TAFor.count;
+    condition = user.TAFor.count;
     negate    = true;
 }
 
 NotTeachingCourses: WOConditional {
-    condition = session.user.teaching.count;
+    condition = user.teaching.count;
     negate    = true;
 }
 
@@ -137,7 +137,7 @@ Page : net.sf.webcat.core.PageWithNavigation {
 }
 
 TAInCourses: WOConditional {
-    condition = session.user.TAFor.count;
+    condition = user.TAFor.count;
 }
 
 TARepetition: WORepetition {
@@ -147,7 +147,7 @@ TARepetition: WORepetition {
 }
 
 TeachingCourses: WOConditional {
-    condition = session.user.teaching.count;
+    condition = user.teaching.count;
 }
 
 TeachingRepetition: WORepetition {
@@ -157,14 +157,14 @@ TeachingRepetition: WORepetition {
 }
 
 TimeFormat: WOPopUpButton {
-    list		  = session.user.authenticationDomain.timeFormats;
+    list		  = user.authenticationDomain.timeFormats;
     item   		  = aFormat;
-    selection     = session.user.timeFormat;
+    selection     = user.timeFormat;
     displayString = formattedCurrentTime;
 }
 
 TimeZone: WOPopUpButton {
-    list		  = session.user.authenticationDomain.timeZones;
+    list		  = user.authenticationDomain.timeZones;
     item   		  = zone;
     selection     = selectedZone;
     displayString = zone.printableName;
@@ -175,12 +175,12 @@ TR: net.sf.webcat.core.TableRow {
 }
 
 URL: WOTextField {
-    value = session.localUser.url;
+    value = user.url;
     size = 40;
 }
 
 UserName: WOString {
-    value = session.user.userName;
+    value = user.userName;
 }
 
 WebcalLinkInfo: net.sf.webcat.core.PopUpInfo {

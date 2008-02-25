@@ -28,7 +28,7 @@ package net.sf.webcat.core;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -39,7 +39,7 @@ import org.apache.log4j.*;
  *  @version $Id$
  */
 public class WOEC
-    extends LockErrorScreamerEditingContext
+    extends er.extensions.ERXEC
 {
     //~ Constructors ..........................................................
 
@@ -50,6 +50,10 @@ public class WOEC
     public WOEC()
     {
         super();
+        if (log.isDebugEnabled())
+        {
+            log.debug("creating new ec: " + hashCode());
+        }
     }
 
 
@@ -61,99 +65,22 @@ public class WOEC
     public WOEC( EOObjectStore os )
     {
         super( os );
+        if (log.isDebugEnabled())
+        {
+            log.debug("creating new ec: " + hashCode());
+        }
     }
 
 
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    public void insertObject( EOEnterpriseObject arg0 )
-    {
-        super.insertObject( arg0 );
-        if ( insertedObjects.indexOfIdenticalObject( arg0 )
-             == NSArray.NotFound )
-            insertedObjects.addObject( arg0 );
-    }
-
-
-    // ----------------------------------------------------------
-    public void deleteObject( EOEnterpriseObject arg0 )
-    {
-        super.deleteObject( arg0 );
-        insertedObjects.removeObject( arg0 );
-    }
-
-
-    // ----------------------------------------------------------
-    public void deleteObjects( NSArray arg0 )
-    {
-        super.deleteObjects( arg0 );
-        insertedObjects.removeObjectsInArray( arg0 );
-    }
-
-
-    // ----------------------------------------------------------
-    public void saveChanges()
-    {
-        NSArray insertedObjectsNow = insertedObjects();
-        if ( insertedObjects.count() != insertedObjectsNow.count() )
-        {
-            log.error( "saveChanges(): inserted object count mismatch" );
-            log.error( "saveChanges(): inserted objects  = "
-                       + insertedObjectsNow );
-            log.error( "saveChanges(): tracked insertions = "
-                            + insertedObjects );
-            log.error( "saveChanges(): changed objects  = "
-                            + updatedObjects() );
-        }
-        else
-        {
-            NSArray trackedInsertions = insertedObjects.immutableClone();
-            insertedObjects.removeObjectsInArray( insertedObjectsNow );
-            if ( insertedObjects.count() > 0 )
-            {
-                log.error( "saveChanges(): inserted object contents mismatch" );
-                log.error( "saveChanges(): inserted objects  = "
-                           + insertedObjectsNow );
-                log.error( "saveChanges(): tracked insertions = "
-                           + trackedInsertions );
-                log.error( "saveChanges(): changed objects  = "
-                           + updatedObjects() );
-            }
-        }
-        super.saveChanges();
-        insertedObjects.removeAllObjects();
-    }
-
-
-    // ----------------------------------------------------------
-    public void revert()
-    {
-        super.revert();
-        insertedObjects.removeAllObjects();
-    }
-
-
-    // ----------------------------------------------------------
-    public void reset()
-    {
-        super.reset();
-        insertedObjects.removeAllObjects();
-    }
-
-
-    // ----------------------------------------------------------
-    public void forgetObject( EOEnterpriseObject arg0 )
-    {
-        super.forgetObject( arg0 );
-        insertedObjects.removeObject( arg0 );
-    }
-
-
-    // ----------------------------------------------------------
     public void dispose()
     {
-        insertedObjects.removeAllObjects();
+        if (log.isDebugEnabled())
+        {
+            log.debug("dispose(): " + hashCode());
+        }
         super.dispose();
     }
 
@@ -178,9 +105,251 @@ public class WOEC
     }
 
 
-    //~ Instance/static variables .............................................
+    // ----------------------------------------------------------
+    public static class PeerManager
+    {
+        // ----------------------------------------------------------
+        public PeerManager(PeerManagerPool pool)
+        {
+            owner = pool;
+            if (log.isDebugEnabled())
+            {
+                log.debug("creating manager: " + this);
+            }
+        }
 
-    private NSMutableArray insertedObjects = new NSMutableArray();
+
+        // ----------------------------------------------------------
+        public EOEditingContext editingContext()
+        {
+            if (ec == null)
+            {
+                ec = Application.newPeerEditingContext();
+                if (log.isDebugEnabled())
+                {
+                    log.debug("creating ec: " + ec.hashCode()
+                        + " for manager: " + this);
+                }
+            }
+            return ec;
+        }
+
+
+        // ----------------------------------------------------------
+        public void dispose()
+        {
+            if (ec != null)
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("disposing ec: " + ec.hashCode()
+                        + " for manager: " + this);
+                }
+                Application.releasePeerEditingContext(ec);
+                ec = null;
+            }
+            else
+            {
+                log.debug("dispose() called with null ec for manager: " + this);
+            }
+            if (transientState != null)
+            {
+                NSArray values = transientState.allValues();
+                for (int i = 0; i < values.count(); i++)
+                {
+                    Object value = values.objectAtIndex(i);
+                    if (value instanceof IndependentEOManager.ECManager)
+                    {
+                        ((IndependentEOManager.ECManager)value).dispose();
+                    }
+                    else if (value instanceof EOEditingContext)
+                    {
+                        ((EOEditingContext)value).dispose();
+                    }
+                    else if (value instanceof PeerManager)
+                    {
+                        ((PeerManager)value).dispose();
+                    }
+                    else if (value instanceof PeerManagerPool)
+                    {
+                        ((PeerManagerPool)value).dispose();
+                    }
+                }
+                transientState = null;
+            }
+        }
+
+
+        // ----------------------------------------------------------
+        public void sleep()
+        {
+            if (ec != null)
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("sleep(): " + this);
+                }
+                if (cachePermanently)
+                {
+                    owner.cachePermanently( this );
+                }
+                else
+                {
+                    owner.cache( this );
+                }
+            }
+        }
+
+
+        // ----------------------------------------------------------
+        public boolean cachePermanently()
+        {
+            return cachePermanently;
+        }
+
+
+        // ----------------------------------------------------------
+        public void setCachePermanently(boolean value)
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("setCachePermanently(" + value
+                    + ") for manager: " + this);
+            }
+            cachePermanently = value;
+        }
+
+
+        // ----------------------------------------------------------
+        /**
+         * Retrieve an NSMutableDictionary used to hold transient settings for
+         * this editing context (data that is not database-backed).
+         * @return A map of transient settings
+         */
+        public NSMutableDictionary transientState()
+        {
+            if (transientState == null)
+            {
+                transientState = new NSMutableDictionary();
+            }
+            return transientState;
+        }
+
+
+        //~ Instance/static variables .........................................
+        private EOEditingContext    ec;
+        private PeerManagerPool    owner;
+        private boolean             cachePermanently;
+        private NSMutableDictionary transientState;
+        static Logger log = Logger.getLogger(
+            PeerManager.class.getName().replace('$', '.'));
+    }
+
+
+    // ----------------------------------------------------------
+    public static class PeerManagerPool
+    {
+        // ----------------------------------------------------------
+        public PeerManagerPool()
+        {
+
+            managerCache = new NSMutableArray();
+            permanentManagerCache = new NSMutableArray();
+            if (log.isDebugEnabled())
+            {
+                log.debug("creating manager pool: " + this);
+            }
+        }
+
+
+        // ----------------------------------------------------------
+        public void cache(PeerManager manager)
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("cache(" + manager + ")");
+            }
+            cache(manager, managerCache);
+        }
+
+
+        // ----------------------------------------------------------
+        public void cachePermanently(PeerManager manager)
+        {
+            if (log.isDebugEnabled())
+            {
+                log.debug("cachePermanently(" + manager + ")");
+            }
+            managerCache.removeObject(manager);
+            cache(manager, permanentManagerCache);
+        }
+
+
+        // ----------------------------------------------------------
+        public void dispose()
+        {
+            log.debug("dispose()");
+            dispose(managerCache);
+            dispose(permanentManagerCache);
+        }
+
+
+        // ----------------------------------------------------------
+        private void cache(PeerManager manager, NSMutableArray cache)
+        {
+            int pos = cache.indexOfObject(manager);
+            if (pos == NSArray.NotFound)
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("caching: manager " + manager + " not in cache");
+                }
+                if (cache.count()
+                    > Application.application().pageCacheSize())
+                {
+                    log.debug("caching: pool full, flushing oldest");
+                    ((PeerManager)cache.objectAtIndex(0)).dispose();
+                    cache.removeObjectAtIndex(0);
+                }
+            }
+            else
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("caching: manager " + manager
+                        + " found at pos " + pos);
+                }
+                cache.remove(pos);
+            }
+            if (log.isDebugEnabled())
+            {
+                log.debug("caching: manager " + manager
+                    + " placed at pos " + cache.count());
+            }
+            cache.add(manager);
+        }
+
+
+        // ----------------------------------------------------------
+        private void dispose(NSMutableArray cache)
+        {
+            for (int i = 0; i < cache.count(); i++)
+            {
+                ((PeerManager)cache.objectAtIndex(0)).dispose();
+            }
+            cache.clear();
+        }
+
+
+        //~ Instance/static variables .........................................
+        private NSMutableArray managerCache;
+        private NSMutableArray permanentManagerCache;
+        static Logger log = Logger.getLogger(
+            PeerManagerPool.class.getName().replace('$', '.'));
+    }
+
+
+    //~ Instance/static variables .............................................
 
     static Logger log = Logger.getLogger( WOEC.class );
 }

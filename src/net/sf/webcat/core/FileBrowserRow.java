@@ -476,7 +476,8 @@ public class FileBrowserRow
     {
         if ( applyChangesOnMod )
         {
-            ( (Session)session() ).commitLocalChanges();
+            // TODO: how should the call to commitLocalChanges() be fixed?
+            ( (Session)session() ).commitSessionChanges();
         }
         EditFilePage nextPage = (EditFilePage)pageWithName(
             EditFilePage.class.getName() );
@@ -497,7 +498,8 @@ public class FileBrowserRow
     {
         if ( applyChangesOnMod )
         {
-            ( (Session)session() ).commitLocalChanges();
+            // TODO: how should the call to commitLocalChanges() be fixed?
+            ( (Session)session() ).commitSessionChanges();
         }
         log.debug( "delete: " + file.getPath() );
         if ( file.isDirectory() )
