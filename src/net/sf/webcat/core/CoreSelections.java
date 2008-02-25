@@ -71,23 +71,32 @@ public class CoreSelections
         }
         catch ( com.webobjects.eoaccess.EOObjectNotAvailableException e )
         {
-            super.setCourseRelationship( null );
+            log.debug("course(): attempting to force null after " + e);
+            if (log.isDebugEnabled())
+            {
+                // cut off debugging in base class to avoid recursive
+                // calls to this method!
+                Level oldLevel = log.getLevel();
+                try
+                {
+                    log.setLevel( Level.OFF );
+                    // Do NOT call setCourseRelationship, since it in turn
+                    // calls course()!
+                    super.setCourse( null );
+                }
+                finally
+                {
+                    log.setLevel( oldLevel );
+                }
+            }
+            else
+            {
+                // Do NOT call setCourseRelationship, since it in turn calls
+                // course()!
+                super.setCourse( null );
+            }
             return super.course();
         }
-    }
-
-
-    public void setCourse( Course value )
-    {
-        log.debug("setCourse(" + value + ")");
-        super.setCourse( value );
-    }
-
-
-    public void setCourseOffering( CourseOffering value )
-    {
-        log.debug("setCourseOffering(" + value + ")");
-        super.setCourseOffering( value );
     }
 
 
@@ -110,96 +119,34 @@ public class CoreSelections
         catch ( com.webobjects.eoaccess.EOObjectNotAvailableException e )
         {
             log.debug("courseOffering(): attempting to force null after " + e);
-            super.setCourseOfferingRelationship( null );
+            if (log.isDebugEnabled())
+            {
+                // cut off debugging in base class to avoid recursive
+                // calls to this method!
+                Level oldLevel = log.getLevel();
+                try
+                {
+                    log.setLevel( Level.OFF );
+                    // Do NOT call setCourseOfferingRelationship, since it in
+                    // turn calls courseOffering()!
+                    super.setCourseOffering( null );
+                }
+                finally
+                {
+                    log.setLevel( oldLevel );
+                }
+            }
+            else
+            {
+                // Do NOT call setCourseOfferingRelationship, since it in
+                // turn calls courseOffering()!
+                super.setCourseOffering( null );
+            }
             return super.courseOffering();
         }
     }
 
 
-    // ----------------------------------------------------------
-    /**
-     * Use a separate editing context to save this object's data,
-     * if possible.
-     */
-    public void save()
-    {
-        log.debug("save(): course = " + course() + ", offering = "
-            + courseOffering());
-        boolean usingFreshEC = (ecForPrefs == null);
-        if (usingFreshEC)
-        {
-            ecForPrefs = Application.newPeerEditingContext();
-        }
-        ecForPrefs.lock();
-        try
-        {
-            // Use a separate EC to store the changed preferences
-            CoreSelections me = localInstance(ecForPrefs);
-            // Transfer the course setting
-            {
-                Course course = course();
-                if (course != null)
-                {
-                    course = course.localInstance(ecForPrefs);
-                }
-                me.setCourseRelationship( course );
-            }
-            // Transfer the courseOffering setting
-            {
-                CourseOffering offering = courseOffering();
-                if (offering != null)
-                {
-                    offering = offering.localInstance(ecForPrefs);
-                }
-                me.setCourseOfferingRelationship( offering );
-            }
-            ecForPrefs.saveChanges();
-            // Now refresh the session's copy of this object so that it loads
-            // this saved preferences value
-            editingContext().refreshObject( this );
-            log.debug("save(): after refresh: course = " + course()
-                + ", offering = " + courseOffering());
-        }
-        catch (Exception e)
-        {
-            // If there was an error saving ...
-            try
-            {
-                // Try to unlock first, if possible
-                try
-                {
-                    ecForPrefs.unlock();
-                }
-                catch (Exception eee)
-                {
-                    // nothing
-                }
-                // Try to clean up the broken editing context, if possible
-                Application.releasePeerEditingContext(ecForPrefs);
-            }
-            catch (Exception ee)
-            {
-                // if there is an error, ignore it since we're not going to
-                // use this ec any more anyway
-            }
-            ecForPrefs = null;
-            if (!usingFreshEC)
-            {
-                save();
-            }
-        }
-        finally
-        {
-            if (ecForPrefs != null)
-            {
-                ecForPrefs.unlock();
-            }
-        }
-    }
-
-
     //~ Instance/static variables .............................................
-    private EOEditingContext ecForPrefs;
-
     static Logger log = Logger.getLogger( CoreSelections.class );
 }

@@ -92,7 +92,7 @@ public class IndependentEOManager
     //~ Public Methods ........................................................
 
     // ----------------------------------------------------------
-    protected Object clone()
+    public Object clone()
     {
         try
         {

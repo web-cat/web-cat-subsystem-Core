@@ -62,15 +62,29 @@ public class WCCourseComponent
     @Override
     public void awake()
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug("awake(): begin " + getClass().getName());
+        }
         super.awake();
-        log.debug("awake(): begin");
         if (csm == null)
         {
-            csm = new CoreSelectionsManager(
-                wcSession().localUser().getCoreSelections(),
-                ecManager());
+            Object inheritedCsm = transientState().valueForKey( CSM_KEY );
+            if (inheritedCsm == null)
+            {
+                csm = new CoreSelectionsManager(
+                    user().getMyCoreSelections(), ecManager());
+            }
+            else
+            {
+                csm = (CoreSelectionsManager)
+                    ((CoreSelectionsManager)inheritedCsm).clone();
+            }
         }
-        log.debug("awake(): end");
+        if (log.isDebugEnabled())
+        {
+            log.debug("awake(): end " + getClass().getName());
+        }
     }
 
 
@@ -89,12 +103,11 @@ public class WCCourseComponent
     @Override
     public WOComponent pageWithName( String name )
     {
-        WOComponent result = super.pageWithName( name );
-        if (result instanceof WCCourseComponent && csm != null)
+        if (csm != null)
         {
-            ((WCCourseComponent)result).csm =
-                (CoreSelectionsManager)csm.clone();
+            transientState().takeValueForKey( csm, CSM_KEY );
         }
+        WOComponent result = super.pageWithName( name );
         return result;
     }
 
@@ -105,11 +118,11 @@ public class WCCourseComponent
     private IndependentEOManager.ECManager ecManager()
     {
         IndependentEOManager.ECManager result = (IndependentEOManager.ECManager)
-            wcSession().transientState().valueForKey(KEY);
+            transientState().valueForKey(ECMANAGER_KEY);
         if (result == null)
         {
             result = new IndependentEOManager.ECManager();
-            wcSession().transientState().takeValueForKey(result, KEY);
+            transientState().takeValueForKey(result, ECMANAGER_KEY);
         }
         return result;
     }
@@ -118,7 +131,10 @@ public class WCCourseComponent
     //~ Instance/static variables .............................................
 
     private CoreSelectionsManager csm;
-    private static final String KEY = CoreSelectionsManager.class.getName();
+    private static final String CSM_KEY =
+        CoreSelectionsManager.class.getName();
+    private static final String ECMANAGER_KEY =
+        IndependentEOManager.ECManager.class.getName();
 
     static Logger log = Logger.getLogger( WCCourseComponent.class );
 }
