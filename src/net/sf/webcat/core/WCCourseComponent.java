@@ -115,7 +115,7 @@ public class WCCourseComponent
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
-    private IndependentEOManager.ECManager ecManager()
+    protected IndependentEOManager.ECManager ecManager()
     {
         IndependentEOManager.ECManager result = (IndependentEOManager.ECManager)
             transientState().valueForKey(ECMANAGER_KEY);
