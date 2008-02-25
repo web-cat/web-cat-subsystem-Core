@@ -74,7 +74,7 @@ $>public abstract class <$GEN_PREFIX$><$classNameWithoutPackage$>
      * @param <$ToOneRelationship.name$><$endif$><$endforeach do$>
      * @return The newly created object
      */
-    public static <$classNameWithoutPackage$> create<$classNameWithoutPackage$>(
+    public static <$classNameWithoutPackage$> create(
         EOEditingContext editingContext<$foreach Attribute classAttributes.@sortedNameArray do$><$if !Attribute.allowsNull$>,
         <$if Attribute.userInfo.isScalar == 'true'$><$Attribute.userInfo.type$><$else$><$Attribute.javaValueClassName$><$endif$> <$Attribute.name$><$endif$><$endforeach do$><$foreach ToOneRelationship classToOneRelationships.@sortedNameArray do$><$if ToOneRelationship.isMandatory$>,
         <$ToOneRelationship.destinationEntity.referenceJavaClassName$> <$ToOneRelationship.name$><$endif$><$endforeach do$>
