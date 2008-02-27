@@ -42,6 +42,8 @@ import java.util.regex.*;
 import javax.activation.*;
 import javax.mail.internet.*;
 import net.sf.webcat.archives.*;
+import ognl.helperfunction.WOHelperFunctionHTMLTemplateParser;
+
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -319,6 +321,22 @@ public class Application
         NSLog.debug.setAllowedDebugLevel( NSLog.DebugLevelInformational );
         NSLog.allowDebugLoggingForGroups( NSLog.DebugGroupMultithreading );
         setAllowsConcurrentRequestHandling( true );
+
+        // Add useful tag shortcuts for inline component tags.
+        WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
+        		"net.sf.webcat.core.TableRow", "tr");
+        WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
+        		"WOComponentContent", "content");
+        
+        AjaxUpdateContainerTagProcessor tp =
+        	new AjaxUpdateContainerTagProcessor();
+        
+        WOHelperFunctionHTMLTemplateParser.registerTagProcessorForElementType(
+        		tp, "adiv");
+        WOHelperFunctionHTMLTemplateParser.registerTagProcessorForElementType(
+        		tp, "aspan");
+
+        setIncludeCommentsInResponses(false);
 
         // Ensure subsystems are all loaded
         subsystemManager();

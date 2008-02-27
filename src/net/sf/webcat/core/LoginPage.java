@@ -162,7 +162,8 @@ public class LoginPage
         {
             AuthenticationDomain aDomain = (AuthenticationDomain)
                 domainDisplayGroup.allObjects().objectAtIndex( i );
-            if ( aDomain.authenticator().canChangePassword() )
+            if ( aDomain.authenticator() != null &&
+            		aDomain.authenticator().canChangePassword() )
             {
                 result = true;
                 break;
