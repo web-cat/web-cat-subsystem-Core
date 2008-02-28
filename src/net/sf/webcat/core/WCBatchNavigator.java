@@ -42,7 +42,7 @@ import org.apache.log4j.Logger;
  *  @version $Id$
  */
 public class WCBatchNavigator
-    extends WCComponent
+    extends WOComponent
 {
     //~ Constructors ..........................................................
 
