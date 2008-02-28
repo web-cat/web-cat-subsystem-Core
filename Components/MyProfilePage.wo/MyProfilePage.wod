@@ -1,3 +1,7 @@
+TestSection: net.sf.webcat.core.WCCollapsibleSection {
+    title= "Time Formats";
+}
+
 ApplyChanges: WOSubmitButton {
 	action = apply;
 	value  = " Apply ";

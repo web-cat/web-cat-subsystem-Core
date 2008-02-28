@@ -17,7 +17,7 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
     <td><webobject name="ApplyChanges"/></td></tr>
 </table></webobject>
 
-<h2>Time Formats</h2>
+<wo:WCCollapsibleSection title="Time Formats" initiallyExpanded="~false">
 <webobject name="Form2"><table style="border: none;">
 <tr><td class="R">Time zone:</td><td><webobject name="TimeZone"/></td></tr>
 <tr><td class="R">Format:</td><td><webobject name="DateFormat"/>
@@ -25,8 +25,9 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <tr><td></td>
     <td><webobject name="ApplyTimeFormats"/></td></tr>
 </table></webobject>
+</wo:WCCollapsibleSection>
 
-<h2>Personalized Service URLs</h2>
+<wo:WCCollapsibleSection title="Personalized Service URLs" initiallyExpanded="~false">
 <table style="border: none;"><tbody>
 <tr><td class="R">BlueJ submission definitions:</td>
     <td><wo:link href="$bluejUrl">copy and paste this link</wo:link>
@@ -41,8 +42,9 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
     <td><wo:link href="$webcalUrl">subscribe</wo:link> <wo:link href="$webcalUrl"><wo name="iCal"/></wo:link>
     <wo name="WebcalLinkInfo"/></td></tr>
 </tbody></table>
+</wo:WCCollapsibleSection>
 
-<h2>Courses</h2>
+<wo:WCCollapsibleSection title="Your Courses" initiallyExpanded="~false">
 <webobject name="EnrolledInCourses">
 <p>You are currently <b>enrolled in</b> these courses:</p>
 <div class="shadow"><table><tbody><tr><th>Course</th><th>Name</th><th>Instructor</th></tr>
@@ -84,4 +86,5 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 </webobject><webobject name="NotTeachingCourses">
 <p>You are not currently registered as the <b>instructor</b> for any courses.</p>
 </webobject></webobject>
+</wo:WCCollapsibleSection>
 </webobject>
