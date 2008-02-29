@@ -44,7 +44,7 @@ import org.apache.log4j.Logger;
  *  @version $Id$
  */
 public class WCResourceManager
-    extends WOResourceManager
+    extends er.extensions.ERXResourceManager
 {
     //~ Constructors ..........................................................
 
@@ -67,62 +67,19 @@ public class WCResourceManager
         NSArray   aLanguageList,
         WORequest aRequest )
     {
-        return urlForResourceNamed(
-            false, aResourceName, aFrameworkName, aLanguageList, aRequest );
-    }
-
-
-    // ----------------------------------------------------------
-    public String urlForStaticHtmlResourceNamed(
-        String    aResourceName,
-        String    aFrameworkName,
-        NSArray   aLanguageList,
-        WORequest aRequest )
-    {
-        return urlForResourceNamed(
-            true, aResourceName, aFrameworkName, aLanguageList, aRequest );
-    }
-
-
-    // ----------------------------------------------------------
-    public String urlForFrameworkPrefixedResourceNamed(
-        String aResourceName, WORequest aRequest )
-    {
-        if ( Application.application()._rapidTurnaroundActiveForAnyProject() )
-        {
-            // Skip all caching and other processing here.  This should
-            // only arise when (a) requesting CSS and Javascript-style
-            // resources, when (b) no base.url has been set yet (e.g.,
-            // only during the self-installation wizard).  In that case,
-            // we want to use absolute external URLs, since internal
-            // URLs based on /wr requests will not allow relative references
-            // within CSS or Javascript files to be resolved correctly.
-            // The default developmentBaseURL should provide this for us
-            // until static HTML resources have been initialized correctly
-            // after the self-installation wizard completes.
-            return developmentBaseURL() + aResourceName;
-        }
-        String result =
-            (String)frameworkPrefixedCache.valueForKey( aResourceName );
-        if ( result == null )
+        if (aFrameworkName == null)
         {
             int pos = aResourceName.indexOf( FRAMEWORK_SUFFIX );
             if ( pos >= 0 )
             {
                 String resourceName = aResourceName.substring(
                     pos + FRAMEWORK_SUFFIX.length() );
-                String frameworkName = aResourceName.substring( 0, pos );
-                result = urlForStaticHtmlResourceNamed(
-                    resourceName, frameworkName, null, aRequest );
+                aFrameworkName = aResourceName.substring( 0, pos );
+                aResourceName = resourceName;
             }
-            else
-            {
-                result = urlForStaticHtmlResourceNamed(
-                    aResourceName, null, null, aRequest );
-            }
-            frameworkPrefixedCache.takeValueForKey( result, aResourceName );
         }
-        return result;
+        return standardizeURL(super.urlForResourceNamed(
+            aResourceName, aFrameworkName, aLanguageList, aRequest ));
     }
 
 
@@ -134,107 +91,22 @@ public class WCResourceManager
         WORequest aRequest )
     {
         return ( (WCResourceManager) Application.application()
-            .resourceManager() ).urlForStaticHtmlResourceNamed(
+            .resourceManager() ).urlForResourceNamed(
                 aResourceName, aFrameworkName, aLanguageList, aRequest );
     }
 
 
     // ----------------------------------------------------------
-    public static String frameworkPrefixedResourceURLFor(
+    public static String resourceURLFor(
         String aResourceName, WORequest aRequest )
     {
         return ( (WCResourceManager) Application.application()
-            .resourceManager() ).urlForFrameworkPrefixedResourceNamed(
-                aResourceName, aRequest );
-    }
-
-
-    // ----------------------------------------------------------
-    public static String developmentBaseURL()
-    {
-        if ( developmentBaseURL == null )
-        {
-            developmentBaseURL = Application.configurationProperties()
-                .getProperty( "WCResourceManager.developmentBaseURL",
-                    "http://web-cat.cs.vt.edu/wcstatic/" );
-            if ( !developmentBaseURL.endsWith( "/" ) )
-            {
-                developmentBaseURL += "/";
-            }
-        }
-        return developmentBaseURL;
-    }
-
-
-    // ----------------------------------------------------------
-    /* (non-Javadoc)
-     * @see com.webobjects.appserver.WOResourceManager#flushDataCache()
-     */
-    public void flushDataCache()
-    {
-        frameworkCache = new NSMutableDictionary();
-        appCache = new NSMutableDictionary();
-        frameworkPrefixedCache = new NSMutableDictionary();
-        super.flushDataCache();
+            .resourceManager() ).urlForResourceNamed(
+                aResourceName, null, null, aRequest );
     }
 
 
     //~ Private Methods .......................................................
-
-    // ----------------------------------------------------------
-    private String urlForResourceNamed(
-        boolean   useDevelopmentURLsIfNecessary,
-        String    aResourceName,
-        String    aFrameworkName,
-        NSArray   aLanguageList,
-        WORequest aRequest )
-    {
-        NSMutableDictionary cache = appCache;
-        if ( aFrameworkName != null )
-        {
-            Object framework = frameworkCache.valueForKey( aFrameworkName );
-            if ( framework == null )
-            {
-//                log.debug( "adding framework cache for " + aFrameworkName );
-                cache = new NSMutableDictionary();
-                frameworkCache.takeValueForKey( cache, aFrameworkName );
-            }
-            else
-            {
-                cache = (NSMutableDictionary)framework;
-            }
-        }
-        String result = (String)cache.valueForKey( aResourceName );
-        if ( result == null )
-        {
-//            log.debug( "adding cached URL for " + aFrameworkName + "/"
-//                + aResourceName );
-            if ( useDevelopmentURLsIfNecessary &&
-                 net.sf.webcat.WCServletAdaptor.getInstance() == null )
-            {
-                result = developmentBaseURL();
-                if ( aFrameworkName != null )
-                {
-                    result += aFrameworkName + ".framework/WebServerResources/";
-                }
-                result += aResourceName;
-            }
-            else
-            {
-                result = standardizeURL( super.urlForResourceNamed(
-                    aResourceName, aFrameworkName, aLanguageList, aRequest ) );
-            }
-            cache.takeValueForKey( result, aResourceName );
-        }
-//        if ( log.isDebugEnabled() )
-//        {
-//            log.debug( "urlForResourceNamed( " + aResourceName + ", "
-//                + aFrameworkName + ", " + aLanguageList + ", request ) = "
-//                + result );
-//        }
-        return result;
-    }
-
 
     // ----------------------------------------------------------
     private String standardizeURL( String url )
@@ -250,19 +122,12 @@ public class WCResourceManager
             result = result.substring( 0, pos + 1 ) + "/"
                 + result.substring( pos + 1 );
         }
-//        log.debug( "standardizeURL( " + url + ") = " + result );
         return result;
     }
 
 
     //~ Instance/static variables .............................................
 
-    private NSMutableDictionary frameworkCache = new NSMutableDictionary();
-    private NSMutableDictionary appCache = new NSMutableDictionary();
-    private NSMutableDictionary frameworkPrefixedCache =
-        new NSMutableDictionary();
-
-    private static String developmentBaseURL;
     private static final String FRAMEWORK_SUFFIX =
         ".framework/WebServerResources/";
 

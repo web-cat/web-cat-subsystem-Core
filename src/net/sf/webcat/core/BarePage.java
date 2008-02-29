@@ -171,8 +171,7 @@ public class BarePage
     {
         buffer.append( "<script type=\"text/javascript\" src=\"" );
         buffer.append(
-            WCResourceManager.frameworkPrefixedResourceURLFor( url,
-                context().request() ) );
+            WCResourceManager.resourceURLFor( url, context().request() ) );
         buffer.append( "\"></script>" );
     }
 
@@ -182,8 +181,7 @@ public class BarePage
     {
         buffer.append( "<link rel=\"stylesheet\" type=\"text/css\" href=\"" );
         buffer.append(
-            WCResourceManager.frameworkPrefixedResourceURLFor(
-                url, context().request() ) );
+            WCResourceManager.resourceURLFor( url, context().request() ) );
         buffer.append( "\"/>" );
     }
 
@@ -191,7 +189,7 @@ public class BarePage
     // ----------------------------------------------------------
     public String wcStylesheet()
     {
-        return WCResourceManager.frameworkPrefixedResourceURLFor(
+        return WCResourceManager.resourceURLFor(
             "Core.framework/WebServerResources/wc.css", context().request() );
     }
 
@@ -199,7 +197,7 @@ public class BarePage
     // ----------------------------------------------------------
     public String wcIE5Stylesheet()
     {
-        return WCResourceManager.frameworkPrefixedResourceURLFor(
+        return WCResourceManager.resourceURLFor(
             "Core.framework/WebServerResources/wc-ie5.css",
             context().request() );
     }
@@ -208,7 +206,7 @@ public class BarePage
     // ----------------------------------------------------------
     public String wcIE6Stylesheet()
     {
-        return WCResourceManager.frameworkPrefixedResourceURLFor(
+        return WCResourceManager.resourceURLFor(
             "Core.framework/WebServerResources/wc-ie6.css",
             context().request() );
     }
@@ -220,11 +218,11 @@ public class BarePage
         if ( overlibLink == null )
         {
             overlibLink = "<script type=\"text/javascript\" src=\""
-                + WCResourceManager.frameworkPrefixedResourceURLFor(
+                + WCResourceManager.resourceURLFor(
             "Core.framework/WebServerResources/overlib/Mini/overlib_mini.js",
             context().request() )
                 + "\"></script><script type=\"text/javascript\" src=\""
-                + WCResourceManager.frameworkPrefixedResourceURLFor(
+                + WCResourceManager.resourceURLFor(
                     "Core.framework/WebServerResources/wc.js",
                     context().request() )
                 + "\"></script>";
