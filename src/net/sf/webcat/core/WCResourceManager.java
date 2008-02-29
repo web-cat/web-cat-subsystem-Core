@@ -72,10 +72,9 @@ public class WCResourceManager
             int pos = aResourceName.indexOf( FRAMEWORK_SUFFIX );
             if ( pos >= 0 )
             {
-                String resourceName = aResourceName.substring(
-                    pos + FRAMEWORK_SUFFIX.length() );
                 aFrameworkName = aResourceName.substring( 0, pos );
-                aResourceName = resourceName;
+                aResourceName = aResourceName.substring(
+                    pos + FRAMEWORK_SUFFIX.length() );
             }
         }
         return standardizeURL(super.urlForResourceNamed(
