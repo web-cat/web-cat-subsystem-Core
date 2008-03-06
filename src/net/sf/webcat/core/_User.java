@@ -712,7 +712,6 @@ public abstract class _User
         log.debug("flushCaches()");
         preferencesCache = null;
         preferencesRawCache  = null;
-        setUpdateMutableFields( false );
         super.flushCaches();
     }
 

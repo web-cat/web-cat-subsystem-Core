@@ -434,8 +434,7 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
         log.debug("flushCaches()");
 <$foreach Attribute classAttributes.@sortedNameArray flushCache$><$if Attribute.userInfo.isMutable == 'true'$>        <$Attribute.name$>Cache = null;
         <$Attribute.name$>RawCache  = null;
-<$endif$><$endforeach flushCache$>        setUpdateMutableFields( false );
-        super.flushCaches();
+<$endif$><$endforeach flushCache$>        super.flushCaches();
     }
 
 
