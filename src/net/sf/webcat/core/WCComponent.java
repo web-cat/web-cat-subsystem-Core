@@ -468,8 +468,20 @@ public class WCComponent
     {
         if (peerContextManager != null)
         {
-            peerContextManager.editingContext().revert();
-            peerContextManager.editingContext().refaultAllObjects();
+            try
+            {
+                // Make sure to grab the lock, in case this EC hasn't been
+                // used for anything yet in this RR-loop and Wonder hasn't
+                // auto-locked it yet.
+                peerContextManager.editingContext().lock();
+
+                peerContextManager.editingContext().revert();
+                peerContextManager.editingContext().refaultAllObjects();
+            }
+            finally
+            {
+                peerContextManager.editingContext().unlock();
+            }
         }
         else
         {
@@ -851,9 +863,21 @@ public class WCComponent
         log.debug( "commitLocalChanges()" );
       if (peerContextManager != null)
       {
-          peerContextManager.editingContext().saveChanges();
-          peerContextManager.editingContext().revert();
-          peerContextManager.editingContext().refaultAllObjects();
+          try
+          {
+              // Make sure to grab the lock, in case this EC hasn't been
+              // used for anything yet in this RR-loop and Wonder hasn't
+              // auto-locked it yet.
+              peerContextManager.editingContext().lock();
+
+              peerContextManager.editingContext().saveChanges();
+              peerContextManager.editingContext().revert();
+              peerContextManager.editingContext().refaultAllObjects();
+          }
+          finally
+          {
+              peerContextManager.editingContext().unlock();
+          }
       }
       else
       {
