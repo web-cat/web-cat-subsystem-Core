@@ -125,6 +125,7 @@ public class Course
     public void mightDelete()
     {
         log.debug("mightDelete()");
+        if (isNewObject()) return;
         if (offerings().count() > 0)
         {
             log.debug("mightDelete(): course has offerings");
