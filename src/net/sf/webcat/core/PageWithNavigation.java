@@ -111,7 +111,6 @@ public class PageWithNavigation
             if (thisPage != null)
             {
                 myTab = thisPage.currentTab();
-                myTab.select();
                 secondLevelSelection =
                     ( (Session)session() ).tabs.selectedChild().selectedChild();
             }
@@ -122,10 +121,6 @@ public class PageWithNavigation
                     ( (Session)session() ).tabs.selectedChild().selectedChild();
             }
             bodyClass = myTab.cssClass();
-        }
-        else
-        {
-            myTab.select();
         }
         if ( title == null && thisPage != null )
         {
