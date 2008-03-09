@@ -222,6 +222,8 @@
         <include name="Resources/"/>
         <exclude name="**/CVS/"/>
         <exclude name="**/*~"/>
+        <exclude name=".svn"/>
+        <excludesfile name="woproject/resources.exclude.patternset"/>
       </fileset>
     </copy>
   </target>
@@ -235,6 +237,8 @@
         <include name="WebServerResources/"/>
         <exclude name="**/CVS/"/>
         <exclude name="**/*~"/>
+        <exclude name=".svn"/>
+        <excludesfile name="woproject/wsresources.exclude.patternset"/>
       </fileset>
     </copy>
   </target>
@@ -247,6 +251,7 @@
       <fileset dir="Libraries">
         <include name="**/*.jar"/>
         <exclude name="**/CVS/"/>
+        <exclude name=".svn"/>
       </fileset>
     </copy>
   </target>
