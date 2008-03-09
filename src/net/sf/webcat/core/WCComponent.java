@@ -227,7 +227,7 @@ public class WCComponent
      * Set the tab that corresponds to this component's page.
      * @param current this page's navigation tab
      */
-    public void currentTab(TabDescriptor current)
+    public void setCurrentTab(TabDescriptor current)
     {
         currentTab = current;
     }
