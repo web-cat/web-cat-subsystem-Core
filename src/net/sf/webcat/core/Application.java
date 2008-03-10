@@ -288,6 +288,8 @@ public class Application
 
         // Remove all state login session data
         EOEditingContext ec = newPeerEditingContext();
+        boolean nsLogDebugEnabled = NSLog.debug.isEnabled();
+        NSLog.debug.setIsEnabled(false);
         try
         {
             ec.lock();
@@ -315,6 +317,7 @@ public class Application
             ec.unlock();
             releasePeerEditingContext( ec );
         }
+        NSLog.debug.setIsEnabled(nsLogDebugEnabled);
         AuthenticationDomain.refreshAuthDomains();
         Language.refreshLanguages();
 
@@ -327,10 +330,10 @@ public class Application
         		"net.sf.webcat.core.TableRow", "tr");
         WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
         		"WOComponentContent", "content");
-        
+
         AjaxUpdateContainerTagProcessor tp =
         	new AjaxUpdateContainerTagProcessor();
-        
+
         WOHelperFunctionHTMLTemplateParser.registerTagProcessorForElementType(
         		tp, "adiv");
         WOHelperFunctionHTMLTemplateParser.registerTagProcessorForElementType(
@@ -1182,13 +1185,21 @@ public class Application
         }
         catch ( Exception e )
         {
-            log.error( "Exception sending mail message:\n", e );
-            log.error( "unsent message:\nTo: "
+            String msg = e.getMessage();
+            if (msg != null && msg.contains("java.net.UnknownHostException:"))
+            {
+                log.error( "Exception sending mail message: " + e );
+            }
+            else
+            {
+                log.error( "Exception sending mail message:\n", e );
+                log.error( "unsent message:\nTo: "
                        + ( to == null ? "null" : to )
                        + "\ntoAdmins: " + toAdmins
                        + "\nSubject: " + ( subject == null ? "null" : subject )
                        + "\nBody:\n" + ( body == null ? "null" : body )
                        );
+            }
         }
     }
 
