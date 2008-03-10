@@ -3,10 +3,7 @@ PrivacyStatement: WOHyperlink {
 	string = "Privacy statement";
 }
 
-AdminEmail: WOString {
-	value = application.properties.coreAdminEmail;
-}
-
-Version: WOString {
-    value = application.version;
+AdminEmail: WOHyperlink {
+	href   = "~\"mailto:\" + application.properties.coreAdminEmail";
+	string = application.properties.coreAdminEmail;
 }
