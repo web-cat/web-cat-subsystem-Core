@@ -315,9 +315,16 @@ public class DirectAction
         String thisWosid = wosid();
         if ( session == null && thisWosid != null )
         {
-            session = (Session)Application.application()
-                .restoreSessionWithID( thisWosid, context() );
-            log.debug( "restoreSession(): session = " + session );
+            if (context().hasSession())
+            {
+                session = (Session)context().session();
+            }
+            else
+            {
+                session = (Session)Application.application()
+                    .restoreSessionWithID( thisWosid, context() );
+                log.debug( "restoreSession(): session = " + session );
+            }
         }
     }
 
@@ -422,6 +429,10 @@ public class DirectAction
                 }
 //              log.debug( "session(): session is now " + session );
             }
+        }
+        if (session == null)
+        {
+            session = mySession;
         }
         return mySession;
     }
