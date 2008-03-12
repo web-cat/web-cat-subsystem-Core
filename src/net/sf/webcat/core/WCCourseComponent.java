@@ -67,20 +67,7 @@ public class WCCourseComponent
             log.debug("awake(): begin " + getClass().getName());
         }
         super.awake();
-        if (csm == null)
-        {
-            Object inheritedCsm = transientState().valueForKey( CSM_KEY );
-            if (inheritedCsm == null)
-            {
-                csm = new CoreSelectionsManager(
-                    user().getMyCoreSelections(), ecManager());
-            }
-            else
-            {
-                csm = (CoreSelectionsManager)
-                    ((CoreSelectionsManager)inheritedCsm).clone();
-            }
-        }
+        coreSelections();
         if (log.isDebugEnabled())
         {
             log.debug("awake(): end " + getClass().getName());
@@ -95,6 +82,20 @@ public class WCCourseComponent
      */
     public CoreSelectionsManager coreSelections()
     {
+        if (csm == null)
+        {
+            Object inheritedCsm = transientState().valueForKey( CSM_KEY );
+            if (inheritedCsm == null)
+            {
+                csm = new CoreSelectionsManager(
+                    user().getMyCoreSelections(), ecManager());
+            }
+            else
+            {
+                csm = (CoreSelectionsManager)
+                    ((CoreSelectionsManager)inheritedCsm).clone();
+            }
+        }
         return csm;
     }
 
