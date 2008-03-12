@@ -323,7 +323,6 @@ public class Application
 
         NSLog.debug.setAllowedDebugLevel( NSLog.DebugLevelInformational );
         NSLog.allowDebugLoggingForGroups( NSLog.DebugGroupMultithreading );
-        setAllowsConcurrentRequestHandling( true );
 
         // Add useful tag shortcuts for inline component tags.
         WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
