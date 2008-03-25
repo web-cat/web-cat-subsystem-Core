@@ -48,7 +48,7 @@ public class InstallPage4
     // ----------------------------------------------------------
     /**
      * Creates a new PreCheckPage object.
-     * 
+     *
      * @param context The context to use
      */
     public InstallPage4( WOContext context )
@@ -80,13 +80,13 @@ public class InstallPage4
         {
             if ( context() != null )
             {
-                configuration.setProperty( "base.url", 
+                configuration.setProperty( "base.url",
                     Application.completeURLWithRequestHandlerKey(
                         context(), null, null, null, false, 0 ) );
             }
             else
             {
-                String url = 
+                String url =
                     Application.application().servletConnectURL();
                 url = url.replaceFirst( "(//[^/]+/)/", "\\1" );
                 configuration.setProperty( "base.url", url );
@@ -122,7 +122,9 @@ public class InstallPage4
         storeFormValueToConfig( formValues, "base.url",
             "Please specify the base URL for Web-CAT." );
         storeFormValueToConfig( formValues, "login.url", null );
-        storeFormValueToConfig( formValues, "WOSMTPHost", null );
+        storeFormValueToConfig( formValues, "mail.smtp.host", null );
+        storeFormValueToConfig(
+            formValues, "mail.smtp.host", "WOSMTPHost", null );
         storeFormValueToConfig( formValues, "grader.submissiondir",
             "You must specify a storage directory." );
         storeFormValueToConfig( formValues, "grader.workarea",
