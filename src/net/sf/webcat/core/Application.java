@@ -1464,11 +1464,14 @@ public class Application
                           e.hasMoreElements(); )
                     {
                         Object key = e.nextElement();
-                        Object value = extraInfo.objectForKey( key );
-                        errorBuffer.append( key );
-                        errorBuffer.append( "\t= " );
-                        errorBuffer.append( value );
-                        errorBuffer.append( '\n' );
+                        if (!"Session".equals(key))
+                        {
+                            Object value = extraInfo.objectForKey( key );
+                            errorBuffer.append( key );
+                            errorBuffer.append( "\t= " );
+                            errorBuffer.append( value );
+                            errorBuffer.append( '\n' );
+                        }
                     }
                 }
 
