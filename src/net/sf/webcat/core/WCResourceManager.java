@@ -55,6 +55,14 @@ public class WCResourceManager
     public WCResourceManager()
     {
         super();
+
+        // This provides support for resource-manager-based URL generation
+        // for HTML resources during development mode, even when no
+        // request parameter is provided.  During deployment, this is
+        // always disabled, since the frameworks base URL is always set
+        // to something other than the default in that case.
+        wantExemplar = Application.application().frameworksBaseURL().equals(
+            "/WebObjects/Frameworks");
     }
 
 
@@ -67,6 +75,13 @@ public class WCResourceManager
         NSArray   aLanguageList,
         WORequest aRequest )
     {
+        if (wantExemplar && exemplarRequest == null && aRequest != null)
+        {
+            exemplarRequest = aRequest;
+            log.debug("exemplar = " + exemplarRequest);
+            log.debug("frameworks base = "
+                + Application.application().frameworksBaseURL());
+        }
         if (aFrameworkName == null)
         {
             int pos = aResourceName.indexOf( FRAMEWORK_SUFFIX );
@@ -89,6 +104,7 @@ public class WCResourceManager
         NSArray   aLanguageList,
         WORequest aRequest )
     {
+        if (aRequest == null) aRequest = exemplarRequest;
         return ( (WCResourceManager) Application.application()
             .resourceManager() ).urlForResourceNamed(
                 aResourceName, aFrameworkName, aLanguageList, aRequest );
@@ -99,6 +115,7 @@ public class WCResourceManager
     public static String resourceURLFor(
         String aResourceName, WORequest aRequest )
     {
+        if (aRequest == null) aRequest = exemplarRequest;
         return ( (WCResourceManager) Application.application()
             .resourceManager() ).urlForResourceNamed(
                 aResourceName, null, null, aRequest );
@@ -129,6 +146,9 @@ public class WCResourceManager
 
     private static final String FRAMEWORK_SUFFIX =
         ".framework/WebServerResources/";
+
+    private static WORequest exemplarRequest;
+    private static boolean wantExemplar = false;
 
     static Logger log = Logger.getLogger( WCResourceManager.class );
 }
