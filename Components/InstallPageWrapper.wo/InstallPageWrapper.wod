@@ -133,7 +133,3 @@ StepName: WOString {
 Title: WOString {
     value = title;
 }
-
-Version: WOString {
-    value = application.version;
-}
