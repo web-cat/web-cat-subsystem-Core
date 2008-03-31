@@ -421,9 +421,10 @@ public class PageWithNavigation
     public boolean hasVisibleSecondaryTabs()
     {
         boolean result = false;
-        if ( ( (Session)session() ).user().restrictToStudentView() )
+        Session session = (Session)session();
+        if ( session.user() == null || session.user().restrictToStudentView() )
         {
-            NSArray secondaries = ( (Session)session() ).tabs.selectedChild()
+            NSArray secondaries = session.tabs.selectedChild()
                 .children();
             for ( int i = 0; i < secondaries.count(); i++ )
             {
@@ -438,7 +439,7 @@ public class PageWithNavigation
         }
         else
         {
-            result = ( (Session)session() ).tabs.selectedChild().children()
+            result = session.tabs.selectedChild().children()
                 .count() > 0;
         }
         return result;
