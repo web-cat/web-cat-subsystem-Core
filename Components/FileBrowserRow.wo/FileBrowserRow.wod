@@ -120,10 +120,6 @@ Expand2: WOActiveImage {
 	title     = "Expand Folder";
 }
 
-Expanded : WOConditional {
-    condition = isExpanded;
-}
-
 FileIcon1: WOImage {
 	filename  = iconURL;
 	framework = "Core";
@@ -168,11 +164,6 @@ IsLastInParent : WOConditional {
 
 IsNonemptySpacer : WOConditional {
 	condition = spacerWalker.last;
-	negate = true;
-}
-
-IsNotArchive : WOConditional {
-	condition = isArchive;
 	negate = true;
 }
 
@@ -221,11 +212,6 @@ NoDeleteFile: WOImage {
 	width     = 14;
 	height    = 17;
 	alt       = "";
-}
-
-NotExpanded : WOConditional {
-    condition = isExpanded;
-    negate = true;
 }
 
 Select: WOActiveImage {

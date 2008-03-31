@@ -11,18 +11,8 @@ HasAnnouncements: WOConditional {
     condition = application.properties.coreAnnouncements;
 }
 
-NewSubmission: WOHyperlink {
-    action = newSubmission;
-    string = "Make a new submission";
-}
-
 Page : net.sf.webcat.core.PageWithNavigation {
 	title     = "Your Web-CAT Status";
-}
-
-PastResults: WOHyperlink {
-    action = pastResults;
-    string = "See past results";
 }
 
 SubsystemHomeStatus: net.sf.webcat.core.SubsystemFragmentCollector {
