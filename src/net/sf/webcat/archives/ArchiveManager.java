@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.archives;
@@ -52,7 +48,7 @@ import java.util.List;
  *   path.
  * </li>
  * </ul>
- * 
+ *
  * @author Tony Allowatt
  */
 public class ArchiveManager
@@ -72,7 +68,7 @@ public class ArchiveManager
     // ----------------------------------------------------------
 	/**
 	 * Returns the single instance of the ArchiveManager class.
-	 * 
+	 *
 	 * @return A reference to the ArchiveManager singleton.
 	 */
 	public static ArchiveManager getInstance()
@@ -80,7 +76,7 @@ public class ArchiveManager
 		if ( instance == null )
         {
 			instance = new ArchiveManager();
-        }		
+        }
 		return instance;
 	}
 
@@ -91,7 +87,7 @@ public class ArchiveManager
 	/**
 	 * Add an archive handler to the manager.  Handlers are asked in the order
 	 * they were added whether they can handle a given archive.
-	 * 
+	 *
 	 * @param handler An archive handler object that implements the
 	 * IArchiveHandler interface.
 	 */
@@ -107,12 +103,12 @@ public class ArchiveManager
 	 * guarantees are made as to whether an IArchiveEntry for a directory in
 	 * the archive will be returned before its children; this behavior is
 	 * dependent on the underlying archive handler.
-	 * 
+	 *
 	 * @param file A File object representing the archive.
-	 * 
+	 *
 	 * @return An array of IArchiveEntry objects describing the contents of
 	 * the archive.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public IArchiveEntry[] getContents( File file )
@@ -155,13 +151,13 @@ public class ArchiveManager
 	 * made as to whether an IArchiveEntry for a directory in the archive will
 	 * be returned before its children; this behavior is dependent on the
 	 * underlying archive handler.
-	 * 
+	 *
 	 * @param name The name of the archive being passed.
 	 * @param stream An InputStream from which the archive will be read.
-	 * 
+	 *
 	 * @return An array of IArchiveEntry objects describing the contents of
 	 * the archive.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public IArchiveEntry[] getContents( String name, InputStream stream )
@@ -179,14 +175,14 @@ public class ArchiveManager
      * made as to whether an IArchiveEntry for a directory in the archive will
      * be returned before its children; this behavior is dependent on the
      * underlying archive handler.
-     * 
+     *
      * @param name   The name of the archive being passed.
      * @param stream An InputStream from which the archive will be read.
      * @param size   The size of the input stream, if known.
-     * 
+     *
      * @return An array of IArchiveEntry objects describing the contents of
      * the archive.
-     * 
+     *
      * @throws IOException
      */
     public IArchiveEntry[] getContents( String      name,
@@ -203,7 +199,7 @@ public class ArchiveManager
 		else
 		{
 			return new IArchiveEntry[] {
-				new ArchiveEntry( name, false, new Date(), size )	
+				new ArchiveEntry( name, false, new Date(), size )
 			};
 		}
 	}
@@ -214,12 +210,12 @@ public class ArchiveManager
 	 * Unpacks an archive to the specified destination directory. The
 	 * destination directory must already exist; any nested directories
 	 * in the archive will be created as necessary.
-	 * 
+	 *
 	 * @param destPath A File object representing the directory to which the
 	 * archive will be unpacked.
 	 * @param archiveFile A File object representing the archive to be
 	 * unpacked.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void unpack( File destPath, File archiveFile )
@@ -251,12 +247,12 @@ public class ArchiveManager
 	 * Unpacks an archive to the specified destination directory. The
 	 * destination directory must already exist; any nested directories
 	 * in the archive will be created as necessary.
-	 * 
+	 *
 	 * @param destPath A File object representing the directory to which the
 	 * archive will be unpacked.
 	 * @param name The name of the archive being passed.
 	 * @param stream An InputStream from which the archive will be read.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void unpack( File destPath, String name, InputStream stream )
@@ -280,7 +276,7 @@ public class ArchiveManager
 	/*
 	 * Finds the first archive handler that will accept a file with the
 	 * specified name. If no handler currently registered will accept it,
-	 * this function returns null. 
+	 * this function returns null.
 	 */
 	private IArchiveHandler findHandler( String name )
 	{
@@ -291,7 +287,7 @@ public class ArchiveManager
             {
 				return handler;
             }
-		}		
+		}
 		return null;
 	}
 
@@ -330,7 +326,7 @@ public class ArchiveManager
 
     /** The single instance of the ArchiveManager class. */
     private static ArchiveManager instance;
-    
+
     /** A list of archive handlers currently registered in the manager. */
     private List archiveHandlers;
 }

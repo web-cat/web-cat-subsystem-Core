@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.core;
@@ -54,7 +50,7 @@ public abstract class JarSubsystem
     // ----------------------------------------------------------
     /**
      * Initialize a subsystem from a jar file.
-     * 
+     *
      * @param jarFile The file that contains the subsystem being loaded
      */
     public JarSubsystem( JarFile jarFile )
@@ -69,7 +65,7 @@ public abstract class JarSubsystem
     // ----------------------------------------------------------
     /**
      * Initialize a subsystem from a jar file.
-     * 
+     *
      * @param jarFile The file that contains the subsystem to load
      * @return the new subsystem object
      * @throws IOException
@@ -116,7 +112,7 @@ public abstract class JarSubsystem
         try
         {
             String mainClass =
-                jarFile.getManifest().getMainAttributes().getValue( 
+                jarFile.getManifest().getMainAttributes().getValue(
                     Attributes.Name.MAIN_CLASS );
             return DelegatingUrlClassLoader.getClassLoader().loadClass(
                 mainClass );
@@ -144,7 +140,7 @@ public abstract class JarSubsystem
     // ----------------------------------------------------------
     /**
      * Get a file ("entry") that resides within the subsystem's JAR file.
-     * 
+     *
      * @param entry The file to get
      * @return      An InputStream to the requested entry
      * @throws IOException If an error occurs getting the entry
@@ -162,7 +158,7 @@ public abstract class JarSubsystem
      * <b>image</b> files.  Everything else returns <code>null</code>.
      * TODO: integrate this with the primary MIME decoding logic elsewhere
      * in the project.
-     * 
+     *
      * @param path  The path to test
      * @return      The MIME type of the given path
      */
@@ -192,7 +188,7 @@ public abstract class JarSubsystem
      * Returns whether or not the given path is safe to return.  This denies
      * the downloading of files other than those that should be. Example:
      * .class files shouldn't be downloaded, but .gif files should.
-     * 
+     *
      * @param path The path inside the jar to be verified
      * @return     True if the path describes an allowed file type
      */
@@ -207,7 +203,7 @@ public abstract class JarSubsystem
      * Returns a WOResponse containing the data from the given jarpath,
      * which contains the file <b>iff</b> the path is safe, as determined
      * by {@link #pathIsSafeToReturn(String)}.
-     * 
+     *
      * @param url The path of the file within the JAR.  Example:
      *            /images/foo.gif
      * @return The WOResponse to display to the user
@@ -222,9 +218,9 @@ public abstract class JarSubsystem
             {
                 // TODO: check to see if this leaks file handles or other
                 // resources!
-                response.setContent( new NSData( jarFileEntry( url ), 
+                response.setContent( new NSData( jarFileEntry( url ),
                                                  CHUNK_SIZE ) );
-                response.setHeader( "Content-Type", 
+                response.setHeader( "Content-Type",
                                     mimeTypeForPath( url ) );
             }
             catch ( Exception e )

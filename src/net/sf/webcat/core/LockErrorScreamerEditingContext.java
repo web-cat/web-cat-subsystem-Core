@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.core;
@@ -96,7 +92,7 @@ public class LockErrorScreamerEditingContext
         else
         {
             // This editing context has already been locked.
-            // If the thread is the same then this is a secondary call that 
+            // If the thread is the same then this is a secondary call that
             // results in an increased recursionCount() for the
             // NSRecursiveLock.
             if ( nameOfCurrentThread.equals( nameOfLockingThread ) )
@@ -138,10 +134,10 @@ public class LockErrorScreamerEditingContext
     {
         // This will throw an IllegalStateException if the editing context
         // is not locked, or if the unlocking thread is not the thread with
-        // the lock.  
+        // the lock.
         super.unlock();
 
-        // This editing context is already locked, so remove the trace for the 
+        // This editing context is already locked, so remove the trace for the
         // latest lock(), assuming that it corresponds to this unlock().
         if ( stackTraces.count() > 0 )
         {
@@ -157,7 +153,7 @@ public class LockErrorScreamerEditingContext
         log.debug( "--- Unlocked in " +  nameOfCurrentThread + " ("
                    + stackTraces.count() + " remaining)" );
     }
-     
+
 
     // ----------------------------------------------------------
     /**
@@ -186,26 +182,26 @@ public class LockErrorScreamerEditingContext
     /**
      * Allowing locked editing contexts to be disposed is not a good
      * practice.  This method calls goodbye() to output a warning message
-     * if this happens.  
+     * if this happens.
      */
     public void dispose()
     {
-        try 
+        try
         {
             goodbye();
-        } 
-        finally 
+        }
+        finally
         {
             super.dispose();
         }
     }
-     
+
 
     // ----------------------------------------------------------
     /**
-     * Allowing locked editing contexts to be garbage collected is not a good 
-     * practice.  This method calls goodbye() to outputs a warning message if 
-     * this happens.  
+     * Allowing locked editing contexts to be garbage collected is not a good
+     * practice.  This method calls goodbye() to outputs a warning message if
+     * this happens.
      * @throws Throwable if the superclass implementation produces an error
      */
     public void finalize()
@@ -235,7 +231,7 @@ public class LockErrorScreamerEditingContext
         ( new Throwable() ).printStackTrace( printWriter );
         return stringWriter.toString();
     }
-    
+
 
     //~ Instance/static variables .............................................
 

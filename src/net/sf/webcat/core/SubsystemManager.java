@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.core;
@@ -62,7 +58,7 @@ public class SubsystemManager
      * defined, the corresponding classes will be registered as
      * subsystems.  Either property may be undefined, in which case it
      * will be ignored.
-     * 
+     *
      * @param properties The application's property settings
      */
     public SubsystemManager( WCProperties properties )
@@ -98,7 +94,7 @@ public class SubsystemManager
                 {
                     String name =
                         key.substring( SUBSYSTEM_KEY_PREFIX.length() );
-                    subsystemNames.add( name );                    
+                    subsystemNames.add( name );
                 }
             }
             addSubsystemsInOrder(
@@ -116,7 +112,7 @@ public class SubsystemManager
     /**
      * Search a given directory for jars, and load the subsystem
      * contained in each one.
-     * 
+     *
      * @param directory  The root directory for loading the jar'ed subsystems
      */
 //    public void addSubsystemJarsFromDirectory( String directory )
@@ -154,7 +150,7 @@ public class SubsystemManager
     // ----------------------------------------------------------
     /**
      * Get the requested subsystem.
-     * 
+     *
      * @param name  The name of the subsystem to get
      * @return      The corresponding JarSubsystem
      */
@@ -179,7 +175,7 @@ public class SubsystemManager
     // ----------------------------------------------------------
     /**
      * Add a JarSubsystem to the manager, given a file name.
-     * 
+     *
      * @param name  The file name of the JAR file that contains the subsystem
      * @throws IOException
      */
@@ -193,7 +189,7 @@ public class SubsystemManager
     // ----------------------------------------------------------
     /**
      * Add a JarSubsystem to the manager, given a file object.
-     * 
+     *
      * @param file  The file of the JAR file that contains the subsystem
      * @throws IOException
      */
@@ -211,7 +207,7 @@ public class SubsystemManager
     // ----------------------------------------------------------
     /**
      * Add a Subsystem to the manager, given a class name.
-     * 
+     *
      * @param name the symbolic name to use for this subsystem
      * @param className the class name to load
      */
@@ -566,7 +562,7 @@ public class SubsystemManager
         return buffer.toString();
     }
 
-    
+
     // ----------------------------------------------------------
     /**
      * Install/load a list of subsystems, searching for dependencies and
@@ -636,14 +632,14 @@ public class SubsystemManager
                         addedFeatures );
                     String className =
                         properties.getProperty( SUBSYSTEM_KEY_PREFIX + name );
-    
+
                     // Use a default class if no class name is specified
                     // in the property
                     if ( className == null || className.equals( "" ) )
                     {
                         className = Subsystem.class.getName();
                     }
-    
+
                     addSubsystemFromClassName( name, className );
                 }
             }
@@ -677,7 +673,7 @@ public class SubsystemManager
             // First, try Unix command
             try
             {
-                Process process = Runtime.getRuntime().exec( 
+                Process process = Runtime.getRuntime().exec(
                     Application.isRunningOnWindows()
                         ? "cmd /c set" : "printenv" );
                 BufferedReader in = new BufferedReader(
@@ -700,7 +696,7 @@ public class SubsystemManager
                 log.error(
                     "Error attempting to parse default ENV settings:", e );
             }
-            
+
             inheritedEnvCache = env;
             if ( log.isDebugEnabled() )
             {

@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.core;
@@ -42,7 +38,7 @@ import org.apache.log4j.Logger;
  *
  *  See the description in {@link MutableDictionary} for critical
  *  usage details.
- * 
+ *
  *  @author  Stephen Edwards
  *  @version $Id$
  */
@@ -67,10 +63,10 @@ public class MutableArray
      * Creates an empty mutable array with enough allocated memory to hold
      * the number of objects specified by capacity, a number greater than or
      * equal to 0.
-     * 
+     *
      * MutableArrays expand as needed, so capacity simply establishes the
      * object's initial capacity.
-     * 
+     *
      * @param capacity a size hint for the anticipated upper bound
      */
     public MutableArray( int capacity )
@@ -95,10 +91,10 @@ public class MutableArray
     /**
      * Creates a mutable array containing the objects from objects in the
      * range specified by range.
-     * 
+     *
      * After an immutable array has been initialized in this way, it can't
      * be modified.
-     * 
+     *
      * @param objects the objects contained in the mutable array
      * @param range   the range specified
      */
@@ -138,11 +134,11 @@ public class MutableArray
     /**
      * Creates a mutable array containing the objects from vector in the
      * range specified by range.
-     * 
+     *
      * The ignoreNull argument controls the method's behavior when it
      * encounters a value in the vector: if ignoreNull is true, the null
      * value is simply ignored.
-     * 
+     *
      * @param vector     mutable array contains objects from this
      * @param range      the specified range
      * @param ignoreNull the null value is ignored
@@ -379,15 +375,15 @@ public class MutableArray
         for ( int i = 0; i < count(); i++ )
         {
             Object o = objectAtIndex( i );
-            
+
             if ( o instanceof MutableContainer )
             {
                 ( (MutableContainer)o ).setParentRecursively( this );
             }
         }
     }
-    
-    
+
+
     //----------------------------------------------------------
     /**
      * Examine all contained objects within the specified range for
@@ -424,8 +420,8 @@ public class MutableArray
             }
         }
     }
-    
-    
+
+
     //----------------------------------------------------------
     /**
      * Examine all contained objects for mutable containers, and reset

@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.core;
@@ -53,7 +49,7 @@ import org.apache.log4j.Logger;
  * will result in <code>getProperty("C")</code>
  * returning the value "1234567890 plus more".  The property expansion
  * support is based on code written by Chris Mair.
- * 
+ *
  * @author Stephen Edwards
  * @version $Id$
  */
@@ -67,7 +63,7 @@ public class WCProperties
     /**
      * Creates a new WCProperties object, initializing its contents from
      * a property file.
-     * 
+     *
      * @param filename The file to load from
      * @param defaults The defaults
      */
@@ -82,7 +78,7 @@ public class WCProperties
     // ----------------------------------------------------------
     /**
      * Creates an empty property list with the specified defaults.
-     * 
+     *
      * @param defaults The defaults
      */
     public WCProperties( Properties defaults )
@@ -109,7 +105,7 @@ public class WCProperties
      * Load properties from the specified file if it exists.  The
      * full file name of the file will be added to the property
      * defined by PROPERTYFILES_LOADED if successful.
-     * 
+     *
      * @param fileName The property file to load
      */
     public void attemptToLoad( String fileName )
@@ -158,7 +154,7 @@ public class WCProperties
      * directory (which also catches absolute pathnames for the
      * <code>fileName</code> parameter).  If successful, this property
      * file is loaded last.
-     * 
+     *
      * @param fileName The property file to load
      */
     public void load( String fileName )
@@ -187,7 +183,7 @@ public class WCProperties
      * Add all properties from the given dictionary to this object.
      * All keys and values in the dictionary are converted to strings
      * in order to be added to this property map.
-     * 
+     *
      * @param dictionary The map containing properties to add
      */
     public void addPropertiesFromDictionary( NSDictionary dictionary )
@@ -208,7 +204,7 @@ public class WCProperties
      * Add all properties from the given dictionary to this object.
      * All keys and values in the dictionary are converted to strings
      * in order to be added to this property map.
-     * 
+     *
      * @param dictionary The map containing properties to add
      */
     public void addPropertiesFromDictionaryIfNotDefined(
@@ -342,7 +338,7 @@ public class WCProperties
      * @param s property key
      * @return boolean value of the string in the
      *      properties
-     */    
+     */
     public boolean booleanForKey( String s )
     {
         return booleanForKeyWithDefault( s, false );
@@ -365,7 +361,7 @@ public class WCProperties
         return ERXValueUtilities.booleanValueWithDefault( getProperty( s ),
                                                           defaultValue );
     }
-    
+
 
     // ----------------------------------------------------------
     /**
@@ -374,7 +370,7 @@ public class WCProperties
      * @param s property key
      * @return dictionary de-serialized from the string in
      *      the properties
-     */    
+     */
     public NSDictionary dictionaryForKey( String s )
     {
         return dictionaryForKeyWithDefault( s, null );
@@ -466,11 +462,11 @@ public class WCProperties
      * @param s property key
      * @param defaultValue default value
      * @return int value of the property or the default value
-     */    
+     */
     public int intForKeyWithDefault( String s, int defaultValue )
     {
         return ERXValueUtilities.intValueWithDefault(
-                        getProperty( s ), defaultValue );        
+                        getProperty( s ), defaultValue );
     }
 
 
@@ -481,18 +477,18 @@ public class WCProperties
      * @param s property key
      * @param defaultValue default value
      * @return long value of the property or the default value
-     */    
+     */
     public long longForKeyWithDefault( String s, long defaultValue )
     {
         return ERXValueUtilities.longValueWithDefault(
-                        getProperty( s ), defaultValue );        
+                        getProperty( s ), defaultValue );
     }
 
 
     // ----------------------------------------------------------
     /**
-     * Returning an string for a given 
-     * property. This is a cover method of 
+     * Returning an string for a given
+     * property. This is a cover method of
      * {@link java.util.Properties#getProperty(String)}
      * @param s property
      * @return string value of the property or null
@@ -539,7 +535,7 @@ public class WCProperties
      * Sets a dictionary in the properties for a particular key.
      * @param dictionary to be set in the properties
      * @param key to be used to get the value
-     */    
+     */
     public void setDictionaryForKey( NSDictionary dictionary, String key )
     {
         setStringForKey(
@@ -572,7 +568,7 @@ public class WCProperties
         if ( applicationNameForAppending == null )
         {
             applicationNameForAppending =
-                com.webobjects.appserver.WOApplication.application() != null 
+                com.webobjects.appserver.WOApplication.application() != null
                 ? com.webobjects.appserver.WOApplication.application().name()
                 : null;
             if ( applicationNameForAppending != null )
@@ -644,7 +640,7 @@ public class WCProperties
         {
             return value;
         }
-        
+
         // Get the index of the first constant, if any
         StringBuffer buffer = new StringBuffer( value.length() );
         int beginIndex = 0;
@@ -665,7 +661,7 @@ public class WCProperties
                 buffer.append( value.substring( beginIndex, startName ) );
                 beginIndex = startName;
             }
-            
+
             String constName  =
                 value.substring( startName + REFERENCE_START.length(), endName);
             String constValue = ( maxDepth > 0 )
@@ -685,12 +681,12 @@ public class WCProperties
                 // original property value
                 buffer.append( constValue );
             }
-            
+
             beginIndex = endName + REFERENCE_END.length();
             // Look for the next constant
-            startName = value.indexOf( REFERENCE_START, beginIndex );            
+            startName = value.indexOf( REFERENCE_START, beginIndex );
         }
-        
+
         buffer.append( value.substring(beginIndex, value.length() ) );
         return buffer.toString();
     }
@@ -835,7 +831,7 @@ public class WCProperties
                 if ( getProperty( prefix ) != null )
                 {
                     NSKeyValueCodingAdditions.DefaultImplementation
-                    .takeValueForKeyPath( this, value, keyPath );                    
+                    .takeValueForKeyPath( this, value, keyPath );
                 }
                 else
                 {
@@ -843,10 +839,10 @@ public class WCProperties
                 }
             }
         }
-//        
-//        
-//        
-//        
+//
+//
+//
+//
 //        if ( value == null || value == NSKeyValueCoding.NullValue )
 //        {
 //            remove( key );
@@ -952,7 +948,7 @@ public class WCProperties
     /** caches the application name that is appended to the key for lookup */
     protected String applicationNameForAppending;
     protected boolean willPerformPropertySubstitution = true;
-    
+
     private final String REFERENCE_START = "${";
     private final String REFERENCE_END = "}";
     private final int    MAX_RECURSIVE_DEPTH = 256;

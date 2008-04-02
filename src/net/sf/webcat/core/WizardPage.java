@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.core;
@@ -50,7 +46,7 @@ public class WizardPage
     // ----------------------------------------------------------
     /**
      * Creates a new WizardPage object.
-     * 
+     *
      * @param context The page's context
      */
     public WizardPage( WOContext context )
@@ -152,7 +148,7 @@ public class WizardPage
      * Returns the page to go to when "Back" is pressed.
      * This value is determined by the backPageName property, if set, or
      * the containing page's {@link WCComponent#back()} method.
-     * 
+     *
      * @return The page to go to
      */
     public WOComponent back()
@@ -191,7 +187,7 @@ public class WizardPage
      * Returns the page to go to when "Next" is pressed.
      * This value is determined by the nextPageName property, if set, or
      * the containing page's {@link WCComponent#next()} method.
-     * 
+     *
      * @return The page to go to
      */
     public WOComponent next()
@@ -231,7 +227,7 @@ public class WizardPage
      * Returns the page to go to when "Apply All" is pressed.
      * This value is determined by the containing page's
      * {@link WCComponent#apply()} method.
-     * 
+     *
      * @return The page to go to
      */
     public WOComponent apply()
@@ -271,7 +267,7 @@ public class WizardPage
      * Returns the page to go to when "Finish" is pressed.
      * This value is determined by the containing page's
      * {@link WCComponent#finish()} method.
-     * 
+     *
      * @return The page to go to
      */
     public WOComponent finish()
@@ -291,7 +287,7 @@ public class WizardPage
      * Returns the page to go to when "Enter" is pressed.
      * This value is determined by the containing page's
      * {@link WCComponent#defaultAction()} method.
-     * 
+     *
      * @return The page to go to
      */
     public WOComponent defaultAction()
@@ -327,7 +323,7 @@ public class WizardPage
      * Returns the page to go to when "Enter" is pressed.
      * This value is determined by the containing page's
      * {@link WCComponent#defaultAction()} method.
-     * 
+     *
      * @return The page to go to
      */
     public String initialFocusTo()
@@ -355,7 +351,7 @@ public class WizardPage
     /**
      * Translates the current <code>debugKey</code> into its corresponding
      * <code>state</code> value.
-     * 
+     *
      * @return The value associated with <code>debugKey</code> in
      *         <code>state</code>
      */

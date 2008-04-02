@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.archives;
@@ -37,7 +33,7 @@ import java.io.OutputStream;
 /**
  * Contains some common file copying operations used by the various archive
  * handlers.
- * 
+ *
  * @author Tony Allowatt
  */
 public class FileUtilities
@@ -45,11 +41,11 @@ public class FileUtilities
     // ----------------------------------------------------------
 	/**
 	 * Copies the source file to the destination file.
-	 * 
+	 *
      * @param srcFile A File object representing the path of the source file.
 	 * @param destFile A File object representing the path (and name) of the
 	 * destination file.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public static void copyFileToFile( File srcFile, File destFile )
@@ -65,7 +61,7 @@ public class FileUtilities
     // ----------------------------------------------------------
     /**
      * Copies a file into a specified directory
-     * 
+     *
      * @param oldFile the file to copy
      * @param outputDir the destination directory
      * @throws IOException if there are IO errors
@@ -87,7 +83,7 @@ public class FileUtilities
     /**
      * Copies a file into a specified directory if it does not already
      * exist there, or if the source is newer than the destination.
-     * 
+     *
      * @param oldFile the file to copy
      * @param outputDir the destination directory
      * @throws IOException if there are IO errors
@@ -113,7 +109,7 @@ public class FileUtilities
     /**
      * Recursively copies the contents of the source directory into the
      * destination directory.
-     * 
+     *
      * @param source the source directory
      * @param destination the destination directory
      * @throws IOException if there are IO errors
@@ -144,7 +140,7 @@ public class FileUtilities
      * Recursively copies the contents of the source directory into the
      * destination directory, only updating files that are missing or
      * outdated.
-     * 
+     *
      * @param source the source directory
      * @param destination the destination directory
      * @throws IOException if there are IO errors
@@ -174,7 +170,7 @@ public class FileUtilities
     // ----------------------------------------------------------
     /**
      * Recursively deletes a directory
-     * 
+     *
      * @param dirName the path of the directory
      */
     public static void deleteDirectory( String dirName )
@@ -186,7 +182,7 @@ public class FileUtilities
     // ----------------------------------------------------------
     /**
      * Recursively deletes a directory
-     * 
+     *
      * @param dir the File object for the directory
      */
     public static void deleteDirectory( File dir )
@@ -202,14 +198,14 @@ public class FileUtilities
         }
         dir.delete();
     }
-    
+
 
     // ----------------------------------------------------------
     /**
      * Move the specified file to a new location (path + filename).  First
      * tries to rename the file, and then does a copy/delete if renaming won't
      * work.
-     * 
+     *
      * @param source the file to move
      * @param destination the new file name to rename it to
      * @throws IOException if there are IO errors
@@ -222,18 +218,18 @@ public class FileUtilities
             // if renaming worked, then we're done
             return;
         }
-        
+
         copyFileToFile( source, destination );
         source.delete();
     }
-    
+
 
     // ----------------------------------------------------------
     /**
      * Move the specified file into the destination directory.  First tries
      * to rename the file, and then does a copy/delete if renaming won't
      * work.
-     * 
+     *
      * @param source the file to move
      * @param destDir the destination directory to move it to
      * @throws IOException if there are IO errors
@@ -244,13 +240,13 @@ public class FileUtilities
         File destFile = new File( destDir, source.getName() );
         moveFileToFile( source, destFile );
     }
-    
+
 
     // ----------------------------------------------------------
     /**
      * Recursively copies the contents of the source directory into the
      * destination directory.
-     * 
+     *
      * @param source the source directory
      * @param destination the destination directory
      * @throws IOException if there are IO errors
@@ -282,7 +278,7 @@ public class FileUtilities
      * Copies the contents of an input stream onto an existing output
      * stream.  The output stream is flushed when the operation
      * is complete.
-     * 
+     *
      * @param in  the input stream to copy
      * @param out the destination
      * @throws IOException if there are IO errors
@@ -307,11 +303,11 @@ public class FileUtilities
     // ----------------------------------------------------------
     /**
      * Copies data from the specified input stream to a file.
-     * 
+     *
      * @param stream An InputStream containing the data to be copied.
      * @param destFile A File object representing the path (and name) of the
      * destination file.
-     * 
+     *
      * @throws IOException
      */
     public static void copyStreamToFile( InputStream stream, File destFile )
@@ -328,12 +324,12 @@ public class FileUtilities
     /**
      * Copies data from the specified input stream to a file and sets the
      * file's timestamp.
-     * 
+     *
      * @param stream An InputStream containing the data to be copied.
      * @param destFile A File object representing the path (and name) of the
      * destination file.
      * @param fileTime The timestamp to use for the destination file
-     * 
+     *
      * @throws IOException
      */
     public static void copyStreamToFile(

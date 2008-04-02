@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.core;
@@ -37,21 +33,21 @@ import org.apache.log4j.*;
  * subsystems instead of WebObjects Framework-based subsystems.  Since we
  * aren't using such jar'ed subsystems at present, this is really just a
  * shell for future expandability/flexibility.]
- * 
+ *
  * <p>
  * Web-CAT needs a centralized class loader for all the JAR files to simplify
  * life, since class names are stored in the database and we need a way to
  * instantiate them.  We can't use the system class loader, since it offers
  * no way to "plug-in" additional class loaders.
  * </p>
- * 
+ *
  * <p>
  * Instead, we have this delegating class loader.  It searches through all
  * URLs (as specified through addURL()) to find a class.  If it isn't found,
  * then the System class loader is consulted.  If it still isn't found, the
  * class wasn't loaded.
  * </p>
- * 
+ *
  * <p>
  * Additionally, to keep Web-CAT simple, we only have one of these class
  * loaders running around.  This allows a single class loader to be used to
@@ -72,13 +68,13 @@ public class DelegatingUrlClassLoader
      */
     protected DelegatingUrlClassLoader()
     {
-        super( new URL[] {  }, 
+        super( new URL[] {  },
                // ClassLoader.getSystemClassLoader()
                // Modified to work with WO 5.2 WOBootstrap code
                // Thread.currentThread().getContextClassLoader()
                DelegatingUrlClassLoader.class.getClassLoader()
                );
-        
+
 //        log.debug( "constructor: my chain" );
 //        ClassLoader c = this;
 //        while ( c != null )
@@ -122,7 +118,7 @@ public class DelegatingUrlClassLoader
     // ----------------------------------------------------------
     /**
      * Add a URL to the list of URLs searched for classes.
-     * 
+     *
      * @param u The URL to add.
      */
     public void addURL( URL u )

@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.core;
@@ -68,7 +64,7 @@ public class Subsystem
     /**
      * Get the short (one-word) human-readable name for this
      * subsystem.
-     * 
+     *
      * @return The short name
      */
     public String name()
@@ -138,7 +134,7 @@ public class Subsystem
     /**
      * Get a list of WO components that should be instantiated and presented
      * on the front page.
-     * 
+     *
      * @return The list of names, as strings
      */
     public NSArray frontPageStatusComponents()
@@ -152,7 +148,7 @@ public class Subsystem
      * Get a list of in-jar paths of the EOModels contained in
      * this subsystem's jar file.  If no EOModel(s) are contained
      * in this subsystem, this method returns null.
-     * 
+     *
      * @return The list of paths, as strings
      */
     public NSArray EOModelPathsInJar()
@@ -244,7 +240,7 @@ public class Subsystem
      * Initialize the subsystem-specific session data in a newly created
      * session object.  This method is called once by the core for
      * each newly created session object.
-     * 
+     *
      * @param s The new session object
      */
     public void initializeSessionData( Session s )
@@ -329,7 +325,7 @@ public class Subsystem
     // ----------------------------------------------------------
     /**
      * Get the NSBundle for this subsystem.
-     * 
+     *
      * @return This subsystem's NSBundle
      */
     protected NSBundle myBundle()
@@ -353,7 +349,7 @@ public class Subsystem
      * This is designed for use by subclasses that want to locate internal
      * resources for use in setting up environment variable or plug-in
      * property values.
-     * 
+     *
      * @return The Resources directory name as a string
      */
     @SuppressWarnings( "deprecation" )

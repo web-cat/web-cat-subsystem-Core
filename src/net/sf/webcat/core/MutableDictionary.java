@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.core;
@@ -46,14 +42,14 @@ import org.apache.log4j.Logger;
  *  works in MySQL.  Also, the userInfo dictionary is not inherited from
  *  an attribute's prototype, so each value class must provide its own
  *  copy of the userInfo dictionary in the EOModel.
- * 
+ *
  *  This custom solution also allows us to keep mutable attributes in an
  *  EO, since the EOGenerator template plus the new notifications provided
  *  by its ERXGenericRecord base class allow the value to be appropriately
  *  handled and updates to be safely recorded.  For this to work, a
  *  mutable class must provide both a {@link #hasChanged()} and a
  *  {@link #setHasChanged(boolean)} method (see below).
- * 
+ *
  *  @author  Stephen Edwards
  *  @version $Id$
  */
@@ -315,15 +311,15 @@ public class MutableDictionary
         for ( Enumeration e = objectEnumerator(); e.hasMoreElements(); )
         {
             Object o = e.nextElement();
-            
+
             if ( o instanceof MutableContainer )
             {
                 ( (MutableContainer)o ).setParentRecursively( this );
             }
         }
     }
-    
-    
+
+
     //----------------------------------------------------------
     /**
      * Examine all contained objects for mutable containers, and reset

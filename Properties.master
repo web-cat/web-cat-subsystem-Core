@@ -12,8 +12,8 @@ Core.provider=Virginia Tech Computer Science
 Core.provider.url=http\://web-cat.cs.vt.edu/updates
 Core.info.url=http\://web-cat.cs.vt.edu/WCWiki/CoreSubsystem
 Core.history.url=http\://web-cat.cs.vt.edu/WCWiki/CoreSubsystem/ChangeHistory
-Core.license=GNU General Public License v.2
-Core.license.url=http\://www.gnu.org/copyleft/gpl.html
+Core.license=GNU Affero General Public License v.3
+Core.license.url=http\://www.gnu.org/licenses/agpl.html
 Core.requires=\
 	ExternalJars, WebObjectsUpdater, WonderUpdater, \
 	DBUpdateEngine, EOJDBCPrototypes

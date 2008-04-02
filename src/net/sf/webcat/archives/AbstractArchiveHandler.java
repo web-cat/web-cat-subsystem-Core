@@ -1,13 +1,13 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
  |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU General Public License as published by
- |  the Free Software Foundation; either version 2 of the License, or
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
  |  (at your option) any later version.
  |
  |  Web-CAT is distributed in the hope that it will be useful,
@@ -15,12 +15,8 @@
  |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  |  GNU General Public License for more details.
  |
- |  You should have received a copy of the GNU General Public License
- |  along with Web-CAT; if not, write to the Free Software
- |  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
- |
- |  Project manager: Stephen Edwards <edwards@cs.vt.edu>
- |  Virginia Tech CS Dept, 660 McBryde Hall (0106), Blacksburg, VA 24061 USA
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
 package net.sf.webcat.archives;
@@ -39,8 +35,8 @@ import java.io.InputStream;
  * <p>
  * Most clients can extend this class if they do not need different
  * implementations of their unpacking code depending on whether a File or
- * InputStream is the source. 
- * 
+ * InputStream is the source.
+ *
  * @author Tony Allowatt
  */
 public abstract class AbstractArchiveHandler
@@ -49,9 +45,9 @@ public abstract class AbstractArchiveHandler
     // ----------------------------------------------------------
 	/**
 	 * Returns true if this handler can unpack a file with the given name.
-	 * 
+	 *
 	 * @param name The name of the file to check for acceptance.
-	 * 
+	 *
 	 * @return true if this handler can unpack the file; otherwise, false.
 	 */
 	public abstract boolean acceptsFile( String name );
@@ -63,12 +59,12 @@ public abstract class AbstractArchiveHandler
 	 * guarantees are made as to whether an IArchiveEntry for a directory in
 	 * the archive will be returned before its children; this behavior is
 	 * dependent on the underlying archive handler.
-	 * 
+	 *
 	 * @param archiveFile A File object representing the archive.
-	 * 
+	 *
 	 * @return An array of IArchiveEntry objects describing the contents of
 	 * the archive.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public IArchiveEntry[] getContents( File archiveFile )
@@ -78,7 +74,7 @@ public abstract class AbstractArchiveHandler
 		    new BufferedInputStream( new FileInputStream( archiveFile ) );
 		IArchiveEntry[] entryArray = getContents( stream );
 		stream.close();
-		
+
 		return entryArray;
 	}
 
@@ -89,29 +85,29 @@ public abstract class AbstractArchiveHandler
 	 * InputStream. No guarantees are made as to whether an IArchiveEntry
 	 * for a directory in the archive will be returned before its children;
 	 * this behavior is dependent on the underlying archive handler.
-	 * 
+	 *
 	 * @param stream An InputStream from which the archive will be read.
-	 * 
+	 *
 	 * @return An array of IArchiveEntry objects describing the contents of
 	 * the archive.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public abstract IArchiveEntry[] getContents( InputStream stream )
         throws IOException;
-	
+
 
     // ----------------------------------------------------------
 	/**
 	 * Unpacks an archive to the specified destination directory. The
 	 * destination directory must already exist; any nested directories
 	 * in the archive will be created as necessary.
-	 * 
+	 *
 	 * @param destPath A File object representing the directory to which the
 	 * archive will be unpacked.
 	 * @param archiveFile A File object representing the archive to be
 	 * unpacked.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public void unpack( File destPath, File archiveFile )
@@ -122,18 +118,18 @@ public abstract class AbstractArchiveHandler
 		unpack( destPath, stream );
 		stream.close();
 	}
-	
+
 
     // ----------------------------------------------------------
 	/**
 	 * Unpacks an archive to the specified destination directory. The
 	 * destination directory must already exist; any nested directories
 	 * in the archive will be created as necessary.
-	 * 
+	 *
 	 * @param destPath A File object representing the directory to which the
 	 * archive will be unpacked.
 	 * @param stream An InputStream from which the archive will be read.
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	public abstract void unpack( File destPath, InputStream stream )
