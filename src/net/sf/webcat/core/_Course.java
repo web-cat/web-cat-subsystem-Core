@@ -20,7 +20,7 @@
  |
  |  You should have received a copy of the GNU Affero General Public License
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
- \*==========================================================================*/
+\*==========================================================================*/
 
 package net.sf.webcat.core;
 

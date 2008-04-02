@@ -22,7 +22,7 @@ BE SURE NOT TO INCLUDE DATES IN THIS FILE.$>/*==================================
  |
  |  You should have received a copy of the GNU Affero General Public License
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
- \*==========================================================================*/
+\*==========================================================================*/
 
 <$foreach package classPackage do$>package <$package$>;
 <$endforeach do$>
