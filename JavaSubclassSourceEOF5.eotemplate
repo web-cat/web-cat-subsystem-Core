@@ -23,8 +23,8 @@ BE SURE NOT TO INCLUDE DATES IN THIS FILE.$>/*==================================
 
 <$foreach package classPackage do$>package <$package$>;
 <$endforeach do$>
-import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import com.webobjects.foundation.*;
 
 // -------------------------------------------------------------------------
 /**
@@ -33,7 +33,7 @@ import com.webobjects.eocontrol.*;
  * @author
  * @version $Id$
  */
-public class <$classNameWithoutPackage$>
+public <$if isAbstractEntity$>abstract <$endif$>class <$classNameWithoutPackage$>
     extends <$GEN_PREFIX$><$classNameWithoutPackage$>
 {
     //~ Constructors ..........................................................
