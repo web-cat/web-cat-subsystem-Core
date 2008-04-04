@@ -158,8 +158,8 @@ $>    // Attributes ---<$foreach attribute classAttributes.@sortedNameArray do$>
     public static final String <$rel.name.uppercaseUnderbarString$>_KEY = "<$rel.name$>";<$endforeach$>
     // Fetch specifications ---<$foreach FetchSpec javaBeautifiedFetchSpecificationDictionaries.@sortedNameArray fetchspec$>
     public static final String <$FetchSpec.fetchName.uppercaseUnderbarString$>_FSPEC = "<$FetchSpec.fetchName$>";<$endforeach fetchspec$>
-    public static final String ENTITY_NAME = "<$name$>";
-
+<$if !isAbstractEntity$>    public static final String ENTITY_NAME = "<$name$>";
+<$endif$>
 
     //~ Methods ...............................................................
 
