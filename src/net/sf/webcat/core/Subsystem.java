@@ -28,6 +28,8 @@ import java.io.*;
 import java.util.Iterator;
 import net.sf.webcat.FeatureDescriptor;
 import net.sf.webcat.WCServletAdaptor;
+import net.sf.webcat.dbupdate.UpdateEngine;
+import net.sf.webcat.dbupdate.UpdateSet;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -162,11 +164,15 @@ public class Subsystem
      * Carry out any subsystem-specific startup actions.  This method is
      * called once all subsystems have been created, so any dependencies
      * on services provided by other subsystems are fulfilled.  Subsystems
-     * are init'ed in the same order they are created.
+     * are init'ed in the same order they are created.  The default
+     * implementation calls {@link #updateDbIfNecessary()} to update
+     * the subsystem's database tables, and then {@link #loadTabs()} to
+     * load the subsystem's tab definitions.
      */
     public void init()
     {
-        // Subclasses should override this as necessary
+        updateDbIfNecessary();
+        subsystemTabTemplate = loadTabs();
     }
 
 
@@ -185,7 +191,7 @@ public class Subsystem
         if ( options == null )
         {
             File configFile = new File( myResourcesDir() + "/config.plist" );
-            log.debug( "Atempting to locate parameter descriptions in: "
+            log.debug( "Attempting to locate parameter descriptions in: "
                 + configFile.getPath() );
             if ( !configFile.exists() )
             {
@@ -201,7 +207,7 @@ public class Subsystem
                     configFile = new File(
                         myBundle.resourcePath() + "/config.plist" );
                     log.debug(
-                        "Atempting to locate parameter descriptions in: "
+                        "Attempting to locate parameter descriptions in: "
                         + configFile.getPath() );
                 }
             }
@@ -245,7 +251,7 @@ public class Subsystem
      */
     public void initializeSessionData( Session s )
     {
-        // Subclasses should override this as necessary
+        s.tabs.mergeClonedChildren( subsystemTabTemplate );
     }
 
 
@@ -379,6 +385,114 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
+     * Loads this subsystem's tab definitions.  The default implementation
+     * pulls them from the subsystem's Tabs.plist resource file.
+     * @return the loaded tab definitions, or null if the subsystem has none
+     */
+    protected NSArray loadTabs()
+    {
+        NSBundle bundle = myBundle();
+        if (bundle != null)
+        {
+            byte[] bytes = myBundle().bytesForResourcePath(
+                TabDescriptor.TAB_DEFINITIONS);
+            if (bytes != null && bytes.length > 0)
+            {
+                return TabDescriptor.tabsFromPropertyList(new NSData (bytes));
+            }
+        }
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Applies any necessary database updates to the table structures using
+     * the class returned by {@link #databaseUpdaterClass()}.  Subclasses
+     * typically do not need to override this, unless they want to hook
+     * special behaviors before/after database updating.  To change the
+     * class containing your subsystem's database updates, override
+     * {@link #databaseUpdaterClass()} instead.
+     */
+    protected void updateDbIfNecessary()
+    {
+        Class<? extends UpdateSet> updaterClass = databaseUpdaterClass();
+        if (updaterClass != null)
+        {
+            try
+            {
+                log.debug("Applying updates for subsystem " + name()
+                    + " using " + updaterClass);
+                // Apply any pending database updates for this subsystem
+                UpdateEngine.instance().applyNecessaryUpdates(
+                    updaterClass.newInstance());
+            }
+            catch (Exception e)
+            {
+                log.error(
+                    "Unable to apply updates from database updater class "
+                    + updaterClass, e);
+            }
+        }
+        else
+        {
+            log.debug("no database updater class for subsystem " + name());
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns the database update set class for this subsystem.  The
+     * default implementation takes the subsystem's class name and adds
+     * "DatabaseUpdates" onto the end, then finds the corresponding class
+     * by name.  Subclasses can override this if they use different
+     * conventions.  The result of this method is typically used by
+     * {@link #updateDbIfNecessary()} to apply database updates during
+     * {@link #init()}.
+     * @return The class for this subsystem's update set
+     */
+    protected Class<? extends UpdateSet> databaseUpdaterClass()
+    {
+        Class<? extends UpdateSet> result = null;
+
+        // Ignore subsystems that do not define their own subclasses.
+        // Note that this also ignores Core, which has its updates applied
+        // first by Application.initializeApplication().
+        if (this.getClass().equals(Subsystem.class))
+        {
+            return result;
+        }
+
+        // Otherwise, try to look up the database update set based on
+        // the class name of the subsystem itself
+        String className = this.getClass().getName() + "DatabaseUpdates";
+        try
+        {
+            Class<?> updaterClass = DelegatingUrlClassLoader.getClassLoader()
+                .loadClass( className );
+            result = updaterClass.asSubclass(UpdateSet.class);
+        }
+        catch (ClassCastException e)
+        {
+            log.error("Cannot cast " + className + " to UpdateSet", e);
+        }
+        catch (ClassNotFoundException e)
+        {
+            log.debug("no class found: " + className);
+        }
+        catch (Exception e)
+        {
+            log.error("unable to load database updater class: " + className, e);
+        }
+        log.debug("database updater for " + this.getClass().getName()
+            + " is " + result);
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Add a file resource definition to a dictionary, overridden by an
      * optional user-specified value.  This method is a helper for subsystems
      * that wish to add subsystem-specific file resources to ENV variable
@@ -461,6 +575,8 @@ public class Subsystem
     private String            myResourcesDir;
     private FeatureDescriptor descriptor;
     private NSDictionary      options;
+
+    private static NSArray subsystemTabTemplate;
 
     static Logger log = Logger.getLogger( Subsystem.class );
 }
