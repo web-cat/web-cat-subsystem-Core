@@ -112,13 +112,13 @@ public class WCCourseComponent
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
-    protected IndependentEOManager.ECManager ecManager()
+    protected EOManager.ECManager ecManager()
     {
-        IndependentEOManager.ECManager result = (IndependentEOManager.ECManager)
+        EOManager.ECManager result = (EOManager.ECManager)
             transientState().valueForKey(ECMANAGER_KEY);
         if (result == null)
         {
-            result = new IndependentEOManager.ECManager();
+            result = new EOManager.ECManager();
             transientState().takeValueForKey(result, ECMANAGER_KEY);
         }
         return result;
@@ -131,7 +131,7 @@ public class WCCourseComponent
     private static final String CSM_KEY =
         CoreSelectionsManager.class.getName();
     private static final String ECMANAGER_KEY =
-        IndependentEOManager.ECManager.class.getName();
+        EOManager.ECManager.class.getName();
 
     static Logger log = Logger.getLogger( WCCourseComponent.class );
 }

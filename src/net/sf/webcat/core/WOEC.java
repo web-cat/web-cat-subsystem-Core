@@ -154,9 +154,9 @@ public class WOEC
                 for (int i = 0; i < values.count(); i++)
                 {
                     Object value = values.objectAtIndex(i);
-                    if (value instanceof IndependentEOManager.ECManager)
+                    if (value instanceof EOManager.ECManager)
                     {
-                        ((IndependentEOManager.ECManager)value).dispose();
+                        ((EOManager.ECManager)value).dispose();
                     }
                     else if (value instanceof EOEditingContext)
                     {

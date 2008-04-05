@@ -25,14 +25,14 @@ import com.webobjects.eocontrol.*;
 
 //-------------------------------------------------------------------------
 /**
- *  An {@link IndependentEOManager} specialized for managing a
+ *  An {@link CachingEOManager} specialized for managing a
  *  {@link CoreSelections} object.
  *
  *  @author  Stephen Edwards
  *  @version $Id$
  */
 public class CoreSelectionsManager
-    extends IndependentEOManager
+    extends CachingEOManager
 {
     //~ Constructors ..........................................................
 
