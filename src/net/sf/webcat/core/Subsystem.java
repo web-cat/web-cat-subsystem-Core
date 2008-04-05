@@ -171,8 +171,13 @@ public class Subsystem
      */
     public void init()
     {
+        log.debug("init() for " + name());
         updateDbIfNecessary();
         subsystemTabTemplate = loadTabs();
+        if (log.isDebugEnabled())
+        {
+            log.debug("tabs for " + name() + " = " + subsystemTabTemplate);
+        }
     }
 
 
@@ -398,7 +403,7 @@ public class Subsystem
                 TabDescriptor.TAB_DEFINITIONS);
             if (bytes != null && bytes.length > 0)
             {
-                return TabDescriptor.tabsFromPropertyList(new NSData (bytes));
+                return TabDescriptor.tabsFromPropertyList(new NSData(bytes));
             }
         }
         return null;
@@ -576,7 +581,7 @@ public class Subsystem
     private FeatureDescriptor descriptor;
     private NSDictionary      options;
 
-    private static NSArray subsystemTabTemplate;
+    private NSArray subsystemTabTemplate;
 
     static Logger log = Logger.getLogger( Subsystem.class );
 }
