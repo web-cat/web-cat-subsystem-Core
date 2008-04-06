@@ -22,24 +22,25 @@
 package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
+import com.webobjects.foundation.NSKeyValueCoding.Null;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import org.apache.log4j.Logger;
 
 //-------------------------------------------------------------------------
 /**
- * This class encapsulates an EO that is managed in its own editing context
- * so that it can be saved/managed independently of the client editing context
- * from which it is being accessed.  The intent is to allow a single
- * object (managed by this container) to be independently saved to the
- * database, separate from all the other objects related to it.
+ * This implementation of EOManager provides an independently saveable
+ * view of an EO's state, where changes can be saved independently of the
+ * EO's editing context.  Make changes as usual, then commit them using
+ * the {@link #saveChanges()} method.  Note that if there are optimistic
+ * locking conflicts, this class uses a "last write wins" strategy to
+ * resolve them automatically.
  *
  * @author stedwar2
  * @version $Id$
  */
 public class IndependentEOManager
-    implements EOManager,
-               Cloneable
+    implements EOManager
 {
     //~ Constructors ..........................................................
 
@@ -50,25 +51,28 @@ public class IndependentEOManager
      * After giving control of an EO to this manager, no other code should
      * directly modify the EO's state.
      * @param eo the object to manage
+     */
+    public IndependentEOManager(EOEnterpriseObject eo)
+    {
+        this(eo.editingContext(), eo, new ECManager());
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates a new manager for the given EO.  The EO must exist and be
+     * within an existing editing context, already stored in the database.
+     * After giving control of an EO to this manager, no other code should
+     * directly modify the EO's state.
+     * @param context The editing context used by this manager's client(s)
+     * @param eo the object to manage
      * @param manager the (probably shared) editing context manager to use
      * for independent saving of the given eo
      */
-    public IndependentEOManager(EOEnterpriseObject eo, ECManager manager)
+    public IndependentEOManager(
+        EOEditingContext context, EOEnterpriseObject eo, ECManager manager)
     {
         ecm = manager;
-        snapshot = eo.snapshot().mutableClone();
-
-        // Now convert all NSArrays in snapshot so they are mutable
-        NSArray toManyKeys = eo.toManyRelationshipKeys();
-        for (int i = 0; i < toManyKeys.count(); i++)
-        {
-            String key = (String)toManyKeys.objectAtIndex(i);
-            snapshot.takeValueForKey(
-                ((NSArray)snapshot.valueForKey(key)).mutableClone(),
-                key);
-        }
-        NSArray attributeKeyArray = eo.attributeKeys();
-        attributeKeys = new NSDictionary(attributeKeyArray, attributeKeyArray);
 
         // Now create a mirror in a new EC
         ecm.lock();
@@ -86,20 +90,20 @@ public class IndependentEOManager
     //~ Public Methods ........................................................
 
     // ----------------------------------------------------------
-    public Object clone()
+    /**
+     * Retrieve this object's <code>id</code> value.
+     * @return the value of the attribute
+     */
+    public Number id()
     {
         try
         {
-            IndependentEOManager result = (IndependentEOManager)super.clone();
-
-            result.snapshot = (NSMutableDictionary)snapshot.clone();
-
-            return result;
+            return (Number)EOUtilities.primaryKeyForObject(
+                mirror.editingContext(), mirror).objectForKey( "id" );
         }
-        catch (CloneNotSupportedException e)
+        catch (Exception e)
         {
-            // never happens
-            return null;
+            return er.extensions.ERXConstant.ZeroInteger;
         }
     }
 
@@ -107,114 +111,25 @@ public class IndependentEOManager
     // ----------------------------------------------------------
     public Object valueForKey(String key)
     {
-        Object result = snapshot.valueForKey(key);
-        if (result == NullValue)
+        try
         {
-            result = null;
+            ecm.lock();
+            return ECManager.localize(clientContext, mirror.valueForKey(key));
         }
-        return result;
+        finally
+        {
+            ecm.unlock();
+        }
     }
 
 
     // ----------------------------------------------------------
     public void takeValueForKey( Object value, String key )
     {
-        Object current = snapshot.valueForKey(key);
-        if (current != null && current != NullValue && current instanceof Null)
-        {
-            log.error("non-unique KVC.Null found in snapshot for key " + key);
-            log.error("snapshot = " + snapshot);
-        }
-        if (attributeKeys.valueForKey(key) == null)
-        {
-            // Then this is a relationship, not a plain attribute
-            if (value == null)
-            {
-                if (current == null || current == NullValue)
-                {
-                    return;
-                }
-                if (current instanceof NSArray)
-                {
-                    NSArray currents = (NSArray)current;
-                    if (currents.count() == 1)
-                    {
-                        current = currents.objectAtIndex(0);
-                    }
-                    else
-                    {
-                        throw new IllegalArgumentException("takeValueForKey("
-                            + value + ", " + key + ") called on to-many "
-                            + "relationship with current value of "
-                            + currents);
-                    }
-                }
-                removeObjectFromBothSidesOfRelationshipWithKey(
-                    (EORelationshipManipulation)current, key);
-            }
-            else if (value instanceof NSArray)
-            {
-                NSArray currents = (NSArray)current;
-                for (int i = 0; i < currents.count(); i++)
-                {
-                    removeObjectFromBothSidesOfRelationshipWithKey(
-                        (EORelationshipManipulation)currents.objectAtIndex(i),
-                        key);
-                }
-                NSArray newOnes = (NSArray)value;
-                for (int i = 0; i < newOnes.count(); i++)
-                {
-                    addObjectToBothSidesOfRelationshipWithKey(
-                        (EORelationshipManipulation)newOnes.objectAtIndex(i),
-                        key);
-                }
-            }
-            else
-            {
-                if (current != null && current != NullValue)
-                {
-                    removeObjectFromBothSidesOfRelationshipWithKey(
-                        (EORelationshipManipulation)current, key);
-                }
-                addObjectToBothSidesOfRelationshipWithKey(
-                    (EORelationshipManipulation)value, key);
-            }
-            return;
-        }
-        if (current == value
-            || (value == null && current == NullValue))
-        {
-            return;
-        }
-
-        ecm.lock();
         try
         {
-            Object newValue = value;
-            if (value == null)
-            {
-                snapshot.takeValueForKey(NullValue, key);
-            }
-            else if (value instanceof NSArray)
-            {
-                snapshot.takeValueForKey(((NSArray)value).mutableClone(), key);
-                newValue = ecm.localize(value);
-            }
-            else
-            {
-                snapshot.takeValueForKey(value, key);
-                newValue = ecm.localize(value);
-            }
-            mirror.takeValueForKey(newValue, key);
-            EOEnterpriseObject oldMirror = mirror;
-            mirror = ecm.saveChanges(mirror);
-            if (mirror != oldMirror)
-            {
-                // retry it once if the save forced an abort and a new
-                // EC was created instead
-                mirror.takeValueForKey(ecm.localize(newValue), key);
-                mirror = ecm.saveChanges(mirror);
-            }
+            ecm.lock();
+            mirror.takeValueForKey(ecm.localize(value), key);
         }
         finally
         {
@@ -227,37 +142,11 @@ public class IndependentEOManager
     public void addObjectToBothSidesOfRelationshipWithKey(
         EORelationshipManipulation eo, String key)
     {
-        Object current = snapshot.valueForKey(key);
-        if (current != null
-            && current != NullValue
-            && current instanceof NSArray)
-        {
-            NSMutableArray currentTargets = (NSMutableArray)current;
-            if (currentTargets.contains(eo))
-            {
-                return;
-            }
-            currentTargets.add(eo);
-        }
-        else
-        {
-            snapshot.takeValueForKey(eo, key);
-        }
-        ecm.lock();
         try
         {
+            ecm.lock();
             mirror.addObjectToBothSidesOfRelationshipWithKey(
-                (EORelationshipManipulation)ecm.localize(eo), key);
-            EOEnterpriseObject oldMirror = mirror;
-            mirror = ecm.saveChanges(mirror);
-            if (mirror != oldMirror)
-            {
-                // retry it once if the save forced an abort and a new
-                // EC was created instead
-                mirror.addObjectToBothSidesOfRelationshipWithKey(
-                    (EORelationshipManipulation)ecm.localize(eo), key);
-                mirror = ecm.saveChanges(mirror);
-            }
+                ecm.localize(eo), key);
         }
         finally
         {
@@ -269,35 +158,10 @@ public class IndependentEOManager
     // ----------------------------------------------------------
     public void addObjectToPropertyWithKey(Object eo, String key)
     {
-        Object current = snapshot.valueForKey(key);
-        if (current != null
-            && current != NullValue
-            && current instanceof NSArray)
-        {
-            NSMutableArray currentTargets = (NSMutableArray)current;
-            if (currentTargets.contains(eo))
-            {
-                return;
-            }
-            currentTargets.add(eo);
-        }
-        else
-        {
-            snapshot.takeValueForKey(eo, key);
-        }
-        ecm.lock();
         try
         {
+            ecm.lock();
             mirror.addObjectToPropertyWithKey(ecm.localize(eo), key);
-            EOEnterpriseObject oldMirror = mirror;
-            mirror = ecm.saveChanges(mirror);
-            if (mirror != oldMirror)
-            {
-                // retry it once if the save forced an abort and a new
-                // EC was created instead
-                mirror.addObjectToPropertyWithKey(ecm.localize(eo), key);
-                mirror = ecm.saveChanges(mirror);
-            }
         }
         finally
         {
@@ -310,33 +174,11 @@ public class IndependentEOManager
     public void removeObjectFromBothSidesOfRelationshipWithKey(
         EORelationshipManipulation eo, String key)
     {
-        Object current = snapshot.valueForKey(key);
-        if (current != null
-            && current != NullValue
-            && current instanceof NSArray)
-        {
-            NSMutableArray currentTargets = (NSMutableArray)current;
-            currentTargets.remove(eo);
-        }
-        else if (current == eo)
-        {
-            snapshot.takeValueForKey(NullValue, key);
-        }
-        ecm.lock();
         try
         {
+            ecm.lock();
             mirror.removeObjectFromBothSidesOfRelationshipWithKey(
-                (EORelationshipManipulation)ecm.localize(eo), key);
-            EOEnterpriseObject oldMirror = mirror;
-            mirror = ecm.saveChanges(mirror);
-            if (mirror != oldMirror)
-            {
-                // retry it once if the save forced an abort and a new
-                // EC was created instead
-                mirror.removeObjectFromBothSidesOfRelationshipWithKey(
-                    (EORelationshipManipulation)ecm.localize(eo), key);
-                mirror = ecm.saveChanges(mirror);
-            }
+                ecm.localize(eo), key);
         }
         finally
         {
@@ -348,30 +190,46 @@ public class IndependentEOManager
     // ----------------------------------------------------------
     public void removeObjectFromPropertyWithKey(Object eo, String key)
     {
-        Object current = snapshot.valueForKey(key);
-        if (current != null
-            && current != NullValue
-            && current instanceof NSArray)
-        {
-            NSMutableArray currentTargets = (NSMutableArray)current;
-            currentTargets.remove(eo);
-        }
-        else if (current == eo)
-        {
-            snapshot.takeValueForKey(NullValue, key);
-        }
-        ecm.lock();
         try
         {
+            ecm.lock();
             mirror.removeObjectFromPropertyWithKey(ecm.localize(eo), key);
-            EOEnterpriseObject oldMirror = mirror;
-            mirror = ecm.saveChanges(mirror);
-            if (mirror != oldMirror)
+        }
+        finally
+        {
+            ecm.unlock();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public void saveChanges()
+    {
+        try
+        {
+            ecm.lock();
+            // grab the changes, in case there is trouble saving them
+            NSDictionary changes =
+                mirror.changesFromSnapshot(mirror.snapshot());
+            boolean changesSaved = false;
+            // Try ten times
+            for (int i = 0; !changesSaved && i< 10; i++)
             {
-                // retry it once if the save forced an abort and a new
-                // EC was created instead
-                mirror.removeObjectFromPropertyWithKey(ecm.localize(eo), key);
-                mirror = ecm.saveChanges(mirror);
+                EOEnterpriseObject newMirror = ecm.saveChanges(mirror);
+                changesSaved = (newMirror == mirror);
+                if (!changesSaved)
+                {
+                    // then the changes may have failed
+                    mirror = newMirror;
+                    changes = ecm.localize(changes);
+                    mirror.reapplyChangesFromDictionary(changes);
+                }
+            }
+            if (!changesSaved)
+            {
+                log.error("Unable to save changes to eo " + mirror);
+                log.error("Unsaved changes = " + changes,
+                    new Exception("here"));
             }
         }
         finally
@@ -381,12 +239,25 @@ public class IndependentEOManager
     }
 
 
+    // ----------------------------------------------------------
+    public EOEditingContext clientContext()
+    {
+        return clientContext;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setClientContext(EOEditingContext newClientContext)
+    {
+        clientContext = newClientContext;
+    }
+
+
     //~ Instance/static variables .............................................
 
     private ECManager           ecm;
-    private EOEnterpriseObject  mirror;   // copy of EO internal ec context
-    private NSMutableDictionary snapshot; // snapshot of managed EO's state
-    private NSDictionary        attributeKeys;
+    private EOEnterpriseObject  mirror;   // copy of EO in ecm context
+    private EOEditingContext    clientContext;
 
     static Logger log = Logger.getLogger( IndependentEOManager.class );
 }
