@@ -105,12 +105,14 @@ public class Application
         if ( log.isInfoEnabled() )
         {
             log.info( "Web-CAT v" + version()
-                + "\nCopyright (C) 2006 Virginia Tech\n\n"
+                + "\nCopyright (C) 2006-2008 Virginia Tech\n\n"
                 + "Web-CAT comes with ABSOLUTELY NO WARRANTY; this is "
                 + "free software\n"
-                + "under the terms of the GNU General Public License.  "
-                + "See:\n"
-                + "http://www.gnu.org/licenses/gpl.html\n" );
+                + "under the terms of the GNU Affero General Public License "
+                + "v3.  See:\n"
+                + "http://www.gnu.org/licenses/agpl.html\n"
+                + "For full source code, see:\n"
+                + "http://www.sourceforge.net/projects/web-cat\n");
             log.info( "Properties loaded from:" );
             NSArray dirs =
                 ERXProperties.pathsForUserAndBundleProperties();
