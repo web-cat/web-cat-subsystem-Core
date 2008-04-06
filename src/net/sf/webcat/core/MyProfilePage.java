@@ -148,8 +148,8 @@ public class MyProfilePage
                          && lcPassword.equals( u.lastName().toLowerCase() ) ) )
             {
                 error(
-                    "You may not use your name as a password.  "
-                    + "Please enter a different password." );
+                    "You may not use your first name, last name, or user name "
+                    + "as a password.  Please enter a different password." );
             }
             else if ( newPassword1.equals( u.password() ) )
             {
