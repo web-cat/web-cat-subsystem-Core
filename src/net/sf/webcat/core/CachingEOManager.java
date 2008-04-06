@@ -246,7 +246,7 @@ public class CachingEOManager
         try
         {
             mirror.addObjectToBothSidesOfRelationshipWithKey(
-                (EORelationshipManipulation)ecm.localize(eo), key);
+                ecm.localize(eo), key);
             EOEnterpriseObject oldMirror = mirror;
             mirror = ecm.saveChanges(mirror);
             if (mirror != oldMirror)
@@ -254,7 +254,7 @@ public class CachingEOManager
                 // retry it once if the save forced an abort and a new
                 // EC was created instead
                 mirror.addObjectToBothSidesOfRelationshipWithKey(
-                    (EORelationshipManipulation)ecm.localize(eo), key);
+                    ecm.localize(eo), key);
                 mirror = ecm.saveChanges(mirror);
             }
         }
@@ -325,7 +325,7 @@ public class CachingEOManager
         try
         {
             mirror.removeObjectFromBothSidesOfRelationshipWithKey(
-                (EORelationshipManipulation)ecm.localize(eo), key);
+                ecm.localize(eo), key);
             EOEnterpriseObject oldMirror = mirror;
             mirror = ecm.saveChanges(mirror);
             if (mirror != oldMirror)
@@ -333,7 +333,7 @@ public class CachingEOManager
                 // retry it once if the save forced an abort and a new
                 // EC was created instead
                 mirror.removeObjectFromBothSidesOfRelationshipWithKey(
-                    (EORelationshipManipulation)ecm.localize(eo), key);
+                    ecm.localize(eo), key);
                 mirror = ecm.saveChanges(mirror);
             }
         }
