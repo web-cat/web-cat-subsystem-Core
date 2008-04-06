@@ -1,31 +1,20 @@
-DictionaryCssClass: WOString {
-	value      = dictionaryCssClass;
+CssDiv: WOGenericContainer {
+    elementName = "div";
+    class = "~\"NoticePanel\" + dictionaryCssClass";
 }
 
-ErrorMessageCssClass: WOString {
-	value      = errorMessageCssClass;
+ErrorLi: WOGenericContainer {
+    elementName = "li";
+    class = errorMessageCssClass;
 }
 
-HasExtraMessage: WOConditional {
-	condition = extraErrorMessage.length;
-}
-
-DictionaryRepetition: WORepetition { 	
+DictionaryRepetition: WORepetition {
 	list = errorKeys;
 	item = errorKey;
 }
 
-HasErrors: WOConditional {
-	condition = hasErrors;
-}
-
 Message: WOString {
 	value      = errorMessageItem;
-    escapeHTML = false;
-}
-
-MessageClass: WOString {
-	value      = errorMessageCssClass;
     escapeHTML = false;
 }
 

@@ -1,5 +1,9 @@
-LicenseURL: WOString {
-    value = licenseURL;
+Iframe: WOGenericContainer {
+    elementName = "iframe";
+    src         = licenseURL;
+    width       = "100%";
+    height      = "350";
+    scrolling   = "auto";
 }
 
 Page : net.sf.webcat.core.install.InstallPageWrapper {

@@ -521,7 +521,8 @@ $>    // ----------------------------------------------------------
      * relationship.
      * @return an NSArray of the entities in the relationship
      */
-    public NSArray <$ToManyRelationship.name$>()
+    @SuppressWarnings("unchecked")
+    public NSArray<<$ToManyRelationship.destinationEntity.referenceJavaClassName$>> <$ToManyRelationship.name$>()
     {
         return (NSArray)storedValueForKey( "<$ToManyRelationship.name$>" );
     }
@@ -534,7 +535,7 @@ $>    // ----------------------------------------------------------
      *
      * @param value The new set of entities to relate to
      */
-    public void set<$ToManyRelationship.name.initialCapitalString$>( NSMutableArray value )
+    public void set<$ToManyRelationship.name.initialCapitalString$>( NSMutableArray<<$ToManyRelationship.destinationEntity.referenceJavaClassName$>>  value )
     {
         if (log.isDebugEnabled())
         {
@@ -561,7 +562,8 @@ $>    // ----------------------------------------------------------
             log.debug( "addTo<$ToManyRelationship.name.initialCapitalString$>("
                 + value + "): was " + <$ToManyRelationship.name$>() );
         }
-        NSMutableArray array = (NSMutableArray)<$ToManyRelationship.name$>();
+        NSMutableArray<<$ToManyRelationship.destinationEntity.referenceJavaClassName$>> array =
+            (NSMutableArray<<$ToManyRelationship.destinationEntity.referenceJavaClassName$>>)<$ToManyRelationship.name$>();
         willChange();
         array.addObject( value );
     }
@@ -583,7 +585,8 @@ $>    // ----------------------------------------------------------
             log.debug( "RemoveFrom<$ToManyRelationship.name.initialCapitalString$>("
                 + value + "): was " + <$ToManyRelationship.name$>() );
         }
-        NSMutableArray array = (NSMutableArray)<$ToManyRelationship.name$>();
+        NSMutableArray<<$ToManyRelationship.destinationEntity.referenceJavaClassName$>> array =
+            (NSMutableArray<<$ToManyRelationship.destinationEntity.referenceJavaClassName$>>)<$ToManyRelationship.name$>();
         willChange();
         array.removeObject( value );
     }
@@ -704,7 +707,7 @@ if !ToManyRelationship.ownsDestination$>
     }
 
 
-<$endforeach tomanyrels$><$foreach FetchSpec javaBeautifiedFetchSpecificationDictionaries.@sortedNameArray fetchspec$>    // ----------------------------------------------------------
+<$endforeach tomanyrels$><$if !isAbstractEntity$><$foreach FetchSpec javaBeautifiedFetchSpecificationDictionaries.@sortedNameArray fetchspec$>    // ----------------------------------------------------------
     /**
      * Retrieve object according to the <code><$FetchSpec.niceName$></code>
      * fetch specification.
@@ -713,7 +716,8 @@ if !ToManyRelationship.ownsDestination$>
      * @param <$Binding.name$>Binding fetch spec parameter<$endforeach do2$>
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsFor<$FetchSpec.niceName$>(
+    @SuppressWarnings("unchecked")
+    public static NSArray<<$classNameWithoutPackage$>> objectsFor<$FetchSpec.niceName$>(
             EOEditingContext context<$foreach Binding FetchSpec.bindings do2$>,
             <$Binding.codeType$><$Binding.name$>Binding<$endforeach do2$>
         )
@@ -721,11 +725,14 @@ if !ToManyRelationship.ownsDestination$>
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "<$FetchSpec.fetchName$>", "<$name$>" );
 <$if FetchSpec.bindings.@count > 0$>
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 <$foreach Binding FetchSpec.bindings do2$>
         if ( <$Binding.name$>Binding != null )
+        {
             bindings.setObjectForKey( <$Binding.name$>Binding,
-                                      "<$Binding.name$>" );<$endforeach do2$>
+                                      "<$Binding.name$>" );
+        }<$endforeach do2$>
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 <$endif$>
         NSArray result = context.objectsWithFetchSpecification( spec );
@@ -740,7 +747,7 @@ if !ToManyRelationship.ownsDestination$>
     }
 
 
-<$endforeach fetchspec$>    //~ Instance/static variables .............................................
+<$endforeach fetchspec$><$endif$>    //~ Instance/static variables .............................................
 
     static Logger log = Logger.getLogger( <$classNameWithoutPackage$>.class );
 }

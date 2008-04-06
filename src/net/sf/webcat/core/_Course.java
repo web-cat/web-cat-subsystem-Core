@@ -358,7 +358,8 @@ public abstract class _Course
      * relationship.
      * @return an NSArray of the entities in the relationship
      */
-    public NSArray coreSelections()
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.CoreSelections> coreSelections()
     {
         return (NSArray)storedValueForKey( "coreSelections" );
     }
@@ -371,7 +372,7 @@ public abstract class _Course
      *
      * @param value The new set of entities to relate to
      */
-    public void setCoreSelections( NSMutableArray value )
+    public void setCoreSelections( NSMutableArray<net.sf.webcat.core.CoreSelections>  value )
     {
         if (log.isDebugEnabled())
         {
@@ -398,7 +399,8 @@ public abstract class _Course
             log.debug( "addToCoreSelections("
                 + value + "): was " + coreSelections() );
         }
-        NSMutableArray array = (NSMutableArray)coreSelections();
+        NSMutableArray<net.sf.webcat.core.CoreSelections> array =
+            (NSMutableArray<net.sf.webcat.core.CoreSelections>)coreSelections();
         willChange();
         array.addObject( value );
     }
@@ -420,7 +422,8 @@ public abstract class _Course
             log.debug( "RemoveFromCoreSelections("
                 + value + "): was " + coreSelections() );
         }
-        NSMutableArray array = (NSMutableArray)coreSelections();
+        NSMutableArray<net.sf.webcat.core.CoreSelections> array =
+            (NSMutableArray<net.sf.webcat.core.CoreSelections>)coreSelections();
         willChange();
         array.removeObject( value );
     }
@@ -533,7 +536,8 @@ public abstract class _Course
      * relationship.
      * @return an NSArray of the entities in the relationship
      */
-    public NSArray offerings()
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.CourseOffering> offerings()
     {
         return (NSArray)storedValueForKey( "offerings" );
     }
@@ -546,7 +550,7 @@ public abstract class _Course
      *
      * @param value The new set of entities to relate to
      */
-    public void setOfferings( NSMutableArray value )
+    public void setOfferings( NSMutableArray<net.sf.webcat.core.CourseOffering>  value )
     {
         if (log.isDebugEnabled())
         {
@@ -573,7 +577,8 @@ public abstract class _Course
             log.debug( "addToOfferings("
                 + value + "): was " + offerings() );
         }
-        NSMutableArray array = (NSMutableArray)offerings();
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)offerings();
         willChange();
         array.addObject( value );
     }
@@ -595,7 +600,8 @@ public abstract class _Course
             log.debug( "RemoveFromOfferings("
                 + value + "): was " + offerings() );
         }
-        NSMutableArray array = (NSMutableArray)offerings();
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)offerings();
         willChange();
         array.removeObject( value );
     }

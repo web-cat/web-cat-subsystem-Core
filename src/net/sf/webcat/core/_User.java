@@ -789,7 +789,8 @@ public abstract class _User
      * relationship.
      * @return an NSArray of the entities in the relationship
      */
-    public NSArray TAFor()
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.CourseOffering> TAFor()
     {
         return (NSArray)storedValueForKey( "TAFor" );
     }
@@ -802,7 +803,7 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setTAFor( NSMutableArray value )
+    public void setTAFor( NSMutableArray<net.sf.webcat.core.CourseOffering>  value )
     {
         if (log.isDebugEnabled())
         {
@@ -829,7 +830,8 @@ public abstract class _User
             log.debug( "addToTAFor("
                 + value + "): was " + TAFor() );
         }
-        NSMutableArray array = (NSMutableArray)TAFor();
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)TAFor();
         willChange();
         array.addObject( value );
     }
@@ -851,7 +853,8 @@ public abstract class _User
             log.debug( "RemoveFromTAFor("
                 + value + "): was " + TAFor() );
         }
-        NSMutableArray array = (NSMutableArray)TAFor();
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)TAFor();
         willChange();
         array.removeObject( value );
     }
@@ -964,7 +967,8 @@ public abstract class _User
      * relationship.
      * @return an NSArray of the entities in the relationship
      */
-    public NSArray coreSelections()
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.CoreSelections> coreSelections()
     {
         return (NSArray)storedValueForKey( "coreSelections" );
     }
@@ -977,7 +981,7 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setCoreSelections( NSMutableArray value )
+    public void setCoreSelections( NSMutableArray<net.sf.webcat.core.CoreSelections>  value )
     {
         if (log.isDebugEnabled())
         {
@@ -1004,7 +1008,8 @@ public abstract class _User
             log.debug( "addToCoreSelections("
                 + value + "): was " + coreSelections() );
         }
-        NSMutableArray array = (NSMutableArray)coreSelections();
+        NSMutableArray<net.sf.webcat.core.CoreSelections> array =
+            (NSMutableArray<net.sf.webcat.core.CoreSelections>)coreSelections();
         willChange();
         array.addObject( value );
     }
@@ -1026,7 +1031,8 @@ public abstract class _User
             log.debug( "RemoveFromCoreSelections("
                 + value + "): was " + coreSelections() );
         }
-        NSMutableArray array = (NSMutableArray)coreSelections();
+        NSMutableArray<net.sf.webcat.core.CoreSelections> array =
+            (NSMutableArray<net.sf.webcat.core.CoreSelections>)coreSelections();
         willChange();
         array.removeObject( value );
     }
@@ -1139,7 +1145,8 @@ public abstract class _User
      * relationship.
      * @return an NSArray of the entities in the relationship
      */
-    public NSArray enrolledIn()
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.CourseOffering> enrolledIn()
     {
         return (NSArray)storedValueForKey( "enrolledIn" );
     }
@@ -1152,7 +1159,7 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setEnrolledIn( NSMutableArray value )
+    public void setEnrolledIn( NSMutableArray<net.sf.webcat.core.CourseOffering>  value )
     {
         if (log.isDebugEnabled())
         {
@@ -1179,7 +1186,8 @@ public abstract class _User
             log.debug( "addToEnrolledIn("
                 + value + "): was " + enrolledIn() );
         }
-        NSMutableArray array = (NSMutableArray)enrolledIn();
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)enrolledIn();
         willChange();
         array.addObject( value );
     }
@@ -1201,7 +1209,8 @@ public abstract class _User
             log.debug( "RemoveFromEnrolledIn("
                 + value + "): was " + enrolledIn() );
         }
-        NSMutableArray array = (NSMutableArray)enrolledIn();
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)enrolledIn();
         willChange();
         array.removeObject( value );
     }
@@ -1314,7 +1323,8 @@ public abstract class _User
      * relationship.
      * @return an NSArray of the entities in the relationship
      */
-    public NSArray passwordChangeRequest()
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.PasswordChangeRequest> passwordChangeRequest()
     {
         return (NSArray)storedValueForKey( "passwordChangeRequest" );
     }
@@ -1327,7 +1337,7 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setPasswordChangeRequest( NSMutableArray value )
+    public void setPasswordChangeRequest( NSMutableArray<net.sf.webcat.core.PasswordChangeRequest>  value )
     {
         if (log.isDebugEnabled())
         {
@@ -1354,7 +1364,8 @@ public abstract class _User
             log.debug( "addToPasswordChangeRequest("
                 + value + "): was " + passwordChangeRequest() );
         }
-        NSMutableArray array = (NSMutableArray)passwordChangeRequest();
+        NSMutableArray<net.sf.webcat.core.PasswordChangeRequest> array =
+            (NSMutableArray<net.sf.webcat.core.PasswordChangeRequest>)passwordChangeRequest();
         willChange();
         array.addObject( value );
     }
@@ -1376,7 +1387,8 @@ public abstract class _User
             log.debug( "RemoveFromPasswordChangeRequest("
                 + value + "): was " + passwordChangeRequest() );
         }
-        NSMutableArray array = (NSMutableArray)passwordChangeRequest();
+        NSMutableArray<net.sf.webcat.core.PasswordChangeRequest> array =
+            (NSMutableArray<net.sf.webcat.core.PasswordChangeRequest>)passwordChangeRequest();
         willChange();
         array.removeObject( value );
     }
@@ -1489,7 +1501,8 @@ public abstract class _User
      * relationship.
      * @return an NSArray of the entities in the relationship
      */
-    public NSArray teaching()
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.CourseOffering> teaching()
     {
         return (NSArray)storedValueForKey( "teaching" );
     }
@@ -1502,7 +1515,7 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setTeaching( NSMutableArray value )
+    public void setTeaching( NSMutableArray<net.sf.webcat.core.CourseOffering>  value )
     {
         if (log.isDebugEnabled())
         {
@@ -1529,7 +1542,8 @@ public abstract class _User
             log.debug( "addToTeaching("
                 + value + "): was " + teaching() );
         }
-        NSMutableArray array = (NSMutableArray)teaching();
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)teaching();
         willChange();
         array.addObject( value );
     }
@@ -1551,7 +1565,8 @@ public abstract class _User
             log.debug( "RemoveFromTeaching("
                 + value + "): was " + teaching() );
         }
-        NSMutableArray array = (NSMutableArray)teaching();
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)teaching();
         willChange();
         array.removeObject( value );
     }
@@ -1668,7 +1683,8 @@ public abstract class _User
      * @param accessLevelBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForCourseParticipants(
+    @SuppressWarnings("unchecked")
+    public static NSArray<User> objectsForCourseParticipants(
             EOEditingContext context,
             net.sf.webcat.core.CourseOffering courseOfferingBinding,
             Number accessLevelBinding
@@ -1677,14 +1693,19 @@ public abstract class _User
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "courseParticipants", "User" );
 
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 
         if ( courseOfferingBinding != null )
+        {
             bindings.setObjectForKey( courseOfferingBinding,
                                       "courseOffering" );
+        }
         if ( accessLevelBinding != null )
+        {
             bindings.setObjectForKey( accessLevelBinding,
                                       "accessLevel" );
+        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );
@@ -1710,7 +1731,8 @@ public abstract class _User
      * @param domainBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForEmailAndDomain(
+    @SuppressWarnings("unchecked")
+    public static NSArray<User> objectsForEmailAndDomain(
             EOEditingContext context,
             String emailBinding,
             net.sf.webcat.core.AuthenticationDomain domainBinding
@@ -1719,14 +1741,19 @@ public abstract class _User
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "emailAndDomain", "User" );
 
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 
         if ( emailBinding != null )
+        {
             bindings.setObjectForKey( emailBinding,
                                       "email" );
+        }
         if ( domainBinding != null )
+        {
             bindings.setObjectForKey( domainBinding,
                                       "domain" );
+        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );
@@ -1752,7 +1779,8 @@ public abstract class _User
      * @param domainBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForNameAndDomain(
+    @SuppressWarnings("unchecked")
+    public static NSArray<User> objectsForNameAndDomain(
             EOEditingContext context,
             String userNameBinding,
             net.sf.webcat.core.AuthenticationDomain domainBinding
@@ -1761,14 +1789,19 @@ public abstract class _User
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "nameAndDomain", "User" );
 
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 
         if ( userNameBinding != null )
+        {
             bindings.setObjectForKey( userNameBinding,
                                       "userName" );
+        }
         if ( domainBinding != null )
+        {
             bindings.setObjectForKey( domainBinding,
                                       "domain" );
+        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );
@@ -1793,7 +1826,8 @@ public abstract class _User
      * @param courseOfferingBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForStaffForCourse(
+    @SuppressWarnings("unchecked")
+    public static NSArray<User> objectsForStaffForCourse(
             EOEditingContext context,
             net.sf.webcat.core.CourseOffering courseOfferingBinding
         )
@@ -1801,11 +1835,14 @@ public abstract class _User
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "staffForCourse", "User" );
 
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 
         if ( courseOfferingBinding != null )
+        {
             bindings.setObjectForKey( courseOfferingBinding,
                                       "courseOffering" );
+        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );
@@ -1829,7 +1866,8 @@ public abstract class _User
      * @param courseOfferingBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForStudentsForCourse(
+    @SuppressWarnings("unchecked")
+    public static NSArray<User> objectsForStudentsForCourse(
             EOEditingContext context,
             net.sf.webcat.core.CourseOffering courseOfferingBinding
         )
@@ -1837,11 +1875,14 @@ public abstract class _User
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "studentsForCourse", "User" );
 
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 
         if ( courseOfferingBinding != null )
+        {
             bindings.setObjectForKey( courseOfferingBinding,
                                       "courseOffering" );
+        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );
@@ -1865,7 +1906,8 @@ public abstract class _User
      * @param nameBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForUserWithName(
+    @SuppressWarnings("unchecked")
+    public static NSArray<User> objectsForUserWithName(
             EOEditingContext context,
             String nameBinding
         )
@@ -1873,11 +1915,14 @@ public abstract class _User
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "userWithName", "User" );
 
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 
         if ( nameBinding != null )
+        {
             bindings.setObjectForKey( nameBinding,
                                       "name" );
+        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );

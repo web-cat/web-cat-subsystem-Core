@@ -576,7 +576,8 @@ public abstract class _LoggedError
      * @param nameBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForExceptionLocation(
+    @SuppressWarnings("unchecked")
+    public static NSArray<LoggedError> objectsForExceptionLocation(
             EOEditingContext context,
             Number lineBinding,
             String methodBinding,
@@ -587,20 +588,29 @@ public abstract class _LoggedError
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "exceptionLocation", "LoggedError" );
 
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 
         if ( lineBinding != null )
+        {
             bindings.setObjectForKey( lineBinding,
                                       "line" );
+        }
         if ( methodBinding != null )
+        {
             bindings.setObjectForKey( methodBinding,
                                       "method" );
+        }
         if ( classBinding != null )
+        {
             bindings.setObjectForKey( classBinding,
                                       "class" );
+        }
         if ( nameBinding != null )
+        {
             bindings.setObjectForKey( nameBinding,
                                       "name" );
+        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );

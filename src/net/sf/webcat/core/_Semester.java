@@ -354,7 +354,8 @@ public abstract class _Semester
      * @param context The editing context to use
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForFetchAll(
+    @SuppressWarnings("unchecked")
+    public static NSArray<Semester> objectsForFetchAll(
             EOEditingContext context
         )
     {

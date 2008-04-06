@@ -1,10 +1,10 @@
-<webobject name="HasErrors">
-<div class="NoticePanel<webobject name="DictionaryCssClass"></webobject>"><b class="top"><b class="b1"></b><b class="b2"></b><b class="b3"></b><b class="b4"></b></b><div class="boxcontent">
+<wo:if condition="$hasErrors">
+<wo name="CssDiv"><b class="top"><b class="b1"></b><b class="b2"></b><b class="b3"></b><b class="b4"></b></b><div class="boxcontent">
 <ul>
-<webobject name="DictionaryRepetition">
-<li class="<webobject name="ErrorMessageCssClass"></webobject>"><webobject name="Message"/></li>
-</webobject>
-<webobject name="HasExtraMessage"><li class="warning"><webobject name="ExtraMessage"/></li></webobject>
+  <wo name="DictionaryRepetition">
+    <wo name="ErrorLi"><wo name="Message"/></wo>
+  </wo>
+  <wo:if condition="$extraErrorMessage.length"><li class="warning"><wo name="ExtraMessage"/></li></wo:if>
 </ul>
-</div><b class="bottom"><b class="b4b"></b><b class="b3b"></b><b class="b2b"></b><b class="b1b"></b></b></div>
-</webobject>
+</div><b class="bottom"><b class="b4b"></b><b class="b3b"></b><b class="b2b"></b><b class="b1b"></b></b></wo>
+</wo:if>

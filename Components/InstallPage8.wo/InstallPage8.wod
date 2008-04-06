@@ -24,7 +24,7 @@ coreAdminEmail: WOString {
 }
 
 Config: WOText {
-    value = application.configurationProperties.configSettingsAsString;
+    value = application.configurationProperties.configSettingsAsString; // VALID
     cols  = 70;
     rows  = 40;
 }

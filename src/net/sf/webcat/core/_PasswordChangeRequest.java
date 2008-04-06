@@ -324,7 +324,8 @@ public abstract class _PasswordChangeRequest
      * @param codeBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForCode(
+    @SuppressWarnings("unchecked")
+    public static NSArray<PasswordChangeRequest> objectsForCode(
             EOEditingContext context,
             String codeBinding
         )
@@ -332,11 +333,14 @@ public abstract class _PasswordChangeRequest
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "code", "PasswordChangeRequest" );
 
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 
         if ( codeBinding != null )
+        {
             bindings.setObjectForKey( codeBinding,
                                       "code" );
+        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );
@@ -360,7 +364,8 @@ public abstract class _PasswordChangeRequest
      * @param timeBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForExpiredBefore(
+    @SuppressWarnings("unchecked")
+    public static NSArray<PasswordChangeRequest> objectsForExpiredBefore(
             EOEditingContext context,
             NSTimestamp timeBinding
         )
@@ -368,11 +373,14 @@ public abstract class _PasswordChangeRequest
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "expiredBefore", "PasswordChangeRequest" );
 
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 
         if ( timeBinding != null )
+        {
             bindings.setObjectForKey( timeBinding,
                                       "time" );
+        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );
@@ -396,7 +404,8 @@ public abstract class _PasswordChangeRequest
      * @param userBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForUser(
+    @SuppressWarnings("unchecked")
+    public static NSArray<PasswordChangeRequest> objectsForUser(
             EOEditingContext context,
             net.sf.webcat.core.User userBinding
         )
@@ -404,11 +413,14 @@ public abstract class _PasswordChangeRequest
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "user", "PasswordChangeRequest" );
 
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 
         if ( userBinding != null )
+        {
             bindings.setObjectForKey( userBinding,
                                       "user" );
+        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );

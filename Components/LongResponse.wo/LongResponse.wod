@@ -28,7 +28,7 @@ NotCancelled: WOConditional {
 }
 
 ProgressBar: net.sf.webcat.core.ProgressBar {
-    value = task.stepsCompletedSoFar;
-    valueMax = task.totalNumberOfSteps;
+    value = task.stepsCompletedSoFar;	// VALID
+    valueMax = task.totalNumberOfSteps; // VALID
 }
 

@@ -319,7 +319,8 @@ public abstract class _LoginSession
      * @param userNameBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForUserPid(
+    @SuppressWarnings("unchecked")
+    public static NSArray<LoginSession> objectsForUserPid(
             EOEditingContext context,
             String userNameBinding
         )
@@ -327,11 +328,14 @@ public abstract class _LoginSession
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "userPid", "LoginSession" );
 
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
 
         if ( userNameBinding != null )
+        {
             bindings.setObjectForKey( userNameBinding,
                                       "userName" );
+        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );

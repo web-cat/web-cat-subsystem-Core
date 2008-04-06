@@ -286,7 +286,8 @@ public abstract class _Language
      * @param context The editing context to use
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray objectsForFetchAll(
+    @SuppressWarnings("unchecked")
+    public static NSArray<Language> objectsForFetchAll(
             EOEditingContext context
         )
     {
