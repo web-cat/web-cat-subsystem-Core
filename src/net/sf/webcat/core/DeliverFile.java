@@ -64,8 +64,8 @@ public class DeliverFile
      * has not been set, then this value will be used to locate the
      * file on disk and load its contents for delivery.  For downloaded
      * files, this value also determines the file name used in the
-     * "Save As..." dialog.  Only the last name in the pathname
-     * sequence is visible to the user.
+     * "Save As..." dialog if setDeliveredName is never called.  Only the
+     * last name in the pathname sequence is visible to the user.
      *
      * @param name the file name to use
      */
@@ -74,6 +74,24 @@ public class DeliverFile
         fileName = name;
     }
 
+
+    // ----------------------------------------------------------
+    /**
+     * Set the filename that will be presented to the user in the browser
+     * file download dialog. This method can be used to deliver the file
+     * to the user with a different name than it has internally on the
+     * server.
+     *
+     * If this is null (the default value) then the file will be
+     * presented with the last segment of the actual filename as passed
+     * into setFileName.
+     *
+     * @param name the file name to be presented to the user
+     */
+    public void setDeliveredName( String name )
+    {
+        deliveredName = name;
+    }
 
     // ----------------------------------------------------------
     /**
@@ -193,8 +211,21 @@ public class DeliverFile
         }
         response.setContent( fileData );
         response.setHeader( contentType, "content-type" );
+
+        // TA: Allow the download to be presented to the user with a different
+        // filename than the one it has on the server
+        String attachmentName;
+        if (deliveredName != null)
+        {
+            attachmentName = deliveredName;
+        }
+        else
+        {
+            attachmentName = fileName.getName();
+        }
+
         response.setHeader( (startDownload ? "attachment;" : "")
-                                + "filename=\"" + fileName.getName() +"\"",
+                                + "filename=\"" + attachmentName +"\"",
                             "content-disposition" );
         // TODO: test out caching downloads on IE
         // Work around bug in IE that prevents downloads over SSL when
@@ -226,6 +257,9 @@ public class DeliverFile
     protected NSData  fileData;
     /** The name (and location) of the file to deliver. */
     protected File    fileName;
+    /** If not null, use this name instead of fileName as the destination name
+     * shown to the user in the browser download dialog */
+    protected String  deliveredName;
     /** True if the file should be delivered via a download action; false
      *  if the file should simply be displayed in a browser window. */
     protected boolean startDownload = false;
