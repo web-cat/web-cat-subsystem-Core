@@ -1,3 +1,18 @@
+AuthList: WOPopUpButton {
+    list          = authStrategies;
+    item          = authStrategy;
+    value         = authStrategy;
+    selection     = chosenAuthStrategy;
+    noSelectionString = "Select an authentication mechanism";
+    name          = "authStrategyChoice";
+    onchange      = "submitForm()";
+}
+
+OldAuthStrategy: WOHiddenField {
+	name = "oldAuthStrategyChoice";
+	value = chosenAuthStrategy;
+}
+
 CustomAuthClass: WOTextField {
     value = application.properties.authenticator.default.class.custom;
     name  = "authenticator.default.class.custom";
@@ -19,16 +34,40 @@ InstitutionShortName: WOTextField {
     name  = "authenticator.default";
 }
 
-UseCustomAuth: WORadioButton {
-    value     = "custom-auth-class";
-    selection = application.properties.authenticator.default.class;
-    name      = "authenticator.default.class";
+LdapAuthFilter: WOTextField {
+    value = application.properties.LdapAuthFilter;
+    name  = "LdapAuthFilter";
 }
 
-UseDBAuth: WORadioButton {
-    value     = "net.sf.webcat.core.DatabaseAuthenticator";
-    selection = application.properties.authenticator.default.class;
-    name      = "authenticator.default.class";
+LdapBindDN: WOTextField {
+    value = application.properties.LdapBindDN;
+    name  = "LdapBindDN";
+}
+
+LdapBindPassword: WOTextField {
+    value = application.properties.LdapBindPassword;
+    name  = "LdapBindPassword";
+}
+
+LdapContext: WOTextField {
+    value = application.properties.LdapContext;
+    name  = "LdapContext";
+}
+
+LdapHost: WOTextField {
+    value = application.properties.LdapHost;
+    name  = "LdapHost";
+}
+
+LdapPort: WOTextField {
+    numberformat = "0";
+    value = application.properties.LdapPort;
+    name  = "LdapPort";
+}
+
+LdapUserField: WOTextField {
+    value = application.properties.LdapUserField;
+    name  = "LdapUserField";
 }
 
 Page : net.sf.webcat.core.install.InstallPageWrapper {
