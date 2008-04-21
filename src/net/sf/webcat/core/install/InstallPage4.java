@@ -97,8 +97,7 @@ public class InstallPage4
                 configuration.setProperty( "grader.workarea", value );
             }
         }
-        if ( configuration.getProperty( "WOSMTPHost" ) == null
-             && configuration.getProperty( "mail.smtp.host" ) != null )
+        if ( configuration.getProperty( "mail.smtp.host" ) != null )
         {
             configuration.setProperty( "WOSMTPHost",
                 configuration.getProperty( "mail.smtp.host" ) );
