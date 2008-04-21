@@ -1,7 +1,9 @@
-<webobject name="InProgress"><webobject name="NotCancelled">
-<p><webobject name="Message"/> ...</p>
-<webobject name="ProgressBar"/>
-<p>[Need a Cancel button here.]</p>
-</webobject><webobject name="Cancelled">
-<p><webobject name="CancelledMessage"/></p>
-</webobject></webobject><webobject name="Finished"><webobject name="Content"/></webobject>
+<wo:if condition="$isDone"><wo:content/></wo:if>
+<wo:else>
+  <wo:if condition="$isCancelled">
+    <p><wo:str value="cancelled!"/></p>
+  </wo:if><wo:else>
+    <p><wo:str value="$message"/> ...</p>
+    <wo name="ProgressBar"/>
+  </wo:else>
+</wo:else>

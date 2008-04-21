@@ -1,34 +1,4 @@
-CancelledMessage: WOString {
-    value = "cancelled!";
-}
-
-Cancelled: WOConditional {
-    condition = isCancelled;
-}
-
-Content: WOComponentContent {
-}
-
-Finished: WOConditional {
-    condition = isDone;
-}
-
-InProgress: WOConditional {
-    condition = isDone;
-    negate    = true;
-}
-
-Message: WOString {
-    value = message;
-}
-
-NotCancelled: WOConditional {
-    condition = isCancelled;
-    negate    = true;
-}
-
 ProgressBar: net.sf.webcat.core.ProgressBar {
     value = task.stepsCompletedSoFar;	// VALID
     valueMax = task.totalNumberOfSteps; // VALID
 }
-
