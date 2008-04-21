@@ -151,7 +151,7 @@ public abstract class InstallPage
         String value = extractFormValue( formValues, formKey );
         try
         {
-            if ( value != null )
+            if ( value != null && !"WONoSelectionString".equals(value))
             {
                 value = validateValueForKey( value, formKey ).toString();
                 if ( value == null || value.equals( "" ) )
