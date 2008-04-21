@@ -25,13 +25,16 @@ import com.webobjects.appserver.*;
 
 // -------------------------------------------------------------------------
 /**
- *  Displays Web-CAT's license as a plain HTML page, suitable for use in a
- *  direct action response.
+ *  A component that displays the Web-CAT license, suitable for inclusion
+ *  in another page.  The height attribute, if set, will cause the license
+ *  to be displayed in a 100%-wide auto-scrolling div of the specified
+ *  height (in pixels).  If the height is unset, the license is surrounded
+ *  by an unstyled div instead.
  *
  *  @author Stephen Edwards
  *  @version $Id$
  */
-public class LicensePage
+public class LicenseText
     extends WOComponent
 {
     //~ Constructors ..........................................................
@@ -42,8 +45,13 @@ public class LicensePage
      *
      * @param context The context to use
      */
-    public LicensePage( WOContext context )
+    public LicenseText( WOContext context )
     {
         super( context );
     }
+
+
+    //~ KVC Attributes (must be public) .......................................
+
+    public Number height;
 }

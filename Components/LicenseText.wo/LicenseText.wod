@@ -1,0 +1,4 @@
+Div: WOGenericContainer {
+    elementName = "div";
+    style = "~height ? (\"border: 1px solid black; height:\" + height + \"px; overflow:auto; width:97%; padding:6px;\") : \"\"";
+}
