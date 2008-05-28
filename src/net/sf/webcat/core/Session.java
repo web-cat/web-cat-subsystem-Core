@@ -399,8 +399,19 @@ public class Session
                   + " users)" );
         try
         {
+            String loginSessionId = "";
+            try
+            {
+                loginSessionId = loginSession.sessionId();
+            }
+            catch (Exception e)
+            {
+                // The code above could throw an exception if the EC is
+                // already disposed, so ignore it
+            }
+
             if (  loginSession != null
-               && sessionID().equals( loginSession.sessionId() ) )
+               && sessionID().equals( loginSessionId ) )
             {
                 try
                 {
