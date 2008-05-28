@@ -83,8 +83,12 @@ public class WCCourseComponent
             Object inheritedCsm = transientState().valueForKey( CSM_KEY );
             if (inheritedCsm == null)
             {
-                csm = new CoreSelectionsManager(
-                    user().getMyCoreSelections(), ecManager());
+                if (user() != null)
+                {
+                    csm = new CoreSelectionsManager(
+                        user().getMyCoreSelections(), ecManager());
+                }
+                // else: How is it possible to get here !?!?
             }
             else
             {
