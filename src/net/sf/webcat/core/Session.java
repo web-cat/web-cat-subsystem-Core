@@ -131,30 +131,33 @@ public class Session
             tabs.filterByAccessLevel( u.accessLevel() );
         }
         tabs.selectDefault();
-        EOEditingContext ec = Application.newPeerEditingContext();
-        try
+        if (!doNotUseLoginSession)
         {
-            ec.lock();
-            loginSession = LoginSession.getLoginSessionForUser( ec, user() );
-            if ( loginSession != null )
+            EOEditingContext ec = Application.newPeerEditingContext();
+            try
             {
-                NSTimestamp now = new NSTimestamp();
-                if ( loginSession.expirationTime().after( now ) )
+                ec.lock();
+                loginSession = LoginSession.getLoginSessionForUser(ec, user());
+                if ( loginSession != null )
                 {
-                    return loginSession.sessionId();
+                    NSTimestamp now = new NSTimestamp();
+                    if ( loginSession.expirationTime().after( now ) )
+                    {
+                        return loginSession.sessionId();
+                    }
+                    // otherwise ... fall through to default case
                 }
-                // otherwise ... fall through to default case
             }
+            finally
+            {
+                ec.unlock();
+            }
+            if ( loginSession == null )
+            {
+                Application.releasePeerEditingContext( ec );
+            }
+            updateLoginSession();
         }
-        finally
-        {
-            ec.unlock();
-        }
-        if ( loginSession == null )
-        {
-            Application.releasePeerEditingContext( ec );
-        }
-        updateLoginSession();
         return this.sessionID();
     }
 
@@ -209,6 +212,30 @@ public class Session
 
     // ----------------------------------------------------------
     /**
+     * Find out if this session is memo-ized for later login reuse via
+     * a LoginSession object.
+     * @return True if this session will be shared among all logins
+     */
+    public boolean useLoginSession()
+    {
+        return !doNotUseLoginSession;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set whether this session is memo-ized for later login reuse via
+     * a LoginSession object.
+     * @param value If true, this session will be shared among all logins
+     */
+    public void setUseLoginSession(boolean value)
+    {
+        doNotUseLoginSession = !value;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Refresh the stored information about the current login session
      * in the database.
      *
@@ -216,6 +243,7 @@ public class Session
      */
     private void updateLoginSession()
     {
+        if (doNotUseLoginSession) return;
         log.debug( "updateLoginSession()" );
         if ( primeUser == null ) return;
         if ( loginSession == null )
@@ -657,12 +685,13 @@ public class Session
 
     //~ Instance/static variables .............................................
 
-    private User                  primeUser      = null;
-    private User                  localUser      = null;
-    private LoginSession          loginSession   = null;
-    private NSTimestampFormatter  timeFormatter  = null;
+    private User                  primeUser            = null;
+    private User                  localUser            = null;
+    private LoginSession          loginSession         = null;
+    private NSTimestampFormatter  timeFormatter        = null;
     private NSMutableDictionary   transientState;
-    private WOEC.PeerManagerPool childManagerPool;
+    private WOEC.PeerManagerPool  childManagerPool;
+    private boolean               doNotUseLoginSession = false;
 
     private static final Integer zero = new Integer( 0 );
     private static final Integer one  = new Integer( 1 );
