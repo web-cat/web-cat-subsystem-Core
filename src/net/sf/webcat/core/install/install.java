@@ -84,7 +84,8 @@ public class install
     public WOActionResults defaultAction()
     {
         Application app = (Application)Application.application();
-        WCConfigurationFile configuration = app.configurationProperties();
+        WCConfigurationFile configuration =
+        	Application.configurationProperties();
         if ( log.isDebugEnabled() )
         {
             log.debug( "defaultAction(): incoming configuration = "

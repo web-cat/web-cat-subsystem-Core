@@ -441,7 +441,7 @@ public class WCComponent
         }
         catch ( Exception e )
         {
-            ( (Application)application() ).emailExceptionToAdmins(
+            Application.emailExceptionToAdmins(
                 e,
                 context(),
                 "Exception trying to save component's local changes" );

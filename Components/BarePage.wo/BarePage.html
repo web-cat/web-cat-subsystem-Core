@@ -1,4 +1,4 @@
-<webobject name="IncludePageWrapping"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+<wo:if condition="$includePageWrapping"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
           "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html lang="en" xml:lang="en" xmlns="http://www.w3.org/1999/xhtml"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
@@ -12,7 +12,7 @@
 <webobject name="Overlib"/></webobject>
 <webobject name="StyleSheet"/>
 <webobject name="JavaScript"/><webobject name="InlineHeaderContents"/>
-</head><body class="<webobject name="BodyClass"></webobject>" onload="<webobject name="OnLoad"></webobject>">
-<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div></webobject>
+</head><wo name="Body">
+<div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
 <webobject name="PageContent"/>
-<webobject name="IncludePageWrapping"></body></html></webobject>
+</wo></html></wo:if><wo:else><webobject name="PageContent"/></wo:else>

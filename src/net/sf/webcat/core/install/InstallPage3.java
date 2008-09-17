@@ -199,8 +199,7 @@ public class InstallPage3
                 db.executeSQL( "use `" + dbname + "`" );
             }
             // Initialize database
-            ( (Application)Application.application() )
-                .configurationProperties().updateToSystemProperties();
+            Application.configurationProperties().updateToSystemProperties();
             updateEOModels();
 
             // Instead of calling initializeApplication(), let's just repeat

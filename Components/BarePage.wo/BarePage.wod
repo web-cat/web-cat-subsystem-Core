@@ -20,22 +20,15 @@ JavaScript: WOString {
 	escapeHTML = false;
 }
 
-IncludePageWrapping: WOConditional {
-    condition = includePageWrapping;
-}
-
 InlineHeaderContents: WOString {
 	value      = inlineHeaderContents;
 	escapeHTML = false;
 }
 
-OnLoad: WOString {
-	value      = onLoad;
-	escapeHTML = false;
-}
-
-BodyClass: WOString {
-	value      = bodyClass;
+Body: WOGenericContainer {
+    elementName = "body";
+    onload      = onLoad;
+    class       = bodyClass;
 }
 
 IncludeStdStyleSheet: WOConditional {

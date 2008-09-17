@@ -69,6 +69,6 @@ public class SystemStatusBlock
     // ----------------------------------------------------------
     public int userCount()
     {
-        return ( (Application)application() ).userCount;
+        return Application.userCount;
     }
 }

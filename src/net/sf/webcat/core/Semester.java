@@ -27,6 +27,7 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 
 import java.io.*;
+import java.util.Calendar;
 
 import org.apache.log4j.*;
 
@@ -213,10 +214,10 @@ public class Semester
     public void willUpdate()
     {
         java.util.GregorianCalendar now = new java.util.GregorianCalendar();
-        int thisMonth = now.get(now.MONTH) + 1;
+        int thisMonth = now.get(Calendar.MONTH) + 1;
         if (year() == 0)
         {
-            setYear(now.get(now.YEAR));
+            setYear(now.get(Calendar.YEAR));
         }
         if (season() == null)
         {

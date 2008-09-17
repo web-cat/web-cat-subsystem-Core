@@ -92,8 +92,7 @@ public class InstallPage8
             ( (Application)Application.application() ).initializeApplication();
             ( (Application)Application.application() )
                 .notifyAdminsOfStartup();
-            ( (Application)Application.application() )
-                .sendAdminEmail( "webcat@vt.edu", null, true,
+            Application.sendAdminEmail( "webcat@vt.edu", null, true,
                     "New Web-CAT installation now active",
                     "Congratulations, "
                     + configuration.getProperty("coreAdminEmail")

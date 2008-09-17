@@ -1401,8 +1401,12 @@ public class Application
         try
         {
             errorLoggingContext.lock();
-            LoggedError loggedError = LoggedError.objectForException(
-                errorLoggingContext, anException );
+            LoggedError loggedError = null;
+            if (!needsInstallation())
+            {
+                loggedError = LoggedError.objectForException(
+                    errorLoggingContext, anException );
+            }
 
             if ( loggedError != null )
             {
@@ -1700,7 +1704,7 @@ public class Application
                 // wait for ten seconds to give the kill command time to
                 // work externally, since immediate return of the process
                 // may not always mean its work is complete
-                Thread.currentThread().sleep( 10000 );
+                Thread.sleep( 10000 );
             }
             catch ( Exception e )
             {
