@@ -7,7 +7,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/ExternalJars"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WebObjectsUpdater"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/WonderUpdater"/>
-	<classpathentry kind="con" path="org.objectstyle.wolips.WO_CLASSPATH/DBUpdateEngine/EOJDBCPrototypes/ERExtensions/ERJars/ExternalJars/JavaWOExtensions/WebObjectsUpdater/WonderUpdater/WOOgnl/WOUnitTest/JavaEOAccess/JavaEOControl/JavaFoundation/JavaJDBCAdaptor/JavaWebObjects/JavaWOJSPServlet"/>
+	<classpathentry kind="con" path="org.objectstyle.wolips.ContainerInitializer/10/1/DBUpdateEngine/1/nil/1/nil/1/0/1/false/10/1/EOJDBCPrototypes/1/nil/1/nil/1/0/1/false/10/1/ERExtensions/1/nil/1/nil/1/0/1/false/10/1/ERJars/1/nil/1/nil/1/0/1/false/10/1/ExternalJars/1/nil/1/nil/1/0/1/false/10/1/JavaWOExtensions/1/nil/1/nil/1/0/1/false/10/1/WebObjectsUpdater/1/nil/1/nil/1/0/1/false/10/1/WonderUpdater/1/nil/1/nil/1/0/1/false/10/1/WOOgnl/1/nil/1/nil/1/0/1/false/10/1/WOUnitTest/1/nil/1/nil/1/0/1/false/10/1/JavaEOAccess/1/nil/1/nil/1/0/1/false/10/1/JavaEOControl/1/nil/1/nil/1/0/1/false/10/1/JavaFoundation/1/nil/1/nil/1/0/1/false/10/1/JavaJDBCAdaptor/1/nil/1/nil/1/0/1/false/10/1/JavaWebObjects/1/nil/1/nil/1/0/1/false/10/1/JavaWOJSPServlet/1/nil/1/nil/1/0/1/false"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
