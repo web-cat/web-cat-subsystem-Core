@@ -1,9 +1,10 @@
-<$comment
-EO Template for use by "eogenerator" based upon MiscMerge engine.
-BE SURE NOT TO INCLUDE DATES IN THIS FILE.$>/*==========================================================================*\
+#*
+   EO Template for use by the Velocity EOGenerator built into WOLips.
+   BE SURE NOT TO INCLUDE DATES IN THIS FILE.
+*#/*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2008 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,8 +22,10 @@ BE SURE NOT TO INCLUDE DATES IN THIS FILE.$>/*==================================
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-<$foreach package classPackage do$>package <$package$>;
-<$endforeach do$>
+#if ($entity.packageName)
+package $entity.packageName;
+
+#end
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 
@@ -33,16 +36,16 @@ import com.webobjects.foundation.*;
  * @author
  * @version $Id$
  */
-public <$if isAbstractEntity$>abstract <$endif$>class <$classNameWithoutPackage$>
-    extends <$GEN_PREFIX$><$classNameWithoutPackage$>
+public#if ($entity.isAbstract) abstract#end class ${entity.classNameWithoutPackage}
+    extends ${entity.prefixClassNameWithOptionalPackage}
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
     /**
-     * Creates a new <$classNameWithoutPackage$> object.
+     * Creates a new ${entity.classNameWithoutPackage} object.
      */
-    public <$classNameWithoutPackage$>()
+    public ${entity.classNameWithoutPackage}()
     {
         super();
     }
