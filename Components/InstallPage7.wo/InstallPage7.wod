@@ -80,5 +80,5 @@ Page : net.sf.webcat.core.install.InstallPageWrapper {
     // been initialized yet (since the app hasn't been initialized yet), so the URL
     // references in the CSS file won't resolve correctly.
     stylesheet         = "Grader.framework/WebServerResources/jscalendar/skins/aqua/theme.css";
-    externalJavascript = "Grader.framework/WebServerResources/jscalendar/calendar.js,Grader.framework/WebServerResources/jscalendar/lang/calendar-en.js,Grader.framework/WebServerResources/jscalendar/calendar-setup.js"; 
+    externalJavascript = "Grader.framework/WebServerResources/jscalendar/calendar.js,Grader.framework/WebServerResources/jscalendar/lang/calendar-en.js,Grader.framework/WebServerResources/jscalendar/calendar-setup.js";
 }
