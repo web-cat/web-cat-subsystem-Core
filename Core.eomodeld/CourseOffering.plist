@@ -1,200 +1,87 @@
-
 {
-    attributes =
-    (
-
-       {
-           columnName = CCOURSEID;
-           name = courseId;
-           prototypeName = foreignId;
-       },
-
-       {
-           columnName = CCRN;
-           name = crn;
-           prototypeName = tinyText;
-       },
-
-       {
-           name = id;
-           prototypeName = id;
-       },
-
-       {
-           columnName = CLABEL;
-           name = label;
-           prototypeName = tinyText;
-       },
-
-       {
-           columnName = CMOODLEGROUPID;
-           name = moodleGroupId;
-           prototypeName = foreignId;
-       },
-
-       {
-           columnName = CMOODLEID;
-           name = moodleId;
-           prototypeName = foreignId;
-       },
-
-       {
-           columnName = CSEMESTER;
-           name = semesterId;
-           prototypeName = foreignId;
-       },
-
-       {
-           columnName = URL;
-           name = url;
-           prototypeName = tinyText;
-       }
-    );
-    attributesUsedForLocking =
-    (
-       courseId,
-       crn,
-       label,
-       moodleGroupId,
-       moodleId,
-       semesterId,
-       url
-    );
-    className = net.sf.webcat.core.CourseOffering;
-    classProperties =
-    (
-       TAs,
-       coreSelections,
-       course,
-       crn,
-       instructors,
-       label,
-       moodleGroupId,
-       moodleId,
-       semester,
-       students,
-       url
-    );
-    externalName = TCOURSEOFFERING;
-    internalInfo =
-    {};
-    name = CourseOffering;
-    primaryKeyAttributes =
-    (
-       id
-    );
-    relationships =
-    (
-
-       {
-           definition = courseOfferingUsers2.user;
-           name = TAs;
-       },
-
-       {
-           destination = Course;
-           isToMany = N;
-           joinSemantic = EOInnerJoin;
-           joins =
-           (
-
-              {
-                  destinationAttribute = id;
-                  sourceAttribute = courseId;
-              }
-           );
-           name = course;
-       },
-
-       {
-           deleteRule = EODeleteRuleCascade;
-           destination = CourseStudent;
-           isToMany = Y;
-           joinSemantic = EOInnerJoin;
-           joins =
-           (
-
-              {
-                  destinationAttribute = id;
-                  sourceAttribute = id;
-              }
-           );
-           name = courseOfferingUsers;
-           propagatesPrimaryKey = Y;
-       },
-
-       {
-           deleteRule = EODeleteRuleCascade;
-           destination = InstructorCourse;
-           isToMany = Y;
-           joinSemantic = EOInnerJoin;
-           joins =
-           (
-
-              {
-                  destinationAttribute = id;
-                  sourceAttribute = id;
-              }
-           );
-           name = courseOfferingUsers1;
-           propagatesPrimaryKey = Y;
-       },
-
-       {
-           deleteRule = EODeleteRuleCascade;
-           destination = CourseTA;
-           isToMany = Y;
-           joinSemantic = EOInnerJoin;
-           joins =
-           (
-
-              {
-                  destinationAttribute = id;
-                  sourceAttribute = id;
-              }
-           );
-           name = courseOfferingUsers2;
-           propagatesPrimaryKey = Y;
-       },
-
-       {
-           destination = CoreSelections;
-           isToMany = Y;
-           joinSemantic = EOInnerJoin;
-           joins =
-           (
-
-              {
-                  destinationAttribute = courseOfferingId;
-                  sourceAttribute = id;
-              }
-           );
-           name = coreSelections;
-       },
-
-       {
-           definition = courseOfferingUsers1.user;
-           name = instructors;
-       },
-
-       {
-           destination = Semester;
-           isToMany = N;
-           joinSemantic = EOInnerJoin;
-           joins =
-           (
-
-              {
-                  destinationAttribute = id;
-                  sourceAttribute = semesterId;
-              }
-           );
-           name = semester;
-       },
-
-       {
-           definition = courseOfferingUsers.user;
-           name = students;
-       }
-    );
+    attributes = (
+        {columnName = CCOURSEID; name = courseId; prototypeName = foreignId; }, 
+        {columnName = CCRN; name = crn; prototypeName = tinyText; }, 
+        {name = id; prototypeName = id; }, 
+        {columnName = CLABEL; name = label; prototypeName = tinyText; }, 
+        {
+            columnName = CMOODLEGROUPID; 
+            name = moodleGroupId; 
+            prototypeName = foreignId; 
+        }, 
+        {columnName = CMOODLEID; name = moodleId; prototypeName = foreignId; }, 
+        {columnName = CSEMESTER; name = semesterId; prototypeName = foreignId; }, 
+        {columnName = URL; name = url; prototypeName = tinyText; }
+    ); 
+    attributesUsedForLocking = (courseId, crn, label, moodleGroupId, moodleId, semesterId, url); 
+    className = "net.sf.webcat.core.CourseOffering"; 
+    classProperties = (
+        TAs, 
+        coreSelections, 
+        course, 
+        crn, 
+        instructors, 
+        label, 
+        moodleGroupId, 
+        moodleId, 
+        semester, 
+        students, 
+        url
+    ); 
+    externalName = TCOURSEOFFERING; 
+    name = CourseOffering; 
+    primaryKeyAttributes = (id); 
+    relationships = (
+        {definition = "courseOfferingUsers2.user"; name = TAs; }, 
+        {
+            destination = Course; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = courseId; }); 
+            name = course; 
+        }, 
+        {
+            deleteRule = EODeleteRuleCascade; 
+            destination = CourseStudent; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = id; }); 
+            name = courseOfferingUsers; 
+            propagatesPrimaryKey = Y; 
+        }, 
+        {
+            deleteRule = EODeleteRuleCascade; 
+            destination = InstructorCourse; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = id; }); 
+            name = courseOfferingUsers1; 
+            propagatesPrimaryKey = Y; 
+        }, 
+        {
+            deleteRule = EODeleteRuleCascade; 
+            destination = CourseTA; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = id; }); 
+            name = courseOfferingUsers2; 
+            propagatesPrimaryKey = Y; 
+        }, 
+        {
+            destination = CoreSelections; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = courseOfferingId; sourceAttribute = id; }); 
+            name = coreSelections; 
+        }, 
+        {definition = "courseOfferingUsers1.user"; name = instructors; }, 
+        {
+            destination = Semester; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = semesterId; }); 
+            name = semester; 
+        }, 
+        {definition = "courseOfferingUsers.user"; name = students; }
+    ); 
 }

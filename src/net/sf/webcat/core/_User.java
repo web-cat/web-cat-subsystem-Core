@@ -154,22 +154,22 @@ public abstract class _User
     public static final String LAST_NAME_KEY = "lastName";
     public static final String PASSWORD_KEY = "password";
     public static final String PREFERENCES_KEY = "preferences";
-    public static final String UNIVERSITY_IDNO_KEY = "universityIDNo";
+    public static final String UNIVERSITY_ID_NO_KEY = "universityIDNo";
     public static final String UPDATE_MUTABLE_FIELDS_KEY = "updateMutableFields";
     public static final String URL_KEY = "url";
     public static final String USER_NAME_KEY = "userName";
     // To-one relationships ---
     public static final String AUTHENTICATION_DOMAIN_KEY = "authenticationDomain";
     // To-many relationships ---
-    public static final String TAFOR_KEY = "TAFor";
     public static final String CORE_SELECTIONS_KEY = "coreSelections";
     public static final String ENROLLED_IN_KEY = "enrolledIn";
     public static final String PASSWORD_CHANGE_REQUEST_KEY = "passwordChangeRequest";
+    public static final String TA_FOR_KEY = "TAFor";
     public static final String TEACHING_KEY = "teaching";
     // Fetch specifications ---
     public static final String COURSE_PARTICIPANTS_FSPEC = "courseParticipants";
-    public static final String EMAIL_AND_DOMAIN_FSPEC = "emailAndDomain";
-    public static final String NAME_AND_DOMAIN_FSPEC = "nameAndDomain";
+    public static final String DOMAIN_AND_EMAIL_FSPEC = "domainAndEmail";
+    public static final String DOMAIN_AND_NAME_FSPEC = "domainAndName";
     public static final String STAFF_FOR_COURSE_FSPEC = "staffForCourse";
     public static final String STUDENTS_FOR_COURSE_FSPEC = "studentsForCourse";
     public static final String USER_WITH_NAME_FSPEC = "userWithName";
@@ -229,8 +229,8 @@ public abstract class _User
      */
     public byte accessLevel()
     {
-        Number result =
-            (Number)storedValueForKey( "accessLevel" );
+        Integer result =
+            (Integer)storedValueForKey( "accessLevel" );
         return ( result == null )
             ? 0
             : result.byteValue();
@@ -251,9 +251,9 @@ public abstract class _User
             log.debug( "setAccessLevel("
                 + value + "): was " + accessLevel() );
         }
-        Number actual =
+        Integer actual =
             er.extensions.ERXConstant.integerForInt( value );
-        setAccessLevelRaw( actual );
+            setAccessLevelRaw( actual );
     }
 
 
@@ -262,9 +262,9 @@ public abstract class _User
      * Retrieve this object's <code>accessLevel</code> value.
      * @return the value of the attribute
      */
-    public Number accessLevelRaw()
+    public Integer accessLevelRaw()
     {
-        return (Number)storedValueForKey( "accessLevel" );
+        return (Integer)storedValueForKey( "accessLevel" );
     }
 
 
@@ -275,7 +275,7 @@ public abstract class _User
      *
      * @param value The new value for this property
      */
-    public void setAccessLevelRaw( Number value )
+    public void setAccessLevelRaw( Integer value )
     {
         if (log.isDebugEnabled())
         {
@@ -413,7 +413,7 @@ public abstract class _User
      */
     public net.sf.webcat.core.MutableDictionary preferences()
     {
-    	NSData dbValue =
+        NSData dbValue =
             (NSData)storedValueForKey( "preferences" );
         if ( preferencesRawCache != dbValue )
         {
@@ -541,8 +541,8 @@ public abstract class _User
      */
     public boolean updateMutableFields()
     {
-        Number result =
-            (Number)storedValueForKey( "updateMutableFields" );
+        Integer result =
+            (Integer)storedValueForKey( "updateMutableFields" );
         return ( result == null )
             ? false
             : ( result.intValue() > 0 );
@@ -563,9 +563,9 @@ public abstract class _User
             log.debug( "setUpdateMutableFields("
                 + value + "): was " + updateMutableFields() );
         }
-        Number actual =
+        Integer actual =
             er.extensions.ERXConstant.integerForInt( value ? 1 : 0 );
-        setUpdateMutableFieldsRaw( actual );
+            setUpdateMutableFieldsRaw( actual );
     }
 
 
@@ -574,9 +574,9 @@ public abstract class _User
      * Retrieve this object's <code>updateMutableFields</code> value.
      * @return the value of the attribute
      */
-    public Number updateMutableFieldsRaw()
+    public Integer updateMutableFieldsRaw()
     {
-        return (Number)storedValueForKey( "updateMutableFields" );
+        return (Integer)storedValueForKey( "updateMutableFields" );
     }
 
 
@@ -587,7 +587,7 @@ public abstract class _User
      *
      * @param value The new value for this property
      */
-    public void setUpdateMutableFieldsRaw( Number value )
+    public void setUpdateMutableFieldsRaw( Integer value )
     {
         if (log.isDebugEnabled())
         {
@@ -780,184 +780,6 @@ public abstract class _User
         {
             addObjectToBothSidesOfRelationshipWithKey( value, "authenticationDomain" );
         }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve the entities pointed to by the <code>TAFor</code>
-     * relationship.
-     * @return an NSArray of the entities in the relationship
-     */
-    @SuppressWarnings("unchecked")
-    public NSArray<net.sf.webcat.core.CourseOffering> TAFor()
-    {
-        return (NSArray)storedValueForKey( "TAFor" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Replace the list of entities pointed to by the
-     * <code>TAFor</code> relationship.
-     *
-     * @param value The new set of entities to relate to
-     */
-    public void setTAFor( NSMutableArray<net.sf.webcat.core.CourseOffering>  value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "setTAFor("
-                + value + "): was " + TAFor() );
-        }
-        takeStoredValueForKey( value, "TAFor" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Add a new entity to the <code>TAFor</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>addToTAForRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The new entity to relate to
-     */
-    public void addToTAFor( net.sf.webcat.core.CourseOffering value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "addToTAFor("
-                + value + "): was " + TAFor() );
-        }
-        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
-            (NSMutableArray<net.sf.webcat.core.CourseOffering>)TAFor();
-        willChange();
-        array.addObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove a specific entity from the <code>TAFor</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>removeFromTAForRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The entity to remove from the relationship
-     */
-    public void removeFromTAFor( net.sf.webcat.core.CourseOffering value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "RemoveFromTAFor("
-                + value + "): was " + TAFor() );
-        }
-        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
-            (NSMutableArray<net.sf.webcat.core.CourseOffering>)TAFor();
-        willChange();
-        array.removeObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Add a new entity to the <code>TAFor</code>
-     * relationship.
-     *
-     * @param value The new entity to relate to
-     */
-    public void addToTAForRelationship( net.sf.webcat.core.CourseOffering value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "addToTAForRelationship("
-                + value + "): was " + TAFor() );
-        }
-        addObjectToBothSidesOfRelationshipWithKey(
-            value, "TAFor" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove a specific entity from the <code>TAFor</code>
-     * relationship.
-     *
-     * @param value The entity to remove from the relationship
-     */
-    public void removeFromTAForRelationship( net.sf.webcat.core.CourseOffering value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "removeFromTAForRelationship("
-                + value + "): was " + TAFor() );
-        }
-        removeObjectFromBothSidesOfRelationshipWithKey(
-            value, "TAFor" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Create a brand new object that is a member of the
-     * <code>TAFor</code> relationship.
-     *
-     * @return The new entity
-     */
-    public net.sf.webcat.core.CourseOffering createTAForRelationship()
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "createTAForRelationship()" );
-        }
-        EOClassDescription eoClassDesc = EOClassDescription
-            .classDescriptionForEntityName( "CourseOffering" );
-        EOEnterpriseObject eoObject = eoClassDesc
-            .createInstanceWithEditingContext( editingContext(), null );
-        editingContext().insertObject( eoObject );
-        addObjectToBothSidesOfRelationshipWithKey(
-            eoObject, "TAFor" );
-        return (net.sf.webcat.core.CourseOffering)eoObject;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove and then delete a specific entity that is a member of the
-     * <code>TAFor</code> relationship.
-     *
-     * @param value The entity to remove from the relationship and then delete
-     */
-    public void deleteTAForRelationship( net.sf.webcat.core.CourseOffering value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "deleteTAForRelationship("
-                + value + "): was " + TAFor() );
-        }
-        removeObjectFromBothSidesOfRelationshipWithKey(
-            value, "TAFor" );
-        editingContext().deleteObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove (and then delete, if owned) all entities that are members of the
-     * <code>TAFor</code> relationship.
-     */
-    public void deleteAllTAForRelationships()
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "deleteAllTAForRelationships(): was "
-                + TAFor() );
-        }
-        Enumeration objects = TAFor().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteTAForRelationship(
-                (net.sf.webcat.core.CourseOffering)objects.nextElement() );
     }
 
 
@@ -1497,6 +1319,184 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
+     * Retrieve the entities pointed to by the <code>TAFor</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.CourseOffering> TAFor()
+    {
+        return (NSArray)storedValueForKey( "TAFor" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>TAFor</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setTAFor( NSMutableArray<net.sf.webcat.core.CourseOffering>  value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setTAFor("
+                + value + "): was " + TAFor() );
+        }
+        takeStoredValueForKey( value, "TAFor" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>TAFor</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToTAForRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToTAFor( net.sf.webcat.core.CourseOffering value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToTAFor("
+                + value + "): was " + TAFor() );
+        }
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)TAFor();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>TAFor</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromTAForRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromTAFor( net.sf.webcat.core.CourseOffering value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromTAFor("
+                + value + "): was " + TAFor() );
+        }
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)TAFor();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>TAFor</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToTAForRelationship( net.sf.webcat.core.CourseOffering value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToTAForRelationship("
+                + value + "): was " + TAFor() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "TAFor" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>TAFor</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromTAForRelationship( net.sf.webcat.core.CourseOffering value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromTAForRelationship("
+                + value + "): was " + TAFor() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "TAFor" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>TAFor</code> relationship.
+     *
+     * @return The new entity
+     */
+    public net.sf.webcat.core.CourseOffering createTAForRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createTAForRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "CourseOffering" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "TAFor" );
+        return (net.sf.webcat.core.CourseOffering)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>TAFor</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteTAForRelationship( net.sf.webcat.core.CourseOffering value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteTAForRelationship("
+                + value + "): was " + TAFor() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "TAFor" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>TAFor</code> relationship.
+     */
+    public void deleteAllTAForRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllTAForRelationships(): was "
+                + TAFor() );
+        }
+        Enumeration objects = TAFor().objectEnumerator();
+        while ( objects.hasMoreElements() )
+            deleteTAForRelationship(
+                (net.sf.webcat.core.CourseOffering)objects.nextElement() );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve the entities pointed to by the <code>teaching</code>
      * relationship.
      * @return an NSArray of the entities in the relationship
@@ -1679,15 +1679,15 @@ public abstract class _User
      * fetch specification.
      *
      * @param context The editing context to use
-     * @param courseOfferingBinding fetch spec parameter
      * @param accessLevelBinding fetch spec parameter
+     * @param courseOfferingBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
     @SuppressWarnings("unchecked")
     public static NSArray<User> objectsForCourseParticipants(
             EOEditingContext context,
-            net.sf.webcat.core.CourseOffering courseOfferingBinding,
-            Number accessLevelBinding
+            Integer accessLevelBinding,
+            net.sf.webcat.core.CourseOffering courseOfferingBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
@@ -1696,15 +1696,15 @@ public abstract class _User
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
-        if ( courseOfferingBinding != null )
-        {
-            bindings.setObjectForKey( courseOfferingBinding,
-                                      "courseOffering" );
-        }
         if ( accessLevelBinding != null )
         {
             bindings.setObjectForKey( accessLevelBinding,
                                       "accessLevel" );
+        }
+        if ( courseOfferingBinding != null )
+        {
+            bindings.setObjectForKey( courseOfferingBinding,
+                                      "courseOffering" );
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
@@ -1712,9 +1712,8 @@ public abstract class _User
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForCourseParticipants(ec"
-            
-                + ", " + courseOfferingBinding
                 + ", " + accessLevelBinding
+                + ", " + courseOfferingBinding
                 + "): " + result );
         }
         return result;
@@ -1723,46 +1722,45 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>EmailAndDomain</code>
+     * Retrieve object according to the <code>DomainAndEmail</code>
      * fetch specification.
      *
      * @param context The editing context to use
-     * @param emailBinding fetch spec parameter
      * @param domainBinding fetch spec parameter
+     * @param emailBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
     @SuppressWarnings("unchecked")
-    public static NSArray<User> objectsForEmailAndDomain(
+    public static NSArray<User> objectsForDomainAndEmail(
             EOEditingContext context,
-            String emailBinding,
-            net.sf.webcat.core.AuthenticationDomain domainBinding
+            net.sf.webcat.core.AuthenticationDomain domainBinding,
+            String emailBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "emailAndDomain", "User" );
+            .fetchSpecificationNamed( "domainAndEmail", "User" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
+        if ( domainBinding != null )
+        {
+            bindings.setObjectForKey( domainBinding,
+                                      "domain" );
+        }
         if ( emailBinding != null )
         {
             bindings.setObjectForKey( emailBinding,
                                       "email" );
         }
-        if ( domainBinding != null )
-        {
-            bindings.setObjectForKey( domainBinding,
-                                      "domain" );
-        }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForEmailAndDomain(ec"
-            
-                + ", " + emailBinding
+            log.debug( "objectsForDomainAndEmail(ec"
                 + ", " + domainBinding
+                + ", " + emailBinding
                 + "): " + result );
         }
         return result;
@@ -1771,46 +1769,45 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>NameAndDomain</code>
+     * Retrieve object according to the <code>DomainAndName</code>
      * fetch specification.
      *
      * @param context The editing context to use
-     * @param userNameBinding fetch spec parameter
      * @param domainBinding fetch spec parameter
+     * @param userNameBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
     @SuppressWarnings("unchecked")
-    public static NSArray<User> objectsForNameAndDomain(
+    public static NSArray<User> objectsForDomainAndName(
             EOEditingContext context,
-            String userNameBinding,
-            net.sf.webcat.core.AuthenticationDomain domainBinding
+            net.sf.webcat.core.AuthenticationDomain domainBinding,
+            String userNameBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "nameAndDomain", "User" );
+            .fetchSpecificationNamed( "domainAndName", "User" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
-        if ( userNameBinding != null )
-        {
-            bindings.setObjectForKey( userNameBinding,
-                                      "userName" );
-        }
         if ( domainBinding != null )
         {
             bindings.setObjectForKey( domainBinding,
                                       "domain" );
+        }
+        if ( userNameBinding != null )
+        {
+            bindings.setObjectForKey( userNameBinding,
+                                      "userName" );
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
         NSArray result = context.objectsWithFetchSpecification( spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForNameAndDomain(ec"
-            
-                + ", " + userNameBinding
+            log.debug( "objectsForDomainAndName(ec"
                 + ", " + domainBinding
+                + ", " + userNameBinding
                 + "): " + result );
         }
         return result;
@@ -1849,7 +1846,6 @@ public abstract class _User
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForStaffForCourse(ec"
-            
                 + ", " + courseOfferingBinding
                 + "): " + result );
         }
@@ -1889,7 +1885,6 @@ public abstract class _User
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForStudentsForCourse(ec"
-            
                 + ", " + courseOfferingBinding
                 + "): " + result );
         }
@@ -1929,7 +1924,6 @@ public abstract class _User
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForUserWithName(ec"
-            
                 + ", " + nameBinding
                 + "): " + result );
         }

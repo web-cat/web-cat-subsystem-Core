@@ -347,7 +347,6 @@ public abstract class _PasswordChangeRequest
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForCode(ec"
-            
                 + ", " + codeBinding
                 + "): " + result );
         }
@@ -387,7 +386,6 @@ public abstract class _PasswordChangeRequest
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForExpiredBefore(ec"
-            
                 + ", " + timeBinding
                 + "): " + result );
         }
@@ -427,7 +425,6 @@ public abstract class _PasswordChangeRequest
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForUser(ec"
-            
                 + ", " + userBinding
                 + "): " + result );
         }

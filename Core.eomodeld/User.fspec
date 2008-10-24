@@ -1,143 +1,143 @@
 {
     courseParticipants = {
-        class = EOFetchSpecification;
-        entityName = User;
-        fetchLimit = 0;
-        isDeep = YES;
+        class = EOFetchSpecification; 
+        entityName = User; 
+        fetchLimit = 0; 
+        isDeep = YES; 
         qualifier = {
-            class = EOAndQualifier;
+            class = EOAndQualifier; 
             qualifiers = (
                 {
-                    class = EOKeyValueQualifier;
-                    key = enrolledIn;
-                    selectorName = "doesContain:";
-                    value = {_key = courseOffering; class = EOQualifierVariable; };
-                },
+                    class = EOKeyValueQualifier; 
+                    key = accessLevel; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = accessLevel; class = EOQualifierVariable; }; 
+                }, 
                 {
-                    class = EOKeyValueQualifier;
-                    key = accessLevel;
-                    selectorName = "isEqualTo:";
-                    value = {_key = accessLevel; class = EOQualifierVariable; };
+                    class = EOKeyValueQualifier; 
+                    key = enrolledIn; 
+                    selectorName = "doesContain:"; 
+                    value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
                 }
-            );
-        };
-    };
+            ); 
+        }; 
+    }; 
+    domainAndEmail = {
+        class = EOFetchSpecification; 
+        entityName = User; 
+        fetchLimit = 0; 
+        isDeep = YES; 
+        qualifier = {
+            class = EOAndQualifier; 
+            qualifiers = (
+                {
+                    class = EOKeyValueQualifier; 
+                    key = authenticationDomain; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = domain; class = EOQualifierVariable; }; 
+                }, 
+                {
+                    class = EOKeyValueQualifier; 
+                    key = email; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = email; class = EOQualifierVariable; }; 
+                }
+            ); 
+        }; 
+    }; 
+    domainAndName = {
+        class = EOFetchSpecification; 
+        entityName = User; 
+        fetchLimit = 0; 
+        isDeep = YES; 
+        qualifier = {
+            class = EOAndQualifier; 
+            qualifiers = (
+                {
+                    class = EOKeyValueQualifier; 
+                    key = authenticationDomain; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = domain; class = EOQualifierVariable; }; 
+                }, 
+                {
+                    class = EOKeyValueQualifier; 
+                    key = userName; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = userName; class = EOQualifierVariable; }; 
+                }
+            ); 
+        }; 
+    }; 
     staffForCourse = {
-        class = EOFetchSpecification;
-        entityName = User;
-        fetchLimit = 0;
-        isDeep = YES;
+        class = EOFetchSpecification; 
+        entityName = User; 
+        fetchLimit = 0; 
+        isDeep = YES; 
         qualifier = {
-            class = EOOrQualifier;
+            class = EOOrQualifier; 
             qualifiers = (
                 {
-                    class = EOKeyValueQualifier;
-                    key = TAFor;
-                    selectorName = "doesContain:";
-                    value = {_key = courseOffering; class = EOQualifierVariable; };
-                },
+                    class = EOKeyValueQualifier; 
+                    key = TAFor; 
+                    selectorName = "doesContain:"; 
+                    value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
+                }, 
                 {
-                    class = EOKeyValueQualifier;
-                    key = teaching;
-                    selectorName = "doesContain:";
-                    value = {_key = courseOffering; class = EOQualifierVariable; };
+                    class = EOKeyValueQualifier; 
+                    key = teaching; 
+                    selectorName = "doesContain:"; 
+                    value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
                 }
-            );
-        };
-    };
+            ); 
+        }; 
+    }; 
     studentsForCourse = {
-        class = EOFetchSpecification;
-        entityName = User;
-        fetchLimit = 0;
-        isDeep = YES;
+        class = EOFetchSpecification; 
+        entityName = User; 
+        fetchLimit = 0; 
+        isDeep = YES; 
         qualifier = {
-            class = EOAndQualifier;
+            class = EOAndQualifier; 
             qualifiers = (
                 {
-                    class = EOKeyValueQualifier;
-                    key = enrolledIn;
-                    selectorName = "doesContain:";
-                    value = {_key = courseOffering; class = EOQualifierVariable; };
-                },
+                    class = EOKeyValueQualifier; 
+                    key = enrolledIn; 
+                    selectorName = "doesContain:"; 
+                    value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
+                }, 
                 {
-                    class = EONotQualifier;
+                    class = EONotQualifier; 
                     qualifier = {
-                        class = EOOrQualifier;
+                        class = EOOrQualifier; 
                         qualifiers = (
                             {
-                                class = EOKeyValueQualifier;
-                                key = teaching;
-                                selectorName = "doesContain:";
-                                value = {_key = courseOffering; class = EOQualifierVariable; };
-                            },
+                                class = EOKeyValueQualifier; 
+                                key = teaching; 
+                                selectorName = "doesContain:"; 
+                                value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
+                            }, 
                             {
-                                class = EOKeyValueQualifier;
-                                key = TAFor;
-                                selectorName = "doesContain:";
-                                value = {_key = courseOffering; class = EOQualifierVariable; };
+                                class = EOKeyValueQualifier; 
+                                key = TAFor; 
+                                selectorName = "doesContain:"; 
+                                value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
                             }
-                        );
-                    };
+                        ); 
+                    }; 
                 }
-            );
-        };
-    };
+            ); 
+        }; 
+    }; 
     userWithName = {
-        class = EOFetchSpecification;
-        entityName = User;
-        fetchLimit = 0;
-        isDeep = YES;
+        class = EOFetchSpecification; 
+        entityName = User; 
+        fetchLimit = 0; 
+        isDeep = YES; 
         qualifier = {
-            class = EOKeyValueQualifier;
-            key = userName;
-            selectorName = "isEqualTo:";
-            value = {_key = name; class = EOQualifierVariable; };
-        };
-    };
-    nameAndDomain = {
-        class = EOFetchSpecification;
-        entityName = User;
-        fetchLimit = 0;
-        isDeep = YES;
-        qualifier = {
-            class = EOAndQualifier;
-            qualifiers = (
-                {
-            		class = EOKeyValueQualifier;
-            		key = userName;
-            		selectorName = "isEqualTo:";
-            		value = {_key = userName; class = EOQualifierVariable; };
-            	},
-                {
-            		class = EOKeyValueQualifier;
-            		key = authenticationDomain;
-            		selectorName = "isEqualTo:";
-            		value = {_key = domain; class = EOQualifierVariable; };
-            	}
-            );
-        };
-    };
-    emailAndDomain = {
-        class = EOFetchSpecification;
-        entityName = User;
-        fetchLimit = 0;
-        isDeep = YES;
-        qualifier = {
-            class = EOAndQualifier;
-            qualifiers = (
-                {
-            		class = EOKeyValueQualifier;
-            		key = email;
-            		selectorName = "isEqualTo:";
-            		value = {_key = email; class = EOQualifierVariable; };
-            	},
-                {
-            		class = EOKeyValueQualifier;
-            		key = authenticationDomain;
-            		selectorName = "isEqualTo:";
-            		value = {_key = domain; class = EOQualifierVariable; };
-            	}
-            );
-        };
-    };
+            class = EOKeyValueQualifier; 
+            key = userName; 
+            selectorName = "isEqualTo:"; 
+            value = {"_key" = name; class = EOQualifierVariable; }; 
+        }; 
+    }; 
 }

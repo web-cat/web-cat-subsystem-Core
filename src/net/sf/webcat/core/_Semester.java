@@ -200,9 +200,9 @@ public abstract class _Semester
      * Retrieve this object's <code>season</code> value.
      * @return the value of the attribute
      */
-    public Number season()
+    public Integer season()
     {
-        return (Number)storedValueForKey( "season" );
+        return (Integer)storedValueForKey( "season" );
     }
 
 
@@ -213,7 +213,7 @@ public abstract class _Semester
      *
      * @param value The new value for this property
      */
-    public void setSeason( Number value )
+    public void setSeason( Integer value )
     {
         if (log.isDebugEnabled())
         {
@@ -289,8 +289,8 @@ public abstract class _Semester
      */
     public int year()
     {
-        Number result =
-            (Number)storedValueForKey( "year" );
+        Integer result =
+            (Integer)storedValueForKey( "year" );
         return ( result == null )
             ? 0
             : result.intValue();
@@ -311,9 +311,9 @@ public abstract class _Semester
             log.debug( "setYear("
                 + value + "): was " + year() );
         }
-        Number actual =
+        Integer actual =
             er.extensions.ERXConstant.integerForInt( value );
-        setYearRaw( actual );
+            setYearRaw( actual );
     }
 
 
@@ -322,9 +322,9 @@ public abstract class _Semester
      * Retrieve this object's <code>year</code> value.
      * @return the value of the attribute
      */
-    public Number yearRaw()
+    public Integer yearRaw()
     {
-        return (Number)storedValueForKey( "year" );
+        return (Integer)storedValueForKey( "year" );
     }
 
 
@@ -335,7 +335,7 @@ public abstract class _Semester
      *
      * @param value The new value for this property
      */
-    public void setYearRaw( Number value )
+    public void setYearRaw( Integer value )
     {
         if (log.isDebugEnabled())
         {
@@ -366,7 +366,6 @@ public abstract class _Semester
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForFetchAll(ec"
-            
                 + "): " + result );
         }
         return result;

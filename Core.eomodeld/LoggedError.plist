@@ -1,124 +1,66 @@
-
 {
-    attributes =
-    (
-
-       {
-           columnName = component;
-           name = component;
-           prototypeName = tinyText;
-       },
-
-       {
-           columnName = exceptionName;
-           name = exceptionName;
-           prototypeName = tinyText;
-       },
-
-       {
-           allowsNull = N;
-           name = id;
-           prototypeName = id;
-       },
-
-       {
-           columnName = inClass;
-           name = inClass;
-           prototypeName = tinyText;
-       },
-
-       {
-           columnName = inMethod;
-           name = inMethod;
-           prototypeName = tinyText;
-       },
-
-       {
-           allowsNull = N;
-           columnName = line;
-           name = line;
-           prototypeName = integer;
-           userInfo =
-           {
-               isScalar = true;
-               scalarConversionMethodName = intValue;
-               scalarDefault = 0;
-               type = int;
-               valueClassName = Integer;
-           };
-       },
-
-       {
-           columnName = message;
-           name = message;
-           prototypeName = tinyText;
-       },
-
-       {
-           columnName = mostRecent;
-           name = mostRecent;
-           prototypeName = dateTime;
-       },
-
-       {
-           allowsNull = N;
-           columnName = occurrences;
-           name = occurrences;
-           prototypeName = integer;
-           userInfo =
-           {
-               isScalar = true;
-               scalarConversionMethodName = intValue;
-               scalarDefault = 0;
-               type = int;
-               valueClassName = Integer;
-           };
-       },
-
-       {
-           columnName = page;
-           name = page;
-           prototypeName = tinyText;
-       },
-
-       {
-           columnName = stackTrace;
-           name = stackTrace;
-           prototypeName = mediumText;
-       }
-    );
-    attributesUsedForLocking =
-    (
-       component,
-       exceptionName,
-       inClass,
-       inMethod,
-       line,
-       message,
-       occurrences,
-       page,
-       stackTrace
-    );
-    className = net.sf.webcat.core.LoggedError;
-    classProperties =
-    (
-       component,
-       exceptionName,
-       inClass,
-       inMethod,
-       line,
-       message,
-       mostRecent,
-       occurrences,
-       page,
-       stackTrace
-    );
-    externalName = LoggedError;
-    internalInfo =
-    {};
-    name = LoggedError;
-    primaryKeyAttributes =
-    (
-       id
-    );
+    attributes = (
+        {columnName = component; name = component; prototypeName = tinyText; }, 
+        {columnName = exceptionName; name = exceptionName; prototypeName = tinyText; }, 
+        {allowsNull = N; name = id; prototypeName = id; }, 
+        {columnName = inClass; name = inClass; prototypeName = tinyText; }, 
+        {columnName = inMethod; name = inMethod; prototypeName = tinyText; }, 
+        {
+            allowsNull = N; 
+            columnName = line; 
+            name = line; 
+            prototypeName = integer; 
+            userInfo = {
+                isScalar = true; 
+                scalarConversionMethodName = intValue; 
+                scalarDefault = 0; 
+                type = int; 
+                valueClassName = Integer; 
+            }; 
+        }, 
+        {columnName = message; name = message; prototypeName = tinyText; }, 
+        {columnName = mostRecent; name = mostRecent; prototypeName = dateTime; }, 
+        {
+            allowsNull = N; 
+            columnName = occurrences; 
+            name = occurrences; 
+            prototypeName = integer; 
+            userInfo = {
+                isScalar = true; 
+                scalarConversionMethodName = intValue; 
+                scalarDefault = 0; 
+                type = int; 
+                valueClassName = Integer; 
+            }; 
+        }, 
+        {columnName = page; name = page; prototypeName = tinyText; }, 
+        {columnName = stackTrace; name = stackTrace; prototypeName = mediumText; }
+    ); 
+    attributesUsedForLocking = (
+        component, 
+        exceptionName, 
+        inClass, 
+        inMethod, 
+        line, 
+        message, 
+        occurrences, 
+        page, 
+        stackTrace
+    ); 
+    className = "net.sf.webcat.core.LoggedError"; 
+    classProperties = (
+        component, 
+        exceptionName, 
+        inClass, 
+        inMethod, 
+        line, 
+        message, 
+        mostRecent, 
+        occurrences, 
+        page, 
+        stackTrace
+    ); 
+    externalName = LoggedError; 
+    name = LoggedError; 
+    primaryKeyAttributes = (id); 
 }

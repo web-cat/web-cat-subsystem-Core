@@ -327,8 +327,8 @@ public abstract class _LoggedError
      */
     public int line()
     {
-        Number result =
-            (Number)storedValueForKey( "line" );
+        Integer result =
+            (Integer)storedValueForKey( "line" );
         return ( result == null )
             ? 0
             : result.intValue();
@@ -349,9 +349,9 @@ public abstract class _LoggedError
             log.debug( "setLine("
                 + value + "): was " + line() );
         }
-        Number actual =
+        Integer actual =
             er.extensions.ERXConstant.integerForInt( value );
-        setLineRaw( actual );
+            setLineRaw( actual );
     }
 
 
@@ -360,9 +360,9 @@ public abstract class _LoggedError
      * Retrieve this object's <code>line</code> value.
      * @return the value of the attribute
      */
-    public Number lineRaw()
+    public Integer lineRaw()
     {
-        return (Number)storedValueForKey( "line" );
+        return (Integer)storedValueForKey( "line" );
     }
 
 
@@ -373,7 +373,7 @@ public abstract class _LoggedError
      *
      * @param value The new value for this property
      */
-    public void setLineRaw( Number value )
+    public void setLineRaw( Integer value )
     {
         if (log.isDebugEnabled())
         {
@@ -449,8 +449,8 @@ public abstract class _LoggedError
      */
     public int occurrences()
     {
-        Number result =
-            (Number)storedValueForKey( "occurrences" );
+        Integer result =
+            (Integer)storedValueForKey( "occurrences" );
         return ( result == null )
             ? 0
             : result.intValue();
@@ -471,9 +471,9 @@ public abstract class _LoggedError
             log.debug( "setOccurrences("
                 + value + "): was " + occurrences() );
         }
-        Number actual =
+        Integer actual =
             er.extensions.ERXConstant.integerForInt( value );
-        setOccurrencesRaw( actual );
+            setOccurrencesRaw( actual );
     }
 
 
@@ -482,9 +482,9 @@ public abstract class _LoggedError
      * Retrieve this object's <code>occurrences</code> value.
      * @return the value of the attribute
      */
-    public Number occurrencesRaw()
+    public Integer occurrencesRaw()
     {
-        return (Number)storedValueForKey( "occurrences" );
+        return (Integer)storedValueForKey( "occurrences" );
     }
 
 
@@ -495,7 +495,7 @@ public abstract class _LoggedError
      *
      * @param value The new value for this property
      */
-    public void setOccurrencesRaw( Number value )
+    public void setOccurrencesRaw( Integer value )
     {
         if (log.isDebugEnabled())
         {
@@ -570,18 +570,18 @@ public abstract class _LoggedError
      * fetch specification.
      *
      * @param context The editing context to use
+     * @param classBinding fetch spec parameter
      * @param lineBinding fetch spec parameter
      * @param methodBinding fetch spec parameter
-     * @param classBinding fetch spec parameter
      * @param nameBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
     @SuppressWarnings("unchecked")
     public static NSArray<LoggedError> objectsForExceptionLocation(
             EOEditingContext context,
-            Number lineBinding,
-            String methodBinding,
             String classBinding,
+            Integer lineBinding,
+            String methodBinding,
             String nameBinding
         )
     {
@@ -591,6 +591,11 @@ public abstract class _LoggedError
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
+        if ( classBinding != null )
+        {
+            bindings.setObjectForKey( classBinding,
+                                      "class" );
+        }
         if ( lineBinding != null )
         {
             bindings.setObjectForKey( lineBinding,
@@ -600,11 +605,6 @@ public abstract class _LoggedError
         {
             bindings.setObjectForKey( methodBinding,
                                       "method" );
-        }
-        if ( classBinding != null )
-        {
-            bindings.setObjectForKey( classBinding,
-                                      "class" );
         }
         if ( nameBinding != null )
         {
@@ -617,10 +617,9 @@ public abstract class _LoggedError
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForExceptionLocation(ec"
-            
+                + ", " + classBinding
                 + ", " + lineBinding
                 + ", " + methodBinding
-                + ", " + classBinding
                 + ", " + nameBinding
                 + "): " + result );
         }

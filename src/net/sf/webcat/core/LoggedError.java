@@ -79,9 +79,9 @@ public class LoggedError
         LoggedError result = null;
         NSArray results = objectsForExceptionLocation(
             context,
+            top.getClassName(),
             top.getLineNumber(),
             top.getMethodName(),
-            top.getClassName(),
             throwable.getClass().getName() );
         if ( results != null && results.count() > 0 )
         {

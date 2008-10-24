@@ -92,7 +92,7 @@ public class Semester
      *
      * @param value The new value for this property
      */
-    public void setSeason( Number value )
+    public void setSeason( Integer value )
     {
         if (dirNeedingRenaming == null)
         {

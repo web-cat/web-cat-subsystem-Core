@@ -144,10 +144,10 @@ public abstract class _CourseOffering
     public static final String COURSE_KEY = "course";
     public static final String SEMESTER_KEY = "semester";
     // To-many relationships ---
-    public static final String TAS_KEY = "TAs";
     public static final String CORE_SELECTIONS_KEY = "coreSelections";
     public static final String INSTRUCTORS_KEY = "instructors";
     public static final String STUDENTS_KEY = "students";
+    public static final String T_AS_KEY = "TAs";
     // Fetch specifications ---
     public static final String FOR_SEMESTER_FSPEC = "forSemester";
     public static final String WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC = "withoutAnyRelationshipToUser";
@@ -266,9 +266,9 @@ public abstract class _CourseOffering
      * Retrieve this object's <code>moodleGroupId</code> value.
      * @return the value of the attribute
      */
-    public Number moodleGroupId()
+    public Long moodleGroupId()
     {
-        return (Number)storedValueForKey( "moodleGroupId" );
+        return (Long)storedValueForKey( "moodleGroupId" );
     }
 
 
@@ -279,7 +279,7 @@ public abstract class _CourseOffering
      *
      * @param value The new value for this property
      */
-    public void setMoodleGroupId( Number value )
+    public void setMoodleGroupId( Long value )
     {
         if (log.isDebugEnabled())
         {
@@ -295,9 +295,9 @@ public abstract class _CourseOffering
      * Retrieve this object's <code>moodleId</code> value.
      * @return the value of the attribute
      */
-    public Number moodleId()
+    public Long moodleId()
     {
-        return (Number)storedValueForKey( "moodleId" );
+        return (Long)storedValueForKey( "moodleId" );
     }
 
 
@@ -308,7 +308,7 @@ public abstract class _CourseOffering
      *
      * @param value The new value for this property
      */
-    public void setMoodleId( Number value )
+    public void setMoodleId( Long value )
     {
         if (log.isDebugEnabled())
         {
@@ -467,184 +467,6 @@ public abstract class _CourseOffering
         {
             addObjectToBothSidesOfRelationshipWithKey( value, "semester" );
         }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve the entities pointed to by the <code>TAs</code>
-     * relationship.
-     * @return an NSArray of the entities in the relationship
-     */
-    @SuppressWarnings("unchecked")
-    public NSArray<net.sf.webcat.core.User> TAs()
-    {
-        return (NSArray)storedValueForKey( "TAs" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Replace the list of entities pointed to by the
-     * <code>TAs</code> relationship.
-     *
-     * @param value The new set of entities to relate to
-     */
-    public void setTAs( NSMutableArray<net.sf.webcat.core.User>  value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "setTAs("
-                + value + "): was " + TAs() );
-        }
-        takeStoredValueForKey( value, "TAs" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Add a new entity to the <code>TAs</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>addToTAsRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The new entity to relate to
-     */
-    public void addToTAs( net.sf.webcat.core.User value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "addToTAs("
-                + value + "): was " + TAs() );
-        }
-        NSMutableArray<net.sf.webcat.core.User> array =
-            (NSMutableArray<net.sf.webcat.core.User>)TAs();
-        willChange();
-        array.addObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove a specific entity from the <code>TAs</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>removeFromTAsRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The entity to remove from the relationship
-     */
-    public void removeFromTAs( net.sf.webcat.core.User value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "RemoveFromTAs("
-                + value + "): was " + TAs() );
-        }
-        NSMutableArray<net.sf.webcat.core.User> array =
-            (NSMutableArray<net.sf.webcat.core.User>)TAs();
-        willChange();
-        array.removeObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Add a new entity to the <code>TAs</code>
-     * relationship.
-     *
-     * @param value The new entity to relate to
-     */
-    public void addToTAsRelationship( net.sf.webcat.core.User value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "addToTAsRelationship("
-                + value + "): was " + TAs() );
-        }
-        addObjectToBothSidesOfRelationshipWithKey(
-            value, "TAs" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove a specific entity from the <code>TAs</code>
-     * relationship.
-     *
-     * @param value The entity to remove from the relationship
-     */
-    public void removeFromTAsRelationship( net.sf.webcat.core.User value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "removeFromTAsRelationship("
-                + value + "): was " + TAs() );
-        }
-        removeObjectFromBothSidesOfRelationshipWithKey(
-            value, "TAs" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Create a brand new object that is a member of the
-     * <code>TAs</code> relationship.
-     *
-     * @return The new entity
-     */
-    public net.sf.webcat.core.User createTAsRelationship()
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "createTAsRelationship()" );
-        }
-        EOClassDescription eoClassDesc = EOClassDescription
-            .classDescriptionForEntityName( "User" );
-        EOEnterpriseObject eoObject = eoClassDesc
-            .createInstanceWithEditingContext( editingContext(), null );
-        editingContext().insertObject( eoObject );
-        addObjectToBothSidesOfRelationshipWithKey(
-            eoObject, "TAs" );
-        return (net.sf.webcat.core.User)eoObject;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove and then delete a specific entity that is a member of the
-     * <code>TAs</code> relationship.
-     *
-     * @param value The entity to remove from the relationship and then delete
-     */
-    public void deleteTAsRelationship( net.sf.webcat.core.User value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "deleteTAsRelationship("
-                + value + "): was " + TAs() );
-        }
-        removeObjectFromBothSidesOfRelationshipWithKey(
-            value, "TAs" );
-        editingContext().deleteObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove (and then delete, if owned) all entities that are members of the
-     * <code>TAs</code> relationship.
-     */
-    public void deleteAllTAsRelationships()
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "deleteAllTAsRelationships(): was "
-                + TAs() );
-        }
-        Enumeration objects = TAs().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteTAsRelationship(
-                (net.sf.webcat.core.User)objects.nextElement() );
     }
 
 
@@ -1184,6 +1006,184 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
+     * Retrieve the entities pointed to by the <code>TAs</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.User> TAs()
+    {
+        return (NSArray)storedValueForKey( "TAs" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>TAs</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setTAs( NSMutableArray<net.sf.webcat.core.User>  value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setTAs("
+                + value + "): was " + TAs() );
+        }
+        takeStoredValueForKey( value, "TAs" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>TAs</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToTAsRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToTAs( net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToTAs("
+                + value + "): was " + TAs() );
+        }
+        NSMutableArray<net.sf.webcat.core.User> array =
+            (NSMutableArray<net.sf.webcat.core.User>)TAs();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>TAs</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromTAsRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromTAs( net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromTAs("
+                + value + "): was " + TAs() );
+        }
+        NSMutableArray<net.sf.webcat.core.User> array =
+            (NSMutableArray<net.sf.webcat.core.User>)TAs();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>TAs</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToTAsRelationship( net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToTAsRelationship("
+                + value + "): was " + TAs() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "TAs" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>TAs</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromTAsRelationship( net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromTAsRelationship("
+                + value + "): was " + TAs() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "TAs" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>TAs</code> relationship.
+     *
+     * @return The new entity
+     */
+    public net.sf.webcat.core.User createTAsRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createTAsRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "User" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "TAs" );
+        return (net.sf.webcat.core.User)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>TAs</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteTAsRelationship( net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteTAsRelationship("
+                + value + "): was " + TAs() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "TAs" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>TAs</code> relationship.
+     */
+    public void deleteAllTAsRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllTAsRelationships(): was "
+                + TAs() );
+        }
+        Enumeration objects = TAs().objectEnumerator();
+        while ( objects.hasMoreElements() )
+            deleteTAsRelationship(
+                (net.sf.webcat.core.User)objects.nextElement() );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve object according to the <code>ForSemester</code>
      * fetch specification.
      *
@@ -1214,7 +1214,6 @@ public abstract class _CourseOffering
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForForSemester(ec"
-            
                 + ", " + semesterBinding
                 + "): " + result );
         }
@@ -1254,7 +1253,6 @@ public abstract class _CourseOffering
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForWithoutAnyRelationshipToUser(ec"
-            
                 + ", " + userBinding
                 + "): " + result );
         }
@@ -1294,7 +1292,6 @@ public abstract class _CourseOffering
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForWithoutStudent(ec"
-            
                 + ", " + userBinding
                 + "): " + result );
         }
@@ -1334,7 +1331,6 @@ public abstract class _CourseOffering
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForWithoutStudentOrTA(ec"
-            
                 + ", " + userBinding
                 + "): " + result );
         }
@@ -1374,7 +1370,6 @@ public abstract class _CourseOffering
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForWithoutUserAsStaff(ec"
-            
                 + ", " + userBinding
                 + "): " + result );
         }

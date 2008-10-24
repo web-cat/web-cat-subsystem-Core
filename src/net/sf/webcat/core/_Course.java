@@ -234,8 +234,8 @@ public abstract class _Course
      */
     public int number()
     {
-        Number result =
-            (Number)storedValueForKey( "number" );
+        Integer result =
+            (Integer)storedValueForKey( "number" );
         return ( result == null )
             ? 0
             : result.intValue();
@@ -256,9 +256,9 @@ public abstract class _Course
             log.debug( "setNumber("
                 + value + "): was " + number() );
         }
-        Number actual =
+        Integer actual =
             er.extensions.ERXConstant.integerForInt( value );
-        setNumberRaw( actual );
+            setNumberRaw( actual );
     }
 
 
@@ -267,9 +267,9 @@ public abstract class _Course
      * Retrieve this object's <code>number</code> value.
      * @return the value of the attribute
      */
-    public Number numberRaw()
+    public Integer numberRaw()
     {
-        return (Number)storedValueForKey( "number" );
+        return (Integer)storedValueForKey( "number" );
     }
 
 
@@ -280,7 +280,7 @@ public abstract class _Course
      *
      * @param value The new value for this property
      */
-    public void setNumberRaw( Number value )
+    public void setNumberRaw( Integer value )
     {
         if (log.isDebugEnabled())
         {

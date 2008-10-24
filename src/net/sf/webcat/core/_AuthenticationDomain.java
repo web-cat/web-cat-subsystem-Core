@@ -137,7 +137,7 @@ public abstract class _AuthenticationDomain
     // Attributes ---
     public static final String DATE_FORMAT_KEY = "dateFormat";
     public static final String DEFAULT_EMAIL_DOMAIN_KEY = "defaultEmailDomain";
-    public static final String DEFAULT_URLPATTERN_KEY = "defaultURLPattern";
+    public static final String DEFAULT_URL_PATTERN_KEY = "defaultURLPattern";
     public static final String DISPLAYABLE_NAME_KEY = "displayableName";
     public static final String PROPERTY_NAME_KEY = "propertyName";
     public static final String TIME_FORMAT_KEY = "timeFormat";
@@ -418,7 +418,6 @@ public abstract class _AuthenticationDomain
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForFetchAll(ec"
-            
                 + "): " + result );
         }
         return result;

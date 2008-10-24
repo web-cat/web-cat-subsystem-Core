@@ -1,111 +1,51 @@
-
 {
-    attributes =
-    (
-
-       {
-           columnName = CDEPARTMENTID;
-           name = departmentId;
-           prototypeName = foreignId;
-       },
-
-       {
-           name = id;
-           prototypeName = id;
-       },
-
-       {
-           allowsNull = N;
-           columnName = CNAME;
-           name = name;
-           prototypeName = tinyText;
-       },
-
-       {
-           columnName = CNUMBER;
-           externalType = SMALLINT;
-           name = number;
-           userInfo =
-           {
-               isScalar = true;
-               scalarConversionMethodName = intValue;
-               scalarDefault = 0;
-               type = int;
-               valueClassName = Integer;
-           };
-           valueClassName = NSNumber;
-           valueType = i;
-       }
-    );
-    attributesUsedForLocking =
-    (
-       departmentId,
-       name,
-       number
-    );
-    className = net.sf.webcat.core.Course;
-    classProperties =
-    (
-       coreSelections,
-       department,
-       name,
-       number,
-       offerings
-    );
-    externalName = TCOURSE;
-    internalInfo =
-    {};
-    name = Course;
-    primaryKeyAttributes =
-    (
-       id
-    );
-    relationships =
-    (
-
-       {
-           destination = Department;
-           isToMany = N;
-           joinSemantic = EOInnerJoin;
-           joins =
-           (
-
-              {
-                  destinationAttribute = id;
-                  sourceAttribute = departmentId;
-              }
-           );
-           name = department;
-       },
-
-       {
-           destination = CoreSelections;
-           isToMany = Y;
-           joinSemantic = EOInnerJoin;
-           joins =
-           (
-
-              {
-                  destinationAttribute = courseId;
-                  sourceAttribute = id;
-              }
-           );
-           name = coreSelections;
-       },
-
-       {
-           destination = CourseOffering;
-           isToMany = Y;
-           joinSemantic = EOInnerJoin;
-           joins =
-           (
-
-              {
-                  destinationAttribute = courseId;
-                  sourceAttribute = id;
-              }
-           );
-           name = offerings;
-       }
-    );
+    attributes = (
+        {columnName = CDEPARTMENTID; name = departmentId; prototypeName = foreignId; }, 
+        {name = id; prototypeName = id; }, 
+        {allowsNull = N; columnName = CNAME; name = name; prototypeName = tinyText; }, 
+        {
+            columnName = CNUMBER; 
+            externalType = SMALLINT; 
+            name = number; 
+            userInfo = {
+                isScalar = true; 
+                scalarConversionMethodName = intValue; 
+                scalarDefault = 0; 
+                type = int; 
+                valueClassName = Integer; 
+            }; 
+            valueClassName = NSNumber; 
+            valueType = i; 
+        }
+    ); 
+    attributesUsedForLocking = (departmentId, name, number); 
+    className = "net.sf.webcat.core.Course"; 
+    classProperties = (coreSelections, department, name, number, offerings); 
+    externalName = TCOURSE; 
+    fetchSpecificationDictionary = {}; 
+    name = Course; 
+    primaryKeyAttributes = (id); 
+    relationships = (
+        {
+            destination = Department; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = departmentId; }); 
+            name = department; 
+        }, 
+        {
+            destination = CoreSelections; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = courseId; sourceAttribute = id; }); 
+            name = coreSelections; 
+        }, 
+        {
+            destination = CourseOffering; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = courseId; sourceAttribute = id; }); 
+            name = offerings; 
+        }
+    ); 
 }

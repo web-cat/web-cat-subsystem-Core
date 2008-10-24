@@ -298,7 +298,6 @@ public abstract class _Language
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForFetchAll(ec"
-            
                 + "): " + result );
         }
         return result;

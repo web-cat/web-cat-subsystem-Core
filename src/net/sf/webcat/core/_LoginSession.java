@@ -342,7 +342,6 @@ public abstract class _LoginSession
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForUserPid(ec"
-            
                 + ", " + userNameBinding
                 + "): " + result );
         }

@@ -141,7 +141,7 @@ public class User
                                    String               userName,
                                    AuthenticationDomain domain )
     {
-        NSArray results = objectsForNameAndDomain( ec, userName, domain );
+        NSArray results = objectsForDomainAndName( ec, domain, userName );
         if ( results == null || results.count() == 0 )
         {
             return null;
@@ -172,7 +172,7 @@ public class User
                                           AuthenticationDomain domain )
     {
         // First, try a raw database lookup
-        NSArray results = objectsForEmailAndDomain( ec, email, domain );
+        NSArray results = objectsForDomainAndEmail( ec, domain, email );
         if ( results.count() == 1 )
         {
             return (User)results.objectAtIndex( 0 );
@@ -780,7 +780,7 @@ public class User
             properties.setProperty( PREFIX + PASSWORD_KEY, value );
         value = universityIDNo();
         if ( value != null )
-            properties.setProperty( PREFIX + UNIVERSITY_IDNO_KEY, value );
+            properties.setProperty( PREFIX + UNIVERSITY_ID_NO_KEY, value );
         value = url();
         if ( value != null )
             properties.setProperty( PREFIX + URL_KEY, value );
