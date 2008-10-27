@@ -1,1 +1,1 @@
- -destination src -extension java -java -javaTemplate JavaSourceEOF52.eotemplate -model Core.eomodeld -packagedirs -refmodel ../EOJDBCPrototypes/EOJDBCPrototypes.eomodeld -subclassDestination src -subclassJavaTemplate JavaSubclassSourceEOF5.eotemplate -templatedir . -verbose
+ -destination src -java -javaTemplate JavaSourceEOF52.eotemplate -model Core.eomodeld -packagedirs -refmodel ../EOJDBCPrototypes/EOJDBCPrototypes.eomodeld -subclassDestination src -subclassJavaTemplate JavaSubclassSourceEOF5.eotemplate -templatedir . -verbose
