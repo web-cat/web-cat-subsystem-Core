@@ -48,7 +48,8 @@ import org.apache.log4j.Logger;
    This is how to put in a custom EO superclass.  We also declare
    this class as being abstract, since it should never be instantiated.
 *#public abstract class ${entity.prefixClassNameWithoutPackage}
-    extends #if ($entity.parentClassNameSet)${entity.parentClassName}#{else}er.extensions.ERXGenericRecord
+    extends #if ($entity.parentSet)${entity.parent.className}
+#{else}er.extensions.ERXGenericRecord
 #end
 #set ($alreadyFoundMutableAttribute = false)
 #foreach ($attribute in $entity.sortedClassAttributes)
