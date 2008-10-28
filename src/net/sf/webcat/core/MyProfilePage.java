@@ -230,7 +230,7 @@ public class MyProfilePage
             User me = user();
             NSMutableArray offerings = me.enrolledIn().mutableClone();
             ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates( offerings,
-                me.TAFor() );
+                me.graderFor() );
             ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates( offerings,
                 me.teaching() );
             for ( int i = 0; i < offerings.count(); i++ )
@@ -258,7 +258,7 @@ public class MyProfilePage
                 }
                 crnList = "?crns=" + crnList;
                 if ( me.accessLevel() > 0
-                     && ( me.TAFor().count() > 0 || me.teaching().count() > 0 ) )
+                     && ( me.graderFor().count() > 0 || me.teaching().count() > 0 ) )
                 {
                     crnList += "&staff=true";
                 }

@@ -78,7 +78,7 @@
             qualifiers = (
                 {
                     class = EOKeyValueQualifier; 
-                    key = TAFor; 
+                    key = graderFor; 
                     selectorName = "doesContain:"; 
                     value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
                 }, 
@@ -118,7 +118,7 @@
                             }, 
                             {
                                 class = EOKeyValueQualifier; 
-                                key = TAFor; 
+                                key = graderFor; 
                                 selectorName = "doesContain:"; 
                                 value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
                             }

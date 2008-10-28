@@ -606,10 +606,10 @@ public class User
         if ( canChangeViews() )
         {
             studentView = !studentView;
-            taFor_cache = null;
+            graderFor_cache = null;
             teaching_cache = null;
-            taForButNotStudent_cache = null;
-            instructorForButNotTAOrStudent_cache = null;
+            graderForButNotStudent_cache = null;
+            instructorForButNotGraderOrStudent_cache = null;
             staffFor_cache = null;
             adminForButNotStaff_cache = null;
             adminForButNoOtherRelationships_cache = null;
@@ -659,12 +659,41 @@ public class User
 
 
     // ----------------------------------------------------------
-    public NSArray TAFor()
+    /**
+     * @return the array of course offerings that this user is a grader for
+     * 
+     * @deprecated Use the {@link #graderFor()} method instead.
+     */
+    @Deprecated
+    public NSArray<CourseOffering> TAFor()
     {
-        return studentView ? emptyArray : super.TAFor();
+        return graderFor();
     }
 
 
+    // ----------------------------------------------------------
+    public NSArray<CourseOffering> graderFor()
+    {
+        return studentView ? emptyArray : super.graderFor();
+    }
+
+    
+    // ----------------------------------------------------------
+    /**
+     * Returns a sorted list of course offerings that this user is a TA for.
+     * @param semester Only return courses for this semester.  A value of null
+     * means all courses (same as staffFor()).
+     * @return a sorted array of the matching course offerings.
+     * 
+     * @deprecated Use the {@link #graderFor(Semester)} method instead.
+     */
+    @Deprecated
+    public NSArray TAFor( Semester semester )
+    {
+        return graderFor(semester);
+    }
+
+    
     // ----------------------------------------------------------
     /**
      * Returns a sorted list of course offerings that this user is a TA for.
@@ -672,9 +701,9 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray TAFor( Semester semester )
+    public NSArray graderFor( Semester semester )
     {
-        NSArray result = TAFor();
+        NSArray result = graderFor();
         if ( semester != null )
         {
             result = ERXArrayUtilities
@@ -795,37 +824,52 @@ public class User
      * Returns a sorted list of course offerings that this user is a TA for,
      * without including any courses where this user is also a student.
      * @return a sorted array of the matching course offerings.
+     * 
+     * @deprecated Use the {@link #graderForButNotStudent()} method instead.
      */
+    @Deprecated
     public NSArray TAForButNotStudent()
     {
-        if ( taFor_cache != TAFor() )
+        return graderForButNotStudent();
+    }
+
+    
+    // ----------------------------------------------------------
+    /**
+     * Returns a sorted list of course offerings that this user is a grader for,
+     * without including any courses where this user is also a student.
+     * @return a sorted array of the matching course offerings.
+     */
+    public NSArray graderForButNotStudent()
+    {
+        if ( graderFor_cache != graderFor() )
         {
-            taFor_cache = TAFor();
-            taForButNotStudent_cache = null;
+            graderFor_cache = graderFor();
+            graderForButNotStudent_cache = null;
         }
-        if ( taFor_cache == null || taFor_cache.count() == 0 )
+        if ( graderFor_cache == null || graderFor_cache.count() == 0 )
         {
-            taForButNotStudent_cache = emptyArray;
+            graderForButNotStudent_cache = emptyArray;
         }
         else
         {
             if ( enrolledIn_cache != enrolledIn() )
             {
                 enrolledIn_cache = enrolledIn();
-                taForButNotStudent_cache = null;
+                graderForButNotStudent_cache = null;
             }
-            if ( taForButNotStudent_cache == null )
+            if ( graderForButNotStudent_cache == null )
             {
-                taForButNotStudent_cache =
+                graderForButNotStudent_cache =
                     ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
-                        taFor_cache,
+                        graderFor_cache,
                         CourseOffering.ENTITY_NAME,
                         CourseOffering.WITHOUT_STUDENT_FSPEC,
                         userFilteringDictionary()
                         );
             }
         }
-        return taForButNotStudent_cache;
+        return graderForButNotStudent_cache;
     }
 
 
@@ -836,10 +880,28 @@ public class User
      * @param semester Only return courses for this semester.  A value of null
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
+     * 
+     * @deprecated Use the {@link #graderForButNotStudent(Semester)} method
+     *     instead.
      */
+    @Deprecated
     public NSArray TAForButNotStudent(Semester semester)
     {
-        NSArray result = TAForButNotStudent();
+        return graderForButNotStudent(semester);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns a sorted list of course offerings that this user is a grader for,
+     * without including any courses where this user is also a student.
+     * @param semester Only return courses for this semester.  A value of null
+     * means all courses (same as staffFor()).
+     * @return a sorted array of the matching course offerings.
+     */
+    public NSArray graderForButNotStudent(Semester semester)
+    {
+        NSArray result = graderForButNotStudent();
         if ( semester != null )
         {
             result = ERXArrayUtilities
@@ -860,44 +922,61 @@ public class User
     /**
      * Returns a sorted list of course offerings that this user is an
      * instructor for, without including any courses where this user is also
-     * a student or a TA.
+     * a student or a grader.
+     * @return a sorted array of the matching course offerings.
+     * 
+     * @deprecated Use the {@link #instructorForButNotGraderOrStudent()} method
+     *     instead.
+     */
+    @Deprecated
+    public NSArray instructorForButNotTAOrStudent()
+    {
+        return instructorForButNotGraderOrStudent();
+    }
+    
+    
+    // ----------------------------------------------------------
+    /**
+     * Returns a sorted list of course offerings that this user is an
+     * instructor for, without including any courses where this user is also
+     * a student or a grader.
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray instructorForButNotTAOrStudent()
+    public NSArray instructorForButNotGraderOrStudent()
     {
         if ( teaching_cache != teaching() )
         {
             teaching_cache = teaching();
-            instructorForButNotTAOrStudent_cache = null;
+            instructorForButNotGraderOrStudent_cache = null;
         }
         if ( teaching_cache == null || teaching_cache.count() == 0 )
         {
-            instructorForButNotTAOrStudent_cache = emptyArray;
+            instructorForButNotGraderOrStudent_cache = emptyArray;
         }
         else
         {
             if ( enrolledIn_cache != enrolledIn() )
             {
                 enrolledIn_cache = enrolledIn();
-                instructorForButNotTAOrStudent_cache = null;
+                instructorForButNotGraderOrStudent_cache = null;
             }
-            if ( taFor_cache != TAFor() )
+            if ( graderFor_cache != graderFor() )
             {
-                taFor_cache = TAFor();
-                instructorForButNotTAOrStudent_cache = null;
+                graderFor_cache = graderFor();
+                instructorForButNotGraderOrStudent_cache = null;
             }
-            if ( instructorForButNotTAOrStudent_cache == null )
+            if ( instructorForButNotGraderOrStudent_cache == null )
             {
-                instructorForButNotTAOrStudent_cache =
+                instructorForButNotGraderOrStudent_cache =
                     ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
                         teaching_cache,
                         CourseOffering.ENTITY_NAME,
-                        CourseOffering.WITHOUT_STUDENT_OR_TA_FSPEC,
+                        CourseOffering.WITHOUT_STUDENT_OR_GRADER_FSPEC,
                         userFilteringDictionary()
                         );
             }
         }
-        return instructorForButNotTAOrStudent_cache;
+        return instructorForButNotGraderOrStudent_cache;
     }
 
 
@@ -905,14 +984,33 @@ public class User
     /**
      * Returns a sorted list of course offerings that this user is an
      * instructor for, without including any courses where this user is also
-     * a student or a TA.
+     * a student or a grader.
+     * @param semester Only return courses for this semester.  A value of null
+     * means all courses (same as staffFor()).
+     * @return a sorted array of the matching course offerings.
+     * 
+     * @deprecated Use the {@link #instructorForButNotTAOrStudent(Semester)}
+     *     method instead.
+     */
+    @Deprecated
+    public NSArray instructorForButNotTAOrStudent(Semester semester)
+    {
+        return instructorForButNotGraderOrStudent(semester);
+    }
+    
+        
+    // ----------------------------------------------------------
+    /**
+     * Returns a sorted list of course offerings that this user is an
+     * instructor for, without including any courses where this user is also
+     * a student or a grader.
      * @param semester Only return courses for this semester.  A value of null
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray instructorForButNotTAOrStudent(Semester semester)
+    public NSArray instructorForButNotGraderOrStudent(Semester semester)
     {
-        NSArray result = instructorForButNotTAOrStudent();
+        NSArray result = instructorForButNotGraderOrStudent();
         if ( semester != null )
         {
             result = ERXArrayUtilities
@@ -932,14 +1030,14 @@ public class User
     // ----------------------------------------------------------
     /**
      * Returns a sorted list of course offerings that this user is either
-     * an instructor or TA for.
+     * an instructor or grader for.
      * @return a sorted array of the matching course offerings.
      */
     public NSArray staffFor()
     {
-        if ( taFor_cache != TAFor() )
+        if ( graderFor_cache != graderFor() )
         {
-            taFor_cache = TAFor();
+            graderFor_cache = graderFor();
             staffFor_cache = null;
         }
         if ( teaching_cache != teaching() )
@@ -950,7 +1048,7 @@ public class User
         if ( staffFor_cache == null )
         {
             staffFor_cache = EOSortOrdering.sortedArrayUsingKeyOrderArray(
-                teaching_cache.arrayByAddingObjectsFromArray( taFor_cache ),
+                teaching_cache.arrayByAddingObjectsFromArray( graderFor_cache ),
                 courseSortOrderings );
         }
         return staffFor_cache;
@@ -960,7 +1058,7 @@ public class User
     // ----------------------------------------------------------
     /**
      * Returns a sorted list of course offerings that this user is either
-     * an instructor or TA for.
+     * an instructor or grader for.
      * @param semester Only return courses for this semester.  A value of null
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
@@ -994,9 +1092,9 @@ public class User
     public NSArray adminForButNotStaff()
     {
         if ( !hasAdminPrivileges() ) return emptyArray;
-        if ( taFor_cache != TAFor() )
+        if ( graderFor_cache != graderFor() )
         {
-            taFor_cache = TAFor();
+            graderFor_cache = graderFor();
             adminForButNotStaff_cache = null;
         }
         if ( teaching_cache != teaching() )
@@ -1067,9 +1165,9 @@ public class User
             enrolledIn_cache = enrolledIn();
             adminForButNoOtherRelationships_cache = null;
         }
-        if ( taFor_cache != TAFor() )
+        if ( graderFor_cache != graderFor() )
         {
-            taFor_cache = TAFor();
+            graderFor_cache = graderFor();
             adminForButNoOtherRelationships_cache = null;
         }
         if ( teaching_cache != teaching() )
@@ -1236,10 +1334,10 @@ public class User
     //~ Instance/static variables .............................................
 
     private NSArray enrolledIn_cache;
-    private NSArray taFor_cache;
+    private NSArray graderFor_cache;
     private NSArray teaching_cache;
-    private NSArray taForButNotStudent_cache;
-    private NSArray instructorForButNotTAOrStudent_cache;
+    private NSArray graderForButNotStudent_cache;
+    private NSArray instructorForButNotGraderOrStudent_cache;
     private NSArray staffFor_cache;
     private NSArray adminForButNotStaff_cache;
     private NSArray adminForButNoOtherRelationships_cache;

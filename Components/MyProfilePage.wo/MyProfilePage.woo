@@ -20,7 +20,7 @@
             class = WODisplayGroup; 
             dataSource = {
                 class = EODetailDataSource; 
-                detailKey = TAFor; 
+                detailKey = graderFor; 
                 masterClassDescription = User; 
             }; 
             fetchesOnLoad = YES; 

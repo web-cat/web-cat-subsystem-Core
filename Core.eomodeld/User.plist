@@ -63,7 +63,6 @@
     ); 
     className = "net.sf.webcat.core.User"; 
     classProperties = (
-        TAFor, 
         accessLevel, 
         authenticationDomain, 
         coreSelections, 
@@ -78,17 +77,13 @@
         universityIDNo, 
         updateMutableFields, 
         url, 
-        userName
+        userName, 
+        graderFor
     ); 
     externalName = TUSER; 
     name = User; 
     primaryKeyAttributes = (id); 
     relationships = (
-        {
-            definition = "courseOfferingUsers2.courseOffering"; 
-            name = TAFor; 
-            numberOfToManyFaultsToBatchFetch = 10; 
-        }, 
         {
             destination = AuthenticationDomain; 
             isMandatory = Y; 
@@ -148,6 +143,11 @@
         {
             definition = "courseOfferingUsers1.courseOffering"; 
             name = teaching; 
+            numberOfToManyFaultsToBatchFetch = 10; 
+        }, 
+        {
+            definition = "courseOfferingUsers2.courseOffering"; 
+            name = graderFor; 
             numberOfToManyFaultsToBatchFetch = 10; 
         }
     ); 

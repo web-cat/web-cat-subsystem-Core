@@ -123,7 +123,7 @@ NotEnrolledInCourses: WOConditional {
 }
 
 NotTAInCourses: WOConditional {
-    condition = user.TAFor.count;
+    condition = user.graderFor.count;
     negate    = true;
 }
 
@@ -137,7 +137,7 @@ Page : net.sf.webcat.core.PageWithNavigation {
 }
 
 TAInCourses: WOConditional {
-    condition = user.TAFor.count;
+    condition = user.graderFor.count;
 }
 
 TARepetition: WORepetition {

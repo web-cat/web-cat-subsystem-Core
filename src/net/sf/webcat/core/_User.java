@@ -163,8 +163,8 @@ public abstract class _User
     // To-many relationships ---
     public static final String CORE_SELECTIONS_KEY = "coreSelections";
     public static final String ENROLLED_IN_KEY = "enrolledIn";
+    public static final String GRADER_FOR_KEY = "graderFor";
     public static final String PASSWORD_CHANGE_REQUEST_KEY = "passwordChangeRequest";
-    public static final String TA_FOR_KEY = "TAFor";
     public static final String TEACHING_KEY = "teaching";
     // Fetch specifications ---
     public static final String COURSE_PARTICIPANTS_FSPEC = "courseParticipants";
@@ -1141,6 +1141,184 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
+     * Retrieve the entities pointed to by the <code>graderFor</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.CourseOffering> graderFor()
+    {
+        return (NSArray)storedValueForKey( "graderFor" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>graderFor</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setGraderFor( NSMutableArray<net.sf.webcat.core.CourseOffering>  value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setGraderFor("
+                + value + "): was " + graderFor() );
+        }
+        takeStoredValueForKey( value, "graderFor" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>graderFor</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToGraderForRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToGraderFor( net.sf.webcat.core.CourseOffering value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToGraderFor("
+                + value + "): was " + graderFor() );
+        }
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)graderFor();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>graderFor</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromGraderForRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromGraderFor( net.sf.webcat.core.CourseOffering value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromGraderFor("
+                + value + "): was " + graderFor() );
+        }
+        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
+            (NSMutableArray<net.sf.webcat.core.CourseOffering>)graderFor();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>graderFor</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToGraderForRelationship( net.sf.webcat.core.CourseOffering value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToGraderForRelationship("
+                + value + "): was " + graderFor() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "graderFor" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>graderFor</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromGraderForRelationship( net.sf.webcat.core.CourseOffering value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromGraderForRelationship("
+                + value + "): was " + graderFor() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "graderFor" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>graderFor</code> relationship.
+     *
+     * @return The new entity
+     */
+    public net.sf.webcat.core.CourseOffering createGraderForRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createGraderForRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "CourseOffering" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "graderFor" );
+        return (net.sf.webcat.core.CourseOffering)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>graderFor</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteGraderForRelationship( net.sf.webcat.core.CourseOffering value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteGraderForRelationship("
+                + value + "): was " + graderFor() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "graderFor" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>graderFor</code> relationship.
+     */
+    public void deleteAllGraderForRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllGraderForRelationships(): was "
+                + graderFor() );
+        }
+        Enumeration objects = graderFor().objectEnumerator();
+        while ( objects.hasMoreElements() )
+            deleteGraderForRelationship(
+                (net.sf.webcat.core.CourseOffering)objects.nextElement() );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve the entities pointed to by the <code>passwordChangeRequest</code>
      * relationship.
      * @return an NSArray of the entities in the relationship
@@ -1314,184 +1492,6 @@ public abstract class _User
         while ( objects.hasMoreElements() )
             deletePasswordChangeRequestRelationship(
                 (net.sf.webcat.core.PasswordChangeRequest)objects.nextElement() );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve the entities pointed to by the <code>TAFor</code>
-     * relationship.
-     * @return an NSArray of the entities in the relationship
-     */
-    @SuppressWarnings("unchecked")
-    public NSArray<net.sf.webcat.core.CourseOffering> TAFor()
-    {
-        return (NSArray)storedValueForKey( "TAFor" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Replace the list of entities pointed to by the
-     * <code>TAFor</code> relationship.
-     *
-     * @param value The new set of entities to relate to
-     */
-    public void setTAFor( NSMutableArray<net.sf.webcat.core.CourseOffering>  value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "setTAFor("
-                + value + "): was " + TAFor() );
-        }
-        takeStoredValueForKey( value, "TAFor" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Add a new entity to the <code>TAFor</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>addToTAForRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The new entity to relate to
-     */
-    public void addToTAFor( net.sf.webcat.core.CourseOffering value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "addToTAFor("
-                + value + "): was " + TAFor() );
-        }
-        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
-            (NSMutableArray<net.sf.webcat.core.CourseOffering>)TAFor();
-        willChange();
-        array.addObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove a specific entity from the <code>TAFor</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>removeFromTAForRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The entity to remove from the relationship
-     */
-    public void removeFromTAFor( net.sf.webcat.core.CourseOffering value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "RemoveFromTAFor("
-                + value + "): was " + TAFor() );
-        }
-        NSMutableArray<net.sf.webcat.core.CourseOffering> array =
-            (NSMutableArray<net.sf.webcat.core.CourseOffering>)TAFor();
-        willChange();
-        array.removeObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Add a new entity to the <code>TAFor</code>
-     * relationship.
-     *
-     * @param value The new entity to relate to
-     */
-    public void addToTAForRelationship( net.sf.webcat.core.CourseOffering value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "addToTAForRelationship("
-                + value + "): was " + TAFor() );
-        }
-        addObjectToBothSidesOfRelationshipWithKey(
-            value, "TAFor" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove a specific entity from the <code>TAFor</code>
-     * relationship.
-     *
-     * @param value The entity to remove from the relationship
-     */
-    public void removeFromTAForRelationship( net.sf.webcat.core.CourseOffering value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "removeFromTAForRelationship("
-                + value + "): was " + TAFor() );
-        }
-        removeObjectFromBothSidesOfRelationshipWithKey(
-            value, "TAFor" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Create a brand new object that is a member of the
-     * <code>TAFor</code> relationship.
-     *
-     * @return The new entity
-     */
-    public net.sf.webcat.core.CourseOffering createTAForRelationship()
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "createTAForRelationship()" );
-        }
-        EOClassDescription eoClassDesc = EOClassDescription
-            .classDescriptionForEntityName( "CourseOffering" );
-        EOEnterpriseObject eoObject = eoClassDesc
-            .createInstanceWithEditingContext( editingContext(), null );
-        editingContext().insertObject( eoObject );
-        addObjectToBothSidesOfRelationshipWithKey(
-            eoObject, "TAFor" );
-        return (net.sf.webcat.core.CourseOffering)eoObject;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove and then delete a specific entity that is a member of the
-     * <code>TAFor</code> relationship.
-     *
-     * @param value The entity to remove from the relationship and then delete
-     */
-    public void deleteTAForRelationship( net.sf.webcat.core.CourseOffering value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "deleteTAForRelationship("
-                + value + "): was " + TAFor() );
-        }
-        removeObjectFromBothSidesOfRelationshipWithKey(
-            value, "TAFor" );
-        editingContext().deleteObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove (and then delete, if owned) all entities that are members of the
-     * <code>TAFor</code> relationship.
-     */
-    public void deleteAllTAForRelationships()
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "deleteAllTAForRelationships(): was "
-                + TAFor() );
-        }
-        Enumeration objects = TAFor().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteTAForRelationship(
-                (net.sf.webcat.core.CourseOffering)objects.nextElement() );
     }
 
 

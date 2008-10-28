@@ -16,7 +16,6 @@
     attributesUsedForLocking = (courseId, crn, label, moodleGroupId, moodleId, semesterId, url); 
     className = "net.sf.webcat.core.CourseOffering"; 
     classProperties = (
-        TAs, 
         coreSelections, 
         course, 
         crn, 
@@ -26,13 +25,13 @@
         moodleId, 
         semester, 
         students, 
-        url
+        url, 
+        graders
     ); 
     externalName = TCOURSEOFFERING; 
     name = CourseOffering; 
     primaryKeyAttributes = (id); 
     relationships = (
-        {definition = "courseOfferingUsers2.user"; name = TAs; }, 
         {
             destination = Course; 
             isToMany = N; 
@@ -82,6 +81,7 @@
             joins = ({destinationAttribute = id; sourceAttribute = semesterId; }); 
             name = semester; 
         }, 
-        {definition = "courseOfferingUsers.user"; name = students; }
+        {definition = "courseOfferingUsers.user"; name = students; }, 
+        {definition = "courseOfferingUsers2.user"; name = graders; }
     ); 
 }

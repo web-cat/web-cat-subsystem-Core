@@ -145,14 +145,14 @@ public abstract class _CourseOffering
     public static final String SEMESTER_KEY = "semester";
     // To-many relationships ---
     public static final String CORE_SELECTIONS_KEY = "coreSelections";
+    public static final String GRADERS_KEY = "graders";
     public static final String INSTRUCTORS_KEY = "instructors";
     public static final String STUDENTS_KEY = "students";
-    public static final String T_AS_KEY = "TAs";
     // Fetch specifications ---
     public static final String FOR_SEMESTER_FSPEC = "forSemester";
     public static final String WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC = "withoutAnyRelationshipToUser";
     public static final String WITHOUT_STUDENT_FSPEC = "withoutStudent";
-    public static final String WITHOUT_STUDENT_OR_TA_FSPEC = "withoutStudentOrTA";
+    public static final String WITHOUT_STUDENT_OR_GRADER_FSPEC = "withoutStudentOrGrader";
     public static final String WITHOUT_USER_AS_STAFF_FSPEC = "withoutUserAsStaff";
     public static final String ENTITY_NAME = "CourseOffering";
 
@@ -650,6 +650,184 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
+     * Retrieve the entities pointed to by the <code>graders</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.User> graders()
+    {
+        return (NSArray)storedValueForKey( "graders" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>graders</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setGraders( NSMutableArray<net.sf.webcat.core.User>  value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setGraders("
+                + value + "): was " + graders() );
+        }
+        takeStoredValueForKey( value, "graders" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>graders</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToGradersRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToGraders( net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToGraders("
+                + value + "): was " + graders() );
+        }
+        NSMutableArray<net.sf.webcat.core.User> array =
+            (NSMutableArray<net.sf.webcat.core.User>)graders();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>graders</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromGradersRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromGraders( net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromGraders("
+                + value + "): was " + graders() );
+        }
+        NSMutableArray<net.sf.webcat.core.User> array =
+            (NSMutableArray<net.sf.webcat.core.User>)graders();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>graders</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToGradersRelationship( net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToGradersRelationship("
+                + value + "): was " + graders() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "graders" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>graders</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromGradersRelationship( net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromGradersRelationship("
+                + value + "): was " + graders() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "graders" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>graders</code> relationship.
+     *
+     * @return The new entity
+     */
+    public net.sf.webcat.core.User createGradersRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createGradersRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "User" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "graders" );
+        return (net.sf.webcat.core.User)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>graders</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteGradersRelationship( net.sf.webcat.core.User value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteGradersRelationship("
+                + value + "): was " + graders() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "graders" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>graders</code> relationship.
+     */
+    public void deleteAllGradersRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllGradersRelationships(): was "
+                + graders() );
+        }
+        Enumeration objects = graders().objectEnumerator();
+        while ( objects.hasMoreElements() )
+            deleteGradersRelationship(
+                (net.sf.webcat.core.User)objects.nextElement() );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve the entities pointed to by the <code>instructors</code>
      * relationship.
      * @return an NSArray of the entities in the relationship
@@ -1006,184 +1184,6 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Retrieve the entities pointed to by the <code>TAs</code>
-     * relationship.
-     * @return an NSArray of the entities in the relationship
-     */
-    @SuppressWarnings("unchecked")
-    public NSArray<net.sf.webcat.core.User> TAs()
-    {
-        return (NSArray)storedValueForKey( "TAs" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Replace the list of entities pointed to by the
-     * <code>TAs</code> relationship.
-     *
-     * @param value The new set of entities to relate to
-     */
-    public void setTAs( NSMutableArray<net.sf.webcat.core.User>  value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "setTAs("
-                + value + "): was " + TAs() );
-        }
-        takeStoredValueForKey( value, "TAs" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Add a new entity to the <code>TAs</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>addToTAsRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The new entity to relate to
-     */
-    public void addToTAs( net.sf.webcat.core.User value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "addToTAs("
-                + value + "): was " + TAs() );
-        }
-        NSMutableArray<net.sf.webcat.core.User> array =
-            (NSMutableArray<net.sf.webcat.core.User>)TAs();
-        willChange();
-        array.addObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove a specific entity from the <code>TAs</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>removeFromTAsRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The entity to remove from the relationship
-     */
-    public void removeFromTAs( net.sf.webcat.core.User value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "RemoveFromTAs("
-                + value + "): was " + TAs() );
-        }
-        NSMutableArray<net.sf.webcat.core.User> array =
-            (NSMutableArray<net.sf.webcat.core.User>)TAs();
-        willChange();
-        array.removeObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Add a new entity to the <code>TAs</code>
-     * relationship.
-     *
-     * @param value The new entity to relate to
-     */
-    public void addToTAsRelationship( net.sf.webcat.core.User value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "addToTAsRelationship("
-                + value + "): was " + TAs() );
-        }
-        addObjectToBothSidesOfRelationshipWithKey(
-            value, "TAs" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove a specific entity from the <code>TAs</code>
-     * relationship.
-     *
-     * @param value The entity to remove from the relationship
-     */
-    public void removeFromTAsRelationship( net.sf.webcat.core.User value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "removeFromTAsRelationship("
-                + value + "): was " + TAs() );
-        }
-        removeObjectFromBothSidesOfRelationshipWithKey(
-            value, "TAs" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Create a brand new object that is a member of the
-     * <code>TAs</code> relationship.
-     *
-     * @return The new entity
-     */
-    public net.sf.webcat.core.User createTAsRelationship()
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "createTAsRelationship()" );
-        }
-        EOClassDescription eoClassDesc = EOClassDescription
-            .classDescriptionForEntityName( "User" );
-        EOEnterpriseObject eoObject = eoClassDesc
-            .createInstanceWithEditingContext( editingContext(), null );
-        editingContext().insertObject( eoObject );
-        addObjectToBothSidesOfRelationshipWithKey(
-            eoObject, "TAs" );
-        return (net.sf.webcat.core.User)eoObject;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove and then delete a specific entity that is a member of the
-     * <code>TAs</code> relationship.
-     *
-     * @param value The entity to remove from the relationship and then delete
-     */
-    public void deleteTAsRelationship( net.sf.webcat.core.User value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "deleteTAsRelationship("
-                + value + "): was " + TAs() );
-        }
-        removeObjectFromBothSidesOfRelationshipWithKey(
-            value, "TAs" );
-        editingContext().deleteObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove (and then delete, if owned) all entities that are members of the
-     * <code>TAs</code> relationship.
-     */
-    public void deleteAllTAsRelationships()
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "deleteAllTAsRelationships(): was "
-                + TAs() );
-        }
-        Enumeration objects = TAs().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteTAsRelationship(
-                (net.sf.webcat.core.User)objects.nextElement() );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Retrieve object according to the <code>ForSemester</code>
      * fetch specification.
      *
@@ -1301,7 +1301,7 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>WithoutStudentOrTA</code>
+     * Retrieve object according to the <code>WithoutStudentOrGrader</code>
      * fetch specification.
      *
      * @param context The editing context to use
@@ -1309,13 +1309,13 @@ public abstract class _CourseOffering
      * @return an NSArray of the entities retrieved
      */
     @SuppressWarnings("unchecked")
-    public static NSArray<CourseOffering> objectsForWithoutStudentOrTA(
+    public static NSArray<CourseOffering> objectsForWithoutStudentOrGrader(
             EOEditingContext context,
             net.sf.webcat.core.User userBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "withoutStudentOrTA", "CourseOffering" );
+            .fetchSpecificationNamed( "withoutStudentOrGrader", "CourseOffering" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
@@ -1330,7 +1330,7 @@ public abstract class _CourseOffering
         NSArray result = context.objectsWithFetchSpecification( spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForWithoutStudentOrTA(ec"
+            log.debug( "objectsForWithoutStudentOrGrader(ec"
                 + ", " + userBinding
                 + "): " + result );
         }
