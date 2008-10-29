@@ -23,7 +23,7 @@ package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
-import er.extensions.ERXArrayUtilities;
+import er.extensions.foundation.ERXArrayUtilities;
 import java.net.URLEncoder;
 import org.apache.log4j.Logger;
 

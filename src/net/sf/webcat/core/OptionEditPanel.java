@@ -27,7 +27,7 @@ import java.io.*;
 import java.util.Map;
 import java.util.Set;
 import java.util.zip.*;
-import er.extensions.ERXConstant;
+import er.extensions.eof.ERXConstant;
 import org.apache.log4j.*;
 
 //-------------------------------------------------------------------------

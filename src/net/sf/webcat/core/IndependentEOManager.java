@@ -103,7 +103,7 @@ public class IndependentEOManager
         }
         catch (Exception e)
         {
-            return er.extensions.ERXConstant.ZeroInteger;
+            return er.extensions.eof.ERXConstant.ZeroInteger;
         }
     }
 

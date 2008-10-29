@@ -25,7 +25,7 @@ import com.sun.org.apache.xerces.internal.util.URI.MalformedURIException;
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
 
-import er.extensions.ERXValueUtilities;
+import er.extensions.foundation.ERXValueUtilities;
 
 import java.net.MalformedURLException;
 import java.net.URL;

@@ -168,8 +168,8 @@ public class WCConfigurationFile
             Map.Entry e = (Map.Entry)i.next();
             System.setProperty( (String)e.getKey(), e.getValue().toString() );
         }
-        er.extensions.ERXSystem.updateProperties();
-        er.extensions.ERXLogger.configureLoggingWithSystemProperties();
+        er.extensions.foundation.ERXSystem.updateProperties();
+        er.extensions.logging.ERXLogger.configureLoggingWithSystemProperties();
     }
 
 

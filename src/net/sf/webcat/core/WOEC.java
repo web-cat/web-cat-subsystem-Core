@@ -35,7 +35,7 @@ import org.apache.log4j.Logger;
  *  @version $Id$
  */
 public class WOEC
-    extends er.extensions.ERXEC
+    extends er.extensions.eof.ERXEC
 {
     //~ Constructors ..........................................................
 
@@ -83,7 +83,7 @@ public class WOEC
 
     // ----------------------------------------------------------
     public static class WOECFactory
-        extends er.extensions.ERXEC.DefaultFactory
+        extends er.extensions.eof.ERXEC.DefaultFactory
     {
         protected EOEditingContext _createEditingContext( EOObjectStore parent )
         {
@@ -97,7 +97,7 @@ public class WOEC
     // ----------------------------------------------------------
     public static void installWOECFactory()
     {
-        er.extensions.ERXEC.setFactory( new WOECFactory() );
+        er.extensions.eof.ERXEC.setFactory( new WOECFactory() );
     }
 
 

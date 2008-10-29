@@ -24,16 +24,16 @@ package net.sf.webcat.core;
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
 import er.extensions.ERXExtensions;
-import er.extensions.ERXGenericRecord;
-import er.extensions.ERXLocalizer;
+import er.extensions.eof.ERXGenericRecord;
+import er.extensions.localization.ERXLocalizer;
 import java.util.Enumeration;
 
 //-------------------------------------------------------------------------
 /**
  * Provides a standard component for displaying error message(s) on
  * pages.  This class is based significantly on
- * {@link er.extensions.ERXErrorDictionaryPanel}, but cannot be a subclass
- * of that component because of some of the behaviors it supports (the
+ * {@link er.extensions.components.ERXErrorDictionaryPanel}, but cannot be a
+ * subclass of that component because of some of the behaviors it supports (the
  * other class' appendToResponse() method includes handling that cannot be
  * easily overridden, and assumes the content of the error map is essentially
  * a string-to-string map).  As a result, there is a fair amount of
@@ -44,7 +44,7 @@ import java.util.Enumeration;
  * @version $Id$
  */
 public class ErrorDictionaryPanel
-    extends er.extensions.ERXStatelessComponent
+    extends er.extensions.components.ERXStatelessComponent
 {
     //~ Constructors ..........................................................
 
@@ -274,12 +274,12 @@ public class ErrorDictionaryPanel
                 }
             }
         }
-        if ( er.extensions.ERXValueUtilities.booleanValue(
+        if ( er.extensions.foundation.ERXValueUtilities.booleanValue(
             valueForBinding( "shouldShowNewlineAbove" ) ) )
         {
             style += " nlbefore";
         }
-        if ( er.extensions.ERXValueUtilities.booleanValue(
+        if ( er.extensions.foundation.ERXValueUtilities.booleanValue(
             valueForBinding( "shouldShowNewlineBelow" ) ) )
         {
             style += " nlafter";

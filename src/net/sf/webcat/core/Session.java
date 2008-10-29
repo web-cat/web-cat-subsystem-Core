@@ -25,7 +25,7 @@ import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
-import er.extensions.ERXMutableDictionary;
+import er.extensions.foundation.ERXMutableDictionary;
 import java.util.*;
 
 import net.sf.webcat.core.WOEC.*;
@@ -41,7 +41,7 @@ import org.apache.log4j.Level;
  * @version $Id$
  */
 public class Session
-    extends er.extensions.ERXSession
+    extends er.extensions.appserver.ERXSession
 {
     //~ Constructors ..........................................................
 

@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
  * @version $Id$
  */
 public class LockErrorScreamerEditingContext
-    extends er.extensions.ERXEC
+    extends er.extensions.eof.ERXEC
 {
     //~ Constructors ..........................................................
 

@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
  * @version version suppressed to control auto-generation
  */
 public abstract class _AuthenticationDomain
-    extends er.extensions.ERXGenericRecord
+    extends er.extensions.eof.ERXGenericRecord
 {
     //~ Constructors ..........................................................
 
@@ -128,7 +128,7 @@ public abstract class _AuthenticationDomain
     public static AuthenticationDomain forId(
         EOEditingContext ec, String id )
     {
-        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
+        return forId( ec, er.extensions.foundation.ERXValueUtilities.intValue( id ) );
     }
 
 
@@ -191,7 +191,7 @@ public abstract class _AuthenticationDomain
         }
         catch (Exception e)
         {
-            return er.extensions.ERXConstant.ZeroInteger;
+            return er.extensions.eof.ERXConstant.ZeroInteger;
         }
     }
 

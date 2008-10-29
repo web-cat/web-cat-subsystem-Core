@@ -271,7 +271,7 @@ public class Semester
 
     // ----------------------------------------------------------
     /* (non-Javadoc)
-     * @see er.extensions.ERXGenericRecord#didUpdate()
+     * @see er.extensions.eof.ERXGenericRecord#didUpdate()
      */
     public void didUpdate()
     {

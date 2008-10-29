@@ -354,7 +354,7 @@ public class CourseOffering
 
     // ----------------------------------------------------------
     /* (non-Javadoc)
-     * @see er.extensions.ERXGenericRecord#didUpdate()
+     * @see er.extensions.eof.ERXGenericRecord#didUpdate()
      */
     public void didUpdate()
     {

@@ -22,7 +22,7 @@
 package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
-import er.extensions.ERXFileUtilities;
+import er.extensions.foundation.ERXFileUtilities;
 import java.io.*;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
@@ -54,7 +54,7 @@ import org.apache.log4j.Logger;
  *  @version $Id$
  */
 public class MutableDictionary
-    extends er.extensions.ERXMutableDictionary
+    extends er.extensions.foundation.ERXMutableDictionary
     implements MutableContainer
 {
     //~ Constructors ..........................................................
@@ -212,7 +212,7 @@ public class MutableDictionary
      * compatible with the method in the base class, but the actual object
      * belongs to this subclass)
      */
-    public static er.extensions.ERXMutableDictionary fromPropertyList(
+    public static er.extensions.foundation.ERXMutableDictionary fromPropertyList(
         String plist )
     {
         NSDictionary dict = (NSDictionary)NSPropertyListSerialization.

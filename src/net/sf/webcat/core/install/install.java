@@ -24,8 +24,8 @@ package net.sf.webcat.core.install;
 import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.*;
-import er.extensions.ERXDirectAction;
-import er.extensions.ERXValueUtilities;
+import er.extensions.appserver.ERXDirectAction;
+import er.extensions.foundation.ERXValueUtilities;
 import net.sf.webcat.core.*;
 import org.apache.log4j.Logger;
 

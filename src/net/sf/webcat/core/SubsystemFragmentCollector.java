@@ -76,7 +76,10 @@ public class SubsystemFragmentCollector
             bindingDefinitions = wodBuffer.toString();
             log.debug( "bindingDefinitions =\n" + bindingDefinitions );
         }
-        return templateWithHTMLString( htmlTemplate, bindingDefinitions, null );
+        return templateWithHTMLString( null, null,
+                htmlTemplate, bindingDefinitions, null,
+                Application.application().associationFactoryRegistry(),
+                Application.application().namespaceProvider());
     }
 
 

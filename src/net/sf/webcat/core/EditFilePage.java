@@ -24,7 +24,7 @@ package net.sf.webcat.core;
 import com.webobjects.foundation.*;
 import com.webobjects.appserver.*;
 
-import er.extensions.ERXFileUtilities;
+import er.extensions.foundation.ERXFileUtilities;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.zip.ZipFile;

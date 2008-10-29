@@ -89,7 +89,7 @@ public class LoggedError
         }
         else
         {
-            result = (LoggedError)er.extensions.ERXEOControlUtilities
+            result = (LoggedError)er.extensions.eof.ERXEOControlUtilities
                 .createAndInsertObject( context, ENTITY_NAME );
             result.setLine( top.getLineNumber() );
             result.setExceptionName( throwable.getClass().getName() );

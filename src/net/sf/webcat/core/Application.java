@@ -26,7 +26,8 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import com.webobjects.woextensions.*;
-import er.extensions.*;
+import er.extensions.appserver.*;
+import er.extensions.foundation.*;
 import java.io.File;
 import java.io.StringWriter;
 import java.io.PrintWriter;
@@ -51,7 +52,7 @@ import org.apache.log4j.Logger;
  * @version $Id$
  */
 public class Application
-	extends er.extensions.ERXApplication
+	extends er.extensions.appserver.ERXApplication
 {
     //~ Constructors ..........................................................
 
@@ -171,7 +172,7 @@ public class Application
      */
     public static void main( String argv[] )
     {
-        er.extensions.ERXApplication.main( argv, Application.class );
+        er.extensions.appserver.ERXApplication.main( argv, Application.class );
     }
 
 
@@ -700,7 +701,7 @@ public class Application
     /**
      * Overrides parent implementation to add heap check and force
      * garbage collection when necessary.
-     * @see er.extensions.ERXApplication#dispatchRequest(com.webobjects.appserver.WORequest)
+     * @see er.extensions.appserver.ERXApplication#dispatchRequest(com.webobjects.appserver.WORequest)
      */
     public WOResponse dispatchRequest( WORequest aRequest )
     {
@@ -904,7 +905,7 @@ public class Application
      *        happening when the exception was thrown
      * @param context   the context in which the exception occurred
      * @return an error page
-     * @see er.extensions.ERXApplication#reportException(java.lang.Throwable, com.webobjects.foundation.NSDictionary)
+     * @see er.extensions.appserver.ERXApplication#reportException(java.lang.Throwable, com.webobjects.foundation.NSDictionary)
      */
     public WOResponse reportException( Exception    exception,
                                        NSDictionary extraInfo,
@@ -1573,7 +1574,7 @@ public class Application
      */
     public static EOEditingContext newPeerEditingContext()
     {
-        EOEditingContext result = er.extensions.ERXEC.newEditingContext();
+        EOEditingContext result = er.extensions.eof.ERXEC.newEditingContext();
         result.setUndoManager( null );
         return result;
     }
@@ -1679,7 +1680,7 @@ public class Application
 
     // ----------------------------------------------------------
     /* (non-Javadoc)
-     * @see er.extensions.ERXApplication#killInstance()
+     * @see er.extensions.appserver.ERXApplication#killInstance()
      */
     public void killInstance()
     {
@@ -2263,17 +2264,17 @@ public class Application
     @SuppressWarnings( "unused" )
     private static er.extensions.ERXExtensions forcedInitialization1 = null;
     @SuppressWarnings( "unused" )
-    private static er.extensions.ERXProperties forcedInitialization2 = null;
+    private static er.extensions.foundation.ERXProperties forcedInitialization2 = null;
 
     public static int userCount = 0;
 
     private static final int maxAttachmentSize = 100000; // bytes
 
-    // Add more options here (e.g. for IIS, NSAPI, etc.), if neccessary...
+    // Add more options here (e.g. for IIS, NSAPI, etc.), if necessary...
     private static final NSArray HOST_NAME_KEYS = new NSArray(new Object[]
         {"x-webobjects-server-name", "server_name", "Host", "http_host"});
 
-    // Add more options here (e.g. for IIS, NSAPI, etc.), if neccessary...
+    // Add more options here (e.g. for IIS, NSAPI, etc.), if necessary...
     private static final NSArray SERVER_PORT_KEYS = new NSArray(new Object[]
         {"x-webobjects-server-port", "SERVER_PORT"});
 

@@ -23,7 +23,7 @@ package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
 import com.webobjects.foundation.NSComparator.*;
-import er.extensions.ERXValueUtilities;
+import er.extensions.foundation.ERXValueUtilities;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 

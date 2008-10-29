@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
  * @version version suppressed to control auto-generation
  */
 public abstract class _Semester
-    extends er.extensions.ERXGenericRecord
+    extends er.extensions.eof.ERXGenericRecord
 {
     //~ Constructors ..........................................................
 
@@ -131,7 +131,7 @@ public abstract class _Semester
     public static Semester forId(
         EOEditingContext ec, String id )
     {
-        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
+        return forId( ec, er.extensions.foundation.ERXValueUtilities.intValue( id ) );
     }
 
 
@@ -191,7 +191,7 @@ public abstract class _Semester
         }
         catch (Exception e)
         {
-            return er.extensions.ERXConstant.ZeroInteger;
+            return er.extensions.eof.ERXConstant.ZeroInteger;
         }
     }
 
@@ -312,7 +312,7 @@ public abstract class _Semester
                 + value + "): was " + year() );
         }
         Integer actual =
-            er.extensions.ERXConstant.integerForInt( value );
+            er.extensions.eof.ERXConstant.integerForInt( value );
             setYearRaw( actual );
     }
 

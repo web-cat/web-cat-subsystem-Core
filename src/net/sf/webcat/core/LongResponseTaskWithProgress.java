@@ -21,7 +21,7 @@
 
 package net.sf.webcat.core;
 
-import er.extensions.ERXLongResponseTask;
+import er.extensions.concurrency.ERXLongResponseTask;
 
 //-------------------------------------------------------------------------
 /**

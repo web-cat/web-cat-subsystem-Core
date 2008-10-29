@@ -23,6 +23,8 @@ package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
 import com.webobjects.woextensions.*;
+import er.extensions.components.ERXComponentUtilities;
+import er.extensions.foundation.ERXValueUtilities;
 
 public class WCCollapsibleSection
     extends WOComponent
@@ -117,7 +119,7 @@ public class WCCollapsibleSection
     {
         if (hasBinding("level"))
         {
-            return er.extensions.ERXValueUtilities.intValueWithDefault(
+            return ERXValueUtilities.intValueWithDefault(
                 valueForBinding("level"), 2);
         }
         else
@@ -139,7 +141,7 @@ public class WCCollapsibleSection
         {
             initiallyExpanded = Boolean.valueOf(
                 !hasBinding("initiallyExpanded")
-                || er.extensions.ERXComponentUtilities.booleanValueForBinding(
+                || ERXComponentUtilities.booleanValueForBinding(
                     this, "initiallyExpanded", true));
         }
         return initiallyExpanded;

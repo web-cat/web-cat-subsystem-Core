@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
  *  @version $Id$
  */
 public class WCResourceManager
-    extends er.extensions.ERXResourceManager
+    extends er.extensions.appserver.ERXResourceManager
 {
     //~ Constructors ..........................................................
 

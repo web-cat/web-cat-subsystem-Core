@@ -23,7 +23,7 @@ package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
 
-import er.extensions.*;
+import er.extensions.concurrency.ERXLongResponse;
 
 //-------------------------------------------------------------------------
 /**

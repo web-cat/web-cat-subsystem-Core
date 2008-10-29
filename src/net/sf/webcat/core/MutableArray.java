@@ -43,7 +43,7 @@ import org.apache.log4j.Logger;
  *  @version $Id$
  */
 public class MutableArray
-    extends er.extensions.ERXMutableArray
+    extends er.extensions.foundation.ERXMutableArray
     implements MutableContainer
 {
     //~ Constructors ..........................................................
@@ -294,7 +294,7 @@ public class MutableArray
      * compatible with the method in the base class, but the actual object
      * belongs to this subclass)
      */
-    public static er.extensions.ERXMutableArray fromPropertyList(
+    public static er.extensions.foundation.ERXMutableArray fromPropertyList(
         String plist )
     {
         NSArray a = (NSArray)NSPropertyListSerialization.

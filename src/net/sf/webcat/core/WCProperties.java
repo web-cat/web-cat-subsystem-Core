@@ -22,8 +22,8 @@
 package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
-import er.extensions.ERXProperties;
-import er.extensions.ERXValueUtilities;
+import er.extensions.foundation.ERXProperties;
+import er.extensions.foundation.ERXValueUtilities;
 import java.io.*;
 import java.math.BigDecimal;
 import java.util.*;

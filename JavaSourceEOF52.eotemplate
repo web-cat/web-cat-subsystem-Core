@@ -49,7 +49,7 @@ import org.apache.log4j.Logger;
    this class as being abstract, since it should never be instantiated.
 *#public abstract class ${entity.prefixClassNameWithoutPackage}
     extends #if ($entity.parentSet)${entity.parent.className}
-#{else}er.extensions.ERXGenericRecord
+#{else}er.extensions.eof.ERXGenericRecord
 #end
 #set ($alreadyFoundMutableAttribute = false)
 #foreach ($attribute in $entity.sortedClassAttributes)
@@ -170,7 +170,7 @@ import org.apache.log4j.Logger;
     public static ${entity.classNameWithoutPackage} forId(
         EOEditingContext ec, String id )
     {
-        return forId( ec, er.extensions.ERXValueUtilities.intValue( id ) );
+        return forId( ec, er.extensions.foundation.ERXValueUtilities.intValue( id ) );
     }
 
 
@@ -245,7 +245,7 @@ import org.apache.log4j.Logger;
         }
         catch (Exception e)
         {
-            return er.extensions.ERXConstant.ZeroInteger;
+            return er.extensions.eof.ERXConstant.ZeroInteger;
         }
     }
 
@@ -387,11 +387,11 @@ import org.apache.log4j.Logger;
         }
         ${attribute.javaClassName} actual =
 #if ($attribute.userInfo.type eq "boolean")
-            er.extensions.ERXConstant.integerForInt( value ? 1 : 0 );
+            er.extensions.eof.ERXConstant.integerForInt( value ? 1 : 0 );
 #elseif ($attribute.userInfo.type eq "int"
       || $attribute.userInfo.type eq "byte"
       || $attribute.userInfo.type eq "short")
-            er.extensions.ERXConstant.integerForInt( value );
+            er.extensions.eof.ERXConstant.integerForInt( value );
 #else
             new ${attribute.userInfo.valueClassName}( value );
 #end

@@ -23,7 +23,7 @@ package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
-import er.extensions.ERXValueUtilities;
+import er.extensions.foundation.ERXValueUtilities;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
