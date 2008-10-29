@@ -1592,6 +1592,35 @@ public class Application
 
 
     // ----------------------------------------------------------
+    /**
+     * Creates a new read-only editing context, typically used to prevent
+     * outside code (such as report template expressions) from modifying the
+     * contents of the object store.
+     * 
+     * @return the new editing context
+     */
+    public static ReadOnlyEditingContext newReadOnlyEditingContext()
+    {
+        ReadOnlyEditingContext result = new ReadOnlyEditingContext();
+        result.setUndoManager( null );
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Used to get rid of a read-only editing context that will no longer be
+     * used.
+     * @param ec the editing context to release
+     */
+    public static void releaseReadOnlyEditingContext( 
+            ReadOnlyEditingContext ec )
+    {
+        ec.dispose();
+    }
+
+
+    // ----------------------------------------------------------
     @SuppressWarnings( "deprecation" )
     public void refuseNewSessions( boolean arg0 )
     {
