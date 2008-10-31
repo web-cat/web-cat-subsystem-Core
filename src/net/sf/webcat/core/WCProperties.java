@@ -777,6 +777,266 @@ public class WCProperties
 
     // ----------------------------------------------------------
     /**
+     * Attempts to coerce the string value of a property into its "actual" type,
+     * based on what it looks like. If it starts with a parenthesis, we try it
+     * as an array. If it starts with a brace, we try it as a dictionary.
+     * Otherwise, we try it as a number, and then fall back to the string itself
+     * if these fail.
+     *
+     * @param property the string value of the property to coerce
+     * @param numericsOnly if true, attempt only the numeric and boolean
+     *     conversions, leaving out the array/dictionary ones. This is used
+     *     when recursively coercing the values in a dictionary or array
+     * @return the coerced value of the property
+     */
+    private Object tryToCoercePropertyValue( String property,
+            boolean numericsOnly )
+    {
+        Object coercedValue = null;
+
+        if ( property.startsWith( "(" ) )
+        {
+            // Try to parse the value as an array
+            coercedValue = ERXValueUtilities.arrayValue( property );
+            
+            if ( coercedValue != null )
+            {
+                // If we got an array, recursively perform conversions of
+                // values that look like numbers or booleans.
+                
+                coercedValue = recursivelyCoerceArrayValues(
+                        (NSArray) coercedValue );
+            }
+        }
+
+        if ( coercedValue == null && property.startsWith( "{" ) )
+        {
+            // Try to parse the value as a dictionary
+            coercedValue = ERXValueUtilities.dictionaryValue( property );
+
+            if ( coercedValue != null )
+            {
+                // If we got a dictionary, recursively perform conversions of
+                // values that look like numbers or booleans.
+                
+                coercedValue = recursivelyCoerceDictionaryValues(
+                        (NSDictionary) coercedValue );
+            }
+        }
+
+        if ( "true".equalsIgnoreCase( property ) ||
+                "false".equalsIgnoreCase( property ) )
+        {
+            // Parse the value as a boolean.
+            coercedValue = Boolean.valueOf( property );
+        }
+
+        if ( coercedValue == null )
+        {
+            // Try to parse it as a number (integer, long, then floating point)
+            coercedValue = tryToParseAsNumber( property );
+        }
+
+        if ( coercedValue == null )
+        {
+            // All coercions failed, just keep the string
+            coercedValue = property;
+        }
+
+        return coercedValue;
+    }
+
+
+    // ------------------------------------------------
+    /**
+     * Walks through an array (and recursively through any nested arrays or
+     * dictionaries) and converts any string values that look like numbers into
+     * their actual numeric type.
+     * 
+     * @param array the array of objects to convert
+     * @return a new array containing the converted items
+     */
+    private NSArray recursivelyCoerceArrayValues( NSArray array )
+    {
+        if (array == null)
+        {
+            return null;
+        }
+        else
+        {
+            NSMutableArray newArray = new NSMutableArray();
+
+            for (Object value : array)
+            {
+                Object newValue = null;
+
+                if (value instanceof String)
+                {
+                    newValue = tryToCoercePropertyValue( (String) value, true );
+                    
+                    if (newValue == null)
+                    {
+                        newValue = value;
+                    }
+                }
+                else if (value instanceof NSArray)
+                {
+                    newValue = recursivelyCoerceArrayValues( (NSArray) value );
+                }
+                else if (value instanceof NSDictionary)
+                {
+                    newValue = recursivelyCoerceDictionaryValues(
+                            (NSDictionary) value );
+                }
+                else
+                {
+                    newValue = value;
+                }
+                
+                if (newValue != null)
+                {
+                    newArray.addObject(newValue);
+                }
+            }
+
+            return newArray;
+        }
+    }
+    
+    
+    // ------------------------------------------------
+    /**
+     * Walks through a dictionary (and recursively through any nested arrays or
+     * dictionaries) and converts any string values that look like numbers into
+     * their actual numeric type.
+     * 
+     * @param dictionary the dictionary of objects to convert
+     * @return a new dictionary containing the converted items
+     */
+    private NSDictionary recursivelyCoerceDictionaryValues(
+            NSDictionary dictionary )
+    {
+        if (dictionary == null)
+        {
+            return null;
+        }
+        else
+        {
+            NSMutableDictionary newDictionary = new NSMutableDictionary();
+
+            for (Object key : dictionary.allKeys())
+            {
+                Object value = dictionary.objectForKey(key);
+                Object newValue = null;
+
+                if (value instanceof String)
+                {
+                    newValue = tryToCoercePropertyValue( (String) value, true );
+                    
+                    if (newValue == null)
+                    {
+                        newValue = value;
+                    }
+                }
+                else if (value instanceof NSArray)
+                {
+                    newValue = recursivelyCoerceArrayValues( (NSArray) value );
+                }
+                else if (value instanceof NSDictionary)
+                {
+                    newValue = recursivelyCoerceDictionaryValues(
+                            (NSDictionary) value );
+                }
+                else
+                {
+                    newValue = value;
+                }
+                
+                if (newValue != null)
+                {
+                    newDictionary.setObjectForKey(newValue, key);
+                }
+            }
+
+            return newDictionary;
+        }
+    }
+
+    
+    // ----------------------------------------------------------
+    /**
+     * Tries to parse the specified string as a number; try this in order of
+     * "ascending precision", more or less: Integer, Long, Double, and finally
+     * BigDecimal.
+     *
+     * @param stringValue the string to try to parse as a number
+     * @return if successful, a Number object representing the numerical value
+     * of the string; otherwise, null
+     */
+    private Number tryToParseAsNumber( String stringValue )
+    {
+        Number number = null;
+
+        try
+        {
+            number = Integer.valueOf( stringValue );
+        }
+        catch (NumberFormatException e)
+        {
+            // Do nothing, number is still null.
+        }
+
+        try
+        {
+            number = Integer.valueOf( stringValue );
+        }
+        catch (NumberFormatException e)
+        {
+            // Do nothing, number is still null.
+        }
+
+        if ( number == null )
+        {
+            try
+            {
+                number = Long.valueOf( stringValue );
+            }
+            catch (NumberFormatException e)
+            {
+                // Do nothing, number is still null.
+            }
+        }
+
+        if ( number == null )
+        {
+            try
+            {
+                number = Double.valueOf( stringValue );
+            }
+            catch (NumberFormatException e)
+            {
+                // Do nothing, number is still null.
+            }
+        }
+
+        if ( number == null )
+        {
+            try
+            {
+                number = new BigDecimal( stringValue );
+            }
+            catch (NumberFormatException e)
+            {
+                // Do nothing, number is still null.
+            }
+        }
+
+        return number;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Sets the receiver's value for the property identified by key
      * to value.  If the value is null, the property is removed
      * from the current property object.  This will <b>not</b>
@@ -856,14 +1116,37 @@ public class WCProperties
 
     // ----------------------------------------------------------
     /**
-     * Returns the value bound to the given key.
+     * Returns the value bound to the given key. 
      *
      * @param key   The name of the property to fetch
      * @return      Its value, or null if there is no binding
      */
     public Object valueForKey( String key )
     {
-        return getProperty( key );
+        String result = getProperty( key );
+        
+        if ( result != null )
+        {
+            return tryToCoercePropertyValue( result, false );
+        }
+        else
+        {
+            // AJA 2008-10-31: if the property name starts with "raw." and it's
+            // not a property in its own right, then chop off the "raw." part
+            // and get the property with that name as its literal string value.
+            if (key.startsWith("raw."))
+            {
+                key = key.substring(4);
+
+                result = getProperty( key );
+                if ( result != null )
+                {
+                    return result;
+                }
+            }
+            
+            return null;
+        }
     }
 
 
@@ -881,13 +1164,28 @@ public class WCProperties
     public Object valueForKeyPath( String keyPath )
     {
         log.debug( "valueForKeyPath(" + keyPath + ")" );
-        Object result = getProperty( keyPath );
+
+        String result = getProperty( keyPath );
         if ( result != null )
         {
-            return result;
+            return tryToCoercePropertyValue( result, false );
         }
         else
         {
+            // AJA 2008-10-31: if the property name starts with "raw." and it's
+            // not a property in its own right, then chop off the "raw." part
+            // and get the property with that name as its literal string value.
+            if (keyPath.startsWith("raw."))
+            {
+                keyPath = keyPath.substring(4);
+
+                result = getProperty( keyPath );
+                if ( result != null )
+                {
+                    return result;
+                }
+            }
+
             return NSKeyValueCodingAdditions.DefaultImplementation
                 .valueForKeyPath( this, keyPath );
         }
