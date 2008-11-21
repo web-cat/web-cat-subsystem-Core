@@ -516,7 +516,7 @@ public class Application
         }
         if ( urlHostPrefix != null )
         {
-            dest = dest.replaceFirst( "^http(s)?://[^/]*", urlHostPrefix );
+            dest = dest.replaceFirst( "^http(s)?://[^/]*(/)?", urlHostPrefix );
         }
         dest = dest.replaceFirst( "^http(s)?:",
             "http"
@@ -1176,7 +1176,23 @@ public class Application
             message.setContent( multipart );
 
             // Send the message
-            javax.mail.Transport.send( message );
+            if ("donotsendmail".equals(
+                    configurationProperties().getProperty( "mail.smtp.host" )))
+            {
+            	if (log.isDebugEnabled())
+            	{
+            		log.debug( "E-MAIL DISABLED: unsent message:\nTo: "
+                        + ( to == null ? "null" : to )
+                        + "\ntoAdmins: " + toAdmins
+                        + "\nSubject: " + ( subject == null ? "null" : subject )
+                        + "\nBody:\n" + ( body == null ? "null" : body )
+                        );
+            	}
+            }
+            else
+            {
+            	javax.mail.Transport.send( message );
+            }
         }
         catch ( Exception e )
         {
