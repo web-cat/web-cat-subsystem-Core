@@ -271,7 +271,7 @@ public class OptionEditPanel
     // ----------------------------------------------------------
     public Object choiceLabel()
     {
-        Object result = choice.objectForKey( "label" );
+        Object result = choice == null ? null : choice.objectForKey( "label" );
         if ( result == null )
         {
             result = choiceValue();
@@ -283,7 +283,7 @@ public class OptionEditPanel
     // ----------------------------------------------------------
     public Object choiceValue()
     {
-        return choice.objectForKey( "value" );
+        return choice == null ? null : choice.objectForKey( "value" );
     }
 
 
