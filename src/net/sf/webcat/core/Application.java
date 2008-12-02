@@ -1637,6 +1637,34 @@ public class Application
 
 
     // ----------------------------------------------------------
+    /**
+     * Creates a new migrating editing context, used to handle the updating of
+     * objects when migrating their attribute values.
+     * 
+     * @return the new editing context
+     */
+    public static MigratingEditingContext newMigratingEditingContext()
+    {
+        MigratingEditingContext result = new MigratingEditingContext();
+        result.setUndoManager( null );
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Used to get rid of a migrating editing context that will no longer be
+     * used.
+     * @param ec the editing context to release
+     */
+    public static void releaseMigratingEditingContext( 
+            MigratingEditingContext ec )
+    {
+        ec.dispose();
+    }
+
+
+    // ----------------------------------------------------------
     @SuppressWarnings( "deprecation" )
     public void refuseNewSessions( boolean arg0 )
     {

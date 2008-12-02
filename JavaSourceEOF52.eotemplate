@@ -58,6 +58,13 @@ import org.apache.log4j.Logger;
 #set ($alreadyFoundMutableAttribute = true)
 #end
 #end
+#set ($alreadyFoundMigratoryAttribute = false)
+#foreach ($attribute in $entity.sortedClassAttributes)
+#if ($attribute.userInfo.needsMigration && !$alreadyFoundMigratoryAttribute)
+    implements net.sf.webcat.core.MigratoryAttributeOwner
+#set ($alreadyFoundMigratoryAttribute = true)
+#end
+#end
 {
     //~ Constructors ..........................................................
 
@@ -511,6 +518,67 @@ import org.apache.log4j.Logger;
 
 #end
 #end## has mutables
+#set ($alreadyFoundMigratoryAttribute = false)
+#foreach ($attribute in $entity.sortedClassAttributes)## has migratory attributes
+#if ($attribute.userInfo.needsMigration && !$alreadyFoundMigratoryAttribute)
+#set ($alreadyFoundMigratoryAttribute = true)
+    // ----------------------------------------------------------
+    @Override
+    public void awakeFromFetch(EOEditingContext ec)
+    {
+        super.awakeFromFetch(ec);
+
+        // Only try to migrate if the EC isn't a migrating context. If it is,
+        // we're already trying to migrate and this "awake" is coming from the
+        // child migration context.
+        
+        if (!(ec instanceof net.sf.webcat.core.MigratingEditingContext))
+        {
+            migrateAttributeValuesIfNeeded();
+        }
+    }
+    
+    
+    // ----------------------------------------------------------
+    /**
+     * Called by {@link #awake} to migrate attribute values if needed when the
+     * object is retrieved.
+     */
+    public void migrateAttributeValuesIfNeeded()
+    {
+        log.debug("migrateAttributeValuesIfNeeded()");
+
+#set ($alreadyFoundOneMigratoryAttribute = false)
+        if ( #foreach ($attribute in $entity.sortedClassAttributes)
+#if ($attribute.userInfo.needsMigration)
+#if ($alreadyFoundOneMigratoryAttribute)
+
+            || #end
+${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
+#end
+#end )
+        {
+            net.sf.webcat.core.MigratingEditingContext mec =
+                net.sf.webcat.core.Application.newMigratingEditingContext();
+            ${entity.classNameWithoutPackage} migratingObject = localInstance(mec);
+
+#foreach ($attribute in $entity.sortedClassAttributes)
+#if ($attribute.userInfo.needsMigration)
+            if ( migratingObject.${attribute.name}Raw() == null )
+            {
+                migratingObject.${attribute.name}();
+            }
+    
+#end
+#end
+            mec.saveChanges();
+            net.sf.webcat.core.Application.releaseMigratingEditingContext(mec);
+        }
+    }
+
+
+#end
+#end## has migratory attributes
 #*
    Add methods to call named fetch specifications, with any qualifier bindings
    having typed parameters.
