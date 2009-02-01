@@ -24,7 +24,11 @@ package net.sf.webcat.core;
 import org.apache.log4j.Logger;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
+import com.webobjects.eocontrol.EOFetchSpecification;
 import com.webobjects.eocontrol.EOGlobalID;
+import com.webobjects.eocontrol.EOQualifier;
+import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSMutableArray;
 import er.extensions.eof.ERXEC;
 
 //-------------------------------------------------------------------------
@@ -46,6 +50,38 @@ import er.extensions.eof.ERXEC;
 public class ReadOnlyEditingContext extends ERXEC
 {
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    @Override
+    public NSArray objectsWithFetchSpecification(EOFetchSpecification fspec,
+            EOEditingContext ec)
+    {
+        // Augment the qualifier and use that for the original database fetch.
+        EOFetchSpecification augFspec = (EOFetchSpecification) fspec.clone();
+
+        EOQualifier q = fspec.qualifier();
+        
+        QualifierAugmenter augmenter = new QualifierAugmenter(
+                fspec.entityName(), q);
+        augFspec.setQualifier(augmenter.augmentedQualifier());
+
+        NSArray objects = super.objectsWithFetchSpecification(augFspec, ec);
+
+        if (augmenter.isSignificantDifference())
+        {
+            // Since the objects have been fetched, this has caused their
+            // migratory attributes to be populated. We can now filter this
+            // array in-memory with the original qualifier.
+
+            if (!fspec.fetchesRawRows())
+            {
+                objects = EOQualifier.filteredArrayWithQualifier(objects, q);
+            }
+        }
+
+        return objects;
+    }
+
 
     // ----------------------------------------------------------
     @Override

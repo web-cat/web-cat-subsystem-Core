@@ -21,6 +21,7 @@
 
 package net.sf.webcat.core;
 
+import com.webobjects.eocontrol.EOEditingContext;
 import er.extensions.eof.ERXEC;
 
 //-------------------------------------------------------------------------
@@ -36,5 +37,16 @@ import er.extensions.eof.ERXEC;
  */
 public class MigratingEditingContext extends ERXEC
 {
-    // No new functionality added.
+    // ----------------------------------------------------------
+    public MigratingEditingContext()
+    {
+        super();
+    }
+    
+
+    // ----------------------------------------------------------
+    public MigratingEditingContext(EOEditingContext parent)
+    {
+        super(parent);
+    }
 }
