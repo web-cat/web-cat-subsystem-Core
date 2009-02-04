@@ -1,0 +1,21 @@
+Proxy : AjaxProxy {
+	name = JSONBridgeName;
+	proxyName = componentProxyName;
+}
+
+Tree : net.sf.webcat.ui.WCTree {
+	id = id;
+	cssClass = cssClass;
+	style = style;
+	model = model;
+	decorators = decorators;
+	cookieName = cookieName;
+	openOnClick = openOnClick;
+	persist = persist;
+	rootLabel = rootLabel;
+	showRoot = showRoot;
+	otherTagString = additionalAttributes;
+}
+
+ComponentContent : WOComponentContent {
+}

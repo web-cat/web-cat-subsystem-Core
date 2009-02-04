@@ -1,0 +1,6 @@
+<wo name="Proxy" />
+<wo name="Tree">
+	<script type="dojo/connect">this.checkTreeProxy = <wo:str value="$fullProxyReference" />;</script>
+	<script type="dojo/method" event="decorateNode" args="node">CheckTree_decorateNode(this, node, "<wo:str value="$checkboxName" />");</script>
+	<wo name="ComponentContent" />
+</wo>

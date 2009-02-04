@@ -1,0 +1,3 @@
+<a <wo:if condition="$properties.cssClass">class="<wo:str value="$properties.cssClass"/>"</wo:if><wo:if condition="$properties.style">style="<wo:str value="$properties.style"/>"</wo:if> href="<wo:WOActionURL action="$performAction"/>" onclick="<wo:str value="$jsWrapperID"/>.selectOnlyObjectAtIndexInBatch(<wo:str value="$indexInBatch"/>, { synchronous: true });">
+<wo:str value="$formattedValue"/>
+</a>

@@ -1,0 +1,61 @@
+Proxy : AjaxProxy {
+	name = JSONBridgeName;
+	proxyName = componentProxyName;
+}
+
+ContentPane : WCContentPane {
+	id = updateContainerID;
+}
+
+Columns : WORepetition {
+	list = columns;
+	item = columnInRepetition;
+	index = columnIndexInRepetition;
+}
+
+GoToBeginning : WCButton {
+	iconClass = "webcatObjectTableIcon webcatObjectTableIconFirst";
+	label = "Go to first batch";
+	showLabel = false;
+	action = goToFirstBatch;
+	remote.refreshPanes = updateContainerID;
+}
+
+GoBack : WCButton {
+	iconClass = "webcatObjectTableIcon webcatObjectTableIconPrevious";
+	label = "Go to previous batch";
+	showLabel = false;
+	action = goToPreviousBatch;
+	remote.refreshPanes = updateContainerID;
+}
+
+GoNext : WCButton {
+	iconClass = "webcatObjectTableIcon webcatObjectTableIconNext";
+	label = "Go to next batch";
+	showLabel = false;
+	action = goToNextBatch;
+	remote.refreshPanes = updateContainerID;
+}
+
+GoToEnd : WCButton {
+	iconClass = "webcatObjectTableIcon webcatObjectTableIconLast";
+	label = "Go to last batch";
+	showLabel = false;
+	action = goToLastBatch;
+	remote.refreshPanes = updateContainerID;
+}
+
+Rows : WORepetition {
+	list = displayGroup.displayedObjects;
+	item = objectInRepetition;
+	index = indexInRepetition;
+}
+
+ColumnValue : WOSwitchComponent {
+	WOComponentName = columnInRepetition.componentName;
+	properties = columnInRepetition.properties;
+	value = columnValueOfObjectInRepetition;
+	jsWrapperID = jsWrapperID;
+	indexInBatch = indexInRepetition;
+	columnIndex = columnIndexInRepetition;
+}
