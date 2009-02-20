@@ -1,0 +1,42 @@
+<wo:WCDiv dojoType="dijit.form.DropDownButton">
+<span>Change Course</span>
+<wo:WCDiv dojoType="dijit.TooltipDialog" title="Choose Course">
+<wo:WCForm>
+<fieldset class="course">
+<legend>Selected Course</legend>
+<ol>
+<li>
+<wo:WCContentPane id="$idFor.coursePane">
+<label for="<wo:str value="$idFor.courseSelector"/>">Course offering:</label>
+<wo name="CourseFilter"/>
+</wo:WCContentPane>
+</li>
+<li><label for="<wo:str value="$idFor.semesterSelector"/>">Show semester:</label>
+<wo name="SemesterFilter">
+    <wo:WCConnectAction event="onChange" action="$updateCourseOfferings" remote.refreshPanes="$idFor.coursePane"/>
+</wo>
+</li>
+<wo:if condition="$user.hasTAPrivileges">
+<li><label for="<wo:str value="$idFor.includeWhatImTeachingCheckbox"/>">Include:</label>
+<wo name="IncludeWhatImTeaching">
+    <wo:WCConnectAction event="onChange" action="$updateCourseOfferings" remote.refreshPanes="$idFor.coursePane"/>
+</wo>
+<label for="<wo:str value="$idFor.includeWhatImTeachingCheckbox"/>" class="trailing">what I'm teaching</label>
+</li>
+</wo:if>
+<wo:if condition="$user.hasAdminPrivileges">
+<li><label for="<wo:str value="$idFor.includeAdminAccessCheckbox"/>">Include:</label>
+<wo name="IncludeAdminAccess">
+    <wo:WCConnectAction event="onChange" action="$updateCourseOfferings" remote.refreshPanes="$idFor.coursePane"/>
+</wo>
+<label for="<wo:str value="$idFor.includeAdminAccessCheckbox"/>" class="trailing">admin access</label>
+</li>
+</wo:if>
+</ol></fieldset>
+<div class="center">
+<wo name="OK">OK</wo>
+<wo name="Cancel">Cancel</wo>
+</div>
+</wo:WCForm>
+</wo:WCDiv>
+</wo:WCDiv>

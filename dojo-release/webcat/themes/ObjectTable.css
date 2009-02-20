@@ -1,0 +1,12 @@
+.webcatObjectTableIcon {
+	background-image: url('images/ObjectTable.gif');
+	background-repeat: no-repeat;
+	width: 18px;
+	height: 18px;
+	text-align: center;
+}
+
+.webcatObjectTableIconFirst { background-position: 0px; }
+.webcatObjectTableIconPrevious { background-position: -18px; }
+.webcatObjectTableIconNext { background-position: -36px; }
+.webcatObjectTableIconLast { background-position: -54px; }

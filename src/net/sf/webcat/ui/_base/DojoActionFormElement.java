@@ -341,28 +341,26 @@ public abstract class DojoActionFormElement extends DojoFormElement
         
         if (_directActionName != null)
         {
+            // TODO may need work
+
             actionUrl = context.directActionURLForActionNamed(
                     (String) _directActionName.valueInComponent(component),
                     ERXComponentUtilities.queryParametersInComponent(
                             _associations, component)).replaceAll("&amp;", "&");
+
+            response.appendContentString(
+                    _remoteHelper.invokeRemoteActionCall("this",
+                            actionUrl, null, context));
         }
         else
         {
-            actionUrl = AjaxUtils.ajaxComponentActionUrl(context);
+            response.appendContentString(
+                    _remoteHelper.partialSubmitCall("this", nameInContext(context),
+                            null, context));
         }
-        
-        response.appendContentString(
-                _remoteHelper.xhrMethodCallWithURL("this", actionUrl, context));
     }
     
     
-    // ----------------------------------------------------------
-/*    public void takeValuesFromRequest(WORequest request, WOContext context)
-    {
-        // Do nothing.
-    }
-*/
-
     // ----------------------------------------------------------
     public WOActionResults invokeAction(WORequest request, WOContext context)
     {

@@ -98,67 +98,23 @@ public class DojoRemoteHelper
     
 
     // ----------------------------------------------------------
-    public String xhrMethodCallWithURL(String sender, String url,
-            WOContext context)
-    {
-        return xhrMethodCallWithURL(sender, url, null, context);
-    }
-
-
-    // ----------------------------------------------------------
-    public String xhrMethodCallWithURL(String sender, String url,
-            NSDictionary<String, String> contentOptions,
+    public String partialSubmitCall(String sender,
+            String componentName,
+            DojoOptions contentOptions,
             WOContext context)
     {
         WOComponent component = context.component();
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("webcat.invokeRemoteAction(");
-        buffer.append(sender);
-        buffer.append(", {");
 
         WOAssociation _responseType = associationWithName("responseType");
         WOAssociation _refreshPanes = associationWithName("refreshPanes");
         WOAssociation _form = associationWithName("form");
         WOAssociation _synchronous = associationWithName("synchronous");
 
-        // TODO this is part of the Ajax partial submit problem
-        if (contentOptions != null)
+        DojoOptions options = new DojoOptions();
+
+        if (contentOptions != null && !contentOptions.isEmpty())
         {
-            buffer.append("content:{");
-            
-            NSArray<String> keys = contentOptions.allKeys();
-            for (int i = 0; i < keys.count(); i++)
-            {
-                String key = keys.objectAtIndex(i);
-                String value = contentOptions.objectForKey(key);
-
-                if (key.startsWith("^"))
-                {
-                    buffer.append("\"");
-                    buffer.append(key.substring(1));
-                    buffer.append("\"");
-                    buffer.append(":");
-                    buffer.append(value);
-                }
-                else
-                {
-                    buffer.append("\"");
-                    buffer.append(key);
-                    buffer.append("\"");
-                    buffer.append(":");
-                    buffer.append("\"");
-                    buffer.append(value);
-                    buffer.append("\"");
-                }
-
-                if (i < keys.count() - 1)
-                {
-                    buffer.append(",");
-                }
-            }
-            
-            buffer.append("},");
+            options.putOptions("content", contentOptions);
         }
 
         String responseType = null;
@@ -170,9 +126,7 @@ public class DojoRemoteHelper
         
         if (responseType != null)
         {
-            buffer.append("handleAs:'");
-            buffer.append(responseType);
-            buffer.append("',");
+            options.putValue("handleAs", responseType);
         }
 
         String formId = null;
@@ -182,9 +136,8 @@ public class DojoRemoteHelper
 
             if (formId != null)
             {
-                buffer.append("form:dojo.byId('");
-                buffer.append(formId);
-                buffer.append("'),");
+                String formString = "dojo.byId('" + formId + "')";
+                options.putExpression("form", formString);
             }
         }
         else
@@ -193,15 +146,10 @@ public class DojoRemoteHelper
 
             if (formId != null)
             {
-                buffer.append("form:dojo.query('form[name=");
-                buffer.append(formId);
-                buffer.append("]')[0],");
+                options.putExpression("form",
+                        "dojo.query('form[name=" + formId + "]')[0]");
             }
         }
-        
-        buffer.append("url:'");
-        buffer.append(url);
-        buffer.append("'");
         
         // Append the synchronous flag.
         boolean synchronous = false;
@@ -212,10 +160,129 @@ public class DojoRemoteHelper
 
         if (synchronous)
         {
-            buffer.append(",sync:true");
+            options.putValue("sync", true);
         }
 
-        buffer.append("}");
+        // Append the options dictionary to the script buffer.
+
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("webcat.partialSubmit(");
+        buffer.append(sender);
+        buffer.append(", '");
+        buffer.append(componentName);
+        buffer.append("', ");
+        buffer.append(options.toString());
+        
+        String refreshPanes = null;
+        if (_refreshPanes != null)
+        {
+            Object panes = _refreshPanes.valueInComponent(component);
+            
+            if (panes instanceof List)
+            {
+                refreshPanes = DojoUtils.doubleToSingleQuotes(
+                        new JSONArray((List<?>) panes).toString());
+            }
+            else
+            {
+                try
+                {
+                    refreshPanes =
+                        DojoUtils.doubleToSingleQuotes(
+                                new JSONArray(panes.toString()).toString());
+                }
+                catch (JSONException e)
+                {
+                    refreshPanes = "'"
+                        + DojoUtils.doubleToSingleQuotes(panes.toString())
+                        + "'";
+                }
+            }
+        }
+
+        if (refreshPanes != null && refreshPanes.length() > 0)
+        {
+            buffer.append(", " + refreshPanes);
+        }
+        
+        buffer.append(");");
+
+        return buffer.toString();
+    }
+
+
+    // ----------------------------------------------------------
+    public String invokeRemoteActionCall(String sender, String url,
+            DojoOptions contentOptions, WOContext context)
+    {
+        WOComponent component = context.component();
+
+        WOAssociation _responseType = associationWithName("responseType");
+        WOAssociation _refreshPanes = associationWithName("refreshPanes");
+        WOAssociation _form = associationWithName("form");
+        WOAssociation _synchronous = associationWithName("synchronous");
+
+        DojoOptions options = new DojoOptions();
+
+        if (contentOptions != null && !contentOptions.isEmpty())
+        {
+            options.putOptions("content", contentOptions);
+        }
+
+        String responseType = null;
+        if (_responseType != null)
+        {
+            responseType =
+                _responseType.valueInComponent(component).toString();
+        }
+        
+        if (responseType != null)
+        {
+            options.putValue("handleAs", responseType);
+        }
+
+        String formId = null;
+        if (_form != null)
+        {
+            formId = _form.valueInComponent(component).toString();
+
+            if (formId != null)
+            {
+                options.putExpression("form", "dojo.byId('" + formId + "')");
+            }
+        }
+        else
+        {
+            formId = ERXWOForm.formName(context, null);
+
+            if (formId != null)
+            {
+                options.putExpression("form",
+                        "dojo.query('form[name=" + formId + "]')[0]");
+            }
+        }
+        
+        options.putValue("url", url);
+        
+        // Append the synchronous flag.
+        boolean synchronous = false;
+        if (_synchronous != null)
+        {
+            synchronous = _synchronous.booleanValueInComponent(component);
+        }
+
+        if (synchronous)
+        {
+            options.putValue("sync", true);
+        }
+
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("webcat.invokeRemoteAction(");
+        buffer.append(sender);
+        buffer.append(", ");
+        buffer.append(options.toString());
         
         String refreshPanes = null;
         if (_refreshPanes != null)

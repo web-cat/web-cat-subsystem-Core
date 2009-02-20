@@ -80,10 +80,9 @@ public class DojoConstraintsHelper
      * @return a string representing the constraints hash
      */
     public String constraintsFromBindingValues(WOContext context,
-            NSDictionary<String, Object> additionalConstraints)
+            DojoOptions additionalConstraints)
     {
-        NSMutableDictionary<String, Object> constraints =
-            new NSMutableDictionary<String, Object>();
+        DojoOptions constraints = new DojoOptions();
 
         if (_constraintAssociations != null)
         {
@@ -95,19 +94,19 @@ public class DojoConstraintsHelper
                 if (assoc != null)
                 {
                     Object value = assoc.valueInComponent(context.component());
-                    constraints.setObjectForKey(value, constraint);
+                    constraints.putValue(constraint, value);
                 }
             }
         }
 
         if (additionalConstraints != null)
         {
-            constraints.addEntriesFromDictionary(additionalConstraints);
+            constraints.putAll(additionalConstraints);
         }
 
         if (!constraints.isEmpty())
         {
-            return DojoUtils.hashStringForDictionary(constraints);
+            return constraints.toString();
         }
         else
         {

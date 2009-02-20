@@ -606,7 +606,8 @@ public class WCLink extends WOHTMLDynamicElement
         }
         
         response.appendContentString(
-                _remoteHelper.xhrMethodCallWithURL("this", actionUrl, context));
+                _remoteHelper.invokeRemoteActionCall("this", actionUrl, null,
+                        context));
     }
     
     

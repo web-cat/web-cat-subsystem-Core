@@ -40,89 +40,69 @@ import er.extensions.components.ERXComponentUtilities;
 
 //--------------------------------------------------------------------------
 /**
- * Generates a JavaScript function that can be called to execute an action via
- * an Ajax request.
+ * Generates a script tag of type "dojo/connect" that can be nested inside a
+ * Dijit element to execute a server-side action (via an Ajax request) in
+ * response to a widget event. Use the "event" binding to specify the event
+ * (such as "onChange"), and "args" to specify the argument list, as one
+ * normally would in a dojo/connect script tag. The bindings that specify which
+ * action to execute are similar to those offered by DojoFormActionElement and
+ * DojoRemoteHelper. 
  * 
- * TODO does not currently support form submits (uses webcat.invokeRemoteAction
- * instead of webcat.partialSubmit)
- * 
- * @author Tony ALlevato
+ * @author Tony Allevato
  * @version $Id$
  */
-public class WCRemoteFunction extends WOHTMLDynamicElement
+public class WCConnectAction extends WOHTMLDynamicElement
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    public WCRemoteFunction(String name,
+    public WCConnectAction(String name,
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
-        super(name, someAssociations, template);
+        super("script", someAssociations, template);
 
-        _jsId = _associations.removeObjectForKey("jsId");
         _action = _associations.removeObjectForKey("action");
         _actionClass = _associations.removeObjectForKey("actionClass");
         _directActionName =
             _associations.removeObjectForKey("directActionName");
         _remoteHelper = new DojoRemoteHelper(_associations);
     }
-
+    
 
     //~ Methods ...............................................................
-    
-    // ----------------------------------------------------------
-    protected String jsIdInContext(WOContext context)
-    {
-        if (_jsId != null)
-        {
-            return _jsId.valueInComponent(context.component()).toString();
-        }
-        else
-        {
-            return null;
-        }
-    }
 
+    // ----------------------------------------------------------
+    @Override
+    public void appendAttributesToResponse(WOResponse response,
+            WOContext context)
+    {
+        _appendTagAttributeAndValueToResponse(response, "type", "dojo/connect",
+                false);
+
+        super.appendAttributesToResponse(response, context);
+    }
+    
     
     // ----------------------------------------------------------
     @Override
-    public void appendToResponse(WOResponse response, WOContext context)
+    public void appendChildrenToResponse(WOResponse response, WOContext context)
     {
-        String id = jsIdInContext(context);
-        
-        WOComponent component = context.component();
+        super.appendChildrenToResponse(response, context);
 
-        String actionUrl = null;
+        String elemName = nameInContext(context);
         
-        if (_directActionName != null)
-        {
-            actionUrl = context.directActionURLForActionNamed(
-                    (String) _directActionName.valueInComponent(component),
-                    ERXComponentUtilities.queryParametersInComponent(
-                            _associations, component)).replaceAll("&amp;", "&");
-        }
-        else
-        {
-            actionUrl = AjaxUtils.ajaxComponentActionUrl(context);
-        }
-
-        StringBuffer script = new StringBuffer();
-        script.append(id);
-        script.append(" = function(widget) {\n");
-        script.append(_remoteHelper.invokeRemoteActionCall(
-                "widget", actionUrl, null, context));
-        script.append("}");
-        
-        ERXResponseRewriter.addScriptCodeInHead(response, context,
-                script.toString());
+        response.appendContentString("\n");
+        response.appendContentString(_remoteHelper.partialSubmitCall(
+                "this", elemName, null, context));
+        response.appendContentString("\n");
     }
 
 
     // ----------------------------------------------------------
     protected String nameInContext(WOContext context)
     {
-        if (_associations.objectForKey("name") != null)
+        if (_associations != null && _associations.objectForKey("name") != null)
         {
             return _associations.objectForKey("name").valueInComponent(
                     context.component()).toString();
@@ -181,5 +161,5 @@ public class WCRemoteFunction extends WOHTMLDynamicElement
 
     protected DojoRemoteHelper _remoteHelper;
 
-    private static final Logger log = Logger.getLogger(WCRemoteFunction.class);
+    private static final Logger log = Logger.getLogger(WCConnectAction.class);
 }

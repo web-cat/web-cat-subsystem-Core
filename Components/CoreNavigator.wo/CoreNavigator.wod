@@ -1,0 +1,36 @@
+CourseFilter: WCFilteringSelect {
+    list = courseOfferings;
+    item = courseOfferingInRepetition;
+    selection = selectedCourseOffering;
+    id = idFor.courseSelector;
+    autoComplete = true;
+    invalidMessage = "Invalid course selection";
+}
+
+SemesterFilter: WCFilteringSelect {
+    list = semesters;
+    item = semesterInRepetition;
+    selection = selectedSemester;
+    id = idFor.semesterSelector;
+    autoComplete = true;
+    invalidMessage = "Invalid semester selection";
+}
+
+IncludeWhatImTeaching: WCCheckBox {
+    id = idFor.includeWhatImTeachingCheckbox;
+    checked = includeWhatImTeaching;
+}
+
+IncludeAdminAccess: WCCheckBox {
+    id = idFor.includeAdminAccessCheckbox;
+    checked = includeAdminAccess;
+}
+
+OK: WCButton {
+    action = okPressed;
+    class = "pos";
+}
+
+Cancel: WCButton {
+    class = "neg";
+}
