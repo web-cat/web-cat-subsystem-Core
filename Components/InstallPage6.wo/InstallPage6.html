@@ -47,19 +47,25 @@ like, but here we will just create the first one.</p>
   for all outgoing e-mail messages sent by Web-CAT.
   </td>
 </tr>
-<webobject name="CanSetPassword"><tr>
+<tr>
   <td class="rtn">Admin password:</td>
+<webobject name="CanSetPassword">
   <td class="t"><webobject name="AdminPassword"/></td>
   <td class="t">
   This is the password that will be given to the administrator account when
-  it is created.  <webobject name="UsingDatabaseAuthentication">A non-empty
-  password is mandatory if you are using internal database
-  authentication.</webobject><webobject name="UsingOtherAuthentication">You
-  may leave this field blank if your chosen authentication scheme stores
-  password information on another server.</webobject>
+  it is created.  A non-empty password is mandatory if you are using internal
+  database authentication.
   </td>
-</tr></webobject>
-<tr>
+</webobject><webobject name="CannotSetPassword">
+  <td class="t"><i>[externally managed]</i></td>
+  <td class="t">
+  The password for the administrator account is controlled by the
+  authentication mechanism you have chosen and is not managed by Web-CAT.
+  The admin user name must be recognized as a valid account name by your
+  selected authentication mechanism.
+  </td>
+</webobject>
+</tr><tr>
   <td class="rtn">Notify e-mail(s):</td>
   <td class="t"><webobject name="adminNotifyAddrs"/></td>
   <td class="t">

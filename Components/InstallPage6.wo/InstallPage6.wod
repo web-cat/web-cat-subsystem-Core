@@ -27,6 +27,11 @@ CanSetPassword: WOConditional {
     condition = canSetPassword;
 }
 
+CannotSetPassword: WOConditional {
+    condition = canSetPassword;
+    negate = true;
+}
+
 coreAdminEmail: WOTextField {
     value = application.properties.coreAdminEmail;
     name  = "coreAdminEmail";
