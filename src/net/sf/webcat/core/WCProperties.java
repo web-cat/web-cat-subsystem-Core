@@ -794,10 +794,17 @@ public class WCProperties
     {
         Object coercedValue = null;
 
-        if ( property.startsWith( "(" ) )
+        if ( !numericsOnly && property.startsWith( "(" ) )
         {
             // Try to parse the value as an array
-            coercedValue = ERXValueUtilities.arrayValue( property );
+            try
+            {
+                coercedValue = ERXValueUtilities.arrayValue( property );
+            }
+            catch (IllegalArgumentException e)
+            {
+                coercedValue = null;
+            }
             
             if ( coercedValue != null )
             {
@@ -809,11 +816,19 @@ public class WCProperties
             }
         }
 
-        if ( coercedValue == null && property.startsWith( "{" ) )
+        if ( !numericsOnly && coercedValue == null
+                && property.startsWith( "{" ) )
         {
             // Try to parse the value as a dictionary
-            coercedValue = ERXValueUtilities.dictionaryValue( property );
-
+            try
+            {
+                coercedValue = ERXValueUtilities.dictionaryValue( property );
+            }
+            catch (IllegalArgumentException e)
+            {
+                coercedValue = null;
+            }
+            
             if ( coercedValue != null )
             {
                 // If we got a dictionary, recursively perform conversions of
