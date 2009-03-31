@@ -142,7 +142,7 @@ public class WCComponent
     public static String helpBaseURL()
     {
         return Application.configurationProperties().getProperty(
-            "help.baseURL", "http://web-cat.cs.vt.edu/Web-CAT.help/" );
+            "help.baseURL", "http://web-cat.org/Web-CAT.help/" );
     }
 
 
@@ -447,9 +447,19 @@ public class WCComponent
                 "Exception trying to save component's local changes" );
             // forces revert and refaultAllObjects
             cancelLocalChanges();
-            warning( "An exception occurred while trying to save your "
-                + "changes: " + e + ".  As a result, your changes were "
-                + "canceled.  Please try again." );
+            String msg =
+                "An exception occurred while trying to save your changes";
+            String eMsg = e .getMessage();
+            if (eMsg != null && eMsg.length() > 0)
+            {
+                msg += ": " + eMsg;
+            }
+            if (!msg.endsWith("."))
+            {
+                msg += ".";
+            }
+            warning( msg + "  As a result, your changes were canceled.  "
+                + "Please try again." );
             return false;
         }
     }
