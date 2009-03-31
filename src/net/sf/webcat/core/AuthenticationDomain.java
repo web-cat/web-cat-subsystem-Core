@@ -275,7 +275,7 @@ public class AuthenticationDomain
      * provide KVC access to that static method.
      * @return an NSArray of strings representing the time formats available
      */
-    public NSArray timeFormats()
+    public NSArray<String> timeFormats()
     {
         return availableTimeFormats();
     }
@@ -304,7 +304,7 @@ public class AuthenticationDomain
      * provide KVC access to that static method.
      * @return an NSArray of strings representing the date formats available
      */
-    public NSArray dateFormats()
+    public NSArray<String> dateFormats()
     {
         return availableDateFormats();
     }
@@ -321,7 +321,7 @@ public class AuthenticationDomain
      * this authenticator using the name "<i>MyAuthenticator</i>".
      *
      * @param name the property name of the authenticator
-     * @return an array of all AuthenticationDomain objects
+     * @return The matching AuthenticationDomain object
      */
     public static AuthenticationDomain authDomainByName( String name )
     {
@@ -341,7 +341,7 @@ public class AuthenticationDomain
      * already been loaded into the shared editing context.
      * @return an array of all AuthenticationDomain objects
      */
-    public static NSArray authDomains()
+    public static NSArray<AuthenticationDomain> authDomains()
     {
         ensureAuthDomainsLoaded();
         return authDomains;
@@ -561,14 +561,14 @@ public class AuthenticationDomain
      * acceptable by {@link NSTimestampFormatter}.
      * @return an NSArray of strings representing the time formats available
      */
-    public static NSArray availableTimeFormats()
+    public static NSArray<String> availableTimeFormats()
     {
         if ( timeFormats == null )
         {
             try
             {
-                timeFormats = Application.configurationProperties()
-                    .arrayForKey( "timeFormats" );
+                timeFormats = (NSArray<String>)Application
+                    .configurationProperties().arrayForKey( "timeFormats" );
             }
             catch ( Exception e )
             {
@@ -577,7 +577,8 @@ public class AuthenticationDomain
             }
             if ( timeFormats == null )
             {
-                timeFormats = new NSArray( new String[]{"%I:%M%p", "%H:%M"} );
+                timeFormats =
+                    new NSArray<String>( new String[]{"%I:%M%p", "%H:%M"} );
             }
         }
         return timeFormats;
@@ -593,7 +594,7 @@ public class AuthenticationDomain
      */
     public static String globalDefaultTimeFormat()
     {
-        return (String)availableTimeFormats().objectAtIndex( 0 );
+        return availableTimeFormats().objectAtIndex(0);
     }
 
 
@@ -606,14 +607,14 @@ public class AuthenticationDomain
      * acceptable by {@link NSTimestampFormatter}.
      * @return an NSArray of strings representing the date formats available
      */
-    public static NSArray availableDateFormats()
+    public static NSArray<String> availableDateFormats()
     {
         if ( dateFormats == null )
         {
             try
             {
-                dateFormats = Application.configurationProperties()
-                    .arrayForKey( "dateFormats" );
+                dateFormats = (NSArray<String>)Application
+                    .configurationProperties().arrayForKey( "dateFormats" );
             }
             catch ( Exception e )
             {
@@ -622,7 +623,7 @@ public class AuthenticationDomain
             }
             if ( dateFormats == null )
             {
-                dateFormats = new NSArray( new String[]{
+                dateFormats = new NSArray<String>( new String[]{
                     "%m/%d/%y", "%m/%d/%Y", "%d.%m.%Y", "%d.%m.%y",
                     "%y-%m-%d", "%Y-%m-%d", "%d-%b-%y", "%d-%b-%Y" } );
             }
@@ -692,19 +693,16 @@ public class AuthenticationDomain
      * acceptable by {@link NSTimestampFormatter}.
      * @return an NSArray of strings representing the date formats available
      */
-    public static NSArray availableTimeZones()
+    public static NSArray<TimeZoneDescriptor> availableTimeZones()
     {
         if ( timeZones == null )
         {
-            NSMutableArray zones =
-                new NSMutableArray( NSTimeZone.knownTimeZoneNames() );
-            for ( int i = 0; i < zones.count(); i++ )
+            NSMutableArray zones = new NSMutableArray<TimeZoneDescriptor>();
+            for (Object name : NSTimeZone.knownTimeZoneNames() )
             {
-                zones.replaceObjectAtIndex(
-                    new TimeZoneDescriptor( (String)zones.objectAtIndex( i ) ),
-                    i );
+                zones.add(new TimeZoneDescriptor(name.toString()));
             }
-            ERXArrayUtilities.sortArrayWithKey( zones, "printableName" );
+            ERXArrayUtilities.sortArrayWithKey(zones, "printableName");
             timeZones = zones;
         }
         return timeZones;
@@ -721,11 +719,8 @@ public class AuthenticationDomain
      */
     public static TimeZoneDescriptor descriptorForZone( String id )
     {
-        NSArray zones = availableTimeZones();
-        for ( int i = 0; i < zones.count(); i++ )
+        for (TimeZoneDescriptor tzd : availableTimeZones())
         {
-            TimeZoneDescriptor tzd =
-                (TimeZoneDescriptor)zones.objectAtIndex( i );
             if ( tzd.id.equals( id ) )
             {
                 return tzd;
@@ -762,14 +757,14 @@ public class AuthenticationDomain
 
     //~ Instance/static variables .............................................
 
-    private static NSArray authDomains;
+    private static NSArray<AuthenticationDomain> authDomains;
     private static AuthenticationDomain defaultDomain;
     private static Map theAuthenticatorMap;
     private String cachedSubdirName = null;
     private String cachedName = null;
-    private static NSArray timeFormats;
-    private static NSArray dateFormats;
-    private static NSArray timeZones;
+    private static NSArray<String> timeFormats;
+    private static NSArray<String> dateFormats;
+    private static NSArray<TimeZoneDescriptor> timeZones;
 
     static Logger log = Logger.getLogger( AuthenticationDomain.class );
 }
