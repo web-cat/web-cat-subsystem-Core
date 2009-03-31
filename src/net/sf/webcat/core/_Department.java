@@ -143,6 +143,7 @@ public abstract class _Department
     // To-one relationships ---
     public static final String INSTITUTION_KEY = "institution";
     // To-many relationships ---
+    public static final String COURSES_KEY = "courses";
     // Fetch specifications ---
     public static final String ENTITY_NAME = "Department";
 
@@ -309,6 +310,184 @@ public abstract class _Department
         {
             addObjectToBothSidesOfRelationshipWithKey( value, "institution" );
         }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the entities pointed to by the <code>courses</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.Course> courses()
+    {
+        return (NSArray)storedValueForKey( "courses" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>courses</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setCourses( NSMutableArray<net.sf.webcat.core.Course>  value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setCourses("
+                + value + "): was " + courses() );
+        }
+        takeStoredValueForKey( value, "courses" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>courses</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToCoursesRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToCourses( net.sf.webcat.core.Course value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToCourses("
+                + value + "): was " + courses() );
+        }
+        NSMutableArray<net.sf.webcat.core.Course> array =
+            (NSMutableArray<net.sf.webcat.core.Course>)courses();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>courses</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromCoursesRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromCourses( net.sf.webcat.core.Course value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromCourses("
+                + value + "): was " + courses() );
+        }
+        NSMutableArray<net.sf.webcat.core.Course> array =
+            (NSMutableArray<net.sf.webcat.core.Course>)courses();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>courses</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToCoursesRelationship( net.sf.webcat.core.Course value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToCoursesRelationship("
+                + value + "): was " + courses() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "courses" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>courses</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromCoursesRelationship( net.sf.webcat.core.Course value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromCoursesRelationship("
+                + value + "): was " + courses() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "courses" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>courses</code> relationship.
+     *
+     * @return The new entity
+     */
+    public net.sf.webcat.core.Course createCoursesRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createCoursesRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "Course" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "courses" );
+        return (net.sf.webcat.core.Course)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>courses</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteCoursesRelationship( net.sf.webcat.core.Course value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteCoursesRelationship("
+                + value + "): was " + courses() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "courses" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>courses</code> relationship.
+     */
+    public void deleteAllCoursesRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllCoursesRelationships(): was "
+                + courses() );
+        }
+        Enumeration objects = courses().objectEnumerator();
+        while ( objects.hasMoreElements() )
+            deleteCoursesRelationship(
+                (net.sf.webcat.core.Course)objects.nextElement() );
     }
 
 

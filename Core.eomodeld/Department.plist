@@ -1,33 +1,40 @@
 {
     attributes = (
         {
-            allowsNull = N; 
-            columnName = CABBREVIATION; 
-            name = abbreviation; 
-            prototypeName = tinyText; 
-        }, 
-        {name = id; prototypeName = id; }, 
+            allowsNull = N;
+            columnName = CABBREVIATION;
+            name = abbreviation;
+            prototypeName = tinyText;
+        },
+        {name = id; prototypeName = id; },
         {
-            columnName = CINSTITUTIONID; 
-            name = institutionId; 
-            prototypeName = foreignId; 
-        }, 
+            columnName = CINSTITUTIONID;
+            name = institutionId;
+            prototypeName = foreignId;
+        },
         {columnName = CNAME; name = name; prototypeName = tinyText; }
-    ); 
-    attributesUsedForLocking = (abbreviation, institutionId, name); 
-    className = "net.sf.webcat.core.Department"; 
-    classProperties = (abbreviation, institution, name); 
-    externalName = TDEPARTMENT; 
-    fetchSpecificationDictionary = {}; 
-    name = Department; 
-    primaryKeyAttributes = (id); 
+    );
+    attributesUsedForLocking = (abbreviation, institutionId, name);
+    className = "net.sf.webcat.core.Department";
+    classProperties = (abbreviation, institution, name, courses);
+    externalName = TDEPARTMENT;
+    fetchSpecificationDictionary = {};
+    name = Department;
+    primaryKeyAttributes = (id);
     relationships = (
         {
-            destination = AuthenticationDomain; 
-            isToMany = N; 
-            joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = id; sourceAttribute = institutionId; }); 
-            name = institution; 
+            destination = AuthenticationDomain;
+            isToMany = N;
+            joinSemantic = EOInnerJoin;
+            joins = ({destinationAttribute = id; sourceAttribute = institutionId; });
+            name = institution;
+        },
+        {
+            destination = Course;
+            isToMany = Y;
+            joinSemantic = EOInnerJoin;
+            joins = ({destinationAttribute = departmentId; sourceAttribute = id; });
+            name = courses;
         }
-    ); 
+    );
 }
