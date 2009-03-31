@@ -99,4 +99,18 @@ public class CoreSelectionsManager
         addObjectToBothSidesOfRelationshipWithKey(
             value, CoreSelections.COURSE_OFFERING_KEY);
     }
+
+
+    // ----------------------------------------------------------
+    public Semester semester()
+    {
+        return (Semester)valueForKey(CoreSelections.SEMESTER_KEY);
+    }
+
+
+    // ----------------------------------------------------------
+    public void setSemesterRelationship(Semester semester)
+    {
+        takeValueForKey(semester, CoreSelections.SEMESTER_KEY);
+    }
 }
