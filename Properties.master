@@ -4,10 +4,10 @@
 subsystem.Core
 
 Core.version.major=1
-Core.version.minor=5
-Core.version.revision=6
+Core.version.minor=6
+Core.version.revision=0
 
-Core.copyright=(c) 2006-2008 Virginia Tech Department of Computer Science
+Core.copyright=(c) 2006-2009 Virginia Tech Department of Computer Science
 Core.provider=Virginia Tech Computer Science
 Core.provider.url=http\://web-cat.cs.vt.edu/updates
 Core.info.url=http\://web-cat.cs.vt.edu/WCWiki/CoreSubsystem
