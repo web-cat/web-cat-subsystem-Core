@@ -1,0 +1,42 @@
+<webobject name="BarePage">
+<webobject name="IncludePageWrapping"><div id="banner">
+  <div id="tools">
+   <wo name="HasMultipleRoles">
+   selected role:
+   <wo:loop list="$session.tabs.children" item="$aRole" index="$aRoleIndex">
+   <wo name="IsNotFirstRole">|</wo>
+   <wo:if condition="~selectedRole.equals(aRole)"><wo:str value="$aRole.label.toLowerCase"/></wo:if>
+   <wo:else>
+   <wo:link action="$switchRole"><wo:str value="$aRole.label.toLowerCase"/></wo:link>
+   </wo:else>
+   </wo:loop>
+   &nbsp;&nbsp;&nbsp;
+   </wo>
+   <webobject name="HelpLink">help</webobject> | <webobject name="FeedbackLink">feedback</webobject> | <webobject name="LogoutLink">logout</webobject>
+  </div>
+  <wo name="Logo"/><span class="tagline">Automatic grading using student-written tests</span><br/>
+  <span class="title">Web-CAT</span><br/>
+  <ul id="globalnav">
+    <li class="globalnav-indent">&nbsp;</li>
+    <wo name="PrimaryTabs"><wo:if condition="$primaryTabIsVisible">
+    <wo:WOGenericContainer elementName="li" class="$primaryTabClass"><wo:link action="$primaryTabLink"><webobject name="PrimaryTabLabel"/></wo:link></wo:WOGenericContainer>
+    </wo:if></wo>
+  </ul>
+  <ul id="globalsubnav"><wo:if condition="$hasVisibleSecondaryTabs">
+    <wo name="SecondaryTabs"><wo:if condition="$secondaryTabIsVisible">
+    <wo:WOGenericContainer elementName="li" class="$secondaryTabClass"><webobject name="SecondaryTabLink"><webobject name="SecondaryTabLabel"/></webobject></wo:WOGenericContainer>
+    </wo:if></wo>
+    </wo:if><wo:else><li>&nbsp;</li></wo:else>
+    <li class="uid"><webobject name="CanToggleView"><webobject name="StudentView"/> </webobject><webobject name="UserName"/></li>
+  </ul>
+</div>
+</webobject><div id="page"><wo name="DivContents">
+<webobject name="HasTitle"><h1 id="title"><webobject name="Title"/></h1></webobject>
+<webobject name="Errors"/><webobject name="PageContent"/></wo name="DivContents"><webobject name="IncludePageWrapping"><webobject name="HasMenu">
+<div id="menu"><p class="header"><webobject name="MenuHeader"/></p><ul>
+<webobject name="Steps">
+<wo name="Li"><p><webobject name="StepUsesLink"><webobject name="StepLink">Step <webobject name="StepNumber"/></webobject></webobject><webobject name="StepWithoutLink">Step <webobject name="StepNumber"/></webobject></p>
+    <ul><li><webobject name="StepLabel"/><webobject name="IsSideStep"><br/><b>Side step: <webobject name="SideStepTitle"/></b></webobject></li></ul>
+</wo>
+</webobject></ul></div>
+</webobject></webobject><div class="spacer">&nbsp;</div></div><webobject name="IncludePageWrapping"><webobject name="Footer"/></webobject></webobject>

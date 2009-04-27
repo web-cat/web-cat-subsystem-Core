@@ -18,6 +18,21 @@ DIV#banner {
 	font-size: smaller;
 }
 
+DIV#banner .tagline {
+	font-size: smaller;
+}
+
+DIV#banner .title {
+	font-size: 140%;
+	font-weight: bold;
+}
+
+DIV#banner img {
+	border: 0;
+	float : left;
+	padding: 5px 5px 0 0;
+}
+
 DIV#banner DIV#tools {
 	float: right;
 	text-align: right;
@@ -58,7 +73,7 @@ DIV.spacer {
 DIV#footer {
 	margin: 0;
 	margin-top: 2px;
-	padding: 0;
+	padding: 0 4px;
 	text-align: center;
 	font-size: x-small;
 }
@@ -498,6 +513,9 @@ h4, h5, h6 { font-size: 1em; }
 b.check { color: green; }
 b.warn { color: #d00; }
 
+.floatLeft { float: left; }
+.floatRight { float: right; }
+
 BODY.user H1, BODY.user H2, BODY.user H3, BODY.user H4,
 BODY.user H5, BODY.user H6, BODY.user H7 {
 	color: #363;
@@ -901,3 +919,105 @@ div#contents div.shadow table.distchart td img.bar {
   left: +208px;
 }
 
+
+/* Transitional form stuff from new theme support */
+
+form fieldset {
+    margin-bottom: 0.8em;
+    border: 1px solid white;
+    display: table;
+}
+
+.dijitTooltipContainer form fieldset {
+    border-color: black;
+}
+
+fieldset { padding: .5em; }
+
+
+form legend {
+    padding: 0 0.2em;
+    font-weight: bold;
+}
+
+form label {
+    display: inline-block;
+    /* line-height: 1.8; */
+    vertical-align: top;
+    text-align: right;
+    padding-right: 0.8em;
+}
+
+form label.trailing {
+    display: inline;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+}
+
+form fieldset ol {
+    margin: 0;
+    padding: 0;
+}
+
+form fieldset li {
+    list-style: none;
+    padding: 0.5em;
+    margin: 0;
+}
+
+form > fieldset > ol > li:first-child {
+    padding-top: 0;
+}
+
+form fieldset fieldset {
+    border: none;
+    margin: 0.3em 0 0;
+}
+
+form fieldset fieldset legend {
+    padding: 0 0 0.5em;
+    font-weight: normal;
+}
+
+form fieldset fieldset label {
+    display: block;
+    width: auto;
+}
+
+form em {
+    font-weight: bold;
+    font-style: normal;
+    /* color: #f00; */
+}
+
+form label {
+    width: 10em;
+}
+
+form fieldset fieldset label {
+    margin-left: 10.3em;
+}
+
+form fieldset.accountInfo label {
+    width: 5em;
+}
+form fieldset.accountInfo fieldset label {
+    margin-left: 5.3em;
+}
+
+form fieldset.course label,
+form fieldset.assignment label {
+    width: 7.7em;
+}
+
+form fieldset.course fieldset label,
+form fieldset.assignment fieldset label {
+    width: 10em;
+    margin-left: 8em;
+}
+
+form fieldset.course fieldset table.layout label {
+    float: none;
+    width: auto;
+}

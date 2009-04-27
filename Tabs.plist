@@ -1,23 +1,73 @@
 {
-    Home = {
+  staff = {
+    accessLevel = 40;
+    priority    = 100;
+    wantsStart  = YES;
+    children = {
+      Home = {
+        accessLevel = 40;
         priority   = 10;
         wantsStart = YES;
         children   = {
-            Status = {
-                pageName = net.sf.webcat.core.StatusPage;
-                priority = 100;
-                wantsStart = YES;
-            };
-            "My Profile" = {
-                pageName = net.sf.webcat.core.MyProfilePage;
-                priority = 1001;
-                id       = Profile;
-            };
-            Feedback = {
-                pageName = net.sf.webcat.core.FeedbackPage;
-                priority = 1002;
-                id       = Feedback;
-            };
+          Status = {
+            pageName   = net.sf.webcat.core.StatusPage;
+            accessLevel = 40;
+            priority   = 100;
+            wantsStart = YES;
+          };
+          "My Profile" = {
+            pageName = net.sf.webcat.core.MyProfilePage;
+            accessLevel = 40;
+            priority = 1001;
+            id       = Profile;
+          };
+          "Typography" = {
+            pageName = net.sf.webcat.core.TypographyDemoPage;
+            accessLevel = 40;
+            priority = 1002;
+            id       = Profile;
+          };
+          Feedback = {
+            pageName = net.sf.webcat.core.FeedbackPage;
+            accessLevel = 40;
+            priority = 1003;
+            id       = Feedback;
+          };
+          Navigator = {
+            pageName = net.sf.webcat.core.tests.CoreNavigatorTestPage;
+            accessLevel = 40;
+            priority = 1004;
+            id       = Feedback;
+          };
         };
+      };
     };
+  };
+  student = {
+    priority    = 200;
+    wantsStart  = YES;
+    children = {
+      Home = {
+        priority   = 10;
+        wantsStart = YES;
+        children   = {
+          Status = {
+            pageName   = net.sf.webcat.core.StatusPage;
+            priority   = 100;
+            wantsStart = YES;
+          };
+          "My Profile" = {
+            pageName = net.sf.webcat.core.MyProfilePage;
+            priority = 1001;
+            id       = Profile;
+          };
+          Feedback = {
+            pageName = net.sf.webcat.core.FeedbackPage;
+            priority = 1002;
+            id       = Feedback;
+          };
+        };
+      };
+    };
+  };
 }

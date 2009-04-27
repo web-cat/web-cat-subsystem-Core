@@ -1,0 +1,29 @@
+{
+    name             = "Dream Way";
+    dirName          = dream-way;
+    version.major    = 1;
+    version.minor    = 0;
+    version.revision = 0;
+    version.date     = 20090304;
+    provider         = "Virginia Tech Computer Science";
+    provider.url     = "http://web-cat.cs.vt.edu/updates";
+    license          = "GNU General Public License v.2";
+    license.url      = "http://www.gnu.org/copyleft/gpl.html";
+    copyright        = "(c) 2009 Virginia Tech Department of Computer Science";
+    info.url         = "http://web-cat.cs.vt.edu/WCWiki/DreamWayTheme";
+    history.url      = "http://web-cat.cs.vt.edu/WCWiki/DreamWayTheme/ChangeHistory";
+    author           = "Stephen Edwards (edwards@cs.vt.edu)";
+    authorUid        = edwards;
+    description      = "A light blue-toned background, with contrasting dark
+        text.";
+    credits          = "Brought to you by ...";
+
+    extends = nihilo-dark;
+    cssOrder = (
+        {
+            file = "dream-way.css";
+            media = "screen, projection, tv";
+        }
+    );
+
+}

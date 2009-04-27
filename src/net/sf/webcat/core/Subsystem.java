@@ -331,6 +331,40 @@ public class Subsystem
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Get the string path name for this subsystem's Resources directory.
+     * This is designed for use by subclasses that want to locate internal
+     * resources for use in setting up environment variable or plug-in
+     * property values.
+     *
+     * @return The Resources directory name as a string
+     */
+    @SuppressWarnings( "deprecation" )
+    public String myResourcesDir()
+    {
+        if ( myResourcesDir == null )
+        {
+            // First, look for an overriding property, like those that
+            // might be used for non-servlet deployment scenarios.
+            myResourcesDir = Application.configurationProperties()
+                .getProperty( name() + ".Resources" );
+        }
+        if ( myResourcesDir == null )
+        {
+            NSBundle myBundle = myBundle();
+            if ( myBundle != null )
+            {
+                // Note that the resourcePath() method is deprecated, but it
+                // is the best way to get what we need here, so we'll use it
+                // anyway, rather than re-implementing it.
+                myResourcesDir = myBundle.resourcePath();
+            }
+        }
+        return myResourcesDir;
+    }
+
+
     //~ Protected Methods .....................................................
 
     // ----------------------------------------------------------
@@ -356,45 +390,11 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
-     * Get the string path name for this subsystem's Resources directory.
-     * This is designed for use by subclasses that want to locate internal
-     * resources for use in setting up environment variable or plug-in
-     * property values.
-     *
-     * @return The Resources directory name as a string
-     */
-    @SuppressWarnings( "deprecation" )
-    protected String myResourcesDir()
-    {
-        if ( myResourcesDir == null )
-        {
-            // First, look for an overriding property, like those that
-            // might be used for non-servlet deployment scenarios.
-            myResourcesDir = Application.configurationProperties()
-                .getProperty( name() + ".Resources" );
-        }
-        if ( myResourcesDir == null )
-        {
-            NSBundle myBundle = myBundle();
-            if ( myBundle != null )
-            {
-                // Note that the resourcePath() method is deprecated, but it
-                // is the best way to get what we need here, so we'll use it
-                // anyway, rather than re-implementing it.
-                myResourcesDir = myBundle.resourcePath();
-            }
-        }
-        return myResourcesDir;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Loads this subsystem's tab definitions.  The default implementation
      * pulls them from the subsystem's Tabs.plist resource file.
      * @return the loaded tab definitions, or null if the subsystem has none
      */
-    protected NSArray loadTabs()
+    protected NSArray<TabDescriptor> loadTabs()
     {
         NSBundle bundle = myBundle();
         if (bundle != null)
@@ -581,7 +581,7 @@ public class Subsystem
     private FeatureDescriptor descriptor;
     private NSDictionary      options;
 
-    private NSArray subsystemTabTemplate;
+    private NSArray<TabDescriptor> subsystemTabTemplate;
 
     static Logger log = Logger.getLogger( Subsystem.class );
 }

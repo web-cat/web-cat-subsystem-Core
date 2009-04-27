@@ -657,6 +657,19 @@ public class Session
 
     // ----------------------------------------------------------
     /**
+     * Get the theme to use for this session.
+     * @return The Theme to use
+     */
+    public Theme theme()
+    {
+        return (user() == null || user().theme() == null)
+            ? Theme.defaultTheme()
+            :  user().theme();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Clear the cached timestamp formatter in this session so that a fresh
      * one will be created from user preferences the next time one is needed.
      */

@@ -1,23 +1,19 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<wo:if condition="$includePageWrapping"><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
 <title><wo:str value="$title"/></title>
-<link rel="stylesheet" type="text/css" href="<wo:WOResourceURL filename="dojo/resources/dojo.css" />" />
-<link rel="stylesheet" type="text/css" href="<wo:WOResourceURL filename="dijit/themes/nihilo/nihilo.css" />" />
-<link rel="stylesheet" type="text/css" href="<wo:WOResourceURL filename="css/trans-nihilo.css" />" />
-<link rel="stylesheet" type="text/css" href="<wo:WOResourceURL filename="css/layout.css" />" media="screen, projection, tv" />
-<link rel="stylesheet" type="text/css" href="<wo:WOResourceURL filename="css/colors0.css" />" media="screen, projection, tv" />
-<link rel="stylesheet" type="text/css" href="<wo:WOResourceURL filename="css/typography.css" />" media="screen, projection, tv" />
-<link rel="stylesheet" type="text/css" href="<wo:WOResourceURL filename="css/fonts0.css" />" media="screen, projection, tv" />
-<link rel="stylesheet" type="text/css" href="<wo:WOResourceURL filename="css/print.css" />" media="print" />
-<wo:if condition="$doesPageSpecificStylesheetExist"><link rel="stylesheet" type="text/css" href="<wo:WOResourceURL framework="$pageFramework" filename="$pageSpecificStylesheetPath" />"/></wo:if>
+<wo name="DojoCss"/>
+<wo name="DojoThemeCss"/>
+<wo name="DojoxFileInputCss"/>
+<wo:str escapeHTML="false" value="$theme.linkTags"/>
+<wo:if condition="$doesPageSpecificStylesheetExist"><wo name="PageSpecificCss"/></wo:if>
 <script type="text/javascript" src="<wo:WOResourceURL filename="dojo/dojo.js" />" djConfig="parseOnLoad: true"></script>
 <script type="text/javascript" src="<wo:WOResourceURL filename="dojo/BasePage.js" />"></script>
 <script type="text/javascript">
-<wo:loop list="$extraRequiresArray" item="$extraRequire">dojo.require("<wo:str value="$extraRequire" />");
+<wo:loop list="$extraRequiresArray" item="$oneExtraRequire">dojo.require("<wo:str value="$extraRequire" />");
 </wo:loop>// <!-- END_REQUIRES -->
-
+ dojo.require("dojox.form.FileInput");
 dojo.addOnLoad(function() {
     dijit.setWaiRole(dojo.body(), "application");
 // <!-- END_ON_LOAD -->
@@ -25,7 +21,7 @@ dojo.addOnLoad(function() {
 </script>
 <wo:if condition="$doesPageSpecificJavascriptExist"><script type="text/javascript" src="<wo:WOResourceURL framework="$pageFramework" filename="$pageSpecificJavascriptPath" />"></script></wo:if>
 </head>
-<body class="nihilo">
+<wo:WOGenericContainer elementName="body" class="$bodyCssClass">
 <wo:WOComponentContent />
-</body>
-</html>
+</wo:WOGenericContainer>
+</html></wo:if><wo:else><wo:WOComponentContent/></wo:else>

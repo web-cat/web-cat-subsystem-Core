@@ -1,10 +1,15 @@
 <div id="footer">
-<a href="http://web-cat.org/WCWiki/Web-CAT">Web-CAT</a> is
-&copy; 2006-2009 <a href="http://www.cs.vt.edu/">Virginia Tech</a>
-&nbsp;|&nbsp;
-v<wo:str value="$application.version"/>
-&nbsp;|&nbsp;
-Comments to <wo name="AdminEmail"/>
-&nbsp;|&nbsp;
-<webobject name="PrivacyStatement"/>
+  <div id="width">
+    <span class="floatLeft">
+      <a href="http://web-cat.org/WCWiki/Web-CAT">Web-CAT</a> is
+      &copy; 2006-2009 <a href="http://www.cs.vt.edu/">Virginia Tech</a>
+      <span class="grey">|</span>
+      v<wo:str value="$application.version"/>
+    </span>
+    <span class="floatRight">
+    Administrator: <wo name="AdminEmail"/>
+    <span class="grey">|</span>
+    <wo:link href="$application.properties.corePrivacyURL">privacy</wo:link>
+    </span>
+  </div>
 </div>

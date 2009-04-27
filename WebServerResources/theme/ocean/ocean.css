@@ -1,0 +1,204 @@
+/* =================================================================== */
+/* @group Page Content
+====================================================================== */
+
+body {
+	background-color: #030d3e;
+	background-image: url(ocean.jpg);
+	background-position: top left;
+}
+
+
+/* @end
+====================================================================== */
+/* @group Header/Footer
+====================================================================== */
+
+#header .title h1,
+#header .title h2 {
+	color: white;
+}
+
+#roles, #utils {
+	color: white;
+}
+
+#roles a, #utils a {
+	color: white;
+	background-image: url(../base/images/white-15.png);
+	text-decoration: none;
+	padding: 0.1em 0.5em;
+}
+
+#roles a:hover, #utils a:hover, #roles a.here {
+	background-image: url(../base/images/black-50.png);
+	text-decoration: underline;
+}
+
+#header a:hover,
+#footer a:hover {
+	border-bottom: none;
+}
+
+#footer {
+	color: white;
+}
+
+#footer a {
+	color: white;
+	background-image: url(../base/images/white-15.png);
+	text-decoration: none;
+	padding: 0.1em 0.5em;
+}
+
+#footer a:hover {
+	color: white;
+	background-image: url(../base/images/black-50.png);
+	text-decoration: underline;
+}
+
+
+/* @end
+====================================================================== */
+/* @group Main Menu
+====================================================================== */
+
+#mainMenu li {
+}
+
+#mainMenu a {
+	color: #fff;
+	background-image: url(../base/images/white-15.png);
+}
+
+
+#mainMenu a:hover,
+#mainMenu .here a {
+	background-image: url(../base/images/black-50.png);
+}
+
+#mainMenu li:hover a {
+	background-image: none;
+}
+
+#mainMenu > li:hover > a {
+	background-image: url(../base/images/black-50.png);
+}
+
+#mainMenu :hover  ul {
+	background-image: url(../base/images/black-50.png);
+}
+
+#mainMenu li:hover li:hover > a,
+#mainMenu li.here:hover li.here:hover > a {
+	color: black;
+	background-image: url(../base/images/white-40.png);
+}
+#mainMenu li.here:hover li.here > a {
+	color: black;
+	background-image: url(../base/images/white-25.png);
+}
+
+#mainMenu li a:hover ul li a:hover {
+	background-image: url(../base/images/white-40.png);
+}
+
+
+/* @end
+====================================================================== */
+/* @group Basic Look
+====================================================================== */
+
+a, a:active, a:link {
+	text-decoration: none;
+	color: #58f;
+}
+a:visited { text-decoration: none; }
+a:hover { border-bottom: 1px dotted #58f; }
+
+h1, h2, h3, h4, h5, h6 { color: #feb; }
+.disabled { color: #555; }
+b, strong { color: #feb; }
+.check { color: #9f4; }.warn  { color: #e20; }
+.date { color: #555; }
+
+span.hl {	font-weight: bold;	/* color: #aad518;	   padding: 0 2px; */
+	/* background-image: url(../base/images/white-40.png);
+	color: black; */
+	color: #fe7;
+	background-color: black;
+	padding: 0.1em 0.3em;}
+
+.module {	background: transparent url(../base/images/black-40.png) repeat top left;	color:  #ccc;}
+
+pre, .code {
+	background-image: url(../base/images/white-15.png);
+	border-left: 4px solid #ccc;
+}
+
+label em { color: #e20; }
+
+/* @end
+====================================================================== */
+/* @group =Tables
+====================================================================== */
+
+table {	border: 1px solid #ccc;}table th {	background-image: url(../base/images/white-15.png);	color: #feb;}
+
+table thead {
+	border-bottom: 1px solid #ccc;
+}
+
+.batchnav { background-image: url(../base/images/white-15.png); }
+/*TR.o  { background-color: transparent; } */TR.e  { background-image: url(../base/images/white-10.png); }
+
+/* Need to revise
+TR.oe { background-color: #faa; }TR.ee { background-color: #f99; }TR.oc { background-color: #ef4; }TR.ec { background-color: #de0; }
+*/
+
+/* deprecated
+TD.n  { text-align: right;  }TD.s  { text-align: center; }TD.L  { text-align: left;   }TD.R  { text-align: right;  }*/
+
+	/*
+	================================================================== */
+	/* @group Mini-Histogram
+	================================================================== */
+
+	table.distchart {		background-color: white;
+		border-bottom: 1px solid black;	}
+
+
+	/* @end
+	================================================================== */
+
+
+	/*
+	================================================================== */
+	/* @group Meter
+	================================================================== */
+
+	table.percentbar td.plus  { background-color: #00df00; }	table.percentbar td.minus { background-color: #df0000; }	table tr#divider td { border-top: 1px solid #ccc; }
+
+
+	/* @end
+	================================================================== */
+
+
+	/*
+	================================================================== */
+	/* @group Printout
+	================================================================== */
+
+
+	/* @end
+	================================================================== */
+
+
+/* @end
+====================================================================== */
+/* @group Notices
+====================================================================== */
+
+
+/* @end
+====================================================================== */

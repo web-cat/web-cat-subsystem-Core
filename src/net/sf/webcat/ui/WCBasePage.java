@@ -21,14 +21,19 @@
 
 package net.sf.webcat.ui;
 
-import java.net.URL;
 import com.webobjects.appserver.WOApplication;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResourceManager;
+import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSMutableArray;
+import java.net.URL;
+import net.sf.webcat.core.Session;
+import net.sf.webcat.core.Theme;
+import net.sf.webcat.core.WCResourceManager;
+import org.apache.log4j.Logger;
 
 // ------------------------------------------------------------------------
 /**
@@ -64,35 +69,70 @@ import com.webobjects.foundation.NSMutableArray;
  * <tt>dojo.require</tt>d in the page header.</td>
  * </tr>
  * </table>
- *  
+ *
  * @author Tony Allevato
  * @version $Id$
  */
-public class WCBasePage extends WOComponent
+public class WCBasePage
+    extends WOComponent
 {
     //~ Constructor ...........................................................
-    
+
     // ----------------------------------------------------------
     /**
      * Creates a new Dojo page.
-     * 
+     *
      * @param context the context
      */
     public WCBasePage(WOContext context)
     {
         super(context);
     }
-    
+
 
     //~ KVC attributes (must be public) .......................................
-    
-    public String extraRequires;
+
     public String title;
+    public String extraBodyCssClass;
+    public String extraRequires;
+    public boolean includePageWrapping = true;
 
-    public String extraRequire;
+    /** Used to refer to a single item in a repetition on the page. */
+    public String oneExtraRequire;
 
-    
+
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    public void appendToResponse( WOResponse response, WOContext context )
+    {
+        log.debug( "nowrap = "
+                   + context.request().stringFormValueForKey( "nowrap" ) );
+        includePageWrapping =
+            ( context.request().stringFormValueForKey( "nowrap" ) == null );
+        response.appendHeader("no-cache", "pragma");
+        response.appendHeader("no-cache", "cache-control");
+        super.appendToResponse( response, context );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns the HTML page's title string.  This is the title
+     * string that will show as the "page title" in the browser.
+     * This generic implementation returns "Web-CAT", which is the
+     * title that will be used for pages that do not provide one.
+     * Ideally, subsystems will override this default.
+     *
+     * @return The page title
+     */
+    public String pageTitle()
+    {
+        return ( title == null )
+                ? "Web-CAT"
+                : ( "Web-CAT: " + title );
+    }
+
 
     // ----------------------------------------------------------
     public NSArray<String> extraRequiresArray()
@@ -101,7 +141,7 @@ public class WCBasePage extends WOComponent
         {
             return null;
         }
-        
+
         NSMutableArray<String> array = new NSMutableArray<String>();
 
         String[] requires = extraRequires.split(";");
@@ -112,7 +152,7 @@ public class WCBasePage extends WOComponent
                 array.addObject(require);
             }
         }
-        
+
         return array;
     }
 
@@ -121,7 +161,7 @@ public class WCBasePage extends WOComponent
     /**
      * Returns true if a page-specific stylesheet exists for the component
      * containing this WCBasePage instance.
-     * 
+     *
      * @return true if a page-specific stylesheet exists for the component,
      *     otherwise false
      */
@@ -136,7 +176,7 @@ public class WCBasePage extends WOComponent
     /**
      * Returns true if a page-specific JavaScript file exists for the component
      * containing this WCBasePage instance.
-     * 
+     *
      * @return true if a page-specific JavaScript file exists for the component,
      *     otherwise false
      */
@@ -151,11 +191,11 @@ public class WCBasePage extends WOComponent
     /**
      * Returns true if a page-specific resource for the component containing
      * this WCBasePage instance.
-     * 
+     *
      * @param directory the WebServerResources subdirectory containing the
      *     resource to look for
      * @param extension the extension of the resource to look for
-     * 
+     *
      * @return true if the page-specific resource exists for the component,
      *     otherwise false
      */
@@ -177,7 +217,7 @@ public class WCBasePage extends WOComponent
     /**
      * Gets the name of the framework that contains the component containing
      * this WCBasePage instance.
-     * 
+     *
      * @return the name of the framework that contains the component
      */
     public String pageFramework()
@@ -190,7 +230,7 @@ public class WCBasePage extends WOComponent
     /**
      * Returns the path (relative to WebServerResources) of the page-specific
      * stylesheet for the component containing this WCBasePage instance.
-     * 
+     *
      * @return the WebServerResources-relative path of the page-specific
      *     stylesheet
      */
@@ -205,7 +245,7 @@ public class WCBasePage extends WOComponent
     /**
      * Returns the path (relative to WebServerResources) of the page-specific
      * Javascript file for the component containing this WCBasePage instance.
-     * 
+     *
      * @return the WebServerResources-relative path of the page-specific
      *     JavaScript file
      */
@@ -217,14 +257,63 @@ public class WCBasePage extends WOComponent
 
 
     // ----------------------------------------------------------
+    public String bodyCssClass()
+    {
+        String result = null;
+
+        Object dojoTheme =
+            theme().valueForKeyPath("inherit.properties.dojoTheme");
+        if (dojoTheme != null)
+        {
+            result = dojoTheme.toString();
+        }
+        if (extraBodyCssClass != null)
+        {
+            if (result == null)
+            {
+                result = "";
+            }
+            else
+            {
+                result += " ";
+            }
+            result += extraBodyCssClass;
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    public Theme theme()
+    {
+        if (hasSession())
+        {
+            return ((Session)session()).theme();
+        }
+        else
+        {
+            return Theme.defaultTheme();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public String stylesheetUrl(String partialUrl)
+    {
+        return WCResourceManager.resourceURLFor(
+            partialUrl, context().request());
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Returns true if a page-specific resource for the component containing
      * this WCBasePage instance.
-     * 
+     *
      * @param directory the WebServerResources subdirectory containing the
      *     resource to look for
      * @param extension the extension of the resource to look for
-     * 
+     *
      * @return the WebServerResources-relative path of the page-specific
      *     resource
      */
@@ -237,12 +326,14 @@ public class WCBasePage extends WOComponent
 
 
     //~ Static/instance variables .............................................
-    
+
     private static final long serialVersionUID = 1L;
-    
+
     private static final String JAVASCRIPT_RESOURCE_DIR = "javascript";
     private static final String JAVASCRIPT_RESOURCE_EXT = "js";
 
     private static final String STYLESHEETS_RESOURCE_DIR = "stylesheets";
     private static final String STYLESHEETS_RESOURCE_EXT = "css";
+
+    static Logger log = Logger.getLogger( WCBasePage.class );
 }

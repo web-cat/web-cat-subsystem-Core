@@ -160,6 +160,7 @@ public abstract class _User
     public static final String USER_NAME_KEY = "userName";
     // To-one relationships ---
     public static final String AUTHENTICATION_DOMAIN_KEY = "authenticationDomain";
+    public static final String THEME_KEY = "theme";
     // To-many relationships ---
     public static final String CORE_SELECTIONS_KEY = "coreSelections";
     public static final String ENROLLED_IN_KEY = "enrolledIn";
@@ -779,6 +780,67 @@ public abstract class _User
         else
         {
             addObjectToBothSidesOfRelationshipWithKey( value, "authenticationDomain" );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the entity pointed to by the <code>theme</code>
+     * relationship.
+     * @return the entity in the relationship
+     */
+    public net.sf.webcat.core.Theme theme()
+    {
+        return (net.sf.webcat.core.Theme)storedValueForKey( "theme" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the entity pointed to by the <code>theme</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>setThemeRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void setTheme( net.sf.webcat.core.Theme value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setTheme("
+                + value + "): was " + theme() );
+        }
+        takeStoredValueForKey( value, "theme" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the entity pointed to by the <code>theme</code>
+     * relationship.  This method is a type-safe version of
+     * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
+     *
+     * @param value The new entity to relate to
+     */
+    public void setThemeRelationship(
+        net.sf.webcat.core.Theme value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setThemeRelationship("
+                + value + "): was " + theme() );
+        }
+        if ( value == null )
+        {
+            net.sf.webcat.core.Theme object = theme();
+            if ( object != null )
+                removeObjectFromBothSidesOfRelationshipWithKey( object, "theme" );
+        }
+        else
+        {
+            addObjectToBothSidesOfRelationshipWithKey( value, "theme" );
         }
     }
 

@@ -42,6 +42,7 @@ help.baseURL = http://web-cat.cs.vt.edu/Web-CAT.help/
 # -------------------------------------------------------------------
 log4j.logger.net.sf.webcat.core.Application          = INFO
 log4j.logger.net.sf.webcat.core.install              = INFO
+log4j.logger.net.sf.webcat.core.Theme                = INFO
 
 # This entry ensures that one must specifically request that this be
 # turned on separately from turning on generic Application class logging,

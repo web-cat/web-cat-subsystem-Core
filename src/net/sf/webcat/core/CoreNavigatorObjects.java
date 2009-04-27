@@ -10,7 +10,8 @@ import er.extensions.eof.ERXQ;
 public class CoreNavigatorObjects
 {
     // ----------------------------------------------------------
-    public static class AllSemesters implements INavigatorObject
+    public static class AllSemesters
+        implements INavigatorObject
     {
         // ----------------------------------------------------------
         public AllSemesters(EOEditingContext ec)
@@ -18,22 +19,22 @@ public class CoreNavigatorObjects
             semesters = EOUtilities.objectsForEntityNamed(ec,
                     Semester.ENTITY_NAME);
         }
-        
-        
+
+
         // ----------------------------------------------------------
         public NSArray<?> representedObjects()
         {
             return semesters;
         }
 
-        
+
         // ----------------------------------------------------------
         public String toString()
         {
             return "All";
         }
-        
-        
+
+
         // ----------------------------------------------------------
         public boolean equals(Object obj)
         {
@@ -51,32 +52,35 @@ public class CoreNavigatorObjects
 
         private NSArray<Semester> semesters;
     }
-    
-    
+
+
     // ----------------------------------------------------------
-    public static class SingleSemester implements INavigatorObject
+    public static class SingleSemester
+        implements INavigatorObject
     {
         // ----------------------------------------------------------
         public SingleSemester(Semester semester)
         {
             this.semester = semester;
         }
-        
-        
+
+
         // ----------------------------------------------------------
         public NSArray<?> representedObjects()
         {
             return new NSMutableArray<Semester>(semester);
         }
 
-        
+
         // ----------------------------------------------------------
         public String toString()
         {
-            return semester.toString();
+            return (semester == null)
+                ? "null"
+                : semester.toString();
         }
-        
-        
+
+
         // ----------------------------------------------------------
         public boolean equals(Object obj)
         {
@@ -95,52 +99,53 @@ public class CoreNavigatorObjects
         private Semester semester;
     }
 
-    
+
     // ----------------------------------------------------------
-    public static class OfferingsForSemestersAndCourse
-    implements INavigatorObject
+    public static class CourseOfferingSet
+        implements INavigatorObject
     {
         // ----------------------------------------------------------
-        public OfferingsForSemestersAndCourse(EOEditingContext ec,
-                NSArray<Semester> semesters, Course course)
+        /**
+         * Create an "all" object for a set of course offerings.  Assumes
+         * that all the course offerings in the set are offerings of
+         * the same course.
+         */
+        public CourseOfferingSet(NSArray<CourseOffering> offerings)
         {
-            EOFetchSpecification fspec = new EOFetchSpecification(
-                    CourseOffering.ENTITY_NAME,
-                    ERXQ.and(
-                            ERXQ.in("semester", semesters),
-                            ERXQ.is("course", course)
-                            ),
-                    null);
-
-            this.course = course;
-            courseOfferings = ec.objectsWithFetchSpecification(fspec);
+            courseOfferings = offerings;
         }
-        
-        
+
+
         // ----------------------------------------------------------
         public NSArray<?> representedObjects()
         {
             return courseOfferings;
         }
 
-        
+
         // ----------------------------------------------------------
         public String toString()
         {
-            return course.toString() + " (All)";
+            if (courseOfferings == null || courseOfferings.count() == 0)
+            {
+                return "null";
+            }
+            else
+            {
+                return courseOfferings.objectAtIndex(0).course().toString()
+                    + " (All)";
+            }
         }
-        
-        
+
+
         // ----------------------------------------------------------
         public boolean equals(Object obj)
         {
-            if (obj instanceof OfferingsForSemestersAndCourse)
+            if (obj instanceof CourseOfferingSet)
             {
-                OfferingsForSemestersAndCourse o =
-                    (OfferingsForSemestersAndCourse) obj;
-                
-                return course.equals(o.course)
-                    && courseOfferings.equals(o.courseOfferings);
+                CourseOfferingSet o = (CourseOfferingSet) obj;
+
+                return courseOfferings.equals(o.courseOfferings);
             }
             else
             {
@@ -149,32 +154,34 @@ public class CoreNavigatorObjects
         }
 
 
-        private Course course;
         private NSArray<CourseOffering> courseOfferings;
     }
 
-    
+
     // ----------------------------------------------------------
-    public static class SingleCourseOffering implements INavigatorObject
+    public static class SingleCourseOffering
+        implements INavigatorObject
     {
         // ----------------------------------------------------------
         public SingleCourseOffering(CourseOffering offering)
         {
             this.offering = offering;
         }
-        
-        
+
+
         // ----------------------------------------------------------
         public NSArray<?> representedObjects()
         {
             return new NSMutableArray<CourseOffering>(offering);
         }
 
-        
+
         // ----------------------------------------------------------
         public String toString()
         {
-            return offering.toString();
+            return (offering == null)
+                ? "null"
+                : offering.toString();
         }
 
 
@@ -184,7 +191,7 @@ public class CoreNavigatorObjects
             if (obj instanceof SingleCourseOffering)
             {
                 SingleCourseOffering o = (SingleCourseOffering) obj;
-                
+
                 return offering.equals(o.offering);
             }
             else

@@ -7,15 +7,12 @@ Form1: WOForm {
     multipleSubmit = true;
 }
 
-Page: net.sf.webcat.core.PageWithNavigation {
+Page: net.sf.webcat.core.WCPageWithNavigation {
 }
 
 NotSent: WOConditional {
 	condition = sent;
 	negate = true;
-}
-
-ResetButton: WOResetButton {
 }
 
 Sent: WOConditional {
@@ -24,6 +21,7 @@ Sent: WOConditional {
 
 SubmitButton: WOSubmitButton {
 	action = sendFeedback;
+	value  = "Send Comment";
 }
 
 Text: WOText {

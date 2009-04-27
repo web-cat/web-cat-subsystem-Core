@@ -1,0 +1,44 @@
+{
+    name             = "Standard Base Theme";
+    dirName          = base;
+    version.major    = 1;
+    version.minor    = 0;
+    version.revision = 0;
+    version.date     = 20090301;
+    provider         = "Virginia Tech Computer Science";
+    provider.url     = "http://web-cat.cs.vt.edu/updates";
+    license          = "GNU General Public License v.2";
+    license.url      = "http://www.gnu.org/copyleft/gpl.html";
+    copyright        = "(c) 2009 Virginia Tech Department of Computer Science";
+    info.url         = "http://web-cat.cs.vt.edu/WCWiki/BaseTheme";
+    history.url      = "http://web-cat.cs.vt.edu/WCWiki/BaseTheme/ChangeHistory";
+    author           = "Stephen Edwards (edwards@cs.vt.edu)";
+    authorUid        = edwards;
+    description      = "This is the core theme that most other themes extend.
+        By itself, it is quite ugly.   It defines a common layout, common
+        font choices, and other structural elements, without any choices for
+        colors, background images, etc.";
+    credits          = "Brought to you by ...";
+    isForThemeDevelopers = true;
+
+    dojoTheme = nihilo;
+    cssOrder = (
+        {
+            file = "layout.css";
+            media = "screen, projection, tv";
+        },
+        {
+            file = "typography.css";
+            media = "screen, projection, tv";
+        },
+        {
+            file = "fonts.css";
+            media = "print, screen, projection, tv";
+        },
+        {
+            file = "print.css";
+            media = "print";
+        }
+    );
+
+}

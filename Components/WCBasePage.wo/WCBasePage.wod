@@ -1,0 +1,27 @@
+DojoCss: WOGenericContainer {
+    elementName = "link";
+    rel         = "stylesheet";
+    type        = "text/css";
+    href        = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/resources/dojo.css\")";
+}
+
+DojoThemeCss: WOGenericContainer {
+    elementName = "link";
+    rel         = "stylesheet";
+    type        = "text/css";
+    href        = "~stylesheetUrl(\"Core.framework/WebServerResources/dijit/themes/\" + theme.dojoTheme + \"/\" + theme.dojoTheme + \".css\")";
+}
+
+DojoxFileInputCss: WOGenericContainer {
+    elementName = "link";
+    rel         = "stylesheet";
+    type        = "text/css";
+    href        = "~stylesheetUrl(\"Core.framework/WebServerResources/dojox/form/resources/FileInput.css\")";
+}
+
+PageSpecificCss: WOGenericContainer {
+    elementName = "link";
+    rel         = "stylesheet";
+    type        = "text/css";
+    href        = "~stylesheetUrl(pageFramework + \".framework/WebServerResources/\" + pageSpecificStylesheetPath)";
+}

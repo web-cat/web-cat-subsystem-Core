@@ -1,0 +1,29 @@
+{
+    name             = "Beach";
+    dirName          = beachy;
+    version.major    = 1;
+    version.minor    = 0;
+    version.revision = 0;
+    version.date     = 20090227;
+    provider         = "Virginia Tech Computer Science";
+    provider.url     = "http://web-cat.cs.vt.edu/updates";
+    license          = "GNU General Public License v.2";
+    license.url      = "http://www.gnu.org/copyleft/gpl.html";
+    copyright        = "(c) 2009 Virginia Tech Department of Computer Science";
+    info.url         = "http://web-cat.cs.vt.edu/WCWiki/BeachTheme";
+    history.url      = "http://web-cat.cs.vt.edu/WCWiki/BeachTheme/ChangeHistory";
+    author           = "Stephen Edwards (edwards@cs.vt.edu)";
+    authorUid        = edwards;
+    description      = "Dark text on a light background, with an airy,
+        nature-inspired outdoor background at the beach.";
+    credits          = "Brought to you by ...";
+
+    extends = nihilo-dark;
+    cssOrder = (
+        {
+            file = "beach.css";
+            media = "screen, projection, tv";
+        }
+    );
+
+}

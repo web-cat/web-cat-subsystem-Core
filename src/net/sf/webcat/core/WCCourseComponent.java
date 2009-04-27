@@ -22,6 +22,7 @@
 package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
+import com.webobjects.foundation.NSMutableArray;
 
 import org.apache.log4j.*;
 
@@ -113,6 +114,104 @@ public class WCCourseComponent
     }
 
 
+    // ----------------------------------------------------------
+    public NSMutableArray<INavigatorObject> courseOfferings()
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public INavigatorObject selectedCourseOffering()
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setSelectedCourseOffering(INavigatorObject selected)
+    {
+    }
+
+
+    // ----------------------------------------------------------
+    public NSMutableArray<INavigatorObject> semesters()
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public INavigatorObject selectedSemester()
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setSelectedSemester(INavigatorObject selected)
+    {
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean allowsAllSemesters()
+    {
+        return allowsAllSemesters;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setAllowsAllSemesters(boolean value)
+    {
+        allowsAllSemesters = value;
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean allowsAllOfferingsForCourse()
+    {
+        return allowsAllOfferingsForCourse;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setAllowsAllOfferingsForCourse(boolean value)
+    {
+        allowsAllOfferingsForCourse = value;
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean includeWhatImTeaching()
+    {
+        // TODO: implement
+        return includeWhatImTeaching;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setIncludeWhatImTeaching(boolean value)
+    {
+        // TODO: implement
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean includeAdminAccess()
+    {
+        // TODO: implement
+        return includeAdminAccess;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setIncludeAdminAccess(boolean value)
+    {
+        // TODO: implement
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
@@ -136,6 +235,21 @@ public class WCCourseComponent
         CoreSelectionsManager.class.getName();
     private static final String ECMANAGER_KEY =
         EOManager.ECManager.class.getName();
+
+    private NSMutableArray<INavigatorObject> courseOfferings;
+    private INavigatorObject selectedCourseOffering;
+
+    private NSMutableArray<INavigatorObject> semesters;
+    private INavigatorObject selectedSemester;
+
+    private boolean allowsAllSemesters = true;
+    private boolean allowsAllOfferingsForCourse = true;
+
+    private Boolean includeWhatImTeaching;
+    private Boolean includeAdminAccess;
+
+    private static final String SEMESTER_PREF_KEY = "semester";
+    private static final String COURSE_OFFERING_SET_KEY = "courseOfferingSet";
 
     static Logger log = Logger.getLogger( WCCourseComponent.class );
 }

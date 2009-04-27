@@ -21,6 +21,7 @@
 
 package net.sf.webcat.core;
 
+import org.apache.log4j.Logger;
 import net.sf.webcat.core.CoreNavigatorObjects;
 import net.sf.webcat.core.Course;
 import net.sf.webcat.core.CourseOffering;
@@ -30,6 +31,7 @@ import net.sf.webcat.core.Semester;
 import net.sf.webcat.core.WCComponent;
 import net.sf.webcat.ui.util.ComponentIDGenerator;
 import com.webobjects.appserver.WOActionResults;
+import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
@@ -42,12 +44,13 @@ import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSTimestamp;
 import er.extensions.eof.ERXQ;
 import er.extensions.foundation.ERXArrayUtilities;
+import er.extensions.foundation.ERXValueUtilities;
 
 //--------------------------------------------------------------------------
 /**
  * The popup course selector that serves as the basis for the Web-CAT core
  * subsystem navigation scheme.
- * 
+ *
  * <h2>Bindings</h2>
  * <dl>
  * <dt>allowsAllSemesters</dt>
@@ -69,28 +72,29 @@ import er.extensions.foundation.ERXArrayUtilities;
  * courses that the user is teaching. If the user has TA privileges or higher,
  * he can change this in the user interface. Defaults to true.</dd>
  * </dl>
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
-public class CoreNavigator extends WCComponent
+public class CoreNavigator
+    extends WCComponent
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
     /**
-     * TODO: real description
-     * 
+     * Create a new object.
+     *
      * @param context
      */
     public CoreNavigator(WOContext context)
     {
         super(context);
     }
-    
-    
+
+
     //~ KVC attributes (must be public) .......................................
-    
+
     public NSMutableArray<INavigatorObject> courseOfferings;
     public INavigatorObject courseOfferingInRepetition;
     public INavigatorObject selectedCourseOffering;
@@ -98,14 +102,16 @@ public class CoreNavigator extends WCComponent
     public NSMutableArray<INavigatorObject> semesters;
     public INavigatorObject semesterInRepetition;
     public INavigatorObject selectedSemester;
-    
+
     public boolean allowsAllSemesters = true;
     public boolean allowsAllOfferingsForCourse = true;
 
     public boolean includeWhatImTeaching = true;
     public boolean includeAdminAccess = false;
-    
+
     public ComponentIDGenerator idFor;
+
+    public static final String COURSE_OFFERING_SET_KEY = "courseOfferingSet";
 
 
     //~ Methods ...............................................................
@@ -114,6 +120,8 @@ public class CoreNavigator extends WCComponent
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
+        log.debug("entering appendToResponse()");
+
         idFor = new ComponentIDGenerator(this);
 
         // TODO Grab current selections from session and set the values of
@@ -122,17 +130,62 @@ public class CoreNavigator extends WCComponent
         updateSemesters();
 
         super.appendToResponse(response, context);
+        log.debug("leaving appendToResponse()");
+    }
+
+
+    // ----------------------------------------------------------
+    public void awake()
+    {
+        log.debug("entering awake()");
+        if (selectionsParent == null)
+        {
+            selectionsParent = findNearestAncestor(WCCourseComponent.class);
+            if (selectionsParent == null)
+            {
+                throw new IllegalStateException("CoreNavigator can only be "
+                    + "embedded inside a WCCourseComponent page");
+            }
+
+            Semester semester = selectionsParent.coreSelections().semester();
+            if (semester != null)
+            {
+                selectedSemester =
+                    new CoreNavigatorObjects.SingleSemester(semester);
+            }
+
+            // Handle course preference
+            CourseOffering co =
+                selectionsParent.coreSelections().courseOffering();
+            if (co != null)
+            {
+                selectedCourseOffering =
+                    new CoreNavigatorObjects.SingleCourseOffering(co);
+            }
+            else
+            {
+                wantOfferingsForCourse =
+                    selectionsParent.coreSelections().course();
+            }
+        }
+        log.debug("selected semester = " + selectedSemester);
+        log.debug("selected course = " + selectedCourseOffering);
+        log.debug("parent = " + parent().getClass().getName());
+        super.awake();
+        log.debug("leaving awake()");
     }
 
 
     // ----------------------------------------------------------
     /**
-     * Updates the list of available semesters, followed by course offerings.
-     * 
+     * Updates the list of available semesters, followed by course offerings
+     * and assignments.
+     *
      * @return the result is ignored
      */
     public WOActionResults updateSemesters()
     {
+        log.debug("updateSemesters()");
         semesters = new NSMutableArray<INavigatorObject>();
 
         if (allowsAllSemesters)
@@ -141,31 +194,36 @@ public class CoreNavigator extends WCComponent
                     localContext()));
         }
 
-        NSArray<Semester> sems = EOUtilities.objectsForEntityNamed(
-                localContext(), Semester.ENTITY_NAME);
+        NSArray<Semester> sems = Semester.objectsForFetchAll(localContext());
 
         for (Semester sem : sems)
         {
             semesters.addObject(new CoreNavigatorObjects.SingleSemester(sem));
         }
-        
+
         if (selectedSemester == null)
         {
             selectedSemester = semesters.objectAtIndex(0);
         }
-        
+
+        if (log.isDebugEnabled())
+        {
+            log.debug("semesters = " + semesters);
+            log.debug("selected semester = " + selectedSemester);
+        }
         return updateCourseOfferings();
     }
 
 
     // ----------------------------------------------------------
     /**
-     * Updates the list of course offerings.
-     * 
+     * Updates the list of course offerings, followed by assignments.
+     *
      * @return the result is ignored
      */
     public WOActionResults updateCourseOfferings()
     {
+        log.debug("updateCourseOfferings()");
         courseOfferings = new NSMutableArray<INavigatorObject>();
 
         NSArray<Semester> sems = (NSArray<Semester>)
@@ -186,10 +244,10 @@ public class CoreNavigator extends WCComponent
         {
             NSMutableArray<CourseOffering> temp =
                 new NSMutableArray<CourseOffering>();
-            
+
             temp.addObjectsFromArray(user().staffFor());
             temp.addObjectsFromArray(user().enrolledIn());
-            
+
             offerings = temp;
         }
         else
@@ -203,7 +261,7 @@ public class CoreNavigator extends WCComponent
         offerings = ERXQ.filtered(offerings, ERXQ.in("semester", sems));
 
         // Now sort the course offerings by course department and number.
-        
+
         offerings = EOSortOrdering.sortedArrayUsingKeyOrderArray(offerings,
                 EntityUtils.sortOrderingsForEntityNamed(
                         CourseOffering.ENTITY_NAME));
@@ -214,28 +272,69 @@ public class CoreNavigator extends WCComponent
 
         Course lastCourse = null;
 
-        for (CourseOffering offering : offerings)
+        INavigatorObject oldSelection = selectedCourseOffering;
+        selectedCourseOffering = null;
+
+        for (int i = 0; i < offerings.count(); i++)
         {
+            CourseOffering offering = offerings.objectAtIndex(i);
             if (lastCourse == null || !lastCourse.equals(offering.course()))
             {
-                if (allowsAllOfferingsForCourse &&
-                        userHasAccessToAllOfferingsForCourse(offering.course()))
+                if (allowsAllOfferingsForCourse)
                 {
-                    INavigatorObject courseWrapper =
-                        new CoreNavigatorObjects.OfferingsForSemestersAndCourse(
-                                localContext(), sems, offering.course());
-                    
-                    courseOfferings.addObject(courseWrapper);
+                    int mismatchIndex = i + 1;
+                    for (; mismatchIndex < offerings.count(); mismatchIndex++)
+                    {
+                        // Find first offering later in list from a
+                        // different course
+                        if (!offering.course().equals(
+                            offerings.objectAtIndex(mismatchIndex).course()))
+                        {
+                            break;
+                        }
+                    }
+
+                    // If there was more than one offering for
+                    // the initial course
+                    if (mismatchIndex > i + 1)
+                    {
+                        NSMutableArray<CourseOffering> subset =
+                            new NSMutableArray<CourseOffering>(
+                                mismatchIndex - i);
+                        for (int k = i; k < mismatchIndex; k++)
+                        {
+                            subset.add(offerings.objectAtIndex(k));
+                        }
+
+                        INavigatorObject courseWrapper =
+                            new CoreNavigatorObjects
+                            .CourseOfferingSet(subset);
+                        courseOfferings.addObject(courseWrapper);
+                    }
                 }
 
                 lastCourse = offering.course();
             }
 
-            courseOfferings.addObject(
-                    new CoreNavigatorObjects.SingleCourseOffering(
-                            offering));
+            INavigatorObject newOffering =
+                new CoreNavigatorObjects.SingleCourseOffering(offering);
+            courseOfferings.addObject(newOffering);
+            if (oldSelection != null && oldSelection.equals(newOffering))
+            {
+                selectedCourseOffering = newOffering;
+            }
         }
-        
+
+        if (selectedCourseOffering == null && courseOfferings.count() > 0)
+        {
+            selectedCourseOffering = courseOfferings.objectAtIndex(0);
+        }
+
+        if (log.isDebugEnabled())
+        {
+            log.debug("courseOfferings = " + courseOfferings);
+            log.debug("selected course offering = " + selectedCourseOffering);
+        }
         return null;
     }
 
@@ -243,7 +342,7 @@ public class CoreNavigator extends WCComponent
     // ----------------------------------------------------------
     /**
      * Invoked when the OK button in the dialog is pressed.
-     * 
+     *
      * @return null to reload the current page
      */
     public WOActionResults okPressed()
@@ -251,38 +350,75 @@ public class CoreNavigator extends WCComponent
         // TODO store the user's current semester, course, and assignment
         // selection in the session or wherever the nav-state is being
         // persisted
-        
+
+        // Save semester choice
+        if (selectedSemester != null)
+        {
+            NSArray<?> sems = selectedSemester.representedObjects();
+            if (sems != null && sems.count() == 1)
+            {
+                selectionsParent.coreSelections().setSemesterRelationship(
+                    (Semester)sems.objectAtIndex(0));
+            }
+            else if (allowsAllSemesters)
+            {
+                selectionsParent.coreSelections()
+                    .setSemesterRelationship(null);
+            }
+        }
+
+        // Save course or course offering choice
+        if (selectedCourseOffering != null)
+        {
+            NSArray<?> offerings = selectedCourseOffering.representedObjects();
+            if (offerings != null && offerings.count() > 0)
+            {
+                CourseOffering co = (CourseOffering)offerings.objectAtIndex(0);
+                boolean allOfferings =
+                    offerings.count() > 1 && allowsAllOfferingsForCourse;
+                if (allOfferings)
+                {
+                    selectionsParent.coreSelections()
+                        /* FIXME: finish this! */;
+                }
+                else
+                {
+                    selectionsParent.coreSelections()
+                        .setCourseOfferingRelationship(co);
+                }
+                selectionsParent.coreSelections()
+                    .setCourseRelationship(co.course());
+            }
+        }
+
         return null;
     }
 
 
     // ----------------------------------------------------------
     /**
-     * Returns a value indicating whether the current user has access to all of
-     * the offerings of a particular course.
-     * 
-     * @param course the course
-     * 
-     * @return true if the user has access to all of the offerings; otherwise,
-     *     false
+     * Searches up the WOComponent hierarchy searching for the nearest
+     * enclosing ancestor that is an instance of the specified target
+     * class.
+     * @param targetClass The type of ancestor to look for
+     * @return The identified ancestor, if one is found, or null if
+     * none matching the target class is found.
      */
-    private boolean userHasAccessToAllOfferingsForCourse(Course course)
+    protected <T> T findNearestAncestor(Class<T> targetClass)
     {
-        if (user().hasAdminPrivileges())
+        WOComponent ancestor = parent();
+        while (ancestor != null
+            && !(targetClass.isAssignableFrom(ancestor.getClass())))
         {
-            return true;
+            ancestor = ancestor.parent();
         }
-
-        NSArray<CourseOffering> offerings = course.offerings();
-        
-        for (CourseOffering offering : offerings)
-        {
-            if (!offering.isGrader(user()) && !offering.isInstructor(user()))
-            {
-                return false;
-            }
-        }
-        
-        return true;
+        return (T)ancestor;
     }
+
+
+    //~ Static/instance variables .............................................
+
+    private WCCourseComponent selectionsParent = null;
+    private Course wantOfferingsForCourse;
+    static Logger log = Logger.getLogger(CoreNavigator.class);
 }

@@ -1,0 +1,1 @@
+Drop the three folders (dijit, dojo, dojox) of a Dojo distribution here.

@@ -176,6 +176,19 @@ public class CoreDatabaseUpdates
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Adds label key to CourseOffering.
+     * @throws SQLException on error
+     */
+//    public void updateIncrement9() throws SQLException
+//    {
+//        createThemesTable();
+//        database().executeSQL(
+//            "ALTER TABLE TUSER ADD CTHEMEID INTEGER" );
+//    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
@@ -481,6 +494,28 @@ public class CoreDatabaseUpdates
                 + "OID INTEGER NOT NULL, userId INTEGER NOT NULL)" );
             database().executeSQL(
                 "ALTER TABLE PasswordChangeRequest ADD PRIMARY KEY (OID)" );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create the TUPLOADEDSCRIPTFILES table, if needed.
+     * @throws SQLException on error
+     */
+    private void createThemesTable() throws SQLException
+    {
+        if ( !database().hasTable( "TTHEMES" ) )
+        {
+            log.info( "creating table TTHEMES" );
+            database().executeSQL(
+                "CREATE TABLE TTHEMES "
+                + "(CDIRNAME TINYTEXT NOT NULL, OID INTEGER NOT NULL, "
+                + "CISFORTHEMEDEVELOPERS BIT , "
+                + "CLASTUPDATE DATETIME , CNAME TINYTEXT , "
+                + "CPROPERTIES BLOB , CUPDATEMUTABLEFIELDS BIT NOT NULL )" );
+            database().executeSQL(
+                "ALTER TABLE TTHEMES ADD PRIMARY KEY (OID)" );
         }
     }
 

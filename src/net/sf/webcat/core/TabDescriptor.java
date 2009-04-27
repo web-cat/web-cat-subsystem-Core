@@ -63,7 +63,7 @@ public class TabDescriptor
                           int     accessLevel,
                           int     priority,
                           boolean wantsStart,
-                          NSArray children,
+                          NSArray<TabDescriptor> children,
                           String  id,
                           NSDictionary config
                         )
@@ -73,7 +73,7 @@ public class TabDescriptor
         this.accessLevel = accessLevel;
         this.priority    = priority;
         this.wantsStart  = wantsStart;
-        this.children    = new NSMutableArray();
+        this.children    = new NSMutableArray<TabDescriptor>();
         this.id          = id;
         if ( config != null )
         {
@@ -269,7 +269,7 @@ public class TabDescriptor
      *
      * @return The tab label
      */
-    public NSMutableArray children()
+    public NSMutableArray<TabDescriptor> children()
     {
         return children;
     }
@@ -405,7 +405,7 @@ public class TabDescriptor
     public TabDescriptor childAt( int pos )
     {
         if ( pos >= 0 && pos < children.count() )
-            return (TabDescriptor)children.objectAtIndex( pos );
+            return children.objectAtIndex( pos );
         else
             return null;
     }
@@ -537,17 +537,15 @@ public class TabDescriptor
     {
         if ( children.count() > 0 )
         {
-            for ( int i = 0; i < children.count(); i++ )
+            for (TabDescriptor child : children)
             {
-                TabDescriptor child =
-                    (TabDescriptor)children.objectAtIndex( i );
                 if ( child.wantsStart )
                 {
                     return child.selectDefault();
                 }
             }
             return
-                ( (TabDescriptor)children.objectAtIndex( 0 ) ).selectDefault();
+                children.objectAtIndex(0).selectDefault();
         }
         else
         {
@@ -570,10 +568,8 @@ public class TabDescriptor
         }
         else if ( children.count() > 0 )
         {
-            for ( int i = 0; i < children.count(); i++ )
+            for (TabDescriptor child : children)
             {
-                TabDescriptor child =
-                    (TabDescriptor)children.objectAtIndex( i );
                 child = child.selectDownwardById( targetId );
                 if ( child != null )
                 {
@@ -629,7 +625,7 @@ public class TabDescriptor
      * Add a list of additional children to this tab.
      * @param moreChildren the new subtabs to add
      */
-    public void addChildren( NSArray moreChildren )
+    public void addChildren( NSArray<TabDescriptor> moreChildren )
     {
         if ( moreChildren == null  ||  moreChildren.count() == 0 ) return;
         TabDescriptor selectedChildTab = selectedChild();
@@ -658,7 +654,7 @@ public class TabDescriptor
     {
         for ( int i = 0; i < children.count(); i++ )
         {
-            TabDescriptor child = (TabDescriptor)children.objectAtIndex( i );
+            TabDescriptor child = children.objectAtIndex( i );
             child.myIndex = i;
             child.parent  = this;
             if ( child == selectedChildTab )
@@ -679,18 +675,15 @@ public class TabDescriptor
      * Merge a list of additional children into this tab.
      * @param moreChildren the new subtabs to add
      */
-    public void mergeClonedChildren( NSArray moreChildren )
+    public void mergeClonedChildren(NSArray<TabDescriptor> moreChildren)
     {
         if ( moreChildren == null  ||  moreChildren.count() == 0 ) return;
-        NSMutableArray newChildren = new NSMutableArray();
-        tabSearch: for ( int i = 0; i < moreChildren.count(); i++ )
+        NSMutableArray<TabDescriptor> newChildren =
+            new NSMutableArray<TabDescriptor>();
+        tabSearch: for (TabDescriptor newTab : moreChildren)
         {
-            TabDescriptor newTab =
-                (TabDescriptor)moreChildren.objectAtIndex( i );
-            for ( int j = 0; j < children.count(); j++ )
+            for (TabDescriptor oldTab : children)
             {
-                TabDescriptor oldTab =
-                    (TabDescriptor)children.objectAtIndex( j );
                 if ( oldTab.label().equals( newTab.label() ) )
                 {
                     // Found old tab already present
@@ -907,9 +900,9 @@ public class TabDescriptor
      * @param dict the properties to use
      * @return An array of the new tab descriptors
      */
-    public static NSArray tabsFromDictionary( NSDictionary dict )
+    public static NSArray<TabDescriptor> tabsFromDictionary( NSDictionary dict )
     {
-        NSMutableArray tabs = new NSMutableArray();
+        NSMutableArray<TabDescriptor> tabs = new NSMutableArray();
         for ( Enumeration keys = dict.keyEnumerator(); keys.hasMoreElements(); )
         {
             String label = (String)keys.nextElement();
@@ -946,7 +939,7 @@ public class TabDescriptor
      * @param data the raw bytes from the property list
      * @return An array of the new tab descriptors
      */
-    public static NSArray tabsFromPropertyList( NSData data )
+    public static NSArray<TabDescriptor> tabsFromPropertyList( NSData data )
     {
         NSDictionary dict = (NSDictionary)NSPropertyListSerialization
             .propertyListFromData( data, "US-ASCII" );
@@ -986,8 +979,8 @@ public class TabDescriptor
 
     // ----------------------------------------------------------
     /**
-     * Generate a string representation of this tab's state.
-     * @return A human-readable description of this tab
+     * Generate an independent copy of this tab.
+     * @return A clone of this tab
      */
     public Object clone()
     {
@@ -1009,7 +1002,7 @@ public class TabDescriptor
         for ( int i = 0; i < children.count(); i++ )
         {
             TabDescriptor thisTab = (TabDescriptor)
-                ( (TabDescriptor)result.children.objectAtIndex( i ) ).clone();
+                result.children.objectAtIndex(i).clone();
             thisTab.parent = result;
             result.children.replaceObjectAtIndex( thisTab, i );
         }
@@ -1084,7 +1077,7 @@ public class TabDescriptor
     private int                 accessLevel;
     private int                 priority;
     private boolean             wantsStart;
-    private NSMutableArray      children;
+    private NSMutableArray<TabDescriptor> children;
     private String              id;
     private NSMutableDictionary config;
 

@@ -1,0 +1,272 @@
+/* =================================================================== */
+/* @group Page Content
+====================================================================== */
+
+body {
+	background-color: #92afeb;
+	background-image: url(dream-way.jpg);
+}
+
+
+/* @end
+====================================================================== */
+
+#header .title h1,
+#header .title h2 {
+    color:  white;
+}
+
+#roles, #utils {
+    color:  #115;
+}
+
+#roles a, #utils a {
+    color:  #115;
+    background-image: url(../base/images/white-40.png);
+    text-decoration: none;
+    padding: 0.1em 0.5em;
+}
+
+#roles a:hover, #utils a:hover, #roles a.here {
+	color: white;
+    background-image: url(../base/images/black-70.png);
+    text-decoration: underline;
+}
+
+#header a:hover,
+#footer a:hover {
+    border-bottom: none;
+}
+
+#footer {
+    color: #115;
+}
+
+#footer a {
+    color: #115;
+    background-image: url(../base/images/white-60.png);
+    text-decoration: none;
+    padding: 0.1em 0.5em;
+}
+
+#footer a:hover {
+    color: white;
+    background-image: url(../base/images/black-70.png);
+    text-decoration: underline;
+}
+
+
+/* @end
+====================================================================== */
+/* @group Main Menu
+====================================================================== */
+
+#mainMenu li {
+}
+
+#mainMenu a {
+    color: #115;
+    background-image: url(../base/images/white-40.png);
+}
+
+
+#mainMenu a:hover,
+#mainMenu .here a {
+	color: white;
+    background-image: url(../base/images/black-50.png);
+}
+
+#mainMenu li:hover a {
+    color: white;
+    background-image: none;
+}
+
+#mainMenu > li:hover > a {
+	color: white;
+    background-image: url(../base/images/black-80.png);
+}
+
+#mainMenu :hover  ul {
+    color: white;
+    background-image: url(../base/images/black-80.png);
+}
+
+#mainMenu li:hover li:hover > a,
+#mainMenu li.here:hover li.here:hover > a {
+    color: black;
+    background-image: url(../base/images/white-40.png);
+}
+#mainMenu li.here:hover li.here > a {
+    color: black;
+    background-image: url(../base/images/white-50.png);
+}
+
+#mainMenu li a:hover ul li a:hover {
+    background-image: url(../base/images/white-40.png);
+}
+
+
+/* @end
+====================================================================== */
+/* @group Basic Look
+====================================================================== */
+
+a, a:active, a:link {
+    text-decoration: none;
+    color: #22d;
+}
+a:visited { text-decoration: none; }
+a:hover {
+    background: #ddf;
+    color: #000;
+    border-bottom: 1px dotted black;
+}
+
+h1, h2, h3, h4, h5, h6 { color: #44b; }
+.disabled { color: #555; }
+b, strong { color: #115; }
+.check { color: #2d2; }
+.warn  { color: #a00; }
+.date { color: #777; }
+
+span.hl {
+    font-weight: bold;
+    /* color: #aad518;
+       padding: 0 2px; */
+    /* background-image: url(../base/images/white-40.png);
+    color: black; */
+    color: white;
+    background-color: #44b;
+    padding: 0.1em 0.3em;
+}
+
+.module {
+    background: transparent url(../base/images/white-90.png) repeat top left;
+    color:  #444;
+}
+
+pre, .code {
+    background-image: url(../base/images/black-05.png);
+    border-left: 4px solid #115;
+    color: black;
+}
+
+label em { color: #e20; }
+
+
+/* @end
+====================================================================== */
+/* @group =Tables
+====================================================================== */
+
+table {
+    border: 1px solid #115;
+}
+
+table th {
+    background-color: #44b;
+    color: #eee;
+}
+
+table thead {
+    border-bottom: 1px solid #115;
+}
+
+.batchnav { background-image: url(../base/images/black-20.png); }
+
+/*TR.o  { background-color: transparent; } */
+tr.e  { background-image: url(../base/images/black-05.png); }
+
+/* Need to revise
+TR.oe { background-color: #faa; }
+TR.ee { background-color: #f99; }
+TR.oc { background-color: #ef4; }
+TR.ec { background-color: #de0; }
+*/
+
+/* deprecated
+TD.n  { text-align: right;  }
+TD.s  { text-align: center; }
+TD.L  { text-align: left;   }
+TD.R  { text-align: right;  }
+*/
+
+    /*
+    ================================================================== */
+    /* @group Mini-Histogram
+    ================================================================== */
+
+    table.distchart {
+        background-color: white;
+        border-bottom: 1px solid black;
+    }
+
+
+    /* @end
+    ================================================================== */
+
+
+    /*
+    ================================================================== */
+    /* @group Meter
+    ================================================================== */
+
+    table.percentbar td.plus  { background-color: #00df00; }
+    table.percentbar td.minus { background-color: #df0000; }
+    table tr#divider td { border-top: 1px solid #aaa; }
+
+
+    /* @end
+    ================================================================== */
+
+
+    /*
+    ================================================================== */
+    /* @group Printout
+    ================================================================== */
+
+
+    /* @end
+    ================================================================== */
+
+
+/* @end
+====================================================================== */
+/* @group Notices
+====================================================================== */
+
+
+
+
+/* @end
+====================================================================== */
+/* @group Dojo Nihilo
+====================================================================== */
+
+.nihilo .dijitTitlePane .dijitTitlePaneTitle {
+
+    color: #115;
+    border-bottom: 1px solid #115;
+}
+
+.nihilo .dijitTitlePaneFocused .dijitTitlePaneTextNode {
+    color: #115;
+}
+
+
+.nihilo .dijitOpen .dijitTitlePaneTextNode {
+    color: #115;
+}
+
+
+form fieldset {
+    border: 1px solid #115;
+}
+
+.dijitTooltipContainer form fieldset {
+    border-color: #115;
+}
+
+
+/* @end
+====================================================================== */

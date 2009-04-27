@@ -47,6 +47,10 @@ public class CoreSelectionsManager
     public CoreSelectionsManager(CoreSelections selections, ECManager manager)
     {
         super(selections, manager);
+        System.out.println("creating CoreSelectionsManager("
+            + selections.hashCode()
+            + " => " + selections
+            + ", " + manager + ")");
     }
 
 

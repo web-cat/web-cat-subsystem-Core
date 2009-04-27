@@ -58,14 +58,19 @@ public class PageWithNavigation
 
     //~ KVC Attributes (must be public) .......................................
 
-    public TabDescriptor primaryTabItem;
-    public TabDescriptor secondaryTabItem;
+    public TabDescriptor selectedRole;
     public TabDescriptor secondLevelSelection;
-    public TabDescriptor tertiaryTabItem;
     public int           tertiaryTabIndex;
     public WCComponent   thisPage;
     public String        sideStepTitle;
     public boolean       hideSteps = false;
+
+    // Repetition variables
+    public TabDescriptor primaryTabItem;
+    public TabDescriptor secondaryTabItem;
+    public TabDescriptor tertiaryTabItem;
+    public TabDescriptor aRole;
+    public int           aRoleIndex;
 
 
     //~ Methods ...............................................................
@@ -107,16 +112,22 @@ public class PageWithNavigation
             if (thisPage != null)
             {
                 myTab = thisPage.currentTab();
+                TabDescriptor tabs = ( (Session)session() ).tabs;
+                selectedRole = tabs.selectedChild();
                 secondLevelSelection =
-                    ( (Session)session() ).tabs.selectedChild().selectedChild();
+                    selectedRole.selectedChild().selectedChild();
+            }
+            if (selectedRole == null)
+            {
+                selectedRole = ( (Session)session() ).tabs.selectedChild();
             }
             if (myTab == null)
             {
-                myTab = ( (Session)session() ).tabs.selectedDescendant();
+                myTab = selectedRole.selectedDescendant();
                 secondLevelSelection =
-                    ( (Session)session() ).tabs.selectedChild().selectedChild();
+                    selectedRole.selectedChild().selectedChild();
             }
-            bodyClass = myTab.cssClass();
+            bodyClass = "staff"; // myTab.cssClass();
         }
         if ( title == null && thisPage != null )
         {
@@ -318,6 +329,22 @@ public class PageWithNavigation
 
     // ----------------------------------------------------------
     /**
+     * Follow the link for a primary tab.
+     * @return the new component
+     */
+    public WOComponent switchRole()
+    {
+        if (thisPage != null)
+        {
+            thisPage.changeWorkflow();
+        }
+        return pageWithName(
+            aRole.selectDefault().selectedDescendant().pageName() );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Follow the link for a secondary tab.
      * @return the new component
      */
@@ -361,7 +388,9 @@ public class PageWithNavigation
      */
     public boolean hasSteps()
     {
-        return !hideSteps && secondLevelSelection.children().count() > 0;
+        return !hideSteps
+            && secondLevelSelection != null
+            && secondLevelSelection.children().count() > 0;
     }
 
 
@@ -420,7 +449,7 @@ public class PageWithNavigation
         Session session = (Session)session();
         if ( session.user() == null || session.user().restrictToStudentView() )
         {
-            NSArray secondaries = session.tabs.selectedChild()
+            NSArray secondaries = selectedRole.selectedChild()
                 .children();
             for ( int i = 0; i < secondaries.count(); i++ )
             {
@@ -435,7 +464,7 @@ public class PageWithNavigation
         }
         else
         {
-            result = session.tabs.selectedChild().children()
+            result = selectedRole.selectedChild().children()
                 .count() > 0;
         }
         return result;

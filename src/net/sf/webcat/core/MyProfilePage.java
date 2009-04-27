@@ -23,6 +23,7 @@ package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXQ;
 import er.extensions.foundation.ERXArrayUtilities;
 import java.net.URLEncoder;
 import org.apache.log4j.Logger;
@@ -56,16 +57,20 @@ public class MyProfilePage
 
     public String              newPassword1;
     public String              newPassword2;
-    public WODisplayGroup      enrolledInDisplayGroup;
-    public User                instructor;
-    public WODisplayGroup      TADisplayGroup;
-    public WODisplayGroup      teachingDisplayGroup;
-    public CourseOffering      courseOffering;
     public int                 index;
     public AuthenticationDomain.TimeZoneDescriptor zone;
     public AuthenticationDomain.TimeZoneDescriptor selectedZone;
+
+    // Display groups
+    public WODisplayGroup      enrolledInDisplayGroup;
+    public WODisplayGroup      TADisplayGroup;
+    public WODisplayGroup      teachingDisplayGroup;
+
+    // Repetition variables
+    public CourseOffering      aCourseOffering;
     public String              aFormat;
-    public NSTimestamp         now;
+    public User                anInstructor;
+    public Theme               aTheme;
 
 
     //~ Methods ...............................................................
@@ -88,6 +93,7 @@ public class MyProfilePage
                     NSTimeZone.getDefault().getID() );
             }
         }
+        log.debug("appendToResponse(), theme = " + user().theme());
         super.appendToResponse( response, context );
     }
 
@@ -286,8 +292,65 @@ public class MyProfilePage
     }
 
 
+    // ----------------------------------------------------------
+    public NSTimestamp now()
+    {
+        return now;
+    }
+
+
+    // ----------------------------------------------------------
+    public NSArray<Theme> allThemes()
+    {
+        // TODO: Add dojo support to select whether to show developer themes
+        if (allThemes == null)
+        {
+            allThemes = ERXQ.filtered(Theme.themes(),
+                ERXQ.equals(Theme.IS_FOR_THEME_DEVELOPERS_KEY, false));
+        }
+        return allThemes;
+    }
+
+
+    // ----------------------------------------------------------
+    public WOComponent previewTheme()
+    {
+        log.debug("user ec = " + user().editingContext()
+            + ", theme ec = "
+            + ((user().theme() == null)
+                ? "null"
+                : user().theme().editingContext().toString()));
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public WOComponent changeTheme()
+    {
+        log.debug("Changing theme, before = " + user().theme());
+        log.debug("user ec = " + user().editingContext()
+            + ", theme ec = "
+            + ((user().theme() == null)
+                ? "null"
+                : user().theme().editingContext().toString()));
+        super.applyLocalChanges();
+        log.debug("Changing theme, after = " + user().theme());
+        log.debug("user ec = " + user().editingContext()
+            + ", theme ec = "
+            + ((user().theme() == null)
+                ? "null"
+                : user().theme().editingContext().toString()));
+        log.debug("Changing theme, session theme = " + wcSession().theme());
+        log.debug("sesssion theme ec = " + wcSession().theme().editingContext());
+        log.debug("sharing ");
+        return null;
+    }
+
+
     //~ Instance/static variables .............................................
 
     private String icalUrl;
+    private NSTimestamp now;
+    private NSArray<Theme> allThemes;
     static Logger log = Logger.getLogger( MyProfilePage.class );
 }

@@ -1,0 +1,181 @@
+BarePage: net.sf.webcat.ui.WCTransitionalBasePage {
+    title                = title;
+    extraBodyCssClass    = extraBodyCssClass;
+}
+
+DivContents: WOGenericContainer {
+	elementName = "div";
+	id          = "contents";
+	class       = "~(hasSteps && includePageWrapping) ? \"\" : \"nomenu\"";
+}
+
+Errors: net.sf.webcat.core.ErrorDictionaryPanel {
+	errorMessages          = thisPage.messages;
+	extraErrorMessage      = application.deathMessage;
+	shouldShowNewlineBelow = true;
+}
+
+FeedbackLink: WOHyperlink {
+	action = goToFeedback;
+}
+
+FeedbackBtn: WOActiveImage {
+	action = goToFeedback;
+	filename = "icons/feedback.gif";
+	width    = "20";
+	height   = "18";
+	alt      = "Feedback";
+	border   = "0";
+	align    = "middle";
+//	otherTagString = "width=\"20\" height=\"18\" alt=\"Feedback\" border=\"0\"";
+}
+
+Footer: net.sf.webcat.core.Footer {}
+
+HasMenu: WOConditional {
+    condition = hasSteps;
+}
+
+HasMultipleRoles: WOConditional {
+    condition = "~session.tabs.children.count > 1";
+}
+
+HasTitle: WOConditional {
+    condition = hasTitle;
+}
+
+HelpBtn: WOActiveImage {
+	href     = helpURL;
+	filename = "icons/help.gif";
+	target   = "\"WCHelp\"";
+	width    = "16";
+	height   = "16";
+	alt      = "Help";
+	border   = "0";
+	align    = "middle";
+//	otherTagString = "width=\"16\" height=\"16\" alt=\"Help\" border=\"0\"";
+}
+
+HelpLink: WOHyperlink {
+	href = helpURL;
+	target = "\"WCHelp\"";
+}
+
+IncludePageWrapping: WOConditional {
+    condition = includePageWrapping;
+}
+
+IsNotFirstRole: WOConditional {
+    condition = "~aRoleIndex > 0";
+}
+
+IsSideStep: WOConditional {
+	condition = isSideStep;
+}
+
+Li: WOGenericContainer {
+    elementName = "li";
+    class       = "~stepIsSelected ? \"here\" : \"\"";
+}
+
+LogoutLink: WOHyperlink {
+	action = logout;
+}
+
+Logo: WOImage {
+	filename = "images/Web-CAT2.gif";
+	width    = "50";
+	height   = "20";
+	alt      = "Web-CAT";
+	border   = "0";
+	align    = "middle";
+//	otherTagString = "width=\"16\" height=\"14\" alt=\"Log out\" border=\"0\"";
+}
+
+LogoutBtn: WOActiveImage {
+	action = logout;
+	filename = "icons/close.gif";
+	width    = "16";
+	height   = "14";
+	alt      = "Log out";
+	border   = "0";
+	align    = "middle";
+//	otherTagString = "width=\"16\" height=\"14\" alt=\"Log out\" border=\"0\"";
+}
+
+MenuHeader: WOString {
+	value = secondLevelSelection.label;
+}
+
+PageContent: WOComponentContent {
+}
+
+PrimaryTabLabel: WOString {
+	value = primaryTabItem.label;
+}
+
+PrimaryTabs: WORepetition {
+	list = selectedRole.children;
+	item = primaryTabItem;
+}
+
+SecondaryTabLabel: WOString {
+	value = secondaryTabItem.label;
+}
+
+SecondaryTabLink: WOHyperlink {
+	action = secondaryTabLink;
+}
+
+SecondaryTabs: WORepetition {
+	list = selectedRole.selectedChild.children;
+	item = secondaryTabItem;
+}
+
+SideStepTitle: WOString {
+	value = lcSideStepTitle;
+}
+
+Steps: WORepetition {
+	list  = secondLevelSelection.children;
+	item  = tertiaryTabItem;
+	index = tertiaryTabIndex;
+}
+
+StepNumber: WOString {
+	value = tertiaryNumeral;
+}
+
+StepLabel: WOString {
+	value = tertiaryTabItem.lcLabel;
+}
+
+StepUsesLink: WOConditional {
+	condition = stepUsesLink;
+}
+
+StepLink: WOHyperlink {
+	action = stepLink;
+}
+
+StepWithoutLink: WOConditional {
+	condition = stepUsesLink;
+	negate    = true;
+}
+
+CanToggleView: WOConditional {
+	condition = session.user.canChangeViews;
+}
+
+StudentView: WOHyperlink {
+    action = toggleStudentView;
+    string = session.user.toggleViewLabel;
+}
+
+Title: WOString {
+	value = title;
+}
+
+UserName: WOString {
+	value = session.user.name;
+}

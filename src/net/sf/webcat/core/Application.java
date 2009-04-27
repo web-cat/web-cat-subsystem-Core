@@ -315,8 +315,11 @@ public class Application
             releasePeerEditingContext( ec );
         }
         NSLog.debug.setIsEnabled(nsLogDebugEnabled);
+
+        // Force common objects to be loaded into the shared editing context
         AuthenticationDomain.refreshAuthDomains();
         Language.refreshLanguages();
+        Theme.refreshThemes();
 
         NSLog.debug.setAllowedDebugLevel( NSLog.DebugLevelInformational );
         NSLog.allowDebugLoggingForGroups( NSLog.DebugGroupMultithreading );
@@ -1982,7 +1985,7 @@ public class Application
         String lastStaticHtmlDirName = configurationProperties()
             .getProperty( "last.static.html.dir" );
         String staticHtmlBase = configurationProperties().getProperty(
-        "static.html.baseURL" );
+            "static.html.baseURL" );
 
         if ( staticHtmlDirName != null && staticHtmlBase != null )
         {

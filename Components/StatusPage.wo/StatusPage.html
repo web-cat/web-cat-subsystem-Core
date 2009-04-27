@@ -1,8 +1,12 @@
-<webobject name="Page">
+<wo:net.sf.webcat.core.WCPageWithNavigation title="Your Web-CAT Status">
 
-<webobject name="SubsystemHomeStatus"/>
+<wo:net.sf.webcat.core.SubsystemFragmentCollector fragmentKey="homeStatus"/>
 
-<webobject name="HasAnnouncements"><h2>Announcements</h2>
-<webobject name="Announcements"/></webobject>
-<webobject name="CanSeeStatus"><webobject name="SystemStatus"/></webobject>
-</webobject>
+<wo:if condition="$application.properties.coreAnnouncements">
+<wo:net.sf.webcat.core.WCPageModule title="Announcements" open="false">
+<wo:str value="$application.properties.coreAnnouncements" escapeHTML="false"/>
+</wo:net.sf.webcat.core.WCPageModule>
+</wo:if>
+
+<wo:net.sf.webcat.core.SystemStatusBlock/>
+</wo:net.sf.webcat.core.PageWithNavigation>

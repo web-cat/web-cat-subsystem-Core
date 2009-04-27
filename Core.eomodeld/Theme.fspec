@@ -1,0 +1,30 @@
+{
+    fetchAll =
+    {
+        class = EOFetchSpecification;
+        entityName = Theme;
+        fetchLimit = 0;
+        isDeep = YES;
+        refreshesRefetchedObjects = YES;
+        sortOrderings =
+        (
+           {
+               class = EOSortOrdering;
+               key = name;
+               selectorName = compareCaseInsensitiveAscending:;
+           }
+        );
+    };
+    dirName = {
+        class = EOFetchSpecification;
+        entityName = Theme;
+        fetchLimit = 1;
+        isDeep = YES;
+        qualifier = {
+            class = EOKeyValueQualifier;
+            key = dirName;
+            selectorName = "isEqualTo:";
+            value = {"_key" = dirName; class = EOQualifierVariable; };
+        };
+    };
+}

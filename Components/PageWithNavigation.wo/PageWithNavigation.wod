@@ -24,37 +24,18 @@ FeedbackLink: WOHyperlink {
 	action = goToFeedback;
 }
 
-FeedbackBtn: WOActiveImage {
-	action = goToFeedback;
-	filename = "icons/feedback.gif";
-	width    = "20";
-	height   = "18";
-	alt      = "Feedback";
-	border   = "0";
-	align    = "middle";
-//	otherTagString = "width=\"20\" height=\"18\" alt=\"Feedback\" border=\"0\"";
-}
-
 Footer: net.sf.webcat.core.Footer {}
 
 HasMenu: WOConditional {
     condition = hasSteps;
 }
 
-HasTitle: WOConditional {
-    condition = hasTitle;
+HasMultipleRoles: WOConditional {
+    condition = "~session.user != null && session.user.accessLevel > 25";
 }
 
-HelpBtn: WOActiveImage {
-	href     = helpURL;
-	filename = "icons/help.gif";
-	target   = "\"WCHelp\"";
-	width    = "16";
-	height   = "16";
-	alt      = "Help";
-	border   = "0";
-	align    = "middle";
-//	otherTagString = "width=\"16\" height=\"16\" alt=\"Help\" border=\"0\"";
+HasTitle: WOConditional {
+    condition = hasTitle;
 }
 
 HelpLink: WOHyperlink {
@@ -64,6 +45,10 @@ HelpLink: WOHyperlink {
 
 IncludePageWrapping: WOConditional {
     condition = includePageWrapping;
+}
+
+IsNotFirstRole: WOConditional {
+    condition = "~aRoleIndex > 0";
 }
 
 IsSideStep: WOConditional {
@@ -84,20 +69,6 @@ Logo: WOImage {
 	width    = "50";
 	height   = "20";
 	alt      = "Web-CAT";
-	border   = "0";
-	align    = "middle";
-//	otherTagString = "width=\"16\" height=\"14\" alt=\"Log out\" border=\"0\"";
-}
-
-LogoutBtn: WOActiveImage {
-	action = logout;
-	filename = "icons/close.gif";
-	width    = "16";
-	height   = "14";
-	alt      = "Log out";
-	border   = "0";
-	align    = "middle";
-//	otherTagString = "width=\"16\" height=\"14\" alt=\"Log out\" border=\"0\"";
 }
 
 MenuHeader: WOString {
@@ -112,8 +83,12 @@ PrimaryTabLabel: WOString {
 }
 
 PrimaryTabs: WORepetition {
-	list = session.tabs.children;
+	list = selectedRole.children;
 	item = primaryTabItem;
+}
+
+RoleIsVisible: WOConditional {
+    condition = "~session.user.accessLevel >= aRole.accessLevel";
 }
 
 SecondaryTabLabel: WOString {
@@ -125,7 +100,7 @@ SecondaryTabLink: WOHyperlink {
 }
 
 SecondaryTabs: WORepetition {
-	list = session.tabs.selectedChild.children;
+	list = selectedRole.selectedChild.children;
 	item = secondaryTabItem;
 }
 

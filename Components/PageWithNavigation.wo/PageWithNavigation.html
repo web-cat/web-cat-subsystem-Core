@@ -1,9 +1,19 @@
 <webobject name="BarePage">
 <webobject name="IncludePageWrapping"><div id="banner">
-  <div id="tools">
-   <webobject name="HelpLink">help</webobject>&nbsp;<webobject name="HelpBtn"/>&nbsp;&nbsp;&nbsp;<webobject name="FeedbackLink">feedback</webobject>&nbsp;<webobject name="FeedbackBtn"/>&nbsp;&nbsp;&nbsp;<webobject name="LogoutLink">logout</webobject>&nbsp;<webobject name="LogoutBtn"/>
+  <div id="tools"><wo name="HasMultipleRoles">choose role:
+   <wo:loop list="$session.tabs.children" item="$aRole" index="$aRoleIndex">
+    <wo name="RoleIsVisible">
+      <wo name="IsNotFirstRole">|</wo>
+      <wo:if condition="~selectedRole.equals(aRole)"><wo:str value="$aRole.label"/></wo:if>
+      <wo:else>
+      <wo:link action="$switchRole"><wo:str value="$aRole.label"/></wo:link>
+      </wo:else>
+    </wo>
+   </wo:loop>&nbsp;&nbsp;&nbsp;</wo>
+   <webobject name="HelpLink">help</webobject> | <webobject name="FeedbackLink">feedback</webobject> | <webobject name="LogoutLink">logout</webobject>
   </div>
-  <wo name="Logo"/>&nbsp;&nbsp;Web-CAT: Automatic grading using student-written tests<br/>
+  <wo name="Logo"/><span class="tagline">Automatic grading using student-written tests</span><br/>
+  <span class="title">Web-CAT</span><br/>
   <ul id="globalnav">
     <li class="globalnav-indent">&nbsp;</li>
     <wo name="PrimaryTabs"><wo:if condition="$primaryTabIsVisible">

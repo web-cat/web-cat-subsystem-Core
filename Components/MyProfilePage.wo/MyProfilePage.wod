@@ -26,11 +26,11 @@ CanTeach: WOConditional {
 }
 
 CompactName: WOString {
-	value = courseOffering.compactName;
+	value = aCourseOffering.compactName;
 }
 
 CourseName: WOString {
-	value = courseOffering.course.name;
+	value = aCourseOffering.course.name;
 }
 
 DateFormat: WOPopUpButton {
@@ -59,7 +59,7 @@ EnrolledInCourses: WOConditional {
 }
 
 EnrollmentRepetition: WORepetition {
-	item  = courseOffering;
+	item  = aCourseOffering;
 	list  = enrolledInDisplayGroup.displayedObjects;
 	index = index;
 }
@@ -93,13 +93,13 @@ iCalLinkInfo: net.sf.webcat.core.PopUpInfo {
 }
 
 InstructorName: WOHyperlink {
-	href   = instructor.url;
-    string = instructor.shortName;
+	href   = anInstructor.url;
+    string = anInstructor.shortName;
 }
 
 InstructorRepetition: WORepetition {
-    item = instructor;
-    list = courseOffering.instructors;
+    item = anInstructor;
+    list = aCourseOffering.instructors;
 }
 
 LastName: WOTextField {
@@ -132,7 +132,7 @@ NotTeachingCourses: WOConditional {
     negate    = true;
 }
 
-Page : net.sf.webcat.core.PageWithNavigation {
+Page : net.sf.webcat.core.WCPageWithNavigation {
 	title = "Manage Your Profile";
 }
 
@@ -141,7 +141,7 @@ TAInCourses: WOConditional {
 }
 
 TARepetition: WORepetition {
-	item  = courseOffering;
+	item  = aCourseOffering;
 	list  = TADisplayGroup.displayedObjects;
 	index = index;
 }
@@ -151,9 +151,14 @@ TeachingCourses: WOConditional {
 }
 
 TeachingRepetition: WORepetition {
-	item  = courseOffering;
+	item  = aCourseOffering;
 	list  = teachingDisplayGroup.displayedObjects;
 	index = index;
+}
+
+ThemeDescription: WOString {
+    value = "~(user.theme == null) ? session.theme.inherit.properties.description : user.theme.inherit.properties.description";
+    escapeHTML = false;
 }
 
 TimeFormat: WOPopUpButton {
