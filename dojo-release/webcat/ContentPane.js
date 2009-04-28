@@ -45,6 +45,14 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
 	
 	/* Set to true when the pane is initially starting up, otherwise false. */
 	initialStartup: true,
+	
+	/* Web-CAT's content pane by default does NOT show a loading message when
+	   it is being updated, to behave more like the old-style Prototype
+	   AjaxUpdateContainers (that is, modifications are made in place and
+	   appear instant). Set this attribute to true if you want to show a
+	   loading message when this pane is refreshed (for example, to indicate
+	   a long-running operation). */
+	showsLoadingMessageOnRefresh: false,
 
 
 	//~ Methods ...............................................................
@@ -71,7 +79,8 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
 	// ----------------------------------------------------------	
 	_setContent: function(content, isFakeContent)
 	{
-		if (!isFakeContent)
+		if (!isFakeContent ||
+		    (isFakeContent && this.showsLoadingMessageOnRefresh))
 		{
 			this.inherited(arguments);
 		}

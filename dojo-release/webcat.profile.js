@@ -15,12 +15,16 @@ dependencies = {
                 "dijit.form.FilteringSelect",
                 "dijit.form.Form",
                 "dijit.form.NumberSpinner",
+                "dijit.form.SimpleTextarea",
                 "dijit.form.Slider",
+                "dijit.form.Textarea",
+                "dijit.form.TextBox",
                 "dijit.form.TimeTextBox",
                 "dijit.form.ValidationTextBox",
                 "webcat.global",
                 "webcat.ContentPane",
                 "webcat.ObjectTable",
+                "webcat.TitlePane",
                 "webcat.Tree"
             ]
         }

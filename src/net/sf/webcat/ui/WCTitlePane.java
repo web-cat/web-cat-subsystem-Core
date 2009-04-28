@@ -77,7 +77,7 @@ public class WCTitlePane extends WCContentPane
     @Override
     public String dojoType()
     {
-        return "dijit.TitlePane";
+        return "webcat.TitlePane";
     }
 
     
