@@ -28,29 +28,21 @@ import com.webobjects.foundation.NSDictionary;
 
 //------------------------------------------------------------------------
 /**
- * A text box that uses a regular expression to validate its contents.
- *
- * <h2>Bindings</h2>
- * <table>
- * <tr>
- * <td>{@code regExp}</td>
- * <td>The regular expression used to validate the textbox's contents.</td>
- * </tr>
- * <tr>
- * <td>{@code invalidMessage}</td>
- * <td>The message displayed when the contents of the textbox are invalid.</td>
- * </tr>
- * </table>
+ * A text area that automatically resizes itself to fit the user's content.
+ * Because of this behavior, the <tt>rows</tt> and <tt>cols</tt> bindings
+ * inherited from WCSimpleTextArea will be ignored; the control will expand to
+ * the width of its parent container, and be as tall as necessary to fit its
+ * content.
  * 
  * @author Tony Allevato
  * @version $Id$
  */
-public class WCValidationTextBox extends WCTextBox
+public class WCTextArea extends WCSimpleTextArea
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    public WCValidationTextBox(String name,
+    public WCTextArea(String name,
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
@@ -64,6 +56,6 @@ public class WCValidationTextBox extends WCTextBox
     @Override
     public String dojoType()
     {
-        return "dijit.form.ValidationTextBox";
+        return "dijit.form.Textarea";
     }
 }

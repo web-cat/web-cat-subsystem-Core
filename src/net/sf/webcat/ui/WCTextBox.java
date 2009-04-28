@@ -28,29 +28,23 @@ import com.webobjects.foundation.NSDictionary;
 
 //------------------------------------------------------------------------
 /**
- * A text box that uses a regular expression to validate its contents.
- *
+ * A basic text box that automatically takes on Dojo styling.
+ * 
  * <h2>Bindings</h2>
- * <table>
- * <tr>
- * <td>{@code regExp}</td>
- * <td>The regular expression used to validate the textbox's contents.</td>
- * </tr>
- * <tr>
- * <td>{@code invalidMessage}</td>
- * <td>The message displayed when the contents of the textbox are invalid.</td>
- * </tr>
- * </table>
+ * <dl>
+ * <dt>value</dt>
+ * <dd>The text entered into the text box.</dd>
+ * </dl>
  * 
  * @author Tony Allevato
  * @version $Id$
  */
-public class WCValidationTextBox extends WCTextBox
+public class WCTextBox extends DojoFormElement
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    public WCValidationTextBox(String name,
+    public WCTextBox(String name,
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
@@ -64,6 +58,6 @@ public class WCValidationTextBox extends WCTextBox
     @Override
     public String dojoType()
     {
-        return "dijit.form.ValidationTextBox";
+        return "dijit.form.TextBox";
     }
 }
