@@ -181,12 +181,12 @@ public class CoreDatabaseUpdates
      * Adds label key to CourseOffering.
      * @throws SQLException on error
      */
-//    public void updateIncrement9() throws SQLException
-//    {
-//        createThemesTable();
-//        database().executeSQL(
-//            "ALTER TABLE TUSER ADD CTHEMEID INTEGER" );
-//    }
+    public void updateIncrement9() throws SQLException
+    {
+        createThemesTable();
+        database().executeSQL(
+            "ALTER TABLE TUSER ADD CTHEMEID INTEGER" );
+    }
 
 
     //~ Private Methods .......................................................
