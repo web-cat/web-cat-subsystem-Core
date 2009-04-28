@@ -31,7 +31,7 @@
   	  <arg value="copyTests=false"/>
         <!-- this is kind of a hack, but I couldn't get Dijit's CSS images to
              work when they were in a nested directory, and if I try to use
-             WebServeResources as the release name, it DELETES IT (!) before
+             WebServerResources as the release name, it DELETES IT (!) before
              building, so do everything in a temp directory and then copy the
              dojo,dijit,dojox folders directly -->
   	  <arg value="releaseName=wcdojo"/>
@@ -41,6 +41,13 @@
   		<fileset dir="__dojo-tmp/wcdojo"/>
   	</copy>
   	<delete dir="__dojo-tmp"/>
+  	<echo>
+  	If you are running this task in Eclipse with automatic builds enabled,
+    the "build" directory for the Core project may have become out-of-sync
+  	after this long file-based operation. It is recommended that you clean
+    the Core project now to ensure that all necessary web resources will
+    be found.
+  	</echo>
   </target>
 
 </project>
