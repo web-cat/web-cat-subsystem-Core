@@ -74,6 +74,21 @@ public class WCPageModule
 
 
     // ----------------------------------------------------------
+    public String id()
+    {
+        return (String)valueForBinding("id");
+    }
+    
+
+    // ----------------------------------------------------------
+    public boolean showsLoadingMessageOnRefresh()
+    {
+        return ERXValueUtilities.booleanValueWithDefault(
+                valueForBinding("showsLoadingMessageOnRefresh"), true);
+    }
+    
+
+    // ----------------------------------------------------------
     public boolean isCollapsible()
     {
         return ERXValueUtilities.booleanValueWithDefault(
