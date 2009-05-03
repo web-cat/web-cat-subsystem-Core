@@ -4,7 +4,7 @@
 *#/*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -34,7 +34,8 @@ import com.webobjects.foundation.*;
  * TODO: place a real description here.
  *
  * @author
- * @version $Id$
+ * @author  latest changes by: $Author$
+ * @version $Revision$ $Date$
  */
 public#if ($entity.isAbstract) abstract#end class ${entity.classNameWithoutPackage}
     extends ${entity.prefixClassNameWithOptionalPackage}
