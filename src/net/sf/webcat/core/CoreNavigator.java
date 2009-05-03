@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -33,18 +33,12 @@ import net.sf.webcat.ui.util.ComponentIDGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.eoaccess.EOUtilities;
-import com.webobjects.eocontrol.EOFetchSpecification;
-import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableArray;
-import com.webobjects.foundation.NSTimestamp;
 import er.extensions.eof.ERXQ;
-import er.extensions.foundation.ERXArrayUtilities;
-import er.extensions.foundation.ERXValueUtilities;
 
 //--------------------------------------------------------------------------
 /**
@@ -74,7 +68,8 @@ import er.extensions.foundation.ERXValueUtilities;
  * </dl>
  *
  * @author Tony Allevato
- * @version $Id$
+ * @author  latest changes by: $Author$
+ * @version $Revision$ $Date$
  */
 public class CoreNavigator
     extends WCComponent
@@ -105,9 +100,7 @@ public class CoreNavigator
 
     public boolean allowsAllSemesters = true;
     public boolean allowsAllOfferingsForCourse = true;
-
-    public boolean includeWhatImTeaching = true;
-    public boolean includeAdminAccess = false;
+    public boolean startOpen = false;
 
     public ComponentIDGenerator idFor;
 
@@ -123,9 +116,6 @@ public class CoreNavigator
         log.debug("entering appendToResponse()");
 
         idFor = new ComponentIDGenerator(this);
-
-        // TODO Grab current selections from session and set the values of
-        // selectedCourseOffering and selectedSemester to reflect that
 
         updateSemesters();
 
@@ -161,6 +151,7 @@ public class CoreNavigator
             {
                 selectedCourseOffering =
                     new CoreNavigatorObjects.SingleCourseOffering(co);
+                wantOfferingsForCourse = null;
             }
             else
             {
@@ -221,6 +212,7 @@ public class CoreNavigator
      *
      * @return the result is ignored
      */
+    @SuppressWarnings("unchecked")
     public WOActionResults updateCourseOfferings()
     {
         log.debug("updateCourseOfferings()");
@@ -235,12 +227,12 @@ public class CoreNavigator
         // the user's access level and selections in the UI. This may include
         // more offerings that we really need.
 
-        if (user().hasAdminPrivileges() && includeAdminAccess)
+        if (user().hasAdminPrivileges() && includeAdminAccess())
         {
-            offerings = EOUtilities.objectsForEntityNamed(localContext(),
-                    CourseOffering.ENTITY_NAME);
+            offerings = EOUtilities.objectsForEntityNamed(
+                localContext(), CourseOffering.ENTITY_NAME);
         }
-        else if (user().hasTAPrivileges() && includeWhatImTeaching)
+        else if (user().hasTAPrivileges() && includeWhatImTeaching())
         {
             NSMutableArray<CourseOffering> temp =
                 new NSMutableArray<CourseOffering>();
@@ -298,18 +290,26 @@ public class CoreNavigator
                     // the initial course
                     if (mismatchIndex > i + 1)
                     {
+                        CourseOffering exemplar = null;
                         NSMutableArray<CourseOffering> subset =
                             new NSMutableArray<CourseOffering>(
                                 mismatchIndex - i);
                         for (int k = i; k < mismatchIndex; k++)
                         {
-                            subset.add(offerings.objectAtIndex(k));
+                            exemplar = offerings.objectAtIndex(k);
+                            subset.add(exemplar);
                         }
 
                         INavigatorObject courseWrapper =
                             new CoreNavigatorObjects
                             .CourseOfferingSet(subset);
                         courseOfferings.addObject(courseWrapper);
+                        if (wantOfferingsForCourse != null
+                            && exemplar != null
+                            && wantOfferingsForCourse == exemplar.course())
+                        {
+                            selectedCourseOffering = courseWrapper;
+                        }
                     }
                 }
 
@@ -319,7 +319,10 @@ public class CoreNavigator
             INavigatorObject newOffering =
                 new CoreNavigatorObjects.SingleCourseOffering(offering);
             courseOfferings.addObject(newOffering);
-            if (oldSelection != null && oldSelection.equals(newOffering))
+            if ((oldSelection != null && oldSelection.equals(newOffering))
+                || (selectedCourseOffering == null
+                    && wantOfferingsForCourse != null
+                    && wantOfferingsForCourse == offering.course()))
             {
                 selectedCourseOffering = newOffering;
             }
@@ -347,23 +350,18 @@ public class CoreNavigator
      */
     public WOActionResults okPressed()
     {
-        // TODO store the user's current semester, course, and assignment
-        // selection in the session or wherever the nav-state is being
-        // persisted
-
         // Save semester choice
         if (selectedSemester != null)
         {
             NSArray<?> sems = selectedSemester.representedObjects();
             if (sems != null && sems.count() == 1)
             {
-                selectionsParent.coreSelections().setSemesterRelationship(
+                selectionsParent.coreSelections().setSemester(
                     (Semester)sems.objectAtIndex(0));
             }
             else if (allowsAllSemesters)
             {
-                selectionsParent.coreSelections()
-                    .setSemesterRelationship(null);
+                selectionsParent.coreSelections().setSemester(null);
             }
         }
 
@@ -379,7 +377,7 @@ public class CoreNavigator
                 if (allOfferings)
                 {
                     selectionsParent.coreSelections()
-                        /* FIXME: finish this! */;
+                        .setCourseOfferingRelationship(null);
                 }
                 else
                 {
@@ -397,6 +395,48 @@ public class CoreNavigator
 
     // ----------------------------------------------------------
     /**
+     * @param includeWhatImTeaching the includeWhatImTeaching to set
+     */
+    public void setIncludeWhatImTeaching(boolean includeWhatImTeaching)
+    {
+        selectionsParent.coreSelections().setIncludeWhatImTeaching(
+            includeWhatImTeaching);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @return the includeWhatImTeaching
+     */
+    public boolean includeWhatImTeaching()
+    {
+        return selectionsParent.coreSelections().includeWhatImTeaching();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @param includeAdminAccess the includeAdminAccess to set
+     */
+    public void setIncludeAdminAccess(boolean includeAdminAccess)
+    {
+        selectionsParent.coreSelections().setIncludeAdminAccess(
+            includeAdminAccess);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * @return the includeAdminAccess
+     */
+    public boolean includeAdminAccess()
+    {
+        return selectionsParent.coreSelections().includeAdminAccess();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Searches up the WOComponent hierarchy searching for the nearest
      * enclosing ancestor that is an instance of the specified target
      * class.
@@ -404,6 +444,7 @@ public class CoreNavigator
      * @return The identified ancestor, if one is found, or null if
      * none matching the target class is found.
      */
+    @SuppressWarnings("unchecked")
     protected <T> T findNearestAncestor(Class<T> targetClass)
     {
         WOComponent ancestor = parent();

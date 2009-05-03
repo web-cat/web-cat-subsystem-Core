@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,10 +21,6 @@
 
 package net.sf.webcat.core;
 
-import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
-import er.extensions.eof.ERXConstant;
-import er.extensions.foundation.ERXValueUtilities;
 import org.apache.log4j.*;
 
 // -------------------------------------------------------------------------
@@ -33,7 +29,8 @@ import org.apache.log4j.*;
  * for entities in the Core subsystem.
  *
  * @author stedwar2
- * @version $Id$
+ * @author  latest changes by: $Author$
+ * @version $Revision$ $Date$
  */
 public class CoreSelections
     extends _CoreSelections
@@ -48,11 +45,6 @@ public class CoreSelections
     {
         super();
     }
-
-
-    //~ Constants .............................................................
-
-    public static final String SEMESTER_KEY = "semester";
 
 
     //~ Methods ...............................................................
@@ -150,33 +142,7 @@ public class CoreSelections
     }
 
 
-    // ----------------------------------------------------------
-    public Semester semester()
-    {
-        Object semesterPref =
-            user().preferences().valueForKey( SEMESTER_KEY );
-        if (semesterPref == null)
-        {
-            return null;
-        }
-        else
-        {
-            return Semester.forId(editingContext(),
-                ERXValueUtilities.intValue(semesterPref));
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    public void setSemester(Semester semester)
-    {
-        user().preferences().takeValueForKey(
-            semester == null ? ERXConstant.ZeroInteger : semester.id(),
-            SEMESTER_KEY);
-        user().savePreferences();
-    }
-
-
     //~ Instance/static variables .............................................
-    static Logger log = Logger.getLogger( CoreSelections.class );
+
+    static Logger log = Logger.getLogger(CoreSelections.class);
 }

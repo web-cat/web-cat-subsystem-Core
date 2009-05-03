@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,7 +22,6 @@
 package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
-import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import org.apache.log4j.Logger;
 
@@ -34,7 +33,8 @@ import org.apache.log4j.Logger;
  * are locally cached as well.
  *
  * @author stedwar2
- * @version $Id$
+ * @author  latest changes by: $Author$
+ * @version $Revision$ $Date$
  */
 public class CachingEOManager
     implements EOManager,
@@ -52,22 +52,23 @@ public class CachingEOManager
      * @param manager the (probably shared) editing context manager to use
      * for independent saving of the given eo
      */
+    @SuppressWarnings("unchecked")
     public CachingEOManager(EOEnterpriseObject eo, ECManager manager)
     {
         ecm = manager;
         snapshot = eo.snapshot().mutableClone();
 
         // Now convert all NSArrays in snapshot so they are mutable
-        NSArray toManyKeys = eo.toManyRelationshipKeys();
-        for (int i = 0; i < toManyKeys.count(); i++)
+        for (String key : eo.toManyRelationshipKeys())
         {
-            String key = (String)toManyKeys.objectAtIndex(i);
             snapshot.takeValueForKey(
-                ((NSArray)snapshot.valueForKey(key)).mutableClone(),
+                ((NSArray<?>)snapshot.valueForKey(key)).mutableClone(),
                 key);
         }
-        NSArray attributeKeyArray = eo.attributeKeys();
-        attributeKeys = new NSDictionary(attributeKeyArray, attributeKeyArray);
+        NSArray<String> attributeKeyArray = eo.attributeKeys();
+
+        attributeKeys = new NSDictionary<String, String>(
+            attributeKeyArray, attributeKeyArray);
 
         // Now create a mirror in a new EC
         ecm.lock();
@@ -85,13 +86,15 @@ public class CachingEOManager
     //~ Public Methods ........................................................
 
     // ----------------------------------------------------------
+    @SuppressWarnings("unchecked")
     public Object clone()
     {
         try
         {
             CachingEOManager result = (CachingEOManager)super.clone();
 
-            result.snapshot = (NSMutableDictionary)snapshot.clone();
+            result.snapshot =
+                (NSMutableDictionary<String, Object>)snapshot.clone();
 
             return result;
         }
@@ -135,7 +138,7 @@ public class CachingEOManager
                 }
                 if (current instanceof NSArray)
                 {
-                    NSArray currents = (NSArray)current;
+                    NSArray<?> currents = (NSArray<?>)current;
                     if (currents.count() == 1)
                     {
                         current = currents.objectAtIndex(0);
@@ -153,14 +156,14 @@ public class CachingEOManager
             }
             else if (value instanceof NSArray)
             {
-                NSArray currents = (NSArray)current;
+                NSArray<?> currents = (NSArray<?>)current;
                 for (int i = 0; i < currents.count(); i++)
                 {
                     removeObjectFromBothSidesOfRelationshipWithKey(
                         (EORelationshipManipulation)currents.objectAtIndex(i),
                         key);
                 }
-                NSArray newOnes = (NSArray)value;
+                NSArray<?> newOnes = (NSArray<?>)value;
                 for (int i = 0; i < newOnes.count(); i++)
                 {
                     addObjectToBothSidesOfRelationshipWithKey(
@@ -196,7 +199,8 @@ public class CachingEOManager
             }
             else if (value instanceof NSArray)
             {
-                snapshot.takeValueForKey(((NSArray)value).mutableClone(), key);
+                snapshot.takeValueForKey(
+                    ((NSArray<?>)value).mutableClone(), key);
                 newValue = ecm.localize(value);
             }
             else
@@ -223,6 +227,7 @@ public class CachingEOManager
 
 
     // ----------------------------------------------------------
+    @SuppressWarnings("unchecked")
     public void addObjectToBothSidesOfRelationshipWithKey(
         EORelationshipManipulation eo, String key)
     {
@@ -231,7 +236,8 @@ public class CachingEOManager
             && current != NullValue
             && current instanceof NSArray)
         {
-            NSMutableArray currentTargets = (NSMutableArray)current;
+            NSMutableArray<Object> currentTargets =
+                (NSMutableArray<Object>)current;
             if (currentTargets.contains(eo))
             {
                 return;
@@ -266,6 +272,7 @@ public class CachingEOManager
 
 
     // ----------------------------------------------------------
+    @SuppressWarnings("unchecked")
     public void addObjectToPropertyWithKey(Object eo, String key)
     {
         Object current = snapshot.valueForKey(key);
@@ -273,7 +280,8 @@ public class CachingEOManager
             && current != NullValue
             && current instanceof NSArray)
         {
-            NSMutableArray currentTargets = (NSMutableArray)current;
+            NSMutableArray<Object> currentTargets =
+                (NSMutableArray<Object>)current;
             if (currentTargets.contains(eo))
             {
                 return;
@@ -314,7 +322,8 @@ public class CachingEOManager
             && current != NullValue
             && current instanceof NSArray)
         {
-            NSMutableArray currentTargets = (NSMutableArray)current;
+            NSMutableArray<?> currentTargets =
+                (NSMutableArray<?>)current;
             currentTargets.remove(eo);
         }
         else if (current == eo)
@@ -352,7 +361,7 @@ public class CachingEOManager
             && current != NullValue
             && current instanceof NSArray)
         {
-            NSMutableArray currentTargets = (NSMutableArray)current;
+            NSMutableArray<?> currentTargets = (NSMutableArray<?>)current;
             currentTargets.remove(eo);
         }
         else if (current == eo)
@@ -383,9 +392,14 @@ public class CachingEOManager
     //~ Instance/static variables .............................................
 
     private ECManager           ecm;
-    private EOEnterpriseObject  mirror;   // copy of EO internal ec context
-    private NSMutableDictionary snapshot; // snapshot of managed EO's state
-    private NSDictionary        attributeKeys;
 
-    static Logger log = Logger.getLogger( CachingEOManager.class );
+    // copy of EO internal ec context
+    private EOEnterpriseObject  mirror;
+
+    // snapshot of managed EO's state
+    private NSMutableDictionary<String, Object> snapshot;
+
+    private NSDictionary<String, String>        attributeKeys;
+
+    static Logger log = Logger.getLogger(CachingEOManager.class);
 }

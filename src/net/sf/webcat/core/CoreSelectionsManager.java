@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,7 +21,8 @@
 
 package net.sf.webcat.core;
 
-import com.webobjects.eocontrol.*;
+import er.extensions.eof.ERXConstant;
+import er.extensions.foundation.ERXValueUtilities;
 
 //-------------------------------------------------------------------------
 /**
@@ -29,7 +30,8 @@ import com.webobjects.eocontrol.*;
  *  {@link CoreSelections} object.
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @author  latest changes by: $Author$
+ *  @version $Revision$ $Date$
  */
 public class CoreSelectionsManager
     extends CachingEOManager
@@ -47,11 +49,15 @@ public class CoreSelectionsManager
     public CoreSelectionsManager(CoreSelections selections, ECManager manager)
     {
         super(selections, manager);
-        System.out.println("creating CoreSelectionsManager("
-            + selections.hashCode()
-            + " => " + selections
-            + ", " + manager + ")");
     }
+
+
+    //~ Constants .............................................................
+
+    public static final String SEMESTER_KEY = "semester";
+    public static final String INCLUDE_WHAT_IM_TEACHING_KEY
+        = "includeWhatImTeaching";
+    public static final String INCLUDE_ADMIN_ACCESS_KEY = "includeAdminAccess";
 
 
     //~ Public Methods ........................................................
@@ -76,8 +82,20 @@ public class CoreSelectionsManager
      */
     public void setCourseRelationship( Course value )
     {
-        addObjectToBothSidesOfRelationshipWithKey(
-            value, CoreSelections.COURSE_KEY);
+        if (value == null)
+        {
+            Course old = course();
+            if (old != null)
+            {
+                removeObjectFromBothSidesOfRelationshipWithKey(
+                    old, CoreSelections.COURSE_KEY);
+            }
+        }
+        else
+        {
+            addObjectToBothSidesOfRelationshipWithKey(
+                value, CoreSelections.COURSE_KEY);
+        }
     }
 
     // ----------------------------------------------------------
@@ -100,21 +118,112 @@ public class CoreSelectionsManager
      */
     public void setCourseOfferingRelationship( CourseOffering value )
     {
-        addObjectToBothSidesOfRelationshipWithKey(
-            value, CoreSelections.COURSE_OFFERING_KEY);
+        if (value == null)
+        {
+            CourseOffering old = courseOffering();
+            if (old != null)
+            {
+                removeObjectFromBothSidesOfRelationshipWithKey(
+                    old, CoreSelections.COURSE_OFFERING_KEY);
+            }
+        }
+        else
+        {
+            addObjectToBothSidesOfRelationshipWithKey(
+                value, CoreSelections.COURSE_OFFERING_KEY);
+        }
     }
 
 
     // ----------------------------------------------------------
     public Semester semester()
     {
-        return (Semester)valueForKey(CoreSelections.SEMESTER_KEY);
+        if (semester == null)
+        {
+            User user = (User)valueForKey(CoreSelections.USER_KEY);
+            Object semesterPref =
+                user.preferences().valueForKey( SEMESTER_KEY );
+            if (semesterPref != null)
+            {
+                semester = Semester.forId(user.editingContext(),
+                    ERXValueUtilities.intValue(semesterPref));
+            }
+        }
+        return semester;
     }
 
 
     // ----------------------------------------------------------
-    public void setSemesterRelationship(Semester semester)
+    public void setSemester(Semester semester)
     {
-        takeValueForKey(semester, CoreSelections.SEMESTER_KEY);
+        this.semester = semester;
+        User user = (User)valueForKey(CoreSelections.USER_KEY);
+        user.preferences().takeValueForKey(
+            semester == null ? ERXConstant.ZeroInteger : semester.id(),
+            SEMESTER_KEY);
+        user.savePreferences();
     }
+
+
+    // ----------------------------------------------------------
+    public boolean includeWhatImTeaching()
+    {
+        if (includeWhatImTeaching == null)
+        {
+            User user = (User)valueForKey(CoreSelections.USER_KEY);
+            includeWhatImTeaching = Boolean.valueOf(
+                ERXValueUtilities.booleanValueWithDefault(
+                    user.preferences().valueForKey(
+                        INCLUDE_WHAT_IM_TEACHING_KEY),
+                    true));
+        }
+        return includeWhatImTeaching.booleanValue();
+    }
+
+
+    // ----------------------------------------------------------
+    public void setIncludeWhatImTeaching(boolean value)
+    {
+        includeWhatImTeaching = Boolean.valueOf(value);
+        User user = (User)valueForKey(CoreSelections.USER_KEY);
+        user.preferences().takeValueForKey(
+            includeWhatImTeaching,
+            INCLUDE_WHAT_IM_TEACHING_KEY);
+        user.savePreferences();
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean includeAdminAccess()
+    {
+        if (includeAdminAccess == null)
+        {
+            User user = (User)valueForKey(CoreSelections.USER_KEY);
+            includeAdminAccess = Boolean.valueOf(
+                ERXValueUtilities.booleanValueWithDefault(
+                    user.preferences().valueForKey(
+                        INCLUDE_ADMIN_ACCESS_KEY),
+                    false));
+        }
+        return includeAdminAccess.booleanValue();
+    }
+
+
+    // ----------------------------------------------------------
+    public void setIncludeAdminAccess(boolean value)
+    {
+        includeAdminAccess = Boolean.valueOf(value);
+        User user = (User)valueForKey(CoreSelections.USER_KEY);
+        user.preferences().takeValueForKey(
+            includeAdminAccess,
+            INCLUDE_ADMIN_ACCESS_KEY);
+        user.savePreferences();
+    }
+
+
+    //~ Instance/static variables .............................................
+
+    private Semester semester;
+    private Boolean includeWhatImTeaching;
+    private Boolean includeAdminAccess;
 }
