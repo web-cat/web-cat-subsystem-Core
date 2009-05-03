@@ -1,3 +1,10 @@
+Anchor: WOGenericContainer {
+    elementName = "a";
+    title       = "show/hide";
+    href        = "javascript:void(0);";
+    onclick     = "~\"showHide(this, '\" + divId + \"');\"";
+}
+
 InstitutionPattern: WOPopUpButton {
 	list              = authDomains;
 	selection         = selectedAuthDomain;

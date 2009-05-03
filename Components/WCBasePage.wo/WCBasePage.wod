@@ -1,8 +1,21 @@
+BasePageJs: WOGenericContainer {
+    elementName = "script";
+    type        = "text/javascript";
+    src         = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/BasePage.js\")";
+}
+
 DojoCss: WOGenericContainer {
     elementName = "link";
     rel         = "stylesheet";
     type        = "text/css";
     href        = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/resources/dojo.css\")";
+}
+
+DojoJs: WOGenericContainer {
+    elementName = "script";
+    type        = "text/javascript";
+    src         = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/dojo.js\")";
+    djConfig    = "parseOnLoad: true";
 }
 
 DojoThemeCss: WOGenericContainer {
@@ -25,3 +38,10 @@ PageSpecificCss: WOGenericContainer {
     type        = "text/css";
     href        = "~stylesheetUrl(pageFramework + \".framework/WebServerResources/\" + pageSpecificStylesheetPath)";
 }
+
+PageSpecificJs: WOGenericContainer {
+    elementName = "script";
+    type        = "text/javascript";
+    href        = "~stylesheetUrl(pageFramework + \".framework/WebServerResources/\" + pageSpecificJavascriptPath)";
+}
+

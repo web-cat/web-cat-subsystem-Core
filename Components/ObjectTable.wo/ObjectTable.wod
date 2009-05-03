@@ -1,3 +1,9 @@
+Anchor: WOGenericContainer {
+    elementName = "a";
+    href        = "javascript:void(0);";
+    onclick     = "~jsWrapperID + \".changeSortOrdering(\" + columnIndexInRepetition + \");\"";
+}
+
 Proxy : AjaxProxy {
 	name = JSONBridgeName;
 	proxyName = componentProxyName;

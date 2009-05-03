@@ -8,10 +8,10 @@
 <wo name="DojoxFileInputCss"/>
 <wo:str escapeHTML="false" value="$theme.linkTags"/>
 <wo:if condition="$doesPageSpecificStylesheetExist"><wo name="PageSpecificCss"/></wo:if>
-<script type="text/javascript" src="<wo:WOResourceURL filename="dojo/dojo.js" />" djConfig="parseOnLoad: true"></script>
-<script type="text/javascript" src="<wo:WOResourceURL filename="dojo/BasePage.js" />"></script>
+<wo name="DojoJs"/>
+<wo name="BasePageJs"/>
 <script type="text/javascript">
-<wo:loop list="$extraRequiresArray" item="$oneExtraRequire">dojo.require("<wo:str value="$extraRequire" />");
+<wo:loop list="$extraRequiresArray" item="$oneExtraRequire">dojo.require("<wo:str value="$extraRequires" />");
 </wo:loop>// <!-- END_REQUIRES -->
  dojo.require("dojox.form.FileInput");
 dojo.addOnLoad(function() {
@@ -19,7 +19,7 @@ dojo.addOnLoad(function() {
 // <!-- END_ON_LOAD -->
 });
 </script>
-<wo:if condition="$doesPageSpecificJavascriptExist"><script type="text/javascript" src="<wo:WOResourceURL framework="$pageFramework" filename="$pageSpecificJavascriptPath" />"></script></wo:if>
+<wo:if condition="$doesPageSpecificJavascriptExist"><wo name="PageSpecificJs"/></wo:if>
 </head>
 <wo:WOGenericContainer elementName="body" class="$bodyCssClass">
 <wo:WOComponentContent />

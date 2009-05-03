@@ -1,0 +1,46 @@
+BasePageJs: WOGenericContainer {
+    elementName = "script";
+    type        = "text/javascript";
+    src         = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/BasePage.js\")";
+}
+
+DojoCss: WOGenericContainer {
+    elementName = "link";
+    rel         = "stylesheet";
+    type        = "text/css";
+    href        = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/resources/dojo.css\")";
+}
+
+DojoJs: WOGenericContainer {
+    elementName = "script";
+    type        = "text/javascript";
+    src         = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/dojo.js\")";
+    djConfig    = "parseOnLoad: true";
+}
+
+DojoThemeCss: WOGenericContainer {
+    elementName = "link";
+    rel         = "stylesheet";
+    type        = "text/css";
+    href        = "~stylesheetUrl(\"Core.framework/WebServerResources/dijit/themes/nihilo/nihilo.css\")";
+}
+
+PageSpecificCss: WOGenericContainer {
+    elementName = "link";
+    rel         = "stylesheet";
+    type        = "text/css";
+    href        = "~stylesheetUrl(pageFramework + \".framework/WebServerResources/\" + pageSpecificStylesheetPath)";
+}
+
+PageSpecificJs: WOGenericContainer {
+    elementName = "script";
+    type        = "text/javascript";
+    href        = "~stylesheetUrl(pageFramework + \".framework/WebServerResources/\" + pageSpecificJavascriptPath)";
+}
+
+WcCss: WOGenericContainer {
+    elementName = "link";
+    rel         = "stylesheet";
+    type        = "text/css";
+    href        = "~stylesheetUrl(\"Core.framework/WebServerResources/wc.css\")";
+}
