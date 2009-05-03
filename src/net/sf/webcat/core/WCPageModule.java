@@ -78,7 +78,7 @@ public class WCPageModule
     {
         return (String)valueForBinding("id");
     }
-    
+
 
     // ----------------------------------------------------------
     public boolean showsLoadingMessageOnRefresh()
@@ -86,20 +86,13 @@ public class WCPageModule
         return ERXValueUtilities.booleanValueWithDefault(
                 valueForBinding("showsLoadingMessageOnRefresh"), true);
     }
-    
+
 
     // ----------------------------------------------------------
     public boolean isCollapsible()
     {
         return ERXValueUtilities.booleanValueWithDefault(
             valueForBinding("collapsible"), true);
-    }
-
-
-    // ----------------------------------------------------------
-    public boolean isStatic()
-    {
-        return ERXValueUtilities.booleanValue(valueForBinding("static"));
     }
 
 
