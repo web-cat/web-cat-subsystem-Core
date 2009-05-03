@@ -100,7 +100,7 @@ public class CoreNavigator
 
     public boolean allowsAllSemesters = true;
     public boolean allowsAllOfferingsForCourse = true;
-    public boolean startOpen = false;
+    public Boolean startOpen;
 
     public ComponentIDGenerator idFor;
 
@@ -114,6 +114,12 @@ public class CoreNavigator
     public void appendToResponse(WOResponse response, WOContext context)
     {
         log.debug("entering appendToResponse()");
+
+        if (startOpen == null)
+        {
+            startOpen = Boolean.valueOf(
+                selectionsParent.forceNavigatorSelection());
+        }
 
         idFor = new ComponentIDGenerator(this);
 

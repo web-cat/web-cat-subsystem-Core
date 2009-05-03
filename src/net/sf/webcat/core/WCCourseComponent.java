@@ -116,100 +116,16 @@ public class WCCourseComponent
 
 
     // ----------------------------------------------------------
-    public NSMutableArray<INavigatorObject> courseOfferings()
+    /**
+     * This method determines whether any embedded navigator will
+     * automatically pop up to force a selection and page reload.
+     * The default implementation simply returns false, but is designed
+     * to be overridden in subclasses.
+     * @return True if the navigator should start out by opening automatically.
+     */
+    public boolean forceNavigatorSelection()
     {
-        return null;
-    }
-
-
-    // ----------------------------------------------------------
-    public INavigatorObject selectedCourseOffering()
-    {
-        return null;
-    }
-
-
-    // ----------------------------------------------------------
-    public void setSelectedCourseOffering(INavigatorObject selected)
-    {
-    }
-
-
-    // ----------------------------------------------------------
-    public NSMutableArray<INavigatorObject> semesters()
-    {
-        return null;
-    }
-
-
-    // ----------------------------------------------------------
-    public INavigatorObject selectedSemester()
-    {
-        return null;
-    }
-
-
-    // ----------------------------------------------------------
-    public void setSelectedSemester(INavigatorObject selected)
-    {
-    }
-
-
-    // ----------------------------------------------------------
-    public boolean allowsAllSemesters()
-    {
-        return allowsAllSemesters;
-    }
-
-
-    // ----------------------------------------------------------
-    public void setAllowsAllSemesters(boolean value)
-    {
-        allowsAllSemesters = value;
-    }
-
-
-    // ----------------------------------------------------------
-    public boolean allowsAllOfferingsForCourse()
-    {
-        return allowsAllOfferingsForCourse;
-    }
-
-
-    // ----------------------------------------------------------
-    public void setAllowsAllOfferingsForCourse(boolean value)
-    {
-        allowsAllOfferingsForCourse = value;
-    }
-
-
-    // ----------------------------------------------------------
-    public boolean includeWhatImTeaching()
-    {
-        // TODO: implement
-        return includeWhatImTeaching;
-    }
-
-
-    // ----------------------------------------------------------
-    public void setIncludeWhatImTeaching(boolean value)
-    {
-        // TODO: implement
-    }
-
-
-    // ----------------------------------------------------------
-    public boolean includeAdminAccess()
-    {
-        // TODO: implement
-        return includeAdminAccess;
-    }
-
-
-    // ----------------------------------------------------------
-    public void setIncludeAdminAccess(boolean value)
-    {
-        // TODO: implement
+        return false;
     }
 
 

@@ -1,7 +1,7 @@
 /*==========================================================================*\
 |  $Id$
 |*-------------------------------------------------------------------------*|
-|  Copyright (C) 2006-2008 Virginia Tech
+|  Copyright (C) 2006-2009 Virginia Tech
 |
 |  This file is part of Web-CAT.
 |
@@ -28,22 +28,30 @@ import net.sf.webcat.core.*;
 /**
  * A test page for testing the core navigator pop-up component.
  *
- *  @author Stephen Edwards
- *  @version $Id$
+ * @author Stephen Edwards
+ * @author  latest changes by: $Author$
+ * @version $Revision$ $Date$
  */
 public class CoreNavigatorTestPage
     extends WCCourseComponent
 {
-   //~ Constructors ..........................................................
+    //~ Constructors ..........................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Creates a new page.
+     *
+     * @param context The context to use
+     */
+    public CoreNavigatorTestPage(WOContext context)
+    {
+        super(context);
+    }
+
 
    // ----------------------------------------------------------
-   /**
-    * Creates a new page.
-    *
-    * @param context The context to use
-    */
-   public CoreNavigatorTestPage(WOContext context)
-   {
-       super(context);
-   }
+    public boolean forceNavigatorSelection()
+    {
+        return true;
+    }
 }
