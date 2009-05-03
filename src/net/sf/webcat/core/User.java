@@ -661,7 +661,7 @@ public class User
     // ----------------------------------------------------------
     /**
      * @return the array of course offerings that this user is a grader for
-     * 
+     *
      * @deprecated Use the {@link #graderFor()} method instead.
      */
     @Deprecated
@@ -677,14 +677,14 @@ public class User
         return studentView ? emptyArray : super.graderFor();
     }
 
-    
+
     // ----------------------------------------------------------
     /**
      * Returns a sorted list of course offerings that this user is a TA for.
      * @param semester Only return courses for this semester.  A value of null
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
-     * 
+     *
      * @deprecated Use the {@link #graderFor(Semester)} method instead.
      */
     @Deprecated
@@ -693,7 +693,7 @@ public class User
         return graderFor(semester);
     }
 
-    
+
     // ----------------------------------------------------------
     /**
      * Returns a sorted list of course offerings that this user is a TA for.
@@ -824,7 +824,7 @@ public class User
      * Returns a sorted list of course offerings that this user is a TA for,
      * without including any courses where this user is also a student.
      * @return a sorted array of the matching course offerings.
-     * 
+     *
      * @deprecated Use the {@link #graderForButNotStudent()} method instead.
      */
     @Deprecated
@@ -833,7 +833,7 @@ public class User
         return graderForButNotStudent();
     }
 
-    
+
     // ----------------------------------------------------------
     /**
      * Returns a sorted list of course offerings that this user is a grader for,
@@ -880,7 +880,7 @@ public class User
      * @param semester Only return courses for this semester.  A value of null
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
-     * 
+     *
      * @deprecated Use the {@link #graderForButNotStudent(Semester)} method
      *     instead.
      */
@@ -924,7 +924,7 @@ public class User
      * instructor for, without including any courses where this user is also
      * a student or a grader.
      * @return a sorted array of the matching course offerings.
-     * 
+     *
      * @deprecated Use the {@link #instructorForButNotGraderOrStudent()} method
      *     instead.
      */
@@ -933,8 +933,8 @@ public class User
     {
         return instructorForButNotGraderOrStudent();
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Returns a sorted list of course offerings that this user is an
@@ -988,7 +988,7 @@ public class User
      * @param semester Only return courses for this semester.  A value of null
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
-     * 
+     *
      * @deprecated Use the {@link #instructorForButNotTAOrStudent(Semester)}
      *     method instead.
      */
@@ -997,8 +997,8 @@ public class User
     {
         return instructorForButNotGraderOrStudent(semester);
     }
-    
-        
+
+
     // ----------------------------------------------------------
     /**
      * Returns a sorted list of course offerings that this user is an
@@ -1033,7 +1033,7 @@ public class User
      * an instructor or grader for.
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray staffFor()
+    public NSArray<CourseOffering> staffFor()
     {
         if ( graderFor_cache != graderFor() )
         {
