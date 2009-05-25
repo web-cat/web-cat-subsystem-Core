@@ -1,10 +1,16 @@
+JSONRPCJs: WOGenericContainer {
+    elementName = "script";
+    type = "text/javascript";
+    src = "~stylesheetUrl(\"Ajax.framework/WebServerResources/jsonrpc.js\")";
+}
+
 BasePageJs: WOGenericContainer {
     elementName = "script";
     type        = "text/javascript";
-    src         = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/BasePage.js\")";
+    src         = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/\" + pageScriptName)";
 }
 
-DojoCss: WOGenericContainer {
+DojoCss: WOGenericElement {
     elementName = "link";
     rel         = "stylesheet";
     type        = "text/css";
@@ -18,21 +24,21 @@ DojoJs: WOGenericContainer {
     djConfig    = "parseOnLoad: true";
 }
 
-DojoThemeCss: WOGenericContainer {
+DojoThemeCss: WOGenericElement {
     elementName = "link";
     rel         = "stylesheet";
     type        = "text/css";
     href        = "~stylesheetUrl(\"Core.framework/WebServerResources/dijit/themes/\" + theme.dojoTheme + \"/\" + theme.dojoTheme + \".css\")";
 }
 
-DojoxFileInputCss: WOGenericContainer {
+DojoxFileInputCss: WOGenericElement {
     elementName = "link";
     rel         = "stylesheet";
     type        = "text/css";
     href        = "~stylesheetUrl(\"Core.framework/WebServerResources/dojox/form/resources/FileInput.css\")";
 }
 
-PageSpecificCss: WOGenericContainer {
+PageSpecificCss: WOGenericElement {
     elementName = "link";
     rel         = "stylesheet";
     type        = "text/css";
