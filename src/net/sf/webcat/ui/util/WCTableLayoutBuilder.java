@@ -19,8 +19,9 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package net.sf.webcat.ui.table;
+package net.sf.webcat.ui.util;
 
+import net.sf.webcat.ui.StringCell;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
@@ -28,20 +29,20 @@ import com.webobjects.foundation.NSMutableDictionary;
 
 //------------------------------------------------------------------------
 /**
- * A helper class to ease the description of the column set of an ObjectTable.
+ * A helper class to ease the description of the column set of a WCDataTable.
  * 
  * @author Tony Allevato
  * @version $Id$
  */
-public class ObjectTableColumns
+public class WCTableLayoutBuilder
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
     /**
-     * Initializes a new instalce of the ObjectTableColumns class.
+     * Initializes a new instance of the WCDataTableLayout class.
      */
-    public ObjectTableColumns()
+    public WCTableLayoutBuilder()
     {
         columns = new NSMutableArray<NSDictionary<String, Object>>();
     }
@@ -74,17 +75,22 @@ public class ObjectTableColumns
      * @param properties a dictionary of initial cell-specific properties for
      *     the cells in this column (can be null)
      * 
-     * @return an ObjectTableColumn object that represents the newly added
+     * @return a Column object that represents the newly added
      *     column, which can be used to conveniently chain additional
      *     addProperty methods
      */
-    public ObjectTableColumn add(String name, String componentName,
+    public Column add(String name, String componentName,
             String keyPath, String sortingKeyPath,
             NSDictionary<String, Object> properties)
     {
         NSMutableDictionary<String, Object> dict =
             new NSMutableDictionary<String, Object>();
-        
+
+        if (componentName == null)
+        {
+            componentName = DEFAULT_CELL_COMPONENT_NAME;
+        }
+
         dict.setObjectForKey(name, "name");
         dict.setObjectForKey(componentName, "componentName");
 
@@ -104,22 +110,22 @@ public class ObjectTableColumns
 
         columns.addObject(dict);
         
-        return new ObjectTableColumn(dict);
+        return new Column(dict);
     }
     
     
     // ----------------------------------------------------------
     /**
      * Represents a column in the table layout. These are returned by the
-     * {@link ObjectTable#add} method to provide convenient helper methods for
+     * {@link WCDataTable#add} method to provide convenient helper methods for
      * constructing the layout.
      */
-    public class ObjectTableColumn
+    public class Column
     {
         //~ Constructors ......................................................
         
         // ----------------------------------------------------------
-        private ObjectTableColumn(NSMutableDictionary<String, Object> dict)
+        private Column(NSMutableDictionary<String, Object> dict)
         {
             dictionary = dict;
         }
@@ -135,7 +141,7 @@ public class ObjectTableColumns
          * @return this column, so that multiple calls can be chained
          */
         @SuppressWarnings("unchecked")
-        public ObjectTableColumn addProperty(String key, Object value)
+        public Column addProperty(String key, Object value)
         {
             NSMutableDictionary<String, Object> props =
                 (NSMutableDictionary<String, Object>)
@@ -154,6 +160,9 @@ public class ObjectTableColumns
 
 
     //~ Static/instance variables .........................................
+
+    private static final String DEFAULT_CELL_COMPONENT_NAME =
+        net.sf.webcat.ui.StringCell.class.getName();
 
     private NSMutableArray<NSDictionary<String, Object>> columns;
 }

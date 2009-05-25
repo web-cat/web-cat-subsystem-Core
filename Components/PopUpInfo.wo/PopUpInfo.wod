@@ -1,7 +1,6 @@
-Link: WOHyperlink {
-    href        = "javascript:void(0);";
-	onclick     = "~\"return overlib('\" + message + \"', STICKY, BELOW, RIGHT, CAPTION, '\" + title + \"');\"";
-    onmouseout  = "return nd();";
+Span: WOGenericContainer {
+    elementName = "span";
+    id = idFor.tooltipTarget;
 }
 
 InfoImage : WOImage {
@@ -10,4 +9,9 @@ InfoImage : WOImage {
     width     = 16;
     height    = 16;
     border    = 0;
+}
+
+Tooltip : WCTooltip {
+    connectId = idFor.tooltipTarget;
+    position = "below";
 }

@@ -19,10 +19,9 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package net.sf.webcat.ui.table;
+package net.sf.webcat.ui;
 
 import java.text.Format;
-import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver._private.WOFormatterRepository;
 import com.webobjects.foundation.NSDictionary;
@@ -37,8 +36,6 @@ import com.webobjects.foundation.NSDictionary;
  * be applied to the &lt;span&gt; tag containing the cell's value.
  * <li><b>style:</b> a CSS style string that will be applied to the contents of
  * the cell.
- * <li><b>action:</b> the name of the action to be performed on the component
- * that contains the table.</li>
  * <li><b>formatter:</b> a {@link java.text.Format} object that will be used to
  * format the value of the cell.</li>
  * <li><b>numberFormat:</b> a string specifying the number format to use to
@@ -50,21 +47,21 @@ import com.webobjects.foundation.NSDictionary;
  * @author Tony Allevato
  * @version $Id$
  */
-public class ActionURLCell extends AbstractObjectTableCell
+public class StringCell extends WCTableCell
 {
-	//~ Constructors ..........................................................
-    
+    //~ Constructor ...........................................................
+
     // ----------------------------------------------------------
-    public ActionURLCell(WOContext context)
-	{
-		super(context);
-	}
+    public StringCell(WOContext context)
+    {
+        super(context);
+    }
 
 
-	//~ KVC attributes (must be public) .......................................
-	
+    //~ KVC attributes (must be public) .......................................
+   
     public Format formatter;
-
+    
 
     //~ Methods ...............................................................
 
@@ -77,10 +74,10 @@ public class ActionURLCell extends AbstractObjectTableCell
         // Store the formatter or convert a specified format string, if
         // necessary.
 
-        Format format = (Format) props.objectForKey("formatter");
-        if (format != null)
+        Format formatter = (Format) props.objectForKey("formatter");
+        if (formatter != null)
         {
-            formatter = format;
+            this.formatter = formatter;
         }
         else
         {
@@ -124,18 +121,4 @@ public class ActionURLCell extends AbstractObjectTableCell
             return value.toString();
         }
     }
-
-    
-    // ----------------------------------------------------------
-    /**
-     * Performs the action named in the "action" property on the component that
-     * contains the ObjectTable.
-     * 
-     * @return the results of the action
-     */
-	public WOActionResults performAction()
-	{
-		String action = (String) properties.objectForKey("action");
-		return parent().performParentAction(action);
-	}
 }

@@ -5,9 +5,11 @@ dependencies = {
             dependencies: [
                 "dijit.Dialog",
                 "dijit.Menu",
+                "dijit.ProgressBar",
                 "dijit.TitlePane",
                 "dijit.Toolbar",
                 "dijit.Tooltip",
+                "dijit.Tree",
                 "dijit.form.Button",
                 "dijit.form.CheckBox",
                 "dijit.form.ComboBox",
@@ -21,9 +23,11 @@ dependencies = {
                 "dijit.form.TextBox",
                 "dijit.form.TimeTextBox",
                 "dijit.form.ValidationTextBox",
+                "dojox.data.dom",
                 "webcat.global",
+                "webcat.ComboBox",
                 "webcat.ContentPane",
-                "webcat.ObjectTable",
+                "webcat.Table",
                 "webcat.TitlePane",
                 "webcat.Tree"
             ]

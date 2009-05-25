@@ -133,6 +133,12 @@ public class WCDateTimePicker extends WOComponent
     public void setValue(NSTimestamp aValue)
     {
         GregorianCalendar aValueCalendar = new GregorianCalendar();
+        
+        if (aValue == null)
+        {
+            aValue = new NSTimestamp();
+        }
+
         aValueCalendar.setTime(aValue);
 
         GregorianCalendar datePartCalendar = new GregorianCalendar();

@@ -32,18 +32,18 @@ import com.webobjects.appserver.*;
  * @version $Id$
  */
 
-public class WCTable
+public class WCStyledTable
 extends WOComponent
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
     /**
-     * Creates a new WCTable object.
+     * Creates a new WCStyledTable object.
      *
      * @param context The page's context
      */
-    public WCTable( WOContext context )
+    public WCStyledTable( WOContext context )
     {
         super( context );
     }

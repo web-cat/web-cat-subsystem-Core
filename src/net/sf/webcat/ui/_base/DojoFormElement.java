@@ -115,7 +115,7 @@ public abstract class DojoFormElement extends DojoElement
             if (name != null && name.length() > 0 && _value != null)
             {
                 String stringValue = request.stringFormValueForKey(name);
-                Object value = objectForStringValue(stringValue);
+                Object value = objectForStringValue(stringValue, context);
                 _value.setValue(value, context.component());
             }
         }
@@ -170,10 +170,12 @@ public abstract class DojoFormElement extends DojoElement
      * 
      * @param stringValue
      *            the string representation of the value of the field
+     * @param context
+     *            the context of the request
      * @return an object to set into the "value" binding of the hosting
      *         component
      */
-    protected Object objectForStringValue(String stringValue)
+    protected Object objectForStringValue(String stringValue, WOContext context)
     {
         return stringValue;
     }
@@ -192,10 +194,12 @@ public abstract class DojoFormElement extends DojoElement
      * @param value
      *            the object obtained by querying the "value" binding on the
      *            hosting component
+     * @param context
+     *            the context of the request
      * @return the string representation of the element, to be written into the
      *         "value" attribute of the HTML
      */
-    protected String stringValueForObject(Object value)
+    protected String stringValueForObject(Object value, WOContext context)
     {
         return value.toString();
     }
@@ -288,7 +292,7 @@ public abstract class DojoFormElement extends DojoElement
 
             if (object != null)
             {
-                String value = stringValueForObject(object);
+                String value = stringValueForObject(object, context);
 
                 if (value == null)
                     return null;

@@ -19,16 +19,16 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-dojo.provide("webcat.ObjectTable");
+dojo.provide("webcat.Table");
 
 // ------------------------------------------------------------------------
 /**
  * This is not a true Dojo widget class. It is a wrapper class that wraps an
- * instance of the ObjectTable component based on its AjaxProxy and JavaScript
- * id, and provides functions that communicate back to the server through the
+ * instance of the WCTable component based on its AjaxProxy and JavaScript id,
+ * and provides functions that communicate back to the server through the
  * proxy.
  */
-dojo.declare("webcat.ObjectTable", null,
+dojo.declare("webcat.Table", null,
 {
 	//~ Constructor ...........................................................
 
@@ -151,6 +151,50 @@ dojo.declare("webcat.ObjectTable", null,
 			this._updateTableGenerator(), size);
 	},
 	
+
+    // ----------------------------------------------------------
+    changeFilter: function(keyPath, changes)
+    {
+        this.proxy.changeFilter(
+            this._updateTableGenerator(), keyPath, changes);
+    },
+    
+    
+    // ----------------------------------------------------------
+    startFilterValueUpdateTimer: function(keyPath, widget, evt, proxy)
+    {
+        if(evt.keyCode == null)
+        {
+            return;
+        }
+        else
+        {
+            switch (evt.keyCode)
+            {
+                case Event.KEY_TAB:
+                case Event.KEY_RETURN:
+                case Event.KEY_ESC:
+                case Event.KEY_LEFT:
+                case Event.KEY_RIGHT:
+                case Event.KEY_UP:
+                case Event.KEY_DOWN:
+                    return;
+            }
+        }
+
+        if (this.timeoutId)
+        {
+            clearTimeout(this.timeoutId);
+        }
+
+        value = widget.id;
+        script = "eval('" + proxy + ".changeFilter(\"" + keyPath +
+            "\", { value: dijit.byId(\"" + value + "\").getValue() });');";
+        this.timeoutId = setTimeout(
+            script, 500
+        );
+    },
+
 
 	// ----------------------------------------------------------
 	_updateTableGenerator: function()

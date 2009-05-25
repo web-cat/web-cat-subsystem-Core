@@ -1,4 +1,4 @@
-Proxy : AjaxProxy {
+Proxy : WCJSONRPC {
 	name = JSONBridgeName;
 	proxyName = componentProxyName;
 }

@@ -21,10 +21,19 @@
 
 package net.sf.webcat.ui;
 
+import java.math.BigDecimal;
+import java.text.Format;
+import java.text.ParseException;
 import net.sf.webcat.ui._base.DojoFormElement;
 import com.webobjects.appserver.WOAssociation;
+import com.webobjects.appserver.WOComponent;
+import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOElement;
+import com.webobjects.appserver._private.WODynamicElementCreationException;
+import com.webobjects.appserver._private.WOFormatterRepository;
 import com.webobjects.foundation.NSDictionary;
+import com.webobjects.foundation.NSLog;
+import com.webobjects.foundation.NSValidation;
 
 //------------------------------------------------------------------------
 /**
@@ -48,7 +57,18 @@ public class WCTextBox extends DojoFormElement
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
-        super("input", someAssociations, template);
+        super("span", someAssociations, template);
+
+        _formatter = _associations.removeObjectForKey("formatter");
+        _dateFormat = _associations.removeObjectForKey("dateformat");
+        _numberFormat = _associations.removeObjectForKey("numberformat");
+        _useDecimalNumber = _associations.removeObjectForKey("useDecimalNumber");
+
+        if (_dateFormat != null && _numberFormat != null)
+            throw new WODynamicElementCreationException("<" +
+                    getClass().getName() +
+                    "> Cannot have 'dateFormat' and 'numberFormat' " +
+                    "attributes at the same time.");
     }
 
 
@@ -60,4 +80,105 @@ public class WCTextBox extends DojoFormElement
     {
         return "dijit.form.TextBox";
     }
+    
+    
+    // ----------------------------------------------------------
+    @Override
+    protected Object objectForStringValue(String stringValue, WOContext context)
+    {
+        WOComponent component = context.component();
+        Object objectValue = stringValue;
+        
+        if (stringValue != null)
+        {
+            Format formatter = null;
+
+            if (stringValue.length() != 0)
+            {
+                formatter = WOFormatterRepository.formatterForComponent(
+                        component, _dateFormat, _numberFormat, _formatter);
+            }
+
+            if (formatter != null)
+            {
+                try
+                {
+                    Object firstPass = formatter.parseObject(stringValue);
+                    String formattedValue = formatter.format(firstPass);
+                    objectValue = formatter.parseObject(formattedValue);
+                }
+                catch (ParseException e1)
+                {
+                    String keyPath = _value.keyPath();
+
+                    NSValidation.ValidationException exception =
+                        new NSValidation.ValidationException(
+                            e1.getMessage(), stringValue, keyPath);
+                    
+                    component.validationFailedWithException(exception,
+                            stringValue, keyPath);
+
+                    return null;
+                }
+
+                if (objectValue != null && _useDecimalNumber != null
+                        && _useDecimalNumber.booleanValueInComponent(component))
+                {
+                    objectValue = new BigDecimal(objectValue.toString());
+                }
+            }
+            else if (objectValue.toString().length() == 0)
+            {
+                objectValue = null;
+            }
+        }
+        
+        return objectValue;
+    }
+    
+    
+    // ----------------------------------------------------------
+    @Override
+    protected String stringValueForObject(Object value, WOContext context)
+    {
+        if (value != null)
+        {
+            WOComponent component = context.component();
+            String stringValue = null;
+            
+            Format formatter = WOFormatterRepository.formatterForInstance(
+                    value, component, _dateFormat, _numberFormat, _formatter);
+
+            if (formatter != null)
+            {
+                try
+                {
+                    String formattedValue = formatter.format(value);
+                    Object parsedValue = formatter.parseObject(formattedValue);
+                    stringValue = formatter.format(parsedValue);
+                }
+                catch (Exception e)
+                {
+                    stringValue = null;
+                }
+            }
+
+            if (stringValue == null)
+            {
+                stringValue = value.toString();
+            }
+
+            return stringValue;
+        }
+
+        return null;
+    }
+    
+
+    //~ Static/instance variables .............................................
+
+    protected WOAssociation _formatter;
+    protected WOAssociation _dateFormat;
+    protected WOAssociation _numberFormat;
+    protected WOAssociation _useDecimalNumber;    
 }

@@ -19,7 +19,7 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package net.sf.webcat.ui.table;
+package net.sf.webcat.ui;
 
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.NSBundle;
@@ -43,7 +43,7 @@ import com.webobjects.foundation.NSDictionary;
  * @author Tony Allevato
  * @version $Id$
  */
-public class BooleanActionCell extends AbstractObjectTableCell
+public class BooleanActionCell extends WCTableCell
 {
     //~ Constructors ..........................................................
 

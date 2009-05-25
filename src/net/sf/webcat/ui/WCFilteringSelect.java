@@ -56,7 +56,7 @@ public class WCFilteringSelect extends DojoSingleSelectionListFormElement
 	@Override
 	public String dojoType()
 	{
-		return "dijit.form.FilteringSelect";
+		return "webcat.FilteringSelect";
 	}
 
 

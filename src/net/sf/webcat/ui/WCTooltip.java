@@ -69,7 +69,7 @@ public class WCTooltip extends DojoElement
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
-        super("div", someAssociations, template);
+        super("span", someAssociations, template);
     }
 
 

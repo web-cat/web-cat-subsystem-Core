@@ -19,19 +19,30 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package net.sf.webcat.ui.table;
+package net.sf.webcat.ui;
 
+import java.util.Iterator;
+import net.sf.webcat.ui.util.WCTableFilterBuilder;
+import net.sf.webcat.ui.util.WCTableLayoutBuilder;
+import ognl.webobjects.WOOgnl;
+import org.jfree.util.Log;
+import org.json.JSONException;
+import org.json.JSONObject;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WODisplayGroup;
 import com.webobjects.appserver.WOResponse;
+import com.webobjects.eocontrol.EOAndQualifier;
+import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSKeyValueCodingAdditions;
 import com.webobjects.foundation.NSMutableArray;
+import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSSelector;
+import er.extensions.appserver.ERXWOContext;
 import er.extensions.foundation.ERXStringUtilities;
 
 //------------------------------------------------------------------------
@@ -42,9 +53,11 @@ import er.extensions.foundation.ERXStringUtilities;
  * array of objects to be displayed. These objects can be anything that supports
  * key-value coding, such as enterprise objects or dictionaries.
  * </p><p>
- * The column layout is provided by the <i>columns</i> binding; this should be
- * an array of dictionaries constructed directly in code, loaded from a plist
- * file, or obtained from the {@link ObjectTableColumns} utility class.
+ * The column layout is provided either in markup (by nesting
+ * {@link WCTableColumn} elements) or by explicitly setting the
+ * <i>columns</i> binding; this should be an array of dictionaries constructed
+ * directly in code, loaded from a plist file, or obtained from the
+ * {@link WCTableLayoutBuilder} utility class.
  * </p><p> 
  * Each entry in the columns array is a dictionary with the following keys:
  * </p><p>
@@ -72,7 +85,7 @@ import er.extensions.foundation.ERXStringUtilities;
  *     displayed in the table and also manages the current selection
  * @binding columns an array of dictionaries that describe the columns in
  *     the table; this can be loaded from a plist file or generated in code
- *     with the {@link ObjectTableColumns} class
+ *     with the {@link WCTableLayoutBuilder} class
  * @binding isBatched true if the table displays a fixed-size batch of
  *     objects and provides controls for changing the batch size and
  *     navigating the pages of the table (defaults to false)
@@ -92,7 +105,7 @@ import er.extensions.foundation.ERXStringUtilities;
  * @author Tony Allevato
  * @version $Id$
  */
-public class ObjectTable extends WOComponent
+public class WCTable extends WOComponent
 {
     //~ Constructors ..........................................................
     
@@ -102,7 +115,7 @@ public class ObjectTable extends WOComponent
      * 
      * @param context
      */
-    public ObjectTable(WOContext context)
+    public WCTable(WOContext context)
     {
         super(context);
     }
@@ -114,6 +127,7 @@ public class ObjectTable extends WOComponent
     public boolean canSort = false;
     public WODisplayGroup displayGroup;
     public NSArray<NSDictionary<String, Object>> columns;
+    public NSArray<NSDictionary<String, Object>> filters;
     public boolean isBatched = false;
     public int batchSize = 0;
     public boolean showsRowNumbers = false;
@@ -123,8 +137,11 @@ public class ObjectTable extends WOComponent
     public Object objectInRepetition;
     public int indexInRepetition;
     public NSDictionary<String, Object> columnInRepetition;
-    public int columnIndexInRepetition;
+    public int columnIndexInRepetition;    
+    public NSDictionary<String, Object> filterInRepetition;
+    public int filterIndexInRepetition;
 
+    private NSMutableDictionary<String, JSONObject> currentFilters;
     private int sortedColumnIndex = -1;
     private boolean sortedColumnAscending;
     
@@ -135,6 +152,11 @@ public class ObjectTable extends WOComponent
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
+        if (currentFilters == null)
+        {
+            currentFilters = new NSMutableDictionary<String, JSONObject>();
+        }
+
         if (id == null)
         {
             id = ERXStringUtilities.safeIdentifierName(context.elementID());
@@ -251,6 +273,13 @@ public class ObjectTable extends WOComponent
     
     
     // ----------------------------------------------------------
+    public String idForFilterDialog()
+    {
+        return id() + "_filterDialog";
+    }
+    
+    
+    // ----------------------------------------------------------
     /**
      * Called from within a columns repetition nested in a rows repetition,
      * this method gets the value for the current row and column that will be
@@ -267,13 +296,36 @@ public class ObjectTable extends WOComponent
         }
         else
         {
-            value = NSKeyValueCodingAdditions.Utility.valueForKeyPath(
-                    objectInRepetition, keyPath);
+            if (keyPath.startsWith("~"))
+            {
+                String expression = keyPath.substring(1);
+                value = WOOgnl.factory().getValue(expression,
+                        objectInRepetition);
+            }
+            else
+            {
+                value = NSKeyValueCodingAdditions.Utility.valueForKeyPath(
+                        objectInRepetition, keyPath);
+            }
         }
         
         return value;
     }
     
+
+    // ----------------------------------------------------------
+    /**
+     * 
+     */
+    public boolean columnInRepetitionCanBeSorted()
+    {
+        String keyPath = (String) columnInRepetition.objectForKey("keyPath");
+        String sortingKeyPath = (String) columnInRepetition.objectForKey(
+                "sortingKeyPath");
+        
+        return (sortingKeyPath != null || !keyPath.startsWith("~"));
+    }
+
 
     // ----------------------------------------------------------
     public String cssClassOfRowInRepetition()
@@ -444,6 +496,231 @@ public class ObjectTable extends WOComponent
     
     
     // ----------------------------------------------------------
+    public synchronized void changeFilter(String keyPath, JSONObject changes)
+    {
+        JSONObject filter = currentFilters.objectForKey(keyPath);
+        
+        if (filter == null)
+        {
+            filter = new JSONObject();
+            currentFilters.setObjectForKey(filter, keyPath);
+        }
+        
+        Iterator<String> it = changes.keys();
+        while (it.hasNext())
+        {
+            String changeKey = it.next();
+            
+            try
+            {
+                Object value = changes.get(changeKey);
+                filter.put(changeKey, value);
+            }
+            catch (JSONException e)
+            {
+                // Do nothing.
+            }
+        }
+
+        updateDisplayGroupQualifier();
+    }
+
+    
+    private void updateDisplayGroupQualifier()
+    {
+        NSMutableArray<EOQualifier> quals = new NSMutableArray<EOQualifier>();
+        
+        for (String keyPath : currentFilters.allKeys())
+        {
+            JSONObject filterArgs = currentFilters.objectForKey(keyPath);
+            
+            try
+            {
+                if (filterArgs.getBoolean("enabled"))
+                {
+                    String relation = filterArgs.getString("relation");
+                    Object value = filterArgs.get("value");
+
+                    String format = keyPath + " %s %%@";
+                    String qualString = null;
+                    
+                    if ("is".equals(relation))
+                    {
+                            qualString = String.format(format, "=");
+                    }
+                    else if ("is not".equals(relation))
+                    {
+                            qualString = String.format(format, "<>");
+                    }
+                    else if ("starts with".equals(relation))
+                    {
+                            value = value.toString() + "*"; 
+                            qualString = String.format(format,
+                                    "caseInsensitiveLike");
+                    }
+                    else if ("ends with".equals(relation))
+                    {
+                            value = "*" + value.toString(); 
+                            qualString = String.format(format,
+                                    "caseInsensitiveLike");
+                    }
+                    else if ("contains".equals(relation))
+                    {
+                            value = "*" + value.toString() + "*"; 
+                            qualString = String.format(format,
+                                    "caseInsensitiveLike");
+                    }
+                    
+                    quals.add(EOQualifier.qualifierWithQualifierFormat(
+                            qualString, new NSArray<Object>(value)));
+                }
+            }
+            catch (JSONException e)
+            {
+                // Do nothing.
+            }
+        }
+
+        if (quals.isEmpty())
+        {
+            displayGroup.setQualifier(null);
+        }
+        else
+        {
+            displayGroup.setQualifier(new EOAndQualifier(quals));
+        }
+        
+        displayGroup.updateDisplayedObjects();
+    }
+    
+    
+    public boolean currentFilterIsEnabled()
+    {
+        String keyPath = (String) filterInRepetition.objectForKey("keyPath");
+        
+        JSONObject filter = currentFilters.objectForKey(keyPath);
+
+        if (filter != null)
+        {
+            try
+            {
+                return filter.getBoolean("enabled");
+            }
+            catch (JSONException e)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    
+    public String currentFilterComparison()
+    {
+        String keyPath = (String) filterInRepetition.objectForKey("keyPath");
+        
+        JSONObject filter = currentFilters.objectForKey(keyPath);
+
+        if (filter != null)
+        {
+            try
+            {
+                return filter.getString("relation");
+            }
+            catch (JSONException e)
+            {
+                return "is";
+            }
+        }
+        else
+        {
+            return "is";
+        }
+    }
+
+    
+    public void setCurrentFilterIsEnabled(boolean value)
+    {
+        String keyPath = (String) filterInRepetition.objectForKey("keyPath");
+        
+        JSONObject changes = new JSONObject();
+        try
+        {
+            changes.put("enabled", value);
+        }
+        catch (JSONException e)
+        {
+            // Do nothing.
+        }
+        
+        changeFilter(keyPath, changes);
+    }
+    
+    
+    public Object currentFilterValue()
+    {
+        String keyPath = (String) filterInRepetition.objectForKey("keyPath");
+        
+        JSONObject filter = currentFilters.objectForKey(keyPath);
+
+        if (filter != null)
+        {
+            try
+            {
+                return filter.get("value");
+            }
+            catch (JSONException e)
+            {
+                return null;
+            }
+        }
+        else
+        {
+            return null;
+        }
+    }
+    
+    
+    public void setCurrentFilterValue(Object value)
+    {
+        String keyPath = (String) filterInRepetition.objectForKey("keyPath");
+        
+        JSONObject changes = new JSONObject();
+        try
+        {
+            changes.put("value", value);
+        }
+        catch (JSONException e)
+        {
+            // Do nothing.
+        }
+        
+        changeFilter(keyPath, changes);
+    }
+    
+
+    public String idForCurrentFilterEnabledCheckbox()
+    {
+        return id() + "_filter_" + filterIndexInRepetition + "_enabled";
+    }
+
+
+    public String idForCurrentFilterComparisonButton()
+    {
+        return id() + "_filter_" + filterIndexInRepetition + "_comparison";
+    }
+
+
+    public String idForCurrentFilterValueWidget()
+    {
+        return id() + "_filter_" + filterIndexInRepetition + "_value";
+    }
+
+
+    // ----------------------------------------------------------
     public boolean columnInRepetitionIsSorted()
     {
         return (columnIndexInRepetition == sortedColumnIndex);
@@ -532,4 +809,155 @@ public class ObjectTable extends WOComponent
         displayGroup.setSelectionIndexes(new NSArray<Integer>(
                 index + displayGroup.indexOfFirstDisplayedObject() - 1));
     }
+    
+    
+    @Override
+    public void awake()
+    {
+        super.awake();
+
+        if (currentTable() != null)
+        {
+            Log.error("WCTable elements cannot be nested! The layout of "
+                    + "your table will not work as expected.");
+        }
+
+        // Clear out the previous state when the table component is awoken
+        // (this is important if we have multiple tables on the same page).
+        ERXWOContext.contextDictionary().removeObjectForKey(
+                CURRENT_DATA_TABLE_LAYOUT_KEY);
+        ERXWOContext.contextDictionary().removeObjectForKey(
+                CURRENT_DATA_TABLE_FILTERS_KEY);
+
+        setCurrentTable(this);
+    }
+    
+
+    @Override
+    public void sleep()
+    {
+        setCurrentTable(null);
+
+        super.sleep();
+    }
+
+
+    public static WCTable currentTable()
+    {
+        return (WCTable) ERXWOContext.contextDictionary().objectForKey(
+                CURRENT_DATA_TABLE_KEY);
+    }
+    
+    
+    public static void setCurrentTable(WCTable table)
+    {
+        if (table == null)
+        {
+            ERXWOContext.contextDictionary().removeObjectForKey(
+                    CURRENT_DATA_TABLE_KEY);
+        }
+        else
+        {
+            ERXWOContext.contextDictionary().setObjectForKey(table,
+                    CURRENT_DATA_TABLE_KEY);
+        }
+    }
+
+
+    public static WCTableLayoutBuilder currentTableLayout()
+    {
+        WCTable table = currentTable();
+        
+        if (table == null)
+        {
+            return null;
+        }
+        else
+        {
+            WCTableLayoutBuilder layout =
+                (WCTableLayoutBuilder) ERXWOContext.contextDictionary().objectForKey(
+                    CURRENT_DATA_TABLE_LAYOUT_KEY);
+            
+            if (layout == null)
+            {
+                layout = new WCTableLayoutBuilder();
+                ERXWOContext.contextDictionary().setObjectForKey(layout,
+                        CURRENT_DATA_TABLE_LAYOUT_KEY);
+            }
+
+            return layout;
+        }
+    }
+    
+    
+    public static void commitTableLayoutChanges()
+    {
+        WCTable table = currentTable();
+        
+        if (table != null)
+        {
+            WCTableLayoutBuilder layout =
+                (WCTableLayoutBuilder) ERXWOContext.contextDictionary().objectForKey(
+                    CURRENT_DATA_TABLE_LAYOUT_KEY);
+            
+            if (layout != null)
+            {
+                table.columns = layout.asArray();
+            }
+        }
+    }
+    
+    
+    public static WCTableFilterBuilder currentFilters()
+    {
+        WCTable table = currentTable();
+        
+        if (table == null)
+        {
+            return null;
+        }
+        else
+        {
+            WCTableFilterBuilder filters =
+                (WCTableFilterBuilder) ERXWOContext.contextDictionary().objectForKey(
+                    CURRENT_DATA_TABLE_FILTERS_KEY);
+            
+            if (filters == null)
+            {
+                filters = new WCTableFilterBuilder();
+                ERXWOContext.contextDictionary().setObjectForKey(filters,
+                        CURRENT_DATA_TABLE_FILTERS_KEY);
+            }
+
+            return filters;
+        }
+    }
+    
+    
+    public static void commitFilterChanges()
+    {
+        WCTable table = currentTable();
+        
+        if (table != null)
+        {
+            WCTableFilterBuilder filters =
+                (WCTableFilterBuilder) ERXWOContext.contextDictionary().objectForKey(
+                    CURRENT_DATA_TABLE_FILTERS_KEY);
+            
+            if (filters != null)
+            {
+                table.filters = filters.asArray();
+            }
+        }
+    }
+    
+    
+    //~ Static/instance variables .............................................
+    
+    private static final String CURRENT_DATA_TABLE_KEY =
+        "net.sf.webcat.ui.table.WCDataTable.currentTable";
+    private static final String CURRENT_DATA_TABLE_LAYOUT_KEY =
+        "net.sf.webcat.ui.table.WCDataTable.currentTableLayout";
+    private static final String CURRENT_DATA_TABLE_FILTERS_KEY =
+        "net.sf.webcat.ui.table.WCDataTable.currentTableFilters";
 }

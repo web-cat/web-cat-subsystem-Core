@@ -30,6 +30,7 @@ import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSMutableArray;
 import java.net.URL;
+import net.sf.webcat.core.Application;
 import net.sf.webcat.core.Session;
 import net.sf.webcat.core.Theme;
 import net.sf.webcat.core.WCResourceManager;
@@ -95,6 +96,7 @@ public class WCBasePage
     public String title;
     public String extraBodyCssClass;
     public String extraRequires;
+    public String pageScriptName;
     public boolean includePageWrapping = true;
 
     /** Used to refer to a single item in a repetition on the page. */
@@ -106,6 +108,15 @@ public class WCBasePage
     // ----------------------------------------------------------
     public void appendToResponse( WOResponse response, WOContext context )
     {
+        if (Application.isDevelopmentModeSafe())
+        {
+            pageScriptName = DEVELOPMENT_SCRIPT_NAME;
+        }
+        else
+        {
+            pageScriptName = DEPLOYMENT_SCRIPT_NAME;
+        }
+        
         log.debug( "nowrap = "
                    + context.request().stringFormValueForKey( "nowrap" ) );
         includePageWrapping =
@@ -334,6 +345,10 @@ public class WCBasePage
 
     private static final String STYLESHEETS_RESOURCE_DIR = "stylesheets";
     private static final String STYLESHEETS_RESOURCE_EXT = "css";
+
+    private static final String DEPLOYMENT_SCRIPT_NAME = "BasePage.js";
+    private static final String DEVELOPMENT_SCRIPT_NAME =
+        "BasePage.js.uncompressed.js";
 
     static Logger log = Logger.getLogger( WCBasePage.class );
 }

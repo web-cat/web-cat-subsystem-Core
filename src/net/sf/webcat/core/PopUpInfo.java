@@ -22,6 +22,7 @@
 package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
+import net.sf.webcat.ui.util.ComponentIDGenerator;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -48,9 +49,22 @@ public class PopUpInfo
         super( context );
     }
 
+    //~ KVC attributes (must be public) .......................................
+
+    public ComponentIDGenerator idFor;
+
 
     //~ Methods ...............................................................
 
+    // ----------------------------------------------------------
+    public void appendToResponse(WOResponse response, WOContext context)
+    {
+        idFor = new ComponentIDGenerator(this);
+        
+        super.appendToResponse(response, context);
+    }
+    
+    
     // ----------------------------------------------------------
     public boolean isStateless()
     {

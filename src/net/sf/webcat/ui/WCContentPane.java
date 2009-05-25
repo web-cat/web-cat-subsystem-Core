@@ -59,8 +59,7 @@ public class WCContentPane extends DojoElement
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
-        super("div", someAssociations, template);
-
+        super(name, someAssociations, template);
     }
 
 
@@ -71,6 +70,14 @@ public class WCContentPane extends DojoElement
     public String dojoType()
     {
         return "webcat.ContentPane";
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public String elementName()
+    {
+        return "div";
     }
 
 
@@ -144,4 +151,9 @@ public class WCContentPane extends DojoElement
 
         return id;
     }
+    
+
+    //~ Static/instance variables .............................................
+
+    protected WOAssociation _elementName;
 }

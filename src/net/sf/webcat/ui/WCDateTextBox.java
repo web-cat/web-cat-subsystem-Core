@@ -86,7 +86,7 @@ public class WCDateTextBox extends DojoFormElement
 
     // ----------------------------------------------------------
     @Override
-    protected String stringValueForObject(Object value)
+    protected String stringValueForObject(Object value, WOContext context)
     {
         // Append the date set in the value binding, if it exists. Dojo
         // requires that this be string in ISO date format, so we convert it
@@ -98,7 +98,7 @@ public class WCDateTextBox extends DojoFormElement
 
     // ----------------------------------------------------------
     @Override
-    protected Object objectForStringValue(String stringValue)
+    protected Object objectForStringValue(String stringValue, WOContext context)
     {
         // When Dojo populates the shadowed text field with the selected date,
         // it always formats it in ISO date format.

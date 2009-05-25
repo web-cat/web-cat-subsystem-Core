@@ -85,7 +85,14 @@ public class ComponentIDGenerator implements NSKeyValueCodingAdditions
     // ----------------------------------------------------------
     public Object valueForKey(String key)
     {
-        return idBase + "_" + key;
+        if (COMPONENT_ID_PREFIX.equals(key))
+        {
+            return idBase;
+        }
+        else
+        {
+            return idBase + "_" + key;
+        }
     }
     
 
@@ -99,12 +106,21 @@ public class ComponentIDGenerator implements NSKeyValueCodingAdditions
     // ----------------------------------------------------------
     public Object valueForKeyPath(String keypath)
     {
-        String suffix = keypath.replace('.', '_');
-        return idBase + "_" + suffix;
+        if (COMPONENT_ID_PREFIX.equals(keypath))
+        {
+            return idBase;
+        }
+        else
+        {
+            String suffix = keypath.replace('.', '_');
+            return idBase + "_" + suffix;
+        }
     } 
 
 
     //~ Static/instance variables .............................................
+
+    private static final String COMPONENT_ID_PREFIX = "ComponentIDPrefix";
 
     private String idBase;
 }

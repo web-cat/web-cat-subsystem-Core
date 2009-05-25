@@ -76,13 +76,105 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
 	},
 
 
-	// ----------------------------------------------------------	
-	_setContent: function(content, isFakeContent)
-	{
-		if (!isFakeContent ||
-		    (isFakeContent && this.showsLoadingMessageOnRefresh))
-		{
-			this.inherited(arguments);
-		}
-	}
+    // ----------------------------------------------------------
+    _setContent: function(cont, isFakeContent)
+    {
+// BEGIN WEBCAT CHANGES
+        if (isFakeContent && !this.showsLoadingMessageOnRefresh)
+            return;
+// END WEBCAT CHANGES
+
+        // first get rid of child widgets
+        this.destroyDescendants();
+
+        // Delete any state information we have about current contents
+        delete this._singleChild;
+
+        // dojo.html.set will take care of the rest of the details
+        // we provide an overide for the error handling to ensure the widget gets the errors 
+        // configure the setter instance with only the relevant widget instance properties
+        // NOTE: unless we hook into attr, or provide property setters for each property, 
+        // we need to re-configure the ContentSetter with each use
+        var setter = this._contentSetter; 
+        if(! (setter && setter instanceof dojo.html._ContentSetter)) {
+            setter = this._contentSetter = new dojo.html._ContentSetter({
+                node: this.containerNode,
+                _onError: dojo.hitch(this, this._onError),
+// BEGIN WEBCAT CHANGES
+                onEnd: function() {
+                    // Run scripts that aren't of type "dojo/..." before the
+                    // widgets are parsed.
+
+                    dojo.query("script", this.node).forEach(function(n) {
+                        if (!/dojo\//.test(n.type))
+                        {
+                            dojo.eval(dojox.data.dom.textContent(n));
+                        }
+                    });
+
+                    if(this.parseContent){
+                        // populates this.parseResults if you need those..
+                        this._parse();
+                    }
+
+                    return this.node; /* DomNode */
+                },
+// END WEBCAT CHANGES
+                onContentError: dojo.hitch(this, function(e){
+                    // fires if a domfault occurs when we are appending this.errorMessage
+                    // like for instance if domNode is a UL and we try append a DIV
+                    var errMess = this.onContentError(e);
+                    try{
+                        this.containerNode.innerHTML = errMess;
+                    }catch(e){
+                        console.error('Fatal '+this.id+' could not change content due to '+e.message, e);
+                    }
+                })/*,
+                _onError */
+            });
+        };
+
+        var setterParams = dojo.mixin({
+            cleanContent: this.cleanContent, 
+            extractContent: this.extractContent, 
+            parseContent: this.parseOnLoad 
+        }, this._contentSetterParams || {});
+        
+        dojo.mixin(setter, setterParams); 
+
+        setter.set( (dojo.isObject(cont) && cont.domNode) ? cont.domNode : cont );
+
+        // setter params must be pulled afresh from the ContentPane each time
+        delete this._contentSetterParams;
+
+        if(!isFakeContent){
+            dojo.forEach(this.getChildren(), function(child){
+                child.startup();
+            });
+
+            if(this.doLayout){
+                this._checkIfSingleChild();
+            }
+
+            // Call resize() on each of my child layout widgets,
+            // or resize() on my single child layout widget...
+            // either now (if I'm currently visible)
+            // or when I become visible
+            this._scheduleLayout();
+            
+            this._onLoadHandler(cont);
+        }
+    }
+});
+
+
+// ------------------------------------------------------------------------
+/**
+ * An inline content pane.
+ *
+ * @author Tony Allevato
+ */
+dojo.declare("webcat.ContentSpan", webcat.ContentPane,
+{
+    baseClass: ""
 });

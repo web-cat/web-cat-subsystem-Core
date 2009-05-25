@@ -19,7 +19,7 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package net.sf.webcat.ui.table;
+package net.sf.webcat.ui;
 
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
@@ -32,12 +32,12 @@ import com.webobjects.foundation.NSDictionary;
  * @author Tony Allevato
  * @version $Id$
  */
-public abstract class AbstractObjectTableCell extends WOComponent
+public abstract class WCTableCell extends WOComponent
 {
     //~ Constructors ..........................................................
     
     // ----------------------------------------------------------
-    public AbstractObjectTableCell(WOContext context)
+    public WCTableCell(WOContext context)
     {
         super(context);
     }

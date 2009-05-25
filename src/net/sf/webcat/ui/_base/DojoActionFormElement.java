@@ -355,8 +355,8 @@ public abstract class DojoActionFormElement extends DojoFormElement
         else
         {
             response.appendContentString(
-                    _remoteHelper.partialSubmitCall("this", nameInContext(context),
-                            null, context));
+                    _remoteHelper.partialSubmitCall("this",
+                            nameInContext(context), null, context));
         }
     }
     

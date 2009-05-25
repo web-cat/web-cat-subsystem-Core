@@ -21,6 +21,8 @@
 
 dojo.provide("webcat.Tree");
 
+dojo.require("dijit.Tree");
+
 // ------------------------------------------------------------------------
 /**
  * A Dojo tree model (for dijit.Tree) that obtains its data from a JSONBridge.
@@ -189,19 +191,9 @@ dojo.declare("webcat.DecoratedTreeNode", dijit._TreeNode,
 	//~ Properties ............................................................
 	
 	widgetsInTemplate: true,
-	templateString:
- 		'<div class="dijitTreeNode" waiRole="presentation"\n\t>'+
-			'<div dojoAttachPoint="rowNode" class="dijitTreeRow" waiRole="presentation"\n\t\t>'+
-				'<img src="${_blankGif}" alt="" dojoAttachPoint="expandoNode" class="dijitTreeExpando" waiRole="presentation"\n\t\t>'+
-				'<span dojoAttachPoint="expandoNodeText" class="dijitExpandoText" waiRole="presentation"\n\t\t></span\n\t\t>'+
-				'<span dojoAttachPoint="contentNode" dojoAttachEvent="onmouseenter:_onMouseEnter, onmouseleave:_onMouseLeave"\n\t\t\tclass="dijitTreeContent" waiRole="presentation">\n\t\t\t'+
-					'<div dojoAttachPoint="leftDecoration" class="dijitInline" waiRole="presentation"></div>\n\t\t\t'+
-					'<img src="${_blankGif}" alt="" dojoAttachPoint="iconNode" class="dijitTreeIcon" waiRole="presentation"\n\t\t\t>'+
-					'<span dojoAttachPoint="labelNode" class="dijitTreeLabel" wairole="treeitem" tabindex="-1" waiState="selected-false" dojoAttachEvent="onfocus:_onNodeFocus"></span>\n\t\t'+
-				'</span\n\t>'+
-			'</div>\n\t'+
-			'<div dojoAttachPoint="containerNode" class="dijitTreeContainer" waiRole="presentation" style="display: none;"></div>\n'+
-		'</div>\n',
+
+    templatePath: dojo.moduleUrl("webcat", "templates/DecoratedTreeNode.html"),
+
 	id: null,
 
 
