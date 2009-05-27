@@ -30,6 +30,7 @@ import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSDictionary;
 import er.ajax.AjaxUtils;
+import er.extensions.appserver.ERXApplication;
 import er.extensions.appserver.ERXWOContext;
 
 //------------------------------------------------------------------------
@@ -60,6 +61,10 @@ public class WCContentPane extends DojoElement
             WOElement template)
     {
         super(name, someAssociations, template);
+        
+        // We don't remove the "alwaysDynamic" binding from the associations
+        // dictionary here because we need to pass it through as an attribute
+        // to the Dojo element itself.
     }
 
 
@@ -123,6 +128,34 @@ public class WCContentPane extends DojoElement
 
 
     // ----------------------------------------------------------
+    public void appendChildrenToResponse(WOResponse response, WOContext context)
+    {
+        boolean isAjax = ERXApplication.isAjaxRequest(context.request());
+        
+        if (isAjax || (!isAjax && !alwaysDynamicInContext(context)))
+        {
+            super.appendChildrenToResponse(response, context);
+        }
+    }
+    
+
+    // ----------------------------------------------------------
+    protected boolean alwaysDynamicInContext(WOContext context)
+    {
+        if (_associations != null
+                && _associations.objectForKey("alwaysDynamic") != null)
+        {
+            return _associations.objectForKey("alwaysDynamic").
+                booleanValueInComponent(context.component());
+        }
+        else
+        {
+            return false;
+        }
+    }
+    
+    
+    // ----------------------------------------------------------
     public WOActionResults handleRequest(WORequest request, WOContext context)
     {
         String id = _containerID(context);
@@ -154,6 +187,4 @@ public class WCContentPane extends DojoElement
     
 
     //~ Static/instance variables .............................................
-
-    protected WOAssociation _elementName;
 }

@@ -44,7 +44,7 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
 	//~ Properties ............................................................
 	
 	/* Set to true when the pane is initially starting up, otherwise false. */
-	initialStartup: true,
+	_initialStartup: true,
 	
 	/* Web-CAT's content pane by default does NOT show a loading message when
 	   it is being updated, to behave more like the old-style Prototype
@@ -53,6 +53,11 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
 	   loading message when this pane is refreshed (for example, to indicate
 	   a long-running operation). */
 	showsLoadingMessageOnRefresh: false,
+	
+	/* The pane should ignore its component content and always load its content
+	   dynamically, even upon an initial page load. (The WCContentPane class
+	   has to play a part here by not appending the content to the response.) */
+	alwaysDynamic: false,
 
 
 	//~ Methods ...............................................................
@@ -60,16 +65,16 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
 	// ----------------------------------------------------------
 	startup: function()
 	{
-		this.initialStartup = true;
+		this._initialStartup = true;
 		this.inherited(arguments);
-		this.initialStartup = false;
+		this._initialStartup = false;
 	},
 	
 	
 	// ----------------------------------------------------------
 	_loadCheck: function(/* Boolean */ forceLoad)
 	{
-		if (!this.initialStartup)
+		if (this.alwaysDynamic || !this._initialStartup)
 		{
 			this.inherited(arguments);
 		}
