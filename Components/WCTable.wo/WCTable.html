@@ -110,7 +110,7 @@
 				<th>
 					<wo:if condition="$canSort">
                         <wo:if condition="$columnInRepetitionCanBeSorted">
-							<a href="javascript:void(0);" onclick="<wo:str value="$jsWrapperID"/>.changeSortOrdering(<wo:str value="$columnIndexInRepetition"/>);">
+							<wo name="SortLink">
 								<wo:str value="$columnInRepetition.name"/>
 								<wo:if condition="$columnInRepetitionIsSorted">
 									<wo:if condition="$columnInRepetitionIsAscending">
@@ -121,7 +121,7 @@
 								</wo:if><wo:else>
 									<wo:WOImage filename="webcat/themes/images/Unsorted.gif" />
 								</wo:else>
-							</a>
+							</wo>
 				        </wo:if><wo:else>
                             <wo:str value="$columnInRepetition.name"/>
 				        </wo:else>
@@ -134,7 +134,7 @@
 	</thead>
 	<tbody>
 		<wo name="Rows">
-		<tr class="<wo:str value="$cssClassOfRowInRepetition"/>">
+		<wo:WOGenericContainer elementName="tr" class="$cssClassOfRowInRepetition">
 			<wo:if condition="$showsRowNumbers">
 				<td><wo:str value="$actualRowNumber"/></td>
 			</wo:if>
@@ -158,7 +158,7 @@
 			<wo name="Columns">
 				<td><wo name="ColumnValue"/></td>
 			</wo>
-		</tr>
+		</wo:WOGenericContainer>
 		</wo>
 	</tbody>
 </wo:WCStyledTable>
