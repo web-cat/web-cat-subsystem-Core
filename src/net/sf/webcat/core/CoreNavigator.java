@@ -400,9 +400,6 @@ public class CoreNavigator
 
 
     // ----------------------------------------------------------
-    /**
-     * @param includeWhatImTeaching the includeWhatImTeaching to set
-     */
     public void setIncludeWhatImTeaching(boolean includeWhatImTeaching)
     {
         selectionsParent.coreSelections().setIncludeWhatImTeaching(
@@ -411,9 +408,6 @@ public class CoreNavigator
 
 
     // ----------------------------------------------------------
-    /**
-     * @return the includeWhatImTeaching
-     */
     public boolean includeWhatImTeaching()
     {
         return selectionsParent.coreSelections().includeWhatImTeaching();
@@ -421,9 +415,6 @@ public class CoreNavigator
 
 
     // ----------------------------------------------------------
-    /**
-     * @param includeAdminAccess the includeAdminAccess to set
-     */
     public void setIncludeAdminAccess(boolean includeAdminAccess)
     {
         selectionsParent.coreSelections().setIncludeAdminAccess(
@@ -432,9 +423,6 @@ public class CoreNavigator
 
 
     // ----------------------------------------------------------
-    /**
-     * @return the includeAdminAccess
-     */
     public boolean includeAdminAccess()
     {
         return selectionsParent.coreSelections().includeAdminAccess();
@@ -465,7 +453,7 @@ public class CoreNavigator
 
     //~ Static/instance variables .............................................
 
-    private WCCourseComponent selectionsParent = null;
+    protected WCCourseComponent selectionsParent = null;
     private Course wantOfferingsForCourse;
     static Logger log = Logger.getLogger(CoreNavigator.class);
 }
