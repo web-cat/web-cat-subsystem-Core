@@ -4,6 +4,7 @@ dojo.require("dijit.form.FilteringSelect");
 
 dojo.declare("webcat.ResizingComboBoxMixin", null,
 {
+    fixedSize: false,
     maximumWidth: Number.MAX_VALUE,
 
     resizeToFitOptions: function()
@@ -47,7 +48,10 @@ dojo.declare("webcat.ResizingComboBoxMixin", null,
 
     _postCreate: function()
     {
-        this.resizeToFitOptions();
+        if (!this.fixedSize)
+        {
+            this.resizeToFitOptions();
+        }
     }
 });
 
