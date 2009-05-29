@@ -701,9 +701,9 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray graderFor( Semester semester )
+    public NSArray<CourseOffering> graderFor( Semester semester )
     {
-        NSArray result = graderFor();
+        NSArray<CourseOffering> result = graderFor();
         if ( semester != null )
         {
             result = ERXArrayUtilities
@@ -721,7 +721,7 @@ public class User
 
 
     // ----------------------------------------------------------
-    public NSArray teaching()
+    public NSArray<CourseOffering> teaching()
     {
         return studentView ? emptyArray : super.teaching();
     }
@@ -734,9 +734,9 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray teaching( Semester semester )
+    public NSArray<CourseOffering> teaching( Semester semester )
     {
-        NSArray result = teaching();
+        NSArray<CourseOffering> result = teaching();
         if ( semester != null )
         {
             result = ERXArrayUtilities
