@@ -30,127 +30,162 @@ dojo.provide("webcat.Table");
  */
 dojo.declare("webcat.Table", null,
 {
-	//~ Constructor ...........................................................
+    //~ Properties ............................................................
 
-	// ----------------------------------------------------------
-	constructor: function(proxy, idPrefix, multiSelect)
-	{
-		this.proxy = proxy;
-		this.idPrefix = idPrefix;
-		this.multiSelect = multiSelect;
-		
-		this.selectionCheckboxName = idPrefix + "_selectionState";
-		this.allSelectionCheckboxID = idPrefix + "_allSelectionState";
-		this.updateContainerID = idPrefix + "_updateContainer";
-	},
-	
+    // A reference to the JSON RPC bridge used to obtain data for the table.
+    proxy: null,
 
-	//~ Methods ...............................................................
-
-	// ----------------------------------------------------------
-	selectAllObjectsInBatch: function(state)
-	{
-		var checkboxes = document.getElementsByName(
-			this.selectionCheckboxName);
-
-		for (var i = 0; i < checkboxes.length; i++)
-			checkboxes[i].checked = state;
-	
-		this.proxy.selectAllObjectsInBatch(
-			function() { }, state);
-	},
-	
-
-	// ----------------------------------------------------------
-	selectObjectAtIndexInBatch: function(index, state)
-	{
-		if (this.multiSelect)
-		{
-			var allChecked = true;
-			var checkboxes = document.getElementsByName(
-				this.selectionCheckboxName);
-				
-			for (var i = 0; i < checkboxes.length; i++)
-			{
-				if (!checkboxes[i].checked)
-				{
-					allChecked = false;
-					break;
-				}
-			}
-		
-			var checkbox = dojo.byId(this.allSelectionCheckboxID);
-			checkbox.checked = allChecked;
-		}
-
-		this.proxy.selectObjectAtIndexInBatch(
-			function() { }, index, state);
-	},
-	
-
-	// ----------------------------------------------------------
-	selectOnlyObjectAtIndexInBatch: function(index, options)
-	{
-		options = typeof(options) != 'undefined' ? options : {};
-
-		if (this.multiSelect)
-		{
-			var checkboxes = document.getElementsByName(
-				this.selectionCheckboxName);
-	
-			for (var i = 0; i < checkboxes.length; i++)
-				checkboxes[i].checked = (i == index);
-
-			var checkbox = dojo.byId(this.allSelectionCheckboxID);
-			checkbox.checked = false;
-		}
-
-		if (options.synchronous)
-		{
-			this.proxy.selectOnlyObjectAtIndexInBatch(index);
-		}
-		else
-		{
-			this.proxy.selectOnlyObjectAtIndexInBatch(function() { }, index);
-		}
-	},
+    // The prefix used for all of the widget IDs in the table.
+    idPrefix: "",
+    
+    // True if multiple selection is allowed.
+    multiSelect: false,
 
 
-	// ----------------------------------------------------------
-	performActionOnObjectAtIndexInBatch: function(index, columnIndex)
-	{
-		if (this.multiSelect)
-		{
-			var checkboxes = document.getElementsByName(
-				this.selectionCheckboxName);
-	
-			for (var i = 0; i < checkboxes.length; i++)
-				checkboxes[i].checked = (i == index);
-		}
+    //~ Constructor ...........................................................
 
-		var checkbox = dojo.byId(this.allSelectionCheckboxID);
-		checkbox.checked = false;
-	
-		this.proxy.performActionOnObjectAtIndexInBatch(
-			this._updateTableGenerator(), index, columnIndex);
-	},
-	
+    // ----------------------------------------------------------
+    constructor: function(/* Object */ args)
+    {
+        dojo.mixin(this, args);
 
-	// ----------------------------------------------------------
-	changeSortOrdering: function(index)
-	{
-		this.proxy.changeSortOrdering(
-			this._updateTableGenerator(), index);
-	},
-	
+        this.selectionCheckboxName = this.idPrefix + "_selectionState";
+        this.allSelectionCheckboxID = this.idPrefix + "_allSelectionState";
+        this.updateContainerID = this.idPrefix + "_updateContainer";
 
-	// ----------------------------------------------------------
-	changeBatchSize: function(size)
-	{
-		this.proxy.changeBatchSize(
-			this._updateTableGenerator(), size);
-	},
-	
+        // Cache the checkbox widgets for easier access later.
+        if (this.multiSelect)
+        {
+            this.selectionCheckboxes =
+                dojo.query("*[name='" + this.selectionCheckboxName + "']").map(
+                function(node) {
+                    return dijit.getEnclosingWidget(node);
+                });
+
+            this.allSelectionCheckbox = dijit.byId(this.allSelectionCheckboxID);
+        }
+    },
+    
+    
+    //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    selectAllObjectsInBatch: function(state)
+    {
+        this.selectionCheckboxes.forEach(function(widget) {
+            widget.attr("checked", state);
+        });
+    
+        this.proxy.selectAllObjectsInBatch(
+            function() { }, state);
+    },
+    
+
+    // ----------------------------------------------------------
+    selectObjectAtIndexInBatch: function(index, state)
+    {
+        if (this.multiSelect)
+        {
+            var allChecked;
+
+            allChecked = this.selectionCheckboxes.length > 0
+                && this.selectionCheckboxes.every(function(widget) {
+                    return widget.attr("checked");
+                });
+        
+            this.allSelectionCheckbox.attr("checked", allChecked);
+        }
+
+        this.proxy.selectObjectAtIndexInBatch(
+            function() { }, index, state);
+    },
+    
+
+    // ----------------------------------------------------------
+    selectOnlyObjectAtIndexInBatch: function(index, options)
+    {
+        options = typeof(options) != 'undefined' ? options : {};
+
+        if (this.multiSelect)
+        {
+            this.selectionCheckboxes.forEach(function(widget, i) {
+                widget.attr("checked", i == index);
+            });
+
+            this.allSelectionCheckbox.attr("checked", false);
+        }
+
+        if (options.synchronous)
+        {
+            this.proxy.selectOnlyObjectAtIndexInBatch(index);
+        }
+        else
+        {
+            this.proxy.selectOnlyObjectAtIndexInBatch(function() { }, index);
+        }
+    },
+
+
+    // ----------------------------------------------------------
+    performActionOnObjectAtIndexInBatch: function(index, columnIndex)
+    {
+        if (this.multiSelect)
+        {
+            this.selectionCheckboxes.forEach(function(widget, i) {
+                widget.attr("checked", i == index);
+            });
+
+            this.allSelectionCheckbox.attr("checked", false);
+        }
+
+        this.proxy.performActionOnObjectAtIndexInBatch(
+            this._updateTableGenerator(), index, columnIndex);
+    },
+    
+
+    // ----------------------------------------------------------
+    changeSortOrdering: function(index)
+    {
+        this.proxy.changeSortOrdering(
+            this._updateTableGenerator(), index);
+    },
+    
+
+    // ----------------------------------------------------------
+    changeBatchSize: function(size)
+    {
+        this.proxy.changeBatchSize(
+            this._updateTableGenerator(), size);
+    },
+    
+
+    // ----------------------------------------------------------
+    goToFirstBatch: function()
+    {
+        this.proxy.goToFirstBatch(this._updateTableGenerator());
+    },
+
+
+    // ----------------------------------------------------------
+    goToPreviousBatch: function()
+    {
+        this.proxy.goToPreviousBatch(this._updateTableGenerator());
+    },
+
+
+    // ----------------------------------------------------------
+    goToNextBatch: function()
+    {
+        this.proxy.goToNextBatch(this._updateTableGenerator());
+    },
+
+
+    // ----------------------------------------------------------
+    goToLastBatch: function()
+    {
+        this.proxy.goToLastBatch(this._updateTableGenerator());
+    },
+
 
     // ----------------------------------------------------------
     changeFilter: function(keyPath, changes)
@@ -196,12 +231,12 @@ dojo.declare("webcat.Table", null,
     },
 
 
-	// ----------------------------------------------------------
-	_updateTableGenerator: function()
-	{
-		var ucid = this.updateContainerID;
-		return function() {
-			eval("dijit.byId('" + ucid + "').refresh();");
-		};
-	}
+    // ----------------------------------------------------------
+    _updateTableGenerator: function()
+    {
+        var ucid = this.updateContainerID;
+        return function() {
+            eval("dijit.byId('" + ucid + "').refresh();");
+        };
+    }
 });

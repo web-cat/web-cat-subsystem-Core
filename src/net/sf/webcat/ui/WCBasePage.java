@@ -233,7 +233,10 @@ public class WCBasePage
      */
     public String pageFramework()
     {
-        return NSBundle.bundleForClass(parent().getClass()).name();
+        WOComponent root = this;
+        while (root.parent() != null) root = root.parent();
+
+        return NSBundle.bundleForClass(root.getClass()).name();
     }
 
 
@@ -331,7 +334,10 @@ public class WCBasePage
     protected String pageSpecificResourcePath(String directory,
             String extension)
     {
-        return directory + "/" + parent().getClass().getSimpleName() + "." +
+        WOComponent root = this;
+        while (root.parent() != null) root = root.parent();
+        
+        return directory + "/" + root.getClass().getSimpleName() + "." +
             extension;
     }
 
