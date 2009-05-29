@@ -6,12 +6,12 @@ dojo.declare("webcat.ResizingComboBoxMixin", null,
 {
     fixedSize: false,
     maximumWidth: Number.MAX_VALUE,
+    _idealWidth: 0,
 
-    resizeToFitOptions: function()
+    getIdealWidthOfOptions: function()
     {
         var maxWidth = 32;
         var tb = this.textbox;
-        var dn = this.domNode;
 
         dojo.query("> option", this.srcNodeRef).forEach(function(node)
         {
@@ -36,21 +36,31 @@ dojo.declare("webcat.ResizingComboBoxMixin", null,
             dojo.destroy(el);
         });
 
-        var diff = dojo.marginBox(dn).w - dojo.marginBox(tb).w;
-        
-        var newWidth = maxWidth + diff + 4;
-        if (newWidth > this.maximumWidth)
-            newWidth = this.maximumWidth;
-
-        dojo.marginBox(dn, { w: newWidth });
+        this._idealWidth = maxWidth;
     },
     
 
     _postCreate: function()
     {
         if (!this.fixedSize)
+            this.getIdealWidthOfOptions();
+    },
+    
+    
+    _startup: function()
+    {
+        if (!this.fixedSize)
         {
-            this.resizeToFitOptions();
+            var tb = this.textbox;
+            var dn = this.domNode;
+
+            var diff = dojo.marginBox(dn).w - dojo.marginBox(tb).w;
+            
+            var newWidth = this._idealWidth + diff + 4;
+            if (newWidth > this.maximumWidth)
+                newWidth = this.maximumWidth;
+    
+            dojo.marginBox(dn, { w: newWidth });
         }
     }
 });
@@ -62,5 +72,10 @@ dojo.declare("webcat.FilteringSelect",
     postCreate: function(){
         dijit.form.FilteringSelect.prototype.postCreate.apply(this, arguments);
         webcat.ResizingComboBoxMixin.prototype._postCreate.apply(this, arguments);
+    },
+    
+    startup: function() {
+        dijit.form.FilteringSelect.prototype.startup.apply(this, arguments);
+        webcat.ResizingComboBoxMixin.prototype._startup.apply(this, arguments);
     }
 });
