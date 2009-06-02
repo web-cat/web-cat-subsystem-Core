@@ -176,14 +176,9 @@ public class DeliverFile
     {
         if ( fileName == null )
         {
-            log.debug( "no file name provided" );
             if ( fileData == null )
             {
-                log.error( "no file name specified" );
-            }
-            else
-            {
-                log.warn( "no file name specified" );
+                log.error( "no file name or file data specified" );
             }
             fileName = new File( "file.dat" );
         }
