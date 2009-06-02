@@ -1,10 +1,10 @@
 Proxy : WCJSONRPC {
-	name = JSONBridgeName;
-	proxyName = componentProxyName;
+	name = idFor.jsonrpc;
+	proxyName = "table";
 }
 
 ContentPane : WCContentPane {
-	id = updateContainerID;
+	id = idFor.updateContainer;
 }
 
 Columns : WORepetition {
@@ -47,12 +47,20 @@ ColumnValue : WOSwitchComponent {
 	WOComponentName = columnInRepetition.componentName;
 	properties = columnInRepetition.properties;
 	value = columnValueOfObjectInRepetition;
-	jsWrapperID = jsWrapperID;
+	jsWrapperID = idFor.jsId;
 	indexInBatch = indexInRepetition;
 	columnIndex = columnIndexInRepetition;
 }
 
 SortLink: WOHyperlink {
     href    = "javascript:void(0);";
-    onclick = "~jsWrapperID + \".changeSortOrdering(\" + columnIndexInRepetition + \");\"";
+    onclick = "~idFor.jsId + \".changeSortOrdering(\" + columnIndexInRepetition + \");\"";
+}
+
+TableInstance : WCDiv {
+    dojoType = "webcat.Table";
+    jsId = idFor.jsId;
+    proxy = proxyReference;
+    idPrefix = idFor.ComponentIDPrefix;
+    multiSelect = multipleSelection;
 }

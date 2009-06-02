@@ -22,6 +22,7 @@
 package net.sf.webcat.ui;
 
 import java.util.Iterator;
+import net.sf.webcat.ui.util.ComponentIDGenerator;
 import net.sf.webcat.ui.util.WCTableFilterBuilder;
 import net.sf.webcat.ui.util.WCTableLayoutBuilder;
 import ognl.webobjects.WOOgnl;
@@ -123,7 +124,6 @@ public class WCTable extends WOComponent
     
     //~ KVC attributes (must be public) .......................................
 
-    public String id;
     public boolean canSort = false;
     public WODisplayGroup displayGroup;
     public NSArray<NSDictionary<String, Object>> columns;
@@ -141,6 +141,8 @@ public class WCTable extends WOComponent
     public NSDictionary<String, Object> filterInRepetition;
     public int filterIndexInRepetition;
 
+    public ComponentIDGenerator idFor;
+
     private NSMutableDictionary<String, JSONObject> currentFilters;
     private int sortedColumnIndex = -1;
     private boolean sortedColumnAscending;
@@ -152,16 +154,16 @@ public class WCTable extends WOComponent
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
+        if (idFor == null)
+        {
+            idFor = new ComponentIDGenerator(this);
+        }
+
         if (currentFilters == null)
         {
             currentFilters = new NSMutableDictionary<String, JSONObject>();
         }
 
-        if (id == null)
-        {
-            id = ERXStringUtilities.safeIdentifierName(context.elementID());
-        }
-        
         if (!isBatched)
         {
         	batchSize = -1;
@@ -182,103 +184,41 @@ public class WCTable extends WOComponent
 
     // ----------------------------------------------------------
     /**
-     * Gets a page-unique identifier used as a prefix to generate DOM element
-     * identifiers for the controls and nodes used in the table.
-     * 
-     * @returns the DOM identifier prefix
-     */
-    public String id()
-    {
-        return id;
-    }
-
-    
-    // ----------------------------------------------------------
-    /**
-     * Gets the internal JavaScript identifier of the JSON bridge that will be
-     * used to communicate with the server to handle user interaction events
-     * and model data requests.
-     */
-    public String JSONBridgeName()
-    {
-        return "__JSONBridge_" + id();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Gets the internal JavaScript identifier that will refer to the actual
-     * component inside an AjaxProxy.
-     */
-    public String componentProxyName()
-    {
-        return "table";
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Gets the full JavaScript reference to the proxy object that is used to
      * make RPC calls to the server-side component.
+     * 
+     * @return the full JavaScript reference to the proxy object 
      */
     public String proxyReference()
     {
-        return JSONBridgeName() + "." + componentProxyName();
+        return idFor.valueForKey("jsonrpc") + ".table";
     }
     
 
     // ----------------------------------------------------------
-    /**
-     * Gets the DOM identifier for the Ajax update container that holds the
-     * table.
-     */
-    public String updateContainerID()
+    public String idForCurrentFilterEnabledCheckbox()
     {
-        return id() + "_updateContainer";
-    }
-    
-    
-    // ----------------------------------------------------------
-    /**
-     * Gets the DOM identifier for the checkbox in the table header that
-     * allows for the quick selection/deselection of every object in the
-     * current batch.
-     */
-    public String allSelectionCheckboxID()
-    {
-        return id() + "_allSelectionState";
+        return idFor.valueForKey("filter") + "_" +
+            filterIndexInRepetition + "_enabled";
     }
 
-    
-    // ----------------------------------------------------------
-    /**
-     * Gets the form name of the checkboxes or radio buttons used to
-     * allow for the selection/deselection of an object in the table.
-     */
-    public String selectionCheckboxName()
-    {
-        return id() + "_selectionState";
-    }
-    
 
     // ----------------------------------------------------------
-    /**
-     * Gets the JavaScript identifier of the webcat.ObjectTable wrapper
-     * object that is used to communicate from JavaScript to this component.
-     */
-    public String jsWrapperID()
+    public String idForCurrentFilterComparisonButton()
     {
-    	return id() + "_wrapper";
+        return idFor.valueForKey("filter") + "_" +
+            filterIndexInRepetition + "_comparison";
     }
-    
-    
+
+
     // ----------------------------------------------------------
-    public String idForFilterDialog()
+    public String idForCurrentFilterValueWidget()
     {
-        return id() + "_filterDialog";
+        return idFor.valueForKey("filter") + "_" +
+            filterIndexInRepetition + "_value";
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Called from within a columns repetition nested in a rows repetition,
@@ -526,6 +466,7 @@ public class WCTable extends WOComponent
     }
 
     
+    // ----------------------------------------------------------
     private void updateDisplayGroupQualifier()
     {
         NSMutableArray<EOQualifier> quals = new NSMutableArray<EOQualifier>();
@@ -594,6 +535,7 @@ public class WCTable extends WOComponent
     }
     
     
+    // ----------------------------------------------------------
     public boolean currentFilterIsEnabled()
     {
         String keyPath = (String) filterInRepetition.objectForKey("keyPath");
@@ -618,6 +560,7 @@ public class WCTable extends WOComponent
     }
     
     
+    // ----------------------------------------------------------
     public String currentFilterComparison()
     {
         String keyPath = (String) filterInRepetition.objectForKey("keyPath");
@@ -642,6 +585,7 @@ public class WCTable extends WOComponent
     }
 
     
+    // ----------------------------------------------------------
     public void setCurrentFilterIsEnabled(boolean value)
     {
         String keyPath = (String) filterInRepetition.objectForKey("keyPath");
@@ -660,6 +604,7 @@ public class WCTable extends WOComponent
     }
     
     
+    // ----------------------------------------------------------
     public Object currentFilterValue()
     {
         String keyPath = (String) filterInRepetition.objectForKey("keyPath");
@@ -684,6 +629,7 @@ public class WCTable extends WOComponent
     }
     
     
+    // ----------------------------------------------------------
     public void setCurrentFilterValue(Object value)
     {
         String keyPath = (String) filterInRepetition.objectForKey("keyPath");
@@ -701,24 +647,6 @@ public class WCTable extends WOComponent
         changeFilter(keyPath, changes);
     }
     
-
-    public String idForCurrentFilterEnabledCheckbox()
-    {
-        return id() + "_filter_" + filterIndexInRepetition + "_enabled";
-    }
-
-
-    public String idForCurrentFilterComparisonButton()
-    {
-        return id() + "_filter_" + filterIndexInRepetition + "_comparison";
-    }
-
-
-    public String idForCurrentFilterValueWidget()
-    {
-        return id() + "_filter_" + filterIndexInRepetition + "_value";
-    }
-
 
     // ----------------------------------------------------------
     public boolean columnInRepetitionIsSorted()
@@ -811,6 +739,7 @@ public class WCTable extends WOComponent
     }
     
     
+    // ----------------------------------------------------------
     @Override
     public void awake()
     {
@@ -833,6 +762,7 @@ public class WCTable extends WOComponent
     }
     
 
+    // ----------------------------------------------------------
     @Override
     public void sleep()
     {
@@ -842,6 +772,7 @@ public class WCTable extends WOComponent
     }
 
 
+    // ----------------------------------------------------------
     public static WCTable currentTable()
     {
         return (WCTable) ERXWOContext.contextDictionary().objectForKey(
@@ -849,6 +780,7 @@ public class WCTable extends WOComponent
     }
     
     
+    // ----------------------------------------------------------
     public static void setCurrentTable(WCTable table)
     {
         if (table == null)
@@ -864,6 +796,7 @@ public class WCTable extends WOComponent
     }
 
 
+    // ----------------------------------------------------------
     public static WCTableLayoutBuilder currentTableLayout()
     {
         WCTable table = currentTable();
@@ -890,6 +823,7 @@ public class WCTable extends WOComponent
     }
     
     
+    // ----------------------------------------------------------
     public static void commitTableLayoutChanges()
     {
         WCTable table = currentTable();
@@ -908,6 +842,7 @@ public class WCTable extends WOComponent
     }
     
     
+    // ----------------------------------------------------------
     public static WCTableFilterBuilder currentFilters()
     {
         WCTable table = currentTable();
@@ -934,6 +869,7 @@ public class WCTable extends WOComponent
     }
     
     
+    // ----------------------------------------------------------
     public static void commitFilterChanges()
     {
         WCTable table = currentTable();

@@ -52,8 +52,16 @@ dojo.declare("webcat.Table", null,
         this.selectionCheckboxName = this.idPrefix + "_selectionState";
         this.allSelectionCheckboxID = this.idPrefix + "_allSelectionState";
         this.updateContainerID = this.idPrefix + "_updateContainer";
+        
+        this.recacheCheckboxWidgets();
+    },
+    
+    
+    //~ Methods ...............................................................
 
-        // Cache the checkbox widgets for easier access later.
+    // ----------------------------------------------------------
+    recacheCheckboxWidgets: function()
+    {
         if (this.multiSelect)
         {
             this.selectionCheckboxes =
@@ -65,9 +73,7 @@ dojo.declare("webcat.Table", null,
             this.allSelectionCheckbox = dijit.byId(this.allSelectionCheckboxID);
         }
     },
-    
-    
-    //~ Methods ...............................................................
+
 
     // ----------------------------------------------------------
     selectAllObjectsInBatch: function(state)
