@@ -4,6 +4,7 @@ dependencies = {
             name: 'BasePage.js',
             dependencies: [
                 "dijit.Dialog",
+                "dijit.InlineEditBox",
                 "dijit.Menu",
                 "dijit.ProgressBar",
                 "dijit.TitlePane",
