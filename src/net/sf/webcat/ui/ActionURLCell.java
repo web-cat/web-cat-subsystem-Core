@@ -115,6 +115,11 @@ public class ActionURLCell extends WCTableCell
      */
     public String formattedValue()
     {
+        if (value == null)
+        {
+            return "";
+        }
+
         if (formatter != null)
         {
             return formatter.format(value);
