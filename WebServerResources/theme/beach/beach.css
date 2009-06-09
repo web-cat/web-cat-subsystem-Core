@@ -3,7 +3,7 @@
 ====================================================================== */
 
 body {
-	background-color: #b5a386;
+	background-color: #b3a483;
 	background-image: url(beach.jpg);
     background-position: top left;
 }
@@ -111,16 +111,16 @@ body {
 
 a, a:active, a:link {
     text-decoration: none;
-    color: #A56F38;
+    color: #387cb3;
 }
 a:visited { text-decoration: none; }
 a:hover {
     background: #F0f0f0;
-    color: #000;
+    /* color: #000; */
     border-bottom: 1px dotted black;
 }
 
-h1, h2, h3, h4, h5, h6 { color: #633; }
+h1, h2, h3, h4, h5, h6 { color: #542a2a; }
 .disabled { color: #555; }
 b, strong { color: #111; }
 .check { color: green; }
@@ -134,7 +134,7 @@ span.hl {
     /* background-image: url(../base/images/white-40.png);
     color: black; */
     color: white;
-    background-color: #633;
+    background-color: #542a2a;
     padding: 0.1em 0.3em;
 }
 
