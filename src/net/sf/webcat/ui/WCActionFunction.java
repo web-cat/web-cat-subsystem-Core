@@ -23,6 +23,7 @@ package net.sf.webcat.ui;
 
 import org.apache.log4j.Logger;
 import net.sf.webcat.core.Application;
+import net.sf.webcat.ui._base.DojoActionFormElement;
 import net.sf.webcat.ui.util.DojoOptions;
 import net.sf.webcat.ui.util.DojoRemoteHelper;
 import com.webobjects.appserver.WOActionResults;
@@ -37,41 +38,59 @@ import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableDictionary;
 import er.ajax.AjaxUtils;
 import er.extensions.appserver.ERXResponseRewriter;
+import er.extensions.appserver.ERXWOContext;
 import er.extensions.appserver.ajax.ERXAjaxApplication;
 import er.extensions.components.ERXComponentUtilities;
 
 //--------------------------------------------------------------------------
 /**
- * Generates a JavaScript function that can be called to execute an action via
- * an Ajax request.
+ * Generates a JavaScript function that can be called to execute an action,
+ * either as a synchronous (page-load) request or a remote Ajax request.
  * 
- * TODO does not currently support form submits (uses webcat.invokeRemoteAction
- * instead of webcat.partialSubmit)
+ * As with other Dojo action elements, the "remoteness" of the request is
+ * determined by the presence of any of the "remote.*" bindings. If they are
+ * omitted, the request is synchronous.
+ * 
+ * TODO does not currently support form submits for Ajax requests (uses
+ * webcat.invokeRemoteAction instead of webcat.partialSubmit). This means that
+ * form contents will not be serialized and the server-side component bindings
+ * will not be updated.
  * 
  * @author Tony ALlevato
  * @version $Id$
  */
-public class WCRemoteFunction extends WOHTMLDynamicElement
+public class WCActionFunction extends DojoActionFormElement
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    public WCRemoteFunction(String name,
+    public WCActionFunction(String name,
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
         super(name, someAssociations, template);
 
         _jsId = _associations.removeObjectForKey("jsId");
-        _action = _associations.removeObjectForKey("action");
-        _actionClass = _associations.removeObjectForKey("actionClass");
-        _directActionName =
-            _associations.removeObjectForKey("directActionName");
-        _remoteHelper = new DojoRemoteHelper(_associations);
     }
 
 
     //~ Methods ...............................................................
+    
+    // ----------------------------------------------------------
+    @Override
+    public String dojoType()
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    protected boolean needsShadowButton()
+    {
+        return true;
+    }
+    
     
     // ----------------------------------------------------------
     protected String jsIdInContext(WOContext context)
@@ -91,8 +110,10 @@ public class WCRemoteFunction extends WOHTMLDynamicElement
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
-        String id = jsIdInContext(context);
+        super.appendToResponse(response, context);
         
+        String id = jsIdInContext(context);
+
         WOComponent component = context.component();
 
         String actionUrl = null;
@@ -112,8 +133,19 @@ public class WCRemoteFunction extends WOHTMLDynamicElement
         StringBuffer script = new StringBuffer();
         script.append(id);
         script.append(" = function(widget) {\n");
-        script.append(_remoteHelper.invokeRemoteActionCall(
-                "widget", actionUrl, null, context));
+
+        if (_remoteHelper.isRemoteInContext(context))
+        {
+            script.append(_remoteHelper.invokeRemoteActionCall(
+                    "widget", actionUrl, null, context));
+        }
+        else
+        {
+            script.append("dojo.byId('"
+                    + shadowButtonIdInContext(context)
+                    + "').click();");
+        }
+
         script.append("}");
 
         if (Application.isAjaxRequest(context.request()))
@@ -131,69 +163,35 @@ public class WCRemoteFunction extends WOHTMLDynamicElement
 
 
     // ----------------------------------------------------------
-    protected String nameInContext(WOContext context)
+    @Override
+    protected void appendOnClickScriptToResponse(WOResponse response,
+            WOContext context)
     {
-        if (_associations.objectForKey("name") != null)
-        {
-            return _associations.objectForKey("name").valueInComponent(
-                    context.component()).toString();
-        }
-        else
-        {
-            return context.elementID();
-        }
+        // Do nothing.
     }
-    
+
+
+    // ----------------------------------------------------------
+    @Override
+    protected void _appendOpenTagToResponse(WOResponse response,
+            WOContext context)
+    {
+        // Do nothing.
+    }
+
     
     // ----------------------------------------------------------
     @Override
-    public WOActionResults invokeAction(WORequest request, WOContext context)
+    protected void _appendCloseTagToResponse(WOResponse response,
+            WOContext context)
     {
-        if (!AjaxUtils.isAjaxRequest(request) ||
-                !AjaxUtils.shouldHandleRequest(request, context, null))
-        {
-            return null;
-        }
-        
-        WOActionResults result = null;
-
-        WOComponent component = context.component();
-
-        AjaxUtils.createResponse(request, context);
-        AjaxUtils.mutableUserInfo(request);
-
-        if (_action != null)
-        {
-            result = (WOActionResults) _action.valueInComponent(component);
-        }
-        
-        AjaxUtils.updateMutableUserInfoWithAjaxInfo(context);
-
-        if (result == context.page())
-        {
-            log.warn("An Ajax request attempted to return the page, which "
-                    + "is almost certainly an error.");
-
-            result = null;
-        }
-
-        if (result == null)
-        {
-            result = AjaxUtils.createResponse(request, context);
-        }
-
-        return result;
+        // Do nothing.
     }
 
 
     //~ Static/instance variables .............................................
     
     protected WOAssociation _jsId;
-    protected WOAssociation _action;
-    protected WOAssociation _actionClass;
-    protected WOAssociation _directActionName;
 
-    protected DojoRemoteHelper _remoteHelper;
-
-    private static final Logger log = Logger.getLogger(WCRemoteFunction.class);
+    private static final Logger log = Logger.getLogger(WCActionFunction.class);
 }

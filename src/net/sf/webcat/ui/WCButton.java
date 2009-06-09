@@ -78,7 +78,8 @@ public class WCButton extends DojoActionFormElement
     @Override
     public String inputTypeInContext(WOContext context)
     {
-        if (_remoteHelper.isRemoteInContext(context))
+        if (_remoteHelper.isRemoteInContext(context) ||
+                !hasActionInContext(context))
         {
             return "button";
         }

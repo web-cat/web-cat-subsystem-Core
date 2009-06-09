@@ -46,7 +46,12 @@ import er.extensions.components.ERXComponentUtilities;
  * (such as "onChange"), and "args" to specify the argument list, as one
  * normally would in a dojo/connect script tag. The bindings that specify which
  * action to execute are similar to those offered by DojoFormActionElement and
- * DojoRemoteHelper. 
+ * DojoRemoteHelper.
+ * 
+ * TODO should this element subclass WCActionFunction now to simply add script
+ * tag wrappers around the generated function call? This would allow the
+ * element to support synchronous actions as well as asynchronous ones without
+ * too much effort.
  * 
  * @author Tony Allevato
  * @version $Id$

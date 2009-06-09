@@ -225,7 +225,8 @@ public abstract class DojoActionFormElement extends DojoFormElement
     {
         super.appendToResponse(response, context);
 
-        if (needsShadowButton() && !_remoteHelper.isRemoteInContext(context))
+        if (needsShadowButton() && !_remoteHelper.isRemoteInContext(context) &&
+                hasActionInContext(context))
         {
             appendShadowButtonToResponse(response, context);
         }
@@ -313,7 +314,7 @@ public abstract class DojoActionFormElement extends DojoFormElement
     protected void appendShadowButtonToResponse(WOResponse response,
             WOContext context)
     {
-        WOResponse subresponse = new WOResponse();
+        WOResponse subresponse = response ;//new WOResponse();
 
         subresponse.appendContentString("<button type=\"submit\" ");
         subresponse._appendTagAttributeAndValue("id",
@@ -324,9 +325,9 @@ public abstract class DojoActionFormElement extends DojoFormElement
                 false);
         subresponse.appendContentString("></button>");
 
-        ERXResponseRewriter.insertInResponseBeforeTag(response, context,
-                subresponse.contentString(), WCForm.SHADOW_BUTTON_REGION_END,
-                ERXResponseRewriter.TagMissingBehavior.Inline);
+//        ERXResponseRewriter.insertInResponseBeforeTag(response, context,
+//                subresponse.contentString(), WCForm.SHADOW_BUTTON_REGION_END,
+//                ERXResponseRewriter.TagMissingBehavior.Inline);
     }
 
 
@@ -387,7 +388,10 @@ public abstract class DojoActionFormElement extends DojoFormElement
         AjaxUtils.createResponse(request, context);
         AjaxUtils.mutableUserInfo(request);
 
-        result = (WOActionResults) _action.valueInComponent(component);
+        if (_action != null)
+        {
+            result = (WOActionResults) _action.valueInComponent(component);
+        }
         
         AjaxUtils.updateMutableUserInfoWithAjaxInfo(context);
 
