@@ -58,7 +58,7 @@ public class WCComboButton extends DojoActionFormElement
     
     
     // ----------------------------------------------------------
-    protected boolean needsShadowButton()
+    protected boolean usesFakeFullSubmit()
     {
         return true;
     }    

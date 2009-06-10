@@ -60,7 +60,7 @@ public class WCMenuItem extends DojoActionFormElement
     
     
     // ----------------------------------------------------------
-    protected boolean needsShadowButton()
+    protected boolean usesFakeFullSubmit()
     {
         return true;
     }

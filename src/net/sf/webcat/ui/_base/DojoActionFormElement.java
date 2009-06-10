@@ -203,17 +203,17 @@ public abstract class DojoActionFormElement extends DojoFormElement
      * that element itself suffices to perform a standard action. If the
      * element is represented by, for example, a div where the onclick
      * attribute is the only method of interaction, then that element's class
-     * should override this and return true to generate a "shadow button" that
-     * can have its click method called to perform the submit.
+     * should override this and return true to use a "fake full submit" that
+     * dynamically creates a button and uses it to submit the form.
      * </p><p>
-     * Important: Make sure to use WCForm so that shadow buttons get generated
-     * in the correct location.
+     * Important: Make sure to use WCForm (or, at the very least, ERXWOForm) so
+     * that the auto-detection of the containing form works correctly. 
      * </p>
      * 
-     * @return true if the element needs a shadow button to simulate a page-load
-     *     submit; false if the element itself can perform the submit
+     * @return true if the element needs a fake form submit to simulate a
+     *     page-load submit; false if the element itself can perform the submit
      */
-    protected boolean needsShadowButton()
+    protected boolean usesFakeFullSubmit()
     {
         return false;
     }
@@ -224,12 +224,6 @@ public abstract class DojoActionFormElement extends DojoFormElement
     public void appendToResponse(WOResponse response, WOContext context)
     {
         super.appendToResponse(response, context);
-
-        if (needsShadowButton() && !_remoteHelper.isRemoteInContext(context) &&
-                hasActionInContext(context))
-        {
-            appendShadowButtonToResponse(response, context);
-        }
 
         if (_directActionName != null || _actionClass != null)
         {
@@ -271,17 +265,13 @@ public abstract class DojoActionFormElement extends DojoFormElement
 
             response.appendContentString("\n</script>\n");
         }
-        else if (needsShadowButton())
+        else if (usesFakeFullSubmit())
         {
             response.appendContentString("<script type=\"dojo/connect\" "
                     + "event=\"onClick\" args=\"evt\">\n");
 
-            // Not dijit.byId here, because we're just working with a
-            // regular DOM button element.
-
-            response.appendContentString(" dojo.byId('"
-                    + shadowButtonIdInContext(context)
-                    + "').click();");
+            response.appendContentString(WCForm.scriptToPerformFakeFullSubmit(
+                    context, nameInContext(context)));
 
             response.appendContentString("\n</script>\n");
         }
@@ -307,27 +297,6 @@ public abstract class DojoActionFormElement extends DojoFormElement
     {
         return "__dae_shadow_button__" +
             ERXWOContext.safeIdentifierName(context, false);
-    }
-
-
-    // ----------------------------------------------------------
-    protected void appendShadowButtonToResponse(WOResponse response,
-            WOContext context)
-    {
-        WOResponse subresponse = response ;//new WOResponse();
-
-        subresponse.appendContentString("<button type=\"submit\" ");
-        subresponse._appendTagAttributeAndValue("id",
-                shadowButtonIdInContext(context), false);
-        appendNameAttributeToResponse(subresponse, context);
-        subresponse._appendTagAttributeAndValue("value", "__shadow", false);
-        subresponse._appendTagAttributeAndValue("style", "display: none;",
-                false);
-        subresponse.appendContentString("></button>");
-
-//        ERXResponseRewriter.insertInResponseBeforeTag(response, context,
-//                subresponse.contentString(), WCForm.SHADOW_BUTTON_REGION_END,
-//                ERXResponseRewriter.TagMissingBehavior.Inline);
     }
 
 
