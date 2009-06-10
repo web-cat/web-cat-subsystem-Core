@@ -23,6 +23,7 @@ package net.sf.webcat.ui;
 
 import com.webobjects.appserver.WOAssociation;
 import com.webobjects.appserver.WOElement;
+import com.webobjects.appserver._private.WODynamicElementCreationException;
 import com.webobjects.foundation.NSDictionary;
 import net.sf.webcat.ui._base.DojoGenericElement;
 
@@ -47,5 +48,12 @@ public class WCDiv extends DojoGenericElement
             WOElement template)
     {
         super("div", someAssociations, template);
+        
+        if (_dojoType == null)
+        {
+            throw new WODynamicElementCreationException(
+                    "<" + getClass().getName() + "> 'dojoType' binding must "
+                    + "be specified.");
+        }
     }
 }
