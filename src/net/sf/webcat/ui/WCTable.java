@@ -224,6 +224,8 @@ public class WCTable extends WOComponent
      * Called from within a columns repetition nested in a rows repetition,
      * this method gets the value for the current row and column that will be
      * passed to the cell component.
+     * 
+     * @return the value of the current column in the current row of the table
      */
     public Object columnValueOfObjectInRepetition()
     {
@@ -255,7 +257,7 @@ public class WCTable extends WOComponent
 
     // ----------------------------------------------------------
     /**
-     * 
+     * @return true if the current column can be sorted, otherwise false 
      */
     public boolean columnInRepetitionCanBeSorted()
     {
@@ -305,6 +307,9 @@ public class WCTable extends WOComponent
     /**
      * Gets the actual row number of the current row, displayed when the
      * showsRowNumbers binding is set to true.
+     * 
+     * @return the actual row number for the current row (that is, the number
+     *     of the object in the display group, not its displayed index)
      */
     public int actualRowNumber()
     {
@@ -664,7 +669,9 @@ public class WCTable extends WOComponent
     
     // ----------------------------------------------------------
     /**
-     * @return
+     * Sets the display group to point to the first batch of objects.
+     * 
+     * @return null
      */
     public synchronized WOActionResults goToFirstBatch()
     {
@@ -676,7 +683,9 @@ public class WCTable extends WOComponent
     
     // ----------------------------------------------------------
     /**
-     * @return
+     * Sets the display group to point to the previous batch of objects.
+     * 
+     * @return null
      */
     public synchronized WOActionResults goToPreviousBatch()
     {
@@ -688,7 +697,9 @@ public class WCTable extends WOComponent
 
     // ----------------------------------------------------------
     /**
-     * @return
+     * Sets the display group to point to the next batch of objects.
+     * 
+     * @return null
      */
     public synchronized WOActionResults goToNextBatch()
     {
@@ -700,7 +711,9 @@ public class WCTable extends WOComponent
     
     // ----------------------------------------------------------
     /**
-     * @return
+     * Sets the display group to point to the last batch of objects.
+     * 
+     * @return null
      */
     public synchronized WOActionResults goToLastBatch()
     {
