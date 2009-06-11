@@ -141,7 +141,7 @@ public class WCActionFunction extends DojoActionFormElement
         }
         else
         {
-            response.appendContentString(WCForm.scriptToPerformFakeFullSubmit(
+            script.append(WCForm.scriptToPerformFakeFullSubmit(
                     context, nameInContext(context)));
         }
 
