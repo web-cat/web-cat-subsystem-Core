@@ -72,7 +72,11 @@ webcat.fakeFullSubmit = function(/* String */ formName, /* String */ fieldName)
         value: '__shadow',
         style: { display: 'none' },
     }, form, 'last');
+
     button.click();
+    
+    // We could destroy the button here, but since the page is going to be
+    // reloaded at this point anyway, it doesn't seem to matter.
 };
 
 
