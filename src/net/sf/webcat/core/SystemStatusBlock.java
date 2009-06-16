@@ -54,6 +54,7 @@ public class SystemStatusBlock
 
     public int     index;
     public boolean includeSeparator = false;
+    public boolean startOpen = false;
 
 
     //~ Methods ...............................................................
