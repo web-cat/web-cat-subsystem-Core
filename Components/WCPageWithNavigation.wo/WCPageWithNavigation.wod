@@ -3,7 +3,7 @@ BasePage: net.sf.webcat.ui.WCBasePage {
     extraBodyCssClass    = extraBodyCssClass;
 }
 
-Errors: net.sf.webcat.core.ErrorDictionaryPanel {
+Errors: net.sf.webcat.core.WCErrorDictionaryPanel {
 	errorMessages          = thisPage.messages;
 	extraErrorMessage      = application.deathMessage;
 	shouldShowNewlineBelow = true;

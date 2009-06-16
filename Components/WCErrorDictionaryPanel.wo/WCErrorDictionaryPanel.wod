@@ -1,0 +1,19 @@
+ErrorLi: WOGenericContainer {
+    elementName = "li";
+    class = errorMessageCssClass;
+}
+
+DictionaryRepetition: WORepetition {
+	list = errorKeys;
+	item = errorKey;
+}
+
+Message: WOString {
+	value      = errorMessageItem;
+    escapeHTML = false;
+}
+
+ExtraMessage: WOString {
+	value      = extraErrorMessage;
+    escapeHTML = false;
+}

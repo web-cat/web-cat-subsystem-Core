@@ -1,15 +1,16 @@
 <div id="footer">
   <div id="width">
     <span class="floatLeft">
-      <a href="http://web-cat.org/WCWiki/Web-CAT">Web-CAT</a> is
+      <a href="http://web-cat.org/">Web-CAT</a> is
       &copy; 2006-2009 <a href="http://www.cs.vt.edu/">Virginia Tech</a>
       <span class="grey">|</span>
       v<wo:str value="$application.version"/>
     </span>
     <span class="floatRight">
     Administrator: <wo name="AdminEmail"/>
+    <wo:if condition="$application.properties.corePrivacyURL">
     <span class="grey">|</span>
-    <wo:link href="$application.properties.corePrivacyURL">privacy</wo:link>
+    <wo:link href="$application.properties.corePrivacyURL">privacy</wo:link></wo:if>
     </span>
   </div>
 </div>

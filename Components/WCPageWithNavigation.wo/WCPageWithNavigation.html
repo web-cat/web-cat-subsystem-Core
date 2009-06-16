@@ -28,7 +28,7 @@
     <ul id="mainMenu" class="floatRight">
       <wo:loop list="$selectedRole.children" item="$primaryTabItem">
         <wo:if condition="$primaryTabIsVisible"><wo name="PrimaryTab">
-          <wo:link action="$primaryTabLink"><wo:str value="$primaryTabItem.label"/><wo:if condition="$hasVisibleSecondaryTabs">  &#187;</wo:if></wo:link>
+          <wo:link action="$primaryTabLink"><wo:str value="$primaryTabItem.label"/><wo:if condition="$primaryTabItem.children.count">  &#187;</wo:if></wo:link>
           <wo:if condition="$hasVisibleSecondaryTabs">
             <ul><wo:loop list="$primaryTabItem.children" item="$secondaryTabItem">
               <wo:if condition="$secondaryTabIsVisible"><wo name="SecondaryTab">
