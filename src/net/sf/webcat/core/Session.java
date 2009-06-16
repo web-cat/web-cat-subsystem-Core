@@ -553,6 +553,7 @@ public class Session
     public void commitSessionChanges()
     {
         log.debug( "commitLocalChanges()" );
+        temporaryTheme = null;
         defaultEditingContext().saveChanges();
         defaultEditingContext().revert();
         defaultEditingContext().refaultAllObjects();
@@ -566,6 +567,7 @@ public class Session
      */
     public void cancelSessionChanges()
     {
+        temporaryTheme = null;
         defaultEditingContext().revert();
         defaultEditingContext().refaultAllObjects();
     }
@@ -662,9 +664,20 @@ public class Session
      */
     public Theme theme()
     {
+        if (temporaryTheme != null)
+        {
+            return temporaryTheme;
+        }
         return (user() == null || user().theme() == null)
             ? Theme.defaultTheme()
             :  user().theme();
+    }
+
+
+    // ----------------------------------------------------------
+    public void setTemporaryTheme(Theme theme)
+    {
+        temporaryTheme = theme;
     }
 
 
@@ -705,6 +718,7 @@ public class Session
     private NSMutableDictionary   transientState;
     private WOEC.PeerManagerPool  childManagerPool;
     private boolean               doNotUseLoginSession = false;
+    private Theme                 temporaryTheme;
 
     private static final Integer zero = new Integer( 0 );
     private static final Integer one  = new Integer( 1 );

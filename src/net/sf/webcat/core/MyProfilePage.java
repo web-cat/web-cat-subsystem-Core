@@ -22,6 +22,7 @@
 package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
+import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.foundation.*;
 import er.extensions.eof.ERXQ;
 import er.extensions.foundation.ERXArrayUtilities;
@@ -315,11 +316,13 @@ public class MyProfilePage
     // ----------------------------------------------------------
     public WOComponent previewTheme()
     {
-        log.debug("user ec = " + user().editingContext()
-            + ", theme ec = "
-            + ((user().theme() == null)
-                ? "null"
-                : user().theme().editingContext().toString()));
+        log.debug("previewTheme(): user theme = " + user().theme());
+        log.debug("session theme = " + wcSession().theme());
+        wcSession().setTemporaryTheme(
+            user().theme() == null
+                ? Theme.defaultTheme()
+                : user().theme());
+        log.debug("after preview, session theme = " + wcSession().theme());
         return null;
     }
 
