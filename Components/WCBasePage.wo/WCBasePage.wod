@@ -48,6 +48,6 @@ PageSpecificCss: WOGenericElement {
 PageSpecificJs: WOGenericContainer {
     elementName = "script";
     type        = "text/javascript";
-    href        = "~stylesheetUrl(pageFramework + \".framework/WebServerResources/\" + pageSpecificJavascriptPath)";
+    src         = "~stylesheetUrl(pageFramework + \".framework/WebServerResources/\" + pageSpecificJavascriptPath)";
 }
 
