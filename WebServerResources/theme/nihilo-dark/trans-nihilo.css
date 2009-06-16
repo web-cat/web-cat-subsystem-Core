@@ -101,6 +101,8 @@
 }
 
 .nihilo .dijitDropDownButton .dijitReset.dijitButtonNode .dijitReset,
+.nihilo .dijitFileInputText,
+.nihilo .dijitFileInputButton,
 .nihilo .dijitButton .dijitReset.dijitButtonNode .dijitReset {
 	color: #ccc;
 }

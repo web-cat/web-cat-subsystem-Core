@@ -23,6 +23,7 @@ body {
 #roles a, #utils a {
     color:  #115;
     background-image: url(../base/images/white-40.png);
+    background-color: transparent;
     text-decoration: none;
     padding: 0.1em 0.5em;
 }
@@ -45,6 +46,7 @@ body {
 #footer a {
     color: #115;
     background-image: url(../base/images/white-60.png);
+    background-color: transparent;
     text-decoration: none;
     padding: 0.1em 0.5em;
 }
@@ -67,8 +69,8 @@ body {
 #mainMenu a {
     color: #115;
     background-image: url(../base/images/white-40.png);
+    background-color: transparent;
 }
-
 
 #mainMenu a:hover,
 #mainMenu .here a {
@@ -117,7 +119,7 @@ a, a:active, a:link {
 }
 a:visited { text-decoration: none; }
 a:hover {
-    background: #ddf;
+    background-color: #ddf;
     color: #000;
     border-bottom: 1px dotted black;
 }
