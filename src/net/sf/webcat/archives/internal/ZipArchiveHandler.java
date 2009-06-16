@@ -56,16 +56,26 @@ public class ZipArchiveHandler
 	{
 		ZipInputStream zipStream = new ZipInputStream( stream );
 
-		ArrayList entryList = new ArrayList();
+		ArrayList<IArchiveEntry> entryList = new ArrayList<IArchiveEntry>();
 
 		ZipEntry zipEntry = zipStream.getNextEntry();
 		while ( zipEntry != null )
 		{
             zipStream.closeEntry();
-			ArchiveEntry entry = new ArchiveEntry(
-					zipEntry.getName(), zipEntry.isDirectory(),
-					new Date( zipEntry.getTime() ), zipEntry.getSize() );
-			entryList.add( entry );
+            String name = zipEntry.getName();
+            if (name != null
+                && !zipEntry.isDirectory()
+                && !name.equals(".DS_Store")
+                && !name.endsWith("/.DS_Store")
+                && !name.startsWith("__MACOSX/"))
+            {
+                ArchiveEntry entry = new ArchiveEntry(
+					name,
+					zipEntry.isDirectory(),
+					new Date( zipEntry.getTime() ),
+					zipEntry.getSize() );
+                entryList.add( entry );
+            }
 			zipEntry = zipStream.getNextEntry();
 		}
 
@@ -85,18 +95,25 @@ public class ZipArchiveHandler
 		ZipEntry zipEntry = zipStream.getNextEntry();
 		while ( zipEntry != null )
 		{
+	        String name = zipEntry.getName();
 			if ( zipEntry.isDirectory() )
 			{
-				File destDir = new File( destPath, zipEntry.getName() );
+			    if (!"__MACOSX".equals(name))
+			    {
+			        File destDir = new File( destPath, name );
 
-				if ( !destDir.exists() )
-                {
-					destDir.mkdirs();
-                }
+			        if ( !destDir.exists() )
+			        {
+			            destDir.mkdirs();
+			        }
+			    }
 			}
-			else
+			else if (name != null
+			         && !(name.equals(".DS_Store")
+			              || name.startsWith("__MACOSX/")
+			              || name.endsWith("/.DS_Store")))
 			{
-				File destFile = new File( destPath, zipEntry.getName() );
+				File destFile = new File( destPath, name );
 				File destParent = destFile.getParentFile();
 
 				if ( destParent != null  &&  !destParent.exists() )

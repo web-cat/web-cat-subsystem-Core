@@ -46,16 +46,22 @@ public class TarUtil
 	{
 		TarInputStream tarStream = new TarInputStream( stream );
 
-		ArrayList entryList = new ArrayList();
+		ArrayList<IArchiveEntry> entryList = new ArrayList<IArchiveEntry>();
 
 		TarEntry tarEntry = tarStream.getNextEntry();
 		while ( tarEntry != null )
 		{
-			ArchiveEntry entry = new ArchiveEntry(
+		    String name = tarEntry.getName();
+            if (name != null
+                && !tarEntry.isDirectory()
+                && !name.equals(".DS_Store")
+                && !name.startsWith("__MACOSX/"))
+            {
+                ArchiveEntry entry = new ArchiveEntry(
 					tarEntry.getName(), tarEntry.isDirectory(),
 					tarEntry.getModTime(), tarEntry.getSize() );
-			entryList.add( entry );
-
+                entryList.add( entry );
+            }
 			tarEntry = tarStream.getNextEntry();
 		}
 
@@ -74,18 +80,25 @@ public class TarUtil
 		TarEntry tarEntry = tarStream.getNextEntry();
 		while ( tarEntry != null )
 		{
+            String name = tarEntry.getName();
 			if ( tarEntry.isDirectory() )
 			{
-				File destDir = new File( destPath, tarEntry.getName() );
-
-				if ( !destDir.exists() )
+                if (!"__MACOSX".equals(name))
                 {
-					destDir.mkdirs();
+                    File destDir = new File( destPath, name );
+
+                    if ( !destDir.exists() )
+                    {
+                        destDir.mkdirs();
+                    }
                 }
 			}
-			else
+            else if (name != null
+                     && !(name.equals(".DS_Store")
+                          || name.startsWith("__MACOSX/")
+                          || name.endsWith("/.DS_Store")))
 			{
-				File destFile = new File( destPath, tarEntry.getName() );
+				File destFile = new File( destPath, name );
 				File destParent = destFile.getParentFile();
 
 				if ( destParent != null  &&  !destParent.exists() )
