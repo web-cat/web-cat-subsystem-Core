@@ -22,30 +22,48 @@
 package net.sf.webcat.ui;
 
 import net.sf.webcat.ui.util.DojoUtils;
+import com.webobjects.appserver.WOApplication;
 import com.webobjects.appserver.WOAssociation;
+import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOElement;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.appserver._private.WODynamicGroup;
+import com.webobjects.appserver._private.WOHTMLDynamicElement;
 import com.webobjects.foundation.NSDictionary;
 import er.extensions.appserver.ERXResponseRewriter;
 
 // ------------------------------------------------------------------------
 /**
- * An element whose content is a fragment of JavaScript code that should be
- * inserted in some special way into the page content. The {@code scriptName}
- * binding determines where the fragment should be inserted.
  * <p>
- * Currently the only supported value for {@code scriptName} is
- * "{@code onLoad}", which causes the script code to be appended to a global
- * {@code dojo.addOnLoad} block (creating it if it does not yet exist). If the
- * value of {@code scriptName} is anything else, or null, then the script will
- * be appended at the end of the &lt;head&gt; tag content.
+ * An element whose content is a fragment of JavaScript code that should be
+ * inserted in some special way into the page content. The {@code location}
+ * binding determines where the fragment should be inserted.
+ * </p>
+ * <h2>Bindings</h2>
+ * <dl>
+ * <dt>location</dt>
+ * <dd>The location in the page at which to insert the script; this is only
+ * relevant when the element is used on a new page load, not as part of an
+ * Ajax response. Valid choices are "onLoad", which inserts the script into the
+ * page's <tt>onLoad</tt> script, and "head", which inserts the script into the
+ * head tag. Any other value, or null, inserts the script at the location of
+ * the WCScriptFragment element.</dd>
+ * <dt>type</dt>
+ * <dd>The MIME type of the script. In most cases this can be omitted, as the
+ * default value of "text/javascript" is appropriate.</dd>
+ * <dt>filename</dt>
+ * <dd>The path of the script, relative to the framework's WebServerResources
+ * directory.</dd>
+ * <dt>framework</dt>
+ * <dd>The framework that contains the script resource, or null to use the
+ * framework of the hosting component.</dd>
+ * </dl>
  * 
  * @author Tony Allevato
  * @version $Id$
  */
-public class WCScriptFragment extends WODynamicGroup
+public class WCScriptFragment extends WOHTMLDynamicElement
 {
     //~ Constructor ...........................................................
     
@@ -63,7 +81,10 @@ public class WCScriptFragment extends WODynamicGroup
     {
         super(name, someAssociations, template);
         
-        _scriptName = someAssociations.objectForKey("scriptName");
+        _location = someAssociations.objectForKey("location");
+        _type = someAssociations.objectForKey("type");
+        _filename = someAssociations.objectForKey("filename");
+        _framework = someAssociations.objectForKey("framework");
     }
     
 
@@ -71,15 +92,15 @@ public class WCScriptFragment extends WODynamicGroup
 
     // ----------------------------------------------------------
     /**
-     * Gets the value of the scriptName binding in the specified context.
+     * Gets the value of the location binding in the specified context.
      * 
      * @param context the context
      * @return the value of the scriptName binding
      */
-    protected String scriptNameInContext(WOContext context)
+    protected String locationInContext(WOContext context)
     {
-        if (_scriptName != null)
-            return _scriptName.valueInComponent(context.component()).toString();
+        if (_location != null)
+            return _location.valueInComponent(context.component()).toString();
         else
             return null;
     }
@@ -87,8 +108,58 @@ public class WCScriptFragment extends WODynamicGroup
     
     // ----------------------------------------------------------
     /**
+     * Gets the value of the type binding in the specified context.
+     * 
+     * @param context the context
+     * @return the value of the type binding
+     */
+    protected String typeInContext(WOContext context)
+    {
+        if (_type != null)
+            return _type.valueInComponent(context.component()).toString();
+        else
+            return "text/javascript";
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the resource URL of the script if the filename and (optional)
+     * framework bindings are specified.
+     * 
+     * @param aContext the context of the request
+     * @return the resource URL of the script, or null if the filename is not
+     *     specified
+     */
+    protected String _scriptURL(WOContext aContext)
+    {
+        if (_filename == null)
+        {
+            return null;
+        }
+
+        WOComponent aComponent = aContext.component();
+        
+        String filename = (String)_filename.valueInComponent(aComponent);
+        String frameworkName = _frameworkNameInComponent(
+                _framework, aComponent);
+        String scriptURL = aContext._urlForResourceNamed(filename,
+                frameworkName, true);
+
+        if (scriptURL == null)
+        {
+            scriptURL = WOApplication.application().resourceManager().
+                errorMessageUrlForResourceNamed(filename, frameworkName);
+        }
+        
+        return scriptURL;
+    }
+    
+
+    // ----------------------------------------------------------
+    /**
      * Overriden to cause the component content (which should be JavaScript
-     * code) to be inserted into the script specified by the "scriptName"
+     * code) to be inserted into the script specified by the "location"
      * association.
      * 
      * @param response the response
@@ -100,21 +171,45 @@ public class WCScriptFragment extends WODynamicGroup
         WOResponse contentResponse = new WOResponse();
         super.appendToResponse(contentResponse, context);
         
-        String scriptName = scriptNameInContext(context);
+        String location = locationInContext(context);
+        String type = typeInContext(context);
+        String scriptURL = _scriptURL(context);
         String script = contentResponse.contentString();
         
-        if ("onLoad".equalsIgnoreCase(scriptName))
+        if ("onLoad".equalsIgnoreCase(location))
         {
             DojoUtils.addScriptCodeToOnLoad(response, context, script);
         }
-        else
+        else if ("head".equalsIgnoreCase(location))
         {
             ERXResponseRewriter.addScriptCodeInHead(response, context, script);
+        }
+        else
+        {
+            response.appendContentString("<script type=\"");
+            response.appendContentString(type);
+            response.appendContentString("\"");
+            
+            if (scriptURL != null)
+            {
+                response.appendContentString(" src=\"");
+                response.appendContentString(scriptURL);
+                response.appendContentString("\"></script>\n");
+            }
+            else
+            {
+                response.appendContentString(">\n");
+                response.appendContentString(script);
+                response.appendContentString("\n</script>\n");
+            }
         }
     }
     
     
     //~ Static/instance variables .............................................
 
-    protected WOAssociation _scriptName;
+    protected WOAssociation _location;
+    protected WOAssociation _type;
+    protected WOAssociation _filename;
+    protected WOAssociation _framework;
 }
