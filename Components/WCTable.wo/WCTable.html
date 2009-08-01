@@ -55,7 +55,6 @@
     </script>
 </wo>
 <wo:WCSpan dojoType="dijit.ToolbarSeparator"/>
-<span>
 <wo:WCSpan dojoType="dijit.form.DropDownButton" label="~'Show ' + ((batchSize == -1) ? 'all' : batchSize) + ' items'">
 	<wo:WCDiv dojoType="dijit.Menu">
 		<wo:WCMenuItem label="5"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(5);</script></wo:WCMenuItem>
@@ -68,7 +67,6 @@
 		<wo:WCMenuItem label="all"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(-1);</script></wo:WCMenuItem>
 	</wo:WCDiv>
 </wo:WCSpan>
-</span>
 <wo:WCSpan dojoType="dijit.ToolbarSeparator"/>
 <span>Displaying <wo:str value="$displayGroup.indexOfFirstDisplayedObject"/>&ndash;<wo:str value="$displayGroup.indexOfLastDisplayedObject"/> of <wo:str value="$displayGroup.allObjects.count"/></span>
 <wo:WCSpan dojoType="dijit.ToolbarSeparator"/>
