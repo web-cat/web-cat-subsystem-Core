@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -27,6 +27,7 @@ import er.extensions.ERXExtensions;
 import er.extensions.eof.ERXGenericRecord;
 import er.extensions.localization.ERXLocalizer;
 import java.util.Enumeration;
+import java.util.Map;
 
 //-------------------------------------------------------------------------
 /**
@@ -148,15 +149,17 @@ public class ErrorDictionaryPanel
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    public NSMutableDictionary errorMessages()
+    @SuppressWarnings("unchecked")
+    public NSMutableDictionary<String, ErrorMessage> errorMessages()
     {
         if ( errorMessages == null )
         {
-            errorMessages =
-                (NSMutableDictionary)valueForBinding( "errorMessages" );
+            errorMessages = (NSMutableDictionary<String, ErrorMessage>)
+                valueForBinding( "errorMessages" );
             if ( errorMessages == null )
             {
-                errorMessages = new NSMutableDictionary();
+                errorMessages =
+                    new NSMutableDictionary<String, ErrorMessage>();
             }
         }
         return errorMessages;
@@ -164,11 +167,13 @@ public class ErrorDictionaryPanel
 
 
     // ----------------------------------------------------------
-    public NSMutableArray errorKeyOrder()
+    @SuppressWarnings("unchecked")
+    public NSMutableArray<String> errorKeyOrder()
     {
         if ( errorKeyOrder == null )
         {
-            errorKeyOrder = (NSMutableArray)valueForBinding( "errorKeyOrder" );
+            errorKeyOrder =
+                (NSMutableArray<String>)valueForBinding( "errorKeyOrder" );
         }
         return errorKeyOrder;
     }
@@ -200,7 +205,7 @@ public class ErrorDictionaryPanel
 
 
     // ----------------------------------------------------------
-    public NSArray errorKeys()
+    public NSArray<String> errorKeys()
     {
         return errorKeyOrder() != null
             ? errorKeyOrder()
@@ -261,8 +266,10 @@ public class ErrorDictionaryPanel
         }
         else
         {
-            NSDictionary dict = errorMessages();
-            for ( Enumeration e = dict.keyEnumerator(); e.hasMoreElements();) {
+            NSDictionary<String, ErrorMessage> dict = errorMessages();
+            for ( Enumeration<String> e = dict.keyEnumerator();
+                  e.hasMoreElements();)
+            {
                 byte category = errorMessageCategory(
                     errorMessages().objectForKey( e.nextElement() ) );
                 switch ( category )
@@ -356,20 +363,46 @@ public class ErrorDictionaryPanel
 
 
     // ----------------------------------------------------------
+    public String panelClass()
+    {
+        if (panelClass == null)
+        {
+            byte category = Status.INFORMATION;
+            for (String key : errorKeys())
+            {
+                byte thisCategory = errorMessageCategory(
+                    errorMessages().objectForKey(key));
+                if (thisCategory < category)
+                {
+                    category = thisCategory;
+                }
+            }
+            panelClass = Status.statusCssClass(category);
+        }
+        return "NoticePanel " + panelClass;
+    }
+
+
+    // ----------------------------------------------------------
     public void reset()
     {
         super.reset();
         errorMessages = null;
         errorKeyOrder = null;
         extraErrorMessage = null;
+        panelClass = null;
     }
 
 
     //~ Instance/static variables .............................................
-    protected NSMutableDictionary errorMessages;
-    protected NSMutableArray errorKeyOrder;
-    protected String extraErrorMessage;
 
-    private final static String eliminable = "Could not save your changes: null";
-    private final static String couldNotSave = "Could not save your changes: ";
+    protected NSMutableDictionary<String, ErrorMessage> errorMessages;
+    protected NSMutableArray<String> errorKeyOrder;
+    protected String extraErrorMessage;
+    protected String panelClass;
+
+    private final static String eliminable =
+        "Could not save your changes: null";
+    private final static String couldNotSave =
+        "Could not save your changes: ";
 }

@@ -5,10 +5,11 @@ Span: WOGenericContainer {
 
 InfoImage : WOImage {
     framework = "Core";
-    filename  = "icons/info.gif";
+    filename  = "icons/help.png";
     width     = 16;
     height    = 16;
     border    = 0;
+    class     = "help";
 }
 
 Tooltip : WCTooltip {

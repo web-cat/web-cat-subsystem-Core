@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -755,7 +755,7 @@ public class Application
         }
         if ( requestLog.isDebugEnabled() )
         {
-            requestLog.debug( "dispatchRequest():\n\tmethod = "
+            requestLog.debug( "dispatchRequest(): method = "
                 + aRequest.method() );
             requestLog.debug( "\tqueryString = " + aRequest.queryString() );
             requestLog.debug( "\trequestHandlerKey = "

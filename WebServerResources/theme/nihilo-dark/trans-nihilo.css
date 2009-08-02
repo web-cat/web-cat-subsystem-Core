@@ -5,14 +5,16 @@
 .dijitReset,
 .dijitTextArea { color: black; }
 
+.dijitTitlePane { overflow: visible; }
+
 .dojoxColorPicker {
-	padding: 0;
-/*	background-color: #333;
-	border: 1px solid #777;*/
+    padding: 0;
+/*  background-color: #333;
+    border: 1px solid #777;*/
 }
 
 .nihilo .dijitProgressBarEmpty {
-	border-color: white;
+    border-color: white;
 }
 
 
@@ -23,36 +25,61 @@
 
 .dijitTitlePaneTitle { outline: 0; }
 
-.nihilo .dijitTitlePaneContentOuter {	background: none;	border: none;
-	padding: 2px;
-	margin: 0;
+.nihilo .dijitTitlePaneContentOuter {
+    background: none;
+    border: none;
+    padding: 2px;
+    margin: 0;
 }
 
 .nihilo .dijitTitlePaneContentOuter > .dijitReset {
-	color: inherit;
+    color: inherit;
 }
 
-.nihilo .dijitTabContainerTop-dijitContentPane,.nihilo .dijitTabContainerLeft-dijitContentPane,.nihilo .dijitTabContainerRight-dijitContentPane,.nihilo .dijitTabContainerBottom-dijitContentPane,.nihilo .dijitAccordionContainer-dijitContentPane {	background-color: transparent;}
+.nihilo .dijitTabContainerTop-dijitContentPane,
+.nihilo .dijitTabContainerLeft-dijitContentPane,
+.nihilo .dijitTabContainerRight-dijitContentPane,
+.nihilo .dijitTabContainerBottom-dijitContentPane,
+.nihilo .dijitAccordionContainer-dijitContentPane {
+    background-color: transparent;
+}
 
 .nihilo .dijitTabPaneWrapper {
-	background: none;
-	border-right-width: 2px;
-}.nihilo .dijitTitlePane .dijitTitlePaneTitle {	background: none;	border: none;	padding: 0;	cursor: pointer;	font-size: 1.5em;	text-decoration: none;	font-weight: bold;
-	padding: 0 0 0.3em 0;	line-height: 100%;	height: auto;	margin: 0 0 10px 0;	color: #feb;
+    background: none;
+    border-right-width: 2px;
+}
+
+.nihilo .dijitTitlePane .dijitTitlePaneTitle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 1.5em;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0 0 0.3em 0;
+    line-height: 100%;
+    height: auto;
+    margin: 0 0 10px 0;
+    color: #feb;
     border-bottom: 1px solid #feb;
 }
 
 .nihilo .dijitTitlePane .dijitTitlePane .dijitTitlePaneTitle {
-	font-size: 1.3em;
+    font-size: 1.3em;
 }
 
 .nihilo .dijitTitlePane .dijitTitlePane .dijitTitlePane .dijitTitlePaneTitle {
-	font-size: 1.2em;
+    font-size: 1.2em;
 }
 
-.nihilo .dijitTitlePaneFocused .dijitTitlePaneTextNode {	color: #feb;}
+.nihilo .dijitTitlePaneFocused .dijitTitlePaneTextNode {
+    color: #feb;
+}
 
-.nihilo .dijitOpen .dijitTitlePaneTextNode {	color: #feb;}
+.nihilo .dijitOpen .dijitTitlePaneTextNode {
+    color: #feb;
+}
 
 .nihilo .dijitTitlePaneContentInner { padding: 0; }
 
@@ -63,8 +90,8 @@
 ====================================================================== */
 
 .dijitSpinner .dijitInputLayoutContainer .dijitArrowButtonInner {
-	margin: -2px auto;
-	height: 11px;
+    margin: -2px auto;
+    height: 11px;
 }
 
 
@@ -74,7 +101,7 @@
 ====================================================================== */
 
 .dijitDropDownButton .dijitArrowButtonInner {
-	height: 11px;
+    height: 11px;
 }
 
 .nihilo .dijitButton,
@@ -82,97 +109,102 @@
 .nihilo button,
 .nihilo .dijitFileInputButton,
 .nihilo .dijitFileInputText {
-	cursor: pointer;
+    cursor: pointer;
 }
+
+.nihilo .dijitButtonNode { padding: 1px 2px 2px 2px; }
+
 .nihilo .dijitFileInputButton,
 .nihilo .dijitFileInputText,
 .nihilo .dijitDropDownButton .dijitButtonNode,
 .nihilo .dijitButton .dijitButtonNode {
-	border: 1px solid #888;
-	border-bottom: 1px solid #333;
-	background: black;
+    border: 1px solid #888;
+    border-bottom: 1px solid #333;
+    background: black;
 }
 
 .nihilo .dijitFileInputButton,
 .nihilo .dijitFileInputText,
 .nihilo .dijitDropDownButton .dijitButtonNode button,
 .nihilo .dijitButton .dijitButtonNode button {
-	background: black url(buttonEnabled.png) repeat-x top left;
+    background: black url(buttonEnabled.png) repeat-x top left;
 }
 
 .nihilo .dijitDropDownButton .dijitReset.dijitButtonNode .dijitReset,
 .nihilo .dijitFileInputText,
 .nihilo .dijitFileInputButton,
 .nihilo .dijitButton .dijitReset.dijitButtonNode .dijitReset {
-	color: #ccc;
+    color: #ccc;
 }
 
 .nihilo .dijitButton.pos .dijitReset.dijitButtonNode .dijitReset {
-	color: #7c7;
+    color: #7c7;
 }
 
 .nihilo .dijitButton.neg .dijitReset.dijitButtonNode .dijitReset {
-	color: #c77;
+    color: #c77;
 }
 
 .nihilo .dijitDropDownButton .dijitDropDownButtonDisabled .dijitReset.dijitButtonNode .dijitReset,
 .nihilo .dijitButton .dijitButtonDisabled .dijitReset.dijitButtonNode .dijitReset {
-	color: black;
+    color: black;
 }
 
 .nihilo .dijitButtonDisabled .dijitButtonNode,
 .nihilo .dijitButtonDisabled .dijitButtonNode button {
-	background-color: #777;
-	opacity: 1;}
+    background-color: #777;
+    opacity: 1;
+}
 
 .nihilo .dijitButtonDisabled .dijitReset.dijitButtonNode .dijitReset {
-	color: #333;
+    color: #333;
 }
-.nihilo .dijitFileInputButton:hover,
+
+.nihilo .dijitFileInputButton:hover,
 .nihilo .dijitFileInputText:hover,
 .nihilo .dijitDropDownButtonHover .dijitReset.dijitButtonNode,
 .nihilo .dijitButtonHover .dijitReset.dijitButtonNode {
-	background-color: #222;
-	border: 1px solid #999;
-	border-bottom: 1px solid #444;
+    background-color: #222;
+    border: 1px solid #999;
+    border-bottom: 1px solid #444;
 }
 
 .nihilo .dijitDropDownButtonHover .dijitReset.dijitButtonNode button,
 .nihilo .dijitButtonHover .dijitReset.dijitButtonNode button {
-	background-color: #111;
+    background-color: #111;
 }
 
 .nihilo .dijitButtonHover.pos .dijitReset.dijitButtonNode {
-	background-color: #242;
+    background-color: #242;
 }
 .nihilo .dijitButtonHover.pos .dijitReset.dijitButtonNode button {
-	background-color: #131;
+    background-color: #131;
 }
 
 .nihilo .dijitButtonHover.pos .dijitReset.dijitButtonNode .dijitReset {
-	color: #afa;
+    color: #afa;
 }
 
 .nihilo .dijitButtonHover.neg .dijitReset.dijitButtonNode {
-	background-color: #422;
+    background-color: #422;
 }
 .nihilo .dijitButtonHover.neg .dijitReset.dijitButtonNode button {
-	background-color: #311;
+    background-color: #311;
 }
 
 .nihilo .dijitButtonHover.neg .dijitReset.dijitButtonNode .dijitReset {
-	color: #faa;
+    color: #faa;
 }
 
 .nihilo .dijitFileInputButton:hover,
 .nihilo .dijitFileInputText:hover,
 .nihilo .dijitDropDownButtonHover .dijitReset.dijitButtonNode .dijitReset,
 .nihilo .dijitButtonHover .dijitReset.dijitButtonNode .dijitReset {
-	color: white;
+    color: white;
 }
 
 .nihilo button img {
-	vertical-align: bottom;
+    vertical-align: bottom;
 }
 
 /* @end
@@ -181,47 +213,47 @@
 ====================================================================== */
 
 .dijitRuleLabel {
-	color: #ccc;
+    color: #ccc;
 }
 
 .dijitRuleMark {
-	border-color: #ccc;
+    border-color: #ccc;
 }
 
 .dijitRuleMarkH {
-	height: 0.5em;
+    height: 0.5em;
 }
 
 
 .dijitRuleMarkV {
-	width: 0.5em;
+    width: 0.5em;
 }
 
 .dijitRuleContainerH.dijitRuleLabelsContainerH {
-	border-width: 0;
-	height: 1.7em;
+    border-width: 0;
+    height: 1.7em;
 }
 
 .dijitRuleContainerH {
-	height: 0.5em;
+    height: 0.5em;
 }
 
 .dijitRuleContainerV.dijitRuleLabelsContainerV {
-	border-width: 0;
-	width: 2em;
+    border-width: 0;
+    width: 2em;
 }
 
 .dijitRuleLabelsContainerV .dijitRuleLabelContainerV {
-	left: 0.4em;
+    left: 0.4em;
 }
 
 .dijitRuleLabelsContainerV:first-child .dijitRuleLabelContainerV {
-	left: auto;
-	right: 0.4em;
+    left: auto;
+    right: 0.4em;
 }
 
 .dijitRuleContainerV {
-	width: 0.5em;
+    width: 0.5em;
 }
 
 
@@ -230,23 +262,42 @@
 /* @group Checks/Radios
 ====================================================================== */
 
-.nihilo .dijitCheckBox,.nihilo .dijitCheckBoxIcon			{	background-image: url(../../dijit/themes/tundra/images/checkmark.png);	margin: 0 2px;}
-
-.nihilo .dijitRadio,.nihilo .dijitRadioIcon	{	background-image: url(../../dijit/themes/tundra/images/checkmark.png);}
-
-.nihilo .dijitRadio,.nihilo .dijitToggleButton .dijitRadioIcon {	background-position: -112px;}
-
-.nihilo .dijitRadio.dijitRadioDisabled {	background-position: -144px;}
-
-.nihilo .dijitRadioChecked.dijitRadioCheckedDisabled {	background-position: -128px;}
-
-.nihilo .dijitRadio.dijitRadioHover {	background-position: -176px;}
-
-.nihilo .dijitRadioChecked.dijitRadioCheckedHover {
-	background-position: -160px;
+.nihilo .dijitCheckBox,
+.nihilo .dijitCheckBoxIcon          {
+    background-image: url(../../dijit/themes/tundra/images/checkmark.png);
+    margin: 0 2px;
 }
 
-.nihilo .dijitRadioChecked,.nihilo .dijitToggleButtonChecked .dijitRadioIcon {	background-position: -96px;}
+.nihilo .dijitRadio,
+.nihilo .dijitRadioIcon {
+    background-image: url(../../dijit/themes/tundra/images/checkmark.png);
+}
+
+.nihilo .dijitRadio,
+.nihilo .dijitToggleButton .dijitRadioIcon {
+    background-position: -112px;
+}
+
+.nihilo .dijitRadio.dijitRadioDisabled {
+    background-position: -144px;
+}
+
+.nihilo .dijitRadioChecked.dijitRadioCheckedDisabled {
+    background-position: -128px;
+}
+
+.nihilo .dijitRadio.dijitRadioHover {
+    background-position: -176px;
+}
+
+.nihilo .dijitRadioChecked.dijitRadioCheckedHover {
+    background-position: -160px;
+}
+
+.nihilo .dijitRadioChecked,
+.nihilo .dijitToggleButtonChecked .dijitRadioIcon {
+    background-position: -96px;
+}
 
 
 /* @end
@@ -295,7 +346,7 @@
 .nihilo .dijitToolbar .dijitDropDownButton,
 .nihilo .dijitToolbar .dijitComboButton .dijitButtonContents,
 .nihilo .dijitToolbar .dijitComboButton .dijitDownArrowButton {
-    background: none;   
+    background: none;
     padding: 1px;   /* on hover etc., margin replaced w/border */
 }
 
@@ -335,7 +386,7 @@
     border: 0px;
 }
 
-.nihilo .dijitToolbar label {   
+.nihilo .dijitToolbar label {
     padding: 3px 3px 0 6px;
 }
 
@@ -347,3 +398,7 @@
     border: 1px #555 dotted !important;
     padding: 0px;
 }
+
+
+/* @end
+====================================================================== */

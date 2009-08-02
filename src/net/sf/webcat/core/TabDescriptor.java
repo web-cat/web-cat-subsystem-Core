@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -916,6 +916,11 @@ public class TabDescriptor
                 settings.objectForKey( "wantsStart" ), false );
             NSDictionary children =
                 (NSDictionary)settings.objectForKey( "children" );
+            String overridingLabel = (String)settings.objectForKey("label");
+            if (overridingLabel != null)
+            {
+                label = overridingLabel;
+            }
             tabs.addObject( new TabDescriptor(
                 pageName,
                 label,

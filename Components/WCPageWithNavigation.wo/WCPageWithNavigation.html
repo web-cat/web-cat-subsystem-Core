@@ -42,6 +42,8 @@
   </div>
 </div>
 </wo:if><div id="page"><div class="width100 floatRight">
-<wo:if condition="$hasTitle"><div class="module title"><h1><wo:str value="$title"/></h1></div></wo:if>
+<wo:if condition="$hasTitle"><div class="module title">
+  <wo:if condition="$permalink"><wo:link href="$permalink" class="permalink floatRight">Permalink</wo:link></wo:if>
+  <h1><wo:str value="$title"/></h1></div></wo:if>
 <webobject name="Errors"/><wo:content/>
 </div></div></div><wo:if condition="$includePageWrapping"><wo:net.sf.webcat.core.Footer/></wo:if></wo>

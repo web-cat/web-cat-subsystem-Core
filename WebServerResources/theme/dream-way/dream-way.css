@@ -178,6 +178,8 @@ table thead {
 
 /*TR.o  { background-color: transparent; } */
 tr.e  { background-image: url(../base/images/black-05.png); }
+tr.o.selected { background-color: #aec9ef; }
+tr.e.selected { background-image: none; background-color: #a5bfe3; }
 
 /* Need to revise
 TR.oe { background-color: #faa; }

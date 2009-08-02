@@ -36,6 +36,10 @@
             media = "print, screen, projection, tv";
         },
         {
+            file = "code.css";
+            media = "print, screen, projection, tv";
+        },
+        {
             file = "print.css";
             media = "print";
         }

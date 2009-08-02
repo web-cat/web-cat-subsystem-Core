@@ -1,4 +1,16 @@
-TD.reportHeader {
+.srcView { line-height: 140%; }
+.srcView table { margin: 0; }
+
+/* To remove line-height spacing around vertical spacing images surrounding
+   message boxes in code listings.  */
+.srcView > tbody > tr > td > img { display: block; margin: 1px; }
+
+.srcView td {
+	margin: 0;
+	padding: 0;
+}
+
+td.reportHeader {
     background:  #eff7ff;
     padding:     5px;
     font-weight: bold;
@@ -6,25 +18,18 @@ TD.reportHeader {
     border:      #dcdcdc 1px solid;
 }
 
-TD.messageBox {
+td.messageBox {
     background: #eff7ff;
     font-size:  12px;
     padding:    5px;
     border:     #dcdcdc 1px solid;
 }
-DIV#contents TABLE.srcView TD.messageBox {
-    padding:    5px;
-}
 
-TD.newMessageBox {
+td.newMessageBox {
     background: #eff7ff;
     padding:    5px;
     font-size:  12px;
     border:     #dcdcdc 5px solid;
-}
-
-DIV#contents TABLE.srcView TD.newMessageBox {
-    padding:    5px;
 }
 
 .titleText {
@@ -32,27 +37,28 @@ DIV#contents TABLE.srcView TD.newMessageBox {
     font-size:   12px;
 }
 
-TD.titleText {
+.srcView td.titleText {
     background:   #eff7ff;
     padding-left: 5px;
 }
 
-TD.headerStats {
+td.headerStats {
     border-left: #dcdcdc 1px solid;
 }
 
-TD.graphHeaderLeft {
+td.graphHeaderLeft {
     background: #eff7ff;
     border:     #dcdcdc 1px solid;
 }
-TD.graphHeader {
+
+td.graphHeader {
     background:    #eff7ff;
     border-bottom: #dcdcdc 1px solid;
     border-top:    #dcdcdc 1px solid;
     border-right:  #dcdcdc 1px solid;
 }
 
-TD.graphItem {
+td.graphItem {
     background: #ffffff;
     border-bottom: #dcdcdc 1px solid;
     border-left:   #dcdcdc 1px solid;
@@ -60,48 +66,49 @@ TD.graphItem {
     padding-left:  15px;
     padding-right: 15px;
     font-weight:   bold;
-    font-size:     12px; 
+    font-size:     12px;
 }
 
-TD.graphPercent {
+td.graphPercent {
     background:    #ffffff;
     border-bottom: #dcdcdc 1px solid;
     border-right:  #dcdcdc 1px solid;
 }
 
-TD.graphBarLeft {
+td.graphBarLeft {
     background:    #ffffff;
-    border-bottom: #dcdcdc 1px solid;  
+    border-bottom: #dcdcdc 1px solid;
 }
 
-TD.graphBar {
+td.graphBar {
     background:    #ffffff;
     border-bottom: #dcdcdc 1px solid;
     border-right:  #dcdcdc 1px solid;
     width:         100%;
-} 
+}
 
-TD.hspacer {
+td.hspacer {
     border-bottom: #dcdcdc 1px solid;
     border-top:    #dcdcdc 1px solid;
 }
 
-TABLE.barGraph {
+table.barGraph {
     width: 100%;
 }
 
-TD.empty {
+td.empty {
     font-size:  2px;
     background: #c0c0c0;
     border:     #9c9c9c 1px solid;
 }
 
-TD.fullcover {
+td.fullcover {
     font-size:  2px;
     background: #00df00;
     border:     #9c9c9c 1px solid;
 }
-TD.covered {
+
+td.covered {
     font-size:     2px;
     background:    #00df00;
     border-left:   #9c9c9c 1px solid;
@@ -109,65 +116,48 @@ TD.covered {
     border-bottom: #9c9c9c 1px solid;
 }
 
-TD.uncovered {
+td.uncovered {
     font-size:  2px;
     background: #df0000;
     border:     #9c9c9c 1px solid;
 }
 
-DIV#contents TABLE.srcView TD.tabText {
-    padding-right: 12px; 
+.srcView td.tabText {
+    padding-right: 12px;
 }
 
-DIV.timestamp {
+div.timestamp {
     font-size:    9px;
     font-weight:  normal;
     padding-left: 1px;
 }
 
-SPAN.srcFile {
+span.srcFile {
     font-size: 9px;
 }
 
-TABLE.srcView {
+table.srcView {
     font-size: 12px;
     border:    #000000 1px solid;
 }
 
-TD.lineCount {
+.srcView td.lineCount {
     background:    #F0F0F0;
     border-right:  #dcdcdc 1px solid;
     padding-right: 3px;
 }
-DIV#contents TABLE.srcView TD.lineCount {
-    padding-right: 3px;
-}
 
-TD.lineCount {
-    background:    #F0F0F0;
-    border-right:  #dcdcdc 1px solid;
-    padding-right: 3px;
-}
-DIV#contents TABLE.srcView TD.lineCount {
-    padding-right: 3px;
-}
-
-TD.lineCountHilight {
+.srcView td.lineCountHilight {
     background:    #C8C8F0;
     border-right:  #dcdcdc 1px solid;
     padding-right: 3px;
 }
-DIV#contents TABLE.srcView TD.lineCountHilight {
-    padding-right: 3px;
-}
 
-SPAN.Hilight {
+span.Hilight {
     background: #C8C8F0;
 }
 
-DIV#contents TABLE.srcView TD.srcCell,
-TABLE.srcView TD.srcCell,
-TD.srcCell
+.srcView td.srcCell
 {
     padding-right: 10px;
     margin-top: 0px;
@@ -176,14 +166,14 @@ TD.srcCell
     white-space: pre;
 }
 
-SPAN.srcLine
+span.srcLine
 {
     display: inline;
     white-space: pre;
     padding-left: 10px;
 }
 
-SPAN.srcLineHilight
+span.srcLineHilight
 {
     display: inline;
     white-space: pre;
@@ -191,205 +181,199 @@ SPAN.srcLineHilight
     background: #F0C8C8;
 }
 
-TD.srcHilight {
+td.srcHilight {
     background: #F0C8C8;
 }
 
-TR.Error {
+tr.Error {
     background: #ff2222;
 }
 
-TR.Error TD.srcLine,
-TR.Error TD.srcCell {
+tr.Error td.srcLine,
+tr.Error td.srcCell {
     color: white;
 }
 
-TR.Error SPAN.srcLineHilight,
-TR.Error TD.srcHilight {
+tr.Error span.srcLineHilight,
+tr.Error td.srcHilight {
     color:      white;
     background: #ff2222;
 }
 
-TR.Error TD.srcLineClassStart {
+tr.Error td.srcLineClassStart {
     color: white;
     font-weight: normal;
 }
 
-TR.Warning {
+tr.Warning {
     background: #FFCC66;
 }
 
-TR.Warning SPAN.srcLineHilight,
-TR.Warning TD.srcHilight {
+tr.Warning span.srcLineHilight,
+tr.Warning td.srcHilight {
     background: #FFCC66;
 }
 
-TR.Question {
+tr.Question {
     background: #FF33FF;
 }
 
-TR.Question SPAN.srcLineHilight,
-TR.Question TD.srcHilight {
+tr.Question span.srcLineHilight,
+tr.Question td.srcHilight {
     background: #FF33FF;
 }
 
-TR.Question TD.srcLine,
-TR.Question TD.srcCell {
+tr.Question td.srcLine,
+tr.Question td.srcCell {
     color: white;
 }
 
-TR.Question TD.srcLineClassStart {
+tr.Question td.srcLineClassStart {
     color: white;
     font-weight: normal;
 }
 
-TR.Suggestion {
+tr.Suggestion {
     background: #eeff44;
 }
 
-TR.Suggestion SPAN.srcLineHilight,
-TR.Suggestion TD.srcHilight {
+tr.Suggestion span.srcLineHilight,
+tr.Suggestion td.srcHilight {
     background: #eeff44;
 }
 
-TR.Answer {
+tr.Answer {
     background: #CCCCFF;
 }
 
-TR.Answer SPAN.srcLineHilight,
-TR.Answer TD.srcHilight {
+tr.Answer span.srcLineHilight,
+tr.Answer td.srcHilight {
     background: #CCCCFF;
 }
 
-TR.Good {
+tr.Good {
     background: #33ff00;
 }
 
-TR.Good SPAN.srcLineHilight,
-TR.Good TD.srcHilight {
+tr.Good span.srcLineHilight,
+tr.Good td.srcHilight {
     background: #33ff00;
 }
 
-TR.Extra_Credit {
+tr.Extra_Credit {
     background: #33ff00;
 }
 
-TR.Extra_Credit SPAN.srcLineHilight,
-TR.Extra_Credit TD.srcHilight {
+tr.Extra_Credit span.srcLineHilight,
+tr.Extra_Credit td.srcHilight {
     background: #33ff00;
 }
 
-TD.coverageCount {
+td.coverageCount {
     background:    #F0F0F0;
     border-right:  #dcdcdc 1px solid;
     padding-right: 3px;
 }
-DIV#contents TABLE.srcView TD.coverageCount {
-    padding-right: 3px;
-}
 
-TD.wholeLine {
+td.wholeLine {
     background: #F0C8C8;
 }
 
-TD.coverageCountHilight {
+.srcView td.coverageCountHilight {
     background:    #F0C8C8;
     border-right:  #dcdcdc 1px solid;
     padding-right: 3px;
 }
-DIV#contents TABLE.srcView TD.coverageCountHilight {
-    padding-right: 3px;
-}
 
-TD.srcLine,
-TD.srcCell {
+td.srcLine,
+td.srcCell {
     width: 100%;
 }
 
-TD.srcLineClassStart {
+td.srcLineClassStart {
     width:       100%;
     border-top:  #dcdcdc 1px solid;
-    font-weight: bold;	
+    font-weight: bold;
 }
 
-PRE.srcLine {
+pre.srcLine {
     margin-top:    0px;
-    margin-bottom: 0px; 
+    margin-bottom: 0px;
 }
 
-TD.footer {
+td.footer {
     border-top: #dcdcdc 1px solid;
     font-size:  9px;
 }
 
-SPAN.keyword {
+span.keyword {
     color:       #0000ff;
     font-weight: bold;
 }
 
-SPAN.string {
+span.string {
     color:       #aa22ff;
     font-weight: bold;
 }
 
-SPAN.comment {
+span.comment {
     color:      #00bb00;
     font-style: italic;
 }
 
-TD.srcLineClassStart SPAN.keyword {
+td.srcLineClassStart span.keyword {
     color:       #0088ff;
     font-weight: bold;
 }
 
-TR.Error SPAN.keyword {
+tr.Error span.keyword {
     color:       white;
     font-weight: bold;
 }
 
-TR.Error SPAN.string {
+tr.Error span.string {
     color:       white;
 }
 
-TR.Error SPAN.comment {
+tr.Error span.comment {
     color:      white;
     font-style: italic;
 }
 
-TR.Question SPAN.keyword {
+tr.Question span.keyword {
     color:       white;
     font-weight: bold;
 }
 
-TR.Question SPAN.string {
+tr.Question span.string {
     color:       white;
 }
 
-TR.Question SPAN.comment {
+tr.Question span.comment {
     color:      white;
     font-style: italic;
 }
 
-TR.Error TD.srcLineClassStart SPAN.keyword {
+tr.Error td.srcLineClassStart span.keyword {
     color:       white;
     font-weight: bold;
 }
 
-TR.Error TD.srcLineClassStart SPAN.string {
+tr.Error td.srcLineClassStart span.string {
     color:       white;
 }
 
-TR.Error TD.srcLineClassStart SPAN.comment {
+tr.Error td.srcLineClassStart span.comment {
     color:      white;
     font-style: italic;
 }
 
-TR.Question TD.srcLineClassStart SPAN.keyword {
+tr.Question td.srcLineClassStart span.keyword {
     color:       white;
     font-weight: bold;
 }
 
-TR.Question TD.srcLineClassStart SPAN.comment {
+tr.Question td.srcLineClassStart span.comment {
     color:      white;
     font-style: italic;
 }

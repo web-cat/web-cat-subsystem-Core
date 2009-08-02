@@ -128,7 +128,7 @@ way to fit your requirements.
 	float: left;
 	height: 1.8em;
 	padding: 0 1em;
-	line-height: 1.7em;
+	line-height: 1.8em;
 	text-decoration: none;
 	white-space: nowrap;
 }
@@ -247,17 +247,20 @@ li, dd { margin-left: 1em; }
 a.permalink {
 	font-size: x-small;
 	padding: 0 0 0 20px;
-	background: transparent url(../images/page_white_link.png) no-repeat center left;
+	background: transparent url(../../icons/permalink.png) no-repeat center left;
 }
 a.permalink.floatRight {
 	margin-left: 1.5em;
 	display: block;
 }
-.left { text-align: left; }
-.right { text-align: right; }
+.left, .L { text-align: left; }
+.right, .n, .R { text-align: right; }
+.center, .s { text-align: center; }
 .sm { font-size: smaller }
 .nowrap { white-space: nowrap; }
 .top { vertical-align: top; }
+.nlbefore { margin-top: 1em; }
+.nlafter  { margin-bottom: 1em; }
 
 pre, .code {
 	border: none;
@@ -271,6 +274,55 @@ pre, .code, code, var, samp, kbd {
 	font-size: inherit;
 }
 
+img.help, img.icon, input.icon { vertical-align: text-top; }
+img.icon.so, input.icon.so { padding-bottom: -2px; padding-top: 2px; }
+
+.NoticePanel {
+	display: block;
+	margin: 0;
+	padding: 8px;
+    background: #e9eef3;
+    border-top: 4px solid #aec9ef;
+    border-bottom: 4px solid #aec9ef;
+    color: black;
+}
+
+.NoticePanel.error {
+    background-color: #f7f1ef;
+    border-color: #f8a88c;
+}
+.NoticePanel.warning {
+    background-color: #ffffe6;
+    border-color: #f6f086;
+}
+.NoticePanel.suggestion {
+    background-color: #f7f7f7;
+    border-color: #dbdbdb;
+}
+.NoticePanel.check {
+    background-color: #e6ffe1;
+    border-color: #bbeeae;
+}
+
+ul.NoticePanel, .NoticePanel ul {
+    list-style-type: none;
+}
+
+.NoticePanel li {
+    background: url(../../icons/info.png) 0 3px no-repeat;
+    padding-left: 24px;
+    padding-bottom: 4px;
+}
+
+
+.NoticePanel li.error { background-image: url(../../icons/exclaim.png); }
+.NoticePanel li.warning { background-image: url(../../icons/caution.png); }
+.NoticePanel li.suggestion { background-image: url(../../icons/suggestion.png); }
+.NoticePanel li.check {
+	background-image: url(../../icons/check.png);
+	color: black;
+}
+
 
 /* @end
 ====================================================================== */
@@ -278,7 +330,12 @@ pre, .code, code, var, samp, kbd {
 ====================================================================== */
 
 table {	border-collapse: collapse;
-	margin: 0 0.5em 1em 0.1em;}table.d2w table,
+	margin: 0 0.5em 1em 0.1em;}
+
+.dtw table {
+	margin-left: auto;
+	margin-right: auto;
+}table.d2w table,
 table.layout {	border: none;}table th {	padding: 0.1em .6em;}
 
 table td {	padding: 0.1em .6em;}

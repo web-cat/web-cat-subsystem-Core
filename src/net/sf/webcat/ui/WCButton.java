@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -30,9 +30,9 @@ import net.sf.webcat.ui._base.DojoActionFormElement;
 //------------------------------------------------------------------------
 /**
  * A simple push-button.
- * 
+ *
  * <h2>Bindings</h2>
- * See also the bindings for {@link net.sf.webcat.ui.DojoActionFormElement}.
+ * See also the bindings for {@link net.sf.webcat.ui._base.DojoActionFormElement}.
  * <table>
  * <tr>
  * <td>{@code iconClass}</td>
@@ -47,7 +47,7 @@ import net.sf.webcat.ui._base.DojoActionFormElement;
  * <td>A boolean value indicating whether the label should be shown.</td>
  * </tr>
  * </table>
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */

@@ -19,9 +19,9 @@ Sent: WOConditional {
 	condition = sent;
 }
 
-SubmitButton: WOSubmitButton {
+SubmitButton: WCButton {
 	action = sendFeedback;
-	value  = "Send Comment";
+	label  = "Send Comment";
 }
 
 Text: WOText {
