@@ -170,6 +170,15 @@ table th {
     color: #eee;
 }
 
+table th a, table th a:active, table th a:link {
+    color: #cce;
+}
+table th a:hover {
+    background-color: #55d;
+    color: white;
+    border-bottom: 1px dotted white;
+}
+
 table thead {
     border-bottom: 1px solid #115;
 }
