@@ -22,7 +22,7 @@ MyForm: WOForcedForm {
     multipleSubmit = true;
 }
 
-Page: net.sf.webcat.core.BarePage {
+Page: net.sf.webcat.ui.WCBasePage {
     title = "Unexpected Exception";
 }
 

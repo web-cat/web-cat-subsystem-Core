@@ -7,9 +7,8 @@ AuthList: WOPopUpButton {
 	name              = "AuthenticationDomain";
 }
 
-BarePage : net.sf.webcat.core.BarePage {
+BarePage : net.sf.webcat.ui.WCBasePage {
 	title = "Login";
-	bodyClass = "user";
 }
 
 Errors: net.sf.webcat.core.ErrorDictionaryPanel {

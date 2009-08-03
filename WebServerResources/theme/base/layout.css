@@ -214,6 +214,10 @@ h1 {
 	clear: none;
 }
 
+.module.title.login { margin-top: 1.5em; margin-bottom: 0; }
+.module.title.login h1 { display: inline; float: left; margin: 0; }
+.module.title.login h2 { display: inline; float: right; }
+
 .module.title .tools {
 	float: right;
 	margin: -0.3em 0;
@@ -231,6 +235,29 @@ p {
 .module {
 	padding: 1em 1.5em 1em 1.5em;
 	margin-bottom: 1.5em;
+}
+
+.med-logo {
+	margin-top: 1.5em;
+	min-height: 215px;
+	background: transparent url(../../images/wc-400.png) top left no-repeat;
+}
+
+.med-logo .module { margin-left: 410px; }
+
+.large-logo {
+    min-height: 143px;
+    background: transparent url(../../images/wc-800.png) top left no-repeat;
+    padding-top: 280px;
+    margin-bottom: 1.5em;
+}
+
+.large-logo .module { margin-left: 310px; }
+
+.poweredby a {
+	display: block;
+	float: right;
+	margin: 1.5em;
 }
 
 /* .module > h1:first-child { margin-top: 0; } */

@@ -1,14 +1,15 @@
 <webobject name="BarePage">
-<table class="FullBox">
-<tr><td style="width:30%;padding:10px;text-align:center;border:1px solid #f96">
+<div id="content"><div id="page"><div class="width100 floatRight">
+<div class="module login title">
   <h1>Web-CAT</h1>
-  <p><webobject name="Logo"/></p>
-  <p><b>Automatic Grading Using Student-written Tests</b></p><br/>
-  <p><webobject name="PoweredByWOLink"><webobject name="PoweredByWO"/></webobject></p>
-</td><td style="padding:10px"><webobject name="LoginForm">
-  <p>Welcome to the <b>Web Center for Automated Testing</b> (Web-CAT).</p>
+  <h2>Automatic Grading Using Student-written Tests</h2>
+  <div style="clear:both"></div>
+</div>
+
+<div class="large-logo"><div class="module">
+<webobject name="LoginForm">
+  <p>Login to the <b>Web Center for Automated Testing</b> (Web-CAT):</p>
   <wo name="ExtraKeys"><wo name="ExtraKey"/></wo>
-  <p>Only registered users may use Web-CAT.  Please login:</p>
   <webobject name="Errors"/>
   <table style="border:none">
   <tr><td class="R"><b>User Name:</b></td>
@@ -20,15 +21,15 @@
       <td><webobject name="AuthList"/></td></tr></webobject>
   <tr><td></td><td><input type="submit" value=" Login "/><wo:if condition="$showForgotPasswordLink"> <wo:link directActionName="passwordChangeRequest">Forgot your password?</wo:link></wo:if><webobject name="HasSpecificAuthDomain"><webobject name="HiddenAuthDomain"/></webobject></td></tr>
     </table>
-  <webobject name="HasMOTD"><p><webobjects name="MOTD"/></p></webobject>
-  <p>View <span class="hl">system status</span> using your <b>Home</b> tab
-  after logging in.</p>
-<!--  <p>Web-CAT is powered by:</p>
-
-  <p>[ insert logos/links for WebObjects, Perl, Clover, ANT, Checkstyle, PMD ]</p> -->
-  <webobject name="HasLangList"><p>This Web-CAT server currently has the following languages installed:</p>
-  <p><webobject name="LangList"/></p></webobject>
-  <p>If you teach at another university and are interested in using
-     Web-CAT, please contact <wo:er.extensions.components.ERXMailTo email="$application.properties.coreAdminEmail"/>.</p>
 </webobject>
-</td></tr></table><webobject name="Footer"/></webobject>
+</div></div>
+
+<webobject name="HasMOTD"><div class="module"><webobjects name="MOTD"/></div></webobject>
+
+<!--  <p>Web-CAT is powered by:</p>
+  <p>[ insert logos/links for WebObjects, Perl, Clover, ANT, Checkstyle, PMD ]</p> -->
+<div class="poweredby">
+<webobject name="PoweredByWOLink"><webobject name="PoweredByWO"/></webobject>
+</div>
+
+</div></div></div><webobject name="Footer"/></webobject>

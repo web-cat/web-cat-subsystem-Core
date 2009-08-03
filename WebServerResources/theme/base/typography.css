@@ -21,6 +21,17 @@
     line-height: 15px;
 }
 
+.login.title h1 {
+    font-size: 30px;
+    line-height: 30px;
+}
+
+.login.title h2 {
+    font-size: 18px;
+    font-style: italic;
+    line-height: 18px;
+}
+
 #header .title h1 {
     font-size: 1.2em;
 }

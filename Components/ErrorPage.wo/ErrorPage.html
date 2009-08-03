@@ -1,12 +1,7 @@
 <webobject name="Page">
-<table class="FullBox">
-<tr><td style="width:30%;padding:10px;text-align:center;border:1px solid #f96">
-  <h1>Web-CAT</h1>
-  <p><webobject name="Logo"/></p>
-  <p><b>Automatic Grading Using Student-written Tests</b></p><br/>
-  <p><webobject name="PoweredByWOLink"><webobject name="PoweredByWO"/></webobject></p>
-</td><td style="padding:10px">
-<h1 id="title">Unexpected Exception</h1>
+<div id="content"><div id="page"><div class="width100 floatRight">
+<div class="med-logo"><div class="module">
+<h2>Unexpected Exception</h2>
 <p>
 An unexpected exception has occured while trying to process your request.
 The details of the exception have been e-mailed to the Web-CAT
@@ -19,7 +14,9 @@ If you continue to experience problems, you should logout.
 <webobject name="MyForm">
 <center><webobject name="SubmitButton"/><webobject name="IsLoggedIn"> <webobject name="LogoutButton"/></webobject></center>
 </webobject>
-<wo:if condition="$isAdminUser"><h3>Exception Details</h3><table>
+</div></div>
+
+<wo:if condition="$isAdminUser"><div class="module"><h2>Exception Details</h2><table>
 <p><b>Error:</b> <wo:str value="$exception.getClass.getName"/></p>
 <wo:if condition="$exception.getMessage">
 <p><b>Reason:</b> <wo:str value="$exception.getMessage"/></p></wo:if>
@@ -31,7 +28,6 @@ If you continue to experience problems, you should logout.
   <td><wo:str value="$errorline.methodName"/></td>
   <td><wo:str value="$errorline.lineNumber"/></td>
 </tr></wo>
-</table></wo:if>
-</td></tr></table>
-<webobject name="Footer"/>
+</table></div></wo:if>
+</div></div></div><webobject name="Footer"/>
 </webobject>
