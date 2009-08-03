@@ -1,0 +1,6 @@
+Link : WOHyperlink {
+    action = performAction;
+    class = properties.cssClass;
+    style = properties.style;
+    onclick = "~jsWrapperID + '.selectOnlyObjectAtIndexInBatch(' + ~indexInBatch + ', { synchronous: true });'";
+}

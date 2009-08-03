@@ -265,7 +265,8 @@ public class WCTable extends WOComponent
         String sortingKeyPath = (String) columnInRepetition.objectForKey(
                 "sortingKeyPath");
         
-        return (sortingKeyPath != null || !keyPath.startsWith("~"));
+        return (sortingKeyPath != null ||
+                (keyPath != null && !keyPath.startsWith("~")));
     }
 
 

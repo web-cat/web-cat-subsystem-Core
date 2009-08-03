@@ -29,7 +29,8 @@ import com.webobjects.foundation.NSDictionary;
 
 //------------------------------------------------------------------------
 /**
- * A cell that contains a simple string value.
+ * A cell containing a formatted string value that can be clicked on to perform
+ * an action.
  *
  * <p><b>Cell Properties</b></p>
  * <ul>
