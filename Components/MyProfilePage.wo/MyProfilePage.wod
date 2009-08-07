@@ -33,6 +33,16 @@ CourseName: WOString {
 	value = aCourseOffering.course.name;
 }
 
+CustomBackgroundInfo: net.sf.webcat.core.PopUpInfo {
+    title   = "Custom Background URL";
+    message = "You can provide a URL to an external image you wish to use as the background image on Web-CAT.  This image will be used instead of the default background for your selected theme.  You can use a URL to a publicly available image on the web, or to one you have uploaded to your personal web space on another server.";
+}
+
+CustomCssInfo: net.sf.webcat.core.PopUpInfo {
+    title   = "Custom CSS URL";
+    message = "You can provide a URL to an external CSS (Cascading Style Sheet) file you have uploaded to your personal web space on another server.  Using CSS, you can override the look of most features in Web-CAT&apos;s user interface.";
+}
+
 DateFormat: WOPopUpButton {
     list		  = user.authenticationDomain.dateFormats;
     item   		  = aFormat;
