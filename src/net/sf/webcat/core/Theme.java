@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2008 Virginia Tech
+ |  Copyright (C) 2008-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,18 +22,17 @@
 package net.sf.webcat.core;
 
 import java.io.File;
-import org.apache.log4j.Logger;
-import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.foundation.ERXValueUtilities;
 
 // -------------------------------------------------------------------------
 /**
- * TODO: place a real description here.
+ * Represents a theme (stored in the Core framework).
  *
  * @author
- * @version $Id$
+ *  @author Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class Theme
     extends _Theme
@@ -138,10 +137,32 @@ public class Theme
 
 
     // ----------------------------------------------------------
+    /**
+     * Provided for OGNL compatibility of the pseudo-key .inherit.
+     * WO will correctly use valueForKey()/valueForKeyPath(), but
+     * OGNL won't, so we need this stub for evaluating OGNL expressions
+     * using the .inherit key.
+     */
+    public Object inherit()
+    {
+        return valueForKey(INHERIT_KEY);
+    }
+
+
+    // ----------------------------------------------------------
     public Object valueForKey(String key)
     {
-        if (INHERIT_PREFIX.equals(key))
+        if (INHERIT_KEY.equals(key))
         {
+            if (inheriter == null)
+            {
+                inheriter = new PropertyInheriter();
+            }
+            return inheriter;
+        }
+        else if (key.startsWith(INHERIT_PREFIX))
+        {
+            key = key.substring(INHERIT_PREFIX_LEN);
             if (inheriter == null)
             {
                 inheriter = new PropertyInheriter();
@@ -158,7 +179,11 @@ public class Theme
     // ----------------------------------------------------------
     public void takeValueForKey(Object value, String key)
     {
-        if (key.startsWith(INHERIT_PREFIX))
+        if (key.equals(INHERIT_KEY))
+        {
+            throw new IllegalArgumentException("cannot set the .inherit key");
+        }
+        else if (key.startsWith(INHERIT_PREFIX))
         {
             key = key.substring(INHERIT_PREFIX_LEN);
         }
@@ -171,6 +196,7 @@ public class Theme
     {
         if (keyPath.startsWith(INHERIT_PREFIX))
         {
+            keyPath = keyPath.substring(INHERIT_PREFIX_LEN);
             if (inheriter == null)
             {
                 inheriter = new PropertyInheriter();
@@ -419,11 +445,10 @@ public class Theme
         // ----------------------------------------------------------
         public Object valueForKeyPath(String keyPath)
         {
-            Object result = Theme.this.valueForKeyPath(
-                keyPath.substring(INHERIT_PREFIX_LEN));
+            Object result = Theme.this.valueForKeyPath(keyPath);
             if (result == null && parent() != null)
             {
-                result = parent().valueForKeyPath(keyPath);
+                result = parent().valueForKeyPath(INHERIT_PREFIX + keyPath);
             }
             return result;
         }
@@ -439,11 +464,10 @@ public class Theme
         // ----------------------------------------------------------
         public Object valueForKey(String key)
         {
-            Object result = Theme.this.valueForKey(
-                key.substring(INHERIT_PREFIX_LEN));
+            Object result = Theme.this.valueForKey(key);
             if (result == null && parent() != null)
             {
-                result = parent().valueForKey(key);
+                result = parent().valueForKey(INHERIT_PREFIX + key);
             }
             return result;
         }
@@ -460,6 +484,7 @@ public class Theme
 
     private static NSArray<Theme> themes;
     private static File themeBaseDir;
-    private static final String INHERIT_PREFIX = "inherit.";
+    private static final String INHERIT_KEY    = "inherit";
+    private static final String INHERIT_PREFIX = INHERIT_KEY + ".";
     private static final int INHERIT_PREFIX_LEN = INHERIT_PREFIX.length();
 }

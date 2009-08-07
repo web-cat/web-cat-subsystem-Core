@@ -257,7 +257,7 @@ p {
 .poweredby a {
 	display: block;
 	float: right;
-	margin: 1.5em;
+	margin: 0 0 1.5em 1.5em;
 }
 
 /* .module > h1:first-child { margin-top: 0; } */
@@ -306,13 +306,16 @@ img.icon.so, input.icon.so { padding-bottom: -2px; padding-top: 2px; }
 
 .NoticePanel {
 	display: block;
-	margin: 0;
+	margin: 0 0 1em 0;
 	padding: 8px;
     background: #e9eef3;
     border-top: 4px solid #aec9ef;
     border-bottom: 4px solid #aec9ef;
     color: black;
 }
+
+.NoticePanel b, .NoticePanel strong { color: black; }
+.NoticePanel a { color: blue; }
 
 .NoticePanel.error {
     background-color: #f7f1ef;
@@ -366,6 +369,19 @@ table {	border-collapse: collapse;
 table.layout {	border: none;}table th {	padding: 0.1em .6em;}
 
 table td {	padding: 0.1em .6em;}
+
+.theme-thumb {
+    float: left;
+    margin-right: 1.5em;
+    width: 45%;
+    border: 1px solid transparent;
+}
+
+.theme-thumb.selected {
+    border: 1px dotted red;
+}
+
+.theme-thumb td { vertical-align: top; padding: 0.5em; }
 
 
 	/*

@@ -17,6 +17,8 @@
     description      = "A light blue-toned background, with contrasting dark
         text.";
     credits          = "Brought to you by ...";
+    preview          = "dream-way-preview.png";
+    thumb            = "dream-way-thumb.png";
 
     extends = nihilo-dark;
     cssOrder = (

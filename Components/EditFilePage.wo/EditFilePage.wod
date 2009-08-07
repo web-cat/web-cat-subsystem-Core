@@ -1,5 +1,5 @@
-Cancel: WOSubmitButton {
-    value  = "Cancel";
+Cancel: WCButton {
+    label  = "Cancel";
     action = cancelEdit;
 }
 
@@ -17,13 +17,13 @@ Page: net.sf.webcat.core.PageWithNavigation {
     sideStepTitle = sideStepTitle;
 }
 
-SaveAndContinue: WOSubmitButton {
-    value  = "Save and Keep Editing";
+SaveAndContinue: WCButton {
+    label  = "Save and Keep Editing";
     action = saveAndContinue;
 }
 
-SaveAndDone: WOSubmitButton {
-    value  = "Save and Close File";
+SaveAndDone: WCButton {
+    label  = "Save and Close File";
     action = saveAndDone;
 }
 
@@ -32,7 +32,7 @@ Time: WOString {
     formatter = session.timeFormatter;
 }
 
-WizardForm: WOForm {
+WizardForm: WCForm {
     multipleSubmit = true;
     action         = saveAndDone;
 

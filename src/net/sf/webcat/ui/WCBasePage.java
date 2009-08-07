@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -30,6 +30,8 @@ import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSMutableArray;
 import java.net.URL;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import net.sf.webcat.core.Application;
 import net.sf.webcat.core.Session;
 import net.sf.webcat.core.Theme;
@@ -72,7 +74,8 @@ import org.apache.log4j.Logger;
  * </table>
  *
  * @author Tony Allevato
- * @version $Id$
+ * @author Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class WCBasePage
     extends WOComponent
@@ -96,6 +99,7 @@ public class WCBasePage
     public String title;
     public String extraBodyCssClass;
     public String extraRequires;
+    public String extraCssFiles;
     public String pageScriptName;
     public boolean includePageWrapping = true;
 
@@ -116,7 +120,7 @@ public class WCBasePage
         {
             pageScriptName = DEPLOYMENT_SCRIPT_NAME;
         }
-        
+
         log.debug( "nowrap = "
                    + context.request().stringFormValueForKey( "nowrap" ) );
         includePageWrapping =
@@ -298,6 +302,105 @@ public class WCBasePage
 
 
     // ----------------------------------------------------------
+    public String extraCssLinkTags()
+    {
+        String result = null;
+        if (extraCssFiles != null)
+        {
+            String[] links = extraCssFiles.split(";");
+            StringBuffer buf = new StringBuffer(80 * links.length);
+            for (String link : links)
+            {
+                if (link != null && link.length() > 0)
+                {
+                    String file = link;
+                    String extra = "";
+                    Matcher m =
+                        Pattern.compile("^(.*)\\[([^\\]]*)\\]$").matcher(link);
+                    if (m.matches())
+                    {
+                        file = m.group(1);
+                        extra = m.group(2);
+                    }
+                    buf.append("<link rel=\"stylesheet\" type=\"text/css\""
+                        + "href=\"");
+                    buf.append(WCResourceManager.resourceURLFor(file, null));
+                    buf.append('\"');
+                    if (extra != null)
+                    {
+                        buf.append(' ');
+                        buf.append(extra);
+                    }
+                    buf.append("/>");
+                }
+            }
+            result = buf.toString();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean hasCustomExternalCssLinks()
+    {
+        return hasSession()
+            && ((Session)session()).user().preferences()
+                .valueForKey("customCss") != null;
+    }
+
+
+    // ----------------------------------------------------------
+    public String customExternalCssLinks()
+    {
+        String result = null;
+        String customCss = (String)((Session)session()).user().preferences()
+            .valueForKey("customCss");
+        if (customCss != null)
+        {
+            String[] links = customCss.split(";");
+            StringBuffer buf = new StringBuffer(80 * links.length);
+            for (String link : links)
+            {
+                if (link != null && link.length() > 0)
+                {
+                    String file = link;
+                    String extra = "";
+                    Matcher m =
+                        Pattern.compile("^(.*)\\[([^\\]]*)\\]$").matcher(link);
+                    if (m.matches())
+                    {
+                        file = m.group(1);
+                        extra = m.group(2);
+                    }
+                    buf.append("<link rel=\"stylesheet\" type=\"text/css\""
+                        + "href=\"");
+                    buf.append(file);
+                    buf.append('\"');
+                    if (extra != null)
+                    {
+                        buf.append(' ');
+                        buf.append(extra);
+                    }
+                    buf.append("/>");
+                }
+            }
+            result = buf.toString();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    public String customBackground()
+    {
+        return hasSession()
+            ? (String)((Session)session()).user().preferences()
+               .valueForKey("customBackgroundUrl")
+            : null;
+    }
+
+
+    // ----------------------------------------------------------
     public Theme theme()
     {
         if (hasSession())
@@ -336,7 +439,7 @@ public class WCBasePage
     {
         WOComponent root = this;
         while (root.parent() != null) root = root.parent();
-        
+
         return directory + "/" + root.getClass().getSimpleName() + "." +
             extension;
     }

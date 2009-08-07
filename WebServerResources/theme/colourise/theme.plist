@@ -17,6 +17,8 @@
     description      = "A dark black background with a color spectrum highlight
         and contrasting light grey text.";
     credits          = "Brought to you by ...";
+    preview          = "colourise-preview.png";
+    thumb            = "colourise-thumb.png";
 
     extends = nihilo-dark;
     cssOrder = (

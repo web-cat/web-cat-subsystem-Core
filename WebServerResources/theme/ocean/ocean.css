@@ -159,6 +159,9 @@ TR.oe { background-color: #faa; }TR.ee { background-color: #f99; }TR.oc { back
 /* deprecated
 TD.n  { text-align: right;  }TD.s  { text-align: center; }TD.L  { text-align: left;   }TD.R  { text-align: right;  }*/
 
+.theme-thumb.selected { border: 1px solid #ccc; }
+
+
 	/*
 	================================================================== */
 	/* @group Mini-Histogram

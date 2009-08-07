@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -31,12 +31,13 @@ import org.apache.log4j.Logger;
 
 //-------------------------------------------------------------------------
 /**
-* Represents a standard Web-CAT page that has not yet been implemented
-* (is "to be defined").
-*
-*  @author Stephen Edwards
-*  @version $Id$
-*/
+ * Represents a standard Web-CAT page that has not yet been implemented
+ * (is "to be defined").
+ *
+ *  @author Stephen Edwards
+ * @author Last changed by $Author$
+ * @version $Revision$, $Date$
+ */
 public class MyProfilePage
     extends WCComponent
 {
@@ -61,6 +62,8 @@ public class MyProfilePage
     public int                 index;
     public AuthenticationDomain.TimeZoneDescriptor zone;
     public AuthenticationDomain.TimeZoneDescriptor selectedZone;
+    public String              backgroundUrl;
+    public String              extraCss;
 
     // Display groups
     public WODisplayGroup      enrolledInDisplayGroup;
@@ -72,6 +75,7 @@ public class MyProfilePage
     public String              aFormat;
     public User                anInstructor;
     public Theme               aTheme;
+    public boolean             openThemes;
 
 
     //~ Methods ...............................................................
@@ -106,6 +110,20 @@ public class MyProfilePage
         user().setTimeZoneName( selectedZone.id );
         applyLocalChanges();
         wcSession().clearCachedTimeFormatter();
+        openThemes = false;
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public WOComponent applyThemeCustomizations()
+    {
+        log.debug( "applyThemeCustomizations()" );
+        user().preferences().takeValueForKey(
+            backgroundUrl, "customBackgroundUrl");
+        user().preferences().takeValueForKey(extraCss, "customCss");
+        user().savePreferences();
+        openThemes = true;
         return null;
     }
 
@@ -124,6 +142,7 @@ public class MyProfilePage
     public boolean applyLocalChanges()
     {
         log.debug( "applyLocalChanges()" );
+        openThemes = false;
         User u = user();
         String lcPassword = ( newPassword1 == null )
             ? null
@@ -323,6 +342,7 @@ public class MyProfilePage
                 ? Theme.defaultTheme()
                 : user().theme());
         log.debug("after preview, session theme = " + wcSession().theme());
+        openThemes = true;
         return null;
     }
 
@@ -330,6 +350,7 @@ public class MyProfilePage
     // ----------------------------------------------------------
     public WOComponent changeTheme()
     {
+        user().setTheme(aTheme);
         log.debug("Changing theme, before = " + user().theme());
         log.debug("user ec = " + user().editingContext()
             + ", theme ec = "
@@ -346,6 +367,7 @@ public class MyProfilePage
         log.debug("Changing theme, session theme = " + wcSession().theme());
         log.debug("sesssion theme ec = " + wcSession().theme().editingContext());
         log.debug("sharing ");
+        openThemes = true;
         return null;
     }
 

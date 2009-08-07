@@ -22,42 +22,42 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <wo:net.sf.webcat.core.WCPageModule title="Your Courses" open="false">
 <webobject name="EnrolledInCourses">
 <p>You are currently <b>enrolled in</b> these courses:</p>
-<div class="shadow"><table><tbody><tr><th>Course</th><th>Name</th><th>Instructor</th></tr>
+<table><thead><tr><th>Course</th><th>Name</th><th>Instructor</th></tr></thead><tbody>
 <webobject name="EnrollmentRepetition">
 <webobject name="TR">
 <td><webobject name="CompactName"/></td>
 <td><webobject name="CourseName"/></td>
 <td><webobject name="InstructorRepetition"><webobject name="InstructorName"/>
 </webobject></td>
-</webobject></webobject></tbody></table></div><div class="spacer">&nbsp;</div>
+</webobject></webobject></tbody></table>
 </webobject><webobject name="NotEnrolledInCourses">
 <p>You are not currently <b>enrolled in</b> any courses.</p>
 </webobject>
 <webobject name="CanTA">
 <webobject name="TAInCourses">
 <p>You are a <b>TA</b> for these courses:</p>
-<div class="shadow"><table><tbody><tr><th>Course</th><th>Name</th><th>Instructor</th></tr>
+<table><thead><tr><th>Course</th><th>Name</th><th>Instructor</th></tr></thead><tbody>
 <webobject name="TARepetition">
 <webobject name="TR">
 <td><webobject name="CompactName"/></td>
 <td><webobject name="CourseName"/></td>
 <td><webobject name="InstructorRepetition"><webobject name="InstructorName"/>
 </webobject></td>
-</webobject></webobject></tbody></table></div><div class="spacer">&nbsp;</div>
+</webobject></webobject></tbody></table>
 </webobject><webobject name="NotTAInCourses">
 <p>You are not currently registered as the <b>TA</b> for any courses.</p>
 </webobject></webobject>
 <webobject name="CanTeach">
 <webobject name="TeachingCourses">
 <p>You are an <b>instructor</b> for these courses:</p>
-<div class="shadow"><table><tbody><tr><th>Course</th><th>Name</th><th>Instructor</th></tr>
+<table><thead><tr><th>Course</th><th>Name</th><th>Instructor</th></tr></thead><tbody>
 <webobject name="TeachingRepetition">
 <webobject name="TR">
 <td><webobject name="CompactName"/></td>
 <td><webobject name="CourseName"/></td>
 <td><webobject name="InstructorRepetition"><webobject name="InstructorName"/>
 </webobject></td>
-</webobject></webobject></tbody></table></div>
+</webobject></webobject></tbody></table>
 </webobject><webobject name="NotTeachingCourses">
 <p>You are not currently registered as the <b>instructor</b> for any courses.</p>
 </webobject></webobject>
@@ -73,17 +73,27 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 </table></webobject>
 </wo:net.sf.webcat.core.WCPageModule>
 
-<wo:net.sf.webcat.core.WCPageModule title="Display Theme" open="false">
-<wo:WOForm action="$previewTheme">
-<table style="border: none;"><tbody>
-<tr><td class="R">Use theme:</td>
-    <td><wo:select list="$allThemes" item="$aTheme" displayString="$aTheme.name" selection="$user.theme" noSelectionString="default (Dream Way)"/></td></tr>
-<!--<tr><td class="R">Description:</td>
-    <td><wo name="ThemeDescription"/></td></tr>-->
-<tr><td></td><td><wo:submit value="Preview" action="$previewTheme"/>
-    <wo:submit value="Apply" action="$changeTheme"/></td></tr>
-</tbody></table>
-</wo:WOForm>
+<wo:net.sf.webcat.core.WCPageModule title="Display Theme" open="$openThemes">
+<wo:loop list="$allThemes" item="$aTheme">
+  <wo name="ThemeTable"><tr><td>
+    <wo name="PreviewLink"><wo name="ThemeThumb"/></wo>
+    </td><td><h3><wo:str value="$aTheme.name"/></h3>
+    <wo:str value="$aTheme.inherit.properties.description"/><br/>
+    <wo:if condition="~(aTheme.id == session.theme.id)">
+    (currently selected)
+    </wo:if><wo:else><wo:link action="$changeTheme">Select</wo:link>
+    </wo:else><wo:if condition="~(@net.sf.webcat.core.Theme@defaultTheme().id() == aTheme.id)"> (default)</wo:if></td></tr>
+  </wo>
+</wo:loop>
+<h2 style="clear:both">Customize Your Selected Theme</h2>
+<wo:WCForm><table style="border:none;">
+<tr><td class="R">Use a custom background URL:</td>
+    <td><wo:WOTextField value="$backgroundUrl" size="60"/></td></tr>
+<tr><td>Add a custom CSS URL:</td>
+    <td><wo:WOTextField value="$extraCss" size="60"/></td></tr>
+<tr><td></td><td>
+<wo:WCButton action="$applyThemeCustomizations">Save</wo:WCButton>
+</td></tr></table></wo:WCForm>
 </wo:net.sf.webcat.core.WCPageModule>
 
 <wo:net.sf.webcat.core.WCPageModule title="Personalized Service URLs" open="false">

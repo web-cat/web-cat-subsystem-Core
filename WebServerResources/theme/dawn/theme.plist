@@ -16,6 +16,8 @@
     authorUid        = edwards;
     description      = "A dark dawn sky, with contrasting white text.";
     credits          = "Brought to you by ...";
+    preview          = "dawn-preview.png";
+    thumb            = "dawn-thumb.png";
 
     extends = ocean;
     cssOrder = (

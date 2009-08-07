@@ -7,8 +7,8 @@
 <wo name="DojoCss"/>
 <wo name="DojoThemeCss"/>
 <wo name="DojoxFileInputCss"/>
-<wo:str escapeHTML="false" value="$theme.linkTags"/>
-<wo:if condition="$doesPageSpecificStylesheetExist"><wo name="PageSpecificCss"/></wo:if>
+<wo:str escapeHTML="false" value="$theme.linkTags"/><wo:str escapeHTML="false" value="$extraCssLinkTags"/>
+<wo:if condition="$doesPageSpecificStylesheetExist"><wo name="PageSpecificCss"/></wo:if><wo:if condition="$hasCustomExternalCssLinks"><wo:str escapeHTML="false" value="$customExternalCssLinks"/></wo:if>
 <wo name="DojoJs"/>
 <wo name="BasePageJs"/>
 <script type="text/javascript">
@@ -20,8 +20,11 @@ dojo.addOnLoad(function() {
 // <!-- END_ON_LOAD -->
 });
 </script>
-<wo:if condition="$doesPageSpecificJavascriptExist"><wo name="PageSpecificJs"/></wo:if>
-</head>
+<wo:if condition="$doesPageSpecificJavascriptExist"><wo name="PageSpecificJs"/></wo:if><wo:if condition="~customBackground != null">
+<style type="text/css">
+body { background-image: url(<wo:str escapeHTML="false" value="$customBackground"/>); }
+</style>
+</wo:if></head>
 <wo:WOGenericContainer elementName="body" class="$bodyCssClass">
 <wo:WOComponentContent />
 </wo:WOGenericContainer>

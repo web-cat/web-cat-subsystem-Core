@@ -1,7 +1,6 @@
-<wo:net.sf.webcat.core.WCPageWithNavigation>
+<wo:WCPageWithNavigation>
 
-<div class="module">
-<div dojoType="dijit.TitlePane" title="Announcements" open="true">
+<wo:WCPageModule title="Typography">
 
 <p>This page presents most of typographical aspects of the new
 Web-CAT theme.</p>
@@ -30,11 +29,10 @@ If youre are <b>new to Web-CAT</b>, you might want to watch this <a href="http:/
 <p>Here is some <span class="check">green text</span> and some
 <span class="warn">red text</span>.</p>
 
-</div></div>
+</wo:WCPageModule>
 
 <!-- ====================================================================== -->
-<div class="module">
-<div dojoType="dijit.TitlePane" title="Headings" open="false">
+<wo:WCPageModule title="Headings" open="false">
 
 <h1>This is a Heading 1</h1>
 <p>Lorem tortor Curabitur urna interdum Maecenas ut felis Sed euismod
@@ -88,31 +86,42 @@ consectetuer malesuada Phasellus Curabitur.</p>
 id. Congue Quisque augue elit dolor nibh id lobortis egestas tristique
 fringilla. Laoreet elit.</p>
 
-</div></div>
+</wo:WCPageModule>
 
 <!-- ====================================================================== -->
-<div class="module">
-<div dojoType="dijit.TitlePane" title="Notice Panels" open="false">
+<wo:WCPageModule title="Notice Panels" open="false">
 
-<p class="error">This is a sample error message. Use <strong>&lt;p class="error"&gt;Your error message goes here!&lt;/p&gt;</strong>.</p>
+<ul class="NoticePanel error" style="margin-bottom: 1.5em;">
+<li class="error">This is a sample error message.</li>
+<li class="warning">This is a sample warning message.</li>
+<li class="info">This is a sample information message.</li>
+<li class="check">This is a sample confirmation message.</li>
+</ul>
 
-<p class="message">This is a sample info message. Use <strong>&lt;p class="message"&gt;Your info message goes here!&lt;/p&gt;</strong>.</p>
+<ul class="NoticePanel error" style="margin-bottom: 1.5em;">
+<li>This is a sample error message in an error notice panel.  The type of
+    panel used when there are multiple messages is usually determined by
+    the most severe message in the panel.</li>
+</ul>
 
-<p class="tips">This is a sample tips message. Use <strong>&lt;p class="tips"&gt;Your tips goes here!&lt;/p&gt;</strong>.</p>
+<ul class="NoticePanel warning" style="margin-bottom: 1.5em;">
+<li class="warning">This is a sample warning message.</li>
+</ul>
 
-<p class="feed">This is a sample rss message. Use <strong>&lt;p class="feed"&gt;Your tips goes here!&lt;/p&gt;</strong>.</p>
+<ul class="NoticePanel info" style="margin-bottom: 1.5em;">
+<li class="info">This is a sample info message.</li>
+</ul>
 
-<p class="stickynote">This is a sample clip note. Use <strong>&lt;p class="stickynote"&gt;Your clip note goes here!&lt;/p&gt;</strong> to form a clip note!</p>
-
-<p class="download">This is a sample download. Use <strong>&lt;div class="download"&gt;&lt;p&gt;Your download goes here!&lt;/p&gt;</strong> to form a download!</p>
+<ul class="NoticePanel check">
+<li class="check">This is a sample confirmation message.</li>
+</ul>
 
 <blockquote>This is a sample Blockquote. Use <strong>&lt;blockquote&gt;Your quote goes here!&lt;/blockquote&gt;</strong> to form a quote!</blockquote>
 
-</div></div>
+</wo:WCPageModule>
 
 <!-- ====================================================================== -->
-<div class="module">
-<div dojoType="dijit.TitlePane" title="Lists" open="false">
+<wo:WCPageModule title="Lists" open="false">
 
 <ol>
 <li>This is a sample <strong>Ordered List</strong>.</li>
@@ -155,11 +164,10 @@ fringilla. Laoreet elit.</p>
 
 <p class="blocknumber"><span class="bignumber">03</span>This is a sample block number. Use <strong>&lt;p class="blocknumber"&gt;&lt;span class="bignumber"&gt;03.&lt;/span&gt;Your content goes here!&lt;/p&gt;</strong> to form a block number!</p>
 
-</div></div>
+</wo:WCPageModule>
 
 <!-- ====================================================================== -->
-<div class="module">
-<div dojoType="dijit.TitlePane" title="Code Displays" open="false">
+<wo:WCPageModule title="Code Displays" open="false">
 
 <p>Below is a sample of <strong>&lt;pre&gt;</strong> or <strong>&lt;div class="code"&gt;</strong></p>
 <pre>#ja-rightcol {
@@ -169,11 +177,11 @@ fringilla. Laoreet elit.</p>
 }
 </pre>
 
-</div></div>
+</wo:WCPageModule>
 
 <!-- ====================================================================== -->
-<div class="module">
-<div dojoType="dijit.TitlePane" title="Tables" open="false">
+<wo:WCPageModule title="Tables" open="false">
+<p>This table has a &lt;thead&gt;:</p>
 <table><thead>
 <tr><th colspan="2">System Status</th></tr></thead><tbody>
 <tr class="o">
@@ -186,6 +194,36 @@ fringilla. Laoreet elit.</p>
 <tr class="e">
   <td>Queued jobs</td><td class="n">0</td>
 </tr></tbody></table>
-</div></div>
 
-</wo:net.sf.webcat.core.WCPageWithNavigation>
+<p>This table does not:</p>
+<table>
+<tr><th colspan="2">System Status</th></tr><tbody>
+<tr class="o">
+  <td>Up since</td><td class="n">10/17/08 04:03AM</td>
+</tr><tr class="e">
+  <td>Next scheduled down time</td><td class="n">4:00AM</td>
+</tr><tr class="o">
+  <td>Current users</td><td class="n">16</td>
+</tr>
+<tr class="e">
+  <td>Queued jobs</td><td class="n">0</td>
+</tr></tbody></table>
+
+
+<p>This table has a link in the header:</p>
+<table><thead>
+<tr><th colspan="2"><a href="">System Status</a></th></tr></thead><tbody>
+<tr class="o">
+  <td>Up since</td><td class="n">10/17/08 04:03AM</td>
+</tr><tr class="e">
+  <td>Next scheduled down time</td><td class="n">4:00AM</td>
+</tr><tr class="o">
+  <td>Current users</td><td class="n">16</td>
+</tr>
+<tr class="e">
+  <td>Queued jobs</td><td class="n">0</td>
+</tr></tbody></table>
+
+</wo:WCPageModule>
+
+</wo:WCPageWithNavigation>

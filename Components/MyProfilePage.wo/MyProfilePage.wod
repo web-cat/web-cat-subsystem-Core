@@ -1,11 +1,11 @@
-ApplyChanges: WOSubmitButton {
+ApplyChanges: WCButton {
 	action = apply;
-	value  = " Apply ";
+	value  = "Save";
 }
 
-ApplyTimeFormats: WOSubmitButton {
+ApplyTimeFormats: WCButton {
 	action = applyTimeFormats;
-	value  = " Apply ";
+	value  = "Save";
 }
 
 BlueJLinkInfo: net.sf.webcat.core.PopUpInfo {
@@ -133,7 +133,9 @@ NotTeachingCourses: WOConditional {
 }
 
 Page : net.sf.webcat.core.WCPageWithNavigation {
-	title = "Manage Your Profile";
+	title         = "Manage Your Profile";
+	extraRequires = "dojox.image.Lightbox";
+	extraCssFiles = "Core.framework/WebServerResources/dojox/image/resources/Lightbox.css";
 }
 
 TAInCourses: WOConditional {
@@ -159,6 +161,24 @@ TeachingRepetition: WORepetition {
 ThemeDescription: WOString {
     value = "~(user.theme == null) ? session.theme.inherit.properties.description : user.theme.inherit.properties.description";
     escapeHTML = false;
+}
+
+PreviewLink: WOHyperlink {
+    href     = "~@net.sf.webcat.core.WCResourceManager@resourceURLFor(\"Core.framework/WebServerResources/theme/\" + aTheme.dirName + \"/\" + aTheme.inherit.properties.preview, null)";
+    dojoType = "dojox.image.Lightbox";
+    group    = "Themes";
+    title    = aTheme.name;
+}
+
+ThemeTable: WOGenericContainer {
+    elementName = "table";
+/*    class = "theme-thumb";*/
+    class = "~((aTheme.id == session.theme.id) ? \"theme-thumb selected\" : \"theme-thumb\")";
+}
+
+ThemeThumb: WOImage {
+    filename  = "~\"theme/\" + aTheme.dirName + \"/\" + aTheme.inherit.properties.thumb";
+    framework = "Core";
 }
 
 TimeFormat: WOPopUpButton {

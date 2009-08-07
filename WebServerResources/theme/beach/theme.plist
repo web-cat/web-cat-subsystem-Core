@@ -17,6 +17,8 @@
     description      = "Dark text on a light background, with an airy,
         nature-inspired outdoor background at the beach.";
     credits          = "Brought to you by ...";
+    preview          = "beach-preview.png";
+    thumb            = "beach-thumb.png";
 
     extends = nihilo-dark;
     cssOrder = (

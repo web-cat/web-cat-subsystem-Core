@@ -1,33 +1,18 @@
-Exclamation: WOImage {
-    alt       = "!";
-    border    = "0";
-    filename  = "exclamation.gif";
-    framework = "JavaWOExtensions";
-    height    = "32";
-    name      = "!";
-    width     = "32";
-}
-
-Form: WOForm {
+Form: WCForm {
 	multipleSubmit = true;
 }
 
-Message: WOString {
-	escapeHTML = false;
-	value = message;
-}
-
-OKButton: WOSubmitButton {
+OKButton: WCButton {
 	action = okClicked;
-	value = "  OK  ";
+	label  = "OK";
+	class  = "pos";
 }
 
-CancelButton: WOSubmitButton {
+CancelButton: WCButton {
 	action = cancelClicked;
-	value = " Cancel ";
+	label  = "Cancel";
+	class  = "neg";
 }
 
-Page: net.sf.webcat.core.PageWithNavigation {
-    sideStepTitle = title;
-    hideSteps     = hideSteps;
+Page: net.sf.webcat.core.WCPageWithNavigation {
 }

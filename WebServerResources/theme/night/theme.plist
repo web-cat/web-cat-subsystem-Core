@@ -16,6 +16,8 @@
     authorUid        = edwards;
     description      = "A dark night time sky, with contrasting white text.";
     credits          = "Brought to you by ...";
+    preview          = "night-preview.png";
+    thumb            = "night-thumb.png";
 
 //    extends = ocean;
     extends = colourise;

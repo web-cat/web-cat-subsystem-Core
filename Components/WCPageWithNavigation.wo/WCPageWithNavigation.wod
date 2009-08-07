@@ -1,6 +1,10 @@
 BasePage: net.sf.webcat.ui.WCBasePage {
     title                = title;
     extraBodyCssClass    = extraBodyCssClass;
+    extraRequires        = extraRequires;
+    extraCssFiles        = extraCssFiles;
+    pageScriptName       = pageScriptName;
+    includePageWrapping  = includePageWrapping;
 }
 
 Errors: net.sf.webcat.core.WCErrorDictionaryPanel {

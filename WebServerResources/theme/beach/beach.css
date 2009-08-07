@@ -172,6 +172,15 @@ table th {
     background-image: url(../base/images/black-20.png);
     color: #111;
 }
+/*
+table th a, table th a:active, table th a:link {
+    color: #cce;
+}
+table th a:hover {
+    background-color: #55d;
+    color: white;
+    border-bottom: 1px dotted white;
+}*/
 
 table thead {
     border-bottom: 1px solid #aaa;
@@ -195,6 +204,11 @@ TD.s  { text-align: center; }
 TD.L  { text-align: left;   }
 TD.R  { text-align: right;  }
 */
+
+.theme-thumb.selected {
+    border: 1px solid #aaa;
+}
+
 
     /*
     ================================================================== */

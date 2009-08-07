@@ -17,6 +17,8 @@
     description      = "A deep, blue underwater background, with contrasting
         white text.";
     credits          = "Brought to you by ...";
+    preview          = "ocean-preview.png";
+    thumb            = "ocean-thumb.png";
 
     extends = nihilo-dark;
     cssOrder = (

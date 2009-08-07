@@ -16,18 +16,19 @@ If you continue to experience problems, you should logout.
 </webobject>
 </div></div>
 
-<wo:if condition="$isAdminUser"><div class="module"><h2>Exception Details</h2><table>
+<wo:if condition="$isAdminUser"><div class="module"><h2>Exception Details</h2>
 <p><b>Error:</b> <wo:str value="$exception.getClass.getName"/></p>
 <wo:if condition="$exception.getMessage">
 <p><b>Reason:</b> <wo:str value="$exception.getMessage"/></p></wo:if>
-<tr><th style="background-color:#363;color:#cfc;padding:0.1em .6em;text-align:left">Class</th>
-<th style="background-color:#363;color:#cfc;padding:0.1em .6em;text-align:left">Method</th>
-<th style="background-color:#363;color:#cfc;padding:0.1em .6em;text-align:left">Line</th></tr>
-<wo name="ReasonRepetition"><tr>
+<table><thead>
+<tr><th>Class</th>
+<th>Method</th>
+<th>Line</th></tr>
+</thead><tbody><wo name="ReasonRepetition"><tr>
   <td><wo:str value="$errorline.className"/></td>
   <td><wo:str value="$errorline.methodName"/></td>
   <td><wo:str value="$errorline.lineNumber"/></td>
 </tr></wo>
-</table></div></wo:if>
+</tbody></table></div></wo:if>
 </div></div></div><webobject name="Footer"/>
 </webobject>
