@@ -1,11 +1,13 @@
 ApplyChanges: WCButton {
 	action = apply;
-	value  = "Save";
+	label  = "Save";
+	class  = "pos";
 }
 
 ApplyTimeFormats: WCButton {
 	action = applyTimeFormats;
-	value  = "Save";
+	label  = "Save";
+    class  = "pos";
 }
 
 BlueJLinkInfo: net.sf.webcat.core.PopUpInfo {

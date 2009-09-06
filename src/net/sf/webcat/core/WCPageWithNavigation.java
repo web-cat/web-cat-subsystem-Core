@@ -34,7 +34,8 @@ import net.sf.webcat.ui.WCBasePage;
  * keys, which it passes on to its BarePage container.
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @author Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class WCPageWithNavigation
     extends WCBasePage
@@ -435,28 +436,28 @@ public class WCPageWithNavigation
     // ----------------------------------------------------------
     public boolean hasVisibleSecondaryTabs()
     {
-        boolean result = false;
+        int count = 0;
         Session session = (Session)session();
         if ( session.user() == null || session.user().restrictToStudentView() )
         {
-            NSArray<TabDescriptor> secondaries = session.tabs.selectedChild()
-                .children();
-            for ( int i = 0; i < secondaries.count(); i++ )
+            NSArray<TabDescriptor> secondaries = primaryTabItem.children();
+            for (TabDescriptor secondary : secondaries)
             {
-                TabDescriptor secondary = secondaries.objectAtIndex( i );
-                if ( secondary.accessLevel() == 0 )
+                if (secondary.accessLevel() == 0)
                 {
-                    result = true;
-                    break;
+                    count++;
+                    if (count > 1)
+                    {
+                        break;
+                    }
                 }
             }
         }
         else
         {
-            result = session.tabs.selectedChild().children()
-                .count() > 0;
+            count = primaryTabItem.children().count();
         }
-        return result;
+        return count > 1;
     }
 
 

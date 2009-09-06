@@ -80,10 +80,6 @@ PoweredByWO: WOImage {
 	width     = "125";
 }
 
-PoweredByWOLink: WOHyperlink {
-    href = "http://www.apple.com/webobjects/";
-}
-
 NeedsAuthList: WOConditional {
     condition = multipleAuthDomains;
 }

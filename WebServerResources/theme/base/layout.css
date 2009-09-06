@@ -232,6 +232,9 @@ h1 {
 p {
 	margin: 0 0 1.2em;
 }
+
+.batchnav p { margin: 0; }
+
 .module {
 	padding: 1em 1.5em 1em 1.5em;
 	margin-bottom: 1.5em;

@@ -3,7 +3,7 @@
 <p>You are <span class="hl"><webobject name="UserName"/></span> registered in
 the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <webobject name="Form1">
-<table style="border: none;">
+<table class="layout">
 <tr><td class="R">First name:</td><td><webobject name="FirstName"/></td></tr>
 <tr><td class="R">Last name:</td><td><webobject name="LastName"/></td></tr>
 <tr><td class="R">E-mail:</td><td><webobject name="Email"/></td></tr>
@@ -27,7 +27,7 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <webobject name="TR">
 <td><webobject name="CompactName"/></td>
 <td><webobject name="CourseName"/></td>
-<td><webobject name="InstructorRepetition"><webobject name="InstructorName"/>
+<td><webobject name="InstructorRepetition"><wo:if condition="$anInstructor.url"><webobject name="InstructorName"/></wo:if><wo:else><wo:str value="$anInstructor.shortName"/></wo:else>
 </webobject></td>
 </webobject></webobject></tbody></table>
 </webobject><webobject name="NotEnrolledInCourses">
@@ -64,7 +64,7 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 </wo:net.sf.webcat.core.WCPageModule>
 
 <wo:net.sf.webcat.core.WCPageModule title="Time Formats" open="false">
-<webobject name="Form2"><table style="border: none;">
+<webobject name="Form2"><table class="layout">
 <tr><td class="R">Time zone:</td><td><webobject name="TimeZone"/></td></tr>
 <tr><td class="R">Format:</td><td><webobject name="DateFormat"/>
   <webobject name="TimeFormat"/></td></tr>
@@ -86,7 +86,7 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
   </wo>
 </wo:loop>
 <h2 style="clear:both">Customize Your Selected Theme</h2>
-<wo:WCForm><table style="border:none;">
+<wo:WCForm><table class="layout">
 <tr><td class="R">Use a custom background URL:</td>
     <td><wo:WOTextField value="$backgroundUrl" size="60"/> <wo name="CustomBackgroundInfo"/></td></tr>
 <tr><td>Add a custom CSS URL:</td>
@@ -97,7 +97,7 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 </wo:net.sf.webcat.core.WCPageModule>
 
 <wo:net.sf.webcat.core.WCPageModule title="Personalized Service URLs" open="false">
-<table style="border: none;"><tbody>
+<table class="layout"><tbody>
 <tr><td class="R">BlueJ submission definitions:</td>
     <td><wo:link href="$bluejUrl">copy and paste this link</wo:link>
     <wo name="BlueJLinkInfo"/></td></tr>

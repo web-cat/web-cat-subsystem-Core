@@ -1,6 +1,7 @@
 Cancel: WCButton {
     label  = "Cancel";
     action = cancelEdit;
+    class  = "neg";
 }
 
 FileContents: WOText {
@@ -13,7 +14,7 @@ Filename: WOString {
     value = fileName;
 }
 
-Page: net.sf.webcat.core.PageWithNavigation {
+Page: net.sf.webcat.core.WCPageWithNavigation {
     sideStepTitle = sideStepTitle;
 }
 
@@ -25,6 +26,7 @@ SaveAndContinue: WCButton {
 SaveAndDone: WCButton {
     label  = "Save and Close File";
     action = saveAndDone;
+    class  = "pos";
 }
 
 Time: WOString {

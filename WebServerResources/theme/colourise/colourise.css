@@ -162,6 +162,10 @@ table th {
     color: white;
 }
 
+table th a, table th a:active, table th a:link {
+    color: #bcf;
+}
+
 table thead {
     border-bottom: 1px solid #211E20;
 }

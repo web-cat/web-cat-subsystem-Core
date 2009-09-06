@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -35,7 +35,8 @@ import org.apache.log4j.Logger;
  * semester).
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @author Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class CourseOffering
     extends _CourseOffering
@@ -200,7 +201,7 @@ public class CourseOffering
      *
      * @param user     The user to check
      * @return true if the user is a grader for the offering
-     * 
+     *
      * @deprecated Use the {@link #isGrader(User)} method instead.
      */
     @Deprecated
@@ -208,8 +209,8 @@ public class CourseOffering
     {
         return isGrader(user);
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Returns true if the given user is a grader (TA) for this
@@ -228,10 +229,10 @@ public class CourseOffering
     // ----------------------------------------------------------
     /**
      * Gets the array of graders (TAs) for this course offering.
-     * 
+     *
      * @return the array of users who are designated as graders for this
      *     course offering
-     *     
+     *
      * @deprecated Use the {@link #graders()} method instead.
      */
     @Deprecated
@@ -239,8 +240,8 @@ public class CourseOffering
     {
         return graders();
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /* (non-Javadoc)
      * @see net.sf.webcat.core._CourseOffering#setCourse(net.sf.webcat.core.Course)
@@ -279,7 +280,7 @@ public class CourseOffering
                 "Please provide a unique CRN to identify your course "
                 + "offering." );
         }
-        NSArray others = EOUtilities.objectsMatchingKeyAndValue(
+        NSArray<?> others = EOUtilities.objectsMatchingKeyAndValue(
             editingContext(), ENTITY_NAME, CRN_KEY, value );
         if (others.count() > 1
             || (others.count() == 1

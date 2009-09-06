@@ -145,6 +145,15 @@ label em { color: #e20; }
 
 table {	border: 1px solid #ccc;}table th {	background-image: url(../base/images/white-15.png);	color: #feb;}
 
+table th a, table th a:active, table th a:link {
+    color: #8cf;
+}
+table th a:hover {
+    color: white;
+    border-bottom: 1px dotted white;
+    background-image: url(../base/images/white-10.png);
+}
+
 table thead {
 	border-bottom: 1px solid #ccc;
 }

@@ -172,15 +172,14 @@ table th {
     background-image: url(../base/images/black-20.png);
     color: #111;
 }
-/*
+
 table th a, table th a:active, table th a:link {
-    color: #cce;
+    color: #118;
 }
 table th a:hover {
-    background-color: #55d;
-    color: white;
-    border-bottom: 1px dotted white;
-}*/
+    color: black;
+    border-bottom: 1px dotted black;
+}
 
 table thead {
     border-bottom: 1px solid #aaa;
