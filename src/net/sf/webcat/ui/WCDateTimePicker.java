@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,6 +22,7 @@
 package net.sf.webcat.ui;
 
 import java.util.GregorianCalendar;
+import java.util.TimeZone;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.foundation.NSTimestamp;
@@ -30,7 +31,7 @@ import com.webobjects.foundation.NSTimestamp;
 /**
  * Combines the Dojo date picker and time picker into a single component, with
  * a single {@code value} binding from which the values for both are obtained.
- * 
+ *
  * <h2>Bindings</h2>
  * <table>
  * <tr>
@@ -55,10 +56,16 @@ import com.webobjects.foundation.NSTimestamp;
  * <td>The width of the time part of the widget, specified as a string in CSS
  * units (that is, pixels, ems, a percentage, etc).</td>
  * </tr>
+ * <tr>
+ * <td>{@code timeZone}</td>
+ * <td>A {@link TimeZone} object defining the time zone
+ * for localizing the date and time.</td>
+ * </tr>
  * </table>
- * 
+ *
  * @author Tony Allevato
- * @version $Id$
+ * @author Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class WCDateTimePicker extends WOComponent
 {
@@ -67,7 +74,7 @@ public class WCDateTimePicker extends WOComponent
     // ----------------------------------------------------------
     /**
      * Creates a new date/time picker.
-     * 
+     *
      * @param context
      *            the context
      */
@@ -86,7 +93,8 @@ public class WCDateTimePicker extends WOComponent
 
     public NSTimestamp datePartOfValue;
     public NSTimestamp timePartOfValue;
-    
+    public TimeZone    timeZone;
+
 
     //~ Methods ...............................................................
 
@@ -94,7 +102,7 @@ public class WCDateTimePicker extends WOComponent
     /**
      * Gets a timestamp representing the combined date and time parts of the
      * date picker.
-     * 
+     *
      * @return the timestamp representing the combined values of the date part
      *         and the time part
      */
@@ -127,13 +135,13 @@ public class WCDateTimePicker extends WOComponent
     // ----------------------------------------------------------
     /**
      * Sets the date and time for the date picker.
-     * 
+     *
      * @param aValue an NSTimestamp
      */
     public void setValue(NSTimestamp aValue)
     {
         GregorianCalendar aValueCalendar = new GregorianCalendar();
-        
+
         if (aValue == null)
         {
             aValue = new NSTimestamp();
@@ -159,7 +167,7 @@ public class WCDateTimePicker extends WOComponent
                 .get(GregorianCalendar.MILLISECOND));
         timePartOfValue = new NSTimestamp(timePartCalendar.getTime());
     }
-    
+
 
     // ----------------------------------------------------------
     public String dateWidthStyle()
@@ -188,7 +196,7 @@ public class WCDateTimePicker extends WOComponent
         }
     }
 
-    
+
     //~ Static/instance variables .............................................
 
     private static final long serialVersionUID = 1L;

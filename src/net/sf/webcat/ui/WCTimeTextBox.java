@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,30 +23,31 @@ package net.sf.webcat.ui;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.TimeZone;
 import net.sf.webcat.ui._base.DojoFormElement;
 import net.sf.webcat.ui.util.DojoOptions;
 import com.webobjects.appserver.WOAssociation;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOElement;
 import com.webobjects.foundation.NSDictionary;
-import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSTimestamp;
 
 //------------------------------------------------------------------------
 /**
  * A text box that lets the user select a time from a popup control.
- * 
+ *
  * @author Tony Allevato
- * @version $Id$
+ * @author Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class WCTimeTextBox extends DojoFormElement
 {
     //~ Constructor ...........................................................
-    
+
     // ----------------------------------------------------------
     /**
      * Creates a new time text box.
-     * 
+     *
      * @param name
      * @param someAssociations
      * @param template
@@ -58,6 +59,7 @@ public class WCTimeTextBox extends DojoFormElement
 		super("input", someAssociations, template);
 
 		_dateformat = _associations.removeObjectForKey("dateformat");
+        _timeZone = _associations.removeObjectForKey("timeZone");
 	}
 
 
@@ -79,7 +81,27 @@ public class WCTimeTextBox extends DojoFormElement
         // requires that this be string in ISO date format, so we convert it
         // before writing it out.
 
-   		return ISO_TIME_FORMAT.format(value);
+	    synchronized (ISO_TIME_FORMAT)
+	    {
+	        if (_timeZone != null)
+	        {
+	            TimeZone tz =
+	                (TimeZone)_timeZone.valueInComponent(context.component());
+	            if (tz != null)
+	            {
+	                ISO_TIME_FORMAT.setTimeZone(tz);
+	            }
+	            else
+	            {
+                    ISO_TIME_FORMAT.setTimeZone(TimeZone.getDefault());
+	            }
+	        }
+            else
+            {
+                ISO_TIME_FORMAT.setTimeZone(TimeZone.getDefault());
+            }
+	        return ISO_TIME_FORMAT.format(value);
+	    }
 	}
 
 
@@ -92,19 +114,39 @@ public class WCTimeTextBox extends DojoFormElement
 
     	Object object;
 
-    	try
+    	synchronized (ISO_TIME_FORMAT)
     	{
-    		object = new NSTimestamp(ISO_TIME_FORMAT.parse(stringValue));
+            if (_timeZone != null)
+            {
+                TimeZone tz =
+                    (TimeZone)_timeZone.valueInComponent(context.component());
+                if (tz != null)
+                {
+                    ISO_TIME_FORMAT.setTimeZone(tz);
+                }
+                else
+                {
+                    ISO_TIME_FORMAT.setTimeZone(TimeZone.getDefault());
+                }
+            }
+            else
+            {
+                ISO_TIME_FORMAT.setTimeZone(TimeZone.getDefault());
+            }
+    	    try
+    	    {
+    	        object = new NSTimestamp(ISO_TIME_FORMAT.parse(stringValue));
+    	    }
+    	    catch (ParseException e)
+    	    {
+    	        object = null;
+    	    }
     	}
-    	catch(ParseException e)
-    	{
-    		object = null;
-    	}
-    	
+
     	return object;
     }
 
-    
+
 	// ----------------------------------------------------------
 	@Override
     public DojoOptions additionalConstraints(WOContext context)
@@ -113,12 +155,12 @@ public class WCTimeTextBox extends DojoFormElement
 
         DojoOptions manualConstraints = new DojoOptions();
 
-        if(_dateformat != null)
+        if (_dateformat != null)
         {
         	String dateFormat =
         		(String)_dateformat.valueInComponent(context.component());
 
-        	if(dateFormat != null)
+        	if (dateFormat != null)
         	{
                 manualConstraints.putValue("datePattern",
                         dateFormatToDatePattern(dateFormat));
@@ -128,18 +170,18 @@ public class WCTimeTextBox extends DojoFormElement
         return manualConstraints;
     }
 
-    
+
     // ----------------------------------------------------------
     /**
      * Converts an NSTimestampFormatter string into a JavaScript date format
      * string. This allows the dateformat binding to be used by Dojo for
      * validation.
-     * 
+     *
      * Only the following format tokens from NSTimestampFormatter are
      * translatable to a JavaScript format, and are therefore the only ones
      * that can be reliably used in a DateTextBox dateformat:
-     * %%, %a, %A, %b, %B, %d, %e, %H, %I, %m, %M, %p, %y, %Y 
-     * 
+     * %%, %a, %A, %b, %B, %d, %e, %H, %I, %m, %M, %p, %y, %Y
+     *
      * @param dateFormat the NSTimestampFormatter date format string
      * @return a JavaScript date format string that is as close as possible to
      * 		the specified NSTimestampFormatter string
@@ -149,20 +191,20 @@ public class WCTimeTextBox extends DojoFormElement
     	StringBuilder datePattern = new StringBuilder(32);
 
     	int i = 0;
-    	while(i < dateFormat.length())
+    	while (i < dateFormat.length())
     	{
     		char ch = dateFormat.charAt(i);
-    		
-    		if(ch == '%')
+
+    		if (ch == '%')
     		{
     			i++;
     			ch = dateFormat.charAt(i);
-    			
-    			switch(ch)
+
+    			switch (ch)
     			{
     			// Literal percent
     			case '%': datePattern.append('%'); break;
-    			
+
     			// Abbreviated weekday name
     			case 'a': datePattern.append('E'); break;
 
@@ -177,7 +219,7 @@ public class WCTimeTextBox extends DojoFormElement
 
     			// Day of the month as a decimal number, leading 0
     			case 'd': datePattern.append("dd"); break;
-    			
+
     			// Day of the month as a decimal number, no leading 0
     			case 'e': datePattern.append('d'); break;
 
@@ -216,12 +258,13 @@ public class WCTimeTextBox extends DojoFormElement
 
     	return datePattern.toString();
     }
-    
+
 
     //~ Static/instance variables .............................................
-    
+
     protected static final SimpleDateFormat ISO_TIME_FORMAT =
         new SimpleDateFormat("'T'HH:mm:ss");
 
     protected WOAssociation _dateformat;
+    protected WOAssociation _timeZone;
 }
