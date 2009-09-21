@@ -101,6 +101,7 @@ public class WCBasePage
     public String extraRequires;
     public String extraCssFiles;
     public String pageScriptName;
+    public String  inlineHeaderContents;
     public boolean includePageWrapping = true;
 
     /** Used to refer to a single item in a repetition on the page. */

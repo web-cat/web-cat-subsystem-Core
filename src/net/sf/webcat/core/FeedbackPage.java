@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -35,7 +35,8 @@ import org.apache.log4j.Logger;
  * administrator.
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @author Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class FeedbackPage
     extends WCComponent
@@ -105,6 +106,11 @@ public class FeedbackPage
         StringBuffer body = new StringBuffer();
         body.append(   "User     :  " );
         body.append( wcSession().primeUser().nameAndUid() );
+        body.append(" <");
+        body.append( wcSession().primeUser().email() );
+        body.append("> from ");
+        body.append( wcSession().primeUser().authenticationDomain()
+            .displayableName() );
         body.append( "\nSubject  :  " );
         body.append( selectedCategory );
         body.append( "\nPage     :  " );

@@ -24,7 +24,7 @@ dojo.addOnLoad(function() {
 <style type="text/css">
 body { background-image: url(<wo:str escapeHTML="false" value="$customBackground"/>); }
 </style>
-</wo:if></head>
+</wo:if><wo:if condition="$inlineHeaderContents"><wo:str escapeHTML="false" value="$inlineHeaderContents"/></wo:if></head>
 <wo:WOGenericContainer elementName="body" class="$bodyCssClass">
 <wo:WOComponentContent />
 </wo:WOGenericContainer>

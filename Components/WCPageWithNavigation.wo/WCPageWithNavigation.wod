@@ -5,6 +5,7 @@ BasePage: net.sf.webcat.ui.WCBasePage {
     extraCssFiles        = extraCssFiles;
     pageScriptName       = pageScriptName;
     includePageWrapping  = includePageWrapping;
+    inlineHeaderContents = inlineHeaderContents;
 }
 
 Errors: net.sf.webcat.core.WCErrorDictionaryPanel {
