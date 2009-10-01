@@ -17,11 +17,15 @@ DojoCss: WOGenericElement {
     href        = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/resources/dojo.css\")";
 }
 
+DojoBaseUrl: WOString {
+    value = dojoBaseUrl;
+}
+
 DojoJs: WOGenericContainer {
     elementName = "script";
     type        = "text/javascript";
-    src         = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/dojo.js\")";
-    djConfig    = "parseOnLoad: true";
+    src         = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/dojo.xd.js\")";
+    //djConfig    = "parseOnLoad: true";
 }
 
 DojoThemeCss: WOGenericElement {

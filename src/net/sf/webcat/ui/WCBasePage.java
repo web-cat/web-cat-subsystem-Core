@@ -416,6 +416,25 @@ public class WCBasePage
 
 
     // ----------------------------------------------------------
+    public String dojoBaseUrl()
+    {
+        // The resource manager doesn't let us get the path to a directory, so
+        // we search for a known file (in this case, dojo/dojo.js inside
+        // Core.framework), and then remove the dojo/dojo.js part from the end
+        // of the path.
+
+        String basePath = "Core.framework/WebServerResources/";
+        String subPath = "dojo/dojo.js";
+
+        String url = WCResourceManager.resourceURLFor(basePath + subPath,
+                context().request());
+
+        url = url.substring(0, url.length() - subPath.length());
+        return url;
+    }
+
+
+    // ----------------------------------------------------------
     public String stylesheetUrl(String partialUrl)
     {
         return WCResourceManager.resourceURLFor(

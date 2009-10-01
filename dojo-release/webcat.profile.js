@@ -25,6 +25,7 @@ dependencies = {
                 "dijit.form.TimeTextBox",
                 "dijit.form.ValidationTextBox",
                 "dojox.data.dom",
+                "dojox.form.FileInput",
                 "webcat.global",
                 "webcat.ComboBox",
                 "webcat.ContentPane",

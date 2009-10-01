@@ -31,6 +31,7 @@
   	  </classpath>
   	  <arg value="build.js"/>
       <arg value="profileFile=../../webcat.profile.js"/>
+  	  <arg value="loader=xdomain"/>
   	  <arg value="action=release"/>
   	  <arg value="optimize=shrinksafe"/>
   	  <arg value="copyTests=false"/>
