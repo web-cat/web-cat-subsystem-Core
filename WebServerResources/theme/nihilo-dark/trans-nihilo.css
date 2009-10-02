@@ -30,6 +30,8 @@
 
 .dijitTitlePaneTitle { outline: 0; }
 
+.nihilo .dijitTitlePane.inline .dijitTitlePaneTitle { margin-bottom: 4px; }
+
 .nihilo .dijitTitlePaneContentOuter {
     background: none;
     border: none;
@@ -68,6 +70,10 @@
     margin: 0 0 10px 0;
     color: #feb;
     border-bottom: 1px solid #feb;
+}
+
+.nihilo .dijitTitlePane .dijitTitlePane.inline .dijitTitlePaneTitle {
+    font-size: 1.1em;
 }
 
 .nihilo .dijitTitlePane .dijitTitlePane .dijitTitlePaneTitle {
