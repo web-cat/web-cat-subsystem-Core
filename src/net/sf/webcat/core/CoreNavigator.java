@@ -369,6 +369,8 @@ public class CoreNavigator
      */
     public WOActionResults okPressed()
     {
+        selectionsParent.flushNavigatorDerivedData();
+
         // Save semester choice
         if (selectedSemester != null)
         {
