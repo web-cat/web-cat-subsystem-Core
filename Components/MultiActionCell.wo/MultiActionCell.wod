@@ -6,7 +6,7 @@ Icons : WORepetition {
 Link : WOHyperlink {
     action = performAction;
     title = iconInRepetition.title;
-    onclick = "~jsWrapperID + '.selectOnlyObjectAtIndexInBatch(' + ~indexInBatch + ', { synchronous: true });'";
+    onclick = "~jsWrapperID + '.selectOnlyObjectAtIndexInBatch(' + indexInBatch + ', { synchronous: true });'";
 }
 
 Icon : WOImage {
