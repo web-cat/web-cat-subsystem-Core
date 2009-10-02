@@ -377,7 +377,11 @@ table {	border-collapse: collapse;
 	margin-left: auto;
 	margin-right: auto;
 }table.d2w table,
-table.layout {	border: none;}table th {	padding: 0.1em .6em;}
+table.layout {	border: none;}
+
+table.layout.nomargin {
+	margin: 0 -0.6em;
+}table th {	padding: 0.1em .6em;}
 
 table td {	padding: 0.1em .6em;}
 
