@@ -150,6 +150,7 @@ public abstract class _CourseOffering
     public static final String STUDENTS_KEY = "students";
     // Fetch specifications ---
     public static final String FOR_SEMESTER_FSPEC = "forSemester";
+    public static final String FOR_SEMESTER_AND_COURSE_FSPEC = "forSemesterAndCourse";
     public static final String WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC = "withoutAnyRelationshipToUser";
     public static final String WITHOUT_STUDENT_FSPEC = "withoutStudent";
     public static final String WITHOUT_STUDENT_OR_GRADER_FSPEC = "withoutStudentOrGrader";
@@ -1214,6 +1215,53 @@ public abstract class _CourseOffering
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForForSemester(ec"
+                + ", " + semesterBinding
+                + "): " + result );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve object according to the <code>ForSemesterAndCourse</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param courseBinding fetch spec parameter
+     * @param semesterBinding fetch spec parameter
+     * @return an NSArray of the entities retrieved
+     */
+    @SuppressWarnings("unchecked")
+    public static NSArray<CourseOffering> objectsForForSemesterAndCourse(
+            EOEditingContext context,
+            net.sf.webcat.core.Course courseBinding,
+            net.sf.webcat.core.Semester semesterBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "forSemesterAndCourse", "CourseOffering" );
+
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
+
+        if ( courseBinding != null )
+        {
+            bindings.setObjectForKey( courseBinding,
+                                      "course" );
+        }
+        if ( semesterBinding != null )
+        {
+            bindings.setObjectForKey( semesterBinding,
+                                      "semester" );
+        }
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        NSArray result = context.objectsWithFetchSpecification( spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "objectsForForSemesterAndCourse(ec"
+                + ", " + courseBinding
                 + ", " + semesterBinding
                 + "): " + result );
         }
