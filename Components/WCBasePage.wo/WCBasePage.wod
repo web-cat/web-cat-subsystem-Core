@@ -25,7 +25,6 @@ DojoJs: WOGenericContainer {
     elementName = "script";
     type        = "text/javascript";
     src         = "~stylesheetUrl(\"Core.framework/WebServerResources/dojo/dojo.xd.js\")";
-    //djConfig    = "parseOnLoad: true";
 }
 
 DojoThemeCss: WOGenericElement {

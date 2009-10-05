@@ -17,12 +17,12 @@
     };
 </script>
 <wo name="DojoJs"/>
-<wo name="BasePageJs"/>
 <script type="text/javascript">
+dojo.require("webcat.BasePage");
 <wo:loop list="$extraRequiresArray" item="$oneExtraRequire">dojo.require("<wo:str value="$extraRequires" />");
 </wo:loop>// <!-- END_REQUIRES -->
 dojo.addOnLoad(function() {
-    //dijit.setWaiRole(dojo.body(), "application");
+    dijit.setWaiRole(dojo.body(), "application");
 // <!-- END_ON_LOAD -->
 });
 </script>

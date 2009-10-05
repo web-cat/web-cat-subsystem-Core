@@ -1,7 +1,8 @@
 dependencies = {
     layers: [
         {
-            name: 'BasePage.js',
+            name: '../webcat/BasePage.js',
+            resourceName: 'webcat.BasePage',
             dependencies: [
                 "dijit.Dialog",
                 "dijit.InlineEditBox",
