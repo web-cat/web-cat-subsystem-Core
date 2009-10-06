@@ -435,7 +435,7 @@ public class WCBasePage
 
 
     // ----------------------------------------------------------
-    public String stylesheetUrl(String partialUrl)
+    public String resourceUrl(String partialUrl)
     {
         return WCResourceManager.resourceURLFor(
             partialUrl, context().request());
