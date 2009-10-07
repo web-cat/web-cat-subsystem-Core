@@ -21,6 +21,7 @@
 
 package net.sf.webcat.ui;
 
+import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import com.webobjects.appserver.WOComponent;
@@ -91,8 +92,6 @@ public class WCDateTimePicker extends WOComponent
     public String dateWidth;
     public String timeWidth;
 
-    public NSTimestamp datePartOfValue;
-    public NSTimestamp timePartOfValue;
     public TimeZone    timeZone;
 
 
@@ -108,25 +107,25 @@ public class WCDateTimePicker extends WOComponent
      */
     public NSTimestamp value()
     {
-        GregorianCalendar valueCalendar = new GregorianCalendar();
+        GregorianCalendar valueCalendar =  (timeZone == null)
+            ? new GregorianCalendar()
+            : new GregorianCalendar(timeZone);
+        valueCalendar.clear();
 
-        GregorianCalendar datePartCalendar = new GregorianCalendar();
+        splitIncomingValueIfNecessary();
+
+        GregorianCalendar datePartCalendar = new GregorianCalendar(utc);
         datePartCalendar.setTime(datePartOfValue);
-        valueCalendar.set(GregorianCalendar.YEAR, datePartCalendar
-                .get(GregorianCalendar.YEAR));
-        valueCalendar.set(GregorianCalendar.DAY_OF_YEAR, datePartCalendar
-                .get(GregorianCalendar.DAY_OF_YEAR));
 
-        GregorianCalendar timePartCalendar = new GregorianCalendar();
+        GregorianCalendar timePartCalendar = new GregorianCalendar(utc);
         timePartCalendar.setTime(timePartOfValue);
-        valueCalendar.set(GregorianCalendar.HOUR_OF_DAY, timePartCalendar
-                .get(GregorianCalendar.HOUR_OF_DAY));
-        valueCalendar.set(GregorianCalendar.MINUTE, timePartCalendar
-                .get(GregorianCalendar.MINUTE));
-        valueCalendar.set(GregorianCalendar.SECOND, timePartCalendar
-                .get(GregorianCalendar.SECOND));
-        valueCalendar.set(GregorianCalendar.MILLISECOND, timePartCalendar
-                .get(GregorianCalendar.MILLISECOND));
+
+        valueCalendar.set(
+            datePartCalendar.get(Calendar.YEAR),
+            datePartCalendar.get(Calendar.MONTH),
+            datePartCalendar.get(Calendar.DAY_OF_MONTH),
+            timePartCalendar.get(Calendar.HOUR_OF_DAY),
+            timePartCalendar.get(Calendar.MINUTE));
 
         return new NSTimestamp(valueCalendar.getTime());
     }
@@ -140,32 +139,9 @@ public class WCDateTimePicker extends WOComponent
      */
     public void setValue(NSTimestamp aValue)
     {
-        GregorianCalendar aValueCalendar = new GregorianCalendar();
-
-        if (aValue == null)
-        {
-            aValue = new NSTimestamp();
-        }
-
-        aValueCalendar.setTime(aValue);
-
-        GregorianCalendar datePartCalendar = new GregorianCalendar();
-        datePartCalendar.set(GregorianCalendar.YEAR, aValueCalendar
-                .get(GregorianCalendar.YEAR));
-        datePartCalendar.set(GregorianCalendar.DAY_OF_YEAR, aValueCalendar
-                .get(GregorianCalendar.DAY_OF_YEAR));
-        datePartOfValue = new NSTimestamp(datePartCalendar.getTime());
-
-        GregorianCalendar timePartCalendar = new GregorianCalendar();
-        timePartCalendar.set(GregorianCalendar.HOUR_OF_DAY, aValueCalendar
-                .get(GregorianCalendar.HOUR_OF_DAY));
-        timePartCalendar.set(GregorianCalendar.MINUTE, aValueCalendar
-                .get(GregorianCalendar.MINUTE));
-        timePartCalendar.set(GregorianCalendar.SECOND, aValueCalendar
-                .get(GregorianCalendar.SECOND));
-        timePartCalendar.set(GregorianCalendar.MILLISECOND, aValueCalendar
-                .get(GregorianCalendar.MILLISECOND));
-        timePartOfValue = new NSTimestamp(timePartCalendar.getTime());
+        incomingValue = aValue;
+        datePartOfValue = null;
+        timePartOfValue = null;
     }
 
 
@@ -197,7 +173,86 @@ public class WCDateTimePicker extends WOComponent
     }
 
 
+    // ----------------------------------------------------------
+    public NSTimestamp datePartOfValue()
+    {
+        splitIncomingValueIfNecessary();
+        return datePartOfValue;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setDatePartOfValue(NSTimestamp value)
+    {
+        datePartOfValue = value;
+    }
+
+
+    // ----------------------------------------------------------
+    public NSTimestamp timePartOfValue()
+    {
+        splitIncomingValueIfNecessary();
+        return timePartOfValue;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setTimePartOfValue(NSTimestamp value)
+    {
+        timePartOfValue = value;
+    }
+
+
+    // ----------------------------------------------------------
+    public TimeZone UTC()
+    {
+        return utc;
+    }
+
+
+    // ----------------------------------------------------------
+    private void splitIncomingValueIfNecessary()
+    {
+        if (datePartOfValue == null || timePartOfValue == null)
+        {
+            if (incomingValue == null)
+            {
+                incomingValue = new NSTimestamp();
+            }
+            GregorianCalendar incoming = (timeZone == null)
+                ? new GregorianCalendar()
+                : new GregorianCalendar(timeZone);
+            incoming.setTime(incomingValue);
+
+            GregorianCalendar datePartCalendar = new GregorianCalendar(utc);
+            datePartCalendar.clear();
+            datePartCalendar.set(
+                incoming.get(Calendar.YEAR),
+                incoming.get(Calendar.MONTH),
+                incoming.get(Calendar.DAY_OF_MONTH));
+            datePartOfValue = new NSTimestamp(datePartCalendar.getTime());
+
+            GregorianCalendar timePartCalendar = new GregorianCalendar(utc);
+            timePartCalendar.clear();
+            timePartCalendar.set(
+                1970,
+                0,
+                1,
+                incoming.get(Calendar.HOUR_OF_DAY),
+                incoming.get(Calendar.MINUTE),
+                incoming.get(Calendar.SECOND));
+            timePartCalendar.set(GregorianCalendar.MONTH, 0);
+            timePartOfValue =
+                new NSTimestamp(timePartCalendar.getTime());
+        }
+    }
+
+
     //~ Static/instance variables .............................................
 
-    private static final long serialVersionUID = 1L;
+    private NSTimestamp incomingValue;
+    private NSTimestamp datePartOfValue;
+    private NSTimestamp timePartOfValue;
+
+    private static TimeZone utc = TimeZone.getTimeZone("UTC");
 }

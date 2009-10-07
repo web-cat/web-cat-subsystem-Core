@@ -212,10 +212,10 @@ public class WCTimeTextBox extends DojoFormElement
     			case 'A': datePattern.append("EE"); break;
 
     			// Abbreviated month name
-    			case 'b': datePattern.append("NNN"); break;
+    			case 'b': datePattern.append("MMM"); break;
 
     			// Full month name
-    			case 'B': datePattern.append("MMM"); break;
+    			case 'B': datePattern.append("MMMM"); break;
 
     			// Day of the month as a decimal number, leading 0
     			case 'd': datePattern.append("dd"); break;
