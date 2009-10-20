@@ -488,7 +488,7 @@ public class WCPageWithNavigation
             : thisPage.pageWithName(name);
     }
 
-
+    
     //~ Instance/static variables .............................................
 
     private TabDescriptor myTab;

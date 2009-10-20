@@ -74,6 +74,29 @@ public class WCCourseComponent
 
 
     // ----------------------------------------------------------
+    public void appendToResponse(WOResponse response, WOContext context)
+    {
+        // TODO make this method final and adjust all the other pages
+
+        boolean force = forceNavigatorSelection();
+
+        if (!force)
+        {
+            _appendToResponse(response, context);
+        }
+
+        super.appendToResponse(response, context);
+    }
+    
+    
+    // ----------------------------------------------------------
+    protected void _appendToResponse(WOResponse response, WOContext context)
+    {
+        // Overridden by subclasses.
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Access the user's current core selections.
      * @return the core selections manager for this page
