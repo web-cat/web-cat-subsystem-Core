@@ -70,7 +70,7 @@ public class CoreSelectionsManager
      */
     public Course course()
     {
-        return (Course)valueForKey(CoreSelections.COURSE_KEY);
+        return (Course)handleQueryWithUnboundKey(CoreSelections.COURSE_KEY);
     }
 
 
@@ -106,7 +106,8 @@ public class CoreSelectionsManager
      */
     public CourseOffering courseOffering()
     {
-        return (CourseOffering)valueForKey(CoreSelections.COURSE_OFFERING_KEY);
+        return (CourseOffering)handleQueryWithUnboundKey(
+            CoreSelections.COURSE_OFFERING_KEY);
     }
 
 
@@ -140,9 +141,10 @@ public class CoreSelectionsManager
     {
         if (semester == null)
         {
-            User user = (User)valueForKey(CoreSelections.USER_KEY);
+            User user =
+                (User)handleQueryWithUnboundKey(CoreSelections.USER_KEY);
             Object semesterPref =
-                user.preferences().valueForKey( SEMESTER_KEY );
+                user.preferences().valueForKey(SEMESTER_KEY);
             if (semesterPref != null)
             {
                 semester = Semester.forId(user.editingContext(),

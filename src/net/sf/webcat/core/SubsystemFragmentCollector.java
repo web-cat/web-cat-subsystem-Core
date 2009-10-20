@@ -22,7 +22,6 @@
 package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
-import com.webobjects.foundation.*;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -32,7 +31,8 @@ import org.apache.log4j.Logger;
  *  in pages/components defined elsewhere in the application (like in Core).
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @author Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class SubsystemFragmentCollector
     extends WOComponent
@@ -72,9 +72,12 @@ public class SubsystemFragmentCollector
             ( (Application)Application.application() ).subsystemManager().
                 collectSubsystemFragments( fragmentKey, htmlBuffer, wodBuffer );
             htmlTemplate = htmlBuffer.toString();
-            log.debug( "htmlTemplate =\n" + htmlTemplate );
             bindingDefinitions = wodBuffer.toString();
-            log.debug( "bindingDefinitions =\n" + bindingDefinitions );
+            if (log.isDebugEnabled())
+            {
+                log.debug( "htmlTemplate =\n" + htmlTemplate );
+                log.debug( "bindingDefinitions =\n" + bindingDefinitions );
+            }
         }
         return templateWithHTMLString( null, null,
                 htmlTemplate, bindingDefinitions, null,
@@ -86,7 +89,10 @@ public class SubsystemFragmentCollector
     // ----------------------------------------------------------
     public Object valueForKey( String key )
     {
-        log.debug( "valueForKey(" + key + ")" );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "valueForKey(" + key + ")" );
+        }
         if ( key.equals( FRAGMENT_KEY_KEY ) )
         {
             return fragmentKey;
@@ -101,7 +107,10 @@ public class SubsystemFragmentCollector
     // ----------------------------------------------------------
     public void takeValueForKey( Object value, String key )
     {
-        log.debug( "takeValueForKey(" + value + ", " + key + ")" );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "takeValueForKey(" + value + ", " + key + ")" );
+        }
         if ( key.equals( FRAGMENT_KEY_KEY ) )
         {
             fragmentKey = (String)value;

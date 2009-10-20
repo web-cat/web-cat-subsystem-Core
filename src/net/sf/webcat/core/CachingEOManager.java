@@ -38,6 +38,7 @@ import org.apache.log4j.Logger;
  */
 public class CachingEOManager
     implements EOManager,
+               NSKeyValueCoding.ErrorHandling,
                Cloneable
 {
     //~ Constructors ..........................................................
@@ -109,120 +110,15 @@ public class CachingEOManager
     // ----------------------------------------------------------
     public Object valueForKey(String key)
     {
-        Object result = snapshot.valueForKey(key);
-        if (result == NullValue)
-        {
-            result = null;
-        }
-        return result;
+        return NSKeyValueCoding.DefaultImplementation.valueForKey(this, key);
     }
 
 
     // ----------------------------------------------------------
     public void takeValueForKey( Object value, String key )
     {
-        Object current = snapshot.valueForKey(key);
-        if (current != null && current != NullValue && current instanceof Null)
-        {
-            log.error("non-unique KVC.Null found in snapshot for key " + key);
-            log.error("snapshot = " + snapshot);
-        }
-        if (attributeKeys.valueForKey(key) == null)
-        {
-            // Then this is a relationship, not a plain attribute
-            if (value == null)
-            {
-                if (current == null || current == NullValue)
-                {
-                    return;
-                }
-                if (current instanceof NSArray)
-                {
-                    NSArray<?> currents = (NSArray<?>)current;
-                    if (currents.count() == 1)
-                    {
-                        current = currents.objectAtIndex(0);
-                    }
-                    else
-                    {
-                        throw new IllegalArgumentException("takeValueForKey("
-                            + value + ", " + key + ") called on to-many "
-                            + "relationship with current value of "
-                            + currents);
-                    }
-                }
-                removeObjectFromBothSidesOfRelationshipWithKey(
-                    (EORelationshipManipulation)current, key);
-            }
-            else if (value instanceof NSArray)
-            {
-                NSArray<?> currents = (NSArray<?>)current;
-                for (int i = 0; i < currents.count(); i++)
-                {
-                    removeObjectFromBothSidesOfRelationshipWithKey(
-                        (EORelationshipManipulation)currents.objectAtIndex(i),
-                        key);
-                }
-                NSArray<?> newOnes = (NSArray<?>)value;
-                for (int i = 0; i < newOnes.count(); i++)
-                {
-                    addObjectToBothSidesOfRelationshipWithKey(
-                        (EORelationshipManipulation)newOnes.objectAtIndex(i),
-                        key);
-                }
-            }
-            else
-            {
-                if (current != null && current != NullValue)
-                {
-                    removeObjectFromBothSidesOfRelationshipWithKey(
-                        (EORelationshipManipulation)current, key);
-                }
-                addObjectToBothSidesOfRelationshipWithKey(
-                    (EORelationshipManipulation)value, key);
-            }
-            return;
-        }
-        if (current == value
-            || (value == null && current == NullValue))
-        {
-            return;
-        }
-
-        ecm.lock();
-        try
-        {
-            Object newValue = value;
-            if (value == null)
-            {
-                snapshot.takeValueForKey(NullValue, key);
-            }
-            else if (value instanceof NSArray)
-            {
-                snapshot.takeValueForKey(
-                    ((NSArray<?>)value).mutableClone(), key);
-                newValue = ecm.localize(value);
-            }
-            else
-            {
-                snapshot.takeValueForKey(value, key);
-                newValue = ecm.localize(value);
-            }
-            mirror.takeValueForKey(newValue, key);
-            EOEnterpriseObject oldMirror = mirror;
-            mirror = ecm.saveChanges(mirror);
-            if (mirror != oldMirror)
-            {
-                // retry it once if the save forced an abort and a new
-                // EC was created instead
-                mirror.takeValueForKey(ecm.localize(newValue), key);
-                mirror = ecm.saveChanges(mirror);
-            }
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        NSKeyValueCoding.DefaultImplementation.takeValueForKey(
+            this, value, key);
     }
 
 
@@ -386,6 +282,133 @@ public class CachingEOManager
         {
             ecm.unlock();
         }
+    }
+
+
+    // ----------------------------------------------------------
+    public Object handleQueryWithUnboundKey(String key)
+    {
+        Object result = snapshot.valueForKey(key);
+        if (result == NullValue)
+        {
+            result = null;
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    public void handleTakeValueForUnboundKey(Object value, String key)
+    {
+        Object current = snapshot.valueForKey(key);
+        if (current != null && current != NullValue && current instanceof Null)
+        {
+            log.error("non-unique KVC.Null found in snapshot for key " + key);
+            log.error("snapshot = " + snapshot);
+        }
+        if (attributeKeys.valueForKey(key) == null)
+        {
+            // Then this is a relationship, not a plain attribute
+            if (value == null)
+            {
+                if (current == null || current == NullValue)
+                {
+                    return;
+                }
+                if (current instanceof NSArray)
+                {
+                    NSArray<?> currents = (NSArray<?>)current;
+                    if (currents.count() == 1)
+                    {
+                        current = currents.objectAtIndex(0);
+                    }
+                    else
+                    {
+                        throw new IllegalArgumentException("takeValueForKey("
+                            + value + ", " + key + ") called on to-many "
+                            + "relationship with current value of "
+                            + currents);
+                    }
+                }
+                removeObjectFromBothSidesOfRelationshipWithKey(
+                    (EORelationshipManipulation)current, key);
+            }
+            else if (value instanceof NSArray)
+            {
+                NSArray<?> currents = (NSArray<?>)current;
+                for (int i = 0; i < currents.count(); i++)
+                {
+                    removeObjectFromBothSidesOfRelationshipWithKey(
+                        (EORelationshipManipulation)currents.objectAtIndex(i),
+                        key);
+                }
+                NSArray<?> newOnes = (NSArray<?>)value;
+                for (int i = 0; i < newOnes.count(); i++)
+                {
+                    addObjectToBothSidesOfRelationshipWithKey(
+                        (EORelationshipManipulation)newOnes.objectAtIndex(i),
+                        key);
+                }
+            }
+            else
+            {
+                if (current != null && current != NullValue)
+                {
+                    removeObjectFromBothSidesOfRelationshipWithKey(
+                        (EORelationshipManipulation)current, key);
+                }
+                addObjectToBothSidesOfRelationshipWithKey(
+                    (EORelationshipManipulation)value, key);
+            }
+            return;
+        }
+        if (current == value
+            || (value == null && current == NullValue))
+        {
+            return;
+        }
+
+        ecm.lock();
+        try
+        {
+            Object newValue = value;
+            if (value == null)
+            {
+                snapshot.takeValueForKey(NullValue, key);
+            }
+            else if (value instanceof NSArray)
+            {
+                snapshot.takeValueForKey(
+                    ((NSArray<?>)value).mutableClone(), key);
+                newValue = ecm.localize(value);
+            }
+            else
+            {
+                snapshot.takeValueForKey(value, key);
+                newValue = ecm.localize(value);
+            }
+            mirror.takeValueForKey(newValue, key);
+            EOEnterpriseObject oldMirror = mirror;
+            mirror = ecm.saveChanges(mirror);
+            if (mirror != oldMirror)
+            {
+                // retry it once if the save forced an abort and a new
+                // EC was created instead
+                mirror.takeValueForKey(ecm.localize(newValue), key);
+                mirror = ecm.saveChanges(mirror);
+            }
+        }
+        finally
+        {
+            ecm.unlock();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public void unableToSetNullForKey(String key)
+    {
+        NSKeyValueCoding.DefaultImplementation.unableToSetNullForKey(this, key);
     }
 
 
