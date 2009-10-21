@@ -35,7 +35,7 @@ webcat.refreshContentPanes = function(/* String|Array */ ids)
 
 	if (dojo.isString(ids))
 	{
-		idArray = [ ids ];
+        idArray = [ ids ];
 	}
 	else if (dojo.isArray(ids))
 	{
@@ -43,7 +43,8 @@ webcat.refreshContentPanes = function(/* String|Array */ ids)
 	}
 
 	dojo.forEach(idArray, function(id) {
-		dijit.byId(id).refresh();
+	    var widget = dijit.byId(id);
+		if (widget) widget.refresh();
 	});
 };
 
