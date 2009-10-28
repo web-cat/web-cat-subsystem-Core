@@ -76,6 +76,9 @@ public class Session
     private final void initSession()
     {
         log.debug( "creating " + sessionID() );
+
+        setStoresIDsInCookies(true);
+        setStoresIDsInURLs(false);
         defaultEditingContext().setUndoManager( null );
 //        defaultEditingContext().setSharedEditingContext( null );
 
