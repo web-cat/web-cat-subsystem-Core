@@ -77,7 +77,7 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <wo:loop list="$allThemes" item="$aTheme">
   <wo name="ThemeTable"><tr><td>
     <wo name="PreviewLink"><wo name="ThemeThumb"/></wo>
-    </td><td><h3><wo:str value="$aTheme.name"/></h3>
+    </td><td><h3><wo:link action="$changeTheme"><wo:str value="$aTheme.name"/></wo:link></h3>
     <wo:str value="$aTheme.inherit.properties.description"/><br/>
     <wo:if condition="~(aTheme.id == session.theme.id)">
     (currently selected)
