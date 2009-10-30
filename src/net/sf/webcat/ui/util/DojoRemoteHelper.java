@@ -35,10 +35,10 @@ import er.extensions.components._private.ERXWOForm;
 
 //------------------------------------------------------------------------
 /**
- * This class maintains the "remote.*" associations for an action element, and 
+ * This class maintains the "remote.*" associations for an action element, and
  * also handles the generation of callback scripts that involve values of
  * multiple associations.
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
@@ -56,7 +56,7 @@ public class DojoRemoteHelper
         _remoteAssociations =
             _NSDictionaryUtilities.extractObjectsForKeysWithPrefix(
                     associations, "remote.", true);
-        
+
         if (_remoteAssociations == null || _remoteAssociations.count() <= 0)
         {
             _remoteAssociations = null;
@@ -69,9 +69,9 @@ public class DojoRemoteHelper
     // ----------------------------------------------------------
     /**
      * Indicates whether the element should use remote (Ajax) requests.
-     * 
-     * @param context 
-     * 
+     *
+     * @param context
+     *
      * @return true if the element should use Ajax; false if it should use
      *     standard page-load actions
      */
@@ -95,7 +95,7 @@ public class DojoRemoteHelper
             return _remoteAssociations.objectForKey(name);
         }
     }
-    
+
 
     // ----------------------------------------------------------
     public String partialSubmitCall(String sender,
@@ -109,6 +109,7 @@ public class DojoRemoteHelper
         WOAssociation _refreshPanes = associationWithName("refreshPanes");
         WOAssociation _form = associationWithName("form");
         WOAssociation _synchronous = associationWithName("synchronous");
+        WOAssociation _block = associationWithName("block");
 
         DojoOptions options = new DojoOptions();
 
@@ -123,7 +124,7 @@ public class DojoRemoteHelper
             responseType =
                 _responseType.valueInComponent(component).toString();
         }
-        
+
         if (responseType != null)
         {
             options.putValue("handleAs", responseType);
@@ -150,7 +151,7 @@ public class DojoRemoteHelper
                         "dojo.query('form[name=" + formId + "]')[0]");
             }
         }
-        
+
         // Append the synchronous flag.
         boolean synchronous = false;
         if (_synchronous != null)
@@ -173,12 +174,12 @@ public class DojoRemoteHelper
         buffer.append(componentName);
         buffer.append("', ");
         buffer.append(options.toString());
-        
+
         String refreshPanes = null;
         if (_refreshPanes != null)
         {
             Object panes = _refreshPanes.valueInComponent(component);
-            
+
             if (panes instanceof List)
             {
                 refreshPanes = DojoUtils.doubleToSingleQuotes(
@@ -205,7 +206,43 @@ public class DojoRemoteHelper
         {
             buffer.append(", " + refreshPanes);
         }
-        
+        else
+        {
+            buffer.append(", null");
+        }
+
+        String block = null;
+        if (_block != null)
+        {
+            Object blockIds = _block.valueInComponent(component);
+
+            if (blockIds instanceof List)
+            {
+                block = DojoUtils.doubleToSingleQuotes(
+                        new JSONArray((List<?>) blockIds).toString());
+            }
+            else
+            {
+                try
+                {
+                    block =
+                        DojoUtils.doubleToSingleQuotes(
+                                new JSONArray(blockIds.toString()).toString());
+                }
+                catch (JSONException e)
+                {
+                    block = "'"
+                        + DojoUtils.doubleToSingleQuotes(blockIds.toString())
+                        + "'";
+                }
+            }
+        }
+
+        if (block != null && block.length() > 0)
+        {
+            buffer.append(", " + block);
+        }
+
         buffer.append(");");
 
         return buffer.toString();
@@ -222,6 +259,7 @@ public class DojoRemoteHelper
         WOAssociation _refreshPanes = associationWithName("refreshPanes");
         WOAssociation _form = associationWithName("form");
         WOAssociation _synchronous = associationWithName("synchronous");
+        WOAssociation _block = associationWithName("block");
 
         DojoOptions options = new DojoOptions();
 
@@ -236,7 +274,7 @@ public class DojoRemoteHelper
             responseType =
                 _responseType.valueInComponent(component).toString();
         }
-        
+
         if (responseType != null)
         {
             options.putValue("handleAs", responseType);
@@ -262,9 +300,9 @@ public class DojoRemoteHelper
                         "dojo.query('form[name=" + formId + "]')[0]");
             }
         }
-        
+
         options.putValue("url", url);
-        
+
         // Append the synchronous flag.
         boolean synchronous = false;
         if (_synchronous != null)
@@ -283,12 +321,12 @@ public class DojoRemoteHelper
         buffer.append(sender);
         buffer.append(", ");
         buffer.append(options.toString());
-        
+
         String refreshPanes = null;
         if (_refreshPanes != null)
         {
             Object panes = _refreshPanes.valueInComponent(component);
-            
+
             if (panes instanceof List)
             {
                 refreshPanes = DojoUtils.doubleToSingleQuotes(
@@ -315,15 +353,51 @@ public class DojoRemoteHelper
         {
             buffer.append(", " + refreshPanes);
         }
-        
+        else
+        {
+            buffer.append(", null");
+        }
+
+        String block = null;
+        if (_block != null)
+        {
+            Object blockIds = _block.valueInComponent(component);
+
+            if (blockIds instanceof List)
+            {
+                block = DojoUtils.doubleToSingleQuotes(
+                        new JSONArray((List<?>) blockIds).toString());
+            }
+            else
+            {
+                try
+                {
+                    block =
+                        DojoUtils.doubleToSingleQuotes(
+                                new JSONArray(blockIds.toString()).toString());
+                }
+                catch (JSONException e)
+                {
+                    block = "'"
+                        + DojoUtils.doubleToSingleQuotes(blockIds.toString())
+                        + "'";
+                }
+            }
+        }
+
+        if (block != null && block.length() > 0)
+        {
+            buffer.append(", " + block);
+        }
+
         buffer.append(");");
 
         return buffer.toString();
     }
-    
-    
+
+
     //~ Static/instance variables .............................................
-    
+
     private WOAssociation _remote;
     private NSDictionary<String, WOAssociation> _remoteAssociations;
 }
