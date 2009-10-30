@@ -2,7 +2,8 @@ Content: WOComponentContent {
 }
 
 TR: WOGenericContainer {
-	elementName = "tr";
-	class       = cssClass;
-	id          = id;
+    elementName = "tr";
+    class       = cssClass;
+    id          = id;
+    handle      = dragHandle;
 }
