@@ -11,29 +11,29 @@ html {  height: 100%;}body {  height: 100%;  margin: 0;  padding: 0;  /*
 }
 
 #content {
-	height: 100%;
-	min-height: 100%;
-	text-align: left;
+    height: 100%;
+    min-height: 100%;
+    text-align: left;
 }
 
 #content,
 #width {
-	width: expression(document.body.clientWidth > 1000 ? "1000px" : "94%");
-	max-width: 1000px;
-	margin: 0 auto;
+    width: expression(document.body.clientWidth > 1000 ? "1000px" : "94%");
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
 #content[id],
 #width[id] {
-	width: 94%;
-	height: auto;
+    width: 94%;
+    height: auto;
 }
 
 #page {
-	float: left;
-	width: 100%;
-	clear: both;
-	padding-bottom: 4em;
+    float: left;
+    width: 100%;
+    clear: both;
+    padding-bottom: 4em;
 }
 
 /* @end
@@ -42,13 +42,13 @@ html {  height: 100%;}body {  height: 100%;  margin: 0;  padding: 0;  /*
 ====================================================================== */
 
 #header .title h1 {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 #header .title h2 {
-	margin: 0;
-	padding: 4px 0 0 0;
+    margin: 0;
+    padding: 4px 0 0 0;
 }
 
 #header .title {
@@ -58,31 +58,31 @@ html {  height: 100%;}body {  height: 100%;  margin: 0;  padding: 0;  /*
 }
 
 .uid {
-	margin-left: 4em;
+    margin-left: 4em;
 }
 
 #utils {
-	float: right;
+    float: right;
 }
 
 #roles {
-	float: right;
-	margin-right: 4em;
+    float: right;
+    margin-right: 4em;
 }
 
 #footer {
-	float: left;
-	width: 100%;
-	clear: both;
-	margin-top: -2.7em;
-	/*background: #000 url(../images/bg/footer.jpg) repeat-x top left; */
+    float: left;
+    width: 100%;
+    clear: both;
+    margin-top: -2.7em;
+    /*background: #000 url(../images/bg/footer.jpg) repeat-x top left; */
 }
 
 /* Sets the width of the footer content */
 #footer #width {
-	position: relative;
-	z-index: 3;
-	padding-top: 1em;
+    position: relative;
+    z-index: 3;
+    padding-top: 1em;
 }
 
 
@@ -103,47 +103,47 @@ way to fit your requirements.
 =================================================================== */
 #mainMenu,
 #mainMenu ul {
-	padding: 0;
-	margin: 0;
-	list-style: none;
-	position: relative;
-	z-index: 100;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    position: relative;
+    z-index: 100;
 }
 
 #mainMenu {
-	margin: 0.4em -0.4em 0.4em 0;
+    margin: 0.4em -0.4em 0.4em 0;
 }
 
 #mainMenu table { border-collapse: collapse; }
 #mainMenu li {
-	float: left;
-	margin: 0.4em;
+    float: left;
+    margin: 0.4em;
 }
 #mainMenu li li { float: none; }
 /* a hack for IE5.x and IE6 */
 #mainMenu li a li { float: left; }
 
 #mainMenu li a {
-	display: block;
-	float: left;
-	height: 1.8em;
-	padding: 0 1em;
-	line-height: 1.8em;
-	text-decoration: none;
-	white-space: nowrap;
+    display: block;
+    float: left;
+    height: 1.8em;
+    padding: 0 1em;
+    line-height: 1.8em;
+    text-decoration: none;
+    white-space: nowrap;
 }
 #mainMenu li li a { float: none; }
 
 #mainMenu li:hover { position: relative; z-index: 100; }
 #mainMenu a:hover {
-	position: relative;
-	z-index: 100;
+    position: relative;
+    z-index: 100;
 }
 
 #mainMenu :hover  ul {
-	left: 0;
-	top: 1.8em;
-	z-index: 300;
+    left: 0;
+    top: 1.8em;
+    z-index: 300;
 }
 #mainMenu a:hover ul { left: -1px; }
 
@@ -154,10 +154,10 @@ way to fit your requirements.
 #mainMenu li:hover li:hover > ul { left: 0; margin-left: 100%; top: 0; }
 /* keep further levels hidden */
 #mainMenu li:hover > ul ul {
-	position: absolute;
-	left: -9999px;
-	top: -9999px;
-	width: auto;
+    position: absolute;
+    left: -9999px;
+    top: -9999px;
+    width: auto;
 }
 
 /* but IE5.x and IE6 need this lot to style the flyouts*/
@@ -206,12 +206,12 @@ way to fit your requirements.
 ====================================================================== */
 
 h1 {
-	margin: 0 0 1.2em;
-	clear: both;}
+    margin: 0 0 1.2em;
+    clear: both;}
 
 .module.title h1 {
-	margin: -0.2em 0;
-	clear: none;
+    margin: -0.2em 0;
+    clear: none;
 }
 
 .module.title.login { margin-top: 1.5em; margin-bottom: 0; }
@@ -219,39 +219,39 @@ h1 {
 .module.title.login h2 { display: inline; float: right; }
 
 .module.title .tools {
-	float: right;
-	margin: -0.3em 0;
+    float: right;
+    margin: -0.3em 0;
 }
 
 .module.title .tools .dijitButton,
 .module.title .tools .dijitDropDownButton,
 .module.title .tools .dijitComboButton {
-	margin: -0.3em 0.2em 0 0.2em;
+    margin: -0.3em 0.2em 0 0.2em;
 }
 
 p {
-	margin: 0 0 1.2em;
+    margin: 0 0 1.2em;
 }
 
 .batchnav p { margin: 0; }
 
 blockquote {
-	margin: 1.2em 0;
-	padding: 0 2em;
-	font-size: inherit;
-	line-height: inherit;
-	border: none;
+    margin: 1.2em 0;
+    padding: 0 2em;
+    font-size: inherit;
+    line-height: inherit;
+    border: none;
 }
 
 .module {
-	padding: 1em 1.5em 1em 1.5em;
-	margin-bottom: 1.5em;
+    padding: 1em 1.5em 1em 1.5em;
+    margin-bottom: 1.5em;
 }
 
 .med-logo {
-	margin-top: 1.5em;
-	min-height: 215px;
-	background: transparent url(../../images/wc-400.png) top left no-repeat;
+    margin-top: 1.5em;
+    min-height: 215px;
+    background: transparent url(../../images/wc-400.png) top left no-repeat;
 }
 
 .med-logo .module { margin-left: 410px; }
@@ -266,9 +266,9 @@ blockquote {
 .large-logo .module { margin-left: 310px; }
 
 .poweredby a {
-	display: block;
-	float: right;
-	margin: 0 0 1.5em 1.5em;
+    display: block;
+    float: right;
+    margin: 0 0 1.5em 1.5em;
 }
 
 /* .module > h1:first-child { margin-top: 0; } */
@@ -283,13 +283,13 @@ img { border: 0; }a img { border: 0; }
 li, dd { margin-left: 1em; }
 
 a.permalink {
-	font-size: x-small;
-	padding: 0 0 0 20px;
-	background: transparent url(../../icons/permalink.png) no-repeat center left;
+    font-size: x-small;
+    padding: 0 0 0 20px;
+    background: transparent url(../../icons/permalink.png) no-repeat center left;
 }
 a.permalink.floatRight {
-	margin-left: 1.5em;
-	display: block;
+    margin-left: 1.5em;
+    display: block;
 }
 .left, .L { text-align: left; }
 .right, .n, .R { text-align: right; }
@@ -301,24 +301,24 @@ a.permalink.floatRight {
 .nlafter  { margin-bottom: 1em; }
 
 pre, .code {
-	border: none;
-	padding: 0.5em 0.5em 0.5em 1em;
+    border: none;
+    padding: 0.5em 0.5em 0.5em 1em;
     line-height: 120%;
 }
 
 pre, .code, code, var, samp, kbd {
-	border: none;
-	background-color: transparent;
-	font-size: inherit;
+    border: none;
+    background-color: transparent;
+    font-size: inherit;
 }
 
 img.help, img.icon, input.icon { vertical-align: text-top; }
 img.icon.so, input.icon.so { padding-bottom: -2px; padding-top: 2px; }
 
 .NoticePanel {
-	display: block;
-	margin: 0 0 1em 0;
-	padding: 8px;
+    display: block;
+    margin: 0 0 1em 0;
+    padding: 8px;
     background: #e9eef3;
     border-top: 4px solid #aec9ef;
     border-bottom: 4px solid #aec9ef;
@@ -360,8 +360,8 @@ ul.NoticePanel, .NoticePanel ul {
 .NoticePanel li.warning { background-image: url(../../icons/caution.png); }
 .NoticePanel li.suggestion { background-image: url(../../icons/suggestion.png); }
 .NoticePanel li.check {
-	background-image: url(../../icons/check.png);
-	color: black;
+    background-image: url(../../icons/check.png);
+    color: black;
 }
 
 
@@ -370,20 +370,20 @@ ul.NoticePanel, .NoticePanel ul {
 /* @group =Tables
 ====================================================================== */
 
-table {	border-collapse: collapse;
-	margin: 0 0.5em 1em 0.1em;}
+table {    border-collapse: collapse;
+    margin: 0 0.5em 1em 0.1em;}
 
 .dtw table {
-	margin-left: auto;
-	margin-right: auto;
+    margin-left: auto;
+    margin-right: auto;
 }table.d2w table,
-table.layout {	border: none;}
+table.layout {    border: none;}
 
 table.layout.nomargin {
-	margin: 0 -0.6em;
-}table th {	padding: 0.1em .6em;}
+    margin: 0 -0.6em;
+}table th {    padding: 0.1em .6em;}
 
-table td {	padding: 0.1em .6em;}
+table td {    padding: 0.1em .6em;}
 
 .theme-thumb {
     float: left;
@@ -399,17 +399,17 @@ table td {	padding: 0.1em .6em;}
 .theme-thumb td { vertical-align: top; padding: 0.5em; }
 
 
-	/*
-	================================================================== */
-	/* @group Mini-Histogram
-	================================================================== */
+    /*
+    ================================================================== */
+    /* @group Mini-Histogram
+    ================================================================== */
 
-	table.distchart {		margin: 0;
-		empty-cells: show;		table-layout: fixed;		width: 100px;		display: table;	}
+    table.distchart {        margin: 0;
+        empty-cells: show;        table-layout: fixed;        width: 100px;        display: table;    }
 
-	table.distchart td {		padding: 0;		margin:  0;		width:  10px;		height: 10px;		line-height: 10px;	}
+    table.distchart td {        padding: 0;        margin:  0;        width:  10px;        height: 10px;        line-height: 10px;    }
 
-	table.distchart td img.bar {		width:  10px;		height: 10px;		border: 0px;	}
+    table.distchart td img.bar {        width:  10px;        height: 10px;        border: 0px;    }
     table.distchart td.b0 {
         background-image: url(../../images/bar00.gif);
     }
@@ -445,32 +445,32 @@ table td {	padding: 0.1em .6em;}
     }
 
 
-	/* @end
-	================================================================== */
+    /* @end
+    ================================================================== */
 
 
-	/*
-	================================================================== */
-	/* @group Meter
-	================================================================== */
+    /*
+    ================================================================== */
+    /* @group Meter
+    ================================================================== */
 
-	table.percentbar {		border: none;		padding: 0;		margin: 0;
-		line-height: 100%;	}	table.percentbar td {		padding: 0;		margin: 0;		border: none;	}
+    table.percentbar {        border: none;        padding: 0;        margin: 0;
+        line-height: 100%;    }    table.percentbar td {        padding: 0;        margin: 0;        border: none;    }
 
-	table tr#divider table.percentbar td { border: none; }
+    table tr#divider table.percentbar td { border: none; }
 
-	/* @end
-	================================================================== */
-
-
-	/*
-	================================================================== */
-	/* @group Printout
-	================================================================== */
+    /* @end
+    ================================================================== */
 
 
-	/* @end
-	================================================================== */
+    /*
+    ================================================================== */
+    /* @group Printout
+    ================================================================== */
+
+
+    /* @end
+    ================================================================== */
 
 
 /* @end
@@ -485,102 +485,102 @@ table td {	padding: 0.1em .6em;}
 ====================================================================== */
 
 form fieldset {
-	margin-bottom: 0.8em;
-	border: 1px solid white;
-	display: table;
+    margin-bottom: 0.8em;
+    border: 1px solid white;
+    display: table;
 }
 
 .dijitTooltipContainer form fieldset {
-	border-color: black;
+    border-color: black;
 }
 
 fieldset { padding: .5em; }
 
 form legend {
-	padding: 0 0.2em;
-	font-weight: bold;
+    padding: 0 0.2em;
+    font-weight: bold;
 }
 
 form label {
-	display: inline-block;
-	/* line-height: 1.8; */
-	vertical-align: top;
-	text-align: right;
-	padding-right: 0.8em;
+    display: inline-block;
+    /* line-height: 1.8; */
+    vertical-align: top;
+    text-align: right;
+    padding-right: 0.8em;
 }
 
 form label.trailing {
-	display: inline;
-	text-align: left;
-	padding: 0;
-	margin: 0;
+    display: inline;
+    text-align: left;
+    padding: 0;
+    margin: 0;
 }
 
 form fieldset ol {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 form fieldset li {
-	list-style: none;
-	padding: 0.5em;
-	margin: 0;
+    list-style: none;
+    padding: 0.5em;
+    margin: 0;
 }
 
 form > fieldset > ol > li:first-child {
-	padding-top: 0;
+    padding-top: 0;
 }
 
 form fieldset fieldset {
-	border: none;
-	margin: 0.3em 0 0;
+    border: none;
+    margin: 0.3em 0 0;
 }
 
 form fieldset fieldset legend {
-	padding: 0 0 0.5em;
-	font-weight: normal;
+    padding: 0 0 0.5em;
+    font-weight: normal;
 }
 
 form fieldset fieldset label {
-	display: block;
-	width: auto;
+    display: block;
+    width: auto;
 }
 
 form em {
-	font-weight: bold;
-	font-style: normal;
-	/* color: #f00; */
+    font-weight: bold;
+    font-style: normal;
+    /* color: #f00; */
 }
 
 form label {
-	width: 10em;
+    width: 10em;
 }
 
 form fieldset fieldset label {
-	margin-left: 10.3em;
+    margin-left: 10.3em;
 }
 
 form fieldset.accountInfo label {
-	width: 5em;
+    width: 5em;
 }
 form fieldset.accountInfo fieldset label {
-	margin-left: 5.3em;
+    margin-left: 5.3em;
 }
 
 form fieldset.course label,
 form fieldset.assignment label {
-	width: 7.7em;
+    width: 7.7em;
 }
 
 form fieldset.course fieldset label,
 form fieldset.assignment fieldset label {
-	width: 10em;
-	margin-left: 8em;
+    width: 10em;
+    margin-left: 8em;
 }
 
 form fieldset.course fieldset table.layout label {
-	float: none;
-	width: auto;
+    float: none;
+    width: auto;
 }
 
 form fieldset.reoffer label {
@@ -591,3 +591,12 @@ form fieldset.reoffer label {
 
 /* @end
 ====================================================================== */
+
+.dojoDndHandle {
+    display: inline-block;
+    vertical-align: middle;
+    width: 16px;
+    height: 16px;
+    cursor: move;
+    background-image: url(images/draghandle.png);
+}
