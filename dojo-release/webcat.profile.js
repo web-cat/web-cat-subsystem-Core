@@ -4,6 +4,7 @@ dependencies = {
             name: '../webcat/BasePage.js',
             resourceName: 'webcat.BasePage',
             dependencies: [
+                "dojo.dnd.Source",
                 "dijit.Dialog",
                 "dijit.InlineEditBox",
                 "dijit.Menu",
@@ -28,6 +29,7 @@ dependencies = {
                 "dojox.data.dom",
                 "dojox.form.FileInput",
                 "webcat.global",
+                "webcat.Blocker",
                 "webcat.ComboBox",
                 "webcat.ContentPane",
                 "webcat.Table",

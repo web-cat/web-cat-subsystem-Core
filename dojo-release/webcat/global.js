@@ -21,31 +21,33 @@
 
 dojo.provide("webcat.global");
 
+dojo.require("webcat.Blocker");
+
 // ----------------------------------------------------------
 /**
  * A convenience method that calls the refresh() method on one or more
  * dijit.ContentPane elements.
  *
  * @param ids a string representing a single identifier to refresh, or an
- *     array of identifiers 
+ *     array of identifiers
  */
 webcat.refreshContentPanes = function(/* String|Array */ ids)
 {
-	var idArray;
+    var idArray;
 
-	if (dojo.isString(ids))
-	{
+    if (dojo.isString(ids))
+    {
         idArray = [ ids ];
-	}
-	else if (dojo.isArray(ids))
-	{
-		idArray = ids;
-	}
+    }
+    else if (dojo.isArray(ids))
+    {
+        idArray = ids;
+    }
 
-	dojo.forEach(idArray, function(id) {
-	    var widget = dijit.byId(id);
-		if (widget) widget.refresh();
-	});
+    dojo.forEach(idArray, function(id) {
+        var widget = dijit.byId(id);
+        if (widget) widget.refresh();
+    });
 };
 
 
@@ -75,7 +77,7 @@ webcat.fakeFullSubmit = function(/* String */ formName, /* String */ fieldName)
     }, form, 'last');
 
     button.click();
-    
+
     // We could destroy the button here, but since the page is going to be
     // reloaded at this point anyway, it doesn't seem to matter.
 };
@@ -95,7 +97,8 @@ webcat.fakeFullSubmit = function(/* String */ formName, /* String */ fieldName)
  */
 webcat.partialSubmit = function(/* _Widget */ widget,
     /* String */ scriptComponentName, /* Object */  options,
-    /* String|Array? */ refreshIds)
+    /* String|Array? */ refreshIds,
+    /* String|Array? */ blockIds)
 {
     var actionUrl = options.form.getAttribute('action');
     actionUrl = actionUrl.replace('/wo/', '/ajax/');
@@ -109,8 +112,8 @@ webcat.partialSubmit = function(/* _Widget */ widget,
     options.content['AJAX_SUBMIT_BUTTON_NAME'] = scriptComponentName;
     options.content['_partialSubmitID'] = widget.name;
     options.content['WOIsmapCoords'] = new Date().getTime();
-    
-    webcat.invokeRemoteAction(widget, options, refreshIds);
+
+    webcat.invokeRemoteAction(widget, options, refreshIds, blockIds);
 };
 
 
@@ -126,75 +129,100 @@ webcat.partialSubmit = function(/* _Widget */ widget,
  *     or an array of IDs
  */
 webcat.invokeRemoteAction = function(/* _Widget */ widget,
-	/* Object */ options, /* String|Array? */ refreshIds)
+    /* Object */ options, /* String|Array? */ refreshIds,
+    /* String|Array? */ blockIds)
 {
-	var evalAttributeFunction = function(code) {
-		return eval('__evalAttributeFunction__temp__ = ' + code);
-	};
+    var evalAttributeFunction = function(code) {
+        return eval('__evalAttributeFunction__temp__ = ' + code);
+    };
 
-	// Set up the event handlers.
-	var xhrOpts = {
-		load: function(response, ioArgs) {
-			if (refreshIds)
-			{
-				webcat.refreshContentPanes(refreshIds);
-			}
+    if (blockIds)
+    {
+        // FIXME improve this api
+        webcat.block(blockIds);
+    }
 
-			var handler;
+    // Set up the event handlers.
+    var xhrOpts = {
+        load: function(response, ioArgs) {
+            if (blockIds)
+            {
+                // FIXME improve this api
+                webcat.unblock(blockIds);
+            }
 
-			if (widget.onRemoteLoad)
-			{
-				handler = widget.onRemoteLoad;
-			}
-			else if (widget.getAttribute('onRemoteLoad'))
-			{
-				handler = evalAttributeFunction(
-					widget.getAttribute('onRemoteLoad'));
-			}
-				
-			return handler(response, ioArgs);
-		},
+            if (refreshIds)
+            {
+                webcat.refreshContentPanes(refreshIds);
+            }
 
-		error: function(response, ioArgs) {
-			var handler;
+            var handler;
 
-			if (widget.onRemoteError)
-			{
-				handler = widget.onRemoteError;
-			}
-			else if (widget.getAttribute('onRemoteError'))
-			{
-				handler = evalAttributeFunction(
-					widget.getAttribute('onRemoteError'));
-			}
-				
-			return handler(response, ioArgs);
-		},
+            if (widget.onRemoteLoad)
+            {
+                handler = widget.onRemoteLoad;
+            }
+            else if (widget.getAttribute('onRemoteLoad'))
+            {
+                handler = evalAttributeFunction(
+                    widget.getAttribute('onRemoteLoad'));
+            }
 
-		handle: function(response, ioArgs) {
-			var handler;
+            return handler(response, ioArgs);
+        },
 
-			if (widget.onRemoteEnd)
-			{
-				handler = widget.onRemoteEnd;
-			}
-			else if (widget.getAttribute('onRemoteEnd'))
-			{
-				handler = evalAttributeFunction(
-					widget.getAttribute('onRemoteEnd'));
-			}
-				
-			return handler(response, ioArgs);
-		}
-	};
-	
-	// Copy remaining options that were passed in by the component.
-	for (var key in options)
-	{
-		xhrOpts[key] = options[key];
-	}
-	
-	dojo.xhrPost(xhrOpts);
+        error: function(response, ioArgs) {
+            var handler;
+
+            if (blockIds)
+            {
+                // FIXME improve this api
+                webcat.unblock(blockIds);
+            }
+
+            if (widget.onRemoteError)
+            {
+                handler = widget.onRemoteError;
+            }
+            else if (widget.getAttribute('onRemoteError'))
+            {
+                handler = evalAttributeFunction(
+                    widget.getAttribute('onRemoteError'));
+            }
+
+            return handler(response, ioArgs);
+        },
+
+        handle: function(response, ioArgs) {
+            var handler;
+
+            if (blockIds)
+            {
+                // FIXME improve this api
+                webcat.unblock(blockIds);
+            }
+
+            if (widget.onRemoteEnd)
+            {
+                handler = widget.onRemoteEnd;
+            }
+            else if (widget.getAttribute('onRemoteEnd'))
+            {
+                handler = evalAttributeFunction(
+                    widget.getAttribute('onRemoteEnd'));
+            }
+
+            return handler(response, ioArgs);
+        }
+    };
+
+    // Copy remaining options that were passed in by the component.
+    for (var key in options)
+    {
+        xhrOpts[key] = options[key];
+    }
+
+    dojo.xhrPost(xhrOpts);
 };
 
 
@@ -208,7 +236,7 @@ webcat.invokeRemoteAction = function(/* _Widget */ widget,
  *
  *     title (String, optional): the title for the dialog box; if omitted, will
  *         default to empty
- * 
+ *
  *     message (String, required): the message to appear in the alert box
  *
  *     okLabel (String, optional): the label for the OK button; if omitted,
@@ -237,7 +265,7 @@ webcat.alert = function(/* Object */ options)
             if (options.onClose) options.onClose();
         }
     };
-        
+
     dialog = new dijit.Dialog({
         id: dialogId,
         title: options.title,
@@ -283,7 +311,7 @@ webcat.alert = function(/* Object */ options)
  *
  *     title (String, optional): the title for the dialog box; if omitted, will
  *         default to empty
- * 
+ *
  *     message (String, required): the message to appear in the alert box
  *
  *     yesLabel (String, optional): the label for the yes button; if omitted,
@@ -322,7 +350,7 @@ webcat.confirm = function(/* Object */ options)
             if (options.onNo) options.onNo();
         }
     };
-        
+
     dialog = new dijit.Dialog({
         id: dialogId,
         title: options.title,
