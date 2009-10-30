@@ -22,6 +22,8 @@
 package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
+import er.extensions.components.ERXComponentUtilities;
+import er.extensions.foundation.ERXValueUtilities;
 
 import org.apache.log4j.Logger;
 
@@ -52,22 +54,70 @@ public class TableRow
 
     //~ KVC Attributes (must be public) .......................................
 
-    public  int     index;
+/*    public  int     index;
     public  Boolean showError   = Boolean.FALSE;
     public  Boolean showCaution = Boolean.FALSE;
     public  Boolean increment   = Boolean.FALSE;
     public  String  id;
-
+    public  String  dragHandle;
+*/
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    public boolean showError()
+    {
+        return ERXComponentUtilities.booleanValueForBinding(
+                this, "showError", false);
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean showCaution()
+    {
+        return ERXComponentUtilities.booleanValueForBinding(
+                this, "showCaution", false);
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean increment()
+    {
+        return ERXComponentUtilities.booleanValueForBinding(
+                this, "increment", false);
+    }
+
+
+    // ----------------------------------------------------------
+    public int index()
+    {
+        return ERXValueUtilities.intValueWithDefault(
+                valueForBinding("index"), 0);
+    }
+
+
+    // ----------------------------------------------------------
+    public String id()
+    {
+        return (String) valueForBinding("id");
+    }
+
+
+    // ----------------------------------------------------------
+    public String dragHandle()
+    {
+        return (String) valueForBinding("dragHandle");
+    }
+
 
     // ----------------------------------------------------------
     public void appendToResponse( WOResponse response, WOContext context )
     {
         super.appendToResponse( response, context );
-        if ( increment )
+
+        if ( increment() && hasBinding("index") )
         {
-            index++;
+            setValueForBinding(index() + 1, "index");
         }
     }
 
@@ -80,10 +130,18 @@ public class TableRow
      */
     public String cssClass()
     {
-        int tag = index % 2;
-        if ( Boolean.TRUE.equals( showCaution ) ) tag += 2;
-        if ( Boolean.TRUE.equals( showError   ) ) tag += 4;
-        return cssTag[tag];
+        int tag = index() % 2;
+        if ( showCaution() ) tag += 2;
+        if ( showError()   ) tag += 4;
+
+        String cssClass = cssTag[tag];
+
+        if (dragHandle() != null)
+        {
+            cssClass += " dojoDndItem";
+        }
+
+        return cssClass;
     }
 
 
@@ -91,23 +149,6 @@ public class TableRow
     public boolean isStateless()
     {
         return true;
-    }
-
-
-    // ----------------------------------------------------------
-    public boolean synchronizesVariablesWithBindings()
-    {
-        return true;
-    }
-
-
-    // ----------------------------------------------------------
-    public void reset()
-    {
-        showError   = Boolean.FALSE;
-        showCaution = Boolean.FALSE;
-        increment   = Boolean.FALSE;
-        id          = null;
     }
 
 
