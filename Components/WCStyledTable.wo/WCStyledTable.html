@@ -1,1 +1,93 @@
-<table><wo:content/></table>
+<script type="text/javascript">
+dojo.declare("webcat.DndMonitor", null,
+{
+    draggingIndices: null,
+    proxy: null,
+    rowCssClasses: [ "o", "e", "oc", "ec", "oe", "ee" ],
+
+    constructor: function(args)
+    {
+        dojo.mixin(this, args);
+    },
+
+    startDrag: function(/*Node*/ source, /*Array*/ nodes, /*Boolean*/ copy)
+    {
+        draggingIndices = dojo.map(nodes, function(node) {
+            return source.getAllNodes().indexOf(node) });
+    },
+
+    setDropAction: function(/*Boolean*/ copy)
+    {
+        this.copy = copy;
+    },
+
+    endDrag: function(/*Node*/ source, /*Array*/ nodes)
+    {
+        var dropIndices = dojo.map(nodes, function(node) {
+            console.log(node);
+            return source.getAllNodes().indexOf(node) });
+        this._updateRowCssClasses(source);
+        this.proxy._itemsWereDragged(draggingIndices, dropIndices);
+        draggingIndices = null;
+    },
+
+    _updateRowCssClasses: function(/*Node*/ source)
+    {
+        var srcnode = new dojo.NodeList(source.node);
+        var index = 0;
+
+        srcnode.query("tbody tr").forEach(dojo.hitch(this, function(node) {
+            var oldClassName = null;
+            dojo.some(this.rowCssClasses, dojo.hitch(this, function(className) {
+                if (dojo.hasClass(node, className))
+                {
+                    oldClassName = className;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }));
+
+            if (oldClassName)
+            {
+                var tag = index % 2;
+                if (oldClassName.length == 2 &&
+                    oldClassName.charAt(1) == 'c')
+                {
+                    tag += 2;
+                }
+                else if (oldClassName.length == 2 &&
+                         oldClassName.charAt(1) == 'e')
+                {
+                    tag += 4;
+                }
+
+                dojo.removeClass(node, oldClassName);
+                dojo.addClass(node, this.rowCssClasses[tag]);
+            }
+
+            index++;
+        }));
+    }
+});
+</script>
+
+<wo:if condition="$itemsWereDraggedHandler">
+<wo name="JSONRPC"/>
+<wo name="DndTable">
+<script type="dojo/connect" event="onDndStart" args="source,nodes,copy">
+    <wo:str value="$idFor.jsId"/>.startDrag(source,nodes,copy);
+</script>
+<script type="dojo/connect" event="onDndDrop" args="source,nodes,copy">
+    <wo:str value="$idFor.jsId"/>.setDropAction(copy);
+</script>
+<script type="dojo/connect" event="insertNodes" args="addSelected,data,before,anchor">
+    <wo:str value="$idFor.jsId"/>.endDrag(this, data);
+</script>
+<wo:content/></wo>
+<wo name="DndMonitorInstance"/>
+</wo:if><wo:else>
+<wo name="Table"><wo:content/></wo>
+</wo:else>
