@@ -1,24 +1,22 @@
-<wo:WCStylesheetFragment filename="webcat/themes/Table.css"/>
-
 <wo name="Proxy" />
 <wo:content/>
 <div style="display: inline">
 <wo:if condition="$false"> <!-- $filters.count -->
     <wo:WCDiv dojoType="dijit.form.DropDownButton">
-	    <span>Filter...</span>
-	    <wo:WCDiv dojoType="dijit.TooltipDialog" id="$idFor.filterDialog" style="display: none">
-	        <wo:loop list="$filters" item="$filterInRepetition" index="$filterIndexInRepetition">
-	            <p>
-				    <wo:WCCheckBox checked="$currentFilterIsEnabled" id="$idForCurrentFilterEnabledCheckbox">
-				        <script type="dojo/method" event="onClick" args="evt">
-				            <wo:str value="$idFor.jsId"/>.changeFilter("<wo:str value="$filterInRepetition.keyPath"/>", { enabled: this.checked });
-				        </script>
-				    </wo:WCCheckBox>
-	                <wo:str value="$filterInRepetition.name"/>
-	                <wo:ERXWOSwitch case="$filterInRepetition.type">
-	                    <wo:ERXWOCase case="string">
-	                        <wo:WCFilteringSelect id="$idForCurrentFilterComparisonButton" value="$currentFilterComparison">
-	                            <option value="is">is</option>
+        <span>Filter...</span>
+        <wo:WCDiv dojoType="dijit.TooltipDialog" id="$idFor.filterDialog" style="display: none">
+            <wo:loop list="$filters" item="$filterInRepetition" index="$filterIndexInRepetition">
+                <p>
+                    <wo:WCCheckBox checked="$currentFilterIsEnabled" id="$idForCurrentFilterEnabledCheckbox">
+                        <script type="dojo/method" event="onClick" args="evt">
+                            <wo:str value="$idFor.jsId"/>.changeFilter("<wo:str value="$filterInRepetition.keyPath"/>", { enabled: this.checked });
+                        </script>
+                    </wo:WCCheckBox>
+                    <wo:str value="$filterInRepetition.name"/>
+                    <wo:ERXWOSwitch case="$filterInRepetition.type">
+                        <wo:ERXWOCase case="string">
+                            <wo:WCFilteringSelect id="$idForCurrentFilterComparisonButton" value="$currentFilterComparison">
+                                <option value="is">is</option>
                                 <option value="is not">is not</option>
                                 <option value="starts with">starts with</option>
                                 <option value="ends with">ends with</option>
@@ -26,17 +24,17 @@
                                 <script type="dojo/method" event="onChange" args="newValue">
                                     <wo:str value="$idFor.jsId"/>.changeFilter("<wo:str value="$filterInRepetition.keyPath"/>", { relation: newValue });
                                 </script>
-	                        </wo:WCFilteringSelect>
-						    <wo:WCTextBox id="$idForCurrentFilterValueWidget" value="$currentFilterValue" length="20">
-						        <script type="dojo/method" event="onKeyPress" args="evt">
-						            <wo:str value="$idFor.jsId"/>.startFilterValueUpdateTimer("<wo:str value="$filterInRepetition.keyPath"/>", this, evt, "<wo:str value="$idFor.jsId"/>");
-						        </script>
-						    </wo:WCTextBox>
-	                    </wo:ERXWOCase>
-	                </wo:ERXWOSwitch>
-	            </p>
-	        </wo:loop>
-	    </wo:WCDiv>
+                            </wo:WCFilteringSelect>
+                            <wo:WCTextBox id="$idForCurrentFilterValueWidget" value="$currentFilterValue" length="20">
+                                <script type="dojo/method" event="onKeyPress" args="evt">
+                                    <wo:str value="$idFor.jsId"/>.startFilterValueUpdateTimer("<wo:str value="$filterInRepetition.keyPath"/>", this, evt, "<wo:str value="$idFor.jsId"/>");
+                                </script>
+                            </wo:WCTextBox>
+                        </wo:ERXWOCase>
+                    </wo:ERXWOSwitch>
+                </p>
+            </wo:loop>
+        </wo:WCDiv>
     </wo:WCDiv>
 </wo:if>
 </div>
@@ -56,16 +54,16 @@
 </wo>
 <wo:WCSpan dojoType="dijit.ToolbarSeparator"/>
 <wo:WCSpan dojoType="dijit.form.DropDownButton" label="~'Show ' + ((batchSize == -1) ? 'all' : batchSize) + ' items'">
-	<wo:WCDiv dojoType="dijit.Menu">
-		<wo:WCMenuItem label="5"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(5);</script></wo:WCMenuItem>
-		<wo:WCMenuItem label="10"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(10);</script></wo:WCMenuItem>
-		<wo:WCMenuItem label="15"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(15);</script></wo:WCMenuItem>
-		<wo:WCMenuItem label="20"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(20);</script></wo:WCMenuItem>
-		<wo:WCMenuItem label="25"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(25);</script></wo:WCMenuItem>
-		<wo:WCMenuItem label="50"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(50);</script></wo:WCMenuItem>
-		<wo:WCMenuItem label="100"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(100);</script></wo:WCMenuItem>
-		<wo:WCMenuItem label="all"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(-1);</script></wo:WCMenuItem>
-	</wo:WCDiv>
+    <wo:WCDiv dojoType="dijit.Menu">
+        <wo:WCMenuItem label="5"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(5);</script></wo:WCMenuItem>
+        <wo:WCMenuItem label="10"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(10);</script></wo:WCMenuItem>
+        <wo:WCMenuItem label="15"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(15);</script></wo:WCMenuItem>
+        <wo:WCMenuItem label="20"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(20);</script></wo:WCMenuItem>
+        <wo:WCMenuItem label="25"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(25);</script></wo:WCMenuItem>
+        <wo:WCMenuItem label="50"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(50);</script></wo:WCMenuItem>
+        <wo:WCMenuItem label="100"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(100);</script></wo:WCMenuItem>
+        <wo:WCMenuItem label="all"><script type="dojo/method" event="onClick" args="evt"><wo:str value="$idFor.jsId"/>.changeBatchSize(-1);</script></wo:WCMenuItem>
+    </wo:WCDiv>
 </wo:WCSpan>
 <wo:WCSpan dojoType="dijit.ToolbarSeparator"/>
 <span>Displaying <wo:str value="$displayGroup.indexOfFirstDisplayedObject"/>&ndash;<wo:str value="$displayGroup.indexOfLastDisplayedObject"/> of <wo:str value="$displayGroup.allObjects.count"/></span>
@@ -83,75 +81,75 @@
 </div>
 </wo:if>
 <wo:WCStyledTable>
-	<thead>
-		<tr>
-			<wo:if condition="$showsRowNumbers">
-				<th>#</th>
-			</wo:if>
-			<wo:if condition="$allowsSelection">
-				<th><wo:if condition="$multipleSelection">
-						<wo:WCCheckBox id="$idFor.allSelectionState" checked="$isEntireBatchSelected">
-							<script type="dojo/method" event="onClick" args="evt">
-								<wo:str value="$idFor.jsId"/>.selectAllObjectsInBatch(this.checked);
-							</script>
-						</wo:WCCheckBox>
-				</wo:if><wo:else>&nbsp;</wo:else></th>
-			</wo:if>
-			<wo name="Columns">
-				<th>
-					<wo:if condition="$canSort">
+    <thead>
+        <tr>
+            <wo:if condition="$showsRowNumbers">
+                <th>#</th>
+            </wo:if>
+            <wo:if condition="$allowsSelection">
+                <th><wo:if condition="$multipleSelection">
+                        <wo:WCCheckBox id="$idFor.allSelectionState" checked="$isEntireBatchSelected">
+                            <script type="dojo/method" event="onClick" args="evt">
+                                <wo:str value="$idFor.jsId"/>.selectAllObjectsInBatch(this.checked);
+                            </script>
+                        </wo:WCCheckBox>
+                </wo:if><wo:else>&nbsp;</wo:else></th>
+            </wo:if>
+            <wo name="Columns">
+                <th>
+                    <wo:if condition="$canSort">
                         <wo:if condition="$columnInRepetitionCanBeSorted">
-							<wo name="SortLink">
-								<wo:str value="$columnInRepetition.name"/>
-								<wo:if condition="$columnInRepetitionIsSorted">
-									<wo:if condition="$columnInRepetitionIsAscending">
-										<wo:WOImage filename="webcat/themes/images/Ascending.gif" />
-									</wo:if><wo:else>
-										<wo:WOImage filename="webcat/themes/images/Descending.gif" />
-									</wo:else>
-								</wo:if><wo:else>
-									<wo:WOImage filename="webcat/themes/images/Unsorted.gif" />
-								</wo:else>
-							</wo>
-				        </wo:if><wo:else>
+                            <wo name="SortLink">
+                                <wo:str value="$columnInRepetition.name"/>
+                                <wo:if condition="$columnInRepetitionIsSorted">
+                                    <wo:if condition="$columnInRepetitionIsAscending">
+                                        <wo:WOImage filename="webcat/themes/images/Ascending.gif" />
+                                    </wo:if><wo:else>
+                                        <wo:WOImage filename="webcat/themes/images/Descending.gif" />
+                                    </wo:else>
+                                </wo:if><wo:else>
+                                    <wo:WOImage filename="webcat/themes/images/Unsorted.gif" />
+                                </wo:else>
+                            </wo>
+                        </wo:if><wo:else>
                             <wo:str value="$columnInRepetition.name"/>
-				        </wo:else>
-					</wo:if><wo:else>
-						<wo:str value="$columnInRepetition.name"/>
-					</wo:else>
-				</th>
-			</wo>
-		</tr>
-	</thead>
-	<tbody>
-		<wo name="Rows">
-		<wo:WOGenericContainer elementName="tr" class="$cssClassOfRowInRepetition">
-			<wo:if condition="$showsRowNumbers">
-				<td><wo:str value="$actualRowNumber"/></td>
-			</wo:if>
-			<wo:if condition="$allowsSelection">
-				<td>
-					<wo:if condition="$multipleSelection">
-						<wo:WCCheckBox name="$idFor.selectionState" checked="$isRowInRepetitionSelected">
-							<script type="dojo/method" event="onClick" args="evt">
-								<wo:str value="$idFor.jsId"/>.selectObjectAtIndexInBatch(<wo:str value="$indexInRepetition"/>, this.checked);
-							</script>
-						</wo:WCCheckBox>
-					</wo:if><wo:else>
-						<wo:WCRadioButton name="$idFor.selectionState" checked="$isRowInRepetitionSelected">
-							<script type="dojo/method" event="onClick" args="evt">
-								<wo:str value="$idFor.jsId"/>.selectObjectAtIndexInBatch(<wo:str value="$indexInRepetition"/>, this.checked);
-							</script>
-						</wo:WCRadioButton>
-					</wo:else>
-				</td>
-			</wo:if>
-			<wo name="Columns">
-				<td><wo name="ColumnValue"/></td>
-			</wo>
-		</wo:WOGenericContainer>
-		</wo>
-	</tbody>
+                        </wo:else>
+                    </wo:if><wo:else>
+                        <wo:str value="$columnInRepetition.name"/>
+                    </wo:else>
+                </th>
+            </wo>
+        </tr>
+    </thead>
+    <tbody>
+        <wo name="Rows">
+        <wo:WOGenericContainer elementName="tr" class="$cssClassOfRowInRepetition">
+            <wo:if condition="$showsRowNumbers">
+                <td><wo:str value="$actualRowNumber"/></td>
+            </wo:if>
+            <wo:if condition="$allowsSelection">
+                <td>
+                    <wo:if condition="$multipleSelection">
+                        <wo:WCCheckBox name="$idFor.selectionState" checked="$isRowInRepetitionSelected">
+                            <script type="dojo/method" event="onClick" args="evt">
+                                <wo:str value="$idFor.jsId"/>.selectObjectAtIndexInBatch(<wo:str value="$indexInRepetition"/>, this.checked);
+                            </script>
+                        </wo:WCCheckBox>
+                    </wo:if><wo:else>
+                        <wo:WCRadioButton name="$idFor.selectionState" checked="$isRowInRepetitionSelected">
+                            <script type="dojo/method" event="onClick" args="evt">
+                                <wo:str value="$idFor.jsId"/>.selectObjectAtIndexInBatch(<wo:str value="$indexInRepetition"/>, this.checked);
+                            </script>
+                        </wo:WCRadioButton>
+                    </wo:else>
+                </td>
+            </wo:if>
+            <wo name="Columns">
+                <td><wo name="ColumnValue"/></td>
+            </wo>
+        </wo:WOGenericContainer>
+        </wo>
+    </tbody>
 </wo:WCStyledTable>
 <script type="dojo/method" event="onDownloadEnd">
     <wo:str value="$idFor.jsId"/>.recacheCheckboxWidgets();
