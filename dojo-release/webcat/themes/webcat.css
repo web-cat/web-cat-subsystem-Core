@@ -1,0 +1,54 @@
+/* webcat.Table */
+
+.webcatObjectTableIcon {
+    background-image: url('images/Table.gif');
+    background-repeat: no-repeat;
+    width: 18px;
+    height: 18px;
+    text-align: center;
+}
+
+.webcatObjectTableIconFirst { background-position: 0px; }
+.webcatObjectTableIconPrevious { background-position: -18px; }
+.webcatObjectTableIconNext { background-position: -36px; }
+.webcatObjectTableIconLast { background-position: -54px; }
+
+/* webcat.Spinner */
+
+.webcatSpinner {
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position-y: 0px;
+    vertical-align: middle;
+}
+
+.webcatSpinnerSmall {
+    width: 18px;
+    height: 18px;
+    background-image: url('images/spinner18.png');
+}
+
+.webcatSpinnerMedium {
+    width: 36px;
+    height: 36px;
+    background-image: url('images/spinner36.png');
+}
+
+.webcatSpinnerLarge {
+    width: 72px;
+    height: 72px;
+    background-image: url('images/spinner72.png');
+}
+
+.webcatSpinnerHidden {
+    visibility: hidden;
+}
+
+/* webcat.Blocker */
+
+.webcatBlocker {
+    display: none;
+    position: absolute;
+    background-color: white;
+    z-index: 999;
+}

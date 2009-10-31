@@ -32,6 +32,7 @@ dependencies = {
                 "webcat.Blocker",
                 "webcat.ComboBox",
                 "webcat.ContentPane",
+                "webcat.Spinner",
                 "webcat.Table",
                 "webcat.TitlePane",
                 "webcat.Tree"

@@ -20,34 +20,66 @@
 \*==========================================================================*/
 
 dojo.provide("webcat.Blocker");
+dojo.require("webcat.Spinner");
 
+//=========================================================================
+/**
+ * The webcat.Blocker class represents a translucent overlay that can be placed
+ * on top of a node in order to indicate a long-running action, and block input
+ * to widgets on the node during that action.
+ *
+ * While this class is publicly accessible, it is easier to use the global
+ * webcat.block() and webcat.unblock() functions below to manage blockers.
+ */
 dojo.declare("webcat.Blocker", null,
 {
+    /** The length of the fade-in/out animations, in milliseconds. */
     duration: 400,
 
-    opacity: 0.4,
+    /** Overrides the opacity of the overlay. */
+    opacity: 0.6,
 
-    backgroundColor: "white",
+    /** Overrides the color of the overlay. */
+    color: null,
 
-    zIndex: 999,
+    /** Overrides the z-index at which the ovelay should appear. */
+    zIndex: null,
+
+    /**
+     * Controls whether an animated progress spinner should be centered in
+     * the overlay. Defaults to true.
+     */
+    usesSpinner: true,
+
+    /** The Spinner widget used by this blocker, if there is one. */
+    _spinner: null,
 
     // ----------------------------------------------------------
     constructor: function(node, args)
     {
         dojo.mixin(this, args);
+
         this.node = dojo.byId(node);
 
-        this.overlay = dojo.doc.createElement("div");
-        dojo.query(this.overlay)
-            .place(dojo.body(), "last")
-            .addClass("dojoBlockOverlay")
-            .style({
-                backgroundColor: this.backgroundColor,
-                position: "absolute",
-                zIndex: this.zIndex,
-                display: "none",
-                opacity: this.opacity
-            });
+        var styleOverrides = { };
+        if (this.color)
+            styleOverrides.backgroundColor = this.color;
+        if (this.zIndex)
+            styleOverrides.zIndex = this.zIndex;
+        if (this.opacity)
+            styleOverrides.opacity = this.opacity;
+
+        this.overlay = dojo.create("div", {
+            "class": "webcatBlocker",
+            style: styleOverrides
+        }, dojo.body());
+    },
+
+
+    // ----------------------------------------------------------
+    destroy: function()
+    {
+        dojo.destroy(this.overlay);
     },
 
 
@@ -58,69 +90,138 @@ dojo.declare("webcat.Blocker", null,
         var ov = this.overlay;
 
         dojo.marginBox(ov, pos);
-        dojo.style(ov, { opacity:0, display:"block" });
+
+        if (this.usesSpinner)
+        {
+            var widgetSize = null;
+            var LMARGIN = 32, MMARGIN = 16, SMARGIN = 8;
+            if (pos.w >= 72+LMARGIN && pos.h >= 72+LMARGIN)
+            {
+                widgetSize = "large";
+            }
+            else if (pos.w >= 36+MMARGIN && pos.h >= 36+MMARGIN)
+            {
+                widgetSize = "medium";
+            }
+            else if (pos.w >= 18+SMARGIN && pos.h >= 18+SMARGIN)
+            {
+                widgetSize = "small";
+            }
+
+            if (widgetSize)
+            {
+                this._spinner = new webcat.Spinner({
+                    size: widgetSize
+                });
+                this._spinner.startup();
+                this._spinner.placeAt(ov, "last");
+                dojo.style(this._spinner.domNode, "position", "absolute");
+
+                var spinnerSize = this._spinner.getPixelSize();
+                var spinnerBox = {
+                    w: spinnerSize,
+                    h: spinnerSize,
+                    l: (pos.w - spinnerSize) / 2,
+                    t: (pos.h - spinnerSize) / 2
+                };
+
+                dojo.marginBox(this._spinner.domNode, spinnerBox);
+
+                this._spinner.start();
+            }
+        }
+
+        dojo.style(ov, { opacity: 0, display: "block" });
         dojo.anim(ov, { opacity: this.opacity }, this.duration);
     },
 
 
     // ----------------------------------------------------------
-    hide: function()
+    hide: function(onEnd)
     {
         dojo.fadeOut({
             node: this.overlay,
             duration: this.duration,
             onEnd: dojo.hitch(this, function() {
-                    dojo.style(this.overlay, "display", "none");
+                dojo.style(this.overlay, "display", "none");
+                if (this._spinner)
+                {
+                    this._spinner.destroyRecursive();
+                    this._spinner = null;
+                }
+                if (onEnd) onEnd(this);
             })
         }).play();
     }
 });
 
 
-(function(){
-
-    var blockers = {};
-
+(function()
+{
+    // Maintains the map of blockers currently in use.
+    var blockers = { };
     var id_count = 0;
 
     // ----------------------------------------------------------
-    var _uniqueId = function(){
-            var id_base = "webcat_blocked",
-                    id;
-            do{
-                    id = id_base + "_" + (++id_count);
-            }while(dojo.byId(id));
-            return id;
+    /**
+     * Gets a unique ID for the globally created blocker.
+     */
+    var _uniqueId = function()
+    {
+        var id_base = "webcat_blocked";
+        var id;
+
+        do
+        {
+            id = id_base + "_" + (++id_count);
+        } while(dojo.byId(id));
+
+        return id;
     };
+
 
     dojo.mixin(webcat,
     {
     // ----------------------------------------------------------
-    block: function(node, args) {
-        var n = dojo.byId(node);
-        var id = dojo.attr(n, "id");
-        if(!id)
+    /**
+     * Creates a blocker over the specified node.
+     */
+    block: function(node, args)
+    {
+        node = dojo.byId(node);
+        var id = dojo.attr(node, "id");
+
+        if (!id)
         {
             id = _uniqueId();
-            dojo.attr(n, "id", id);
+            dojo.attr(node, "id", id);
         }
+
         if(!blockers[id])
         {
-            blockers[id] = new webcat.Blocker(n, args);
+            blockers[id] = new webcat.Blocker(node, args);
         }
+
         blockers[id].show();
         return blockers[id];
     },
 
 
     // ----------------------------------------------------------
-    unblock: function(node, args)
+    /**
+     * Removes the blocker from the specified node.
+     */
+    unblock: function(node)
     {
+        node = dojo.byId(node);
         var id = dojo.attr(node, "id");
-        if(id && blockers[id])
+
+        if (id && blockers[id])
         {
-            blockers[id].hide();
+            blockers[id].hide(function(blocker) { blocker.destroy(); });
+            delete blockers[id];
         }
     }
+
     });
 })();

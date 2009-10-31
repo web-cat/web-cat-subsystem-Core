@@ -20,8 +20,34 @@
 \*==========================================================================*/
 
 dojo.provide("webcat.global");
-
 dojo.require("webcat.Blocker");
+
+
+//----------------------------------------------------------
+/**
+ * A convenience method that, if passed an array, will return that array. If
+ * passed a string, it will return an array containing one element: that
+ * string. If passed anything else, it returns null.
+ *
+ * @param ids an object that is either a string or an array
+ * @return see above
+ */
+webcat._promoteSingletonIfNeeded = function(/* String|Array */ ids)
+{
+    if (dojo.isString(ids))
+    {
+        return [ ids ];
+    }
+    else if (dojo.isArray(ids))
+    {
+        return ids;
+    }
+    else
+    {
+        return null;
+    }
+}
+
 
 // ----------------------------------------------------------
 /**
@@ -33,16 +59,7 @@ dojo.require("webcat.Blocker");
  */
 webcat.refreshContentPanes = function(/* String|Array */ ids)
 {
-    var idArray;
-
-    if (dojo.isString(ids))
-    {
-        idArray = [ ids ];
-    }
-    else if (dojo.isArray(ids))
-    {
-        idArray = ids;
-    }
+    var idArray = webcat._promoteSingletonIfNeeded(ids);
 
     dojo.forEach(idArray, function(id) {
         var widget = dijit.byId(id);
@@ -94,11 +111,14 @@ webcat.fakeFullSubmit = function(/* String */ formName, /* String */ fieldName)
  * @param options a hash that contains options that will be passed to the XHR
  * @param refreshIds a string containing the ID of the content pane to refresh,
  *     or an array of IDs
+ * @param blockIds a string containing the ID of the DOM element to block with
+ *     an overlay, or an array of IDs, or the boolean "true" to block all of
+ *     the panes specified by refreshIds
  */
 webcat.partialSubmit = function(/* _Widget */ widget,
     /* String */ scriptComponentName, /* Object */  options,
     /* String|Array? */ refreshIds,
-    /* String|Array? */ blockIds)
+    /* Boolean|String|Array? */ blockIds)
 {
     var actionUrl = options.form.getAttribute('action');
     actionUrl = actionUrl.replace('/wo/', '/ajax/');
@@ -127,19 +147,42 @@ webcat.partialSubmit = function(/* _Widget */ widget,
  * @param options a hash containing options that are passed to the XHR
  * @param refreshIds a string containing the ID of the content pane to refresh,
  *     or an array of IDs
+ * @param blockIds a string containing the ID of the DOM element to block with
+ *     an overlay, or an array of IDs, or the boolean "true" to block all of
+ *     the panes specified by refreshIds
  */
 webcat.invokeRemoteAction = function(/* _Widget */ widget,
     /* Object */ options, /* String|Array? */ refreshIds,
-    /* String|Array? */ blockIds)
+    /* Boolean|String|Array? */ blockIds)
 {
     var evalAttributeFunction = function(code) {
         return eval('__evalAttributeFunction__temp__ = ' + code);
     };
 
+    if (typeof blockIds == 'boolean' && blockIds == true)
+    {
+        blockIds = refreshIds;
+    }
+
+    blockIds = webcat._promoteSingletonIfNeeded(blockIds);
+
     if (blockIds)
     {
-        // FIXME improve this api
-        webcat.block(blockIds);
+        dojo.forEach(blockIds, function(id) {
+            var widget = dijit.byId(id);
+            if (widget)
+            {
+                webcat.block(widget.domNode);
+            }
+            else
+            {
+                var node = dojo.byId(id);
+                if (node)
+                {
+                    webcat.block(node);
+                }
+            }
+        });
     }
 
     // Set up the event handlers.
@@ -147,8 +190,21 @@ webcat.invokeRemoteAction = function(/* _Widget */ widget,
         load: function(response, ioArgs) {
             if (blockIds)
             {
-                // FIXME improve this api
-                webcat.unblock(blockIds);
+                dojo.forEach(blockIds, function(id) {
+                    var widget = dijit.byId(id);
+                    if (widget)
+                    {
+                        webcat.unblock(widget.domNode);
+                    }
+                    else
+                    {
+                        var node = dojo.byId(id);
+                        if (node)
+                        {
+                            webcat.unblock(node);
+                        }
+                    }
+                });
             }
 
             if (refreshIds)
