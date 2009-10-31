@@ -41,6 +41,13 @@ DojoxFileInputCss: WOGenericElement {
     href        = "~resourceUrl(\"Core.framework/WebServerResources/dojox/form/resources/FileInput.css\")";
 }
 
+WebcatDojoCss: WOGenericElement {
+    elementName = "link";
+    rel         = "stylesheet";
+    type        = "text/css";
+    href        = "~resourceUrl(\"Core.framework/WebServerResources/webcat/themes/webcat.css\")";
+}
+
 PageSpecificCss: WOGenericElement {
     elementName = "link";
     rel         = "stylesheet";
