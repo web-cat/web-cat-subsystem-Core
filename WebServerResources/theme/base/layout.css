@@ -4,7 +4,15 @@
 
 
 
-html {  height: 100%;}body {  height: 100%;  margin: 0;  padding: 0;  /* defaults for all backgrounds */
+html {
+  height: 100%;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* defaults for all backgrounds */
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: top center;
@@ -35,7 +43,8 @@ html {  height: 100%;}body {  height: 100%;  margin: 0;  padding: 0;  /*
     clear: both;
     padding-bottom: 4em;
 }
-
+
+
 /* @end
 ====================================================================== */
 /* @group Header/Footer
@@ -101,6 +110,8 @@ Copyright (c) 2005-2007 Stu Nicholls. All rights reserved.
 This stylesheet and the associated (x)html may be modified in any
 way to fit your requirements.
 =================================================================== */
+#mainMenudiv { clear: right; }
+
 #mainMenu,
 #mainMenu ul {
     padding: 0;
@@ -207,7 +218,8 @@ way to fit your requirements.
 
 h1 {
     margin: 0 0 1.2em;
-    clear: both;}
+    clear: both;
+}
 
 .module.title h1 {
     margin: -0.2em 0;
@@ -278,7 +290,8 @@ blockquote {
 .hidden { display: none;  }
 .center { text-align: center; }
 
-img { border: 0; }a img { border: 0; }
+img { border: 0; }
+a img { border: 0; }
 
 li, dd { margin-left: 1em; }
 
@@ -370,20 +383,32 @@ ul.NoticePanel, .NoticePanel ul {
 /* @group =Tables
 ====================================================================== */
 
-table {    border-collapse: collapse;
-    margin: 0 0.5em 1em 0.1em;}
+table {
+    border-collapse: collapse;
+    margin: 0 0.5em 1em 0.1em;
+}
 
 .dtw table {
     margin-left: auto;
     margin-right: auto;
-}table.d2w table,
-table.layout {    border: none;}
+}
+
+table.d2w table,
+table.layout {
+    border: none;
+}
 
 table.layout.nomargin {
     margin: 0 -0.6em;
-}table th {    padding: 0.1em .6em;}
+}
 
-table td {    padding: 0.1em .6em;}
+table th {
+    padding: 0.1em .6em;
+}
+
+table td {
+    padding: 0.1em .6em;
+}
 
 .theme-thumb {
     float: left;
@@ -404,12 +429,27 @@ table td {    padding: 0.1em .6em;}
     /* @group Mini-Histogram
     ================================================================== */
 
-    table.distchart {        margin: 0;
-        empty-cells: show;        table-layout: fixed;        width: 100px;        display: table;    }
+    table.distchart {
+        margin: 0;
+        empty-cells: show;
+        table-layout: fixed;
+        width: 100px;
+        display: table;
+    }
 
-    table.distchart td {        padding: 0;        margin:  0;        width:  10px;        height: 10px;        line-height: 10px;    }
+    table.distchart td {
+        padding: 0;
+        margin:  0;
+        width:  10px;
+        height: 10px;
+        line-height: 10px;
+    }
 
-    table.distchart td img.bar {        width:  10px;        height: 10px;        border: 0px;    }
+    table.distchart td img.bar {
+        width:  10px;
+        height: 10px;
+        border: 0px;
+    }
     table.distchart td.b0 {
         background-image: url(../../images/bar00.gif);
     }
@@ -454,10 +494,21 @@ table td {    padding: 0.1em .6em;}
     /* @group Meter
     ================================================================== */
 
-    table.percentbar {        border: none;        padding: 0;        margin: 0;
-        line-height: 100%;    }    table.percentbar td {        padding: 0;        margin: 0;        border: none;    }
+    table.percentbar {
+        border: none;
+        padding: 0;
+        margin: 0;
+        line-height: 100%;
+    }
 
-    table tr#divider table.percentbar td { border: none; }
+    table.percentbar td {
+        padding: 0;
+        margin: 0;
+        border: none;
+    }
+
+    table tr#divider table.percentbar td { border: none; }
+
 
     /* @end
     ================================================================== */
