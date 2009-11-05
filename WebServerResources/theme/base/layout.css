@@ -638,7 +638,10 @@ form fieldset.reoffer label {
     width: 11em;
 }
 
-
+.dijitTextBox,
+.dj_safari .dijitComboBox {
+    vertical-align: baseline;
+}
 
 /* @end
 ====================================================================== */
@@ -650,4 +653,44 @@ form fieldset.reoffer label {
     height: 16px;
     cursor: move;
     background-image: url(images/draghandle.png);
+}
+
+tr.o.dojoDndItemOver {
+    cursor: default;
+}
+tr.e.dojoDndItemOver {
+    cursor: default;
+}
+tr.o.dojoDndItemSelected {
+    background-image: url(images/highlight-20.png);
+}
+tr.e.dojoDndItemSelected {
+    background-image: url(images/highlight-25.png);
+}
+tr.o.dojoDndItemAnchor {
+    background-image: url(images/highlight-20.png);
+}
+tr.e.dojoDndItemAnchor {
+    background-image: url(images/highlight-25.png);
+}
+/*.dojoDndItemOver .dojoDndItemAnchor {
+    background: #ededed;
+}*/
+.dojoDndItemBefore {
+    border-top: 2px solid #369;
+    margin: 8px;
+}
+.dojoDndItemAfter {
+    border-bottom: 2px solid #369;
+}
+.dojoDndAvatar {
+    border: 2px solid #ccc;
+    font-size: 75%;
+}
+.dojoDndAvatarHeader {
+    background: #aaa;
+}
+.dojoDndAvatarItem {
+    background: #fff;
+    border-bottom: 1px solid #666;
 }
