@@ -6,4 +6,6 @@ TR: WOGenericContainer {
     class       = cssClass;
     id          = id;
     handle      = dragHandle;
+    dndType     = dndType;
+    dndData     = dndData;
 }

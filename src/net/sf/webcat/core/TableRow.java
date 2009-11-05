@@ -111,6 +111,20 @@ public class TableRow
 
 
     // ----------------------------------------------------------
+    public String dndType()
+    {
+        return (String) valueForBinding("dndType");
+    }
+
+
+    // ----------------------------------------------------------
+    public String dndData()
+    {
+        return (String) valueForBinding("dndData");
+    }
+
+
+    // ----------------------------------------------------------
     public void appendToResponse( WOResponse response, WOContext context )
     {
         super.appendToResponse( response, context );

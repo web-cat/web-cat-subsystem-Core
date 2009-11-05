@@ -1,20 +1,24 @@
 Table : WOGenericContainer {
     elementName = "table";
+    class = cssClass;
+    id = id;
 }
 
 DndTable : WOGenericContainer {
     elementName = "table";
-    dojoType = "dojo.dnd.Source";
-    withHandles = true;
+    class = cssClass;
+    id = id;
+    dojoType = sourceDojoType;
+    proxy = fullProxyReference;
+    singular = "~multiple ? null : true";
+    withHandles = withHandles;
+    isSource = isSource;
+    copyOnly = copyOnly;
+    moveOnly = moveOnly;
+    accept = accept;
 }
 
 JSONRPC: WCJSONRPC {
     name = JSONBridgeName;
     proxyName = componentProxyName;
-}
-
-DndMonitorInstance : WCDiv {
-    dojoType = "webcat.DndMonitor";
-    jsId = idFor.jsId;
-    proxy = fullProxyReference;
 }

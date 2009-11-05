@@ -27,20 +27,73 @@ import org.apache.log4j.Logger;
 import org.jfree.util.Log;
 import org.json.JSONArray;
 import net.sf.webcat.ui.util.ComponentIDGenerator;
+import net.sf.webcat.ui.util.DojoUtils;
 import com.webobjects.appserver.*;
 import er.extensions.foundation.ERXStringUtilities;
 
 // -------------------------------------------------------------------------
 /**
+ * <p>
  * A WOGenericContainer that represents a table, formatted and styled
- * the standard Web-CAT way.
+ * the standard Web-CAT way. This component also supports drag-and-drop of
+ * rows.
+ * </p>
  *
- * @author Stephen Edwards
+ * <h2>Bindings</h2>
+ *
+ * <dl>
+ *
+ * <dt>id</dt>
+ * <dd>A unique identifier for the table. When using drag-and-drop, this is
+ * used to identify the source and target tables for a drag operation.</dd>
+ *
+ * <dt>onDropMethod</dt>
+ * <dd>The name of a method that will be called when one or more rows are
+ * dropped on this table. If omitted, the table will not support drag and drop.
+ * This method should be implemented by the component
+ * that conatins the WCStyledTable, and should have the following signature:
+ * <code>void yourMethodName(String sourceId, int[] draggedRowIndices,
+ * String targetId, int[] droppedRowIndices, boolean isCopy).</code>
+ *
+ * <dt>multiple</dt>
+ * <dd>True to allow multiple selection and dragging of rows in the table,
+ * otherwise false. Defaults to true.</dd>
+ *
+ * <dt>withHandles</dt>
+ * <dd>True if rows can only be dragged by a drag handle; false if they can
+ * be dragged by clicking anywhere in the row. To place a drag handle on a
+ * row, put the WCDragHandle element somewhere in the row with an appropriate
+ * id (the same id can be used for all drag handles in the table, unless you
+ * do something more complicated like nest tables inside rows), and then
+ * on the table row, use the <code>dragHandle="theId"</code> attribute. Unlike
+ * the default Dojo behavior, this value defaults to true.</dd>
+ *
+ * <dt>isSource</dt>
+ * <dd>True if the table can be used as a drag source; false if it can only
+ * act as a target. Defaults to true.</dd>
+ *
+ * <dt>copyOnly</dt>
+ * <dd>Set to true if items may only be copied; false if moves are also
+ * permitted. Defaults to false.</dd>
+ *
+ * <dt>moveOnly</dt>
+ * <dd>Set to true if items may only be rearranged in this container; false if
+ * they may also be copied. Defaults to false.</dd>
+ *
+ * <dt>accept</dt>
+ * <dd>A comma-delimited list of DnD types that can be accepted by this table
+ * when it acts as a target. The type of a row can be specified by using the
+ * dndType attribute on the table row's <code>&lt;tr&gt;</code> tag. By
+ * default this value will be equivalent to "text", which is also the default
+ * type of any row that does not have a dndType explicitly provided.</dd>
+ *
+ * </dl>
+ *
+ * @author Stephen Edwards, Tony Allevato
  * @version $Id$
  */
 
-public class WCStyledTable
-extends WOComponent
+public class WCStyledTable extends WOComponent
 {
     //~ Constructors ..........................................................
 
@@ -59,7 +112,15 @@ extends WOComponent
     //~ KVC attributes (must be public) .......................................
 
     public String id;
-    public String itemsWereDraggedHandler;
+    public String cssClass;
+    public String onDropMethod;
+    public boolean multiple = true;
+    public boolean withHandles = true;
+    public boolean isSource = true;
+    public boolean copyOnly = false;
+    public boolean moveOnly = false;
+    public String accept = null;
+
     public ComponentIDGenerator idFor;
 
 
@@ -77,6 +138,46 @@ extends WOComponent
         }
 
         super.appendToResponse(response, context);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the dojoType of the table depending on whether items can be copied
+     * or not, or whether the table is a pure target.
+     *
+     * @return the dojoType of the table
+     */
+    public String sourceDojoType()
+    {
+        return "webcat.TableSource";
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns the accepted dndTypes of this target as a JSON array that can be
+     * passed into Dojo. For example, the type list "text,image" would be
+     * converted to the JSON string '["text", "image"]'.
+     *
+     * @return the accepted dndTypes of this target as a JSON array string
+     */
+    public String acceptedTypesAsJSONArray()
+    {
+        if (accept == null)
+        {
+            return null;
+        }
+
+        JSONArray array = new JSONArray();
+
+        String[] types = accept.split("\\s*,\\s*");
+        for (String type : types)
+        {
+            array.put(type);
+        }
+
+        return DojoUtils.doubleToSingleQuotes(array.toString());
     }
 
 
@@ -121,29 +222,53 @@ extends WOComponent
 
 
     // ----------------------------------------------------------
-    public void _itemsWereDragged(
+    /**
+     * Called when items were dropped onto the table. Delegates to the method
+     * on the parent component that was specified by the "onDropMethod"
+     * binding.
+     *
+     * @param sourceId the identifier of the source of the items that were
+     *     dropped
+     * @param _dragIndices the array of indices of the items that were dropped
+     * @param targetId the identifier of this target
+     * @param _dropIndices the array of indices that represent the locations at
+     *     which the corresponding items in _dragIndices were dropped
+     * @param isCopy true if the items were copied; false if they were moved
+     */
+    public void _itemsWereDropped(
+            String sourceId,
             JSONArray _dragIndices,
-            JSONArray _dropIndices)
+            String targetId,
+            JSONArray _dropIndices,
+            boolean isCopy)
     {
         try
         {
             Method method = parent().getClass().getMethod(
-                    itemsWereDraggedHandler,
-                    int[].class, int[].class);
+                    onDropMethod,
+                    String.class,   // sourceId
+                    int[].class,    // draggedRowIndices
+                    String.class,   // targetId
+                    int[].class,    // droppedRowIndices
+                    boolean.class   // copy
+            );
 
-            int[] dragIndices = new int[_dragIndices.length()];
+            int[] draggedRowIndices = new int[_dragIndices.length()];
             for (int i = 0; i < _dragIndices.length(); i++)
             {
-                dragIndices[i] = _dragIndices.getInt(i);
+                draggedRowIndices[i] = _dragIndices.getInt(i);
             }
 
-            int[] dropIndices = new int[_dropIndices.length()];
+            int[] droppedRowIndices = new int[_dropIndices.length()];
             for (int i = 0; i < _dropIndices.length(); i++)
             {
-                dropIndices[i] = _dropIndices.getInt(i);
+                droppedRowIndices[i] = _dropIndices.getInt(i);
             }
 
-            method.invoke(parent(), dragIndices, dropIndices);
+            method.invoke(parent(),
+                    sourceId, draggedRowIndices,
+                    targetId, droppedRowIndices,
+                    isCopy);
         }
         catch (InvocationTargetException e)
         {
@@ -155,6 +280,8 @@ extends WOComponent
         }
     }
 
+
+    //~ Static/instance variables .............................................
 
     static Logger log = Logger.getLogger(WCStyledTable.class);
 }
