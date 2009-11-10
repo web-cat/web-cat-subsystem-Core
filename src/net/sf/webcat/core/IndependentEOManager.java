@@ -109,6 +109,20 @@ public class IndependentEOManager
 
 
     // ----------------------------------------------------------
+    /**
+     * Gets a local instance of the managed object in the specified editing
+     * context.
+     *
+     * @param ec the editing context
+     * @return a local instance of the object
+     */
+    public EOEnterpriseObject localInstanceIn(EOEditingContext ec)
+    {
+        return EOUtilities.localInstanceOfObject(ec, mirror);
+    }
+
+
+    // ----------------------------------------------------------
     public Object valueForKey(String key)
     {
         try
