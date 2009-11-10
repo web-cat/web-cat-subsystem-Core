@@ -109,18 +109,6 @@ public class Theme
 
 
     // ----------------------------------------------------------
-    /**
-     * Get a human-readable representation of this theme, which is
-     * the same as {@link #userPresentableDescription()}.
-     * @return this theme's name
-     */
-    public String toString()
-    {
-        return userPresentableDescription();
-    }
-
-
-    // ----------------------------------------------------------
     public Theme parent()
     {
         if (baseIsNotSet)

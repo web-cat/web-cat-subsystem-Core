@@ -186,18 +186,6 @@ public class Semester
 
     // ----------------------------------------------------------
     /**
-     * Get a human-readable representation of this semester, which is
-     * the same as {@link #userPresentableDescription()}.
-     * @return this semester's name
-     */
-    public String toString()
-    {
-        return userPresentableDescription();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Returns the name of this semester in a form usable as a
      * subdirectory name.
      *

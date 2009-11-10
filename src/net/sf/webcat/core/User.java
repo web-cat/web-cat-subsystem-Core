@@ -222,18 +222,6 @@ public class User
 
     // ----------------------------------------------------------
     /**
-     * Get a human-readable representation of this user, which is
-     * the same as {@link #userPresentableDescription()}.
-     * @return this user's name
-     */
-    public String toString()
-    {
-        return userPresentableDescription();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Return the user's full name as a string, in the format "First Last".
      * @return the name
      */

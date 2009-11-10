@@ -169,18 +169,6 @@ public class CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Get a human-readable representation of this course offering, which is
-     * the same as {@link #userPresentableDescription()}.
-     * @return this course offering's short name
-     */
-    public String toString()
-    {
-        return userPresentableDescription();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Returns true if the given user is an instructor of this
      * course offering
      *

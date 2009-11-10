@@ -75,18 +75,6 @@ public class AuthenticationDomain
 
     // ----------------------------------------------------------
     /**
-     * Get a human-readable representation of this authenticator, which is
-     * the same as {@link #userPresentableDescription()}.
-     * @return this authenticator's property name
-     */
-    public String toString()
-    {
-        return userPresentableDescription();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Change the value of this object's <code>propertyName</code>
      * property.  Takes care of renaming the associated subdirectories
      * for this domain as well.

@@ -94,18 +94,6 @@ public class Course
 
 
     // ----------------------------------------------------------
-    /**
-     * Get a human-readable representation of this course, which is
-     * the same as {@link #userPresentableDescription()}.
-     * @return this course's short name
-     */
-    public String toString()
-    {
-        return userPresentableDescription();
-    }
-
-
-    // ----------------------------------------------------------
     public Object validateNumber( Object value )
     {
         if ( value == null )

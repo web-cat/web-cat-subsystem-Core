@@ -899,6 +899,22 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
 
 #end## fetchspec
 #end
+    // ----------------------------------------------------------
+    /**
+     * Produce a string representation of this object.  This implementation
+     * calls UserPresentableDescription(), which uses WebObjects' internal
+     * mechanism to print out the visible fields of this object.  Normally,
+     * subclasses would override userPresentableDescription() to change
+     * the way the object is printed.
+     *
+     * @return A string representation of the object's value
+     */
+    public String toString()
+    {
+        return userPresentableDescription();
+    }
+
+
     //~ Instance/static variables .............................................
 
     static Logger log = Logger.getLogger( ${entity.classNameWithoutPackage}.class );

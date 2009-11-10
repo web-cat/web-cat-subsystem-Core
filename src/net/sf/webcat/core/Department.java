@@ -61,16 +61,4 @@ public class Department
     {
         return abbreviation() + " (" + institution() + ")";
     }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get a human-readable representation of this department, which is
-     * the same as {@link #userPresentableDescription()}.
-     * @return this user's name
-     */
-    public String toString()
-    {
-        return userPresentableDescription();
-    }
 }
