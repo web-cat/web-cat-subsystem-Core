@@ -848,6 +848,22 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
 
 #end## tomanyrels
 #if (!$entity.abstractEntity)
+    // ----------------------------------------------------------
+    /**
+     * Retrieve objects using a fetch specification.
+     *
+     * @param context The editing context to use
+     * @param fspec The fetch specification to use
+     */
+    @SuppressWarnings("unchecked")
+    public static NSArray<${entity.classNameWithoutPackage}> objectsWithFetchSpecification(
+        EOEditingContext context,
+        EOFetchSpecification fspec)
+    {
+        return context.objectsWithFetchSpecification(fspec);
+    }
+
+
 #foreach ($fetchSpec in $entity.sortedFetchSpecs)## fetchspec
     // ----------------------------------------------------------
     /**
@@ -860,7 +876,6 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
 #end
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<${entity.classNameWithoutPackage}> objectsFor${fetchSpec.capitalizedName}(
             EOEditingContext context#foreach ($binding in $fetchSpec.distinctBindings),
             ${binding.attributePath.childClassName} ${binding.name}Binding#end
@@ -884,7 +899,7 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 #end
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<${entity.classNameWithoutPackage}> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsFor${fetchSpec.capitalizedName}(ec"

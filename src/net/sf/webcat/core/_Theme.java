@@ -770,6 +770,22 @@ public abstract class _Theme
 
     // ----------------------------------------------------------
     /**
+     * Retrieve objects using a fetch specification.
+     *
+     * @param context The editing context to use
+     * @param fspec The fetch specification to use
+     */
+    @SuppressWarnings("unchecked")
+    public static NSArray<Theme> objectsWithFetchSpecification(
+        EOEditingContext context,
+        EOFetchSpecification fspec)
+    {
+        return context.objectsWithFetchSpecification(fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve object according to the <code>DirName</code>
      * fetch specification.
      *
@@ -777,7 +793,6 @@ public abstract class _Theme
      * @param dirNameBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<Theme> objectsForDirName(
             EOEditingContext context,
             String dirNameBinding
@@ -796,7 +811,7 @@ public abstract class _Theme
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<Theme> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForDirName(ec"
@@ -815,7 +830,6 @@ public abstract class _Theme
      * @param context The editing context to use
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<Theme> objectsForFetchAll(
             EOEditingContext context
         )
@@ -823,7 +837,7 @@ public abstract class _Theme
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "fetchAll", "Theme" );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<Theme> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForFetchAll(ec"

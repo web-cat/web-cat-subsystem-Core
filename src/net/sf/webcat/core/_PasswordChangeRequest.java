@@ -317,6 +317,22 @@ public abstract class _PasswordChangeRequest
 
     // ----------------------------------------------------------
     /**
+     * Retrieve objects using a fetch specification.
+     *
+     * @param context The editing context to use
+     * @param fspec The fetch specification to use
+     */
+    @SuppressWarnings("unchecked")
+    public static NSArray<PasswordChangeRequest> objectsWithFetchSpecification(
+        EOEditingContext context,
+        EOFetchSpecification fspec)
+    {
+        return context.objectsWithFetchSpecification(fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve object according to the <code>Code</code>
      * fetch specification.
      *
@@ -324,7 +340,6 @@ public abstract class _PasswordChangeRequest
      * @param codeBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<PasswordChangeRequest> objectsForCode(
             EOEditingContext context,
             String codeBinding
@@ -343,7 +358,7 @@ public abstract class _PasswordChangeRequest
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<PasswordChangeRequest> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForCode(ec"
@@ -363,7 +378,6 @@ public abstract class _PasswordChangeRequest
      * @param timeBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<PasswordChangeRequest> objectsForExpiredBefore(
             EOEditingContext context,
             NSTimestamp timeBinding
@@ -382,7 +396,7 @@ public abstract class _PasswordChangeRequest
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<PasswordChangeRequest> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForExpiredBefore(ec"
@@ -402,7 +416,6 @@ public abstract class _PasswordChangeRequest
      * @param userBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<PasswordChangeRequest> objectsForUser(
             EOEditingContext context,
             net.sf.webcat.core.User userBinding
@@ -421,7 +434,7 @@ public abstract class _PasswordChangeRequest
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<PasswordChangeRequest> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForUser(ec"

@@ -566,6 +566,22 @@ public abstract class _LoggedError
 
     // ----------------------------------------------------------
     /**
+     * Retrieve objects using a fetch specification.
+     *
+     * @param context The editing context to use
+     * @param fspec The fetch specification to use
+     */
+    @SuppressWarnings("unchecked")
+    public static NSArray<LoggedError> objectsWithFetchSpecification(
+        EOEditingContext context,
+        EOFetchSpecification fspec)
+    {
+        return context.objectsWithFetchSpecification(fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve object according to the <code>ExceptionLocation</code>
      * fetch specification.
      *
@@ -576,7 +592,6 @@ public abstract class _LoggedError
      * @param nameBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<LoggedError> objectsForExceptionLocation(
             EOEditingContext context,
             String classBinding,
@@ -613,7 +628,7 @@ public abstract class _LoggedError
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<LoggedError> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForExceptionLocation(ec"

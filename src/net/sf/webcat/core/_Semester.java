@@ -348,13 +348,28 @@ public abstract class _Semester
 
     // ----------------------------------------------------------
     /**
+     * Retrieve objects using a fetch specification.
+     *
+     * @param context The editing context to use
+     * @param fspec The fetch specification to use
+     */
+    @SuppressWarnings("unchecked")
+    public static NSArray<Semester> objectsWithFetchSpecification(
+        EOEditingContext context,
+        EOFetchSpecification fspec)
+    {
+        return context.objectsWithFetchSpecification(fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve object according to the <code>FetchAll</code>
      * fetch specification.
      *
      * @param context The editing context to use
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<Semester> objectsForFetchAll(
             EOEditingContext context
         )
@@ -362,7 +377,7 @@ public abstract class _Semester
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "FetchAll", "Semester" );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<Semester> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForFetchAll(ec"

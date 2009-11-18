@@ -280,13 +280,28 @@ public abstract class _Language
 
     // ----------------------------------------------------------
     /**
+     * Retrieve objects using a fetch specification.
+     *
+     * @param context The editing context to use
+     * @param fspec The fetch specification to use
+     */
+    @SuppressWarnings("unchecked")
+    public static NSArray<Language> objectsWithFetchSpecification(
+        EOEditingContext context,
+        EOFetchSpecification fspec)
+    {
+        return context.objectsWithFetchSpecification(fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve object according to the <code>FetchAll</code>
      * fetch specification.
      *
      * @param context The editing context to use
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<Language> objectsForFetchAll(
             EOEditingContext context
         )
@@ -294,7 +309,7 @@ public abstract class _Language
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "FetchAll", "Language" );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<Language> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForFetchAll(ec"

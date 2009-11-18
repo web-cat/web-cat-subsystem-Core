@@ -1737,6 +1737,22 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
+     * Retrieve objects using a fetch specification.
+     *
+     * @param context The editing context to use
+     * @param fspec The fetch specification to use
+     */
+    @SuppressWarnings("unchecked")
+    public static NSArray<User> objectsWithFetchSpecification(
+        EOEditingContext context,
+        EOFetchSpecification fspec)
+    {
+        return context.objectsWithFetchSpecification(fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve object according to the <code>CourseParticipants</code>
      * fetch specification.
      *
@@ -1745,7 +1761,6 @@ public abstract class _User
      * @param courseOfferingBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<User> objectsForCourseParticipants(
             EOEditingContext context,
             Integer accessLevelBinding,
@@ -1770,7 +1785,7 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<User> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForCourseParticipants(ec"
@@ -1792,7 +1807,6 @@ public abstract class _User
      * @param emailBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<User> objectsForDomainAndEmail(
             EOEditingContext context,
             net.sf.webcat.core.AuthenticationDomain domainBinding,
@@ -1817,7 +1831,7 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<User> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForDomainAndEmail(ec"
@@ -1839,7 +1853,6 @@ public abstract class _User
      * @param userNameBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<User> objectsForDomainAndName(
             EOEditingContext context,
             net.sf.webcat.core.AuthenticationDomain domainBinding,
@@ -1864,7 +1877,7 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<User> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForDomainAndName(ec"
@@ -1885,7 +1898,6 @@ public abstract class _User
      * @param courseOfferingBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<User> objectsForStaffForCourse(
             EOEditingContext context,
             net.sf.webcat.core.CourseOffering courseOfferingBinding
@@ -1904,7 +1916,7 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<User> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForStaffForCourse(ec"
@@ -1924,7 +1936,6 @@ public abstract class _User
      * @param courseOfferingBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<User> objectsForStudentsForCourse(
             EOEditingContext context,
             net.sf.webcat.core.CourseOffering courseOfferingBinding
@@ -1943,7 +1954,7 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<User> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForStudentsForCourse(ec"
@@ -1963,7 +1974,6 @@ public abstract class _User
      * @param nameBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<User> objectsForUserWithName(
             EOEditingContext context,
             String nameBinding
@@ -1982,7 +1992,7 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = context.objectsWithFetchSpecification( spec );
+        NSArray<User> result = objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "objectsForUserWithName(ec"
