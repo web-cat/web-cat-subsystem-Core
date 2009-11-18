@@ -73,6 +73,7 @@ public class IndependentEOManager
         EOEditingContext context, EOEnterpriseObject eo, ECManager manager)
     {
         ecm = manager;
+        setClientContext(context);
 
         // Now create a mirror in a new EC
         ecm.lock();
