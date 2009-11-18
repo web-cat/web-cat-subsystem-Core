@@ -191,15 +191,21 @@ import org.apache.log4j.Logger;
 *#
     // Attributes ---
 #foreach ($attribute in $entity.sortedClassAttributes)
+#if (!$attribute.inherited)
     public static final String ${attribute.uppercaseUnderscoreName}_KEY = "${attribute.name$}";
+#end
 #end
     // To-one relationships ---
 #foreach ($rel in $entity.sortedClassToOneRelationships)
+#if (!$rel.inherited)
     public static final String ${rel.uppercaseUnderscoreName}_KEY = "${rel.name}";
+#end
 #end
     // To-many relationships ---
 #foreach ($rel in $entity.sortedClassToManyRelationships)
+#if (!$rel.inherited)
     public static final String ${rel.uppercaseUnderscoreName}_KEY = "${rel.name}";
+#end
 #end
     // Fetch specifications ---
 #foreach ($fetchSpec in $entity.sortedFetchSpecs)
@@ -225,6 +231,7 @@ import org.apache.log4j.Logger;
     }
 
 
+#if (!$entity.parentSet)
     // ----------------------------------------------------------
     /**
      * Get a list of changes between this object's current state and the
@@ -256,7 +263,9 @@ import org.apache.log4j.Logger;
         }
     }
 
+#end## entity.parentSet
 #foreach ($attribute in $entity.sortedClassAttributes)
+#if (!$attribute.inherited)
 #if ($attribute.userInfo.isMutable)
     //-- Local mutable cache --
     private ${attribute.userInfo.valueClassName} ${attribute.name}Cache;
@@ -361,7 +370,7 @@ import org.apache.log4j.Logger;
     }
 
 
-#else
+#else## !isMutable
 #if ($attribute.userInfo.isScalar)
     // ----------------------------------------------------------
     /**
@@ -406,7 +415,7 @@ import org.apache.log4j.Logger;
     }
 
 
-#end
+#end## isScalar
     // ----------------------------------------------------------
     /**
      * Retrieve this object's <code>${attribute.name}</code> value.
@@ -436,8 +445,9 @@ import org.apache.log4j.Logger;
     }
 
 
-#end
-#end
+#end## is or is not mutable
+#end## !inherited
+#end## for entity.sortedClassAttributes
 #set ($alreadyFoundMutableAttribute = false)
 #foreach ($attribute in $entity.sortedClassAttributes)## has mutables
 #if ($attribute.userInfo.isMutable && !$alreadyFoundMutableAttribute)
@@ -520,6 +530,7 @@ import org.apache.log4j.Logger;
 #end## has mutables
 #set ($alreadyFoundMigratoryAttribute = false)
 #foreach ($attribute in $entity.sortedClassAttributes)## has migratory attributes
+#if (!$attribute.inherited)
 #if ($attribute.userInfo.needsMigration && !$alreadyFoundMigratoryAttribute)
 #set ($alreadyFoundMigratoryAttribute = true)
     // ----------------------------------------------------------
@@ -578,12 +589,14 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
 
 
 #end
+#end
 #end## has migratory attributes
 #*
    Add methods to call named fetch specifications, with any qualifier bindings
    having typed parameters.
 
 *##foreach ($relationship in $entity.sortedClassToOneRelationships)## toonerels
+#if (!$relationship.inherited)
     // ----------------------------------------------------------
     /**
      * Retrieve the entity pointed to by the <code>${relationship.name}</code>
@@ -650,8 +663,10 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
     }
 
 
+#end## !inherited
 #end## toonerels
 #foreach ($relationship in $entity.sortedClassToManyRelationships)## tomanyrels
+#if (!$relationship.inherited)
     // ----------------------------------------------------------
     /**
      * Retrieve the entities pointed to by the <code>${relationship.name}</code>
@@ -846,6 +861,7 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
     }
 
 
+#end## !inherited
 #end## tomanyrels
 #if (!$entity.abstractEntity)
     // ----------------------------------------------------------
