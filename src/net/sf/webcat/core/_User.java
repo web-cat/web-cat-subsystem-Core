@@ -1755,6 +1755,22 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
+     * Retrieve all objects of this type.
+     *
+     * @param context The editing context to use
+     *
+     * @return an NSArray of the entities retrieved
+     */
+    @SuppressWarnings("unchecked")
+    public static NSArray<User> allObjects(
+        EOEditingContext context)
+    {
+        return objectsMatchingQualifier(context, null, null);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve objects using a qualifier.
      *
      * @param context The editing context to use
