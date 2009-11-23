@@ -34,6 +34,7 @@ dependencies = {
                 "webcat.ContentPane",
                 "webcat.Spinner",
                 "webcat.Table",
+                "webcat.TableSource",
                 "webcat.TitlePane",
                 "webcat.Tree"
             ]
