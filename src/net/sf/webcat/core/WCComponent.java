@@ -705,7 +705,24 @@ public class WCComponent
 
 
     // ----------------------------------------------------------
+    /**
+     * This is a typesafe version of the WO {@link #pageWithName(String)}
+     * method, and should be used instead of the string version.
+     * @param pageClass the class of the page to create
+     * @return a new instance of the class, appropriately typed.
+     */
+    @SuppressWarnings("unchecked")
+    public final <T> T pageWithName(Class<T> pageClass)
+    {
+        return (T)pageWithName(pageClass.getName());
+    }
+
+
+    // ----------------------------------------------------------
     @Override
+    /**
+     * Where possible, use {@link #pageWithName(Class)} instead.
+     */
     public WOComponent pageWithName( String name )
     {
         if (log.isDebugEnabled())

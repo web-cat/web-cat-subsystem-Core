@@ -371,8 +371,7 @@ public class OptionEditPanel
     public WOComponent downloadFile()
         throws java.io.IOException
     {
-        DeliverFile downloadPage = (DeliverFile)pageWithName(
-            DeliverFile.class.getName() );
+        DeliverFile downloadPage = pageWithName(DeliverFile.class);
         // Remember that the attribute value has "Institution/user/..."
         // as a prefix, and base has the same thing as a suffix
         File file = new File( base,  "../../" + value().toString() );
