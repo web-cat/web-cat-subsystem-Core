@@ -189,22 +189,39 @@ import org.apache.log4j.Logger;
   attribute named fooBar, this will declare a FOO_BAR_KEY constant string.
 
 *#
+#if ($entity.abstractEntity)
+    // Relationship to base slice ---
+    private static final String BASE_PREFIX = "${entity.initialLowercaseName}";
+    private static final String BASE_PREFIX_DOT = BASE_PREFIX + ".";
+#end
     // Attributes ---
 #foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.inherited)
-    public static final String ${attribute.uppercaseUnderscoreName}_KEY = "${attribute.name$}";
+#if (!$entity.abstractEntity)
+    public static final String ${attribute.uppercaseUnderscoreName}_KEY = "${attribute.name}";
+#else
+    public static final String ${attribute.uppercaseUnderscoreName}_KEY = BASE_PREFIX_DOT + "${attribute.name$}";
+#end
 #end
 #end
     // To-one relationships ---
 #foreach ($rel in $entity.sortedClassToOneRelationships)
 #if (!$rel.inherited)
+#if (!$entity.abstractEntity)
     public static final String ${rel.uppercaseUnderscoreName}_KEY = "${rel.name}";
+#else
+    public static final String ${rel.uppercaseUnderscoreName}_KEY = BASE_PREFIX_DOT + "${rel.name}";
+#end
 #end
 #end
     // To-many relationships ---
 #foreach ($rel in $entity.sortedClassToManyRelationships)
 #if (!$rel.inherited)
+#if (!$entity.abstractEntity)
     public static final String ${rel.uppercaseUnderscoreName}_KEY = "${rel.name}";
+#else
+    public static final String ${rel.uppercaseUnderscoreName}_KEY = BASE_PREFIX_DOT + "${rel.name}";
+#end
 #end
 #end
     // Fetch specifications ---
@@ -1078,8 +1095,8 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
      * Retrieve object according to the <code>${fetchSpec.capitalizedName}</code>
      * fetch specification.
      *
-     * @param context The editing context to use
 #foreach ($binding in $fetchSpec.distinctBindings)
+     * @param context The editing context to use
      * @param ${binding.name}Binding fetch spec parameter
 #end
      * @return an NSArray of the entities retrieved
@@ -1137,6 +1154,51 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
         return userPresentableDescription();
     }
 
+#if ($entity.abstractEntity)
+
+    // ----------------------------------------------------------
+    /**
+     * Hack to workaround the need to include the base relationship when
+     * fetching objects vs. getting/setting their values via KVC.
+     *
+     * @param key the key to access
+     * @return the value of the key
+     */
+    public Object valueForKey(String key)
+    {
+        if (key.equals(BASE_PREFIX))
+        {
+            return this;
+        }
+
+        if (key.startsWith(BASE_PREFIX_DOT))
+        {
+            key = key.substring(BASE_PREFIX_DOT.length());
+        }
+
+        return super.valueForKey(key);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Hack to workaround the need to include the base relationship when
+     * fetching objects vs. getting/setting their values via KVC.
+     *
+     * @param value the new value of the key
+     * @param key the key to access
+     */
+    public void takeValueForKey(Object value, String key)
+    {
+        if (key.startsWith(BASE_PREFIX_DOT))
+        {
+            key = key.substring(BASE_PREFIX_DOT.length());
+        }
+
+        super.takeValueForKey(value, key);
+    }
+
+#end
 
     //~ Instance/static variables .............................................
 
