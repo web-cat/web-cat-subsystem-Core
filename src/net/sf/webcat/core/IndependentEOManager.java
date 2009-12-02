@@ -223,9 +223,12 @@ public class IndependentEOManager
         try
         {
             ecm.lock();
+
             // grab the changes, in case there is trouble saving them
-            NSDictionary changes =
-                mirror.changesFromSnapshot(mirror.snapshot());
+            NSDictionary snapshot =
+                mirror.editingContext().committedSnapshotForObject(mirror);
+            NSDictionary changes = mirror.changesFromSnapshot(snapshot);
+
             boolean changesSaved = false;
             // Try ten times
             for (int i = 0; !changesSaved && i< 10; i++)
