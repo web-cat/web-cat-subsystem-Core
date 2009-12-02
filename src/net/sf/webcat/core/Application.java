@@ -39,6 +39,7 @@ import javax.mail.internet.*;
 import net.sf.webcat.archives.*;
 import net.sf.webcat.dbupdate.*;
 import ognl.helperfunction.WOHelperFunctionHTMLTemplateParser;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -52,7 +53,7 @@ import org.apache.log4j.Logger;
  * @version $Id$
  */
 public class Application
-	extends er.extensions.appserver.ERXApplication
+    extends er.extensions.appserver.ERXApplication
 {
     //~ Constructors ..........................................................
 
@@ -326,17 +327,17 @@ public class Application
 
         // Add useful tag shortcuts for inline component tags.
         WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
-        		"net.sf.webcat.core.TableRow", "tr");
+                "net.sf.webcat.core.TableRow", "tr");
         WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
-        		"WOComponentContent", "content");
+                "WOComponentContent", "content");
 
         AjaxUpdateContainerTagProcessor tp =
-        	new AjaxUpdateContainerTagProcessor();
+            new AjaxUpdateContainerTagProcessor();
 
         WOHelperFunctionHTMLTemplateParser.registerTagProcessorForElementType(
-        		tp, "adiv");
+                tp, "adiv");
         WOHelperFunctionHTMLTemplateParser.registerTagProcessorForElementType(
-        		tp, "aspan");
+                tp, "aspan");
 
         setIncludeCommentsInResponses(false);
 
@@ -1182,19 +1183,19 @@ public class Application
             if ("donotsendmail".equals(
                     configurationProperties().getProperty( "mail.smtp.host" )))
             {
-            	if (log.isDebugEnabled())
-            	{
-            		log.debug( "E-MAIL DISABLED: unsent message:\nTo: "
+                if (log.isDebugEnabled())
+                {
+                    log.debug( "E-MAIL DISABLED: unsent message:\nTo: "
                         + ( to == null ? "null" : to )
                         + "\ntoAdmins: " + toAdmins
                         + "\nSubject: " + ( subject == null ? "null" : subject )
                         + "\nBody:\n" + ( body == null ? "null" : body )
                         );
-            	}
+                }
             }
             else
             {
-            	javax.mail.Transport.send( message );
+                javax.mail.Transport.send( message );
             }
         }
         catch ( Exception e )
@@ -1955,6 +1956,44 @@ public class Application
             }
             throw e;
         }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Enables logging of executed SQL statements.
+     */
+    public static synchronized void enableSQLLogging()
+    {
+        Logger.getLogger("NSLog").setLevel(Level.DEBUG);
+        Logger.getLogger(er.extensions.logging.ERXNSLogLog4jBridge.class)
+                .setLevel(Level.DEBUG);
+        Logger.getLogger("com.webobjects.jdbcadaptor.MySqlPlugin")
+                .setLevel(Level.DEBUG);
+        Logger.getLogger("er.transaction.adaptor.EOAdaptorDebugEnabled")
+                .setLevel(Level.DEBUG);
+        NSLog.allowDebugLoggingForGroups(NSLog.DebugGroupDatabaseAccess);
+        System.setProperty("er.extensions.ERXAdaptorChannelDelegate.enabled",
+                "true");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Disables logging of executed SQL statements.
+     */
+    public static synchronized void disableSQLLogging()
+    {
+        Logger.getLogger("NSLog").setLevel(Level.OFF);
+        Logger.getLogger(er.extensions.logging.ERXNSLogLog4jBridge.class)
+                .setLevel(Level.OFF);
+        Logger.getLogger("com.webobjects.jdbcadaptor.MySqlPlugin")
+                .setLevel(Level.OFF);
+        Logger.getLogger("er.transaction.adaptor.EOAdaptorDebugEnabled")
+                .setLevel(Level.OFF);
+        NSLog.refuseDebugLoggingForGroups(NSLog.DebugGroupDatabaseAccess);
+        System.setProperty("er.extensions.ERXAdaptorChannelDelegate.enabled",
+                "false");
     }
 
 
