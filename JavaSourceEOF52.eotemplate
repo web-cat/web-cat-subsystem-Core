@@ -1095,8 +1095,8 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
      * Retrieve object according to the <code>${fetchSpec.capitalizedName}</code>
      * fetch specification.
      *
-#foreach ($binding in $fetchSpec.distinctBindings)
      * @param context The editing context to use
+#foreach ($binding in $fetchSpec.distinctBindings)
      * @param ${binding.name}Binding fetch spec parameter
 #end
      * @return an NSArray of the entities retrieved
