@@ -5,6 +5,7 @@ AuthList: WOPopUpButton {
 	displayString     = domainItem.displayableName;
 	noSelectionString = "Choose your institution";
 	name              = "AuthenticationDomain";
+    id                = "AuthenticationDomain";
 }
 
 BarePage : net.sf.webcat.ui.WCBasePage {
@@ -87,11 +88,13 @@ NeedsAuthList: WOConditional {
 UserName: WOTextField {
 	value = userName;
 	name  = "UserName";
+	id    = "UserName";
 	?size = "20";
 }
 
 UserPassword: WOPasswordField {
 	value = password;
 	name  = "UserPassword";
+    id    = "UserPassword";
 	?size = "20";
 }

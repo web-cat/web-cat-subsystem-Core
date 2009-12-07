@@ -12,12 +12,12 @@
   <wo name="ExtraKeys"><wo name="ExtraKey"/></wo>
   <webobject name="Errors"/>
   <table class="layout">
-  <tr><td class="R"><b>User Name:</b></td>
+  <tr><td class="R"><label for="UserName"><b>User Name:</b></label></td>
       <td><webobject name="UserName"/></td></tr>
-  <tr><td class="R"><b>Password:</b></td>
+  <tr><td class="R"><label for="UserPassword"><b>Password:</b></label></td>
       <td><webobject name="UserPassword"/></td></tr>
   <webobject name="NeedsAuthList">
-  <tr><td class="R"><b>Institution:</b></td>
+  <tr><td class="R"><label for="AuthenticationDomain"><b>Institution:</b></label></td>
       <td><webobject name="AuthList"/></td></tr></webobject>
   <tr><td></td><td><input type="submit" value=" Login "/><wo:if condition="$showForgotPasswordLink"> <wo:link directActionName="passwordChangeRequest">Forgot your password?</wo:link></wo:if><webobject name="HasSpecificAuthDomain"><webobject name="HiddenAuthDomain"/></webobject></td></tr>
     </table>
