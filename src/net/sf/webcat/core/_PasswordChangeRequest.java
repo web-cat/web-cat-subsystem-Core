@@ -57,7 +57,7 @@ public abstract class _PasswordChangeRequest
     // ----------------------------------------------------------
     /**
      * A static factory method for creating a new
-     * _PasswordChangeRequest object given required
+     * PasswordChangeRequest object given required
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
@@ -109,11 +109,11 @@ public abstract class _PasswordChangeRequest
         PasswordChangeRequest obj = null;
         if (id > 0)
         {
-            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
-                ENTITY_NAME, "id", new Integer( id ) );
-            if ( results != null && results.count() > 0 )
+            NSArray<PasswordChangeRequest> results =
+                objectsMatchingValues(ec, "id", new Integer(id));
+            if (results != null && results.count() > 0)
             {
-                obj = (PasswordChangeRequest)results.objectAtIndex( 0 );
+                obj = results.objectAtIndex(0);
             }
         }
         return obj;
@@ -171,7 +171,8 @@ public abstract class _PasswordChangeRequest
      * last committed version.
      * @return a dictionary of the changes that have not yet been committed
      */
-    public NSDictionary changedProperties()
+    @SuppressWarnings("unchecked")
+    public NSDictionary<String, Object> changedProperties()
     {
         return changesFromSnapshot(
             editingContext().committedSnapshotForObject(this) );
@@ -341,7 +342,6 @@ public abstract class _PasswordChangeRequest
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<PasswordChangeRequest> allObjects(
         EOEditingContext context)
     {
@@ -358,7 +358,6 @@ public abstract class _PasswordChangeRequest
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<PasswordChangeRequest> objectsMatchingQualifier(
         EOEditingContext context,
         EOQualifier qualifier)
@@ -377,7 +376,6 @@ public abstract class _PasswordChangeRequest
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<PasswordChangeRequest> objectsMatchingQualifier(
         EOEditingContext context,
         EOQualifier qualifier,
@@ -385,7 +383,7 @@ public abstract class _PasswordChangeRequest
     {
         EOFetchSpecification fspec = new EOFetchSpecification(
             ENTITY_NAME, qualifier, sortOrderings);
-
+        fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -400,7 +398,6 @@ public abstract class _PasswordChangeRequest
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<PasswordChangeRequest> objectsMatchingValues(
         EOEditingContext context,
         Object... keysAndValues)
@@ -465,7 +462,6 @@ public abstract class _PasswordChangeRequest
      * @throws EOUtilities.MoreThanOneException
      *     if there is more than one matching object
      */
-    @SuppressWarnings("unchecked")
     public static PasswordChangeRequest objectMatchingValues(
         EOEditingContext context,
         Object... keysAndValues) throws EOObjectNotAvailableException,
@@ -511,14 +507,13 @@ public abstract class _PasswordChangeRequest
      * @throws EOUtilities.MoreThanOneException
      *     if there is more than one matching object
      */
-    @SuppressWarnings("unchecked")
     public static PasswordChangeRequest objectMatchingValues(
         EOEditingContext context,
         NSDictionary<String, Object> keysAndValues)
         throws EOObjectNotAvailableException,
                EOUtilities.MoreThanOneException
     {
-        return (PasswordChangeRequest) EOUtilities.objectMatchingValues(
+        return (PasswordChangeRequest)EOUtilities.objectMatchingValues(
             context, ENTITY_NAME, keysAndValues);
     }
 

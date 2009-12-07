@@ -58,7 +58,7 @@ public abstract class _User
     // ----------------------------------------------------------
     /**
      * A static factory method for creating a new
-     * _User object given required
+     * User object given required
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
@@ -119,11 +119,11 @@ public abstract class _User
         User obj = null;
         if (id > 0)
         {
-            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
-                ENTITY_NAME, "id", new Integer( id ) );
-            if ( results != null && results.count() > 0 )
+            NSArray<User> results =
+                objectsMatchingValues(ec, "id", new Integer(id));
+            if (results != null && results.count() > 0)
             {
-                obj = (User)results.objectAtIndex( 0 );
+                obj = results.objectAtIndex(0);
             }
         }
         return obj;
@@ -198,7 +198,8 @@ public abstract class _User
      * last committed version.
      * @return a dictionary of the changes that have not yet been committed
      */
-    public NSDictionary changedProperties()
+    @SuppressWarnings("unchecked")
+    public NSDictionary<String, Object> changedProperties()
     {
         return changesFromSnapshot(
             editingContext().committedSnapshotForObject(this) );
@@ -1016,7 +1017,7 @@ public abstract class _User
             log.debug( "deleteAllCoreSelectionsRelationships(): was "
                 + coreSelections() );
         }
-        Enumeration objects = coreSelections().objectEnumerator();
+        Enumeration<?> objects = coreSelections().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteCoreSelectionsRelationship(
                 (net.sf.webcat.core.CoreSelections)objects.nextElement() );
@@ -1194,7 +1195,7 @@ public abstract class _User
             log.debug( "deleteAllEnrolledInRelationships(): was "
                 + enrolledIn() );
         }
-        Enumeration objects = enrolledIn().objectEnumerator();
+        Enumeration<?> objects = enrolledIn().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteEnrolledInRelationship(
                 (net.sf.webcat.core.CourseOffering)objects.nextElement() );
@@ -1372,7 +1373,7 @@ public abstract class _User
             log.debug( "deleteAllGraderForRelationships(): was "
                 + graderFor() );
         }
-        Enumeration objects = graderFor().objectEnumerator();
+        Enumeration<?> objects = graderFor().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteGraderForRelationship(
                 (net.sf.webcat.core.CourseOffering)objects.nextElement() );
@@ -1550,7 +1551,7 @@ public abstract class _User
             log.debug( "deleteAllPasswordChangeRequestRelationships(): was "
                 + passwordChangeRequest() );
         }
-        Enumeration objects = passwordChangeRequest().objectEnumerator();
+        Enumeration<?> objects = passwordChangeRequest().objectEnumerator();
         while ( objects.hasMoreElements() )
             deletePasswordChangeRequestRelationship(
                 (net.sf.webcat.core.PasswordChangeRequest)objects.nextElement() );
@@ -1728,7 +1729,7 @@ public abstract class _User
             log.debug( "deleteAllTeachingRelationships(): was "
                 + teaching() );
         }
-        Enumeration objects = teaching().objectEnumerator();
+        Enumeration<?> objects = teaching().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteTeachingRelationship(
                 (net.sf.webcat.core.CourseOffering)objects.nextElement() );
@@ -1761,7 +1762,6 @@ public abstract class _User
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<User> allObjects(
         EOEditingContext context)
     {
@@ -1778,7 +1778,6 @@ public abstract class _User
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<User> objectsMatchingQualifier(
         EOEditingContext context,
         EOQualifier qualifier)
@@ -1797,7 +1796,6 @@ public abstract class _User
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<User> objectsMatchingQualifier(
         EOEditingContext context,
         EOQualifier qualifier,
@@ -1805,7 +1803,7 @@ public abstract class _User
     {
         EOFetchSpecification fspec = new EOFetchSpecification(
             ENTITY_NAME, qualifier, sortOrderings);
-
+        fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -1820,7 +1818,6 @@ public abstract class _User
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<User> objectsMatchingValues(
         EOEditingContext context,
         Object... keysAndValues)
@@ -1885,7 +1882,6 @@ public abstract class _User
      * @throws EOUtilities.MoreThanOneException
      *     if there is more than one matching object
      */
-    @SuppressWarnings("unchecked")
     public static User objectMatchingValues(
         EOEditingContext context,
         Object... keysAndValues) throws EOObjectNotAvailableException,
@@ -1931,14 +1927,13 @@ public abstract class _User
      * @throws EOUtilities.MoreThanOneException
      *     if there is more than one matching object
      */
-    @SuppressWarnings("unchecked")
     public static User objectMatchingValues(
         EOEditingContext context,
         NSDictionary<String, Object> keysAndValues)
         throws EOObjectNotAvailableException,
                EOUtilities.MoreThanOneException
     {
-        return (User) EOUtilities.objectMatchingValues(
+        return (User)EOUtilities.objectMatchingValues(
             context, ENTITY_NAME, keysAndValues);
     }
 

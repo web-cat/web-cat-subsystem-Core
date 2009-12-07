@@ -57,7 +57,7 @@ public abstract class _CourseOffering
     // ----------------------------------------------------------
     /**
      * A static factory method for creating a new
-     * _CourseOffering object given required
+     * CourseOffering object given required
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
@@ -106,11 +106,11 @@ public abstract class _CourseOffering
         CourseOffering obj = null;
         if (id > 0)
         {
-            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
-                ENTITY_NAME, "id", new Integer( id ) );
-            if ( results != null && results.count() > 0 )
+            NSArray<CourseOffering> results =
+                objectsMatchingValues(ec, "id", new Integer(id));
+            if (results != null && results.count() > 0)
             {
-                obj = (CourseOffering)results.objectAtIndex( 0 );
+                obj = results.objectAtIndex(0);
             }
         }
         return obj;
@@ -179,7 +179,8 @@ public abstract class _CourseOffering
      * last committed version.
      * @return a dictionary of the changes that have not yet been committed
      */
-    public NSDictionary changedProperties()
+    @SuppressWarnings("unchecked")
+    public NSDictionary<String, Object> changedProperties()
     {
         return changesFromSnapshot(
             editingContext().committedSnapshotForObject(this) );
@@ -642,7 +643,7 @@ public abstract class _CourseOffering
             log.debug( "deleteAllCoreSelectionsRelationships(): was "
                 + coreSelections() );
         }
-        Enumeration objects = coreSelections().objectEnumerator();
+        Enumeration<?> objects = coreSelections().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteCoreSelectionsRelationship(
                 (net.sf.webcat.core.CoreSelections)objects.nextElement() );
@@ -820,7 +821,7 @@ public abstract class _CourseOffering
             log.debug( "deleteAllGradersRelationships(): was "
                 + graders() );
         }
-        Enumeration objects = graders().objectEnumerator();
+        Enumeration<?> objects = graders().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteGradersRelationship(
                 (net.sf.webcat.core.User)objects.nextElement() );
@@ -998,7 +999,7 @@ public abstract class _CourseOffering
             log.debug( "deleteAllInstructorsRelationships(): was "
                 + instructors() );
         }
-        Enumeration objects = instructors().objectEnumerator();
+        Enumeration<?> objects = instructors().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteInstructorsRelationship(
                 (net.sf.webcat.core.User)objects.nextElement() );
@@ -1176,7 +1177,7 @@ public abstract class _CourseOffering
             log.debug( "deleteAllStudentsRelationships(): was "
                 + students() );
         }
-        Enumeration objects = students().objectEnumerator();
+        Enumeration<?> objects = students().objectEnumerator();
         while ( objects.hasMoreElements() )
             deleteStudentsRelationship(
                 (net.sf.webcat.core.User)objects.nextElement() );
@@ -1209,7 +1210,6 @@ public abstract class _CourseOffering
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<CourseOffering> allObjects(
         EOEditingContext context)
     {
@@ -1226,7 +1226,6 @@ public abstract class _CourseOffering
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<CourseOffering> objectsMatchingQualifier(
         EOEditingContext context,
         EOQualifier qualifier)
@@ -1245,7 +1244,6 @@ public abstract class _CourseOffering
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<CourseOffering> objectsMatchingQualifier(
         EOEditingContext context,
         EOQualifier qualifier,
@@ -1253,7 +1251,7 @@ public abstract class _CourseOffering
     {
         EOFetchSpecification fspec = new EOFetchSpecification(
             ENTITY_NAME, qualifier, sortOrderings);
-
+        fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -1268,7 +1266,6 @@ public abstract class _CourseOffering
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<CourseOffering> objectsMatchingValues(
         EOEditingContext context,
         Object... keysAndValues)
@@ -1333,7 +1330,6 @@ public abstract class _CourseOffering
      * @throws EOUtilities.MoreThanOneException
      *     if there is more than one matching object
      */
-    @SuppressWarnings("unchecked")
     public static CourseOffering objectMatchingValues(
         EOEditingContext context,
         Object... keysAndValues) throws EOObjectNotAvailableException,
@@ -1379,14 +1375,13 @@ public abstract class _CourseOffering
      * @throws EOUtilities.MoreThanOneException
      *     if there is more than one matching object
      */
-    @SuppressWarnings("unchecked")
     public static CourseOffering objectMatchingValues(
         EOEditingContext context,
         NSDictionary<String, Object> keysAndValues)
         throws EOObjectNotAvailableException,
                EOUtilities.MoreThanOneException
     {
-        return (CourseOffering) EOUtilities.objectMatchingValues(
+        return (CourseOffering)EOUtilities.objectMatchingValues(
             context, ENTITY_NAME, keysAndValues);
     }
 

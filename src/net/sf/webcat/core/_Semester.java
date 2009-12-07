@@ -57,7 +57,7 @@ public abstract class _Semester
     // ----------------------------------------------------------
     /**
      * A static factory method for creating a new
-     * _Semester object given required
+     * Semester object given required
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
@@ -109,11 +109,11 @@ public abstract class _Semester
         Semester obj = null;
         if (id > 0)
         {
-            NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
-                ENTITY_NAME, "id", new Integer( id ) );
-            if ( results != null && results.count() > 0 )
+            NSArray<Semester> results =
+                objectsMatchingValues(ec, "id", new Integer(id));
+            if (results != null && results.count() > 0)
             {
-                obj = (Semester)results.objectAtIndex( 0 );
+                obj = results.objectAtIndex(0);
             }
         }
         return obj;
@@ -170,7 +170,8 @@ public abstract class _Semester
      * last committed version.
      * @return a dictionary of the changes that have not yet been committed
      */
-    public NSDictionary changedProperties()
+    @SuppressWarnings("unchecked")
+    public NSDictionary<String, Object> changedProperties()
     {
         return changesFromSnapshot(
             editingContext().committedSnapshotForObject(this) );
@@ -372,7 +373,6 @@ public abstract class _Semester
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<Semester> allObjects(
         EOEditingContext context)
     {
@@ -389,7 +389,6 @@ public abstract class _Semester
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<Semester> objectsMatchingQualifier(
         EOEditingContext context,
         EOQualifier qualifier)
@@ -408,7 +407,6 @@ public abstract class _Semester
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<Semester> objectsMatchingQualifier(
         EOEditingContext context,
         EOQualifier qualifier,
@@ -416,7 +414,7 @@ public abstract class _Semester
     {
         EOFetchSpecification fspec = new EOFetchSpecification(
             ENTITY_NAME, qualifier, sortOrderings);
-
+        fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -431,7 +429,6 @@ public abstract class _Semester
      *
      * @return an NSArray of the entities retrieved
      */
-    @SuppressWarnings("unchecked")
     public static NSArray<Semester> objectsMatchingValues(
         EOEditingContext context,
         Object... keysAndValues)
@@ -496,7 +493,6 @@ public abstract class _Semester
      * @throws EOUtilities.MoreThanOneException
      *     if there is more than one matching object
      */
-    @SuppressWarnings("unchecked")
     public static Semester objectMatchingValues(
         EOEditingContext context,
         Object... keysAndValues) throws EOObjectNotAvailableException,
@@ -542,14 +538,13 @@ public abstract class _Semester
      * @throws EOUtilities.MoreThanOneException
      *     if there is more than one matching object
      */
-    @SuppressWarnings("unchecked")
     public static Semester objectMatchingValues(
         EOEditingContext context,
         NSDictionary<String, Object> keysAndValues)
         throws EOObjectNotAvailableException,
                EOUtilities.MoreThanOneException
     {
-        return (Semester) EOUtilities.objectMatchingValues(
+        return (Semester)EOUtilities.objectMatchingValues(
             context, ENTITY_NAME, keysAndValues);
     }
 
