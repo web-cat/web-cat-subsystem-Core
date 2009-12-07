@@ -558,6 +558,12 @@ form label {
     vertical-align: top;
     text-align: right;
     padding-right: 0.8em;
+    width: 10em;
+}
+
+form table.layout label {
+	padding-right: 0;
+	width: auto;
 }
 
 form label.trailing {
@@ -601,10 +607,6 @@ form em {
     font-weight: bold;
     font-style: normal;
     /* color: #f00; */
-}
-
-form label {
-    width: 10em;
 }
 
 form fieldset fieldset label {
