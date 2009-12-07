@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -38,7 +38,8 @@ import org.apache.log4j.Logger;
  *  communicate with subsystems.
  *
  *  @author Stephen Edwards
- *  @version $Id$
+ * @author Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class Subsystem
 {
@@ -99,7 +100,7 @@ public class Subsystem
             WCServletAdaptor adaptor = WCServletAdaptor.getInstance();
             if ( adaptor != null )
             {
-                for ( Iterator i = adaptor.subsystems().iterator();
+                for ( Iterator<?> i = adaptor.subsystems().iterator();
                       i.hasNext(); )
                 {
                     FeatureDescriptor sd = (FeatureDescriptor)i.next();
@@ -139,7 +140,7 @@ public class Subsystem
      *
      * @return The list of names, as strings
      */
-    public NSArray frontPageStatusComponents()
+    public NSArray<String> frontPageStatusComponents()
     {
         return null;
     }
@@ -153,7 +154,7 @@ public class Subsystem
      *
      * @return The list of paths, as strings
      */
-    public NSArray EOModelPathsInJar()
+    public NSArray<String> EOModelPathsInJar()
     {
         return null;
     }
@@ -191,7 +192,7 @@ public class Subsystem
      * null if none are found
      */
     @SuppressWarnings( "deprecation" )
-    public NSDictionary parameterDescriptions()
+    public NSDictionary<String, Object> parameterDescriptions()
     {
         if ( options == null )
         {
@@ -224,8 +225,9 @@ public class Subsystem
                         + configFile.getPath() );
                     FileInputStream in = new FileInputStream( configFile );
                     NSData data = new NSData( in, (int)configFile.length() );
-                    options = (NSDictionary)NSPropertyListSerialization
-                        .propertyListFromData( data, "UTF-8" );
+                    options = (NSDictionary<String, Object>)
+                        NSPropertyListSerialization
+                            .propertyListFromData( data, "UTF-8" );
                     in.close();
                 }
                 catch ( java.io.IOException e )
@@ -579,7 +581,7 @@ public class Subsystem
     private String            name = getClass().getName();
     private String            myResourcesDir;
     private FeatureDescriptor descriptor;
-    private NSDictionary      options;
+    private NSDictionary<String, Object> options;
 
     private NSArray<TabDescriptor> subsystemTabTemplate;
 
