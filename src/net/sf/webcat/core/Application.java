@@ -31,7 +31,6 @@ import er.extensions.foundation.*;
 import java.io.File;
 import java.io.StringWriter;
 import java.io.PrintWriter;
-import java.net.*;
 import java.util.*;
 import java.util.regex.*;
 import javax.activation.*;
@@ -39,6 +38,7 @@ import javax.mail.internet.*;
 import net.sf.webcat.archives.*;
 import net.sf.webcat.dbupdate.*;
 import ognl.helperfunction.WOHelperFunctionHTMLTemplateParser;
+import ognl.helperfunction.WOTagProcessor;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -50,7 +50,8 @@ import org.apache.log4j.Logger;
  * of exception handling for the Web-CAT application.
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @author Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class Application
     extends er.extensions.appserver.ERXApplication
@@ -69,6 +70,7 @@ public class Application
      *      remaining in the database. </li>
      * </ul>
      */
+    @SuppressWarnings("unchecked")
     public Application()
     {
         super();
@@ -302,11 +304,9 @@ public class Application
             {
                 // Silently swallow it, then retry on the next line
             }
-            NSArray old_sessions = EOUtilities.objectsForEntityNamed(
-                ec, LoginSession.ENTITY_NAME );
-            for ( int i = 0; i < old_sessions.count(); i++ )
+            for (LoginSession session : LoginSession.allObjects(ec))
             {
-                ec.deleteObject( (LoginSession)old_sessions.objectAtIndex( i ) );
+                ec.deleteObject(session);
             }
             ec.saveChanges();
         }
@@ -327,17 +327,20 @@ public class Application
 
         // Add useful tag shortcuts for inline component tags.
         WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
-                "net.sf.webcat.core.TableRow", "tr");
+            "net.sf.webcat.core.TableRow", "tr");
         WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
-                "WOComponentContent", "content");
+            "WOComponentContent", "content");
 
         AjaxUpdateContainerTagProcessor tp =
             new AjaxUpdateContainerTagProcessor();
+        WOTagProcessor simpleTp = new WOGenericContainerTagProcessor();
 
         WOHelperFunctionHTMLTemplateParser.registerTagProcessorForElementType(
-                tp, "adiv");
+            tp, "adiv");
         WOHelperFunctionHTMLTemplateParser.registerTagProcessorForElementType(
-                tp, "aspan");
+            tp, "aspan");
+        WOHelperFunctionHTMLTemplateParser.registerTagProcessorForElementType(
+            simpleTp, "label");
 
         setIncludeCommentsInResponses(false);
 
@@ -911,6 +914,7 @@ public class Application
      * @return an error page
      * @see er.extensions.appserver.ERXApplication#reportException(java.lang.Throwable, com.webobjects.foundation.NSDictionary)
      */
+    @SuppressWarnings("unchecked")
     public WOResponse reportException( Exception    exception,
                                        NSDictionary extraInfo,
                                        WOContext    context )
