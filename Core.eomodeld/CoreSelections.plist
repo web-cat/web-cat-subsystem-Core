@@ -9,7 +9,7 @@
         {name = id; prototypeName = id; }, 
         {columnName = CUSERID; name = userId; prototypeName = foreignId; }
     ); 
-    attributesUsedForLocking = (courseId, courseOfferingId, id, userId); 
+    attributesUsedForLocking = (courseId, courseOfferingId, userId); 
     className = "net.sf.webcat.core.CoreSelections"; 
     classProperties = (course, courseOffering, user); 
     externalName = TCORESELECTIONS; 
