@@ -304,14 +304,37 @@ a.permalink.floatRight {
     margin-left: 1.5em;
     display: block;
 }
-.left, .L { text-align: left; }
-.right, .n, .R { text-align: right; }
-.center, .s { text-align: center; }
+
+.left, .L,
+tr.left > td, tr.L > td,
+tr.center > td.left, tr.center > td.L,
+tr.c > td.left, tr.c > td.L,
+tr.right > td.left, tr.right > td.L,
+tr.n > td.left, tr.n > td.L,
+tr.R > td.left, tr.R > td.L { text-align: left; }
+
+.right, .n, .R,
+tr.right > td, tr.n > td, tr.R > td,
+tr.center > td.right, tr.center > td.n, tr.center > td.R,
+tr.c > td.right, tr.c > td.n, tr.c > td.R,
+tr.left > td.right, tr.left > td.n, tr.left > td.R,
+tr.L > td.right, tr.L > td.n, tr.L > td.R { text-align: right; }
+
+.center, .s, .c,
+tr.center > td, tr.c > td,
+tr.left > td.center, tr.L > td.center,
+tr.left > td.c, tr.L > td.c,
+tr.right > td.center, tr.right > td.c,
+tr.n > td.center, tr.n > td.c
+tr.R > td.center, tr.R > td.c { text-align: center; }
+
 .sm { font-size: smaller }
 .nowrap { white-space: nowrap; }
 .top { vertical-align: top; }
 .nlbefore { margin-top: 1em; }
 .nlafter  { margin-bottom: 1em; }
+.kn, tr.kn > td { margin-bottom: 0; padding-bottom: 0; }
+.kp, tr.kp > td { margin-top: 0; padding-top: 0; }
 
 pre, .code {
     border: none;
@@ -561,7 +584,7 @@ form label {
     width: 10em;
 }
 
-form table.layout label {
+form table label {
 	padding-right: 0;
 	width: auto;
 }
