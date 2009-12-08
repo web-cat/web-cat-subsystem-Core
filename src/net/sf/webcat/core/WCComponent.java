@@ -79,6 +79,8 @@ public class WCComponent
     //~ KVC Attributes (must be public) .......................................
 
     public WCComponent   nextPage;
+    public boolean       cancelsForward;
+    public boolean       nextPerformsSave;
 
     public static final String ALL_TASKS = "all";
 
@@ -268,9 +270,15 @@ public class WCComponent
             // we move to the default second-level tab.
             parent = parent.parent();
         }
-        changeWorkflow();
-        WOComponent result = pageWithName( parent.selectDefault().pageName() );
-        return result;
+        if (cancelsForward)
+        {
+            return internalNext();
+        }
+        else
+        {
+            changeWorkflow();
+            return pageWithName( parent.selectDefault().pageName() );
+        }
     }
 
 
@@ -369,29 +377,7 @@ public class WCComponent
      */
     public WOComponent next()
     {
-        if ( hasMessages() )
-        {
-            return null;
-        }
-        else if ( nextPage != null )
-        {
-            if (breakWorkflow)
-            {
-                breakWorkflow = false;
-            }
-            else if (nextPage.peerContextManager == null
-                     && peerContextManager != null)
-            {
-                nextPage.peerContextManager = peerContextManager;
-                nextPage.alreadyGrabbed = true;
-            }
-            return nextPage;
-        }
-        else
-        {
-            return pageWithName(
-                currentTab().nextSibling().select().pageName() );
-        }
+        return internalNext();
     }
 
 
@@ -794,6 +780,44 @@ public class WCComponent
 
 
     //~ Private Methods .......................................................
+
+    // ----------------------------------------------------------
+    public WOComponent internalNext()
+    {
+        if ( hasMessages() )
+        {
+            return null;
+        }
+
+        if (nextPerformsSave)
+        {
+            if (!applyLocalChanges())
+            {
+                return null;
+            }
+        }
+
+        if ( nextPage != null )
+        {
+            if (breakWorkflow)
+            {
+                breakWorkflow = false;
+            }
+            else if (nextPage.peerContextManager == null
+                     && peerContextManager != null)
+            {
+                nextPage.peerContextManager = peerContextManager;
+                nextPage.alreadyGrabbed = true;
+            }
+            return nextPage;
+        }
+        else
+        {
+            return pageWithName(
+                currentTab().nextSibling().select().pageName() );
+        }
+    }
+
 
     // ----------------------------------------------------------
     private WCComponent outermostWCComponent()

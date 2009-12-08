@@ -1,0 +1,7 @@
+Page: net.sf.webcat.core.WCPageWithNavigation {
+    inlineHeaderContents = inlineHeaderContents;
+    title                = title;
+    sideStepTitle        = sideStepTitle;
+    hideSteps            = hideSteps;
+    permalink            = permalink;
+}
