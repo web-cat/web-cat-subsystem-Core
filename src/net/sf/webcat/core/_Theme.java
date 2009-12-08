@@ -27,6 +27,7 @@ package net.sf.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -146,14 +147,28 @@ public abstract class _Theme
 
     // Attributes ---
     public static final String DIR_NAME_KEY = "dirName";
+    public static final ERXKey<String> dirName =
+        new ERXKey<String>(DIR_NAME_KEY);
     public static final String IS_FOR_THEME_DEVELOPERS_KEY = "isForThemeDevelopers";
+    public static final ERXKey<Integer> isForThemeDevelopers =
+        new ERXKey<Integer>(IS_FOR_THEME_DEVELOPERS_KEY);
     public static final String LAST_UPDATE_KEY = "lastUpdate";
+    public static final ERXKey<NSTimestamp> lastUpdate =
+        new ERXKey<NSTimestamp>(LAST_UPDATE_KEY);
     public static final String NAME_KEY = "name";
+    public static final ERXKey<String> name =
+        new ERXKey<String>(NAME_KEY);
     public static final String PROPERTIES_KEY = "properties";
+    public static final ERXKey<NSData> properties =
+        new ERXKey<NSData>(PROPERTIES_KEY);
     public static final String UPDATE_MUTABLE_FIELDS_KEY = "updateMutableFields";
+    public static final ERXKey<Integer> updateMutableFields =
+        new ERXKey<Integer>(UPDATE_MUTABLE_FIELDS_KEY);
     // To-one relationships ---
     // To-many relationships ---
     public static final String USERS_KEY = "users";
+    public static final ERXKey<net.sf.webcat.core.User> users =
+        new ERXKey<net.sf.webcat.core.User>(USERS_KEY);
     // Fetch specifications ---
     public static final String DIR_NAME_FSPEC = "dirName";
     public static final String FETCH_ALL_FSPEC = "fetchAll";

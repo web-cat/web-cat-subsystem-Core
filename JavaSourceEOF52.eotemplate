@@ -32,6 +32,7 @@ package $entity.superclassPackageName;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -202,6 +203,8 @@ import org.apache.log4j.Logger;
 #else
     public static final String ${attribute.uppercaseUnderscoreName}_KEY = BASE_PREFIX_DOT + "${attribute.name$}";
 #end
+    public static final ERXKey<${attribute.javaClassName}> ${attribute.name} =
+        new ERXKey<${attribute.javaClassName}>(${attribute.uppercaseUnderscoreName}_KEY);
 #end
 #end
     // To-one relationships ---
@@ -212,6 +215,8 @@ import org.apache.log4j.Logger;
 #else
     public static final String ${rel.uppercaseUnderscoreName}_KEY = BASE_PREFIX_DOT + "${rel.name}";
 #end
+    public static final ERXKey<${rel.actualDestination.classNameWithDefault}> ${rel.name} =
+        new ERXKey<${rel.actualDestination.classNameWithDefault}>(${rel.uppercaseUnderscoreName}_KEY);
 #end
 #end
     // To-many relationships ---
@@ -222,6 +227,8 @@ import org.apache.log4j.Logger;
 #else
     public static final String ${rel.uppercaseUnderscoreName}_KEY = BASE_PREFIX_DOT + "${rel.name}";
 #end
+    public static final ERXKey<${rel.actualDestination.classNameWithDefault}> ${rel.name} =
+        new ERXKey<${rel.actualDestination.classNameWithDefault}>(${rel.uppercaseUnderscoreName}_KEY);
 #end
 #end
     // Fetch specifications ---

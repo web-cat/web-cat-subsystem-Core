@@ -27,6 +27,7 @@ package net.sf.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -137,8 +138,14 @@ public abstract class _CoreSelections
     // Attributes ---
     // To-one relationships ---
     public static final String COURSE_KEY = "course";
+    public static final ERXKey<net.sf.webcat.core.Course> course =
+        new ERXKey<net.sf.webcat.core.Course>(COURSE_KEY);
     public static final String COURSE_OFFERING_KEY = "courseOffering";
+    public static final ERXKey<net.sf.webcat.core.CourseOffering> courseOffering =
+        new ERXKey<net.sf.webcat.core.CourseOffering>(COURSE_OFFERING_KEY);
     public static final String USER_KEY = "user";
+    public static final ERXKey<net.sf.webcat.core.User> user =
+        new ERXKey<net.sf.webcat.core.User>(USER_KEY);
     // To-many relationships ---
     // Fetch specifications ---
     public static final String ENTITY_NAME = "CoreSelections";

@@ -27,6 +27,7 @@ package net.sf.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -136,8 +137,14 @@ public abstract class _Language
 
     // Attributes ---
     public static final String COMPILER_KEY = "compiler";
+    public static final ERXKey<String> compiler =
+        new ERXKey<String>(COMPILER_KEY);
     public static final String NAME_KEY = "name";
+    public static final ERXKey<String> name =
+        new ERXKey<String>(NAME_KEY);
     public static final String VERSION_KEY = "version";
+    public static final ERXKey<String> version =
+        new ERXKey<String>(VERSION_KEY);
     // To-one relationships ---
     // To-many relationships ---
     // Fetch specifications ---

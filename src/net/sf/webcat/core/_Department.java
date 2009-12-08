@@ -27,6 +27,7 @@ package net.sf.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -139,11 +140,19 @@ public abstract class _Department
 
     // Attributes ---
     public static final String ABBREVIATION_KEY = "abbreviation";
+    public static final ERXKey<String> abbreviation =
+        new ERXKey<String>(ABBREVIATION_KEY);
     public static final String NAME_KEY = "name";
+    public static final ERXKey<String> name =
+        new ERXKey<String>(NAME_KEY);
     // To-one relationships ---
     public static final String INSTITUTION_KEY = "institution";
+    public static final ERXKey<net.sf.webcat.core.AuthenticationDomain> institution =
+        new ERXKey<net.sf.webcat.core.AuthenticationDomain>(INSTITUTION_KEY);
     // To-many relationships ---
     public static final String COURSES_KEY = "courses";
+    public static final ERXKey<net.sf.webcat.core.Course> courses =
+        new ERXKey<net.sf.webcat.core.Course>(COURSES_KEY);
     // Fetch specifications ---
     public static final String ENTITY_NAME = "Department";
 

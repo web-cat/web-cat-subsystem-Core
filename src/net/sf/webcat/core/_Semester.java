@@ -27,6 +27,7 @@ package net.sf.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -139,9 +140,17 @@ public abstract class _Semester
 
     // Attributes ---
     public static final String SEASON_KEY = "season";
+    public static final ERXKey<Integer> season =
+        new ERXKey<Integer>(SEASON_KEY);
     public static final String SEMESTER_END_DATE_KEY = "semesterEndDate";
+    public static final ERXKey<NSTimestamp> semesterEndDate =
+        new ERXKey<NSTimestamp>(SEMESTER_END_DATE_KEY);
     public static final String SEMESTER_START_DATE_KEY = "semesterStartDate";
+    public static final ERXKey<NSTimestamp> semesterStartDate =
+        new ERXKey<NSTimestamp>(SEMESTER_START_DATE_KEY);
     public static final String YEAR_KEY = "year";
+    public static final ERXKey<Integer> year =
+        new ERXKey<Integer>(YEAR_KEY);
     // To-one relationships ---
     // To-many relationships ---
     // Fetch specifications ---

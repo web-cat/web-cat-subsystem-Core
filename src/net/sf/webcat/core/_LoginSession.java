@@ -27,6 +27,7 @@ package net.sf.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -136,9 +137,15 @@ public abstract class _LoginSession
 
     // Attributes ---
     public static final String EXPIRATION_TIME_KEY = "expirationTime";
+    public static final ERXKey<NSTimestamp> expirationTime =
+        new ERXKey<NSTimestamp>(EXPIRATION_TIME_KEY);
     public static final String SESSION_ID_KEY = "sessionId";
+    public static final ERXKey<String> sessionId =
+        new ERXKey<String>(SESSION_ID_KEY);
     // To-one relationships ---
     public static final String USER_KEY = "user";
+    public static final ERXKey<net.sf.webcat.core.User> user =
+        new ERXKey<net.sf.webcat.core.User>(USER_KEY);
     // To-many relationships ---
     // Fetch specifications ---
     public static final String USER_PID_FSPEC = "userPid";

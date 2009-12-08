@@ -27,6 +27,7 @@ package net.sf.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -136,18 +137,40 @@ public abstract class _CourseOffering
 
     // Attributes ---
     public static final String CRN_KEY = "crn";
+    public static final ERXKey<String> crn =
+        new ERXKey<String>(CRN_KEY);
     public static final String LABEL_KEY = "label";
+    public static final ERXKey<String> label =
+        new ERXKey<String>(LABEL_KEY);
     public static final String MOODLE_GROUP_ID_KEY = "moodleGroupId";
+    public static final ERXKey<Long> moodleGroupId =
+        new ERXKey<Long>(MOODLE_GROUP_ID_KEY);
     public static final String MOODLE_ID_KEY = "moodleId";
+    public static final ERXKey<Long> moodleId =
+        new ERXKey<Long>(MOODLE_ID_KEY);
     public static final String URL_KEY = "url";
+    public static final ERXKey<String> url =
+        new ERXKey<String>(URL_KEY);
     // To-one relationships ---
     public static final String COURSE_KEY = "course";
+    public static final ERXKey<net.sf.webcat.core.Course> course =
+        new ERXKey<net.sf.webcat.core.Course>(COURSE_KEY);
     public static final String SEMESTER_KEY = "semester";
+    public static final ERXKey<net.sf.webcat.core.Semester> semester =
+        new ERXKey<net.sf.webcat.core.Semester>(SEMESTER_KEY);
     // To-many relationships ---
     public static final String CORE_SELECTIONS_KEY = "coreSelections";
+    public static final ERXKey<net.sf.webcat.core.CoreSelections> coreSelections =
+        new ERXKey<net.sf.webcat.core.CoreSelections>(CORE_SELECTIONS_KEY);
     public static final String GRADERS_KEY = "graders";
+    public static final ERXKey<net.sf.webcat.core.User> graders =
+        new ERXKey<net.sf.webcat.core.User>(GRADERS_KEY);
     public static final String INSTRUCTORS_KEY = "instructors";
+    public static final ERXKey<net.sf.webcat.core.User> instructors =
+        new ERXKey<net.sf.webcat.core.User>(INSTRUCTORS_KEY);
     public static final String STUDENTS_KEY = "students";
+    public static final ERXKey<net.sf.webcat.core.User> students =
+        new ERXKey<net.sf.webcat.core.User>(STUDENTS_KEY);
     // Fetch specifications ---
     public static final String FOR_SEMESTER_FSPEC = "forSemester";
     public static final String FOR_SEMESTER_AND_COURSE_FSPEC = "forSemesterAndCourse";

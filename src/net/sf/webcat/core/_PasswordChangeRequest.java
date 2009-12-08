@@ -27,6 +27,7 @@ package net.sf.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -139,9 +140,15 @@ public abstract class _PasswordChangeRequest
 
     // Attributes ---
     public static final String CODE_KEY = "code";
+    public static final ERXKey<String> code =
+        new ERXKey<String>(CODE_KEY);
     public static final String EXPIRE_TIME_KEY = "expireTime";
+    public static final ERXKey<NSTimestamp> expireTime =
+        new ERXKey<NSTimestamp>(EXPIRE_TIME_KEY);
     // To-one relationships ---
     public static final String USER_KEY = "user";
+    public static final ERXKey<net.sf.webcat.core.User> user =
+        new ERXKey<net.sf.webcat.core.User>(USER_KEY);
     // To-many relationships ---
     // Fetch specifications ---
     public static final String CODE_FSPEC = "code";

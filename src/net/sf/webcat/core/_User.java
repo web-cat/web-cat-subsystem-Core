@@ -27,6 +27,7 @@ package net.sf.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -149,24 +150,58 @@ public abstract class _User
 
     // Attributes ---
     public static final String ACCESS_LEVEL_KEY = "accessLevel";
+    public static final ERXKey<Integer> accessLevel =
+        new ERXKey<Integer>(ACCESS_LEVEL_KEY);
     public static final String EMAIL_KEY = "email";
+    public static final ERXKey<String> email =
+        new ERXKey<String>(EMAIL_KEY);
     public static final String FIRST_NAME_KEY = "firstName";
+    public static final ERXKey<String> firstName =
+        new ERXKey<String>(FIRST_NAME_KEY);
     public static final String LAST_NAME_KEY = "lastName";
+    public static final ERXKey<String> lastName =
+        new ERXKey<String>(LAST_NAME_KEY);
     public static final String PASSWORD_KEY = "password";
+    public static final ERXKey<String> password =
+        new ERXKey<String>(PASSWORD_KEY);
     public static final String PREFERENCES_KEY = "preferences";
+    public static final ERXKey<NSData> preferences =
+        new ERXKey<NSData>(PREFERENCES_KEY);
     public static final String UNIVERSITY_ID_NO_KEY = "universityIDNo";
+    public static final ERXKey<String> universityIDNo =
+        new ERXKey<String>(UNIVERSITY_ID_NO_KEY);
     public static final String UPDATE_MUTABLE_FIELDS_KEY = "updateMutableFields";
+    public static final ERXKey<Integer> updateMutableFields =
+        new ERXKey<Integer>(UPDATE_MUTABLE_FIELDS_KEY);
     public static final String URL_KEY = "url";
+    public static final ERXKey<String> url =
+        new ERXKey<String>(URL_KEY);
     public static final String USER_NAME_KEY = "userName";
+    public static final ERXKey<String> userName =
+        new ERXKey<String>(USER_NAME_KEY);
     // To-one relationships ---
     public static final String AUTHENTICATION_DOMAIN_KEY = "authenticationDomain";
+    public static final ERXKey<net.sf.webcat.core.AuthenticationDomain> authenticationDomain =
+        new ERXKey<net.sf.webcat.core.AuthenticationDomain>(AUTHENTICATION_DOMAIN_KEY);
     public static final String THEME_KEY = "theme";
+    public static final ERXKey<net.sf.webcat.core.Theme> theme =
+        new ERXKey<net.sf.webcat.core.Theme>(THEME_KEY);
     // To-many relationships ---
     public static final String CORE_SELECTIONS_KEY = "coreSelections";
+    public static final ERXKey<net.sf.webcat.core.CoreSelections> coreSelections =
+        new ERXKey<net.sf.webcat.core.CoreSelections>(CORE_SELECTIONS_KEY);
     public static final String ENROLLED_IN_KEY = "enrolledIn";
+    public static final ERXKey<net.sf.webcat.core.CourseOffering> enrolledIn =
+        new ERXKey<net.sf.webcat.core.CourseOffering>(ENROLLED_IN_KEY);
     public static final String GRADER_FOR_KEY = "graderFor";
+    public static final ERXKey<net.sf.webcat.core.CourseOffering> graderFor =
+        new ERXKey<net.sf.webcat.core.CourseOffering>(GRADER_FOR_KEY);
     public static final String PASSWORD_CHANGE_REQUEST_KEY = "passwordChangeRequest";
+    public static final ERXKey<net.sf.webcat.core.PasswordChangeRequest> passwordChangeRequest =
+        new ERXKey<net.sf.webcat.core.PasswordChangeRequest>(PASSWORD_CHANGE_REQUEST_KEY);
     public static final String TEACHING_KEY = "teaching";
+    public static final ERXKey<net.sf.webcat.core.CourseOffering> teaching =
+        new ERXKey<net.sf.webcat.core.CourseOffering>(TEACHING_KEY);
     // Fetch specifications ---
     public static final String COURSE_PARTICIPANTS_FSPEC = "courseParticipants";
     public static final String DOMAIN_AND_EMAIL_FSPEC = "domainAndEmail";

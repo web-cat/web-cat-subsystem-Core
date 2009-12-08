@@ -27,6 +27,7 @@ package net.sf.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -136,12 +137,26 @@ public abstract class _AuthenticationDomain
 
     // Attributes ---
     public static final String DATE_FORMAT_KEY = "dateFormat";
+    public static final ERXKey<String> dateFormat =
+        new ERXKey<String>(DATE_FORMAT_KEY);
     public static final String DEFAULT_EMAIL_DOMAIN_KEY = "defaultEmailDomain";
+    public static final ERXKey<String> defaultEmailDomain =
+        new ERXKey<String>(DEFAULT_EMAIL_DOMAIN_KEY);
     public static final String DEFAULT_URL_PATTERN_KEY = "defaultURLPattern";
+    public static final ERXKey<String> defaultURLPattern =
+        new ERXKey<String>(DEFAULT_URL_PATTERN_KEY);
     public static final String DISPLAYABLE_NAME_KEY = "displayableName";
+    public static final ERXKey<String> displayableName =
+        new ERXKey<String>(DISPLAYABLE_NAME_KEY);
     public static final String PROPERTY_NAME_KEY = "propertyName";
+    public static final ERXKey<String> propertyName =
+        new ERXKey<String>(PROPERTY_NAME_KEY);
     public static final String TIME_FORMAT_KEY = "timeFormat";
+    public static final ERXKey<String> timeFormat =
+        new ERXKey<String>(TIME_FORMAT_KEY);
     public static final String TIME_ZONE_NAME_KEY = "timeZoneName";
+    public static final ERXKey<String> timeZoneName =
+        new ERXKey<String>(TIME_ZONE_NAME_KEY);
     // To-one relationships ---
     // To-many relationships ---
     // Fetch specifications ---

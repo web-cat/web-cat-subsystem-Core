@@ -27,6 +27,7 @@ package net.sf.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import er.extensions.eof.ERXKey;
 import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
@@ -142,15 +143,35 @@ public abstract class _LoggedError
 
     // Attributes ---
     public static final String COMPONENT_KEY = "component";
+    public static final ERXKey<String> component =
+        new ERXKey<String>(COMPONENT_KEY);
     public static final String EXCEPTION_NAME_KEY = "exceptionName";
+    public static final ERXKey<String> exceptionName =
+        new ERXKey<String>(EXCEPTION_NAME_KEY);
     public static final String IN_CLASS_KEY = "inClass";
+    public static final ERXKey<String> inClass =
+        new ERXKey<String>(IN_CLASS_KEY);
     public static final String IN_METHOD_KEY = "inMethod";
+    public static final ERXKey<String> inMethod =
+        new ERXKey<String>(IN_METHOD_KEY);
     public static final String LINE_KEY = "line";
+    public static final ERXKey<Integer> line =
+        new ERXKey<Integer>(LINE_KEY);
     public static final String MESSAGE_KEY = "message";
+    public static final ERXKey<String> message =
+        new ERXKey<String>(MESSAGE_KEY);
     public static final String MOST_RECENT_KEY = "mostRecent";
+    public static final ERXKey<NSTimestamp> mostRecent =
+        new ERXKey<NSTimestamp>(MOST_RECENT_KEY);
     public static final String OCCURRENCES_KEY = "occurrences";
+    public static final ERXKey<Integer> occurrences =
+        new ERXKey<Integer>(OCCURRENCES_KEY);
     public static final String PAGE_KEY = "page";
+    public static final ERXKey<String> page =
+        new ERXKey<String>(PAGE_KEY);
     public static final String STACK_TRACE_KEY = "stackTrace";
+    public static final ERXKey<String> stackTrace =
+        new ERXKey<String>(STACK_TRACE_KEY);
     // To-one relationships ---
     // To-many relationships ---
     // Fetch specifications ---
