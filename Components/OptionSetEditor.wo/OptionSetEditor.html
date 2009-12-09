@@ -1,18 +1,48 @@
 <webobject name="HasOptions">
 <table style="width:100%"><thead><tr><th><webobject name="HasCategories">
-Show: <webobject name="CategoryList"/>
-<script language="JavaScript">
-<!--
-function submitForm() { document.WizardForm.submit(); }
-//-->
-</script>
+Show: <wo name="CategoryList">
+    <script type="dojo/connect" event="onChange" args="evt">
+    var widget = dijit.byId('<wo:str value="$idFor.categoryList"/>');
+    var catCount = <wo:str value="~categories != null ? categories.size : 0"/>;
+    var value = widget.getValue();
+    var nodes = new dojo.NodeList();
+    if (value.match(/\d+/))
+    {
+        var selIndex = parseInt(value);
+        for (var i = 0; i < catCount; i++)
+        {
+            if (i != selIndex)
+            {
+                nodes = nodes.concat(
+                    dojo.query('.webcatOptionEditPanelCategory' + i));
+            }
+        }
+        nodes.wipeOut().play();
+
+        nodes = dojo.query('.webcatOptionEditPanelCategory' + selIndex);
+        nodes.wipeIn().play();
+    }
+    else
+    {
+        nodes = dojo.query('.webcatOptionEditPanelOption');
+        nodes.wipeIn().play();
+    }
+    </script>
+</wo>
 </webobject>
 &nbsp;&nbsp;
-<webobject name="OptionsAreVerbose"><webobject name="TerseOptions"/></webobject>
-<webobject name="OptionsAreTerse"><webobject name="VerboseOptions"/></webobject>
-verbose descriptions</th></tr></thead></table>
+<wo name="ShowVerboseDescriptions">
+    <wo:WCConnectAction event="onClick" action="$toggleVerboseOptions" remote="true"/>
+    <script type="dojo/connect" event="onClick" args="evt">
+    var show = dijit.byId('<wo:str value="$idFor.showVerbose"/>').attr('checked');
+    var nodes = dojo.query('.webcatOptionEditPanelDescription');
+    var anim = show ? nodes.wipeIn() : nodes.wipeOut();
+    anim.play();
+    </script>
+</wo> Show verbose descriptions?
+</th></tr></thead></table>
 <webobject name="Repetition">
-<webobject name="ShowThisOption"><p><webobject name="OptionPanel"/></p></webobject>
+<wo name="OptionContainer"><webobject name="OptionPanel"/></wo>
 </webobject>
 </webobject><webobject name="HasNoOptions">
 <p>There are no configurable options to display.</p>

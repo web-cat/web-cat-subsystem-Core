@@ -1,9 +1,9 @@
-CategoryList: WOPopUpButton {
+CategoryList: WCFilteringSelect {
+    id            = idFor.categoryList;
     list          = categories;
     item          = category;
     selection     = chosenCategory;
     noSelectionString = "All Options";
-    onchange      = "submitForm()";
 }
 
 HasCategories: WOConditional {
@@ -28,6 +28,12 @@ OptionsAreVerbose: WOConditional {
     negate    = true;
 }
 
+OptionContainer: WOGenericContainer {
+    elementName = "div";
+    class = cssClassOfOptionCategory;
+    style = initialOptionStyle;
+}
+
 OptionPanel: net.sf.webcat.core.OptionEditPanel {
     option         = option;
     optionValues   = optionValues;
@@ -45,12 +51,7 @@ ShowThisOption: WOConditional {
     condition = showThisOption;
 }
 
-TerseOptions: WOSubmitButton {
-    value  = "Hide";
-    action = toggleVerboseOptions;
-}
-
-VerboseOptions: WOSubmitButton {
-    value  = "Show";
-    action = toggleVerboseOptions;
+ShowVerboseDescriptions: WCCheckBox {
+    id = idFor.showVerbose;
+    checked = verbose;
 }

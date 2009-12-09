@@ -102,6 +102,20 @@ public class OptionEditPanel
 
 
     // ----------------------------------------------------------
+    public String initialStyle()
+    {
+        String style = "margin-top: 0;";
+
+        if (terse)
+        {
+            style += " display: none";
+        }
+
+        return style;
+    }
+
+
+    // ----------------------------------------------------------
     public boolean isBoolean()
     {
         return type == BOOLEAN_TYPE;

@@ -24,6 +24,7 @@ package net.sf.webcat.core;
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
 import er.extensions.foundation.ERXValueUtilities;
+import net.sf.webcat.ui.util.ComponentIDGenerator;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -69,12 +70,16 @@ public class OptionSetEditor
     public String                    chosenCategory;
     public String                    displayedCategory;
 
+    public ComponentIDGenerator      idFor;
+
 
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
     public void appendToResponse( WOResponse response, WOContext context )
     {
+        idFor = new ComponentIDGenerator(this);
+
         if ( isFirstView
              && categories != null
              && categories.count() > 0 )
@@ -100,6 +105,39 @@ public class OptionSetEditor
             }
         }
         super.appendToResponse( response, context );
+    }
+
+
+    // ----------------------------------------------------------
+    public String cssClassOfOptionCategory()
+    {
+        String cssClass = "webcatOptionEditPanelOption";
+
+        if (categories != null && categories.count() != 0)
+        {
+            int index = categories.indexOfObject(option.valueForKey("category"));
+
+            if (index != -1)
+            {
+                cssClass += " webcatOptionEditPanelCategory" + index;
+            }
+        }
+
+        return cssClass;
+    }
+
+
+    // ----------------------------------------------------------
+    public String initialOptionStyle()
+    {
+        String style = "margin-bottom: 6px;";
+
+        if (!showThisOption())
+        {
+            style += " display: none;";
+        }
+
+        return style;
     }
 
 
@@ -151,6 +189,26 @@ public class OptionSetEditor
                 ? Boolean.TRUE : Boolean.FALSE;
         }
         return terse;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up the user's preferences and determine whether or not to show
+     * verbose option descriptions in this component.
+     * @return true if verbose descriptions should be shown, or false if
+     * they should be hidden
+     */
+    public Boolean verbose()
+    {
+        return terse() ? Boolean.FALSE : Boolean.TRUE;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setVerbose(boolean value)
+    {
+        // Do nothing; the actual toggling occurs in the action method.
     }
 
 
