@@ -22,6 +22,7 @@
 dojo.provide("webcat.ContentPane");
 
 dojo.require("dijit.layout.ContentPane");
+dojo.require("webcat.Spinner");
 
 // ------------------------------------------------------------------------
 /**
@@ -41,44 +42,47 @@ dojo.require("dijit.layout.ContentPane");
  */
 dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
 {
-	//~ Properties ............................................................
-	
-	/* Set to true when the pane is initially starting up, otherwise false. */
-	_initialStartup: true,
-	
-	/* Web-CAT's content pane by default does NOT show a loading message when
-	   it is being updated, to behave more like the old-style Prototype
-	   AjaxUpdateContainers (that is, modifications are made in place and
-	   appear instant). Set this attribute to true if you want to show a
-	   loading message when this pane is refreshed (for example, to indicate
-	   a long-running operation). */
-	showsLoadingMessageOnRefresh: false,
-	
-	/* The pane should ignore its component content and always load its content
-	   dynamically, even upon an initial page load. (The WCContentPane class
-	   has to play a part here by not appending the content to the response.) */
-	alwaysDynamic: false,
+    //~ Properties ............................................................
+
+    /* Set to true when the pane is initially starting up, otherwise false. */
+    _initialStartup: true,
+
+    /* Web-CAT's content pane by default does NOT show a loading message when
+       it is being updated, to behave more like the old-style Prototype
+       AjaxUpdateContainers (that is, modifications are made in place and
+       appear instant). Set this attribute to true if you want to show a
+       loading message when this pane is refreshed (for example, to indicate
+       a long-running operation). */
+    showsLoadingMessageOnRefresh: false,
+
+    /* Use a loading message that includes a spinner. */
+    loadingMessage: "<span class='dijitContentPaneLoading'><span dojoType='webcat.Spinner' size='medium'><script type='dojo/connect'>this.start();</script></span>&nbsp;&nbsp;Loading...</span>",
+
+    /* The pane should ignore its component content and always load its content
+       dynamically, even upon an initial page load. (The WCContentPane class
+       has to play a part here by not appending the content to the response.) */
+    alwaysDynamic: false,
 
 
-	//~ Methods ...............................................................
+    //~ Methods ...............................................................
 
-	// ----------------------------------------------------------
-	startup: function()
-	{
-		this._initialStartup = true;
-		this.inherited(arguments);
-		this._initialStartup = false;
-	},
-	
-	
-	// ----------------------------------------------------------
-	_loadCheck: function(/* Boolean */ forceLoad)
-	{
-		if (this.alwaysDynamic || !this._initialStartup)
-		{
-			this.inherited(arguments);
-		}
-	},
+    // ----------------------------------------------------------
+    startup: function()
+    {
+        this._initialStartup = true;
+        this.inherited(arguments);
+        this._initialStartup = false;
+    },
+
+
+    // ----------------------------------------------------------
+    _loadCheck: function(/* Boolean */ forceLoad)
+    {
+        if (this.alwaysDynamic || !this._initialStartup)
+        {
+            this.inherited(arguments);
+        }
+    },
 
 
     // ----------------------------------------------------------
@@ -96,11 +100,11 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
         delete this._singleChild;
 
         // dojo.html.set will take care of the rest of the details
-        // we provide an overide for the error handling to ensure the widget gets the errors 
+        // we provide an overide for the error handling to ensure the widget gets the errors
         // configure the setter instance with only the relevant widget instance properties
-        // NOTE: unless we hook into attr, or provide property setters for each property, 
+        // NOTE: unless we hook into attr, or provide property setters for each property,
         // we need to re-configure the ContentSetter with each use
-        var setter = this._contentSetter; 
+        var setter = this._contentSetter;
         if(! (setter && setter instanceof dojo.html._ContentSetter)) {
             setter = this._contentSetter = new dojo.html._ContentSetter({
                 node: this.containerNode,
@@ -155,12 +159,12 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
         };
 
         var setterParams = dojo.mixin({
-            cleanContent: this.cleanContent, 
-            extractContent: this.extractContent, 
-            parseContent: this.parseOnLoad 
+            cleanContent: this.cleanContent,
+            extractContent: this.extractContent,
+            parseContent: this.parseOnLoad
         }, this._contentSetterParams || {});
-        
-        dojo.mixin(setter, setterParams); 
+
+        dojo.mixin(setter, setterParams);
 
         setter.set( (dojo.isObject(cont) && cont.domNode) ? cont.domNode : cont );
 
@@ -181,7 +185,7 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
             // either now (if I'm currently visible)
             // or when I become visible
             this._scheduleLayout();
-            
+
             this._onLoadHandler(cont);
         }
     }

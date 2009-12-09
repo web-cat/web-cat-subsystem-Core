@@ -166,53 +166,63 @@ webcat.invokeRemoteAction = function(/* _Widget */ widget,
 
     blockIds = webcat._promoteSingletonIfNeeded(blockIds);
 
-    if (blockIds)
+    var blockFunction = function()
     {
-        dojo.forEach(blockIds, function(id) {
-            var widget = dijit.byId(id);
-            if (widget)
-            {
-                webcat.block(widget.domNode);
-            }
-            else
-            {
-                var node = dojo.byId(id);
-                if (node)
+        if (blockIds)
+        {
+            dojo.forEach(blockIds, function(id) {
+                var widget = dijit.byId(id);
+                if (widget)
                 {
-                    webcat.block(node);
+                    webcat.block(widget.domNode);
                 }
-            }
-        });
-    }
+                else
+                {
+                    var node = dojo.byId(id);
+                    if (node)
+                    {
+                        webcat.block(node);
+                    }
+                }
+            });
+        }
+    };
+
+    var unblockFunction = function()
+    {
+        if (blockIds)
+        {
+            dojo.forEach(blockIds, function(id) {
+                var widget = dijit.byId(id);
+                if (widget)
+                {
+                    webcat.unblock(widget.domNode);
+                }
+                else
+                {
+                    var node = dojo.byId(id);
+                    if (node)
+                    {
+                        webcat.unblock(node);
+                    }
+                }
+            });
+        }
+    };
+
+    blockFunction();
 
     // Set up the event handlers.
     var xhrOpts = {
         load: function(response, ioArgs) {
-            if (blockIds)
-            {
-                dojo.forEach(blockIds, function(id) {
-                    var widget = dijit.byId(id);
-                    if (widget)
-                    {
-                        webcat.unblock(widget.domNode);
-                    }
-                    else
-                    {
-                        var node = dojo.byId(id);
-                        if (node)
-                        {
-                            webcat.unblock(node);
-                        }
-                    }
-                });
-            }
+            var handler;
+
+            unblockFunction();
 
             if (refreshIds)
             {
                 webcat.refreshContentPanes(refreshIds);
             }
-
-            var handler;
 
             if (widget.onRemoteLoad)
             {
@@ -230,11 +240,7 @@ webcat.invokeRemoteAction = function(/* _Widget */ widget,
         error: function(response, ioArgs) {
             var handler;
 
-            if (blockIds)
-            {
-                // FIXME improve this api
-                webcat.unblock(blockIds);
-            }
+            unblockFunction();
 
             if (widget.onRemoteError)
             {
@@ -252,11 +258,7 @@ webcat.invokeRemoteAction = function(/* _Widget */ widget,
         handle: function(response, ioArgs) {
             var handler;
 
-            if (blockIds)
-            {
-                // FIXME improve this api
-                webcat.unblock(blockIds);
-            }
+            unblockFunction();
 
             if (widget.onRemoteEnd)
             {

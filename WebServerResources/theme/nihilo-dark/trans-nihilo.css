@@ -22,6 +22,11 @@
 
 .nihilo .dijitTimePickerTick { color: #555; }
 
+.nihilo .dijitMenuItem {
+    font: 95% "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif !important;
+}
+
+
 
 /* @end
 ====================================================================== */

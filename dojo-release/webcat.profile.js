@@ -5,6 +5,7 @@ dependencies = {
             resourceName: 'webcat.BasePage',
             dependencies: [
                 "dojo.dnd.Source",
+                "dojo.NodeList-fx",
                 "dijit.Dialog",
                 "dijit.InlineEditBox",
                 "dijit.Menu",
@@ -32,6 +33,7 @@ dependencies = {
                 "webcat.Blocker",
                 "webcat.ComboBox",
                 "webcat.ContentPane",
+                "webcat.Dialog",
                 "webcat.Spinner",
                 "webcat.Table",
                 "webcat.TableSource",

@@ -21,7 +21,7 @@
 
 dojo.provide("webcat.Table");
 
-// ------------------------------------------------------------------------
+//------------------------------------------------------------------------
 /**
  * This is not a true Dojo widget class. It is a wrapper class that wraps an
  * instance of the WCTable component based on its AjaxProxy and JavaScript id,
@@ -37,7 +37,7 @@ dojo.declare("webcat.Table", null,
 
     // The prefix used for all of the widget IDs in the table.
     idPrefix: "",
-    
+
     // True if multiple selection is allowed.
     multiSelect: false,
 
@@ -52,15 +52,17 @@ dojo.declare("webcat.Table", null,
         this.selectionCheckboxName = this.idPrefix + "_selectionState";
         this.allSelectionCheckboxID = this.idPrefix + "_allSelectionState";
         this.updateContainerID = this.idPrefix + "_updateContainer";
-        
-        this.recacheCheckboxWidgets();
+
+        dojo.connect(window, "onresize", this, "_onWindowResized");
+
+        this.repairAfterRefresh();
     },
-    
-    
+
+
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    recacheCheckboxWidgets: function()
+    repairAfterRefresh: function()
     {
         if (this.multiSelect)
         {
@@ -72,6 +74,8 @@ dojo.declare("webcat.Table", null,
 
             this.allSelectionCheckbox = dijit.byId(this.allSelectionCheckboxID);
         }
+
+        this._onWindowResized();
     },
 
 
@@ -81,11 +85,11 @@ dojo.declare("webcat.Table", null,
         this.selectionCheckboxes.forEach(function(widget) {
             widget.attr("checked", state);
         });
-    
+
         this.proxy.selectAllObjectsInBatch(
             function() { }, state);
     },
-    
+
 
     // ----------------------------------------------------------
     selectObjectAtIndexInBatch: function(index, state)
@@ -98,14 +102,14 @@ dojo.declare("webcat.Table", null,
                 && this.selectionCheckboxes.every(function(widget) {
                     return widget.attr("checked");
                 });
-        
+
             this.allSelectionCheckbox.attr("checked", allChecked);
         }
 
         this.proxy.selectObjectAtIndexInBatch(
             function() { }, index, state);
     },
-    
+
 
     // ----------------------------------------------------------
     selectOnlyObjectAtIndexInBatch: function(index, options)
@@ -135,6 +139,8 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     performActionOnObjectAtIndexInBatch: function(index, columnIndex)
     {
+        webcat.block(this.updateContainerID);
+
         if (this.multiSelect)
         {
             this.selectionCheckboxes.forEach(function(widget, i) {
@@ -147,27 +153,30 @@ dojo.declare("webcat.Table", null,
         this.proxy.performActionOnObjectAtIndexInBatch(
             this._updateTableGenerator(), index, columnIndex);
     },
-    
+
 
     // ----------------------------------------------------------
     changeSortOrdering: function(index)
     {
+        webcat.block(this.updateContainerID);
         this.proxy.changeSortOrdering(
             this._updateTableGenerator(), index);
     },
-    
+
 
     // ----------------------------------------------------------
     changeBatchSize: function(size)
     {
+        webcat.block(this.updateContainerID);
         this.proxy.changeBatchSize(
             this._updateTableGenerator(), size);
     },
-    
+
 
     // ----------------------------------------------------------
     goToFirstBatch: function()
     {
+        webcat.block(this.updateContainerID);
         this.proxy.goToFirstBatch(this._updateTableGenerator());
     },
 
@@ -175,6 +184,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     goToPreviousBatch: function()
     {
+        webcat.block(this.updateContainerID);
         this.proxy.goToPreviousBatch(this._updateTableGenerator());
     },
 
@@ -182,6 +192,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     goToNextBatch: function()
     {
+        webcat.block(this.updateContainerID);
         this.proxy.goToNextBatch(this._updateTableGenerator());
     },
 
@@ -189,6 +200,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     goToLastBatch: function()
     {
+        webcat.block(this.updateContainerID);
         this.proxy.goToLastBatch(this._updateTableGenerator());
     },
 
@@ -196,11 +208,12 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     changeFilter: function(keyPath, changes)
     {
+        webcat.block(this.updateContainerID);
         this.proxy.changeFilter(
             this._updateTableGenerator(), keyPath, changes);
     },
-    
-    
+
+
     // ----------------------------------------------------------
     startFilterValueUpdateTimer: function(keyPath, widget, evt, proxy)
     {
@@ -238,11 +251,42 @@ dojo.declare("webcat.Table", null,
 
 
     // ----------------------------------------------------------
+    _onWindowResized: function()
+    {
+        var containerNode = dijit.byId(this.updateContainerID).domNode;
+        var tableNode = dojo.query("table", containerNode)[0];
+        var headerNodes = dojo.query("thead > tr > th[weight]", tableNode);
+
+        var totalWeight = 0;
+        headerNodes.forEach(function(node) {
+            totalWeight += Number(dojo.attr(node, "weight"));
+            dojo.style(node, "width", null);
+        });
+
+        var parentBox = dojo.marginBox(containerNode);
+        var tableBox = dojo.marginBox(tableNode);
+
+        if (tableBox.w < parentBox.w)
+        {
+            var space = parentBox.w - tableBox.w - 1;
+
+            headerNodes.forEach(function(node) {
+                var columnBox = dojo.marginBox(node);
+                var weight = Number(dojo.attr(node, "weight")) / totalWeight;
+                dojo.marginBox(node, {
+                    w: Math.floor(columnBox.w + space * weight)
+                });
+            });
+        }
+    },
+
+    // ----------------------------------------------------------
     _updateTableGenerator: function()
     {
         var ucid = this.updateContainerID;
         return function() {
-            eval("dijit.byId('" + ucid + "').refresh();");
+            eval("dijit.byId('" + ucid + "').refresh();" +
+                 "webcat.unblock('" + ucid + "');");
         };
     }
 });

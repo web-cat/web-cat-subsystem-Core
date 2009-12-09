@@ -132,7 +132,8 @@ dojo.declare("webcat.Blocker", null,
         }
 
         dojo.style(ov, { opacity: 0, display: "block" });
-        dojo.anim(ov, { opacity: this.opacity }, this.duration);
+        dojo.anim(ov, { opacity: this.opacity }, this.duration,
+                null, null, 250);
     },
 
 

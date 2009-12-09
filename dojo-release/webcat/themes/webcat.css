@@ -1,6 +1,23 @@
+/* webcat.ComboBox */
+
+.webcatComboBoxMenuItem {
+    padding-top: 0px;
+    padding-bottom: 0px;
+    line-height: 100%;
+}
+
+.webcatComboBoxMenuItemDivider {
+    border-bottom: 1px solid silver;
+}
+
 /* webcat.Table */
 
-.webcatObjectTableIcon {
+.webcatTableReset {
+    margin-right: 0px !important;
+    padding: 0px !important;
+}
+
+.webcatTableToolbarIcon {
     background-image: url('images/Table.gif');
     background-repeat: no-repeat;
     width: 18px;
@@ -8,10 +25,10 @@
     text-align: center;
 }
 
-.webcatObjectTableIconFirst { background-position: 0px; }
-.webcatObjectTableIconPrevious { background-position: -18px; }
-.webcatObjectTableIconNext { background-position: -36px; }
-.webcatObjectTableIconLast { background-position: -54px; }
+.webcatTableToolbarIconFirst { background-position: 0px; }
+.webcatTableToolbarIconPrevious { background-position: -18px; }
+.webcatTableToolbarIconNext { background-position: -36px; }
+.webcatTableToolbarIconLast { background-position: -54px; }
 
 /* webcat.Spinner */
 
