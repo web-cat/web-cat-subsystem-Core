@@ -33,58 +33,66 @@ import com.webobjects.foundation.NSDictionary;
 // ------------------------------------------------------------------------
 /**
  * An enhanced version of the HTML {@code select} tag.
- * 
+ *
  * <h2>Bindings</h2>
+ *
  * <dl>
+ *
  * <dt>fixedSize</dt>
  * <dd>Do not resize the widget based on the widths of the elements inside it.
  * Default value is false.</dd>
+ *
+ * <dt>minimumWidth</dt>
+ * <dd>If resizing to fit (the default behavior), the minimum width that the
+ * widget will be allowed to take.</dd>
+ *
  * <dt>maximumWidth</dt>
  * <dd>If resizing to fit (the default behavior), the maximum width that the
  * widget will be allowed to take.</dd>
+ *
  * </dl>
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
 public class WCFilteringSelect extends DojoSingleSelectionListFormElement
 {
     //~ Constructor ...........................................................
-    
-	// ----------------------------------------------------------
-	public WCFilteringSelect(String name,
-			NSDictionary<String, WOAssociation> someAssociations,
-			WOElement template)
-	{
-		super("select", someAssociations, template);
-	}
 
-	
-    //~ Methods ...............................................................
-	
-	// ----------------------------------------------------------
-	@Override
-	public String dojoType()
-	{
-		return "webcat.FilteringSelect";
-	}
-
-
-	// ----------------------------------------------------------
-	@Override
-	public void takeValuesFromRequest(WORequest request, WOContext context)
+    // ----------------------------------------------------------
+    public WCFilteringSelect(String name,
+            NSDictionary<String, WOAssociation> someAssociations,
+            WOElement template)
     {
-    	if(_selection != null &&
-    			!isDisabledInContext(context) && context.wasFormSubmitted())
+        super("span", someAssociations, template);
+    }
+
+
+    //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    @Override
+    public String dojoType()
+    {
+        return "webcat.FilteringSelect";
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void takeValuesFromRequest(WORequest request, WOContext context)
+    {
+        if(_selection != null &&
+                !isDisabledInContext(context) && context.wasFormSubmitted())
         {
             Object selection = null;
             String valueString =
-            	request.stringFormValueForKey(nameInContext(context));
-            
+                request.stringFormValueForKey(nameInContext(context));
+
             if(valueString != null)
             {
                 valueString = valueString.trim();
-                
+
                 if(!NO_SELECTION_PLACEHOLDER.equals(valueString))
                 {
                     int index = Integer.parseInt(valueString);

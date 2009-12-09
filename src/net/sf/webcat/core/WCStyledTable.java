@@ -23,12 +23,16 @@ package net.sf.webcat.core;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Map;
 import org.apache.log4j.Logger;
 import org.jfree.util.Log;
 import org.json.JSONArray;
 import net.sf.webcat.ui.util.ComponentIDGenerator;
 import net.sf.webcat.ui.util.DojoUtils;
 import com.webobjects.appserver.*;
+import com.webobjects.foundation.NSMutableDictionary;
+import com.webobjects.foundation.NSMutableSet;
+import er.extensions.components.ERXComponentUtilities;
 import er.extensions.foundation.ERXStringUtilities;
 
 // -------------------------------------------------------------------------
@@ -40,6 +44,11 @@ import er.extensions.foundation.ERXStringUtilities;
  * </p>
  *
  * <h2>Bindings</h2>
+ *
+ * <p>
+ * Any bindings not specified below are passed directly to the underlying
+ * &lt;table&gt; tag so that you can style it and specify any other attributes.
+ * </p>
  *
  * <dl>
  *
@@ -111,15 +120,13 @@ public class WCStyledTable extends WOComponent
 
     //~ KVC attributes (must be public) .......................................
 
-    public String id;
-    public String cssClass;
-    public String onDropMethod;
+/*    public String onDropMethod;
     public boolean multiple = true;
     public boolean withHandles = true;
     public boolean isSource = true;
     public boolean copyOnly = false;
     public boolean moveOnly = false;
-    public String accept = null;
+    public String accept = null;*/
 
     public ComponentIDGenerator idFor;
 
@@ -138,6 +145,74 @@ public class WCStyledTable extends WOComponent
         }
 
         super.appendToResponse(response, context);
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean synchronizesVariablesWithBindings()
+    {
+        return false;
+    }
+
+
+    // ----------------------------------------------------------
+    public String id()
+    {
+        return (String) valueForBinding("id");
+    }
+
+
+    // ----------------------------------------------------------
+    public String onDropMethod()
+    {
+        return (String) valueForBinding("onDropMethod");
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean multiple()
+    {
+        return ERXComponentUtilities.booleanValueForBinding(this,
+                "multiple", true);
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean withHandles()
+    {
+        return ERXComponentUtilities.booleanValueForBinding(this,
+                "withHandles", true);
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean isSource()
+    {
+        return ERXComponentUtilities.booleanValueForBinding(this,
+                "isSource", true);
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean copyOnly()
+    {
+        return ERXComponentUtilities.booleanValueForBinding(this,
+                "copyOnly", false);
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean moveOnly()
+    {
+        return ERXComponentUtilities.booleanValueForBinding(this,
+                "moveOnly", false);
+    }
+
+
+    // ----------------------------------------------------------
+    public String accept()
+    {
+        return (String) valueForBinding("accept");
     }
 
 
@@ -164,6 +239,8 @@ public class WCStyledTable extends WOComponent
      */
     public String acceptedTypesAsJSONArray()
     {
+        String accept = accept();
+
         if (accept == null)
         {
             return null;
@@ -222,6 +299,39 @@ public class WCStyledTable extends WOComponent
 
 
     // ----------------------------------------------------------
+    public String attributeStringForOtherBindings()
+    {
+        StringBuffer buffer = new StringBuffer(32);
+
+        boolean first = true;
+        for (String binding : bindingKeys())
+        {
+            if (explicitBindings.containsObject(binding))
+            {
+                continue;
+            }
+
+            Object value = valueForBinding(binding);
+
+            if (!first)
+            {
+                buffer.append(' ');
+            }
+
+            buffer.append(binding);
+            buffer.append("=\"");
+            buffer.append(ERXStringUtilities.escapeNonXMLChars(
+                    value.toString()));
+            buffer.append('"');
+
+            first = false;
+        }
+
+        return buffer.toString();
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Called when items were dropped onto the table. Delegates to the method
      * on the parent component that was specified by the "onDropMethod"
@@ -245,7 +355,7 @@ public class WCStyledTable extends WOComponent
         try
         {
             Method method = parent().getClass().getMethod(
-                    onDropMethod,
+                    onDropMethod(),
                     String.class,   // sourceId
                     int[].class,    // draggedRowIndices
                     String.class,   // targetId
@@ -282,6 +392,23 @@ public class WCStyledTable extends WOComponent
 
 
     //~ Static/instance variables .............................................
+
+    private String id;
+
+    static NSMutableSet<String> explicitBindings;
+
+    static
+    {
+        explicitBindings = new NSMutableSet<String>();
+        explicitBindings.addObject("id");
+        explicitBindings.addObject("onDropMethod");
+        explicitBindings.addObject("multiple");
+        explicitBindings.addObject("withHandles");
+        explicitBindings.addObject("isSource");
+        explicitBindings.addObject("copyOnly");
+        explicitBindings.addObject("moveOnly");
+        explicitBindings.addObject("accept");
+    }
 
     static Logger log = Logger.getLogger(WCStyledTable.class);
 }

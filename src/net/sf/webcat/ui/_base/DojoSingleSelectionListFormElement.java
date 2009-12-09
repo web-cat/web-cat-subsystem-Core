@@ -35,230 +35,304 @@ import com.webobjects.foundation.NSDictionary;
 /**
  * A base class for Dojo widgets that act as a single-selection list, such as
  * ComboBox and FilteringSelect.
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
 public abstract class DojoSingleSelectionListFormElement extends DojoFormElement
 {
-	//~ Constructor ...........................................................
+    //~ Constructor ...........................................................
 
-	// ----------------------------------------------------------
-	public DojoSingleSelectionListFormElement(String name,
-			NSDictionary<String, WOAssociation> someAssociations,
-			WOElement template)
-	{
-		super(name, someAssociations, template);
+    // ----------------------------------------------------------
+    public DojoSingleSelectionListFormElement(String name,
+            NSDictionary<String, WOAssociation> someAssociations,
+            WOElement template)
+    {
+        super(name, someAssociations, template);
 
-		_list = _associations.removeObjectForKey("list");
-		_item = _associations.removeObjectForKey("item");
-		_index = _associations.removeObjectForKey("index");
-		_displayString = _associations.removeObjectForKey("displayString");
-		_selection = _associations.removeObjectForKey("selection");
-		_noSelectionString = _associations.removeObjectForKey(
-		        "noSelectionString");
-		_selectedValue = _associations.removeObjectForKey("selectedValue");
-	}
-	
+        _list = _associations.removeObjectForKey("list");
+        _item = _associations.removeObjectForKey("item");
+        _index = _associations.removeObjectForKey("index");
+        _displayString = _associations.removeObjectForKey("displayString");
+        _searchString = _associations.removeObjectForKey("searchString");
+        _selection = _associations.removeObjectForKey("selection");
+        _noSelectionString = _associations.removeObjectForKey(
+                "noSelectionString");
+        _selectedValue = _associations.removeObjectForKey("selectedValue");
+    }
 
-	//~ Methods ...............................................................
 
-	// ----------------------------------------------------------
-	@Override
-	public boolean hasContent()
-	{
-		return true;
-	}
-	
+    //~ Methods ...............................................................
 
-	// ----------------------------------------------------------
+    // ----------------------------------------------------------
+    @Override
+    public boolean hasContent()
+    {
+        return true;
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    protected boolean defaultEscapeHTML()
+    {
+        return false;
+    }
+
+
+    // ----------------------------------------------------------
     protected List<?> listInContext(WOContext context)
     {
-    	List<?> list = Collections.EMPTY_LIST;
-    	
-    	if(_list != null)
-    	{
-    		Object value = _list.valueInComponent(context.component());
-    		
-    		if(value instanceof NSArray)
-    		{
-    			list = ((NSArray<?>)value).vector();
-    		}
-    		else if(value instanceof List)
-    		{
-    			list = (List<?>)value;
-    		}
+        List<?> list = Collections.EMPTY_LIST;
+
+        if(_list != null)
+        {
+            Object value = _list.valueInComponent(context.component());
+
+            if(value instanceof NSArray)
+            {
+                list = ((NSArray<?>)value).vector();
+            }
+            else if(value instanceof List)
+            {
+                list = (List<?>)value;
+            }
         }
 
         return list;
     }
 
- 
-	// ----------------------------------------------------------
+
+    // ----------------------------------------------------------
     protected String noSelectionStringInContext(WOContext context)
     {
-    	Object value = null;
-    	
-    	if(_noSelectionString != null)
-    	{
-    		value = _noSelectionString.valueInComponent(context.component());
-    	}
+        Object value = null;
 
-    	if(value == null)
-    	{
-    		return "";
-    	}
-    	else
-    	{
-    		return value.toString();
-    	}
+        if(_noSelectionString != null)
+        {
+            value = _noSelectionString.valueInComponent(context.component());
+        }
+
+        if(value == null)
+        {
+            return "";
+        }
+        else
+        {
+            return value.toString();
+        }
     }
-    
-    
-	// ----------------------------------------------------------
+
+
+    // ----------------------------------------------------------
     protected Object selectionInContext(WOContext context)
     {
-    	Object selection = null;
-    	
+        Object selection = null;
+
         if(_selection != null)
-        	selection = _selection.valueInComponent(context.component());
-        
+            selection = _selection.valueInComponent(context.component());
+
         if(selection == null)
         {
-        	if(_selectedValue != null)
-        	{
+            if(_selectedValue != null)
+            {
                 selection =
-                	_selectedValue.valueInComponent(context.component());
-        	}
+                    _selectedValue.valueInComponent(context.component());
+            }
         }
 
         return selection;
     }
 
 
-	// ----------------------------------------------------------
-    public void appendOptionTagToResponse(WOResponse response,
-    		WOContext context, String value, boolean isSelected,
-    		String content)
+    // ----------------------------------------------------------
+    protected String optionTagName()
     {
-        response.appendContentString("<option");
+        if ("select".equalsIgnoreCase(elementName()))
+        {
+            return "option";
+        }
+        else
+        {
+            return "span";
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public void appendOptionTagToResponse(WOResponse response,
+            WOContext context, String value, boolean isSelected,
+            String content, String searchString)
+    {
+        response.appendContentCharacter('<');
+        response.appendContentString(optionTagName());
 
         _appendTagAttributeAndValueToResponse(
-        		response, "value", value, _value != null);
+                response, "value", value, _value != null);
 
         if(isSelected)
-        	_appendTagAttributeAndValueToResponse(
-        			response, "selected", "selected", false);
+        {
+            _appendTagAttributeAndValueToResponse(
+                    response, "selected", "selected", false);
+        }
+
+        if (searchString != null)
+        {
+            _appendTagAttributeAndValueToResponse(
+                    response, "searchKey", searchString, true);
+        }
 
         response.appendContentCharacter('>');
 
         if(escapeHTMLInContext(context))
+        {
             response.appendContentHTMLString(content);
+        }
         else
+        {
             response.appendContentString(content);
+        }
 
-        response.appendContentString("</option>");
+        response.appendContentString("</");
+        response.appendContentString(optionTagName());
+        response.appendContentCharacter('>');
     }
 
 
-	// ----------------------------------------------------------
+    // ----------------------------------------------------------
     protected String displayStringInContext(WOContext context)
     {
-    	Object value = null;
-    	
-    	if(_displayString != null)
-    		value = _displayString.valueInComponent(context.component());
+        Object value = null;
 
-    	if(value != null)
-    		return value.toString();
-    	else
-    		return "";
+        if (_displayString != null)
+        {
+            value = _displayString.valueInComponent(context.component());
+        }
+
+        return (value != null) ? value.toString() : "";
     }
-    
 
-	// ----------------------------------------------------------
+
+    // ----------------------------------------------------------
+    protected String searchStringInContext(WOContext context)
+    {
+        Object value = null;
+
+        if (_searchString != null)
+        {
+            value = _searchString.valueInComponent(context.component());
+        }
+
+        return (value != null) ? value.toString() : null;
+    }
+
+
+    // ----------------------------------------------------------
     protected String optionStringInContext(WOContext context, Object value,
-    		int index)
+            int index)
     {
         if(_item != null && _item.isValueSettable())
-    		_item.setValue(value, context.component());
+        {
+            _item.setValue(value, context.component());
+        }
 
         if(_index != null && _index.isValueSettable())
+        {
             _index.setValue(Integer.valueOf(index), context.component());
+        }
 
         String optionString = displayStringInContext(context);
         if(optionString.length() == 0)
+        {
             optionString = valueStringInContext(context);
+        }
 
         return optionString;
     }
 
 
-	// ----------------------------------------------------------
+    // ----------------------------------------------------------
     @Override
-	public void appendChildrenToResponse(WOResponse response, WOContext context)
-	{
-	    String noSelectionString = noSelectionStringInContext(context);
+    public void appendAttributesToResponse(
+            WOResponse response, WOContext context)
+    {
+        super.appendAttributesToResponse(response, context);
 
-	    if(noSelectionString.length() > 0)
-	    {
-	    	appendOptionTagToResponse(response, context,
-	    			NO_SELECTION_PLACEHOLDER, false, noSelectionString);
-	    }
+        _appendTagAttributeAndValueToResponse(
+                response, "labelType", "html", false);
+        _appendTagAttributeAndValueToResponse(
+                response, "labelAttr", "label", false);
+    }
 
-	    List<?> optionList = listInContext(context);
 
-	    if(optionList.size() > 0)
-	    {
-	        Object selection = selectionInContext(context);
+    // ----------------------------------------------------------
+    @Override
+    public void appendChildrenToResponse(WOResponse response, WOContext context)
+    {
+        String noSelectionString = noSelectionStringInContext(context);
 
-	        for(int i = 0; i < optionList.size(); i++)
-	        {
-	            Object option = optionList.get(i);
+        if(noSelectionString.length() > 0)
+        {
+            appendOptionTagToResponse(response, context,
+                    NO_SELECTION_PLACEHOLDER, false, noSelectionString,
+                    noSelectionString);
+        }
 
-	            String optionString = optionStringInContext(context, option, i);
-	            
-	            if(optionString.length() == 0)
-	                optionString = option.toString();
-	            
-	            String valueString = valueStringInContext(context);
-	            
-	            if(valueString.length() == 0)
-	                valueString = Integer.toString(i);
+        List<?> optionList = listInContext(context);
 
-	            boolean selected = false;
+        if(optionList.size() > 0)
+        {
+            Object selection = selectionInContext(context);
 
-	            if(selection != null)
-	            {
-	            	if(_selection == null)
-	            	{
-	            		selected = selection.equals(valueString);
-	            	}
-	            	else
-	            	{
-	            		selected = selection.equals(option);
-	            	}
-	            }
+            for(int i = 0; i < optionList.size(); i++)
+            {
+                Object option = optionList.get(i);
 
-	            appendOptionTagToResponse(response, context,
-	            		valueString, selected, optionString);
-	        }
-	    }
-	    
-	    super.appendChildrenToResponse(response, context);
-	}
+                String optionString = optionStringInContext(context, option, i);
+
+                if(optionString.length() == 0)
+                    optionString = option.toString();
+
+                String searchString = searchStringInContext(context);
+                String valueString = valueStringInContext(context);
+
+                if(valueString.length() == 0)
+                    valueString = Integer.toString(i);
+
+                boolean selected = false;
+
+                if(selection != null)
+                {
+                    if(_selection == null)
+                    {
+                        selected = selection.equals(valueString);
+                    }
+                    else
+                    {
+                        selected = selection.equals(option);
+                    }
+                }
+
+                appendOptionTagToResponse(response, context,
+                        valueString, selected, optionString, searchString);
+            }
+        }
+
+        super.appendChildrenToResponse(response, context);
+    }
 
 
     //~ Static/instance variables .............................................
 
-	protected static final String NO_SELECTION_PLACEHOLDER =
-		"dijit.form.internal.DijitSingleListForm.noSelection";
+    protected static final String NO_SELECTION_PLACEHOLDER =
+        "dijit.form.internal.DijitSingleListForm.noSelection";
 
-	protected WOAssociation _list;
-	protected WOAssociation _item;
-	protected WOAssociation _index;
-	protected WOAssociation _displayString;
-	protected WOAssociation _selection;
-	protected WOAssociation _noSelectionString;
-	protected WOAssociation _selectedValue;
+    protected WOAssociation _list;
+    protected WOAssociation _item;
+    protected WOAssociation _index;
+    protected WOAssociation _displayString;
+    protected WOAssociation _searchString;
+    protected WOAssociation _selection;
+    protected WOAssociation _noSelectionString;
+    protected WOAssociation _selectedValue;
 }

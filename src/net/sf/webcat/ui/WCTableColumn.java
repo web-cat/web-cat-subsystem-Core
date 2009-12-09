@@ -18,17 +18,17 @@ public class WCTableColumn extends WOHTMLDynamicElement
             WOElement template)
     {
         super(name, someAssociations, template);
-        
+
         _name = _associations.removeObjectForKey("name");
         _componentName = _associations.removeObjectForKey("componentName");
         _keyPath = _associations.removeObjectForKey("keyPath");
         _expression = _associations.removeObjectForKey("expression");
         _sortingKeyPath = _associations.removeObjectForKey("sortingKeyPath");
-        
+
         _propertiesHelper = new WCTablePropertiesHelper(_associations);
     }
 
-    
+
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
@@ -36,8 +36,8 @@ public class WCTableColumn extends WOHTMLDynamicElement
 
         if (layout == null)
         {
-            Log.error("WCDataTableColumn must occur as an immediate child "
-                    + "of a WCDataTable element. Your layout will not work "
+            Log.error("WCTableColumn must occur as an immediate child "
+                    + "of a WCTable element. Your layout will not work "
                     + "as expected.");
         }
         else
@@ -63,47 +63,47 @@ public class WCTableColumn extends WOHTMLDynamicElement
 
         // Do not call super; this element generates no content.
     }
-    
+
 
     // ----------------------------------------------------------
     protected String nameInContext(WOContext context)
     {
         String name = null;
-        
+
         if(_name != null)
         {
             name = _name.valueInComponent(context.component()).toString();
         }
-        
+
         return name;
     }
 
-    
+
     // ----------------------------------------------------------
     protected String componentNameInContext(WOContext context)
     {
         String name = null;
-        
+
         if(_componentName != null)
         {
             name = _componentName.valueInComponent(
                     context.component()).toString();
         }
-        
+
         return name;
     }
-    
+
 
     // ----------------------------------------------------------
     protected String keyPathInContext(WOContext context)
     {
         String keyPath = null;
-        
+
         if(_keyPath != null)
         {
             keyPath = _keyPath.valueInComponent(context.component()).toString();
         }
-        
+
         return keyPath;
     }
 
@@ -112,13 +112,13 @@ public class WCTableColumn extends WOHTMLDynamicElement
     protected String expressionInContext(WOContext context)
     {
         String expression = null;
-        
+
         if(_expression != null)
         {
             expression = _expression.valueInComponent(
                     context.component()).toString();
         }
-        
+
         return expression;
     }
 
@@ -127,17 +127,17 @@ public class WCTableColumn extends WOHTMLDynamicElement
     protected String sortingKeyPathInContext(WOContext context)
     {
         String keyPath = null;
-        
+
         if(_sortingKeyPath != null)
         {
             keyPath = _sortingKeyPath.valueInComponent(
                     context.component()).toString();
         }
-        
+
         return keyPath;
     }
 
-    
+
     protected WOAssociation _name;
     protected WOAssociation _componentName;
     protected WOAssociation _keyPath;

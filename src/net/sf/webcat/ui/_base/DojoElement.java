@@ -33,20 +33,22 @@ import com.webobjects.foundation.NSDictionary;
 /**
  * A general base class for Dojo elements (that is, anything that needs to be
  * tagged with a dojoType attribute in HTML).
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
 public abstract class DojoElement extends WOHTMLDynamicElement
 {
     //~ Constructor ...........................................................
-    
+
     // ----------------------------------------------------------
     public DojoElement(String name,
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
         super(name, someAssociations, template);
+
+        _dojoType = _associations.removeObjectForKey("dojoType");
     }
 
 
@@ -56,29 +58,29 @@ public abstract class DojoElement extends WOHTMLDynamicElement
     /**
      * Gets the value of the dojoType attribute that should be attached to this
      * element.
-     * 
+     *
      * @return the value of the dojoType attribute that should be attached to
      *         this element.
      */
     public abstract String dojoType();
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Subclasses should override this if they need to provide a context-
      * sensitive element name (that is, one tag type for a particular binding
      * value, another tag type for a different value).
-     * 
+     *
      * @param context
-     *  
+     *
      * @return the element's tag name
      */
     protected String elementNameInContext(WOContext context)
     {
         return elementName();
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public Object valueForBinding(String name, Object defaultValue,
             WOComponent component)
@@ -106,14 +108,24 @@ public abstract class DojoElement extends WOHTMLDynamicElement
     // ----------------------------------------------------------
     /**
      * Appends the dojoType attribute and value to the response.
-     * 
-     * @param response 
-     * @param context 
+     *
+     * @param response
+     * @param context
      */
     protected void _appendDojoTypeAttributeToResponse(WOResponse response,
             WOContext context)
     {
-        String dojoType = dojoType();
+        String dojoType = null;
+
+        if (_dojoType != null)
+        {
+            dojoType = _dojoType.valueInComponent(
+                    context.component()).toString();
+        }
+        else
+        {
+            dojoType = dojoType();
+        }
 
         if (dojoType != null && dojoType.length() > 0)
         {
@@ -129,14 +141,14 @@ public abstract class DojoElement extends WOHTMLDynamicElement
     {
         // Default implementation does nothing.
     }
-    
-    
+
+
     // ----------------------------------------------------------
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
         super.appendToResponse(response, context);
-        
+
         addRequiredWebResources(response, context);
     }
 
@@ -192,8 +204,8 @@ public abstract class DojoElement extends WOHTMLDynamicElement
             response.appendContentCharacter('>');
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     protected boolean shouldElementHaveEndTag(String elementName)
     {
@@ -201,7 +213,7 @@ public abstract class DojoElement extends WOHTMLDynamicElement
             || "span".equalsIgnoreCase(elementName);
     }
 
-    
+
     // ----------------------------------------------------------
     protected void appendTagAttributeToResponse(WOResponse response,
             String name, Object object)
@@ -212,6 +224,8 @@ public abstract class DojoElement extends WOHTMLDynamicElement
         }
     }
 
-    
+
     //~ Static/instance variables .............................................
+
+    protected WOAssociation _dojoType;
 }

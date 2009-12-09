@@ -1,0 +1,26 @@
+<wo name="Dialog"><wo name="Form">
+<div><wo:content/></div>
+<div style="text-align: center">
+<wo name="OK">
+    <script type="dojo/connect" event="onClick">
+    this.attr("disabled", true);
+    </script>
+    <script type="dojo/connect" event="onRemoteEnd">
+    dijit.byId('<wo:str value="$id"/>').hide();
+    </script>
+</wo>
+<wo name="Cancel">
+    <script type="dojo/connect" event="onClick">
+    dijit.byId('<wo:str value="$id"/>').hide();
+    </script>
+</wo>
+</div>
+</wo></wo>
+<script type="text/javascript">
+dojo.addOnLoad(function() {
+dojo.connect(dijit.byId('<wo:str value="$id"/>'), "_onShow", null, function() {
+var okButton = dijit.byId('<wo:str value="$idFor.okButtonId"/>');
+if (okButton) okButton.attr("disabled", false);
+});
+});
+</script>

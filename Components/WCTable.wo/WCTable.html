@@ -80,7 +80,7 @@
 </wo>
 </div>
 </wo:if>
-<wo:WCStyledTable>
+<wo:WCStyledTable class="webcatTableReset">
     <thead>
         <tr>
             <wo:if condition="$showsRowNumbers">
@@ -96,7 +96,7 @@
                 </wo:if><wo:else>&nbsp;</wo:else></th>
             </wo:if>
             <wo name="Columns">
-                <th>
+                <wo name="ColumnHeader">
                     <wo:if condition="$canSort">
                         <wo:if condition="$columnInRepetitionCanBeSorted">
                             <wo name="SortLink">
@@ -117,7 +117,7 @@
                     </wo:if><wo:else>
                         <wo:str value="$columnInRepetition.name"/>
                     </wo:else>
-                </th>
+                </wo>
             </wo>
         </tr>
     </thead>
@@ -152,7 +152,7 @@
     </tbody>
 </wo:WCStyledTable>
 <script type="dojo/method" event="onDownloadEnd">
-    <wo:str value="$idFor.jsId"/>.recacheCheckboxWidgets();
+    <wo:str value="$idFor.jsId"/>.repairAfterRefresh();
 </script>
 </wo>
 <wo name="TableInstance"/>

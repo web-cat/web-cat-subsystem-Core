@@ -21,11 +21,11 @@
 
 package net.sf.webcat.ui;
 
+import net.sf.webcat.ui._base.DojoElement;
 import com.webobjects.appserver.WOAssociation;
 import com.webobjects.appserver.WOElement;
 import com.webobjects.appserver._private.WODynamicElementCreationException;
 import com.webobjects.foundation.NSDictionary;
-import net.sf.webcat.ui._base.DojoGenericElement;
 
 //--------------------------------------------------------------------------
 /**
@@ -34,16 +34,16 @@ import net.sf.webcat.ui._base.DojoGenericElement;
  * WebObjects element instead of a straight HTML tag, inline bindings can be
  * used directly in attributes (attr="$value") instead of being required to use
  * WOString elements to evaluate them.
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
-public class WCSpan extends DojoGenericElement
+public class WCSpan extends DojoElement
 {
     // ----------------------------------------------------------
     /**
      * Initializes a new instance of the WCSpan class.
-     * 
+     *
      * @param name
      * @param someAssociations
      * @param template
@@ -60,5 +60,15 @@ public class WCSpan extends DojoGenericElement
                     "<" + getClass().getName() + "> 'dojoType' binding must "
                     + "be specified.");
         }
+    }
+
+
+    //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    @Override
+    public String dojoType()
+    {
+        return null;
     }
 }

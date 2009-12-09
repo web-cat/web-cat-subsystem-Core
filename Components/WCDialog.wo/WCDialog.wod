@@ -1,0 +1,22 @@
+Cancel : WCButton {
+    label = "Cancel";
+    class = "neg";
+}
+
+Dialog : WCContentPane {
+    dojoType = "webcat.Dialog";
+    alwaysDynamic = true;
+    title = title;
+    id = id;
+}
+
+Form : WCForm {
+}
+
+OK : WCButton {
+    id = idFor.okButtonId;
+    label = "OK";
+    class = "pos";
+    action = okPressed;
+    remote = true;
+}

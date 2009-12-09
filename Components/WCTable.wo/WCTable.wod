@@ -1,55 +1,60 @@
 Proxy : WCJSONRPC {
-	name = idFor.jsonrpc;
-	proxyName = "table";
+    name = idFor.jsonrpc;
+    proxyName = "table";
 }
 
 ContentPane : WCContentPane {
-	id = idFor.updateContainer;
+    id = idFor.updateContainer;
 }
 
 Columns : WORepetition {
-	list = columns;
-	item = columnInRepetition;
-	index = columnIndexInRepetition;
+    list = columns;
+    item = columnInRepetition;
+    index = columnIndexInRepetition;
+}
+
+ColumnHeader: WOGenericContainer {
+    elementName = "th";
+    weight = columnInRepetition.properties.weight;
 }
 
 GoToBeginning : WCButton {
-	iconClass = "webcatObjectTableIcon webcatObjectTableIconFirst";
-	label = "Go to first batch";
-	showLabel = false;
+    iconClass = "webcatTableToolbarIcon webcatTableToolbarIconFirst";
+    label = "Go to first batch";
+    showLabel = false;
 }
 
 GoBack : WCButton {
-	iconClass = "webcatObjectTableIcon webcatObjectTableIconPrevious";
-	label = "Go to previous batch";
-	showLabel = false;
+    iconClass = "webcatTableToolbarIcon webcatTableToolbarIconPrevious";
+    label = "Go to previous batch";
+    showLabel = false;
 }
 
 GoNext : WCButton {
-	iconClass = "webcatObjectTableIcon webcatObjectTableIconNext";
-	label = "Go to next batch";
-	showLabel = false;
+    iconClass = "webcatTableToolbarIcon webcatTableToolbarIconNext";
+    label = "Go to next batch";
+    showLabel = false;
 }
 
 GoToEnd : WCButton {
-	iconClass = "webcatObjectTableIcon webcatObjectTableIconLast";
-	label = "Go to last batch";
-	showLabel = false;
+    iconClass = "webcatTableToolbarIcon webcatTableToolbarIconLast";
+    label = "Go to last batch";
+    showLabel = false;
 }
 
 Rows : WORepetition {
-	list = displayGroup.displayedObjects;
-	item = objectInRepetition;
-	index = indexInRepetition;
+    list = displayGroup.displayedObjects;
+    item = objectInRepetition;
+    index = indexInRepetition;
 }
 
 ColumnValue : WOSwitchComponent {
-	WOComponentName = columnInRepetition.componentName;
-	properties = columnInRepetition.properties;
-	value = columnValueOfObjectInRepetition;
-	jsWrapperID = idFor.jsId;
-	indexInBatch = indexInRepetition;
-	columnIndex = columnIndexInRepetition;
+    WOComponentName = columnInRepetition.componentName;
+    properties = columnInRepetition.properties;
+    value = columnValueOfObjectInRepetition;
+    jsWrapperID = idFor.jsId;
+    indexInBatch = indexInRepetition;
+    columnIndex = columnIndexInRepetition;
 }
 
 SortLink: WOHyperlink {

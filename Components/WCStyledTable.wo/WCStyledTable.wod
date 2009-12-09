@@ -1,12 +1,11 @@
 Table : WOGenericContainer {
     elementName = "table";
-    class = cssClass;
     id = id;
+    otherTagString = attributeStringForOtherBindings;
 }
 
 DndTable : WOGenericContainer {
     elementName = "table";
-    class = cssClass;
     id = id;
     dojoType = sourceDojoType;
     proxy = fullProxyReference;
@@ -16,6 +15,7 @@ DndTable : WOGenericContainer {
     copyOnly = copyOnly;
     moveOnly = moveOnly;
     accept = accept;
+    otherTagString = attributeStringForOtherBindings;
 }
 
 JSONRPC: WCJSONRPC {
