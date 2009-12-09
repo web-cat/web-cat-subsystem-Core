@@ -1,0 +1,24 @@
+{
+    enabledSubscriptionsForMessageType = {
+        class = EOFetchSpecification; 
+        entityName = BroadcastMessageSubscription; 
+        prefetchingRelationshipKeyPaths = (); 
+        qualifier = {
+            class = EOAndQualifier; 
+            qualifiers = (
+                {
+                    class = EOKeyValueQualifier; 
+                    key = isEnabled; 
+                    selectorName = "isEqualTo:"; 
+                    value = {class = NSNumber; value = 1; }; 
+                }, 
+                {
+                    class = EOKeyValueQualifier; 
+                    key = messageType; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = messageType; class = EOQualifierVariable; }; 
+                }
+            ); 
+        }; 
+    }; 
+}

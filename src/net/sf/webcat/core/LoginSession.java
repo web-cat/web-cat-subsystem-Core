@@ -74,12 +74,8 @@ public class LoginSession
         {
             log.debug( "searching for login session for " + user.userName() );
             // ec.lock();
-            NSArray items = EOUtilities.objectsMatchingKeyAndValue(
-                    ec,
-                    ENTITY_NAME,
-                    USER_KEY,
-                    user
-                );
+            NSArray<LoginSession> items = objectsMatchingValues(
+                    ec, USER_KEY, user);
             // ec.unlock();
 
             if ( items != null )
@@ -94,7 +90,7 @@ public class LoginSession
                 }
                 if ( items.count() > 0 )
                 {
-                    result = (LoginSession)items.objectAtIndex( 0 );
+                    result = items.objectAtIndex( 0 );
                 }
             }
         }

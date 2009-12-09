@@ -178,7 +178,7 @@ public class CoreDatabaseUpdates
 
     // ----------------------------------------------------------
     /**
-     * Adds label key to CourseOffering.
+     * Adds theme ID column to TUSER.
      * @throws SQLException on error
      */
     public void updateIncrement9() throws SQLException
@@ -186,6 +186,47 @@ public class CoreDatabaseUpdates
         createThemesTable();
         database().executeSQL(
             "ALTER TABLE TUSER ADD CTHEMEID INTEGER" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates the broadcast messaging selections and user messaging
+     * selections tables.
+     * @throws SQLException on error
+     */
+    public void updateIncrement10() throws SQLException
+    {
+        createBroadcastMessageSubscriptionTable();
+        createUserMessageSubscriptionTable();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates the protocol settings table and adds an association to it for
+     * users.
+     * @throws SQLException on error
+     */
+    public void updateIncrement11() throws SQLException
+    {
+        createProtocolSettingsTable();
+
+        database().executeSQL(
+                "ALTER TABLE TUSER ADD protocolSettingsId INTEGER" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates the sent message table and the shadow table for the to-many
+     * relationship between users and sent messages.
+     * @throws SQLException on error
+     */
+    public void updateIncrement12() throws SQLException
+    {
+        createSentMessageTable();
+        createUserSentMessageTable();
     }
 
 
@@ -500,7 +541,7 @@ public class CoreDatabaseUpdates
 
     // ----------------------------------------------------------
     /**
-     * Create the TUPLOADEDSCRIPTFILES table, if needed.
+     * Create the TTHEMES table, if needed.
      * @throws SQLException on error
      */
     private void createThemesTable() throws SQLException
@@ -516,6 +557,122 @@ public class CoreDatabaseUpdates
                 + "CPROPERTIES BLOB , CUPDATEMUTABLEFIELDS BIT NOT NULL )" );
             database().executeSQL(
                 "ALTER TABLE TTHEMES ADD PRIMARY KEY (OID)" );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create the BroadcastMessagingSelection table, if needed.
+     * @throws SQLException on error
+     */
+    private void createBroadcastMessageSubscriptionTable() throws SQLException
+    {
+        if ( !database().hasTable( "BroadcastMessageSubscription" ) )
+        {
+            log.info( "creating table BroadcastMessageSubscription" );
+            database().executeSQL(
+                "CREATE TABLE BroadcastMessageSubscription "
+                + "(OID INTEGER NOT NULL, "
+                + "isEnabled BIT NOT NULL, "
+                + "messageType MEDIUMTEXT , "
+                + "protocolType MEDIUMTEXT )" );
+            database().executeSQL(
+                "ALTER TABLE BroadcastMessageSubscription ADD PRIMARY KEY (OID)"
+            );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create the UserMessagingSelection table, if needed.
+     * @throws SQLException on error
+     */
+    private void createUserMessageSubscriptionTable() throws SQLException
+    {
+        if ( !database().hasTable( "UserMessageSubscription" ) )
+        {
+            log.info( "creating table UserMessageSubscription" );
+            database().executeSQL(
+                "CREATE TABLE UserMessageSubscription "
+                + "(OID INTEGER NOT NULL, "
+                + "userId INTEGER, "
+                + "isEnabled BIT NOT NULL, "
+                + "messageType MEDIUMTEXT , "
+                + "protocolType MEDIUMTEXT )" );
+            database().executeSQL(
+                "ALTER TABLE UserMessageSubscription ADD PRIMARY KEY (OID)"
+            );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create the ProtocolSettings table, if needed.
+     * @throws SQLException on error
+     */
+    private void createProtocolSettingsTable() throws SQLException
+    {
+        if ( !database().hasTable( "ProtocolSettings" ) )
+        {
+            log.info( "creating table ProtocolSettings" );
+            database().executeSQL(
+                "CREATE TABLE ProtocolSettings "
+                + "(OID INTEGER NOT NULL, "
+                + "settings BLOB, "
+                + "parentId INTEGER, "
+                + "CUPDATEMUTABLEFIELDS BIT NOT NULL )" );
+            database().executeSQL(
+                "ALTER TABLE ProtocolSettings ADD PRIMARY KEY (OID)"
+            );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create the SentMessage table, if needed.
+     * @throws SQLException on error
+     */
+    private void createSentMessageTable() throws SQLException
+    {
+        if ( !database().hasTable( "SentMessage" ) )
+        {
+            log.info( "creating table SentMessage" );
+            database().executeSQL(
+                "CREATE TABLE SentMessage "
+                + "(OID INTEGER NOT NULL, "
+                + "sentTime DATETIME, "
+                + "messageType MEDIUMTEXT, "
+                + "title MEDIUMTEXT, "
+                + "shortBody MEDIUMTEXT, "
+                + "links BLOB, "
+                + "CUPDATEMUTABLEFIELDS BIT NOT NULL )" );
+            database().executeSQL(
+                "ALTER TABLE SentMessage ADD PRIMARY KEY (OID)"
+            );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create the SentMessage table, if needed.
+     * @throws SQLException on error
+     */
+    private void createUserSentMessageTable() throws SQLException
+    {
+        if ( !database().hasTable( "UserSentMessage" ) )
+        {
+            log.info( "creating table UserSentMessage" );
+            database().executeSQL(
+                "CREATE TABLE UserSentMessage "
+                + "(userId INT NOT NULL, sentMessageId INT NOT NULL)" );
+            database().executeSQL(
+                "ALTER TABLE UserSentMessage ADD PRIMARY KEY "
+                + "(userId, sentMessageId)" );
         }
     }
 

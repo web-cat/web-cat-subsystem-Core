@@ -183,6 +183,9 @@ public abstract class _User
     public static final String AUTHENTICATION_DOMAIN_KEY = "authenticationDomain";
     public static final ERXKey<net.sf.webcat.core.AuthenticationDomain> authenticationDomain =
         new ERXKey<net.sf.webcat.core.AuthenticationDomain>(AUTHENTICATION_DOMAIN_KEY);
+    public static final String PROTOCOL_SETTINGS_KEY = "protocolSettings";
+    public static final ERXKey<net.sf.webcat.core.ProtocolSettings> protocolSettings =
+        new ERXKey<net.sf.webcat.core.ProtocolSettings>(PROTOCOL_SETTINGS_KEY);
     public static final String THEME_KEY = "theme";
     public static final ERXKey<net.sf.webcat.core.Theme> theme =
         new ERXKey<net.sf.webcat.core.Theme>(THEME_KEY);
@@ -196,18 +199,24 @@ public abstract class _User
     public static final String GRADER_FOR_KEY = "graderFor";
     public static final ERXKey<net.sf.webcat.core.CourseOffering> graderFor =
         new ERXKey<net.sf.webcat.core.CourseOffering>(GRADER_FOR_KEY);
+    public static final String MESSAGE_SUBSCRIPTIONS_KEY = "messageSubscriptions";
+    public static final ERXKey<net.sf.webcat.core.UserMessageSubscription> messageSubscriptions =
+        new ERXKey<net.sf.webcat.core.UserMessageSubscription>(MESSAGE_SUBSCRIPTIONS_KEY);
     public static final String PASSWORD_CHANGE_REQUEST_KEY = "passwordChangeRequest";
     public static final ERXKey<net.sf.webcat.core.PasswordChangeRequest> passwordChangeRequest =
         new ERXKey<net.sf.webcat.core.PasswordChangeRequest>(PASSWORD_CHANGE_REQUEST_KEY);
+    public static final String SENT_MESSAGES_KEY = "sentMessages";
+    public static final ERXKey<net.sf.webcat.core.SentMessage> sentMessages =
+        new ERXKey<net.sf.webcat.core.SentMessage>(SENT_MESSAGES_KEY);
     public static final String TEACHING_KEY = "teaching";
     public static final ERXKey<net.sf.webcat.core.CourseOffering> teaching =
         new ERXKey<net.sf.webcat.core.CourseOffering>(TEACHING_KEY);
     // Fetch specifications ---
-    public static final String COURSE_PARTICIPANTS_FSPEC = "courseParticipants";
-    public static final String DOMAIN_AND_EMAIL_FSPEC = "domainAndEmail";
-    public static final String DOMAIN_AND_NAME_FSPEC = "domainAndName";
+    public static final String PARTICIPANTS_FOR_COURSE_FSPEC = "participantsForCourse";
     public static final String STAFF_FOR_COURSE_FSPEC = "staffForCourse";
     public static final String STUDENTS_FOR_COURSE_FSPEC = "studentsForCourse";
+    public static final String USER_WITH_DOMAIN_AND_EMAIL_FSPEC = "userWithDomainAndEmail";
+    public static final String USER_WITH_DOMAIN_AND_NAME_FSPEC = "userWithDomainAndName";
     public static final String USER_WITH_NAME_FSPEC = "userWithName";
     public static final String ENTITY_NAME = "User";
 
@@ -822,6 +831,67 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
+     * Retrieve the entity pointed to by the <code>protocolSettings</code>
+     * relationship.
+     * @return the entity in the relationship
+     */
+    public net.sf.webcat.core.ProtocolSettings protocolSettings()
+    {
+        return (net.sf.webcat.core.ProtocolSettings)storedValueForKey( "protocolSettings" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the entity pointed to by the <code>protocolSettings</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>setProtocolSettingsRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void setProtocolSettings( net.sf.webcat.core.ProtocolSettings value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setProtocolSettings("
+                + value + "): was " + protocolSettings() );
+        }
+        takeStoredValueForKey( value, "protocolSettings" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the entity pointed to by the <code>protocolSettings</code>
+     * relationship.  This method is a type-safe version of
+     * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
+     *
+     * @param value The new entity to relate to
+     */
+    public void setProtocolSettingsRelationship(
+        net.sf.webcat.core.ProtocolSettings value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setProtocolSettingsRelationship("
+                + value + "): was " + protocolSettings() );
+        }
+        if ( value == null )
+        {
+            net.sf.webcat.core.ProtocolSettings object = protocolSettings();
+            if ( object != null )
+                removeObjectFromBothSidesOfRelationshipWithKey( object, "protocolSettings" );
+        }
+        else
+        {
+            addObjectToBothSidesOfRelationshipWithKey( value, "protocolSettings" );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve the entity pointed to by the <code>theme</code>
      * relationship.
      * @return the entity in the relationship
@@ -1417,6 +1487,184 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
+     * Retrieve the entities pointed to by the <code>messageSubscriptions</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.UserMessageSubscription> messageSubscriptions()
+    {
+        return (NSArray)storedValueForKey( "messageSubscriptions" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>messageSubscriptions</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setMessageSubscriptions( NSMutableArray<net.sf.webcat.core.UserMessageSubscription>  value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setMessageSubscriptions("
+                + value + "): was " + messageSubscriptions() );
+        }
+        takeStoredValueForKey( value, "messageSubscriptions" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>messageSubscriptions</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToMessageSubscriptionsRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToMessageSubscriptions( net.sf.webcat.core.UserMessageSubscription value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToMessageSubscriptions("
+                + value + "): was " + messageSubscriptions() );
+        }
+        NSMutableArray<net.sf.webcat.core.UserMessageSubscription> array =
+            (NSMutableArray<net.sf.webcat.core.UserMessageSubscription>)messageSubscriptions();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>messageSubscriptions</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromMessageSubscriptionsRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromMessageSubscriptions( net.sf.webcat.core.UserMessageSubscription value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromMessageSubscriptions("
+                + value + "): was " + messageSubscriptions() );
+        }
+        NSMutableArray<net.sf.webcat.core.UserMessageSubscription> array =
+            (NSMutableArray<net.sf.webcat.core.UserMessageSubscription>)messageSubscriptions();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>messageSubscriptions</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToMessageSubscriptionsRelationship( net.sf.webcat.core.UserMessageSubscription value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToMessageSubscriptionsRelationship("
+                + value + "): was " + messageSubscriptions() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "messageSubscriptions" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>messageSubscriptions</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromMessageSubscriptionsRelationship( net.sf.webcat.core.UserMessageSubscription value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromMessageSubscriptionsRelationship("
+                + value + "): was " + messageSubscriptions() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "messageSubscriptions" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>messageSubscriptions</code> relationship.
+     *
+     * @return The new entity
+     */
+    public net.sf.webcat.core.UserMessageSubscription createMessageSubscriptionsRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createMessageSubscriptionsRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "UserMessageSubscription" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "messageSubscriptions" );
+        return (net.sf.webcat.core.UserMessageSubscription)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>messageSubscriptions</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteMessageSubscriptionsRelationship( net.sf.webcat.core.UserMessageSubscription value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteMessageSubscriptionsRelationship("
+                + value + "): was " + messageSubscriptions() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "messageSubscriptions" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>messageSubscriptions</code> relationship.
+     */
+    public void deleteAllMessageSubscriptionsRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllMessageSubscriptionsRelationships(): was "
+                + messageSubscriptions() );
+        }
+        Enumeration<?> objects = messageSubscriptions().objectEnumerator();
+        while ( objects.hasMoreElements() )
+            deleteMessageSubscriptionsRelationship(
+                (net.sf.webcat.core.UserMessageSubscription)objects.nextElement() );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve the entities pointed to by the <code>passwordChangeRequest</code>
      * relationship.
      * @return an NSArray of the entities in the relationship
@@ -1590,6 +1838,184 @@ public abstract class _User
         while ( objects.hasMoreElements() )
             deletePasswordChangeRequestRelationship(
                 (net.sf.webcat.core.PasswordChangeRequest)objects.nextElement() );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the entities pointed to by the <code>sentMessages</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    @SuppressWarnings("unchecked")
+    public NSArray<net.sf.webcat.core.SentMessage> sentMessages()
+    {
+        return (NSArray)storedValueForKey( "sentMessages" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>sentMessages</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setSentMessages( NSMutableArray<net.sf.webcat.core.SentMessage>  value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setSentMessages("
+                + value + "): was " + sentMessages() );
+        }
+        takeStoredValueForKey( value, "sentMessages" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>sentMessages</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToSentMessagesRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToSentMessages( net.sf.webcat.core.SentMessage value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToSentMessages("
+                + value + "): was " + sentMessages() );
+        }
+        NSMutableArray<net.sf.webcat.core.SentMessage> array =
+            (NSMutableArray<net.sf.webcat.core.SentMessage>)sentMessages();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>sentMessages</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromSentMessagesRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromSentMessages( net.sf.webcat.core.SentMessage value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromSentMessages("
+                + value + "): was " + sentMessages() );
+        }
+        NSMutableArray<net.sf.webcat.core.SentMessage> array =
+            (NSMutableArray<net.sf.webcat.core.SentMessage>)sentMessages();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>sentMessages</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToSentMessagesRelationship( net.sf.webcat.core.SentMessage value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToSentMessagesRelationship("
+                + value + "): was " + sentMessages() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "sentMessages" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>sentMessages</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromSentMessagesRelationship( net.sf.webcat.core.SentMessage value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromSentMessagesRelationship("
+                + value + "): was " + sentMessages() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "sentMessages" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>sentMessages</code> relationship.
+     *
+     * @return The new entity
+     */
+    public net.sf.webcat.core.SentMessage createSentMessagesRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createSentMessagesRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "SentMessage" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "sentMessages" );
+        return (net.sf.webcat.core.SentMessage)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>sentMessages</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteSentMessagesRelationship( net.sf.webcat.core.SentMessage value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteSentMessagesRelationship("
+                + value + "): was " + sentMessages() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "sentMessages" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>sentMessages</code> relationship.
+     */
+    public void deleteAllSentMessagesRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllSentMessagesRelationships(): was "
+                + sentMessages() );
+        }
+        Enumeration<?> objects = sentMessages().objectEnumerator();
+        while ( objects.hasMoreElements() )
+            deleteSentMessagesRelationship(
+                (net.sf.webcat.core.SentMessage)objects.nextElement() );
     }
 
 
@@ -1904,23 +2330,20 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
-     * Retrieve a single object using a list of keys and values to match.
+     * Retrieve the first object that matches a set of keys and values, when
+     * sorted with the specified sort orderings.
      *
      * @param context The editing context to use
+     * @param sortOrderings the sort orderings
      * @param keysAndValues a list of keys and values to match, alternating
      *     "key", "value", "key", "value"...
      *
-     * @return the single entity that was retrieved
-     *
-     * @throws EOObjectNotAvailableException
-     *     if there is no matching object
-     * @throws EOUtilities.MoreThanOneException
-     *     if there is more than one matching object
+     * @return the first entity that was retrieved, or null if there was none
      */
-    public static User objectMatchingValues(
+    public static User firstObjectMatchingValues(
         EOEditingContext context,
-        Object... keysAndValues) throws EOObjectNotAvailableException,
-                                        EOUtilities.MoreThanOneException
+        NSArray<EOSortOrdering> sortOrderings,
+        Object... keysAndValues)
     {
         if (keysAndValues.length % 2 != 0)
         {
@@ -1944,7 +2367,87 @@ public abstract class _User
             valueDictionary.setObjectForKey(value, key);
         }
 
-        return objectMatchingValues(context, valueDictionary);
+        return firstObjectMatchingValues(
+            context, sortOrderings, valueDictionary);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieves the first object that matches a set of keys and values, when
+     * sorted with the specified sort orderings.
+     *
+     * @param context The editing context to use
+     * @param sortOrderings the sort orderings
+     * @param keysAndValues a dictionary of keys and values to match
+     *
+     * @return the first entity that was retrieved, or null if there was none
+     */
+    public static User firstObjectMatchingValues(
+        EOEditingContext context,
+        NSArray<EOSortOrdering> sortOrderings,
+        NSDictionary<String, Object> keysAndValues)
+    {
+        EOFetchSpecification fspec = new EOFetchSpecification(
+            ENTITY_NAME,
+            EOQualifier.qualifierToMatchAllValues(keysAndValues),
+            sortOrderings);
+        fspec.setFetchLimit(1);
+
+        NSArray<User> result =
+            objectsWithFetchSpecification( context, fspec );
+
+        if ( result.count() == 0 )
+        {
+            return null;
+        }
+        else
+        {
+            return result.objectAtIndex(0);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve a single object using a list of keys and values to match.
+     *
+     * @param context The editing context to use
+     * @param keysAndValues a list of keys and values to match, alternating
+     *     "key", "value", "key", "value"...
+     *
+     * @return the single entity that was retrieved, or null if there was none
+     *
+     * @throws EOUtilities.MoreThanOneException
+     *     if there is more than one matching object
+     */
+    public static User uniqueObjectMatchingValues(
+        EOEditingContext context,
+        Object... keysAndValues) throws EOUtilities.MoreThanOneException
+    {
+        if (keysAndValues.length % 2 != 0)
+        {
+            throw new IllegalArgumentException("There should a value " +
+                "corresponding to every key that was passed.");
+        }
+
+        NSMutableDictionary<String, Object> valueDictionary =
+            new NSMutableDictionary<String, Object>();
+
+        for (int i = 0; i < keysAndValues.length; i += 2)
+        {
+            Object key = keysAndValues[i];
+            Object value = keysAndValues[i + 1];
+
+            if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException("Keys should be strings.");
+            }
+
+            valueDictionary.setObjectForKey(value, key);
+        }
+
+        return uniqueObjectMatchingValues(context, valueDictionary);
     }
 
 
@@ -1955,27 +2458,31 @@ public abstract class _User
      * @param context The editing context to use
      * @param keysAndValues a dictionary of keys and values to match
      *
-     * @return the single entity that was retrieved
+     * @return the single entity that was retrieved, or null if there was none
      *
-     * @throws EOObjectNotAvailableException
-     *     if there is no matching object
      * @throws EOUtilities.MoreThanOneException
      *     if there is more than one matching object
      */
-    public static User objectMatchingValues(
+    public static User uniqueObjectMatchingValues(
         EOEditingContext context,
         NSDictionary<String, Object> keysAndValues)
-        throws EOObjectNotAvailableException,
-               EOUtilities.MoreThanOneException
+        throws EOUtilities.MoreThanOneException
     {
-        return (User)EOUtilities.objectMatchingValues(
-            context, ENTITY_NAME, keysAndValues);
+        try
+        {
+            return (User)EOUtilities.objectMatchingValues(
+                context, ENTITY_NAME, keysAndValues);
+        }
+        catch (EOObjectNotAvailableException e)
+        {
+            return null;
+        }
     }
 
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>CourseParticipants</code>
+     * Retrieve objects according to the <code>participantsForCourse</code>
      * fetch specification.
      *
      * @param context The editing context to use
@@ -1983,14 +2490,14 @@ public abstract class _User
      * @param courseOfferingBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray<User> objectsForCourseParticipants(
+    public static NSArray<User> participantsForCourse(
             EOEditingContext context,
             Integer accessLevelBinding,
             net.sf.webcat.core.CourseOffering courseOfferingBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "courseParticipants", "User" );
+            .fetchSpecificationNamed( "participantsForCourse", "User" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
@@ -2007,10 +2514,11 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<User> result = objectsWithFetchSpecification( context, spec );
+        NSArray<User> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForCourseParticipants(ec"
+            log.debug( "participantsForCourse(ec"
                 + ", " + accessLevelBinding
                 + ", " + courseOfferingBinding
                 + "): " + result );
@@ -2021,106 +2529,14 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>DomainAndEmail</code>
-     * fetch specification.
-     *
-     * @param context The editing context to use
-     * @param domainBinding fetch spec parameter
-     * @param emailBinding fetch spec parameter
-     * @return an NSArray of the entities retrieved
-     */
-    public static NSArray<User> objectsForDomainAndEmail(
-            EOEditingContext context,
-            net.sf.webcat.core.AuthenticationDomain domainBinding,
-            String emailBinding
-        )
-    {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "domainAndEmail", "User" );
-
-        NSMutableDictionary<String, Object> bindings =
-            new NSMutableDictionary<String, Object>();
-
-        if ( domainBinding != null )
-        {
-            bindings.setObjectForKey( domainBinding,
-                                      "domain" );
-        }
-        if ( emailBinding != null )
-        {
-            bindings.setObjectForKey( emailBinding,
-                                      "email" );
-        }
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
-
-        NSArray<User> result = objectsWithFetchSpecification( context, spec );
-        if (log.isDebugEnabled())
-        {
-            log.debug( "objectsForDomainAndEmail(ec"
-                + ", " + domainBinding
-                + ", " + emailBinding
-                + "): " + result );
-        }
-        return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve object according to the <code>DomainAndName</code>
-     * fetch specification.
-     *
-     * @param context The editing context to use
-     * @param domainBinding fetch spec parameter
-     * @param userNameBinding fetch spec parameter
-     * @return an NSArray of the entities retrieved
-     */
-    public static NSArray<User> objectsForDomainAndName(
-            EOEditingContext context,
-            net.sf.webcat.core.AuthenticationDomain domainBinding,
-            String userNameBinding
-        )
-    {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "domainAndName", "User" );
-
-        NSMutableDictionary<String, Object> bindings =
-            new NSMutableDictionary<String, Object>();
-
-        if ( domainBinding != null )
-        {
-            bindings.setObjectForKey( domainBinding,
-                                      "domain" );
-        }
-        if ( userNameBinding != null )
-        {
-            bindings.setObjectForKey( userNameBinding,
-                                      "userName" );
-        }
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
-
-        NSArray<User> result = objectsWithFetchSpecification( context, spec );
-        if (log.isDebugEnabled())
-        {
-            log.debug( "objectsForDomainAndName(ec"
-                + ", " + domainBinding
-                + ", " + userNameBinding
-                + "): " + result );
-        }
-        return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve object according to the <code>StaffForCourse</code>
+     * Retrieve objects according to the <code>staffForCourse</code>
      * fetch specification.
      *
      * @param context The editing context to use
      * @param courseOfferingBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray<User> objectsForStaffForCourse(
+    public static NSArray<User> staffForCourse(
             EOEditingContext context,
             net.sf.webcat.core.CourseOffering courseOfferingBinding
         )
@@ -2138,10 +2554,11 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<User> result = objectsWithFetchSpecification( context, spec );
+        NSArray<User> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForStaffForCourse(ec"
+            log.debug( "staffForCourse(ec"
                 + ", " + courseOfferingBinding
                 + "): " + result );
         }
@@ -2151,14 +2568,14 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>StudentsForCourse</code>
+     * Retrieve objects according to the <code>studentsForCourse</code>
      * fetch specification.
      *
      * @param context The editing context to use
      * @param courseOfferingBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray<User> objectsForStudentsForCourse(
+    public static NSArray<User> studentsForCourse(
             EOEditingContext context,
             net.sf.webcat.core.CourseOffering courseOfferingBinding
         )
@@ -2176,10 +2593,11 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<User> result = objectsWithFetchSpecification( context, spec );
+        NSArray<User> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForStudentsForCourse(ec"
+            log.debug( "studentsForCourse(ec"
                 + ", " + courseOfferingBinding
                 + "): " + result );
         }
@@ -2189,17 +2607,145 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>UserWithName</code>
-     * fetch specification.
+     * Retrieve an object according to the <code>userWithDomainAndEmail</code>
+     * fetch specification. If more than one object is found, an exception is
+     * thrown.
+     *
+     * @param context The editing context to use
+     * @param domainBinding fetch spec parameter
+     * @param emailBinding fetch spec parameter
+     * @return the object retrieved, or null if one was not found
+     * @throws EOUtilities.MoreThanOneException if more than one object is found
+     */
+    public static User userWithDomainAndEmail(
+            EOEditingContext context,
+            net.sf.webcat.core.AuthenticationDomain domainBinding,
+            String emailBinding
+        ) throws EOUtilities.MoreThanOneException
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "userWithDomainAndEmail", "User" );
+
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
+
+        if ( domainBinding != null )
+        {
+            bindings.setObjectForKey( domainBinding,
+                                      "domain" );
+        }
+        if ( emailBinding != null )
+        {
+            bindings.setObjectForKey( emailBinding,
+                                      "email" );
+        }
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        NSArray<User> result =
+            objectsWithFetchSpecification( context, spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "userWithDomainAndEmail(ec"
+                + ", " + domainBinding
+                + ", " + emailBinding
+                + "): " + result );
+        }
+
+        if ( result.count() == 0 )
+        {
+            return null;
+        }
+        else if ( result.count() > 1 )
+        {
+            throw new EOUtilities.MoreThanOneException(
+                "Multiple objects were found when only one was expected."
+            );
+        }
+        else
+        {
+            return result.objectAtIndex(0);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve an object according to the <code>userWithDomainAndName</code>
+     * fetch specification. If more than one object is found, an exception is
+     * thrown.
+     *
+     * @param context The editing context to use
+     * @param domainBinding fetch spec parameter
+     * @param userNameBinding fetch spec parameter
+     * @return the object retrieved, or null if one was not found
+     * @throws EOUtilities.MoreThanOneException if more than one object is found
+     */
+    public static User userWithDomainAndName(
+            EOEditingContext context,
+            net.sf.webcat.core.AuthenticationDomain domainBinding,
+            String userNameBinding
+        ) throws EOUtilities.MoreThanOneException
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "userWithDomainAndName", "User" );
+
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
+
+        if ( domainBinding != null )
+        {
+            bindings.setObjectForKey( domainBinding,
+                                      "domain" );
+        }
+        if ( userNameBinding != null )
+        {
+            bindings.setObjectForKey( userNameBinding,
+                                      "userName" );
+        }
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        NSArray<User> result =
+            objectsWithFetchSpecification( context, spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "userWithDomainAndName(ec"
+                + ", " + domainBinding
+                + ", " + userNameBinding
+                + "): " + result );
+        }
+
+        if ( result.count() == 0 )
+        {
+            return null;
+        }
+        else if ( result.count() > 1 )
+        {
+            throw new EOUtilities.MoreThanOneException(
+                "Multiple objects were found when only one was expected."
+            );
+        }
+        else
+        {
+            return result.objectAtIndex(0);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve an object according to the <code>userWithName</code>
+     * fetch specification. If more than one object is found, an exception is
+     * thrown.
      *
      * @param context The editing context to use
      * @param nameBinding fetch spec parameter
-     * @return an NSArray of the entities retrieved
+     * @return the object retrieved, or null if one was not found
+     * @throws EOUtilities.MoreThanOneException if more than one object is found
      */
-    public static NSArray<User> objectsForUserWithName(
+    public static User userWithName(
             EOEditingContext context,
             String nameBinding
-        )
+        ) throws EOUtilities.MoreThanOneException
     {
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "userWithName", "User" );
@@ -2214,14 +2760,29 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<User> result = objectsWithFetchSpecification( context, spec );
+        NSArray<User> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForUserWithName(ec"
+            log.debug( "userWithName(ec"
                 + ", " + nameBinding
                 + "): " + result );
         }
-        return result;
+
+        if ( result.count() == 0 )
+        {
+            return null;
+        }
+        else if ( result.count() > 1 )
+        {
+            throw new EOUtilities.MoreThanOneException(
+                "Multiple objects were found when only one was expected."
+            );
+        }
+        else
+        {
+            return result.objectAtIndex(0);
+        }
     }
 
 

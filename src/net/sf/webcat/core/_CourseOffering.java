@@ -172,12 +172,12 @@ public abstract class _CourseOffering
     public static final ERXKey<net.sf.webcat.core.User> students =
         new ERXKey<net.sf.webcat.core.User>(STUDENTS_KEY);
     // Fetch specifications ---
-    public static final String FOR_SEMESTER_FSPEC = "forSemester";
-    public static final String FOR_SEMESTER_AND_COURSE_FSPEC = "forSemesterAndCourse";
-    public static final String WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC = "withoutAnyRelationshipToUser";
-    public static final String WITHOUT_STUDENT_FSPEC = "withoutStudent";
-    public static final String WITHOUT_STUDENT_OR_GRADER_FSPEC = "withoutStudentOrGrader";
-    public static final String WITHOUT_USER_AS_STAFF_FSPEC = "withoutUserAsStaff";
+    public static final String OFFERINGS_FOR_SEMESTER_FSPEC = "offeringsForSemester";
+    public static final String OFFERINGS_FOR_SEMESTER_AND_COURSE_FSPEC = "offeringsForSemesterAndCourse";
+    public static final String OFFERINGS_WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC = "offeringsWithoutAnyRelationshipToUser";
+    public static final String OFFERINGS_WITHOUT_STUDENT_FSPEC = "offeringsWithoutStudent";
+    public static final String OFFERINGS_WITHOUT_STUDENT_OR_GRADER_FSPEC = "offeringsWithoutStudentOrGrader";
+    public static final String OFFERINGS_WITHOUT_USER_AS_STAFF_FSPEC = "offeringsWithoutUserAsStaff";
     public static final String ENTITY_NAME = "CourseOffering";
 
 
@@ -1340,23 +1340,20 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Retrieve a single object using a list of keys and values to match.
+     * Retrieve the first object that matches a set of keys and values, when
+     * sorted with the specified sort orderings.
      *
      * @param context The editing context to use
+     * @param sortOrderings the sort orderings
      * @param keysAndValues a list of keys and values to match, alternating
      *     "key", "value", "key", "value"...
      *
-     * @return the single entity that was retrieved
-     *
-     * @throws EOObjectNotAvailableException
-     *     if there is no matching object
-     * @throws EOUtilities.MoreThanOneException
-     *     if there is more than one matching object
+     * @return the first entity that was retrieved, or null if there was none
      */
-    public static CourseOffering objectMatchingValues(
+    public static CourseOffering firstObjectMatchingValues(
         EOEditingContext context,
-        Object... keysAndValues) throws EOObjectNotAvailableException,
-                                        EOUtilities.MoreThanOneException
+        NSArray<EOSortOrdering> sortOrderings,
+        Object... keysAndValues)
     {
         if (keysAndValues.length % 2 != 0)
         {
@@ -1380,7 +1377,87 @@ public abstract class _CourseOffering
             valueDictionary.setObjectForKey(value, key);
         }
 
-        return objectMatchingValues(context, valueDictionary);
+        return firstObjectMatchingValues(
+            context, sortOrderings, valueDictionary);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieves the first object that matches a set of keys and values, when
+     * sorted with the specified sort orderings.
+     *
+     * @param context The editing context to use
+     * @param sortOrderings the sort orderings
+     * @param keysAndValues a dictionary of keys and values to match
+     *
+     * @return the first entity that was retrieved, or null if there was none
+     */
+    public static CourseOffering firstObjectMatchingValues(
+        EOEditingContext context,
+        NSArray<EOSortOrdering> sortOrderings,
+        NSDictionary<String, Object> keysAndValues)
+    {
+        EOFetchSpecification fspec = new EOFetchSpecification(
+            ENTITY_NAME,
+            EOQualifier.qualifierToMatchAllValues(keysAndValues),
+            sortOrderings);
+        fspec.setFetchLimit(1);
+
+        NSArray<CourseOffering> result =
+            objectsWithFetchSpecification( context, fspec );
+
+        if ( result.count() == 0 )
+        {
+            return null;
+        }
+        else
+        {
+            return result.objectAtIndex(0);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve a single object using a list of keys and values to match.
+     *
+     * @param context The editing context to use
+     * @param keysAndValues a list of keys and values to match, alternating
+     *     "key", "value", "key", "value"...
+     *
+     * @return the single entity that was retrieved, or null if there was none
+     *
+     * @throws EOUtilities.MoreThanOneException
+     *     if there is more than one matching object
+     */
+    public static CourseOffering uniqueObjectMatchingValues(
+        EOEditingContext context,
+        Object... keysAndValues) throws EOUtilities.MoreThanOneException
+    {
+        if (keysAndValues.length % 2 != 0)
+        {
+            throw new IllegalArgumentException("There should a value " +
+                "corresponding to every key that was passed.");
+        }
+
+        NSMutableDictionary<String, Object> valueDictionary =
+            new NSMutableDictionary<String, Object>();
+
+        for (int i = 0; i < keysAndValues.length; i += 2)
+        {
+            Object key = keysAndValues[i];
+            Object value = keysAndValues[i + 1];
+
+            if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException("Keys should be strings.");
+            }
+
+            valueDictionary.setObjectForKey(value, key);
+        }
+
+        return uniqueObjectMatchingValues(context, valueDictionary);
     }
 
 
@@ -1391,40 +1468,44 @@ public abstract class _CourseOffering
      * @param context The editing context to use
      * @param keysAndValues a dictionary of keys and values to match
      *
-     * @return the single entity that was retrieved
+     * @return the single entity that was retrieved, or null if there was none
      *
-     * @throws EOObjectNotAvailableException
-     *     if there is no matching object
      * @throws EOUtilities.MoreThanOneException
      *     if there is more than one matching object
      */
-    public static CourseOffering objectMatchingValues(
+    public static CourseOffering uniqueObjectMatchingValues(
         EOEditingContext context,
         NSDictionary<String, Object> keysAndValues)
-        throws EOObjectNotAvailableException,
-               EOUtilities.MoreThanOneException
+        throws EOUtilities.MoreThanOneException
     {
-        return (CourseOffering)EOUtilities.objectMatchingValues(
-            context, ENTITY_NAME, keysAndValues);
+        try
+        {
+            return (CourseOffering)EOUtilities.objectMatchingValues(
+                context, ENTITY_NAME, keysAndValues);
+        }
+        catch (EOObjectNotAvailableException e)
+        {
+            return null;
+        }
     }
 
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>ForSemester</code>
+     * Retrieve objects according to the <code>offeringsForSemester</code>
      * fetch specification.
      *
      * @param context The editing context to use
      * @param semesterBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray<CourseOffering> objectsForForSemester(
+    public static NSArray<CourseOffering> offeringsForSemester(
             EOEditingContext context,
             net.sf.webcat.core.Semester semesterBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "forSemester", "CourseOffering" );
+            .fetchSpecificationNamed( "offeringsForSemester", "CourseOffering" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
@@ -1436,10 +1517,11 @@ public abstract class _CourseOffering
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<CourseOffering> result = objectsWithFetchSpecification( context, spec );
+        NSArray<CourseOffering> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForForSemester(ec"
+            log.debug( "offeringsForSemester(ec"
                 + ", " + semesterBinding
                 + "): " + result );
         }
@@ -1449,7 +1531,7 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>ForSemesterAndCourse</code>
+     * Retrieve objects according to the <code>offeringsForSemesterAndCourse</code>
      * fetch specification.
      *
      * @param context The editing context to use
@@ -1457,14 +1539,14 @@ public abstract class _CourseOffering
      * @param semesterBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray<CourseOffering> objectsForForSemesterAndCourse(
+    public static NSArray<CourseOffering> offeringsForSemesterAndCourse(
             EOEditingContext context,
             net.sf.webcat.core.Course courseBinding,
             net.sf.webcat.core.Semester semesterBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "forSemesterAndCourse", "CourseOffering" );
+            .fetchSpecificationNamed( "offeringsForSemesterAndCourse", "CourseOffering" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
@@ -1481,10 +1563,11 @@ public abstract class _CourseOffering
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<CourseOffering> result = objectsWithFetchSpecification( context, spec );
+        NSArray<CourseOffering> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForForSemesterAndCourse(ec"
+            log.debug( "offeringsForSemesterAndCourse(ec"
                 + ", " + courseBinding
                 + ", " + semesterBinding
                 + "): " + result );
@@ -1495,20 +1578,20 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>WithoutAnyRelationshipToUser</code>
+     * Retrieve objects according to the <code>offeringsWithoutAnyRelationshipToUser</code>
      * fetch specification.
      *
      * @param context The editing context to use
      * @param userBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray<CourseOffering> objectsForWithoutAnyRelationshipToUser(
+    public static NSArray<CourseOffering> offeringsWithoutAnyRelationshipToUser(
             EOEditingContext context,
             net.sf.webcat.core.User userBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "withoutAnyRelationshipToUser", "CourseOffering" );
+            .fetchSpecificationNamed( "offeringsWithoutAnyRelationshipToUser", "CourseOffering" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
@@ -1520,10 +1603,11 @@ public abstract class _CourseOffering
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<CourseOffering> result = objectsWithFetchSpecification( context, spec );
+        NSArray<CourseOffering> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForWithoutAnyRelationshipToUser(ec"
+            log.debug( "offeringsWithoutAnyRelationshipToUser(ec"
                 + ", " + userBinding
                 + "): " + result );
         }
@@ -1533,20 +1617,20 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>WithoutStudent</code>
+     * Retrieve objects according to the <code>offeringsWithoutStudent</code>
      * fetch specification.
      *
      * @param context The editing context to use
      * @param userBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray<CourseOffering> objectsForWithoutStudent(
+    public static NSArray<CourseOffering> offeringsWithoutStudent(
             EOEditingContext context,
             net.sf.webcat.core.User userBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "withoutStudent", "CourseOffering" );
+            .fetchSpecificationNamed( "offeringsWithoutStudent", "CourseOffering" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
@@ -1558,10 +1642,11 @@ public abstract class _CourseOffering
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<CourseOffering> result = objectsWithFetchSpecification( context, spec );
+        NSArray<CourseOffering> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForWithoutStudent(ec"
+            log.debug( "offeringsWithoutStudent(ec"
                 + ", " + userBinding
                 + "): " + result );
         }
@@ -1571,20 +1656,20 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>WithoutStudentOrGrader</code>
+     * Retrieve objects according to the <code>offeringsWithoutStudentOrGrader</code>
      * fetch specification.
      *
      * @param context The editing context to use
      * @param userBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray<CourseOffering> objectsForWithoutStudentOrGrader(
+    public static NSArray<CourseOffering> offeringsWithoutStudentOrGrader(
             EOEditingContext context,
             net.sf.webcat.core.User userBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "withoutStudentOrGrader", "CourseOffering" );
+            .fetchSpecificationNamed( "offeringsWithoutStudentOrGrader", "CourseOffering" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
@@ -1596,10 +1681,11 @@ public abstract class _CourseOffering
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<CourseOffering> result = objectsWithFetchSpecification( context, spec );
+        NSArray<CourseOffering> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForWithoutStudentOrGrader(ec"
+            log.debug( "offeringsWithoutStudentOrGrader(ec"
                 + ", " + userBinding
                 + "): " + result );
         }
@@ -1609,20 +1695,20 @@ public abstract class _CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>WithoutUserAsStaff</code>
+     * Retrieve objects according to the <code>offeringsWithoutUserAsStaff</code>
      * fetch specification.
      *
      * @param context The editing context to use
      * @param userBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray<CourseOffering> objectsForWithoutUserAsStaff(
+    public static NSArray<CourseOffering> offeringsWithoutUserAsStaff(
             EOEditingContext context,
             net.sf.webcat.core.User userBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "withoutUserAsStaff", "CourseOffering" );
+            .fetchSpecificationNamed( "offeringsWithoutUserAsStaff", "CourseOffering" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
@@ -1634,10 +1720,11 @@ public abstract class _CourseOffering
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<CourseOffering> result = objectsWithFetchSpecification( context, spec );
+        NSArray<CourseOffering> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForWithoutUserAsStaff(ec"
+            log.debug( "offeringsWithoutUserAsStaff(ec"
                 + ", " + userBinding
                 + "): " + result );
         }

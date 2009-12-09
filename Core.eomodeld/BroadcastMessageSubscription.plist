@@ -1,0 +1,20 @@
+{
+    attributes = (
+        {allowsNull = N; name = id; prototypeName = id; }, 
+        {
+            allowsNull = N; 
+            columnName = isEnabled; 
+            name = isEnabled; 
+            prototypeName = boolean; 
+            userInfo = {isScalar = true; scalarDefault = false; type = boolean; }; 
+        }, 
+        {columnName = messageType; name = messageType; prototypeName = mediumText; }, 
+        {columnName = protocolType; name = protocolType; prototypeName = mediumText; }
+    ); 
+    attributesUsedForLocking = (isEnabled, messageType, protocolType); 
+    className = "net.sf.webcat.core.BroadcastMessageSubscription"; 
+    classProperties = (isEnabled, messageType, protocolType); 
+    externalName = BroadcastMessageSubscription; 
+    name = BroadcastMessageSubscription; 
+    primaryKeyAttributes = (id); 
+}

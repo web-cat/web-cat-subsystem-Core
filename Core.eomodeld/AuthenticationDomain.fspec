@@ -1,18 +1,14 @@
 {
-    FetchAll =
-    {
-        class = EOFetchSpecification;
-        entityName = AuthenticationDomain;
-        fetchLimit = 0;
-        isDeep = YES;
-        refreshesRefetchedObjects = YES;
-        sortOrderings =
-        (
-           {
-               class = EOSortOrdering;
-               key = displayableName;
-               selectorName = compareCaseInsensitiveAscending:;
-           }
-        );
-    };
+    allObjectsOrderedByDisplayableName = {
+        class = EOFetchSpecification; 
+        entityName = AuthenticationDomain; 
+        prefetchingRelationshipKeyPaths = (); 
+        sortOrderings = (
+            {
+                class = EOSortOrdering; 
+                key = displayableName; 
+                selectorName = compareCaseInsensitiveAscending; 
+            }
+        ); 
+    }; 
 }

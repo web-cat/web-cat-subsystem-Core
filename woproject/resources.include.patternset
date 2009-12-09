@@ -8,3 +8,4 @@ Properties
 Tabs.plist
 filetype.properties
 config.plist
+**/*.settings.plist

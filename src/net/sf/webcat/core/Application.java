@@ -27,6 +27,7 @@ import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import com.webobjects.woextensions.*;
 import er.extensions.appserver.*;
+import er.extensions.eof.ERXConstant;
 import er.extensions.foundation.*;
 import java.io.File;
 import java.io.StringWriter;
@@ -36,6 +37,9 @@ import java.util.regex.*;
 import javax.activation.*;
 import javax.mail.internet.*;
 import net.sf.webcat.archives.*;
+import net.sf.webcat.core.messaging.EmailProtocol;
+import net.sf.webcat.core.messaging.Message;
+import net.sf.webcat.core.messaging.TwitterProtocol;
 import net.sf.webcat.dbupdate.*;
 import ognl.helperfunction.WOHelperFunctionHTMLTemplateParser;
 import ognl.helperfunction.WOTagProcessor;
@@ -343,6 +347,8 @@ public class Application
             simpleTp, "label");
 
         setIncludeCommentsInResponses(false);
+
+        initializeMessagingSystem();
 
         // Ensure subsystems are all loaded
         subsystemManager();
@@ -2265,6 +2271,41 @@ public class Application
                     }
                 }
             }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Register all messaging protocols and initializes the system-wide
+     * protocol settings object if it does not exist.
+     */
+    private void initializeMessagingSystem()
+    {
+        // Register messaging protocols.
+
+        Message.registerProtocol(new EmailProtocol());
+        Message.registerProtocol(new TwitterProtocol());
+
+        // Initialize the system-wide broadcast settings object if it does not
+        // already exist (this should only occur when the application is
+        // started for the first time.
+
+        EOEditingContext ec = Application.newPeerEditingContext();
+        try
+        {
+            ec.lock();
+
+            if (ProtocolSettings.systemSettings(ec) == null)
+            {
+                ProtocolSettings.create(ec, false);
+                ec.saveChanges();
+            }
+        }
+        finally
+        {
+            ec.unlock();
+            Application.releasePeerEditingContext(ec);
         }
     }
 

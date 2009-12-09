@@ -1,0 +1,47 @@
+<p>
+Select the protocol(s) that will be used to deliver each type of message below.
+If a protocol provides settings that can be configured, click the "Edit" button
+next to the protocol name to edit them.
+</p>
+
+<wo:WCForm>
+<wo:WCStyledTable>
+<thead>
+    <tr>
+        <th>Message Type</th>
+        <wo name="ProtocolRepetition">
+            <th>
+            <wo:str value="$protocol.name"/>
+            <wo:if condition="$protocol.globalOptions">
+                <wo name="EditLink"><wo name="EditImage"/></wo>
+                <wo name="EditDialog">
+                    <wo name="OptionSetEditor"/>
+                </wo>
+            </wo:if>
+            </th>
+        </wo>
+    </tr>
+</thead>
+<tbody>
+    <wo:if condition="$messageDescriptors.count">
+        <wo name="MessageRepetition">
+            <tr>
+                <td><wo:str value="$messageDescriptor.description"/></td>
+                <wo name="ProtocolRepetition">
+                    <td><wo name="MessageProtocolSelection"/></td>
+                </wo>
+            </tr>
+        </wo>
+    </wo:if><wo:else>
+        <tr>
+            <wo name="NoMessagesCell">
+                There are no
+                <wo:if condition="$isShowingBroadcast">broadcast</wo:if><wo:else>direct-to-user</wo:else>
+                messages available to be configured.
+            </wo>
+        </tr>
+    </wo:else>
+</tbody>
+</wo:WCStyledTable>
+<wo name="Save"/>
+</wo:WCForm>

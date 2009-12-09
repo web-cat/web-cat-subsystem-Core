@@ -1,0 +1,42 @@
+{
+    attributes = (
+        {
+            columnName = sentMessageId;
+            externalType = INT;
+            name = sentMessageId;
+            valueClassName = NSNumber;
+            valueType = i;
+        },
+        {
+            columnName = userId;
+            externalType = INT;
+            name = userId;
+            valueClassName = NSNumber;
+            valueType = i;
+        }
+    );
+    attributesUsedForLocking = (sentMessageId, userId);
+    className = EOGenericRecord;
+    externalName = UserSentMessage;
+    fetchSpecificationDictionary = {};
+    name = UserSentMessage;
+    primaryKeyAttributes = (sentMessageId, userId);
+    relationships = (
+        {
+            destination = SentMessage;
+            isMandatory = Y;
+            isToMany = N;
+            joinSemantic = EOInnerJoin;
+            joins = ({destinationAttribute = id; sourceAttribute = sentMessageId; });
+            name = sentMessage;
+        },
+        {
+            destination = User;
+            isMandatory = Y;
+            isToMany = N;
+            joinSemantic = EOInnerJoin;
+            joins = ({destinationAttribute = id; sourceAttribute = userId; });
+            name = user;
+        }
+    );
+}

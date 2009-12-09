@@ -204,7 +204,8 @@ public class CoreNavigator
                     localContext()));
         }
 
-        NSArray<Semester> sems = Semester.objectsForFetchAll(localContext());
+        NSArray<Semester> sems = Semester.allObjectsOrderedByStartDate(
+                localContext());
 
         for (Semester sem : sems)
         {

@@ -13,6 +13,10 @@
             className = "net.sf.webcat.core.AuthenticationDomain"; 
             name = AuthenticationDomain; 
         }, 
+        {
+            className = "net.sf.webcat.core.BroadcastMessageSubscription"; 
+            name = BroadcastMessageSubscription; 
+        }, 
         {className = "net.sf.webcat.core.CoreSelections"; name = CoreSelections; }, 
         {className = "net.sf.webcat.core.Course"; name = Course; }, 
         {className = "net.sf.webcat.core.CourseOffering"; name = CourseOffering; }, 
@@ -27,9 +31,15 @@
             className = "net.sf.webcat.core.PasswordChangeRequest"; 
             name = PasswordChangeRequest; 
         }, 
+        {className = "net.sf.webcat.core.ProtocolSettings"; name = ProtocolSettings; }, 
         {className = "net.sf.webcat.core.Semester"; name = Semester; }, 
+        {className = "net.sf.webcat.core.SentMessage"; name = SentMessage; }, 
         {className = "net.sf.webcat.core.Theme"; name = Theme; }, 
-        {className = "net.sf.webcat.core.User"; name = User; }
+        {className = "net.sf.webcat.core.User"; name = User; }, 
+        {
+            className = "net.sf.webcat.core.UserMessageSubscription"; 
+            name = UserMessageSubscription; 
+        }, 
+        {className = EOGenericRecord; name = UserSentMessage; }
     ); 
-    entitiesWithSharedObjects = (Language); 
 }

@@ -1,5 +1,5 @@
 {
-    courseParticipants = {
+    participantsForCourse = {
         class = EOFetchSpecification; 
         entityName = User; 
         fetchLimit = 0; 
@@ -18,52 +18,6 @@
                     key = enrolledIn; 
                     selectorName = "doesContain:"; 
                     value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
-                }
-            ); 
-        }; 
-    }; 
-    domainAndEmail = {
-        class = EOFetchSpecification; 
-        entityName = User; 
-        fetchLimit = 0; 
-        isDeep = YES; 
-        qualifier = {
-            class = EOAndQualifier; 
-            qualifiers = (
-                {
-                    class = EOKeyValueQualifier; 
-                    key = authenticationDomain; 
-                    selectorName = "isEqualTo:"; 
-                    value = {"_key" = domain; class = EOQualifierVariable; }; 
-                }, 
-                {
-                    class = EOKeyValueQualifier; 
-                    key = email; 
-                    selectorName = "isEqualTo:"; 
-                    value = {"_key" = email; class = EOQualifierVariable; }; 
-                }
-            ); 
-        }; 
-    }; 
-    domainAndName = {
-        class = EOFetchSpecification; 
-        entityName = User; 
-        fetchLimit = 0; 
-        isDeep = YES; 
-        qualifier = {
-            class = EOAndQualifier; 
-            qualifiers = (
-                {
-                    class = EOKeyValueQualifier; 
-                    key = authenticationDomain; 
-                    selectorName = "isEqualTo:"; 
-                    value = {"_key" = domain; class = EOQualifierVariable; }; 
-                }, 
-                {
-                    class = EOKeyValueQualifier; 
-                    key = userName; 
-                    selectorName = "isEqualTo:"; 
-                    value = {"_key" = userName; class = EOQualifierVariable; }; 
                 }
             ); 
         }; 
@@ -128,10 +82,55 @@
             ); 
         }; 
     }; 
+    userWithDomainAndEmail = {
+        class = EOFetchSpecification; 
+        entityName = User; 
+        isDeep = YES; 
+        qualifier = {
+            class = EOAndQualifier; 
+            qualifiers = (
+                {
+                    class = EOKeyValueQualifier; 
+                    key = authenticationDomain; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = domain; class = EOQualifierVariable; }; 
+                }, 
+                {
+                    class = EOKeyValueQualifier; 
+                    key = email; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = email; class = EOQualifierVariable; }; 
+                }
+            ); 
+        }; 
+        userInfo = {ensureUnique = true; }; 
+    }; 
+    userWithDomainAndName = {
+        class = EOFetchSpecification; 
+        entityName = User; 
+        isDeep = YES; 
+        qualifier = {
+            class = EOAndQualifier; 
+            qualifiers = (
+                {
+                    class = EOKeyValueQualifier; 
+                    key = authenticationDomain; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = domain; class = EOQualifierVariable; }; 
+                }, 
+                {
+                    class = EOKeyValueQualifier; 
+                    key = userName; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = userName; class = EOQualifierVariable; }; 
+                }
+            ); 
+        }; 
+        userInfo = {ensureUnique = true; }; 
+    }; 
     userWithName = {
         class = EOFetchSpecification; 
         entityName = User; 
-        fetchLimit = 0; 
         isDeep = YES; 
         qualifier = {
             class = EOKeyValueQualifier; 
@@ -139,5 +138,6 @@
             selectorName = "isEqualTo:"; 
             value = {"_key" = name; class = EOQualifierVariable; }; 
         }; 
+        userInfo = {ensureUnique = true; }; 
     }; 
 }

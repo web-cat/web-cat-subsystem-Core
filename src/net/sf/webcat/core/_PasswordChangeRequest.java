@@ -151,9 +151,9 @@ public abstract class _PasswordChangeRequest
         new ERXKey<net.sf.webcat.core.User>(USER_KEY);
     // To-many relationships ---
     // Fetch specifications ---
-    public static final String CODE_FSPEC = "code";
-    public static final String EXPIRED_BEFORE_FSPEC = "expiredBefore";
-    public static final String USER_FSPEC = "user";
+    public static final String REQUESTS_EXPIRED_BEFORE_FSPEC = "requestsExpiredBefore";
+    public static final String REQUESTS_FOR_CODE_FSPEC = "requestsForCode";
+    public static final String REQUESTS_FOR_USER_FSPEC = "requestsForUser";
     public static final String ENTITY_NAME = "PasswordChangeRequest";
 
 
@@ -456,23 +456,20 @@ public abstract class _PasswordChangeRequest
 
     // ----------------------------------------------------------
     /**
-     * Retrieve a single object using a list of keys and values to match.
+     * Retrieve the first object that matches a set of keys and values, when
+     * sorted with the specified sort orderings.
      *
      * @param context The editing context to use
+     * @param sortOrderings the sort orderings
      * @param keysAndValues a list of keys and values to match, alternating
      *     "key", "value", "key", "value"...
      *
-     * @return the single entity that was retrieved
-     *
-     * @throws EOObjectNotAvailableException
-     *     if there is no matching object
-     * @throws EOUtilities.MoreThanOneException
-     *     if there is more than one matching object
+     * @return the first entity that was retrieved, or null if there was none
      */
-    public static PasswordChangeRequest objectMatchingValues(
+    public static PasswordChangeRequest firstObjectMatchingValues(
         EOEditingContext context,
-        Object... keysAndValues) throws EOObjectNotAvailableException,
-                                        EOUtilities.MoreThanOneException
+        NSArray<EOSortOrdering> sortOrderings,
+        Object... keysAndValues)
     {
         if (keysAndValues.length % 2 != 0)
         {
@@ -496,7 +493,87 @@ public abstract class _PasswordChangeRequest
             valueDictionary.setObjectForKey(value, key);
         }
 
-        return objectMatchingValues(context, valueDictionary);
+        return firstObjectMatchingValues(
+            context, sortOrderings, valueDictionary);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieves the first object that matches a set of keys and values, when
+     * sorted with the specified sort orderings.
+     *
+     * @param context The editing context to use
+     * @param sortOrderings the sort orderings
+     * @param keysAndValues a dictionary of keys and values to match
+     *
+     * @return the first entity that was retrieved, or null if there was none
+     */
+    public static PasswordChangeRequest firstObjectMatchingValues(
+        EOEditingContext context,
+        NSArray<EOSortOrdering> sortOrderings,
+        NSDictionary<String, Object> keysAndValues)
+    {
+        EOFetchSpecification fspec = new EOFetchSpecification(
+            ENTITY_NAME,
+            EOQualifier.qualifierToMatchAllValues(keysAndValues),
+            sortOrderings);
+        fspec.setFetchLimit(1);
+
+        NSArray<PasswordChangeRequest> result =
+            objectsWithFetchSpecification( context, fspec );
+
+        if ( result.count() == 0 )
+        {
+            return null;
+        }
+        else
+        {
+            return result.objectAtIndex(0);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve a single object using a list of keys and values to match.
+     *
+     * @param context The editing context to use
+     * @param keysAndValues a list of keys and values to match, alternating
+     *     "key", "value", "key", "value"...
+     *
+     * @return the single entity that was retrieved, or null if there was none
+     *
+     * @throws EOUtilities.MoreThanOneException
+     *     if there is more than one matching object
+     */
+    public static PasswordChangeRequest uniqueObjectMatchingValues(
+        EOEditingContext context,
+        Object... keysAndValues) throws EOUtilities.MoreThanOneException
+    {
+        if (keysAndValues.length % 2 != 0)
+        {
+            throw new IllegalArgumentException("There should a value " +
+                "corresponding to every key that was passed.");
+        }
+
+        NSMutableDictionary<String, Object> valueDictionary =
+            new NSMutableDictionary<String, Object>();
+
+        for (int i = 0; i < keysAndValues.length; i += 2)
+        {
+            Object key = keysAndValues[i];
+            Object value = keysAndValues[i + 1];
+
+            if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException("Keys should be strings.");
+            }
+
+            valueDictionary.setObjectForKey(value, key);
+        }
+
+        return uniqueObjectMatchingValues(context, valueDictionary);
     }
 
 
@@ -507,78 +584,44 @@ public abstract class _PasswordChangeRequest
      * @param context The editing context to use
      * @param keysAndValues a dictionary of keys and values to match
      *
-     * @return the single entity that was retrieved
+     * @return the single entity that was retrieved, or null if there was none
      *
-     * @throws EOObjectNotAvailableException
-     *     if there is no matching object
      * @throws EOUtilities.MoreThanOneException
      *     if there is more than one matching object
      */
-    public static PasswordChangeRequest objectMatchingValues(
+    public static PasswordChangeRequest uniqueObjectMatchingValues(
         EOEditingContext context,
         NSDictionary<String, Object> keysAndValues)
-        throws EOObjectNotAvailableException,
-               EOUtilities.MoreThanOneException
+        throws EOUtilities.MoreThanOneException
     {
-        return (PasswordChangeRequest)EOUtilities.objectMatchingValues(
-            context, ENTITY_NAME, keysAndValues);
+        try
+        {
+            return (PasswordChangeRequest)EOUtilities.objectMatchingValues(
+                context, ENTITY_NAME, keysAndValues);
+        }
+        catch (EOObjectNotAvailableException e)
+        {
+            return null;
+        }
     }
 
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>Code</code>
-     * fetch specification.
-     *
-     * @param context The editing context to use
-     * @param codeBinding fetch spec parameter
-     * @return an NSArray of the entities retrieved
-     */
-    public static NSArray<PasswordChangeRequest> objectsForCode(
-            EOEditingContext context,
-            String codeBinding
-        )
-    {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "code", "PasswordChangeRequest" );
-
-        NSMutableDictionary<String, Object> bindings =
-            new NSMutableDictionary<String, Object>();
-
-        if ( codeBinding != null )
-        {
-            bindings.setObjectForKey( codeBinding,
-                                      "code" );
-        }
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
-
-        NSArray<PasswordChangeRequest> result = objectsWithFetchSpecification( context, spec );
-        if (log.isDebugEnabled())
-        {
-            log.debug( "objectsForCode(ec"
-                + ", " + codeBinding
-                + "): " + result );
-        }
-        return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve object according to the <code>ExpiredBefore</code>
+     * Retrieve objects according to the <code>requestsExpiredBefore</code>
      * fetch specification.
      *
      * @param context The editing context to use
      * @param timeBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray<PasswordChangeRequest> objectsForExpiredBefore(
+    public static NSArray<PasswordChangeRequest> requestsExpiredBefore(
             EOEditingContext context,
             NSTimestamp timeBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "expiredBefore", "PasswordChangeRequest" );
+            .fetchSpecificationNamed( "requestsExpiredBefore", "PasswordChangeRequest" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
@@ -590,10 +633,11 @@ public abstract class _PasswordChangeRequest
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<PasswordChangeRequest> result = objectsWithFetchSpecification( context, spec );
+        NSArray<PasswordChangeRequest> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForExpiredBefore(ec"
+            log.debug( "requestsExpiredBefore(ec"
                 + ", " + timeBinding
                 + "): " + result );
         }
@@ -603,20 +647,59 @@ public abstract class _PasswordChangeRequest
 
     // ----------------------------------------------------------
     /**
-     * Retrieve object according to the <code>User</code>
+     * Retrieve objects according to the <code>requestsForCode</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param codeBinding fetch spec parameter
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray<PasswordChangeRequest> requestsForCode(
+            EOEditingContext context,
+            String codeBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "requestsForCode", "PasswordChangeRequest" );
+
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
+
+        if ( codeBinding != null )
+        {
+            bindings.setObjectForKey( codeBinding,
+                                      "code" );
+        }
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        NSArray<PasswordChangeRequest> result =
+            objectsWithFetchSpecification( context, spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "requestsForCode(ec"
+                + ", " + codeBinding
+                + "): " + result );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve objects according to the <code>requestsForUser</code>
      * fetch specification.
      *
      * @param context The editing context to use
      * @param userBinding fetch spec parameter
      * @return an NSArray of the entities retrieved
      */
-    public static NSArray<PasswordChangeRequest> objectsForUser(
+    public static NSArray<PasswordChangeRequest> requestsForUser(
             EOEditingContext context,
             net.sf.webcat.core.User userBinding
         )
     {
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "user", "PasswordChangeRequest" );
+            .fetchSpecificationNamed( "requestsForUser", "PasswordChangeRequest" );
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
@@ -628,10 +711,11 @@ public abstract class _PasswordChangeRequest
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<PasswordChangeRequest> result = objectsWithFetchSpecification( context, spec );
+        NSArray<PasswordChangeRequest> result =
+            objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
-            log.debug( "objectsForUser(ec"
+            log.debug( "requestsForUser(ec"
                 + ", " + userBinding
                 + "): " + result );
         }

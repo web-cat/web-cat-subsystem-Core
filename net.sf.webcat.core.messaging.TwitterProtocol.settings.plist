@@ -1,0 +1,21 @@
+{
+    globalOptions = (
+        {
+            property    = net.sf.webcat.core.messaging.TwitterProtocol.username;
+            type        = shortText;
+            size        = 20;
+            name        = "Twitter Username";
+            description =
+  "The username of the Twitter account that will be updated when
+   messages are sent.";
+        },
+        {
+            property    = net.sf.webcat.core.messaging.TwitterProtocol.password;
+            type        = shortText;
+            size        = 20;
+            name        = "Twitter Password";
+            description =
+  "The password of the Twitter account.";
+        }
+    );
+}

@@ -1,0 +1,44 @@
+{
+    attributes = (
+        {allowsNull = N; name = id; prototypeName = id; }, 
+        {
+            columnName = links; 
+            name = links; 
+            prototypeName = mutableDictionary; 
+            userInfo = {
+                adaptorValueConversionMethodName = archiveData; 
+                isMutable = true; 
+                valueClassName = "net.sf.webcat.core.MutableDictionary"; 
+                valueFactoryMethodName = objectWithArchiveData; 
+            }; 
+        }, 
+        {columnName = messageType; name = messageType; prototypeName = mediumText; }, 
+        {columnName = sentTime; name = sentTime; prototypeName = dateTime; }, 
+        {columnName = shortBody; name = shortBody; prototypeName = mediumText; }, 
+        {columnName = title; name = title; prototypeName = mediumText; }, 
+        {
+            name = updateMutableFields; 
+            prototypeName = updateMutableFields; 
+            userInfo = {isScalar = true; scalarDefault = false; type = boolean; }; 
+        }
+    ); 
+    attributesUsedForLocking = (links, messageType, shortBody, title, updateMutableFields); 
+    className = "net.sf.webcat.core.SentMessage"; 
+    classProperties = (links, messageType, sentTime, shortBody, title, updateMutableFields, users); 
+    externalName = SentMessage; 
+    fetchSpecificationDictionary = {}; 
+    name = SentMessage; 
+    primaryKeyAttributes = (id); 
+    relationships = (
+        {definition = "userSentMessages.user"; name = users; }, 
+        {
+            deleteRule = EODeleteRuleCascade; 
+            destination = UserSentMessage; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = sentMessageId; sourceAttribute = id; }); 
+            name = userSentMessages; 
+            propagatesPrimaryKey = Y; 
+        }
+    ); 
+}

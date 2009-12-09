@@ -519,7 +519,7 @@ public class AuthenticationDomain
         }
 
         log.debug( "refreshing shared authentication domain objects" );
-        authDomains = objectsForFetchAll(
+        authDomains = allObjectsOrderedByDisplayableName(
             EOSharedEditingContext.defaultSharedEditingContext() );
 
         // TODO: can't do this yet, since the domain's authenticator class

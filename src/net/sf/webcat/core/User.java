@@ -141,18 +141,16 @@ public class User
                                    String               userName,
                                    AuthenticationDomain domain )
     {
-        NSArray results = objectsForDomainAndName( ec, domain, userName );
-        if ( results == null || results.count() == 0 )
+        try
         {
-            return null;
+            return userWithDomainAndName( ec, domain, userName );
         }
-        else if ( results.count() > 1 )
+        catch (EOUtilities.MoreThanOneException e)
         {
             throw new MultipleUsersFoundException( "Multiple users found when "
                 + "searching for userName = " + userName + " and domain = "
                 + domain );
         }
-        return (User)results.objectAtIndex( 0 );
     }
 
 
@@ -172,12 +170,16 @@ public class User
                                           AuthenticationDomain domain )
     {
         // First, try a raw database lookup
-        NSArray results = objectsForDomainAndEmail( ec, domain, email );
-        if ( results.count() == 1 )
+        try
         {
-            return (User)results.objectAtIndex( 0 );
+            User user = userWithDomainAndEmail( ec, domain, email );
+
+            if (user != null)
+            {
+                return user;
+            }
         }
-        else if ( results.count() > 1 )
+        catch (EOUtilities.MoreThanOneException e)
         {
             throw new MultipleUsersFoundException( "Multiple users found when "
                 + "searching for email = " + email + " and domain = "
@@ -660,6 +662,9 @@ public class User
 
 
     // ----------------------------------------------------------
+    /**
+     * @return the array of course offerings that this user is a grader for
+     */
     public NSArray<CourseOffering> graderFor()
     {
         return studentView ? emptyArray : super.graderFor();
@@ -698,7 +703,7 @@ public class User
                 .filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
-                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
                     new NSDictionary(
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
@@ -731,7 +736,7 @@ public class User
                 .filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
-                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
                     new NSDictionary(
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
@@ -852,7 +857,7 @@ public class User
                     ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
                         graderFor_cache,
                         CourseOffering.ENTITY_NAME,
-                        CourseOffering.WITHOUT_STUDENT_FSPEC,
+                        CourseOffering.OFFERINGS_WITHOUT_STUDENT_FSPEC,
                         userFilteringDictionary()
                         );
             }
@@ -896,7 +901,7 @@ public class User
                 .filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
-                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
                     new NSDictionary(
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
@@ -959,7 +964,7 @@ public class User
                     ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
                         teaching_cache,
                         CourseOffering.ENTITY_NAME,
-                        CourseOffering.WITHOUT_STUDENT_OR_GRADER_FSPEC,
+                        CourseOffering.OFFERINGS_WITHOUT_STUDENT_OR_GRADER_FSPEC,
                         userFilteringDictionary()
                         );
             }
@@ -1005,7 +1010,7 @@ public class User
                 .filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
-                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
                     new NSDictionary(
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
@@ -1060,7 +1065,7 @@ public class User
                 .filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
-                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
                     new NSDictionary(
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
@@ -1102,7 +1107,7 @@ public class User
                     EOUtilities.objectsForEntityNamed( editingContext(),
                         CourseOffering.ENTITY_NAME ),
                     CourseOffering.ENTITY_NAME,
-                    CourseOffering.WITHOUT_USER_AS_STAFF_FSPEC,
+                    CourseOffering.OFFERINGS_WITHOUT_USER_AS_STAFF_FSPEC,
                     userFilteringDictionary()
                     );
         }
@@ -1128,7 +1133,7 @@ public class User
                 .filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
-                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
                     new NSDictionary(
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
@@ -1175,7 +1180,7 @@ public class User
                     EOUtilities.objectsForEntityNamed( editingContext(),
                         CourseOffering.ENTITY_NAME ),
                     CourseOffering.ENTITY_NAME,
-                    CourseOffering.WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC,
+                    CourseOffering.OFFERINGS_WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC,
                     userFilteringDictionary()
                     );
         }
@@ -1201,7 +1206,7 @@ public class User
                 .filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
-                    CourseOffering.FOR_SEMESTER_FSPEC,
+                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
                     new NSDictionary(
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }

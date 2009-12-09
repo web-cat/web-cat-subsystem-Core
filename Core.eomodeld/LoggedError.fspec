@@ -1,5 +1,5 @@
 {
-    exceptionLocation = {
+    errorsWithExceptionLocation = {
         class = EOFetchSpecification; 
         entityName = LoggedError; 
         prefetchingRelationshipKeyPaths = (); 

@@ -1,0 +1,49 @@
+EditDialog : WCDialog {
+    id = "~'editGlobalOptions_' + indexOfProtocol";
+    title = "Edit Global Options";
+    okAction = "optionsEdited";
+}
+
+EditImage : WOImage {
+    framework = "Core";
+    filename = "icons/edit.gif";
+    width = 16;
+    height = 16;
+}
+
+EditLink : WOGenericContainer {
+    elementName = "a";
+    href = "javascript:void(0);";
+    onclick = "~'dijit.byId(\'editGlobalOptions_' + indexOfProtocol + '\').show();'";
+}
+
+MessageProtocolSelection : WCCheckBox {
+    checked = protocolSelectedForMessage;
+}
+
+MessageRepetition : WORepetition {
+    list = messageDescriptors;
+    item = messageDescriptor;
+}
+
+NoMessagesCell : WOGenericContainer {
+    elementName = "td";
+    colspan = "~protocols.count + 1";
+}
+
+OptionSetEditor : OptionSetEditor {
+    options = protocolOptions;
+    optionValues = optionValues;
+}
+
+ProtocolRepetition : WORepetition {
+    list = protocols;
+    item = protocol;
+    index = indexOfProtocol;
+}
+
+Save : WCButton {
+    label = "Save";
+    action = saveSettings;
+    class = "pos";
+}

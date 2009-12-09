@@ -74,7 +74,7 @@ public class Language
     public static void refreshLanguages()
     {
         log.debug( "refreshing shared language objects" );
-        languages = objectsForFetchAll(
+        languages = allObjects(
             EOSharedEditingContext.defaultSharedEditingContext() );
     }
 

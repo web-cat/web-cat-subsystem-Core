@@ -9,7 +9,7 @@
     className = "net.sf.webcat.core.Language"; 
     classProperties = (compiler, name, version); 
     externalName = TLANGUAGE; 
+    fetchSpecificationDictionary = {}; 
     name = Language; 
     primaryKeyAttributes = (id); 
-    sharedObjectFetchSpecificationNames = (FetchAll); 
 }

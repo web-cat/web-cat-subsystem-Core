@@ -1,0 +1,45 @@
+{
+    attributes = (
+        {allowsNull = N; name = id; prototypeName = id; }, 
+        {columnName = parentId; name = parentId; prototypeName = foreignId; }, 
+        {
+            columnName = settings; 
+            name = settings; 
+            prototypeName = mutableDictionary; 
+            userInfo = {
+                adaptorValueConversionMethodName = archiveData; 
+                isMutable = true; 
+                valueClassName = "net.sf.webcat.core.MutableDictionary"; 
+                valueFactoryMethodName = objectWithArchiveData; 
+            }; 
+        }, 
+        {
+            name = updateMutableFields; 
+            prototypeName = updateMutableFields; 
+            userInfo = {isScalar = true; scalarDefault = false; type = boolean; }; 
+        }
+    ); 
+    attributesUsedForLocking = (parentId, settings, updateMutableFields); 
+    className = "net.sf.webcat.core.ProtocolSettings"; 
+    classProperties = (children, parent, settings, updateMutableFields); 
+    externalName = ProtocolSettings; 
+    fetchSpecificationDictionary = {}; 
+    name = ProtocolSettings; 
+    primaryKeyAttributes = (id); 
+    relationships = (
+        {
+            destination = ProtocolSettings; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = parentId; sourceAttribute = id; }); 
+            name = children; 
+        }, 
+        {
+            destination = ProtocolSettings; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = parentId; }); 
+            name = parent; 
+        }
+    ); 
+}

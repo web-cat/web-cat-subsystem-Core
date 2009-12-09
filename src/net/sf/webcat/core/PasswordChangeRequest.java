@@ -84,7 +84,7 @@ public class PasswordChangeRequest
         EOEditingContext ec, String code )
     {
         PasswordChangeRequest request = null;
-        NSArray results = objectsForCode( ec, code );
+        NSArray results = requestsForCode( ec, code );
         if ( results.count() > 0 )
         {
             request = (PasswordChangeRequest)results.objectAtIndex( 0 );
@@ -111,7 +111,7 @@ public class PasswordChangeRequest
     public static boolean clearPendingUserRequests(
         EOEditingContext ec, User user )
     {
-        NSArray results = objectsForUser( ec, user );
+        NSArray results = requestsForUser( ec, user );
         boolean result = results.count() > 0;
         for ( int i = 0; i < results.count(); i++ )
         {

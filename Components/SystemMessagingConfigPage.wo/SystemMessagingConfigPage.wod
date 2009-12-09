@@ -1,0 +1,6 @@
+ConfigPanel : MessagingConfigPanel {
+    isShowingBroadcast = true;
+}
+
+Page : WCPageWithNavigation {
+}

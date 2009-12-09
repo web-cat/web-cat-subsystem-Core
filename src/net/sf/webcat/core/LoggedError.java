@@ -77,7 +77,7 @@ public class LoggedError
             : new StackTraceElement( "unknown", "unknown", "unknown", 0 );
 
         LoggedError result = null;
-        NSArray results = objectsForExceptionLocation(
+        NSArray results = errorsWithExceptionLocation(
             context,
             top.getClassName(),
             top.getLineNumber(),
