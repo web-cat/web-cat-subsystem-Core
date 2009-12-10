@@ -7,6 +7,7 @@
     </script>
     <script type="dojo/connect" event="onRemoteEnd">
     dijit.byId('<wo:str value="$id"/>').hide();
+    <wo:if condition="$refreshPanesOnOk">webcat.refreshContentPanes('<wo:str value="$refreshPanesOnOk"/>');</wo:if>
     </script>
 </wo>
 <wo name="Cancel">
