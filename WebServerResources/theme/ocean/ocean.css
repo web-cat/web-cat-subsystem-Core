@@ -23,7 +23,7 @@ body {
 	color: white;
 }
 
-#roles a, #utils a {
+#roles a, #utils a, #roles span {
 	color: white;
 	background-image: url(../base/images/white-15.png);
 	text-decoration: none;
@@ -73,7 +73,8 @@ body {
 
 
 #mainMenu a:hover,
-#mainMenu .here a {
+#mainMenu .here a,
+#roles span.here {
 	background-image: url(../base/images/black-50.png);
 }
 

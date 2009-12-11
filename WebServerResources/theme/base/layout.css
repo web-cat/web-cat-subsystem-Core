@@ -260,6 +260,8 @@ blockquote {
     margin-bottom: 1.5em;
 }
 
+.module.panel .NoticePanel { margin-bottom: 0; }
+
 .med-logo {
     margin-top: 1.5em;
     min-height: 215px;
