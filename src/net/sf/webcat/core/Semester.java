@@ -28,6 +28,8 @@ import com.webobjects.eocontrol.*;
 
 import java.io.*;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
+import java.util.TimeZone;
 
 import org.apache.log4j.*;
 
@@ -53,6 +55,63 @@ public class Semester
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new
+     * Semester object given required
+     * attributes and relationships.
+     * @param editingContext The context in which the new object will be
+     * inserted
+     * @param theSeason The semester of the year
+     * @param startDate The start date
+     * @param endDate The end date
+     * @return The newly created object
+     */
+    public static Semester create(
+        EOEditingContext editingContext,
+        int theSeason,
+        NSTimestamp startDate,
+        NSTimestamp endDate,
+        int startYear
+        )
+    {
+        Semester result = create(editingContext, startYear);
+        result.setSeason(theSeason);
+        result.setSemesterStartDate(startDate);
+        result.setSemesterEndDate(endDate);
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new
+     * Semester object given required
+     * attributes and relationships.
+     * @param editingContext The context in which the new object will be
+     * inserted
+     * @param theSeason The semester of the year
+     * @param startYear The year for the semester
+     * @param timeZone The time zone for localizing dates, or
+     * null for the system default
+     * @return The newly created object
+     */
+    public static Semester create(
+        EOEditingContext editingContext,
+        int theSeason,
+        int startYear,
+        TimeZone timeZone
+        )
+    {
+        return create(
+            editingContext,
+            theSeason,
+            defaultStartingDate(theSeason, startYear, timeZone),
+            defaultEndingDate(theSeason, startYear, timeZone),
+            startYear);
+    }
+
+
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
@@ -64,10 +123,10 @@ public class Semester
     public String seasonName()
     {
         String result = "none";
-        Number season = season();
-        if (season != null)
+        Number mySeason = season();
+        if (mySeason != null)
         {
-            result = (String)names.objectAtIndex( season().intValue() );
+            result = names.objectAtIndex(season().intValue());
         }
         return result;
     }
@@ -143,13 +202,8 @@ public class Semester
     {
         super.validateForSave();
         // Make sure the season is not a duplicate
-        NSArray others = EOUtilities.objectsMatchingValues(
-            editingContext(),
-            ENTITY_NAME,
-            new NSDictionary(
-                new Object[] {  year(),   season()   },
-                new Object[] {  YEAR_KEY, SEASON_KEY }
-                ) );
+        NSArray<Semester> others = objectsMatchingQualifier(editingContext(),
+            year.is(year()).and(season.is(season())));
         if (others.count() > 1
             || (others.count() == 1
                 && others.objectAtIndex(0) != this))
@@ -295,13 +349,13 @@ public class Semester
     // ----------------------------------------------------------
     /**
      * Guess the starting month for a semester (assumed to start on day 1).
-     * @param semester the semester to guess for
+     * @param theSeason the semester to guess for
      * @return The month (starting from 1)
      */
-    public static int defaultStartingMonth( int semester )
+    public static int defaultStartingMonth(int theSeason)
     {
         int result = 1;
-        switch ( semester )
+        switch (theSeason)
         {
             case SUMMER1: result = 6; break;
             case SUMMER2: result = 7; break;
@@ -314,15 +368,42 @@ public class Semester
 
     // ----------------------------------------------------------
     /**
+     * Guess the starting date for a semester.
+     * @param theSeason the semester to guess for
+     * @param startYear the year in which the semester starts
+     * @param timeZone the time zone to use for localization
+     * @return The starting date, as a time stamp
+     */
+    public static NSTimestamp defaultStartingDate(
+        int theSeason, int startYear, TimeZone timeZone)
+    {
+        // Note that these month values start at 1, not 0, so they need to
+        // be decremented before being shoved into a calendar object
+        int startMonth = defaultStartingMonth(theSeason);
+        int startDay = 1;
+
+        Calendar cal = (timeZone == null)
+            ? new GregorianCalendar()
+            : new GregorianCalendar(timeZone);
+        cal.clear();
+        cal.set(Calendar.YEAR, startYear);
+        cal.set(Calendar.MONTH, startMonth - 1);
+        cal.set(Calendar.DAY_OF_MONTH, startDay);
+        return new NSTimestamp(cal.getTimeInMillis());
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Guess the ending month for a semester (assumed to end on last day
      * of the month).
-     * @param semester the semester to guess for
+     * @param theSeason the semester to guess for
      * @return The month (starting from 1)
      */
-    public static int defaultEndingMonth( int semester )
+    public static int defaultEndingMonth(int theSeason)
     {
         int result = 12;
-        switch ( semester )
+        switch (theSeason)
         {
             case SPRING:  result = 5; break;
             case SUMMER1: result = 6; break;
@@ -333,30 +414,71 @@ public class Semester
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Guess the ending date for a semester.
+     * @param theSeason the semester to guess for
+     * @param startYear the year in which the semester starts (<b>not</b> ends)
+     * @param timeZone the time zone to use for localization
+     * @return The ending date, as a time stamp
+     */
+    public static NSTimestamp defaultEndingDate(
+        int theSeason, int startYear, TimeZone timeZone)
+    {
+        // Note that these month values start at 1, not 0, so they need to
+        // be decremented before being shoved into a calendar object
+        int endMonth = defaultEndingMonth(theSeason);
+        int endDay = 30;
+        if (defaultStartingMonth(theSeason) > endMonth)
+        {
+            startYear++;
+        }
+        switch (endMonth)
+        {
+            case 2: endDay = 28; break;
+            case 1:
+            case 3:
+            case 5:
+            case 7:
+            case 8:
+            case 10:
+            case 12: endDay = 31; break;
+        }
+
+        Calendar cal = (timeZone == null)
+            ? new GregorianCalendar()
+            : new GregorianCalendar(timeZone);
+        cal.clear();
+        cal.set(Calendar.YEAR, startYear);
+        cal.set(Calendar.MONTH, endMonth - 1);
+        cal.set(Calendar.DAY_OF_MONTH, endDay);
+        return new NSTimestamp(cal.getTimeInMillis());
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
-    private void renameSubdirs( String oldSubdir, String newSubdir )
+    private void renameSubdirs(String oldSubdir, String newSubdir)
     {
-        NSArray domains = AuthenticationDomain.authDomains();
+        NSArray<AuthenticationDomain> domains =
+            AuthenticationDomain.authDomains();
         String msgs = null;
-        for ( int i = 0; i < domains.count(); i++ )
+        for (AuthenticationDomain domain : domains)
         {
-            AuthenticationDomain domain =
-                (AuthenticationDomain)domains.objectAtIndex( i );
             StringBuffer dir = domain.submissionBaseDirBuffer();
             dir.append('/');
             int baseDirLen = dir.length();
-            dir.append( oldSubdir );
-            File oldDir = new File( dir.toString() );
+            dir.append(oldSubdir);
+            File oldDir = new File(dir.toString());
             log.debug("Checking for: " + oldDir);
-            if ( oldDir.exists() )
+            if (oldDir.exists())
             {
-                dir.delete( baseDirLen, dir.length() );
-                dir.append( newSubdir );
-                File newDir = new File( dir.toString() );
+                dir.delete(baseDirLen, dir.length());
+                dir.append(newSubdir);
+                File newDir = new File(dir.toString());
                 log.debug("Renaming: " + oldDir + " => " + newDir);
-                if (!oldDir.renameTo( newDir ))
+                if (!oldDir.renameTo(newDir))
                 {
                     msgs = (msgs == null ? "" : (msgs + "  "))
                         + "Failed to rename directory: "
@@ -387,7 +509,11 @@ public class Semester
             new Integer( WINTER )
         };
 
-    public static final NSArray names = new NSArray( new Object[] {
+    public static final NSArray<Integer> integersInNS =
+        new NSArray<Integer>(integers);
+
+    public static final NSArray<String> names = new NSArray<String>(
+        new String[] {
             "Spring",
             "Summer I",
             "Summer II",

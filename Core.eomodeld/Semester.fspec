@@ -1,8 +1,8 @@
 {
     allObjectsOrderedByStartDate = {
-        class = EOFetchSpecification; 
-        entityName = Semester; 
-        prefetchingRelationshipKeyPaths = (); 
-        sortOrderings = ({class = EOSortOrdering; key = semesterStartDate; selectorName = ascending; }); 
-    }; 
+        class = EOFetchSpecification;
+        entityName = Semester;
+        prefetchingRelationshipKeyPaths = ();
+        sortOrderings = ({class = EOSortOrdering; key = semesterStartDate; selectorName = "compareDescending:"; });
+    };
 }
