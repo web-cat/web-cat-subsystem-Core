@@ -1,8 +1,8 @@
-<wo:if condition="$hasErrors"><div class="module">
+<wo:WCContentPane id="error-panel"><wo:if condition="$hasErrors"><div class="module panel">
 <wo:WOGenericContainer elementName="ul" class="$panelClass">
   <wo:loop list="$errorKeys" item="$errorKey">
     <wo:WOGenericContainer elementName="li" class="$errorMessageCssClass"><wo:str value="$errorMessageItem" escapeHTML="false"/></wo:WOGenericContainer>
   </wo:loop>
   <wo:if condition="$extraErrorMessage.length"><li class="warning"><wo:str value="$extraErrorMessage" escapeHTML="false"/></li></wo:if>
 </wo:WOGenericContainer>
-</div></wo:if>
+</div></wo:if></wo:WCContentPane>
