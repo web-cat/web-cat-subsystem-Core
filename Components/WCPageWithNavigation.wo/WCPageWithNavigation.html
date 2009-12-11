@@ -16,7 +16,7 @@
     <wo:loop list="$session.tabs.children" item="$aRole" index="$aRoleIndex">
       <wo name="RoleIsVisible">
         <wo name="IsNotFirstRole">|</wo>
-        <wo:if condition="~selectedRole.equals(aRole)"><wo:str value="$aRole.label"/></wo:if>
+        <wo:if condition="~selectedRole.equals(aRole)"><span class="here"><wo:str value="$aRole.label"/></span></wo:if>
         <wo:else>
         <wo:link action="$switchRole"><wo:str value="$aRole.label"/></wo:link>
         </wo:else>
