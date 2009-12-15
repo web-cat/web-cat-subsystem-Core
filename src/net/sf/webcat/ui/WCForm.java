@@ -132,7 +132,7 @@ public class WCForm extends ERXWOForm
 
     //~ Static/instance variables .............................................
 
-    private Stack<String> formNames = new Stack<String>();
+    private static Stack<String> formNames = new Stack<String>();
 
     private static Logger log = Logger.getLogger(WCForm.class);
 }
