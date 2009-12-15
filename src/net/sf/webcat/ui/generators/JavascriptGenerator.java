@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import net.sf.webcat.core.Application;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -949,8 +950,7 @@ public class JavascriptGenerator implements WOActionResults
      */
     private boolean isDevelopmentMode()
     {
-        // FIXME
-        return false;
+        return Application.isDevelopmentModeSafe();
     }
 
 
