@@ -19,17 +19,8 @@ HasOptions: WOConditional {
     condition = options.count;
 }
 
-OptionsAreTerse: WOConditional {
-    condition = terse;
-}
-
-OptionsAreVerbose: WOConditional {
-    condition = terse;
-    negate    = true;
-}
-
 OptionContainer: WOGenericContainer {
-    elementName = "div";
+   elementName = "div";
     class = cssClassOfOptionCategory;
     style = initialOptionStyle;
 }
@@ -45,10 +36,6 @@ OptionPanel: net.sf.webcat.core.OptionEditPanel {
 Repetition: WORepetition {
     list = options;
     item = option;
-}
-
-ShowThisOption: WOConditional {
-    condition = showThisOption;
 }
 
 ShowVerboseDescriptions: WCCheckBox {

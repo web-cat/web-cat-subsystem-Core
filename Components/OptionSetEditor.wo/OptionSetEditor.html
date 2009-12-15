@@ -1,5 +1,5 @@
 <webobject name="HasOptions">
-<table style="width:100%"><thead><tr><th><webobject name="HasCategories">
+<webobject name="HasCategories"><table style="width:100%"><thead><tr><th>
 Show: <wo name="CategoryList">
     <script type="dojo/connect" event="onChange" args="evt">
     var widget = dijit.byId('<wo:str value="$idFor.categoryList"/>');
@@ -29,18 +29,8 @@ Show: <wo name="CategoryList">
     }
     </script>
 </wo>
-</webobject>
-&nbsp;&nbsp;
-<wo name="ShowVerboseDescriptions">
-    <wo:WCConnectAction event="onClick" action="$toggleVerboseOptions" remote="true"/>
-    <script type="dojo/connect" event="onClick" args="evt">
-    var show = dijit.byId('<wo:str value="$idFor.showVerbose"/>').attr('checked');
-    var nodes = dojo.query('.webcatOptionEditPanelDescription');
-    var anim = show ? nodes.wipeIn() : nodes.wipeOut();
-    anim.play();
-    </script>
-</wo> Show verbose descriptions?
 </th></tr></thead></table>
+</webobject>
 <webobject name="Repetition">
 <wo name="OptionContainer"><webobject name="OptionPanel"/></wo>
 </webobject>

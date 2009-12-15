@@ -1,18 +1,11 @@
-Browse: WOSubmitButton {
-    value = "Browse...";
+Browse: WCButton {
+    label = "Browse...";
+    id = idFor.optionWidget;
     action = browse;
 }
 
-CanBrowse: WOConditional {
-    condition = canBrowse;
-}
-
-CannotBrowse: WOConditional {
-    condition = canBrowse;
-    negate = true;
-}
-
-CheckBox: WOCheckBox {
+CheckBox: WCCheckBox {
+    id = idFor.optionWidget;
     checked = value;
 }
 
@@ -25,15 +18,14 @@ Description: WOString {
     escapeHTML = false;
 }
 
-DescriptionContainer: WOGenericContainer {
-    elementName = "blockquote";
-    class = "webcatOptionEditPanelDescription";
-    style = initialStyle;
+DescriptionPopup: net.sf.webcat.core.PopUpInfo {
+    message = option.description;
 }
 
-DoubleBox: WOTextField {
+DoubleBox: WCTextBox {
+    id = idFor.optionWidget;
     numberformat = "0.0";
-    size  = fieldSize;
+    style  = "~'width: ' + fieldSize * 0.8 + 'em'";
     value = value;
 }
 
@@ -52,61 +44,15 @@ File: WOString {
     value = fileValue;
 }
 
-HasValue: WOConditional {
-    condition = hasValue;
-}
-
-HideDescription: WOConditional {
-    condition = terse;
-}
-
-IntegerBox: WOTextField {
+IntegerBox: WCTextBox {
+    id = idFor.optionWidget;
     numberformat = "0";
-    size  = fieldSize;
+    style  = "~'width: ' + fieldSize * 0.8 + 'em'";
     value = value;
 }
 
-IsAntBoolean: WOConditional {
-    condition = isAntBoolean;
-}
-
-IsBoolean: WOConditional {
-    condition = isBoolean;
-}
-
-IsDouble: WOConditional {
-    condition = isDouble;
-}
-
-IsFile: WOConditional {
-    condition = isFile;
-}
-
-IsFileOrDir: WOConditional {
-    condition = isFileOrDir;
-}
-
-IsInteger: WOConditional {
-    condition = isInteger;
-}
-
-IsListChoice: WOConditional {
-    condition = isListChoice;
-}
-
-IsLongText: WOConditional {
-    condition = isLongText;
-}
-
-IsRadioChoice: WOConditional {
-    condition = isRadioChoice;
-}
-
-IsShortText: WOConditional {
-    condition = isShortText;
-}
-
-ListChoice: WOPopUpButton {
+ListChoice: WCFilteringSelect {
+    id = idFor.optionWidget;
     list          = option.choices;
     item          = choice;
     displayString = choiceLabel;
@@ -118,7 +64,14 @@ OptionName: WOString {
     value = option.name;
 }
 
-RadioButton: WORadioButton {
+PasswordBox: WCTextBox {
+    id = idFor.optionWidget;
+    style  = "~'width: ' + fieldSize * 0.8 + 'em'";
+    value = value;
+    type  = "password";
+}
+
+RadioButton: WCRadioButton {
     name      = property;
     value     = choice;
     selection = selectedChoice;
@@ -129,28 +82,25 @@ RadioRepetition: WORepetition {
     item = choice;
 }
 
-ShowDescription: WOConditional {
-    condition = terse;
-    negate    = true;
-}
-
-ShowOption: WOConditional {
-    condition = option.disable;
-    negate    = true;
-}
-
-TextArea: WOText {
+TextArea: WCSimpleTextArea {
+    id = idFor.optionWidget;
     rows  = 8;
     cols  = 60;
-     value = value;
-}
-
-TextBox: WOTextField {
-    size  = fieldSize;
     value = value;
 }
 
-UseDefault: WOSubmitButton {
-    value = "Use Default";
+TextBox: WCTextBox {
+    id = idFor.optionWidget;
+    style  = "~'width: ' + fieldSize * 0.8 + 'em'";
+    value = value;
+}
+
+UseDefault: WCButton {
+    label = "Use Default";
     action = clearValue;
+    remote.refreshPanes = idFor.valueContainer;
+}
+
+ValueContainer : WCContentSpan {
+    id = idFor.valueContainer;
 }

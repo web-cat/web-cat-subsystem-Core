@@ -1,28 +1,37 @@
-<webobject name="ShowOption">
-<webobject name="IsBoolean">
-<div><webobject name="CheckBox"/> <b><webobject name="OptionName"/></b></div>
-</webobject><webobject name="IsAntBoolean">
-<div><webobject name="CheckBox"/> <b><webobject name="OptionName"/></b></div>
-</webobject><webobject name="IsInteger">
-<div><b><webobject name="OptionName"/></b>: <webobject name="IntegerBox"/></div>
-</webobject><webobject name="IsDouble">
-<div><b><webobject name="OptionName"/></b>: <webobject name="DoubleBox"/></div>
-</webobject><webobject name="IsListChoice">
-<div><b><webobject name="OptionName"/></b>: <webobject name="ListChoice"/></div>
-</webobject><webobject name="IsRadioChoice">
-<div><b><webobject name="OptionName"/></b>:</div>
-<table class="layout"><webobject name="RadioRepetition"><tr>
-<td><webobject name="RadioButton"/></td><td><webobject name="ChoiceLabel"/></td>
-</tr></webobject></table>
-</webobject><webobject name="IsFile">
-<div><b><webobject name="OptionName"/></b>: <webobject name="File"/>
-<webobject name="CanBrowse"><webobject name="HasValue"> <webobject name="Download"/></webobject><webobject name="Browse"/><webobject name="HasValue"> <webobject name="UseDefault"/></webobject></webobject><webobject name="CannotBrowse"><b class="warn">Cannot browse files</b></webobject></div>
-</webobject><webobject name="IsFileOrDir">
-<div><b><webobject name="OptionName"/></b>: <webobject name="File"/>
-<webobject name="CanBrowse"><webobject name="HasValue"> <webobject name="Download"/></webobject><webobject name="Browse"/><webobject name="HasValue"> <webobject name="UseDefault"/></webobject></webobject><webobject name="CannotBrowse"><b class="warn">Cannot browse files</b></webobject></div>
-</webobject><webobject name="IsShortText">
-<div><b><webobject name="OptionName"/></b>: <webobject name="TextBox"/></div>
-</webobject><webobject name="IsLongText">
-<div><b><webobject name="OptionName"/></b>:</div><div style="margin-bottom:0"><webobject name="TextArea"/></div>
-</webobject>
-<wo name="DescriptionContainer"><webobject name="Description"/></wo></webobject>
+<wo:not condition="$option.disable">
+<div style="display: inline-block; text-align: right; width: 18em">
+    <wo:label for="$idFor.optionWidget" style="width: auto"><b><wo name="OptionName"/>:</b></wo:label>
+</div>
+<div style="display: inline-block; vertical-align: top">
+<wo:if condition="$isBoolean">
+    <wo name="CheckBox"/>
+</wo:if><wo:if condition="$isAntBoolean">
+    <wo name="CheckBox"/>
+</wo:if><wo:if condition="$isInteger">
+    <wo name="IntegerBox"/>
+</wo:if><wo:if condition="$isDouble">
+    <wo name="DoubleBox"/>
+</wo:if><wo:if condition="$isListChoice">
+    <wo name="ListChoice"/>
+</wo:if><wo:if condition="$isRadioChoice">
+    <table class="layout" style="margin-bottom: 0; display: inline-block"><wo name="RadioRepetition"><tr>
+    <td style="padding: 0"><wo name="RadioButton"/></td><td><wo name="ChoiceLabel"/></td>
+    </tr></wo></table>
+</wo:if><wo:if condition="$isFile">
+    <wo name="ValueContainer"><span class="dijitTextBox"><wo name="File"/></span></wo>
+    <wo:if condition="$canBrowse"><wo:if condition="$hasValue"> <wo name="Download"/></wo:if><wo name="Browse"/><wo:if condition="$hasValue"> <wo name="UseDefault"/></wo:if>
+    </wo:if><wo:else><b class="warn">Cannot browse files</b></wo:else>
+</wo:if><wo:if condition="$isFileOrDir">
+    <wo name="ValueContainer"><span class="dijitTextBox"><wo name="File"/></span></wo>
+    <wo:if condition="$canBrowse"><wo:if condition="$hasValue"> <wo name="Download"/></wo:if><wo name="Browse"/><wo:if condition="$hasValue"> <wo name="UseDefault"/></wo:if>
+    </wo:if><wo:else><b class="warn">Cannot browse files</b></wo:else>
+</wo:if><wo:if condition="$isShortText">
+    <wo name="TextBox"/>
+</wo:if><wo:if condition="$isPassword">
+    <wo name="PasswordBox"/>
+</wo:if><wo:if condition="$isLongText">
+    <div style="margin-bottom:0"><wo name="TextArea"/></div>
+</wo:if>
+<wo name="DescriptionPopup"/>
+</div>
+</wo:not>
