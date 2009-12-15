@@ -37,8 +37,10 @@ import java.util.regex.*;
 import javax.activation.*;
 import javax.mail.internet.*;
 import net.sf.webcat.archives.*;
+import net.sf.webcat.core.messaging.ApplicationStartupMessage;
 import net.sf.webcat.core.messaging.EmailProtocol;
 import net.sf.webcat.core.messaging.Message;
+import net.sf.webcat.core.messaging.SMSProtocol;
 import net.sf.webcat.core.messaging.TwitterProtocol;
 import net.sf.webcat.dbupdate.*;
 import ognl.helperfunction.WOHelperFunctionHTMLTemplateParser;
@@ -213,10 +215,11 @@ public class Application
      */
     public void notifyAdminsOfStartup()
     {
+        new ApplicationStartupMessage().send();
+
         sendAdminEmail( null, null, true, "Web-CAT starting up",
             "Web-CAT is starting up at " + startTime,
             null );
-
     }
 
 
@@ -2282,10 +2285,15 @@ public class Application
      */
     private void initializeMessagingSystem()
     {
+        // Register Core messages.
+
+        ApplicationStartupMessage.register();
+
         // Register messaging protocols.
 
         Message.registerProtocol(new EmailProtocol());
         Message.registerProtocol(new TwitterProtocol());
+        Message.registerProtocol(new SMSProtocol());
 
         // Initialize the system-wide broadcast settings object if it does not
         // already exist (this should only occur when the application is
