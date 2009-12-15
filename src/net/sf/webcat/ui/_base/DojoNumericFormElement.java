@@ -34,52 +34,52 @@ import com.webobjects.foundation.NSDictionary;
  * takes the string value of the {@code value} binding and parses it either as
  * an integer or floating-point value, depending on the value returned by a
  * subclass in {@link #supportsIntegralValuesOnly()}.
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
 public abstract class DojoNumericFormElement extends DojoFormElement
 {
     //~ Constructor ...........................................................
-    
-	// ----------------------------------------------------------
-	/**
-	 * Creates a new numeric form value element.
-	 * 
-	 * @param name
-	 * @param someAssociations
-	 * @param template
-	 */
-	public DojoNumericFormElement(String name,
-			NSDictionary<String, WOAssociation> someAssociations,
-			WOElement template)
-	{
-		super(name, someAssociations, template);
-	}
+
+    // ----------------------------------------------------------
+    /**
+     * Creates a new numeric form value element.
+     *
+     * @param name
+     * @param someAssociations
+     * @param template
+     */
+    public DojoNumericFormElement(String name,
+            NSDictionary<String, WOAssociation> someAssociations,
+            WOElement template)
+    {
+        super(name, someAssociations, template);
+    }
 
 
-	//~ Methods ...............................................................
+    //~ Methods ...............................................................
 
-	// ----------------------------------------------------------
-	/**
-	 * Gets a value indicating whether the element should support integral
-	 * values or floating point values.
-	 * 
-	 * @return true if the element should only support integral values; false
-	 * if floating point values are also permitted
-	 */
-	protected boolean supportsIntegralValuesOnly()
-	{
-		return false;
-	}
+    // ----------------------------------------------------------
+    /**
+     * Gets a value indicating whether the element should support integral
+     * values or floating point values.
+     *
+     * @return true if the element should only support integral values; false
+     * if floating point values are also permitted
+     */
+    protected boolean supportsIntegralValuesOnly()
+    {
+        return false;
+    }
 
 
-	// ----------------------------------------------------------
-	@Override
+    // ----------------------------------------------------------
+    @Override
     public void takeValuesFromRequest(WORequest request, WOContext context)
     {
-	    // Don't set the binding if the form control was disabled on the page.
-	    
+        // Don't set the binding if the form control was disabled on the page.
+
         if(!isDisabledInContext(context) && context.wasFormSubmitted())
         {
             String name = nameInContext(context);
@@ -94,17 +94,17 @@ public abstract class DojoNumericFormElement extends DojoFormElement
 
                 if(supportsIntegralValuesOnly())
                 {
-                	value = Integer.valueOf(valueString);
+                    value = Integer.valueOf(valueString);
                 }
                 else
                 {
-                	value = Double.valueOf(valueString);
+                    value = Double.valueOf(valueString);
                 }
 
                 _value.setValue(value, context.component());
             }
         }
-        
+
         super.takeValuesFromRequest(request, context);
     }
 }
