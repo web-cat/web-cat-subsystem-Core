@@ -157,6 +157,10 @@ public class DojoRemoteHelper
             responseType =
                 _responseType.valueInComponent(component).toString();
         }
+        else
+        {
+            responseType = "javascript";
+        }
 
         if (responseType != null)
         {
@@ -310,6 +314,10 @@ public class DojoRemoteHelper
         {
             responseType =
                 _responseType.valueInComponent(component).toString();
+        }
+        else
+        {
+            responseType = "javascript";
         }
 
         if (responseType != null)
