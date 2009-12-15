@@ -44,11 +44,17 @@ import com.webobjects.foundation.NSTimestamp;
 
 //-------------------------------------------------------------------------
 /**
+ * <p>
  * The abstract base class for all notification messages in Web-CAT. Subclasses
  * should localize their registration by providing a static register() method
  * that calls the {@link #registerMessage(Class, String, boolean, int)} with
  * the appropriate parameters, and then the subsystem can all these register()
  * methods in its {@link Subsystem#init()}.
+ * </p><p>
+ * Some methods below are denoted as "only called during the message sending
+ * cycle". This means that during the execution of these methods, the editing
+ * context returned by the {@link #editingContext()} method is valid.
+ * </p>
  *
  * @author Tony Allevato
  * @version $Id$
@@ -101,8 +107,7 @@ public abstract class Message
 
         for (MessageDescriptor descriptor : descriptors.values())
         {
-            if (!descriptor.isBroadcast() &&
-                    user.accessLevel() >= descriptor.accessLevel())
+            if (user.accessLevel() >= descriptor.accessLevel())
             {
                 descs.addObject(descriptor);
             }
@@ -191,9 +196,13 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
+     * <p>
      * Gets the list of users who should receive this message. If the message
      * is meant to be broadcast system-wide only, then this method may return
      * null.
+     * </p><p>
+     * This method is only called during the message sending cycle.
+     * </p>
      *
      * @return an array of Users who should receive the message, or null if it
      *     should only be broadcast system-wide
@@ -203,11 +212,15 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
+     * <p>
      * Gets the title of the message. The message title is used in situations
      * where it is useful to differentiate a very brief description of the
      * message from its longer-form content (such as the subject line of an
      * e-mail). Titles are typically very brief, even shorter than the
      * {@link #shortBody()} of the message.
+     * </p><p>
+     * This method is only called during the message sending cycle.
+     * </p>
      *
      * @return the title of the message
      */
@@ -216,15 +229,19 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
+     * <p>
      * Gets the short-form body content of the message. The short form is used
      * in the pop-up notification list, and is available for messaging
      * protocols that have constraints on the length of the content that they
      * can send (such as Twitter and SMS).
-     *
+     * </p><p>
      * Subclasses should attempt to keep their short form content under 140
      * characters as a rule of thumb, but no guarantees are made to ensure
      * this, so specific protocols may need to further elide this content if
      * necessary.
+     * </p><p>
+     * This method is only called during the message sending cycle.
+     * </p>
      *
      * @return the short form of the message body
      */
@@ -233,10 +250,14 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
+     * <p>
      * Gets the full-form body content of the message. The full form can be an
      * arbitrary length and should be used by protocols where there are no
      * tight constraints on message content length, such as the body of an
      * e-mail or description of an item in an RSS feed.
+     * </p><p>
+     * This method is only called during the message sending cycle.
+     * </p>
      *
      * @return the full form of the message body
      */
@@ -245,11 +266,15 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
+     * <p>
      * Gets a set of attachments that should be sent along with the message, if
      * the protocol (such as e-mail) supports attachments. Since many messaging
      * protocols do not support attachments, there should not be any critical
      * information included here. This method may return null if there are no
      * attachments.
+     * </p><p>
+     * This method is only called during the message sending cycle.
+     * </p>
      *
      * @return a dictionary of attachments, keyed by the name of the attachment
      */
@@ -261,8 +286,12 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
+     * <p>
      * Gets a set of URLs that link to relevant content for the message. This
      * method may return null if there are no links for a particular message.
+     * </p><p>
+     * This method is only called during the message sending cycle.
+     * </p>
      *
      * @return a dictionary containing links to relevant content, keyed by
      *     plain-text labels that describe each link
@@ -275,11 +304,15 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
+     * <p>
      * Gets the protocol settings that should be used when broadcasting this
      * message system-wide. The default behavior returns the global system
      * settings; subclasses can override this to change the destination of the
      * message, such as to a course-specific Twitter feed when the message is
      * relevant to a particular course or assignment.
+     * </p><p>
+     * This method is only called during the message sending cycle.
+     * </p>
      *
      * @return the ProtocolSettings object to use when broadcasting the message
      */
@@ -301,10 +334,14 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
+     * <p>
      * Gets the protocol settings that should be used when sending this message
      * to the specified user. The default behavior returns the user's protocol
      * settings; subclasses should usually not need to override this method
      * since the default behavior is usually appropriate.
+     * </p><p>
+     * This method is only called during the message sending cycle.
+     * </p>
      *
      * @param user the User to whom the message is being sent
      * @return the ProtocolSettings object to use when sending the message
@@ -321,16 +358,17 @@ public abstract class Message
      */
     public final void send()
     {
-        EOEditingContext ec = editingContext();
+        editingContext = Application.newPeerEditingContext();
 
         try
         {
-            ec.lock();
-            sendWithLockedEditingContext(ec);
+            editingContext.lock();
+            sendInternal();
         }
         finally
         {
-            ec.unlock();
+            editingContext.unlock();
+            Application.releasePeerEditingContext(editingContext);
         }
     }
 
@@ -341,7 +379,7 @@ public abstract class Message
      *
      * @param ec the editing context to use for fetching protocol settings
      */
-    private void sendWithLockedEditingContext(EOEditingContext ec)
+    private void sendInternal()
     {
         MessageDescriptor descriptor = descriptors.get(getClass());
 
@@ -351,7 +389,7 @@ public abstract class Message
         if (descriptor.isBroadcast())
         {
             ProtocolSettings protocolSettings = broadcastProtocolSettings();
-            Set<Protocol> protocols = broadcastProtocolsToSend(ec);
+            Set<Protocol> protocols = broadcastProtocolsToSend();
 
             for (Protocol protocol : protocols)
             {
@@ -403,7 +441,7 @@ public abstract class Message
 
         // Store the message in the database.
 
-        storeMessage(ec, descriptor);
+        storeMessage(descriptor);
     }
 
 
@@ -412,50 +450,54 @@ public abstract class Message
      * Stores the contents of this message in the database.
      *
      * @param descriptor the message descriptor for this message
-     * @param ec the editing context
      */
-    private void storeMessage(EOEditingContext ec, MessageDescriptor descriptor)
+    private void storeMessage(MessageDescriptor descriptor)
     {
         // Create a representation of the message in the database so that it
         // can be viewed by users later.
 
-        SentMessage message = SentMessage.create(ec, false);
+        SentMessage message = SentMessage.create(editingContext, false);
 
         message.setSentTime(new NSTimestamp());
         message.setMessageType(messageType());
         message.setTitle(title());
         message.setShortBody(shortBody());
+        message.setIsBroadcast(descriptor.isBroadcast());
 
         if (links() != null)
         {
             message.setLinks(new MutableDictionary(links()));
         }
 
-        for (User user : users())
+        NSArray<User> users = users();
+        if (users != null)
         {
-            // Sanity check to ensure that messages don't get sent to users
-            // who shouldn't receive them based on their access level.
-
-            if (user.accessLevel() >= descriptor.accessLevel())
+            for (User user : users)
             {
-                message.addToUsersRelationship(user.localInstance(ec));
+                // Sanity check to ensure that messages don't get sent to users
+                // who shouldn't receive them based on their access level.
+
+                if (user.accessLevel() >= descriptor.accessLevel())
+                {
+                    message.addToUsersRelationship(user.localInstance(
+                            editingContext));
+                }
             }
         }
 
-        ec.saveChanges();
+        editingContext.saveChanges();
     }
 
 
     // ----------------------------------------------------------
     /**
      * Gets the set of protocols that the system administrator has enabled for
-     * the specified message type.
+     * this type of message.
      *
-     * @param ec the editing context
      * @return the set of Protocols that the system administrator has enabled
      *     for broadcast messages
      */
-    private Set<Protocol> broadcastProtocolsToSend(EOEditingContext ec)
+    private Set<Protocol> broadcastProtocolsToSend()
     {
         String messageType = messageType();
 
@@ -463,7 +505,7 @@ public abstract class Message
 
         NSArray<BroadcastMessageSubscription> subscriptions =
             BroadcastMessageSubscription.enabledSubscriptionsForMessageType(
-                    ec, messageType);
+                    editingContext, messageType);
 
         for (Protocol protocol : broadcastProtocols.values())
         {
@@ -591,32 +633,14 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
-     * Gets an editing context that will be used by the messaging system to
-     * fetch broadcast and user message preferences, creating one if it does
-     * not yet exist. To prevent bloat, the editing context is recycled
-     * whenever more than one minute has passed between uses.
+     * Gets the editing context used during the sending of this message.
+     * Subclasses can access this editing context during the message sending
+     * cycle if they need to fetch EOs.
      *
      * @return an editing context
      */
-    private EOEditingContext editingContext()
+    protected EOEditingContext editingContext()
     {
-        long currentTime = System.currentTimeMillis();
-        if (currentTime - lastECCreationTime >= TIME_TO_RECYCLE_EC)
-        {
-            if (editingContext != null)
-            {
-                Application.releasePeerEditingContext(editingContext);
-            }
-
-            editingContext = null;
-        }
-
-        if (editingContext == null)
-        {
-            editingContext = Application.newPeerEditingContext();
-            lastECCreationTime = System.currentTimeMillis();
-        }
-
         return editingContext;
     }
 
@@ -624,9 +648,6 @@ public abstract class Message
     //~ Static/instance variables .............................................
 
     private EOEditingContext editingContext;
-    private long lastECCreationTime;
-
-    private static final long TIME_TO_RECYCLE_EC = 60 * 1000; // 1 minute
 
     private static Map<Class<? extends Message>, MessageDescriptor> descriptors =
         new HashMap<Class<? extends Message>, MessageDescriptor>();

@@ -2,6 +2,13 @@
     attributes = (
         {allowsNull = N; name = id; prototypeName = id; }, 
         {
+            allowsNull = Y; 
+            columnName = isBroadcast; 
+            name = isBroadcast; 
+            prototypeName = boolean; 
+            userInfo = {isScalar = true; scalarDefault = false; type = boolean; }; 
+        }, 
+        {
             columnName = links; 
             name = links; 
             prototypeName = mutableDictionary; 
@@ -22,11 +29,19 @@
             userInfo = {isScalar = true; scalarDefault = false; type = boolean; }; 
         }
     ); 
-    attributesUsedForLocking = (links, messageType, shortBody, title, updateMutableFields); 
+    attributesUsedForLocking = (isBroadcast, links, messageType, shortBody, title, updateMutableFields); 
     className = "net.sf.webcat.core.SentMessage"; 
-    classProperties = (links, messageType, sentTime, shortBody, title, updateMutableFields, users); 
+    classProperties = (
+        isBroadcast, 
+        links, 
+        messageType, 
+        sentTime, 
+        shortBody, 
+        title, 
+        updateMutableFields, 
+        users
+    ); 
     externalName = SentMessage; 
-    fetchSpecificationDictionary = {}; 
     name = SentMessage; 
     primaryKeyAttributes = (id); 
     relationships = (

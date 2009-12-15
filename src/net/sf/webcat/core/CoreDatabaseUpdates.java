@@ -230,6 +230,18 @@ public class CoreDatabaseUpdates
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Adds the isBroadcast field to the SentMessage table.
+     * @throws SQLException on error
+     */
+    public void updateIncrement13() throws SQLException
+    {
+        database().executeSQL(
+                "ALTER TABLE SentMessage ADD isBroadcast BIT NOT NULL");
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------

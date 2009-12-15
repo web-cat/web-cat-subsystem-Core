@@ -12,12 +12,21 @@ next to the protocol name to edit them.
         <wo name="ProtocolRepetition">
             <th>
             <wo:str value="$protocol.name"/>
-            <wo:if condition="$protocol.globalOptions">
-                <wo name="EditLink"><wo name="EditImage"/></wo>
-                <wo name="EditDialog">
-                    <wo name="OptionSetEditor"/>
-                </wo>
-            </wo:if>
+            <wo:if condition="$isShowingBroadcast">
+                <wo:if condition="$protocol.globalOptions">
+                    <wo name="GlobalEditLink"><wo name="EditImage"/></wo>
+                    <wo name="GlobalEditDialog">
+                        <wo name="OptionSetEditor"/>
+                    </wo>
+                </wo:if>
+            </wo:if><wo:else>
+                <wo:if condition="$protocol.options">
+                    <wo name="EditLink"><wo name="EditImage"/></wo>
+                    <wo name="EditDialog">
+                        <wo name="OptionSetEditor"/>
+                    </wo>
+                </wo:if>
+            </wo:else>
             </th>
         </wo>
     </tr>
@@ -25,12 +34,12 @@ next to the protocol name to edit them.
 <tbody>
     <wo:if condition="$messageDescriptors.count">
         <wo name="MessageRepetition">
-            <tr>
+            <wo:tr index="$indexOfMessage">
                 <td><wo:str value="$messageDescriptor.description"/></td>
                 <wo name="ProtocolRepetition">
                     <td><wo name="MessageProtocolSelection"/></td>
                 </wo>
-            </tr>
+            </wo:tr>
         </wo>
     </wo:if><wo:else>
         <tr>

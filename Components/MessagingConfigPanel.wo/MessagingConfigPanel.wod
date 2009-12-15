@@ -1,6 +1,6 @@
 EditDialog : WCDialog {
     id = "~'editGlobalOptions_' + indexOfProtocol";
-    title = "Edit Global Options";
+    title = "~'Edit Global Options for ' + protocol.name";
     okAction = "optionsEdited";
 }
 
@@ -17,6 +17,18 @@ EditLink : WOGenericContainer {
     onclick = "~'dijit.byId(\'editGlobalOptions_' + indexOfProtocol + '\').show();'";
 }
 
+GlobalEditDialog : WCDialog {
+    id = "~'editGlobalOptions_' + indexOfProtocol";
+    title = "~'Edit Global Options for ' + protocol.name";
+    okAction = "optionsEdited";
+}
+
+GlobalEditLink : WOGenericContainer {
+    elementName = "a";
+    href = "javascript:void(0);";
+    onclick = "~'dijit.byId(\'editGlobalOptions_' + indexOfProtocol + '\').show();'";
+}
+
 MessageProtocolSelection : WCCheckBox {
     checked = protocolSelectedForMessage;
 }
@@ -24,6 +36,7 @@ MessageProtocolSelection : WCCheckBox {
 MessageRepetition : WORepetition {
     list = messageDescriptors;
     item = messageDescriptor;
+    index = indexOfMessage;
 }
 
 NoMessagesCell : WOGenericContainer {
