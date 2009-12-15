@@ -3,7 +3,7 @@
         {
             property    = net.sf.webcat.core.messaging.TwitterProtocol.username;
             type        = shortText;
-            size        = 20;
+            size        = 15;
             name        = "Twitter Username";
             description =
   "The username of the Twitter account that will be updated when
@@ -11,8 +11,8 @@
         },
         {
             property    = net.sf.webcat.core.messaging.TwitterProtocol.password;
-            type        = shortText;
-            size        = 20;
+            type        = password;
+            size        = 15;
             name        = "Twitter Password";
             description =
   "The password of the Twitter account.";

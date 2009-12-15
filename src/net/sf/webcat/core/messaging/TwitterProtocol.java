@@ -21,6 +21,10 @@
 
 package net.sf.webcat.core.messaging;
 
+import org.apache.log4j.Logger;
+import twitter4j.AsyncTwitter;
+import twitter4j.TwitterAdapter;
+import twitter4j.TwitterException;
 import net.sf.webcat.core.ProtocolSettings;
 import net.sf.webcat.core.User;
 
@@ -40,7 +44,29 @@ public class TwitterProtocol extends Protocol
     public void sendMessage(Message message, User user,
             ProtocolSettings settings) throws Exception
     {
-        // TODO implement
+        final String username =
+            settings.stringSettingForKey(USERNAME_SETTING, null);
+        String password = settings.stringSettingForKey(PASSWORD_SETTING, null);
+
+        String content = message.shortBody();
+
+        if (content.length() > 140)
+        {
+            content = content.substring(0, 137) + "...";
+        }
+
+        AsyncTwitter twitter = new AsyncTwitter(username, password);
+
+        twitter.updateStatusAsync(content, new TwitterAdapter() {
+            @Override public void onException(TwitterException e, int method)
+            {
+                if (method == AsyncTwitter.UPDATE_STATUS)
+                {
+                    log.error("An error occurred when updating the Twitter "
+                            + "feed \"" + username + "\"", e);
+                }
+            }
+        });
     }
 
 
@@ -58,4 +84,14 @@ public class TwitterProtocol extends Protocol
     {
         return "Twitter";
     }
+
+
+    //~ Static/instance variables .............................................
+
+    private static final String USERNAME_SETTING =
+        "net.sf.webcat.core.messaging.TwitterProtocol.username";
+    private static final String PASSWORD_SETTING =
+        "net.sf.webcat.core.messaging.TwitterProtocol.password";
+
+    private static final Logger log = Logger.getLogger(TwitterProtocol.class);
 }
