@@ -168,7 +168,7 @@ webcat.invokeRemoteAction = function(/* _Widget */ widget,
         blockIds = refreshIds;
     }
 
-    blockIds = webcat._promoteSingletonIfNeeded(blockIds);
+    blockIds = webcat._parseIds(blockIds);
 
     var blockFunction = function()
     {
