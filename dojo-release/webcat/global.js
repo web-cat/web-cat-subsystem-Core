@@ -25,18 +25,19 @@ dojo.require("webcat.Blocker");
 
 //----------------------------------------------------------
 /**
- * A convenience method that, if passed an array, will return that array. If
- * passed a string, it will return an array containing one element: that
- * string. If passed anything else, it returns null.
+ * A convenience method that parses its argument into one or more element IDs.
+ * If passed an array, it will return the array. If passed a string, it will
+ * split the string around commas and return the resulting array. If passed
+ * anything else, it returns null.
  *
  * @param ids an object that is either a string or an array
- * @return see above
+ * @return an array of IDs
  */
-webcat._promoteSingletonIfNeeded = function(/* String|Array */ ids)
+webcat._parseIds = function(/* String|Array */ ids)
 {
     if (dojo.isString(ids))
     {
-        return [ ids ];
+        return ids.split(/\s*,\s*/);
     }
     else if (dojo.isArray(ids))
     {
@@ -57,15 +58,18 @@ webcat._promoteSingletonIfNeeded = function(/* String|Array */ ids)
  * @param ids a string representing a single identifier to refresh, or an
  *     array of identifiers
  */
-webcat.refreshContentPanes = function(/* String|Array */ ids)
+webcat.refresh = function(/* String|Array */ ids)
 {
-    var idArray = webcat._promoteSingletonIfNeeded(ids);
+    var idArray = webcat._parseIds(ids);
 
     dojo.forEach(idArray, function(id) {
         var widget = dijit.byId(id);
-        if (widget) widget.refresh();
+        if (widget && widget.refresh) widget.refresh();
     });
 };
+
+// Old name for backwards compatibility
+webcat.refreshContentPanes = webcat.refresh;
 
 
 // ----------------------------------------------------------
@@ -228,13 +232,13 @@ webcat.invokeRemoteAction = function(/* _Widget */ widget,
             {
                 handler = widget.onRemoteLoad;
             }
-            else if (widget.getAttribute('onRemoteLoad'))
+            else if (widget.getAttribute && widget.getAttribute('onRemoteLoad'))
             {
                 handler = evalAttributeFunction(
                     widget.getAttribute('onRemoteLoad'));
             }
 
-            return handler(response, ioArgs);
+            return handler ? handler(response, ioArgs) : response;
         },
 
         error: function(response, ioArgs) {
@@ -246,13 +250,13 @@ webcat.invokeRemoteAction = function(/* _Widget */ widget,
             {
                 handler = widget.onRemoteError;
             }
-            else if (widget.getAttribute('onRemoteError'))
+            else if (widget.getAttribute && widget.getAttribute('onRemoteError'))
             {
                 handler = evalAttributeFunction(
                     widget.getAttribute('onRemoteError'));
             }
 
-            return handler(response, ioArgs);
+            return handler ? handler(response, ioArgs) : response;
         },
 
         handle: function(response, ioArgs) {
@@ -264,13 +268,13 @@ webcat.invokeRemoteAction = function(/* _Widget */ widget,
             {
                 handler = widget.onRemoteEnd;
             }
-            else if (widget.getAttribute('onRemoteEnd'))
+            else if (widget.getAttribute && widget.getAttribute('onRemoteEnd'))
             {
                 handler = evalAttributeFunction(
                     widget.getAttribute('onRemoteEnd'));
             }
 
-            return handler(response, ioArgs);
+            return handler ? handler(response, ioArgs) : response;
         }
     };
 
