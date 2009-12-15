@@ -148,6 +148,7 @@ public abstract class _Language
     // To-one relationships ---
     // To-many relationships ---
     // Fetch specifications ---
+    public static final String FETCH_ALL_FSPEC = "FetchAll";
     public static final String ENTITY_NAME = "Language";
 
 
@@ -565,6 +566,32 @@ public abstract class _Language
         {
             return null;
         }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve objects according to the <code>FetchAll</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray<Language> FetchAll(
+            EOEditingContext context
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "FetchAll", "Language" );
+
+        NSArray<Language> result =
+            objectsWithFetchSpecification( context, spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "FetchAll(ec"
+                + "): " + result );
+        }
+        return result;
     }
 
 
