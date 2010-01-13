@@ -26,16 +26,13 @@
 package $entity.packageName;
 
 #end
-import com.webobjects.eocontrol.*;
-import com.webobjects.foundation.*;
-
 // -------------------------------------------------------------------------
 /**
  * TODO: place a real description here.
  *
  * @author
  * @author  latest changes by: $Author$
- * @version $Revision$ $Date$
+ * @version $Revision$, $Date$
  */
 public#if ($entity.isAbstract) abstract#end class ${entity.classNameWithoutPackage}
     extends ${entity.prefixClassNameWithOptionalPackage}
