@@ -458,7 +458,8 @@ public class CourseOffering
         // This code is basically the same as that in
         // _AssignmentOffering.objectsForCourseOffering()
         EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "courseOffering", "AssignmentOffering" );
+            .fetchSpecificationNamed(
+                "offeringsForCourseOffering", "AssignmentOffering");
         NSMutableDictionary bindings = new NSMutableDictionary();
         bindings.setObjectForKey( this, "courseOffering" );
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
