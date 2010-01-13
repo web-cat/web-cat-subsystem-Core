@@ -28,7 +28,6 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.eof.ERXKey;
-import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -666,10 +665,10 @@ public abstract class _CourseOffering
             log.debug( "deleteAllCoreSelectionsRelationships(): was "
                 + coreSelections() );
         }
-        Enumeration<?> objects = coreSelections().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteCoreSelectionsRelationship(
-                (net.sf.webcat.core.CoreSelections)objects.nextElement() );
+        for (net.sf.webcat.core.CoreSelections object : coreSelections())
+        {
+            deleteCoreSelectionsRelationship(object);
+        }
     }
 
 
@@ -844,10 +843,10 @@ public abstract class _CourseOffering
             log.debug( "deleteAllGradersRelationships(): was "
                 + graders() );
         }
-        Enumeration<?> objects = graders().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteGradersRelationship(
-                (net.sf.webcat.core.User)objects.nextElement() );
+        for (net.sf.webcat.core.User object : graders())
+        {
+            deleteGradersRelationship(object);
+        }
     }
 
 
@@ -1022,10 +1021,10 @@ public abstract class _CourseOffering
             log.debug( "deleteAllInstructorsRelationships(): was "
                 + instructors() );
         }
-        Enumeration<?> objects = instructors().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteInstructorsRelationship(
-                (net.sf.webcat.core.User)objects.nextElement() );
+        for (net.sf.webcat.core.User object : instructors())
+        {
+            deleteInstructorsRelationship(object);
+        }
     }
 
 
@@ -1200,10 +1199,10 @@ public abstract class _CourseOffering
             log.debug( "deleteAllStudentsRelationships(): was "
                 + students() );
         }
-        Enumeration<?> objects = students().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteStudentsRelationship(
-                (net.sf.webcat.core.User)objects.nextElement() );
+        for (net.sf.webcat.core.User object : students())
+        {
+            deleteStudentsRelationship(object);
+        }
     }
 
 
@@ -1276,6 +1275,58 @@ public abstract class _CourseOffering
             ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the first object that matches a qualifier, when
+     * sorted with the specified sort orderings.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     * @param sortOrderings the sort orderings
+     *
+     * @return the first entity that was retrieved, or null if there was none
+     */
+    public static CourseOffering firstObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier,
+        NSArray<EOSortOrdering> sortOrderings)
+    {
+        NSArray<CourseOffering> results =
+            objectsMatchingQualifier(context, qualifier, sortOrderings);
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve a single object using a list of keys and values to match.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     *
+     * @return the single entity that was retrieved
+     *
+     * @throws EOUtilities.MoreThanOneException
+     *     if there is more than one matching object
+     */
+    public static CourseOffering uniqueObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier) throws EOUtilities.MoreThanOneException
+    {
+        NSArray<CourseOffering> results =
+            objectsMatchingQualifier(context, qualifier);
+        if (results.size() > 1)
+        {
+            throw new EOUtilities.MoreThanOneException(null);
+        }
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
     }
 
 

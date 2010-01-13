@@ -28,7 +28,6 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.eof.ERXKey;
-import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -71,20 +70,20 @@ public abstract class _User
      */
     public static User create(
         EOEditingContext editingContext,
-        byte accessLevel,
-        boolean updateMutableFields,
-        String userName,
-        net.sf.webcat.core.AuthenticationDomain authenticationDomain
+        byte accessLevelValue,
+        boolean updateMutableFieldsValue,
+        String userNameValue,
+        net.sf.webcat.core.AuthenticationDomain authenticationDomainValue
         )
     {
         User eoObject = (User)
             EOUtilities.createAndInsertInstance(
                 editingContext,
                 _User.ENTITY_NAME);
-        eoObject.setAccessLevel(accessLevel);
-        eoObject.setUpdateMutableFields(updateMutableFields);
-        eoObject.setUserName(userName);
-        eoObject.setAuthenticationDomainRelationship(authenticationDomain);
+        eoObject.setAccessLevel(accessLevelValue);
+        eoObject.setUpdateMutableFields(updateMutableFieldsValue);
+        eoObject.setUserName(userNameValue);
+        eoObject.setAuthenticationDomainRelationship(authenticationDomainValue);
         return eoObject;
     }
 
@@ -1122,10 +1121,10 @@ public abstract class _User
             log.debug( "deleteAllCoreSelectionsRelationships(): was "
                 + coreSelections() );
         }
-        Enumeration<?> objects = coreSelections().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteCoreSelectionsRelationship(
-                (net.sf.webcat.core.CoreSelections)objects.nextElement() );
+        for (net.sf.webcat.core.CoreSelections object : coreSelections())
+        {
+            deleteCoreSelectionsRelationship(object);
+        }
     }
 
 
@@ -1300,10 +1299,10 @@ public abstract class _User
             log.debug( "deleteAllEnrolledInRelationships(): was "
                 + enrolledIn() );
         }
-        Enumeration<?> objects = enrolledIn().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteEnrolledInRelationship(
-                (net.sf.webcat.core.CourseOffering)objects.nextElement() );
+        for (net.sf.webcat.core.CourseOffering object : enrolledIn())
+        {
+            deleteEnrolledInRelationship(object);
+        }
     }
 
 
@@ -1478,10 +1477,10 @@ public abstract class _User
             log.debug( "deleteAllGraderForRelationships(): was "
                 + graderFor() );
         }
-        Enumeration<?> objects = graderFor().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteGraderForRelationship(
-                (net.sf.webcat.core.CourseOffering)objects.nextElement() );
+        for (net.sf.webcat.core.CourseOffering object : graderFor())
+        {
+            deleteGraderForRelationship(object);
+        }
     }
 
 
@@ -1656,10 +1655,10 @@ public abstract class _User
             log.debug( "deleteAllMessageSubscriptionsRelationships(): was "
                 + messageSubscriptions() );
         }
-        Enumeration<?> objects = messageSubscriptions().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteMessageSubscriptionsRelationship(
-                (net.sf.webcat.core.UserMessageSubscription)objects.nextElement() );
+        for (net.sf.webcat.core.UserMessageSubscription object : messageSubscriptions())
+        {
+            deleteMessageSubscriptionsRelationship(object);
+        }
     }
 
 
@@ -1834,10 +1833,10 @@ public abstract class _User
             log.debug( "deleteAllPasswordChangeRequestRelationships(): was "
                 + passwordChangeRequest() );
         }
-        Enumeration<?> objects = passwordChangeRequest().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deletePasswordChangeRequestRelationship(
-                (net.sf.webcat.core.PasswordChangeRequest)objects.nextElement() );
+        for (net.sf.webcat.core.PasswordChangeRequest object : passwordChangeRequest())
+        {
+            deletePasswordChangeRequestRelationship(object);
+        }
     }
 
 
@@ -2012,10 +2011,10 @@ public abstract class _User
             log.debug( "deleteAllSentMessagesRelationships(): was "
                 + sentMessages() );
         }
-        Enumeration<?> objects = sentMessages().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteSentMessagesRelationship(
-                (net.sf.webcat.core.SentMessage)objects.nextElement() );
+        for (net.sf.webcat.core.SentMessage object : sentMessages())
+        {
+            deleteSentMessagesRelationship(object);
+        }
     }
 
 
@@ -2190,10 +2189,10 @@ public abstract class _User
             log.debug( "deleteAllTeachingRelationships(): was "
                 + teaching() );
         }
-        Enumeration<?> objects = teaching().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteTeachingRelationship(
-                (net.sf.webcat.core.CourseOffering)objects.nextElement() );
+        for (net.sf.webcat.core.CourseOffering object : teaching())
+        {
+            deleteTeachingRelationship(object);
+        }
     }
 
 
@@ -2266,6 +2265,58 @@ public abstract class _User
             ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the first object that matches a qualifier, when
+     * sorted with the specified sort orderings.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     * @param sortOrderings the sort orderings
+     *
+     * @return the first entity that was retrieved, or null if there was none
+     */
+    public static User firstObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier,
+        NSArray<EOSortOrdering> sortOrderings)
+    {
+        NSArray<User> results =
+            objectsMatchingQualifier(context, qualifier, sortOrderings);
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve a single object using a list of keys and values to match.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     *
+     * @return the single entity that was retrieved
+     *
+     * @throws EOUtilities.MoreThanOneException
+     *     if there is more than one matching object
+     */
+    public static User uniqueObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier) throws EOUtilities.MoreThanOneException
+    {
+        NSArray<User> results =
+            objectsMatchingQualifier(context, qualifier);
+        if (results.size() > 1)
+        {
+            throw new EOUtilities.MoreThanOneException(null);
+        }
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
     }
 
 

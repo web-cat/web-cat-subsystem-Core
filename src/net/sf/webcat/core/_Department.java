@@ -28,7 +28,6 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.eof.ERXKey;
-import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -67,14 +66,14 @@ public abstract class _Department
      */
     public static Department create(
         EOEditingContext editingContext,
-        String abbreviation
+        String abbreviationValue
         )
     {
         Department eoObject = (Department)
             EOUtilities.createAndInsertInstance(
                 editingContext,
                 _Department.ENTITY_NAME);
-        eoObject.setAbbreviation(abbreviation);
+        eoObject.setAbbreviation(abbreviationValue);
         return eoObject;
     }
 
@@ -494,10 +493,10 @@ public abstract class _Department
             log.debug( "deleteAllCoursesRelationships(): was "
                 + courses() );
         }
-        Enumeration<?> objects = courses().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteCoursesRelationship(
-                (net.sf.webcat.core.Course)objects.nextElement() );
+        for (net.sf.webcat.core.Course object : courses())
+        {
+            deleteCoursesRelationship(object);
+        }
     }
 
 
@@ -570,6 +569,58 @@ public abstract class _Department
             ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the first object that matches a qualifier, when
+     * sorted with the specified sort orderings.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     * @param sortOrderings the sort orderings
+     *
+     * @return the first entity that was retrieved, or null if there was none
+     */
+    public static Department firstObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier,
+        NSArray<EOSortOrdering> sortOrderings)
+    {
+        NSArray<Department> results =
+            objectsMatchingQualifier(context, qualifier, sortOrderings);
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve a single object using a list of keys and values to match.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     *
+     * @return the single entity that was retrieved
+     *
+     * @throws EOUtilities.MoreThanOneException
+     *     if there is more than one matching object
+     */
+    public static Department uniqueObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier) throws EOUtilities.MoreThanOneException
+    {
+        NSArray<Department> results =
+            objectsMatchingQualifier(context, qualifier);
+        if (results.size() > 1)
+        {
+            throw new EOUtilities.MoreThanOneException(null);
+        }
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
     }
 
 

@@ -28,7 +28,6 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.eof.ERXKey;
-import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -68,14 +67,14 @@ public abstract class _SentMessage
      */
     public static SentMessage create(
         EOEditingContext editingContext,
-        boolean updateMutableFields
+        boolean updateMutableFieldsValue
         )
     {
         SentMessage eoObject = (SentMessage)
             EOUtilities.createAndInsertInstance(
                 editingContext,
                 _SentMessage.ENTITY_NAME);
-        eoObject.setUpdateMutableFields(updateMutableFields);
+        eoObject.setUpdateMutableFields(updateMutableFieldsValue);
         return eoObject;
     }
 
@@ -140,9 +139,6 @@ public abstract class _SentMessage
     //~ Constants (for key names) .............................................
 
     // Attributes ---
-    public static final String IS_BROADCAST_KEY = "isBroadcast";
-    public static final ERXKey<Integer> isBroadcast =
-        new ERXKey<Integer>(IS_BROADCAST_KEY);
     public static final String LINKS_KEY = "links";
     public static final ERXKey<NSData> links =
         new ERXKey<NSData>(LINKS_KEY);
@@ -167,7 +163,6 @@ public abstract class _SentMessage
     public static final ERXKey<net.sf.webcat.core.User> users =
         new ERXKey<net.sf.webcat.core.User>(USERS_KEY);
     // Fetch specifications ---
-    public static final String BROADCAST_MESSAGES_FSPEC = "broadcastMessages";
     public static final String ENTITY_NAME = "SentMessage";
 
 
@@ -217,70 +212,6 @@ public abstract class _SentMessage
             return er.extensions.eof.ERXConstant.ZeroInteger;
         }
     }
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve this object's <code>isBroadcast</code> value.
-     * @return the value of the attribute
-     */
-    public boolean isBroadcast()
-    {
-        Integer result =
-            (Integer)storedValueForKey( "isBroadcast" );
-        return ( result == null )
-            ? false
-            : ( result.intValue() > 0 );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Change the value of this object's <code>isBroadcast</code>
-     * property.
-     *
-     * @param value The new value for this property
-     */
-    public void setIsBroadcast( boolean value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "setIsBroadcast("
-                + value + "): was " + isBroadcast() );
-        }
-        Integer actual =
-            er.extensions.eof.ERXConstant.integerForInt( value ? 1 : 0 );
-            setIsBroadcastRaw( actual );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve this object's <code>isBroadcast</code> value.
-     * @return the value of the attribute
-     */
-    public Integer isBroadcastRaw()
-    {
-        return (Integer)storedValueForKey( "isBroadcast" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Change the value of this object's <code>isBroadcast</code>
-     * property.
-     *
-     * @param value The new value for this property
-     */
-    public void setIsBroadcastRaw( Integer value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "setIsBroadcastRaw("
-                + value + "): was " + isBroadcastRaw() );
-        }
-        takeStoredValueForKey( value, "isBroadcast" );
-    }
-
 
     //-- Local mutable cache --
     private net.sf.webcat.core.MutableDictionary linksCache;
@@ -802,10 +733,10 @@ public abstract class _SentMessage
             log.debug( "deleteAllUsersRelationships(): was "
                 + users() );
         }
-        Enumeration<?> objects = users().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteUsersRelationship(
-                (net.sf.webcat.core.User)objects.nextElement() );
+        for (net.sf.webcat.core.User object : users())
+        {
+            deleteUsersRelationship(object);
+        }
     }
 
 
@@ -878,6 +809,58 @@ public abstract class _SentMessage
             ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the first object that matches a qualifier, when
+     * sorted with the specified sort orderings.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     * @param sortOrderings the sort orderings
+     *
+     * @return the first entity that was retrieved, or null if there was none
+     */
+    public static SentMessage firstObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier,
+        NSArray<EOSortOrdering> sortOrderings)
+    {
+        NSArray<SentMessage> results =
+            objectsMatchingQualifier(context, qualifier, sortOrderings);
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve a single object using a list of keys and values to match.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     *
+     * @return the single entity that was retrieved
+     *
+     * @throws EOUtilities.MoreThanOneException
+     *     if there is more than one matching object
+     */
+    public static SentMessage uniqueObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier) throws EOUtilities.MoreThanOneException
+    {
+        NSArray<SentMessage> results =
+            objectsMatchingQualifier(context, qualifier);
+        if (results.size() > 1)
+        {
+            throw new EOUtilities.MoreThanOneException(null);
+        }
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
     }
 
 
@@ -1089,32 +1072,6 @@ public abstract class _SentMessage
         {
             return null;
         }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve objects according to the <code>broadcastMessages</code>
-     * fetch specification.
-     *
-     * @param context The editing context to use
-     * @return an NSArray of the entities retrieved
-     */
-    public static NSArray<SentMessage> broadcastMessages(
-            EOEditingContext context
-        )
-    {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "broadcastMessages", "SentMessage" );
-
-        NSArray<SentMessage> result =
-            objectsWithFetchSpecification( context, spec );
-        if (log.isDebugEnabled())
-        {
-            log.debug( "broadcastMessages(ec"
-                + "): " + result );
-        }
-        return result;
     }
 
 

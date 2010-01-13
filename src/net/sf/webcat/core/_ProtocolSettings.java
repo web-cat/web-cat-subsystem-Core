@@ -28,7 +28,6 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.eof.ERXKey;
-import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -68,14 +67,14 @@ public abstract class _ProtocolSettings
      */
     public static ProtocolSettings create(
         EOEditingContext editingContext,
-        boolean updateMutableFields
+        boolean updateMutableFieldsValue
         )
     {
         ProtocolSettings eoObject = (ProtocolSettings)
             EOUtilities.createAndInsertInstance(
                 editingContext,
                 _ProtocolSettings.ENTITY_NAME);
-        eoObject.setUpdateMutableFields(updateMutableFields);
+        eoObject.setUpdateMutableFields(updateMutableFieldsValue);
         return eoObject;
     }
 
@@ -670,10 +669,10 @@ public abstract class _ProtocolSettings
             log.debug( "deleteAllChildrenRelationships(): was "
                 + children() );
         }
-        Enumeration<?> objects = children().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteChildrenRelationship(
-                (net.sf.webcat.core.ProtocolSettings)objects.nextElement() );
+        for (net.sf.webcat.core.ProtocolSettings object : children())
+        {
+            deleteChildrenRelationship(object);
+        }
     }
 
 
@@ -746,6 +745,58 @@ public abstract class _ProtocolSettings
             ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the first object that matches a qualifier, when
+     * sorted with the specified sort orderings.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     * @param sortOrderings the sort orderings
+     *
+     * @return the first entity that was retrieved, or null if there was none
+     */
+    public static ProtocolSettings firstObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier,
+        NSArray<EOSortOrdering> sortOrderings)
+    {
+        NSArray<ProtocolSettings> results =
+            objectsMatchingQualifier(context, qualifier, sortOrderings);
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve a single object using a list of keys and values to match.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     *
+     * @return the single entity that was retrieved
+     *
+     * @throws EOUtilities.MoreThanOneException
+     *     if there is more than one matching object
+     */
+    public static ProtocolSettings uniqueObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier) throws EOUtilities.MoreThanOneException
+    {
+        NSArray<ProtocolSettings> results =
+            objectsMatchingQualifier(context, qualifier);
+        if (results.size() > 1)
+        {
+            throw new EOUtilities.MoreThanOneException(null);
+        }
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
     }
 
 

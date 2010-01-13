@@ -33,7 +33,6 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.eof.ERXKey;
-import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -101,9 +100,9 @@ import org.apache.log4j.Logger;
      */
     public static ${entity.classNameWithoutPackage} create(
         EOEditingContext editingContext#foreach ($attribute in $entity.sortedClassAttributes)#if (!$attribute.allowsNull),
-        #if ($attribute.userInfo.isScalar)${attribute.userInfo.type}#else${attribute.javaClassName}#end ${attribute.name}#end
+        #if ($attribute.userInfo.isScalar)${attribute.userInfo.type}#else${attribute.javaClassName}#end ${attribute.name}Value#end
 #end#foreach ($relationship in $entity.sortedClassToOneRelationships)#if ($relationship.mandatory),
-        ${relationship.actualDestination.classNameWithDefault} ${relationship.name}#end#end
+        ${relationship.actualDestination.classNameWithDefault} ${relationship.name}Value#end#end
 
         )
     {
@@ -113,12 +112,12 @@ import org.apache.log4j.Logger;
                 ${entity.prefixClassNameWithoutPackage}.ENTITY_NAME);
 #foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.allowsNull)
-        eoObject.set${attribute.capitalizedName}(${attribute.name});
+        eoObject.set${attribute.capitalizedName}(${attribute.name}Value);
 #end
 #end
 #foreach ($relationship in $entity.sortedClassToOneRelationships)
 #if ($relationship.mandatory)
-        eoObject.set${relationship.capitalizedName}Relationship(${relationship.name});
+        eoObject.set${relationship.capitalizedName}Relationship(${relationship.name}Value);
 #end
 #end
         return eoObject;
@@ -879,10 +878,10 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
             log.debug( "deleteAll${relationship.capitalizedName}Relationships(): was "
                 + ${relationship.name}() );
         }
-        Enumeration<?> objects = ${relationship.name}().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            delete${relationship.capitalizedName}Relationship(
-                (${relationship.actualDestination.classNameWithDefault})objects.nextElement() );
+        for (${relationship.actualDestination.classNameWithDefault} object : ${relationship.name}())
+        {
+            delete${relationship.capitalizedName}Relationship(object);
+        }
     }
 
 
@@ -958,6 +957,58 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
             ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the first object that matches a qualifier, when
+     * sorted with the specified sort orderings.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     * @param sortOrderings the sort orderings
+     *
+     * @return the first entity that was retrieved, or null if there was none
+     */
+    public static ${entity.classNameWithoutPackage} firstObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier,
+        NSArray<EOSortOrdering> sortOrderings)
+    {
+        NSArray<${entity.classNameWithoutPackage}> results =
+            objectsMatchingQualifier(context, qualifier, sortOrderings);
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve a single object using a list of keys and values to match.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     *
+     * @return the single entity that was retrieved
+     *
+     * @throws EOUtilities.MoreThanOneException
+     *     if there is more than one matching object
+     */
+    public static ${entity.classNameWithoutPackage} uniqueObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier) throws EOUtilities.MoreThanOneException
+    {
+        NSArray<${entity.classNameWithoutPackage}> results =
+            objectsMatchingQualifier(context, qualifier);
+        if (results.size() > 1)
+        {
+            throw new EOUtilities.MoreThanOneException(null);
+        }
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
     }
 
 

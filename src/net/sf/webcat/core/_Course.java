@@ -28,7 +28,6 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.eof.ERXKey;
-import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -68,16 +67,16 @@ public abstract class _Course
      */
     public static Course create(
         EOEditingContext editingContext,
-        String name,
-        int number
+        String nameValue,
+        int numberValue
         )
     {
         Course eoObject = (Course)
             EOUtilities.createAndInsertInstance(
                 editingContext,
                 _Course.ENTITY_NAME);
-        eoObject.setName(name);
-        eoObject.setNumber(number);
+        eoObject.setName(nameValue);
+        eoObject.setNumber(numberValue);
         return eoObject;
     }
 
@@ -535,10 +534,10 @@ public abstract class _Course
             log.debug( "deleteAllCoreSelectionsRelationships(): was "
                 + coreSelections() );
         }
-        Enumeration<?> objects = coreSelections().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteCoreSelectionsRelationship(
-                (net.sf.webcat.core.CoreSelections)objects.nextElement() );
+        for (net.sf.webcat.core.CoreSelections object : coreSelections())
+        {
+            deleteCoreSelectionsRelationship(object);
+        }
     }
 
 
@@ -713,10 +712,10 @@ public abstract class _Course
             log.debug( "deleteAllOfferingsRelationships(): was "
                 + offerings() );
         }
-        Enumeration<?> objects = offerings().objectEnumerator();
-        while ( objects.hasMoreElements() )
-            deleteOfferingsRelationship(
-                (net.sf.webcat.core.CourseOffering)objects.nextElement() );
+        for (net.sf.webcat.core.CourseOffering object : offerings())
+        {
+            deleteOfferingsRelationship(object);
+        }
     }
 
 
@@ -789,6 +788,58 @@ public abstract class _Course
             ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the first object that matches a qualifier, when
+     * sorted with the specified sort orderings.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     * @param sortOrderings the sort orderings
+     *
+     * @return the first entity that was retrieved, or null if there was none
+     */
+    public static Course firstObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier,
+        NSArray<EOSortOrdering> sortOrderings)
+    {
+        NSArray<Course> results =
+            objectsMatchingQualifier(context, qualifier, sortOrderings);
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve a single object using a list of keys and values to match.
+     *
+     * @param context The editing context to use
+     * @param qualifier The qualifier to use
+     *
+     * @return the single entity that was retrieved
+     *
+     * @throws EOUtilities.MoreThanOneException
+     *     if there is more than one matching object
+     */
+    public static Course uniqueObjectMatchingQualifier(
+        EOEditingContext context,
+        EOQualifier qualifier) throws EOUtilities.MoreThanOneException
+    {
+        NSArray<Course> results =
+            objectsMatchingQualifier(context, qualifier);
+        if (results.size() > 1)
+        {
+            throw new EOUtilities.MoreThanOneException(null);
+        }
+        return (results.size() > 0)
+            ? results.get(0)
+            : null;
     }
 
 
