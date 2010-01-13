@@ -65,7 +65,14 @@ public class Course
      */
     public String deptNumber()
     {
-        return department().abbreviation() + " " + number();
+        if (department() != null)
+        {
+            return department().abbreviation() + " " + number();
+        }
+        else
+        {
+            return department() + " " + number();
+        }
     }
 
 
