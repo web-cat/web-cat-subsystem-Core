@@ -22,9 +22,7 @@
 package net.sf.webcat.core;
 
 import com.webobjects.foundation.*;
-import com.webobjects.foundation.NSComparator.*;
 import er.extensions.foundation.ERXValueUtilities;
-import java.util.Enumeration;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -35,7 +33,8 @@ import org.apache.log4j.Logger;
  *  what level it is at in hierarchical navigation.
  *
  *  @author Stephen Edwards
- *  @version $Id$
+ *  @author Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class TabDescriptor
 {
@@ -65,7 +64,7 @@ public class TabDescriptor
                           boolean wantsStart,
                           NSArray<TabDescriptor> children,
                           String  id,
-                          NSDictionary config
+                          NSDictionary<String, Object> config
                         )
     {
         this.pageName    = pageName;
@@ -75,16 +74,20 @@ public class TabDescriptor
         this.wantsStart  = wantsStart;
         this.children    = new NSMutableArray<TabDescriptor>();
         this.id          = id;
-        if ( config != null )
+        if (config != null)
         {
-            if ( config instanceof NSMutableDictionary )
-                this.config = (NSMutableDictionary)config;
+            if (config instanceof NSMutableDictionary)
+            {
+                this.config = (NSMutableDictionary<String, Object>)config;
+            }
             else
+            {
                 this.config = config.mutableClone();
+            }
         }
-        if ( children != null )
+        if (children != null)
         {
-            addChildren( children );
+            addChildren(children);
         }
         // log.debug( "created, before selection:" + this );
         // selectDefault();
@@ -293,7 +296,7 @@ public class TabDescriptor
      *
      * @return The dictionary of config settings (possibly null)
      */
-    public NSMutableDictionary config()
+    public NSMutableDictionary<String, Object> config()
     {
         return config;
     }
@@ -361,10 +364,9 @@ public class TabDescriptor
      */
     public TabDescriptor previousSibling()
     {
-        if ( hasPreviousSibling() )
-            return (TabDescriptor)parent.children.objectAtIndex( myIndex - 1 );
-        else
-            return null;
+        return hasPreviousSibling()
+            ? parent.children.objectAtIndex(myIndex - 1)
+            : null;
     }
 
 
@@ -388,10 +390,9 @@ public class TabDescriptor
      */
     public TabDescriptor nextSibling()
     {
-        if ( hasNextSibling() )
-            return (TabDescriptor)parent.children.objectAtIndex( myIndex + 1 );
-        else
-            return null;
+        return hasNextSibling()
+            ? parent.children.objectAtIndex(myIndex + 1)
+            : null;
     }
 
 
@@ -402,12 +403,16 @@ public class TabDescriptor
      * @param pos The index of the child to retrieve
      * @return The child tab at the specified position
      */
-    public TabDescriptor childAt( int pos )
+    public TabDescriptor childAt(int pos)
     {
-        if ( pos >= 0 && pos < children.count() )
-            return children.objectAtIndex( pos );
+        if (pos >= 0 && pos < children.count())
+        {
+            return children.objectAtIndex(pos);
+        }
         else
+        {
             return null;
+        }
     }
 
 
@@ -687,6 +692,42 @@ public class TabDescriptor
                 if ( oldTab.label().equals( newTab.label() ) )
                 {
                     // Found old tab already present
+
+                    // First, override any settings, as appropriate
+                    if (newTab.pageName() != null)
+                    {
+                        oldTab.pageName = newTab.pageName();
+                    }
+                    if (newTab.accessLevel() > 0
+                        || (newTab.config() != null
+                            && newTab.config().containsKey("overrideAccessLevel")))
+                    {
+                        oldTab.accessLevel = newTab.accessLevel();
+                    }
+                    if (newTab.priority() > 0)
+                    {
+                        oldTab.priority = newTab.priority();
+                    }
+                    if (newTab.wantsStart())
+                    {
+                        oldTab.wantsStart = newTab.wantsStart();
+                    }
+                    if (newTab.id() != null)
+                    {
+                        oldTab.id = newTab.id();
+                    }
+                    if (newTab.config() != null && newTab.config().count() > 0)
+                    {
+                        if (oldTab.config() == null)
+                        {
+                            oldTab.config =
+                                new NSMutableDictionary<String, Object>();
+                        }
+                        oldTab.config().addEntriesFromDictionary(
+                            newTab.config());
+                    }
+
+                    // Now, recursively merge its children
                     oldTab.mergeClonedChildren( newTab.children() );
                     continue tabSearch;
                 }
@@ -815,8 +856,7 @@ public class TabDescriptor
             buffer.append( "children = {\n" );
             for ( int i = 0; i < children.count(); i++ )
             {
-                TabDescriptor child =
-                    (TabDescriptor)children.objectAtIndex( i );
+                TabDescriptor child = children.objectAtIndex(i);
                 child.appendDetailsToStringBuffer(
                     buffer, appendChildren, indent.length() );
                 if ( i == children.count() - 1)
@@ -900,13 +940,14 @@ public class TabDescriptor
      * @param dict the properties to use
      * @return An array of the new tab descriptors
      */
-    public static NSArray<TabDescriptor> tabsFromDictionary( NSDictionary dict )
+    public static NSArray<TabDescriptor> tabsFromDictionary(
+        NSDictionary<String, NSDictionary<String, Object>> dict)
     {
-        NSMutableArray<TabDescriptor> tabs = new NSMutableArray();
-        for ( Enumeration keys = dict.keyEnumerator(); keys.hasMoreElements(); )
+        NSMutableArray<TabDescriptor> tabs
+            = new NSMutableArray<TabDescriptor>();
+        for (String label : dict.keySet())
         {
-            String label = (String)keys.nextElement();
-            NSDictionary settings = (NSDictionary)dict.objectForKey( label );
+            NSDictionary<String, Object> settings = dict.get(label);
             String pageName = (String)settings.objectForKey( "pageName" );
             int accessLevel = ERXValueUtilities.intValueWithDefault(
                 settings.objectForKey( "accessLevel" ), 0 );
@@ -914,13 +955,18 @@ public class TabDescriptor
                 settings.objectForKey( "priority" ), 0 );
             boolean wantsStart = ERXValueUtilities.booleanValueWithDefault(
                 settings.objectForKey( "wantsStart" ), false );
-            NSDictionary children =
-                (NSDictionary)settings.objectForKey( "children" );
+            @SuppressWarnings("unchecked")
+            NSDictionary<String, NSDictionary<String, Object>> children =
+                (NSDictionary<String, NSDictionary<String, Object>>)settings
+                    .objectForKey( "children" );
             String overridingLabel = (String)settings.objectForKey("label");
             if (overridingLabel != null)
             {
                 label = overridingLabel;
             }
+            @SuppressWarnings("unchecked")
+            NSDictionary<String, Object> tabConfig =
+                (NSDictionary<String, Object>)settings.objectForKey("config");
             tabs.addObject( new TabDescriptor(
                 pageName,
                 label,
@@ -931,7 +977,7 @@ public class TabDescriptor
                     ? null
                     : tabsFromDictionary( children ),
                 (String)settings.objectForKey( "id" ),
-                (NSDictionary)settings.objectForKey( "config" )
+                tabConfig
             ) );
         }
         return tabs;
@@ -944,12 +990,15 @@ public class TabDescriptor
      * @param data the raw bytes from the property list
      * @return An array of the new tab descriptors
      */
-    public static NSArray<TabDescriptor> tabsFromPropertyList( NSData data )
+    public static NSArray<TabDescriptor> tabsFromPropertyList(NSData data)
     {
-        NSDictionary dict = (NSDictionary)NSPropertyListSerialization
-            .propertyListFromData( data, "US-ASCII" );
-        log.debug( "tabFromPropertyList(): dict = " + dict );
-        return tabsFromDictionary( dict );
+        @SuppressWarnings("unchecked")
+        NSDictionary<String, NSDictionary<String, Object>> dict =
+            (NSDictionary<String, NSDictionary<String, Object>>)
+            NSPropertyListSerialization
+                .propertyListFromData(data, "UTF-8");
+        log.debug("tabFromPropertyList(): dict = " + dict);
+        return tabsFromDictionary(dict);
     }
 
 
@@ -1084,7 +1133,7 @@ public class TabDescriptor
     private boolean             wantsStart;
     private NSMutableArray<TabDescriptor> children;
     private String              id;
-    private NSMutableDictionary config;
+    private NSMutableDictionary<String, Object> config;
 
     private TabDescriptor       parent           = null;
     private int                 myIndex          = -1;
