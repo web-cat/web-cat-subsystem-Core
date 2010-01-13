@@ -1,7 +1,13 @@
 Page: net.sf.webcat.core.WCPageWithNavigation {
-    inlineHeaderContents = inlineHeaderContents;
-    title                = title;
     sideStepTitle        = sideStepTitle;
     hideSteps            = hideSteps;
     permalink            = permalink;
+
+    title                = title;
+    extraBodyCssClass    = extraBodyCssClass;
+    extraRequires        = extraRequires;
+    extraCssFiles        = extraCssFiles;
+    pageScriptName       = pageScriptName;
+    includePageWrapping  = includePageWrapping;
+    inlineHeaderContents = inlineHeaderContents;
 }
