@@ -64,3 +64,4 @@ log4j.logger.NSLog = WARN
 er.extensions.ERXApplication.useEditingContextUnlocker=true
 er.extensions.ERXEC.defaultAutomaticLockUnlock = true
 er.extensions.ERXEC.defaultCoalesceAutoLocks=true
+er.extensions.ERXApplication.DefaultEncoding=UTF-8
