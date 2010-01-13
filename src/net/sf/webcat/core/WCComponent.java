@@ -272,7 +272,7 @@ public class WCComponent
         }
         if (cancelsForward)
         {
-            return internalNext();
+            return internalNext(false);
         }
         else
         {
@@ -377,7 +377,7 @@ public class WCComponent
      */
     public WOComponent next()
     {
-        return internalNext();
+        return internalNext(true);
     }
 
 
@@ -782,14 +782,14 @@ public class WCComponent
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
-    public WOComponent internalNext()
+    public WOComponent internalNext(boolean save)
     {
         if ( hasMessages() )
         {
             return null;
         }
 
-        if (nextPerformsSave)
+        if (save && nextPerformsSave)
         {
             if (!applyLocalChanges())
             {
