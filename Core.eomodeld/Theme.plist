@@ -1,58 +1,58 @@
 {
     attributes = (
-        {allowsNull = N; columnName = oid; name = id; prototypeName = id; }, 
+        { name = id; prototypeName = id; },
         {
-            allowsNull = N; 
-            columnName = CDIRNAME; 
-            name = dirName; 
-            prototypeName = tinyText; 
-        }, 
+            allowsNull = N;
+            columnName = CDIRNAME;
+            name = dirName;
+            prototypeName = tinyText;
+        },
         {
-            columnName = CISFORTHEMEDEVELOPERS; 
-            name = isForThemeDevelopers; 
-            prototypeName = boolean; 
-            userInfo = {isScalar = true; scalarDefault = false; type = boolean; }; 
-        }, 
-        {columnName = CLASTUPDATE; name = lastUpdate; prototypeName = dateTime; }, 
-        {columnName = CNAME; name = name; prototypeName = tinyText; }, 
+            columnName = CISFORTHEMEDEVELOPERS;
+            name = isForThemeDevelopers;
+            prototypeName = boolean;
+            userInfo = {isScalar = true; scalarDefault = false; type = boolean; };
+        },
+        {columnName = CLASTUPDATE; name = lastUpdate; prototypeName = dateTime; },
+        {columnName = CNAME; name = name; prototypeName = tinyText; },
         {
-            columnName = CPROPERTIES; 
-            name = properties; 
-            prototypeName = mutableDictionary; 
+            columnName = CPROPERTIES;
+            name = properties;
+            prototypeName = mutableDictionary;
             userInfo = {
-                adaptorValueConversionMethodName = archiveData; 
-                isMutable = true; 
-                valueClassName = "net.sf.webcat.core.MutableDictionary"; 
-                valueFactoryMethodName = objectWithArchiveData; 
-            }; 
-        }, 
+                adaptorValueConversionMethodName = archiveData;
+                isMutable = true;
+                valueClassName = "net.sf.webcat.core.MutableDictionary";
+                valueFactoryMethodName = objectWithArchiveData;
+            };
+        },
         {
-            name = updateMutableFields; 
-            prototypeName = updateMutableFields; 
-            userInfo = {isScalar = true; scalarDefault = false; type = boolean; }; 
+            name = updateMutableFields;
+            prototypeName = updateMutableFields;
+            userInfo = {isScalar = true; scalarDefault = false; type = boolean; };
         }
-    ); 
-    attributesUsedForLocking = (dirName, isForThemeDevelopers, name, updateMutableFields); 
-    className = "net.sf.webcat.core.Theme"; 
+    );
+    attributesUsedForLocking = (dirName, isForThemeDevelopers, name, updateMutableFields);
+    className = "net.sf.webcat.core.Theme";
     classProperties = (
-        dirName, 
-        isForThemeDevelopers, 
-        lastUpdate, 
-        name, 
-        properties, 
-        updateMutableFields, 
+        dirName,
+        isForThemeDevelopers,
+        lastUpdate,
+        name,
+        properties,
+        updateMutableFields,
         users
-    ); 
-    externalName = TTHEMES; 
-    name = Theme; 
-    primaryKeyAttributes = (id); 
+    );
+    externalName = TTHEMES;
+    name = Theme;
+    primaryKeyAttributes = (id);
     relationships = (
         {
-            destination = User; 
-            isToMany = Y; 
-            joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = themeId; sourceAttribute = id; }); 
-            name = users; 
+            destination = User;
+            isToMany = Y;
+            joinSemantic = EOInnerJoin;
+            joins = ({destinationAttribute = themeId; sourceAttribute = id; });
+            name = users;
         }
-    ); 
+    );
 }
