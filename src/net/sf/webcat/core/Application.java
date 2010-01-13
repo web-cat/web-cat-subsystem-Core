@@ -1208,7 +1208,24 @@ public class Application
             }
             else
             {
-                javax.mail.Transport.send( message );
+                // AJA 2010.01.12: Fix (?) for the JAF/Mail issue that prevented mail
+                // from being sent from a servlet when running under Java 1.6:
+                // http://blog.hpxn.net/2009/12/02/tomcat-java-6-and-javamail-cant-load-dch/
+                ClassLoader originalClassLoader =
+                    Thread.currentThread().getContextClassLoader();
+
+                try
+                {
+                    Thread.currentThread().setContextClassLoader(
+                            Application.class.getClassLoader());
+
+                    javax.mail.Transport.send( message );
+                }
+                finally
+                {
+                    Thread.currentThread().setContextClassLoader(
+                            originalClassLoader);
+                }
             }
         }
         catch ( Exception e )
