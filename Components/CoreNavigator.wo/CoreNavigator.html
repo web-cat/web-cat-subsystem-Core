@@ -5,16 +5,16 @@
 <fieldset class="course">
 <legend>Selected Course</legend>
 <ol>
+<li><wo:WOGenericContainer elementName="label" for="$idFor.semesterSelector">Show semester:</wo:WOGenericContainer>
+<wo name="SemesterFilter">
+    <wo:WCConnectAction event="onChange" action="$updateCourseOfferings" remote.refreshPanes="$idFor.coursePane"/>
+</wo>
+</li>
 <li>
 <wo:WCContentPane id="$idFor.coursePane">
 <wo:WOGenericContainer elementName="label" for="$idFor.courseSelector">Course offering:</wo:WOGenericContainer>
 <wo name="CourseFilter"/>
 </wo:WCContentPane>
-</li>
-<li><wo:WOGenericContainer elementName="label" for="$idFor.semesterSelector">Show semester:</wo:WOGenericContainer>
-<wo name="SemesterFilter">
-    <wo:WCConnectAction event="onChange" action="$updateCourseOfferings" remote.refreshPanes="$idFor.coursePane"/>
-</wo>
 </li>
 <wo:if condition="$user.hasTAPrivileges">
 <li><wo:WOGenericContainer elementName="label" for="$idFor.includeWhatImTeachingCheckbox">Include:</wo:WOGenericContainer>
