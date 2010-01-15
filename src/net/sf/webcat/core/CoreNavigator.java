@@ -248,7 +248,7 @@ public class CoreNavigator
 
         if (selectedRole != null)
         {
-            isStaffRole = "staff".equals(selectedRole.label());
+            isStaffRole = selectedRole.accessLevel() >= User.GTA_PRIVILEGES;
         }
 
         // First, get all the course offerings we're interested in based on
