@@ -243,6 +243,14 @@ public class CoreNavigator
 
         NSArray<CourseOffering> offerings;
 
+        TabDescriptor selectedRole = ((Session)session()).tabs.selectedChild();
+        boolean isStaffRole = false;
+
+        if (selectedRole != null)
+        {
+            isStaffRole = "staff".equals(selectedRole.label());
+        }
+
         // First, get all the course offerings we're interested in based on
         // the user's access level and selections in the UI. This may include
         // more offerings that we really need.
@@ -252,7 +260,7 @@ public class CoreNavigator
             offerings = EOUtilities.objectsForEntityNamed(
                 localContext(), CourseOffering.ENTITY_NAME);
         }
-        else if (user().hasTAPrivileges() && includeWhatImTeaching())
+        else if (!isStaffRole)
         {
             NSMutableArray<CourseOffering> temp =
                 new NSMutableArray<CourseOffering>();
@@ -264,7 +272,7 @@ public class CoreNavigator
         }
         else
         {
-            offerings = user().enrolledIn();
+            offerings = user().staffFor();
         }
 
         // Next, filter the course offerings to include only those that occur
