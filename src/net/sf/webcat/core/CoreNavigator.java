@@ -178,6 +178,13 @@ public class CoreNavigator
                 }
             }
         }
+
+        TabDescriptor selectedRole = ((Session)session()).tabs.selectedChild();
+        if (selectedRole != null)
+        {
+            selectedRoleAccessLevel = selectedRole.accessLevel();
+        }
+
         log.debug("selected semester = " + selectedSemester);
         log.debug("selected course = " + selectedCourseOffering);
         log.debug("parent = " + parent().getClass().getName());
@@ -248,7 +255,7 @@ public class CoreNavigator
 
         if (selectedRole != null)
         {
-            isStaffRole = selectedRole.accessLevel() >= User.GTA_PRIVILEGES;
+            isStaffRole = selectedRoleAccessLevel >= User.GTA_PRIVILEGES;
         }
 
         // First, get all the course offerings we're interested in based on
@@ -486,5 +493,6 @@ public class CoreNavigator
 
     protected WCCourseComponent selectionsParent = null;
     private Course wantOfferingsForCourse;
+    private int selectedRoleAccessLevel = 0;
     static Logger log = Logger.getLogger(CoreNavigator.class);
 }
