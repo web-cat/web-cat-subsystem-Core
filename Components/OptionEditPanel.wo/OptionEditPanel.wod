@@ -56,7 +56,7 @@ ListChoice: WCFilteringSelect {
     list          = option.choices;
     item          = choice;
     displayString = choiceLabel;
-    value         = choiceValue;
+//    value         = choiceValue;
     selection     = selectedChoice;
 }
 
