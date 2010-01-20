@@ -61,7 +61,7 @@ import org.apache.log4j.Logger;
 #set ($alreadyFoundMigratoryAttribute = false)
 #foreach ($attribute in $entity.sortedClassAttributes)
 #if ($attribute.userInfo.needsMigration && !$alreadyFoundMigratoryAttribute)
-    implements net.sf.webcat.core.MigratoryAttributeOwner
+#if ($alreadyFoundMutableAttribute)    ,#else    implements#end net.sf.webcat.core.MigratoryAttributeOwner
 #set ($alreadyFoundMigratoryAttribute = true)
 #end
 #end
