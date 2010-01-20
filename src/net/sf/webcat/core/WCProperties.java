@@ -526,7 +526,7 @@ public class WCProperties
     public void setArrayForKey( NSArray array, String key )
     {
         setStringForKey(
-            NSPropertyListSerialization.stringFromPropertyList( array ), key );
+            NSPropertyListSerialization.stringFromPropertyList( array, false ), key );
     }
 
 
@@ -539,7 +539,7 @@ public class WCProperties
     public void setDictionaryForKey( NSDictionary dictionary, String key )
     {
         setStringForKey(
-            NSPropertyListSerialization.stringFromPropertyList( dictionary ),
+            NSPropertyListSerialization.stringFromPropertyList( dictionary, false ),
             key );
     }
 
@@ -553,6 +553,30 @@ public class WCProperties
     public void setStringForKey( String string, String key )
     {
         setProperty( key, string );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sets an object in the properties file for a particular key, doing an
+     * appropriate string conversion if it is an array or dictionary.
+     * @param obj to be set in the properties
+     * @param key to be used to get the value
+     */
+    public void setObjectForKey( Object obj, String key )
+    {
+        if (obj instanceof NSArray)
+        {
+            setArrayForKey( (NSArray) obj, key );
+        }
+        else if (obj instanceof NSDictionary)
+        {
+            setDictionaryForKey( (NSDictionary) obj, key );
+        }
+        else
+        {
+            setStringForKey( obj.toString(), key );
+        }
     }
 
 
@@ -805,12 +829,12 @@ public class WCProperties
             {
                 coercedValue = null;
             }
-            
+
             if ( coercedValue != null )
             {
                 // If we got an array, recursively perform conversions of
                 // values that look like numbers or booleans.
-                
+
                 coercedValue = recursivelyCoerceArrayValues(
                         (NSArray) coercedValue );
             }
@@ -828,12 +852,12 @@ public class WCProperties
             {
                 coercedValue = null;
             }
-            
+
             if ( coercedValue != null )
             {
                 // If we got a dictionary, recursively perform conversions of
                 // values that look like numbers or booleans.
-                
+
                 coercedValue = recursivelyCoerceDictionaryValues(
                         (NSDictionary) coercedValue );
             }
@@ -867,7 +891,7 @@ public class WCProperties
      * Walks through an array (and recursively through any nested arrays or
      * dictionaries) and converts any string values that look like numbers into
      * their actual numeric type.
-     * 
+     *
      * @param array the array of objects to convert
      * @return a new array containing the converted items
      */
@@ -888,7 +912,7 @@ public class WCProperties
                 if (value instanceof String)
                 {
                     newValue = tryToCoercePropertyValue( (String) value, true );
-                    
+
                     if (newValue == null)
                     {
                         newValue = value;
@@ -907,7 +931,7 @@ public class WCProperties
                 {
                     newValue = value;
                 }
-                
+
                 if (newValue != null)
                 {
                     newArray.addObject(newValue);
@@ -917,14 +941,14 @@ public class WCProperties
             return newArray;
         }
     }
-    
-    
+
+
     // ------------------------------------------------
     /**
      * Walks through a dictionary (and recursively through any nested arrays or
      * dictionaries) and converts any string values that look like numbers into
      * their actual numeric type.
-     * 
+     *
      * @param dictionary the dictionary of objects to convert
      * @return a new dictionary containing the converted items
      */
@@ -947,7 +971,7 @@ public class WCProperties
                 if (value instanceof String)
                 {
                     newValue = tryToCoercePropertyValue( (String) value, true );
-                    
+
                     if (newValue == null)
                     {
                         newValue = value;
@@ -966,7 +990,7 @@ public class WCProperties
                 {
                     newValue = value;
                 }
-                
+
                 if (newValue != null)
                 {
                     newDictionary.setObjectForKey(newValue, key);
@@ -977,7 +1001,7 @@ public class WCProperties
         }
     }
 
-    
+
     // ----------------------------------------------------------
     /**
      * Tries to parse the specified string as a number; try this in order of
@@ -1131,7 +1155,7 @@ public class WCProperties
 
     // ----------------------------------------------------------
     /**
-     * Returns the value bound to the given key. 
+     * Returns the value bound to the given key.
      *
      * @param key   The name of the property to fetch
      * @return      Its value, or null if there is no binding
@@ -1139,7 +1163,7 @@ public class WCProperties
     public Object valueForKey( String key )
     {
         String result = getProperty( key );
-        
+
         if ( result != null )
         {
             return tryToCoercePropertyValue( result, false );
@@ -1159,7 +1183,7 @@ public class WCProperties
                     return result;
                 }
             }
-            
+
             return null;
         }
     }
