@@ -37,7 +37,8 @@ Download: WOActiveImage {
     title    = "Download";
     width    = "18";
     height   = "18";
-    style     = "vertical-align:middle;";
+//    style     = "vertical-align:middle;";
+    class    = "icon";
 }
 
 File: WOString {
@@ -52,7 +53,7 @@ IntegerBox: WCTextBox {
 }
 
 ListChoice: WCFilteringSelect {
-    id = idFor.optionWidget;
+    id            = idFor.optionWidget;
     list          = option.choices;
     item          = choice;
     displayString = choiceLabel;
@@ -91,7 +92,7 @@ TextArea: WCSimpleTextArea {
 
 TextBox: WCTextBox {
     id = idFor.optionWidget;
-    style  = "~'width: ' + fieldSize * 0.8 + 'em'";
+    style  = "~'width: ' + fieldSize * 0.55 + 'em'";
     value = value;
 }
 

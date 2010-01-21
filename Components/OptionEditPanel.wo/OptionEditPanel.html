@@ -1,6 +1,10 @@
 <wo:not condition="$option.disable">
 <div style="display: inline-block; text-align: right; width: 18em">
+<wo:if condition="~isFile or isFileOrDir">
+    <wo:label for="$idFor.optionWidget" style="width: auto; margin-top: 2px;"><b><wo name="OptionName"/>:</b></wo:label>
+</wo:if><wo:else>
     <wo:label for="$idFor.optionWidget" style="width: auto"><b><wo name="OptionName"/>:</b></wo:label>
+</wo:else>
 </div>
 <div style="display: inline-block; vertical-align: top">
 <wo:if condition="$isBoolean">
@@ -18,11 +22,11 @@
     <td style="padding: 0"><wo name="RadioButton"/></td><td><wo name="ChoiceLabel"/></td>
     </tr></wo></table>
 </wo:if><wo:if condition="$isFile">
-    <wo name="ValueContainer"><span class="dijitTextBox"><wo name="File"/></span></wo>
+    <wo name="ValueContainer"><wo name="File"/></wo>
     <wo:if condition="$canBrowse"><wo:if condition="$hasValue"> <wo name="Download"/></wo:if><wo name="Browse"/><wo:if condition="$hasValue"> <wo name="UseDefault"/></wo:if>
     </wo:if><wo:else><b class="warn">Cannot browse files</b></wo:else>
 </wo:if><wo:if condition="$isFileOrDir">
-    <wo name="ValueContainer"><span class="dijitTextBox"><wo name="File"/></span></wo>
+    <wo name="ValueContainer"><wo name="File"/></wo>
     <wo:if condition="$canBrowse"><wo:if condition="$hasValue"> <wo name="Download"/></wo:if><wo name="Browse"/><wo:if condition="$hasValue"> <wo name="UseDefault"/></wo:if>
     </wo:if><wo:else><b class="warn">Cannot browse files</b></wo:else>
 </wo:if><wo:if condition="$isShortText">
