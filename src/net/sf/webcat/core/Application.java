@@ -76,7 +76,7 @@ public class Application
      *      remaining in the database. </li>
      * </ul>
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "deprecation" })
     public Application()
     {
         super();
@@ -160,6 +160,11 @@ public class Application
         // Present the first page via the default DirectAction.
         setDefaultRequestHandler(
             requestHandlerForKey( directActionRequestHandlerKey() ) );
+
+        if (!isDevelopmentModeSafe() && isDirectConnectEnabled())
+        {
+            setDirectConnectEnabled(false);
+        }
 
         if ( configurationProperties().hasUsableConfiguration() )
         {
@@ -2047,8 +2052,7 @@ public class Application
             frameworkDir =
                 new File( woaDir, "Contents/Library/Frameworks" );
         }
-        String lastUpdated = configurationProperties().getProperty(
-            "static.HTML.date", "00000000" );
+        boolean forceUpdate = false;
         String staticHtmlDirName = configurationProperties()
             .getProperty( "static.html.dir" );
         String lastStaticHtmlDirName = configurationProperties()
@@ -2094,8 +2098,7 @@ public class Application
         if ( lastStaticHtmlDirName == null
             || !staticHtmlDirName.equals( lastStaticHtmlDirName ) )
         {
-            // Force entire update
-            lastUpdated = "00000000";
+            forceUpdate = true;
         }
 
         if ( log.isDebugEnabled() )
@@ -2120,36 +2123,58 @@ public class Application
             if ( !frameworkName.endsWith( ".framework" ) ) continue;
             frameworkName = frameworkName.substring( 0,
                 frameworkName.length() - ".framework".length() );
-            String frameworkLastUpdated = configurationProperties().
+            String frameworkDatestamp = configurationProperties().
                 getProperty( frameworkName + ".version.date" );
             // frameworkLastUpdated will be null for frameworks that are
-            // not packaged subsytems
-            if ( frameworkLastUpdated != null
-                 && lastUpdated.compareTo( frameworkLastUpdated ) <= 0 )
+            // not packaged subsystems
+            if (frameworkDatestamp != null)
             {
-                updateExecutablePermissionsForFramework(
-                    frameworkName, framework[i] );
-                updateStaticHtmlResourcesForFramework(
-                    framework[i], staticResourceBaseDir );
-                // Now check the additional included frameworks too
-                String alsoContainsList = configurationProperties()
-                    .getProperty( frameworkName + ".alsoContains" );
-                if ( alsoContainsList != null )
+                String lastUpdated = configurationProperties().getProperty(
+                    "static.HTML.date." + frameworkName, "00000000");
+                if (log.isDebugEnabled())
                 {
-                    for ( String fw : alsoContainsList.split( ",\\s*" ) )
+                    log.debug("Comparing last update " + lastUpdated +
+                        " against " + frameworkName + " datestamp of: "
+                        + frameworkDatestamp);
+                }
+                if (!lastUpdated.equals(frameworkDatestamp))
+                {
+                    log.debug("Updating resources for " + frameworkName);
+                    updateExecutablePermissionsForFramework(
+                        frameworkName, framework[i] );
+                    updateStaticHtmlResourcesForFramework(
+                        framework[i], staticResourceBaseDir );
+                    // Now check the additional included frameworks too
+                    String alsoContainsList = configurationProperties()
+                        .getProperty( frameworkName + ".alsoContains" );
+                    if ( alsoContainsList != null )
                     {
-                        File otherFramework = new File( frameworkDir, fw );
-                        updateStaticHtmlResourcesForFramework(
-                            otherFramework, staticResourceBaseDir );
+                        for ( String fw : alsoContainsList.split( ",\\s*" ) )
+                        {
+                            File otherFramework = new File( frameworkDir, fw );
+                            if (log.isDebugEnabled())
+                            {
+                                String includedName = fw.substring(
+                                    0, fw.length() - ".framework".length());
+                                log.debug(
+                                    "Updating resources for " + includedName);
+                            }
+                            updateStaticHtmlResourcesForFramework(
+                                otherFramework, staticResourceBaseDir );
+                        }
                     }
+                    configurationProperties().setProperty(
+                        "static.HTML.date." + frameworkName,
+                        frameworkDatestamp);
+                }
+                else
+                {
+                    log.debug("Already up to date: " + frameworkName);
                 }
             }
         }
 
         // Attempt to update the "last saved" info
-        NSTimestampFormatter formatter = new NSTimestampFormatter( "%Y%m%d" );
-        configurationProperties().setProperty( "static.HTML.date",
-            formatter.format( new NSTimestamp() ) );
         configurationProperties().setProperty( "last.static.html.dir",
             staticResourceBaseDir.getAbsolutePath().replace( '\\', '/' ) );
         configurationProperties().attemptToSave();
