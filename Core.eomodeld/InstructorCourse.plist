@@ -5,14 +5,14 @@
             externalType = INT; 
             name = id; 
             valueClassName = NSNumber; 
-            valueType = i; 
+            valueType = l; 
         }, 
         {
             columnName = CID1; 
             externalType = INT; 
             name = id1; 
             valueClassName = NSNumber; 
-            valueType = i; 
+            valueType = l; 
         }
     ); 
     attributesUsedForLocking = (id, id1); 
