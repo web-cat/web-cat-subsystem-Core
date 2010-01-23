@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2010 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,8 +22,7 @@
 package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
-import com.webobjects.foundation.NSMutableArray;
-
+import com.webobjects.foundation.NSArray;
 import org.apache.log4j.*;
 
 //-------------------------------------------------------------------------
@@ -33,7 +32,7 @@ import org.apache.log4j.*;
  *
  * @author Stephen Edwards
  * @author  latest changes by: $Author$
- * @version $Revision$ $Date$
+ * @version $Revision$, $Date$
  */
 public class WCCourseComponent
     extends WCComponent
@@ -74,7 +73,7 @@ public class WCCourseComponent
 
 
     // ----------------------------------------------------------
-    public void appendToResponse(WOResponse response, WOContext context)
+    public final void appendToResponse(WOResponse response, WOContext context)
     {
         // TODO make this method final and adjust all the other pages
 
@@ -87,8 +86,8 @@ public class WCCourseComponent
 
         super.appendToResponse(response, context);
     }
-    
-    
+
+
     // ----------------------------------------------------------
     protected void _appendToResponse(WOResponse response, WOContext context)
     {
@@ -148,6 +147,25 @@ public class WCCourseComponent
      */
     public boolean forceNavigatorSelection()
     {
+        boolean result = false;
+
+        // Check for required semester
+        if (!allowsAllSemesters()
+            && coreSelections().semester() == null)
+        {
+            // Guess the most recent semester
+            Semester best = bestMatchingSemester();
+            if (best == null)
+            {
+                result = true;
+            }
+            else
+            {
+                coreSelections().setSemester(best);
+            }
+        }
+
+        // Check for required course
         if (!allowsAllOfferingsForCourse()
             && coreSelections().courseOffering() == null)
         {
@@ -157,24 +175,45 @@ public class WCCourseComponent
             {
                 coreSelections().setCourseOfferingRelationship(
                     bestOffering);
-                return false;
             }
             else
             {
-                return true;
+                result = true;
             }
         }
-        return false;
+        return result;
     }
 
 
     // ----------------------------------------------------------
     /**
-     * This method determines whether any embedded navigator will
-     * allow users to select "all" offerings for a course.
-     * The default implementation returns true, but is designed
-     * to be overridden in subclasses.
-     * @return True if the navigator should allow selection of all courses.
+     * This method guesses which semester is most appropriate, when
+     * the user has chosen to see "all" semesters but the current page
+     * requires only one.
+     * @return The semester that seems best to use
+     */
+    protected Semester bestMatchingSemester()
+    {
+        NSArray<Semester> semesters =
+            Semester.allObjectsOrderedByStartDate(localContext());
+        if (semesters != null && semesters.count() > 0)
+        {
+            return semesters.objectAtIndex(0);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * This method guesses the best appropriate course offering to use,
+     * when "all" of a given course is selected but a page requires a
+     * specific course offering.
+     * @return The course offering that seems like the best choice, or null
+     * if none makes sense.
      */
     protected CourseOffering bestMatchingCourseOffering()
     {
