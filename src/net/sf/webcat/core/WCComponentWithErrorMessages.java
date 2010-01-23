@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2010 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,16 +23,16 @@ package net.sf.webcat.core;
 
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
-import java.util.Enumeration;
 
 //-------------------------------------------------------------------------
 /**
-* This class is a base for WCComponent that extracts out the error
-* message handling features.
-*
-* @author Stephen Edwards
-* @version $Id$
-*/
+ * This class is a base for WCComponent that extracts out the error
+ * message handling features.
+ *
+ * @author Stephen Edwards
+ * @author  latest changes by: $Author$
+ * @version $Revision$, $Date$
+ */
 public class WCComponentWithErrorMessages
     extends WOComponent
 {
@@ -44,18 +44,18 @@ public class WCComponentWithErrorMessages
      *
      * @param context The page's context
      */
-    public WCComponentWithErrorMessages( WOContext context )
+    public WCComponentWithErrorMessages(WOContext context)
     {
-        super( context );
+        super(context);
     }
 
 
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    public void appendToResponse( WOResponse response, WOContext context )
+    public void appendToResponse(WOResponse response, WOContext context)
     {
-        super.appendToResponse( response, context );
+        super.appendToResponse(response, context);
         clearMessages();
     }
 
@@ -67,7 +67,7 @@ public class WCComponentWithErrorMessages
      */
     public boolean hasMessages()
     {
-        NSDictionary msgs = messagesIfPresent();
+        NSDictionary<String, Object> msgs = messagesIfPresent();
         return msgs != null && msgs.count() > 0;
     }
 
@@ -82,20 +82,18 @@ public class WCComponentWithErrorMessages
      */
     public boolean hasBlockingErrors()
     {
-        if ( hasMessages() )
+        if (hasMessages())
         {
-            for ( Enumeration e = messages.keyEnumerator();
-                  e.hasMoreElements(); )
+            for (String key : messages.keySet())
             {
-                Object key = e.nextElement();
-                Object value = messages.objectForKey( key );
+                Object value = messages.objectForKey(key);
                 ErrorDictionaryPanel.ErrorMessage msg =
-                    ( value instanceof ErrorDictionaryPanel.ErrorMessage )
+                    (value instanceof ErrorDictionaryPanel.ErrorMessage)
                         ? (ErrorDictionaryPanel.ErrorMessage)value
                         : null;
-                if ( msg == null
-                     || msg.category() == Status.ERROR
-                     || msg.category() == Status.WARNING )
+                if (msg == null
+                    || msg.category() == Status.ERROR
+                    || msg.category() == Status.WARNING)
                 {
                     return true;
                 }
@@ -110,9 +108,9 @@ public class WCComponentWithErrorMessages
      * Record an error message for this page.
      * @param message the error message
      */
-    public void error( String message )
+    public void error(String message)
     {
-        error( message, null );
+        error(message, null);
     }
 
 
@@ -121,9 +119,9 @@ public class WCComponentWithErrorMessages
      * Record an exception as an error message for this page.
      * @param anException the exception to be posted
      */
-    public void error( Throwable anException )
+    public void error(Throwable anException)
     {
-        message( anException, null );
+        message(anException, null);
     }
 
 
@@ -133,9 +131,9 @@ public class WCComponentWithErrorMessages
      * @param message the error message
      * @param id a unique id used to distinguish this message from others
      */
-    public void error( String message, String id )
+    public void error(String message, String id)
     {
-        message( Status.ERROR, message, false, id );
+        message(Status.ERROR, message, false, id);
     }
 
 
@@ -144,9 +142,9 @@ public class WCComponentWithErrorMessages
      * Record an error message for this page.
      * @param message the error message
      */
-    public void warning( String message )
+    public void warning(String message)
     {
-        message( Status.WARNING, message, false, null );
+        message(Status.WARNING, message, false, null);
     }
 
 
@@ -155,9 +153,9 @@ public class WCComponentWithErrorMessages
      * Record an error message for this page.
      * @param message the error message
      */
-    public void confirmationMessage( String message )
+    public void confirmationMessage(String message)
     {
-        message( Status.GOOD, message, false, null );
+        message(Status.GOOD, message, false, null);
     }
 
 
@@ -167,11 +165,11 @@ public class WCComponentWithErrorMessages
      * null message is provided, nothing happens (no message is recorded).
      * @param message the error message, or null
      */
-    public void possibleErrorMessage( String message )
+    public void possibleErrorMessage(String message)
     {
-        if ( message != null )
+        if (message != null)
         {
-            error( message );
+            error(message);
         }
     }
 
@@ -189,10 +187,10 @@ public class WCComponentWithErrorMessages
      * @param id a unique id used to distinguish this message from others
      */
     public void message(
-        byte category, String message, boolean sticky, String id )
+        byte category, String message, boolean sticky, String id)
     {
         message(
-            new ErrorDictionaryPanel.ErrorMessage( category, message, sticky ),
+            new ErrorDictionaryPanel.ErrorMessage(category, message, sticky),
             id
             );
     }
@@ -204,13 +202,13 @@ public class WCComponentWithErrorMessages
      * @param message the error message
      * @param id a unique id used to distinguish this message from others
      */
-    public void message( Object message, String id )
+    public void message(Object message, String id)
     {
-        if ( id == null )
+        if (id == null)
         {
             id = message.toString();
         }
-        messages().setObjectForKey( message, id );
+        messages().setObjectForKey(message, id);
     }
 
 
@@ -220,22 +218,22 @@ public class WCComponentWithErrorMessages
      */
     public void clearMessages()
     {
-        NSMutableDictionary dict = messagesIfPresent();
-        if ( dict != null )
+        NSMutableDictionary<String, Object> dict = messagesIfPresent();
+        if (dict != null)
         {
-            NSMutableDictionary keep = new NSMutableDictionary();
-            for ( Enumeration e = dict.keyEnumerator(); e.hasMoreElements(); )
+            NSMutableDictionary<String, Object> keep =
+                new NSMutableDictionary<String, Object>();
+            for (String key : dict.keySet())
             {
-                Object key = e.nextElement();
-                Object value = dict.objectForKey( key );
-                if ( ( value instanceof ErrorDictionaryPanel.ErrorMessage )
-                     && ( (ErrorDictionaryPanel.ErrorMessage)value ).sticky() )
+                Object value = dict.objectForKey(key);
+                if ((value instanceof ErrorDictionaryPanel.ErrorMessage)
+                    && ((ErrorDictionaryPanel.ErrorMessage)value).sticky())
                 {
-                    keep.setObjectForKey( value, key );
+                    keep.setObjectForKey(value, key);
                 }
             }
             dict.removeAllObjects();
-            dict.addEntriesFromDictionary( keep );
+            dict.addEntriesFromDictionary(keep);
         }
     }
 
@@ -246,8 +244,8 @@ public class WCComponentWithErrorMessages
      */
     public void clearAllMessages()
     {
-        NSMutableDictionary dict = messagesIfPresent();
-        if ( dict != null )
+        NSMutableDictionary<String, Object> dict = messagesIfPresent();
+        if (dict != null)
         {
             dict.removeAllObjects();
         }
@@ -259,12 +257,12 @@ public class WCComponentWithErrorMessages
      * Remove a specific message from this page.
      * @param id the unique identifier for the message
      */
-    public void clearMessage( String id )
+    public void clearMessage(String id)
     {
-        NSMutableDictionary dict = messagesIfPresent();
-        if ( dict != null )
+        NSMutableDictionary<String, Object> dict = messagesIfPresent();
+        if (dict != null)
         {
-            dict.removeObjectForKey( id );
+            dict.removeObjectForKey(id);
         }
     }
 
@@ -276,11 +274,11 @@ public class WCComponentWithErrorMessages
      * dictionary exists, one is created first.
      * @return the message dictionary
      */
-    public NSMutableDictionary messages()
+    public NSMutableDictionary<String, Object> messages()
     {
-        if ( messages == null )
+        if (messages == null)
         {
-            messages = new NSMutableDictionary();
+            messages = new NSMutableDictionary<String, Object>();
         }
         return messages;
     }
@@ -293,24 +291,20 @@ public class WCComponentWithErrorMessages
      * null is returned.
      * @return the message dictionary, or null if one has not yet been created
      */
-    public NSMutableDictionary messagesIfPresent()
+    public NSMutableDictionary<String, Object> messagesIfPresent()
     {
         return messages;
     }
 
 
     // ----------------------------------------------------------
-    /* (non-Javadoc)
-     * @see com.webobjects.appserver.WOComponent#validationFailedWithException(java.lang.Throwable, java.lang.Object, java.lang.String)
-     */
-    public void validationFailedWithException( Throwable ex,
-                                               Object    value,
-                                               String    key )
+    public void validationFailedWithException(
+        Throwable ex, Object value, String key)
     {
-        message( ex, key );
+        message(ex, key);
     }
 
 
     //~ Instance/static variables .............................................
-    private NSMutableDictionary  messages;
+    private NSMutableDictionary<String, Object>  messages;
 }

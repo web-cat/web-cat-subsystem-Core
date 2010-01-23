@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2010 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -49,7 +49,8 @@ import org.apache.log4j.*;
  * </ul>
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @author  latest changes by: $Author$
+ * @version $Revision$, $Date$
  */
 public class User
     extends _User
@@ -821,7 +822,7 @@ public class User
      * @deprecated Use the {@link #graderForButNotStudent()} method instead.
      */
     @Deprecated
-    public NSArray TAForButNotStudent()
+    public NSArray<CourseOffering> TAForButNotStudent()
     {
         return graderForButNotStudent();
     }
@@ -833,7 +834,7 @@ public class User
      * without including any courses where this user is also a student.
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray graderForButNotStudent()
+    public NSArray<CourseOffering> graderForButNotStudent()
     {
         if ( graderFor_cache != graderFor() )
         {
@@ -878,7 +879,7 @@ public class User
      *     instead.
      */
     @Deprecated
-    public NSArray TAForButNotStudent(Semester semester)
+    public NSArray<CourseOffering> TAForButNotStudent(Semester semester)
     {
         return graderForButNotStudent(semester);
     }
@@ -892,9 +893,9 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray graderForButNotStudent(Semester semester)
+    public NSArray<CourseOffering> graderForButNotStudent(Semester semester)
     {
-        NSArray result = graderForButNotStudent();
+        NSArray<CourseOffering> result = graderForButNotStudent();
         if ( semester != null )
         {
             result = ERXArrayUtilities
@@ -922,7 +923,7 @@ public class User
      *     instead.
      */
     @Deprecated
-    public NSArray instructorForButNotTAOrStudent()
+    public NSArray<CourseOffering> instructorForButNotTAOrStudent()
     {
         return instructorForButNotGraderOrStudent();
     }
@@ -935,7 +936,7 @@ public class User
      * a student or a grader.
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray instructorForButNotGraderOrStudent()
+    public NSArray<CourseOffering> instructorForButNotGraderOrStudent()
     {
         if ( teaching_cache != teaching() )
         {
@@ -961,12 +962,14 @@ public class User
             if ( instructorForButNotGraderOrStudent_cache == null )
             {
                 instructorForButNotGraderOrStudent_cache =
-                    ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
-                        teaching_cache,
-                        CourseOffering.ENTITY_NAME,
-                        CourseOffering.OFFERINGS_WITHOUT_STUDENT_OR_GRADER_FSPEC,
-                        userFilteringDictionary()
-                        );
+                    ERXArrayUtilities
+                        .filteredArrayWithEntityFetchSpecification(
+                            teaching_cache,
+                            CourseOffering.ENTITY_NAME,
+                            CourseOffering
+                                .OFFERINGS_WITHOUT_STUDENT_OR_GRADER_FSPEC,
+                            userFilteringDictionary()
+                    );
             }
         }
         return instructorForButNotGraderOrStudent_cache;
@@ -986,7 +989,8 @@ public class User
      *     method instead.
      */
     @Deprecated
-    public NSArray instructorForButNotTAOrStudent(Semester semester)
+    public NSArray<CourseOffering> instructorForButNotTAOrStudent(
+        Semester semester)
     {
         return instructorForButNotGraderOrStudent(semester);
     }
@@ -1001,9 +1005,10 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray instructorForButNotGraderOrStudent(Semester semester)
+    public NSArray<CourseOffering> instructorForButNotGraderOrStudent(
+        Semester semester)
     {
-        NSArray result = instructorForButNotGraderOrStudent();
+        NSArray<CourseOffering> result = instructorForButNotGraderOrStudent();
         if ( semester != null )
         {
             result = ERXArrayUtilities
@@ -1056,9 +1061,9 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray staffFor( Semester semester )
+    public NSArray<CourseOffering> staffFor( Semester semester )
     {
-        NSArray result = staffFor();
+        NSArray<CourseOffering> result = staffFor();
         if ( semester != null )
         {
             result = ERXArrayUtilities
@@ -1082,7 +1087,7 @@ public class User
      * for.
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray adminForButNotStaff()
+    public NSArray<CourseOffering> adminForButNotStaff()
     {
         if ( !hasAdminPrivileges() ) return emptyArray;
         if ( graderFor_cache != graderFor() )
@@ -1124,9 +1129,9 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray adminForButNotStaff( Semester semester )
+    public NSArray<CourseOffering> adminForButNotStaff( Semester semester )
     {
-        NSArray result = adminForButNotStaff();
+        NSArray<CourseOffering> result = adminForButNotStaff();
         if ( semester != null )
         {
             result = ERXArrayUtilities
@@ -1150,7 +1155,7 @@ public class User
      * for.
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray adminForButNoOtherRelationships()
+    public NSArray<CourseOffering> adminForButNoOtherRelationships()
     {
         if ( !hasAdminPrivileges() ) return emptyArray;
         if ( enrolledIn_cache != enrolledIn() )
@@ -1197,9 +1202,10 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray adminForButNoOtherRelationships(Semester semester)
+    public NSArray<CourseOffering> adminForButNoOtherRelationships(
+        Semester semester)
     {
-        NSArray result = adminForButNoOtherRelationships();
+        NSArray<CourseOffering> result = adminForButNoOtherRelationships();
         if ( semester != null )
         {
             result = ERXArrayUtilities
@@ -1326,14 +1332,14 @@ public class User
 
     //~ Instance/static variables .............................................
 
-    private NSArray enrolledIn_cache;
-    private NSArray graderFor_cache;
-    private NSArray teaching_cache;
-    private NSArray graderForButNotStudent_cache;
-    private NSArray instructorForButNotGraderOrStudent_cache;
-    private NSArray staffFor_cache;
-    private NSArray adminForButNotStaff_cache;
-    private NSArray adminForButNoOtherRelationships_cache;
+    private NSArray<CourseOffering> enrolledIn_cache;
+    private NSArray<CourseOffering> graderFor_cache;
+    private NSArray<CourseOffering> teaching_cache;
+    private NSArray<CourseOffering> graderForButNotStudent_cache;
+    private NSArray<CourseOffering> instructorForButNotGraderOrStudent_cache;
+    private NSArray<CourseOffering> staffFor_cache;
+    private NSArray<CourseOffering> adminForButNotStaff_cache;
+    private NSArray<CourseOffering> adminForButNoOtherRelationships_cache;
     private String  name_LF_cache;
 
     private EOEditingContext ecForPrefs;

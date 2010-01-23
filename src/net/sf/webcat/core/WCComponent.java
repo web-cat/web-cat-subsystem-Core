@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2010 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -24,8 +24,6 @@ package net.sf.webcat.core;
 import com.webobjects.appserver.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
-import com.webobjects.foundation.NSValidation.*;
-
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -57,7 +55,8 @@ import org.apache.log4j.Logger;
  * </p>
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @author  latest changes by: $Author$
+ * @version $Revision$, $Date$
  */
 public class WCComponent
     extends WCComponentWithErrorMessages
@@ -590,7 +589,7 @@ public class WCComponent
      * @return True if the page can be rendered using the info from params,
      * or false if required parameters are missing.
      */
-    public boolean startWith( NSDictionary params )
+    public boolean startWith( NSDictionary<String, Object> params )
     {
         return true;
     }
@@ -755,7 +754,7 @@ public class WCComponent
      * this page (data that is not database-backed).
      * @return A map of transient settings
      */
-    public NSMutableDictionary transientState()
+    public NSMutableDictionary<String, Object> transientState()
     {
         return peerContextManager().transientState();
     }
@@ -764,12 +763,13 @@ public class WCComponent
     //~ Protected Methods .....................................................
 
     // ----------------------------------------------------------
-    protected String stringValueForKey( NSDictionary dict, String key )
+    protected String stringValueForKey(
+        NSDictionary<String, Object> dict, String key)
     {
         Object value = dict.valueForKey( key );
         if ( value != null && value instanceof NSArray )
         {
-            NSArray values = (NSArray)value;
+            NSArray<?> values = (NSArray<?>)value;
             if ( values.count() == 1 )
             {
                 value = values.objectAtIndex( 0 );
@@ -782,7 +782,7 @@ public class WCComponent
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
-    public WOComponent internalNext(boolean save)
+    private WOComponent internalNext(boolean save)
     {
         if ( hasMessages() )
         {
