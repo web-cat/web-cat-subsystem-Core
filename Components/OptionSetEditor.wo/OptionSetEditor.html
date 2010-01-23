@@ -3,7 +3,7 @@
 Show: <wo name="CategoryList">
     <script type="dojo/connect" event="onChange" args="evt">
     var widget = dijit.byId('<wo:str value="$idFor.categoryList"/>');
-    var catCount = <wo:str value="~categories != null ? categories.count : 0"/>;
+    var catCount = <wo:if condition="$categories"><wo:str value="$categories.count"/></wo:if><wo:else>0</wo:else>;
     var value = widget.getValue();
     var nodes = new dojo.NodeList();
     if (value.match(/\d+/))
