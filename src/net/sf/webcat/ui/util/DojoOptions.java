@@ -29,17 +29,17 @@ import com.webobjects.foundation.NSMutableDictionary;
  * that values can be either scalar values (which, if strings, are quoted as
  * necessary), direct JS code (which will not be quoted so it can be evaluated
  * on the client), or nested hashes.
- * 
+ *
  * We can't just shove the keys and values into a JSONObject and call toString
  * on that since it will quote all the keys and values.
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
 public class DojoOptions
 {
     //~ Constructors ..........................................................
-    
+
     // ----------------------------------------------------------
     /**
      * Initializes an empty option set.
@@ -56,7 +56,7 @@ public class DojoOptions
     /**
      * Returns a JavaScript hash string containing the key-value pairs in the
      * options object.
-     * 
+     *
      * @return a String representation of the JavaScript hash containing the
      *         values in the dictionary
      */
@@ -92,7 +92,7 @@ public class DojoOptions
     // ----------------------------------------------------------
     /**
      * Gets a value indicating whether or not the options set is empty.
-     * 
+     *
      * @return true if the options set is empty; otherwise false
      */
     public boolean isEmpty()
@@ -108,7 +108,7 @@ public class DojoOptions
      * true or false value will be used. Otherwise, the value will be treated
      * as a string (by calling toString) and it will be put into the options
      * set as a single-quoted string literal.
-     * 
+     *
      * @param key the option key
      * @param value the option value
      */
@@ -126,7 +126,7 @@ public class DojoOptions
      * modification or quoting so that it will be executed when the hash is
      * evaluated on the client. No syntax validation is performed on the
      * expression.
-     * 
+     *
      * @param key the option key
      * @param expression the expression that will be evaluated to obtain the
      *     value of the option
@@ -136,13 +136,13 @@ public class DojoOptions
         options.setObjectForKey(new ExpressionOption(expression),
                 stringAsValidKey(key));
     }
-    
+
 
     // ----------------------------------------------------------
     /**
      * Puts the specified options set as the value of a key in this option set.
      * This allows nested hashes to be constructed.
-     * 
+     *
      * @param key the option key
      * @param value the options set that will be used as the value of the
      *     option
@@ -152,12 +152,12 @@ public class DojoOptions
         options.setObjectForKey(new OptionsOption(value),
                 stringAsValidKey(key));
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Merges the specified options set into this options set.
-     * 
+     *
      * @param opts the options set that will be merged into this one
      */
     public void putAll(DojoOptions opts)
@@ -167,7 +167,7 @@ public class DojoOptions
             options.setObjectForKey(opts.options.objectForKey(key), key);
         }
     }
-    
+
 
     // ----------------------------------------------------------
     /**
@@ -175,15 +175,15 @@ public class DojoOptions
      * as a key in a JavaScript hash. That is, if the string is a valid
      * JavaScript identifier, it will be returned as is; otherwise, it will be
      * returned in single quotes.
-     * 
+     *
      * @param str the string to be made into a key
-     * 
+     *
      * @return the string converted into a form that can be used as a key
      */
     private static String stringAsValidKey(String str)
     {
         boolean isIdentifier = true;
-        
+
         if (str.length() > 0)
         {
             if (!Character.isJavaIdentifierStart(str.charAt(0)))
@@ -206,7 +206,7 @@ public class DojoOptions
         {
             isIdentifier = false;
         }
-        
+
         if (isIdentifier)
         {
             return str;
@@ -222,20 +222,20 @@ public class DojoOptions
     /**
      * Single-quotes the specified string, escaping any existing single quotes
      * and backslashes that may be present inside it.
-     * 
+     *
      * @param str the string to be single-quoted
-     * 
+     *
      * @return the single-quoted string
      */
     private static String singleQuote(String str)
     {
         StringBuffer buffer = new StringBuffer();
         buffer.append('\'');
-        
+
         for (int i = 0; i < str.length(); i++)
         {
             char ch = str.charAt(i);
-            
+
             if (ch == '\'')
             {
                 buffer.append("\\'");
@@ -265,13 +265,17 @@ public class DojoOptions
         {
             this.value = value;
         }
-        
+
 
         // ----------------------------------------------------------
         @Override
         public String toString()
         {
-            if (value instanceof Number || value instanceof Boolean)
+            if (value == null)
+            {
+                return "null";
+            }
+            else if (value instanceof Number || value instanceof Boolean)
             {
                 return value.toString();
             }
@@ -296,16 +300,23 @@ public class DojoOptions
         {
             this.expression = expression;
         }
-        
+
 
         // ----------------------------------------------------------
         @Override
         public String toString()
         {
-            return expression;
+            if (expression == null)
+            {
+                return "null";
+            }
+            else
+            {
+                return expression;
+            }
         }
 
-        
+
         //~ Static/instance variables .........................................
 
         private String expression;
@@ -320,16 +331,23 @@ public class DojoOptions
         {
             this.options = options;
         }
-        
+
 
         // ----------------------------------------------------------
         @Override
         public String toString()
         {
-            return options.toString();
+            if (options == null)
+            {
+                return "null";
+            }
+            else
+            {
+                return options.toString();
+            }
         }
 
-        
+
         //~ Static/instance variables .........................................
 
         private DojoOptions options;

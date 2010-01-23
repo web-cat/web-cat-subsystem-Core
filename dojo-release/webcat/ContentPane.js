@@ -66,6 +66,7 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
 
     //~ Methods ...............................................................
 
+ // BEGIN WEBCAT CHANGES
     // ----------------------------------------------------------
     startup: function()
     {
@@ -76,18 +77,21 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
 
 
     // ----------------------------------------------------------
-    _loadCheck: function(/* Boolean */ forceLoad)
+    _load: function()
     {
         if (this.alwaysDynamic || !this._initialStartup)
         {
             this.inherited(arguments);
         }
     },
+ // END WEBCAT CHANGES
 
 
     // ----------------------------------------------------------
-    _setContent: function(cont, isFakeContent)
-    {
+    _setContent: function(cont, isFakeContent){
+        // summary:
+        //		Insert the content into the container node
+
 // BEGIN WEBCAT CHANGES
         if (isFakeContent && !this.showsLoadingMessageOnRefresh)
             return;
@@ -96,16 +100,13 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
         // first get rid of child widgets
         this.destroyDescendants();
 
-        // Delete any state information we have about current contents
-        delete this._singleChild;
-
         // dojo.html.set will take care of the rest of the details
-        // we provide an overide for the error handling to ensure the widget gets the errors
+        // we provide an override for the error handling to ensure the widget gets the errors
         // configure the setter instance with only the relevant widget instance properties
         // NOTE: unless we hook into attr, or provide property setters for each property,
         // we need to re-configure the ContentSetter with each use
         var setter = this._contentSetter;
-        if(! (setter && setter instanceof dojo.html._ContentSetter)) {
+        if(! (setter && setter instanceof dojo.html._ContentSetter)){
             setter = this._contentSetter = new dojo.html._ContentSetter({
                 node: this.containerNode,
                 _onError: dojo.hitch(this, this._onError),
@@ -114,8 +115,7 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
                     // Run scripts that aren't of type "dojo/..." before the
                     // widgets are parsed. Also, use a synchronous xhrGet
                     // request to pull in any script tags that have src
-                    // attributes and execute those scripts, and (TODO) get any
-                    // link tags with type="text/css".
+                    // attributes and execute those scripts.
 
                     dojo.query("script", this.node).forEach(function(n) {
                         if (n.src)
@@ -172,13 +172,13 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
         delete this._contentSetterParams;
 
         if(!isFakeContent){
+            // Startup each top level child widget (and they will start their children, recursively)
             dojo.forEach(this.getChildren(), function(child){
-                child.startup();
-            });
-
-            if(this.doLayout){
-                this._checkIfSingleChild();
-            }
+                // The parser has already called startup on all widgets *without* a getParent() method
+                if(!this.parseOnLoad || child.getParent){
+                    child.startup();
+                }
+            }, this);
 
             // Call resize() on each of my child layout widgets,
             // or resize() on my single child layout widget...

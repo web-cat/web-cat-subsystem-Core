@@ -1,0 +1,41 @@
+.fake-module {
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.content-pane {
+    border: 1px solid silver;
+    background-color: white;
+    padding: 8px;
+}
+
+.floating-number {
+    float: right;
+    border: 1px solid blue;
+    padding: 4px;
+    margin-left: 1em;
+    font-size: 225%;
+}
+
+.titlepane-3left {
+    width: 27%;
+    margin-right: 2%;
+    float: left;
+    font-size: 70%;
+    line-height: 120%;
+}
+
+.titlepane-3center {
+    width: 27%;
+    margin-right: 2%;
+    float: left;
+    font-size: 70%;
+    line-height: 120%;
+}
+
+.titlepane-3right {
+    width: 27%;
+    float: left;
+    font-size: 70%;
+    line-height: 120%;
+}

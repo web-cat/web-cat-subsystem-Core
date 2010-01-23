@@ -22,12 +22,12 @@
 package net.sf.webcat.ui.util;
 
 import java.util.List;
+import net.sf.webcat.ui.WCForm;
 import org.json.JSONArray;
 import org.json.JSONException;
 import com.webobjects.appserver.WOAssociation;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation._NSDictionaryUtilities;
@@ -185,7 +185,7 @@ public class DojoRemoteHelper
             if (formId != null)
             {
                 options.putExpression("form",
-                        "dojo.query('form[name=" + formId + "]')[0]");
+                        WCForm.formElementByName(formId));
             }
         }
 
@@ -342,7 +342,7 @@ public class DojoRemoteHelper
             if (formId != null)
             {
                 options.putExpression("form",
-                        "dojo.query('form[name=" + formId + "]')[0]");
+                        WCForm.formElementByName(formId));
             }
         }
 

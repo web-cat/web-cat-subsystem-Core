@@ -25,26 +25,28 @@ import java.math.BigDecimal;
 import java.text.Format;
 import java.text.ParseException;
 import net.sf.webcat.ui._base.DojoFormElement;
+import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOAssociation;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOElement;
+import com.webobjects.appserver.WORequest;
+import com.webobjects.appserver.WOResponse;
 import com.webobjects.appserver._private.WODynamicElementCreationException;
 import com.webobjects.appserver._private.WOFormatterRepository;
 import com.webobjects.foundation.NSDictionary;
-import com.webobjects.foundation.NSLog;
 import com.webobjects.foundation.NSValidation;
 
 //------------------------------------------------------------------------
 /**
  * A basic text box that automatically takes on Dojo styling.
- * 
+ *
  * <h2>Bindings</h2>
  * <dl>
  * <dt>value</dt>
  * <dd>The text entered into the text box.</dd>
  * </dl>
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
@@ -63,6 +65,7 @@ public class WCTextBox extends DojoFormElement
         _dateFormat = _associations.removeObjectForKey("dateformat");
         _numberFormat = _associations.removeObjectForKey("numberformat");
         _useDecimalNumber = _associations.removeObjectForKey("useDecimalNumber");
+        _remoteValidator = _associations.removeObjectForKey("remoteValidator");
 
         if (_dateFormat != null && _numberFormat != null)
             throw new WODynamicElementCreationException("<" +
@@ -78,17 +81,51 @@ public class WCTextBox extends DojoFormElement
     @Override
     public String dojoType()
     {
-        return "dijit.form.TextBox";
+        if (_remoteValidator != null)
+        {
+            return "dijit.form.ValidationTextBox";
+        }
+        else
+        {
+            return "dijit.form.TextBox";
+        }
     }
-    
-    
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void appendChildrenToResponse(WOResponse response, WOContext context)
+    {
+        super.appendChildrenToResponse(response, context);
+
+        if (_remoteValidator != null)
+        {
+            WCForm.appendValidatorScriptToResponse(response, context);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public WOActionResults invokeAction(WORequest request, WOContext context)
+    {
+        if (_remoteValidator != null)
+        {
+            WCForm.addValidatorToCurrentForm(context.elementID(),
+                    _remoteValidator);
+        }
+
+        return super.invokeAction(request, context);
+    }
+
+
     // ----------------------------------------------------------
     @Override
     protected Object objectForStringValue(String stringValue, WOContext context)
     {
         WOComponent component = context.component();
         Object objectValue = stringValue;
-        
+
         if (stringValue != null)
         {
             Format formatter = null;
@@ -114,7 +151,7 @@ public class WCTextBox extends DojoFormElement
                     NSValidation.ValidationException exception =
                         new NSValidation.ValidationException(
                             e1.getMessage(), stringValue, keyPath);
-                    
+
                     component.validationFailedWithException(exception,
                             stringValue, keyPath);
 
@@ -132,11 +169,11 @@ public class WCTextBox extends DojoFormElement
                 objectValue = null;
             }
         }
-        
+
         return objectValue;
     }
-    
-    
+
+
     // ----------------------------------------------------------
     @Override
     protected String stringValueForObject(Object value, WOContext context)
@@ -145,7 +182,7 @@ public class WCTextBox extends DojoFormElement
         {
             WOComponent component = context.component();
             String stringValue = null;
-            
+
             Format formatter = WOFormatterRepository.formatterForInstance(
                     value, component, _dateFormat, _numberFormat, _formatter);
 
@@ -173,12 +210,13 @@ public class WCTextBox extends DojoFormElement
 
         return null;
     }
-    
+
 
     //~ Static/instance variables .............................................
 
     protected WOAssociation _formatter;
     protected WOAssociation _dateFormat;
     protected WOAssociation _numberFormat;
-    protected WOAssociation _useDecimalNumber;    
+    protected WOAssociation _useDecimalNumber;
+    protected WOAssociation _remoteValidator;
 }

@@ -20,6 +20,8 @@
 \*==========================================================================*/
 
 dojo.provide("webcat.Spinner");
+
+dojo.require("dojo.cache");
 dojo.require("dijit._Widget");
 dojo.require("dijit._Templated");
 
@@ -42,7 +44,7 @@ dojo.declare("webcat.Spinner",
      */
     size: "small",
 
-    templatePath: dojo.moduleUrl("webcat", "templates/Spinner.html"),
+    templateString: dojo.cache("webcat", "templates/Spinner.html"),
 
 
     //~ Methods ...............................................................
@@ -207,5 +209,5 @@ dojo.declare("webcat.Spinner",
         }
     }
 
-    })
+    });
 })();

@@ -35,35 +35,52 @@ import com.webobjects.foundation.NSDictionary;
 //--------------------------------------------------------------------------
 /**
  * A checkbox.
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
 public class WCCheckBox extends DojoFormElement
 {
     //~ Constructor ...........................................................
-    
+
     // ----------------------------------------------------------
     public WCCheckBox(String name,
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
         super("div", someAssociations, template);
-        
+
         _checked = _associations.removeObjectForKey("checked");
         _selection = _associations.removeObjectForKey("selection");
 
-        if(_checked == null && null == _value
-                || _checked != null && _value != null
-                || _checked != null && !_checked.isValueSettable()
-                || _value != null && _selection != null && !_selection.isValueSettable())
+        if (_checked == null && _value == null)
         {
             throw new WODynamicElementCreationException(
-                    "<" + getClass().getName()+ "> : Bad attribute list.");
+                    "<" + getClass().getName() +
+                    ">: Either 'checked' or 'value' must be bound.");
+        }
+        else if (_checked != null && _value != null)
+        {
+            throw new WODynamicElementCreationException(
+                    "<" + getClass().getName() +
+                    ">: Only one of 'checked' or 'value' may be bound.");
+        }
+        else if (_checked != null && !_checked.isValueSettable())
+        {
+            throw new WODynamicElementCreationException(
+                    "<" + getClass().getName()+ "> : The 'checked' binding " +
+                    "must be settable.");
+        }
+        else if (_value != null &&
+                _selection != null && !_selection.isValueSettable())
+        {
+            throw new WODynamicElementCreationException(
+                    "<" + getClass().getName()+ "> : When using 'value', " +
+                    "the 'selection' binding must be settable.");
         }
     }
 
-    
+
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
@@ -80,14 +97,14 @@ public class WCCheckBox extends DojoFormElement
     {
         return "checkbox";
     }
-    
+
 
     // ----------------------------------------------------------
     @Override
     public void takeValuesFromRequest(WORequest request, WOContext context)
     {
         WOComponent component = context.component();
-        
+
         if(!isDisabledInContext(context) && context.wasFormSubmitted())
         {
             String name = nameInContext(context);
@@ -105,7 +122,7 @@ public class WCCheckBox extends DojoFormElement
                 {
                     value = _value.valueInComponent(component);
                 }
-                
+
                 boolean selected = isValueInInputValues(value, formValues);
 
                 if(_value != null && _selection != null)
@@ -119,7 +136,7 @@ public class WCCheckBox extends DojoFormElement
                         _selection.setValue(null, component);
                     }
                 }
-                
+
                 if(_checked != null)
                 {
                     _checked.setValue(selected, component);
@@ -136,14 +153,14 @@ public class WCCheckBox extends DojoFormElement
         super.appendAttributesToResponse(response, context);
 
         WOComponent component = context.component();
-        
+
         if(_value != null)
         {
             Object value = _value.valueInComponent(component);
             if(value != null && _selection != null)
             {
                 Object selection = _selection.valueInComponent(component);
-                
+
                 if(selection != null &&
                         selection.toString().equals(value.toString()))
                 {
@@ -157,7 +174,7 @@ public class WCCheckBox extends DojoFormElement
             _appendTagAttributeAndValueToResponse(response, "value",
                     context.elementID(), false);
         }
-        
+
         if(checkedInContext(context))
         {
             _appendTagAttributeAndValueToResponse(response,
@@ -165,7 +182,7 @@ public class WCCheckBox extends DojoFormElement
         }
     }
 
-    
+
     // ----------------------------------------------------------
     protected boolean checkedInContext(WOContext context)
     {
@@ -175,13 +192,13 @@ public class WCCheckBox extends DojoFormElement
         }
         else
         {
-            return _checked.booleanValueInComponent(context.component());            
+            return _checked.booleanValueInComponent(context.component());
         }
     }
-    
-    
+
+
     //~ Static/instance variables .............................................
-    
+
     protected WOAssociation _checked;
     protected WOAssociation _selection;
 }

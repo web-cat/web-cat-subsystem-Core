@@ -81,26 +81,28 @@ dojo.declare("webcat.ComboBoxMixin", null,
     // ----------------------------------------------------------
     _computeIdealWidth: function()
     {
-        var maxWidth = this.minimumWidth;
+        var maxWidth = 0;
         var parentNode = this.domNode.parentNode;
+
+        // A dummy element is added to the parent of this widget so that
+        // whatever styling applies to the widget also applies to the span
+        // that we're getting the size of.
+        var el = dojo.create("span", { }, parentNode);
 
         dojo.forEach(this._itemCache, function(item)
         {
-            // A dummy element is added to the parent of this widget so that
-            // whatever styling applies to the widget also applies to the span
-            // that we're getting the size of.
-
-            var el = dojo.create("span", { innerHTML: item }, parentNode);
-            var width = dojo.marginBox(el).w;
-            dojo.destroy(el);
-
-            if (width > maxWidth)
-            {
-                maxWidth = width;
-            }
+            el.innerHTML = item;
+            maxWidth = Math.max(maxWidth, dojo.marginBox(el).w);
         });
 
-        this._idealWidth = maxWidth;
+        dojo.destroy(el);
+
+        this._idealWidth = Math.max(this.minimumWidth, maxWidth);
+
+        if (maxWidth)
+        {
+            this._resizeToIdealWidth();
+        }
     },
 
 
@@ -202,23 +204,57 @@ dojo.declare("webcat.ComboBoxMixin", null,
     {
         if (!this.fixedSize)
         {
-            if (!this._idealWidth)
+            var dialog = this._getContainingTooltipDialog();
+            if (dialog)
             {
-                this._computeIdealWidth();
+                dojo.connect(dialog, "onOpen", this, this._computeIdealWidth);
             }
-
-            var tb = this.textbox;
-            var dn = this.domNode;
-            var diff = dojo.marginBox(dn).w - dojo.marginBox(tb).w;
-            var newWidth = this._idealWidth + diff + 4;
-
-            if (newWidth > this.maximumWidth)
-            {
-                newWidth = this.maximumWidth;
-            }
-
-            dojo.marginBox(dn, { w: newWidth });
         }
+    },
+
+
+    // ----------------------------------------------------------
+    _getContainingTooltipDialog: function()
+    {
+        var parents = dojo.query(this.domNode).parents(".dijitTooltipDialog");
+        var dialog = null;
+        if (parents.length)
+        {
+            dialog = dijit.byNode(parents[0]);
+        }
+
+        return dialog;
+    },
+
+
+    // ----------------------------------------------------------
+    _getContainingPopup: function()
+    {
+        var parents = dojo.query(this.domNode).parents(".dijitPopup");
+        var popup = null;
+        if (parents.length)
+        {
+            popup = parents[0];
+        }
+
+        return popup;
+    },
+
+
+    // ----------------------------------------------------------
+    _resizeToIdealWidth: function()
+    {
+        var tb = this.textbox;
+        var dn = this.domNode;
+        var diff = dojo.marginBox(dn).w - dojo.marginBox(tb).w;
+        var newWidth = this._idealWidth + diff + 4;
+
+        if (newWidth > this.maximumWidth)
+        {
+            newWidth = this.maximumWidth;
+        }
+
+        dojo.marginBox(dn, { w: newWidth });
     }
 });
 
@@ -250,8 +286,7 @@ dojo.declare("webcat._ComboBoxMenu", dijit.form._ComboBoxMenu,
 
 
     // ----------------------------------------------------------
-    createOptions: function(results, dataObject, labelFunc)
-    {
+    createOptions: function(results, dataObject, labelFunc){
         // summary:
         //		Fills in the items in the drop down list
         // results:
@@ -287,7 +322,7 @@ dojo.declare("webcat._ComboBoxMenu", dijit.form._ComboBoxMenu,
                 displayMore = true;
             }else if((dataObject.start + dataObject.count) > (dataObject._maxOptions - 1)){
                 //Weird return from a datastore, where a start + count > maxOptions
-                //implies maxOptions isn't really valid and we have to go into faking it.
+                // implies maxOptions isn't really valid and we have to go into faking it.
                 //And more or less assume more if count == results.length
                 if(dataObject.count == results.length){
                     displayMore = true;
@@ -301,7 +336,8 @@ dojo.declare("webcat._ComboBoxMenu", dijit.form._ComboBoxMenu,
 
         this.nextButton.style.display = displayMore ? "" : "none";
         dojo.attr(this.nextButton,"id", this.id + "_next");
-    }
+        return this.domNode.childNodes;
+    },
 });
 
 

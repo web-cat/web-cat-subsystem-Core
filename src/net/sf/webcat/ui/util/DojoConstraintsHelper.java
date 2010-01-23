@@ -31,14 +31,14 @@ import com.webobjects.foundation._NSDictionaryUtilities;
 /**
  * A class that more easily allows a Dojo-based element to manage the
  * associations that represent constraints.
- * 
+ *
  * This object should be created in the element's constructor. Any bindings
  * that represent constraints that are specified are removed from the element's
  * associations map, so that they are not output as attributes on the tag. Then,
  * in the elements appendAttributesToResponse method, these bindings can be
  * queried and their values returned in a string representing a JavaScript hash
  * that is appropriate for use as the "constraints" attribute.
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
@@ -49,7 +49,7 @@ public class DojoConstraintsHelper
     // ----------------------------------------------------------
     /**
      * Initializes a new instance of the DojoConstraintsHelper class.
-     * 
+     *
      * @param associations the associations from the element
      */
     @SuppressWarnings("unchecked")
@@ -59,7 +59,7 @@ public class DojoConstraintsHelper
         _constraintAssociations =
             _NSDictionaryUtilities.extractObjectsForKeysWithPrefix(
                     associations, "constraints.", true);
-        
+
         if (_constraintAssociations == null ||
                 _constraintAssociations.count() <= 0)
         {
@@ -67,16 +67,16 @@ public class DojoConstraintsHelper
         }
 
     }
-    
+
 
     //~ Methods ...............................................................
-    
+
     // ----------------------------------------------------------
     /**
      * @param context the context under which to access the binding values
      * @param additionalConstraints additional constraints that should be added
-     *     to the user-supplied bindings
-     * 
+     *     to (overriding) the user-supplied bindings
+     *
      * @return a string representing the constraints hash
      */
     public String constraintsFromBindingValues(WOContext context,
@@ -90,10 +90,39 @@ public class DojoConstraintsHelper
             {
                 WOAssociation assoc =
                     _constraintAssociations.objectForKey(constraint);
-                
+
                 if (assoc != null)
                 {
                     Object value = assoc.valueInComponent(context.component());
+
+                    // Literal constants specified in the WOD file (or inline
+                    // bindings) will come through as strings, but if the string
+                    // is actually a number, we should treat it as one.
+
+                    if (value instanceof String)
+                    {
+                        String stringValue = (String) value;
+
+                        try
+                        {
+                            Integer intValue = Integer.parseInt(stringValue);
+                            value = intValue;
+                        }
+                        catch (NumberFormatException e)
+                        {
+                            try
+                            {
+                                Double doubleValue =
+                                    Double.parseDouble(stringValue);
+                                value = doubleValue;
+                            }
+                            catch (NumberFormatException e2)
+                            {
+                                // Do nothing; old value will pass through.
+                            }
+                        }
+                    }
+
                     constraints.putValue(constraint, value);
                 }
             }
@@ -113,7 +142,7 @@ public class DojoConstraintsHelper
             return null;
         }
     }
-    
+
 
     //~ Static/instance variables .............................................
 

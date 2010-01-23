@@ -38,7 +38,7 @@ public abstract class JavascriptFunction
      */
     public JavascriptFunction()
     {
-        args = "";
+        this("");
     }
 
 

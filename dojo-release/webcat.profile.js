@@ -4,8 +4,10 @@ dependencies = {
             name: '../webcat/BasePage.js',
             resourceName: 'webcat.BasePage',
             dependencies: [
+                "dojo.cache",
                 "dojo.dnd.Source",
                 "dojo.NodeList-fx",
+                "dojo.NodeList-traverse",
                 "dijit.Dialog",
                 "dijit.InlineEditBox",
                 "dijit.Menu",
@@ -21,6 +23,7 @@ dependencies = {
                 "dijit.form.FilteringSelect",
                 "dijit.form.Form",
                 "dijit.form.NumberSpinner",
+                "dijit.form.Select",
                 "dijit.form.SimpleTextarea",
                 "dijit.form.Slider",
                 "dijit.form.Textarea",
@@ -29,6 +32,7 @@ dependencies = {
                 "dijit.form.ValidationTextBox",
                 "dojox.data.dom",
                 "dojox.form.FileInput",
+                "dojox.form.TimeSpinner",
                 "webcat.global",
                 "webcat.Blocker",
                 "webcat.ComboBox",
@@ -38,7 +42,8 @@ dependencies = {
                 "webcat.Table",
                 "webcat.TableSource",
                 "webcat.TitlePane",
-                "webcat.Tree"
+                "webcat.Tree",
+                "webcat.ValidationResults"
             ]
         }
     ],
