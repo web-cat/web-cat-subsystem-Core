@@ -1,0 +1,154 @@
+<wo name="Page">
+
+<div class="module fake-module">
+
+<b>Content pane with component content loaded immediately (default behavior):</b>
+<div class="content-pane">
+<wo:WCContentPane>
+<div class="floating-number">
+<wo:str value="$counters.contentPane1"/>
+</div>
+<div>
+This content pane should show its contents right away (populated on page-load).
+The number to the right should always be 1. If it is greater than 1, then the
+content pane has refreshed itself on page-load; this is not the desired
+behavior.
+</div>
+</wo:WCContentPane>
+</div>
+
+<b>Content pane that always loads its content dynamically (<code>alwaysDynamic="true"</code>):</b>
+<div class="content-pane">
+<wo:WCContentPane showsLoadingMessageOnRefresh="true" alwaysDynamic="true">
+<div class="floating-number">
+<wo:str value="$counters.contentPane2"/>
+</div>
+<div>
+This content pane should have displayed a "Loading..." message before this content
+appeared. The number to the right should always be 1. If it is greater than 1,
+then the content pane must have loaded its content at page-load time; this is
+not the desired behavior.
+</div>
+</wo:WCContentPane>
+</div>
+
+</div>
+
+<div class="module titlepane-3left">
+<wo:WCTitlePane title="Immediate content" id="titlePane1">
+<div class="floating-number">
+<wo:str value="$counters.titlePane1"/>
+</div>
+<div>
+This title pane should show its contents right away (populated on page-load).
+The number to the right should always be 1. If it is greater than 1, then the
+title pane has refreshed itself on page-load; this is not the desired
+behavior.
+</div>
+</wo:WCTitlePane>
+</div>
+
+<div class="module titlepane-3center">
+<wo:WCTitlePane showsLoadingMessageOnRefresh="true" alwaysDynamic="true" title="Always dynamic">
+<div class="floating-number">
+<wo:str value="$counters.titlePane2"/>
+</div>
+<div>
+This title pane should have started open and displayed a "Loading..." message
+before this content appeared. The number to the right should always be 1. If it
+is greater than 1, then the content pane must have loaded its content at
+page-load time; this is not the desired behavior.
+</div>
+</wo:WCTitlePane>
+</div>
+
+<div class="module titlepane-3right">
+<wo:WCTitlePane open="false" showsLoadingMessageOnRefresh="true" title="Closed at start">
+<div class="floating-number">
+<wo:str value="$counters.titlePane3"/>
+</div>
+<div>
+This title pane should have started closed and displayed a "Loading..." message
+when it was opened, before this content appeared. The number to the right
+should always be 1. If it is greater than 1, then the content pane must have
+loaded its content at page-load time; this is not the desired behavior.
+</div>
+</wo:WCTitlePane>
+</div>
+
+<div style="clear: both">&nbsp;</div>
+
+<wo:WCPageModule title="Other Controls">
+<h3>Vertical Alignment Test</h3>
+<p>
+We should make sure these controls line up vertically to the best of our ability.
+</p>
+<p style="border: 1px solid blue">
+<label for="foo">Some text:</label> <input id="foo" type="checkbox" dojoType="dijit.form.CheckBox"/> <wo:WCTextBox value="~'textbox'"/> <wo:WCFilteringSelect list="~{'one', 'two', 'three'}"/> <wo:WCNumberSpinner value="0" constraints.min="0" constraints.max="100" constraints.places="0" /> <wo:WCButton label="Button"/>
+</p>
+
+<h3>Form Test</h3>
+<wo:WCForm>
+
+<div>
+<label for="checkbox">WCCheckBox:</label>
+<wo:WCCheckBox id="checkbox" checked="$formValues.checkbox"/>
+</div>
+
+<div>
+<label for="numberSpinner">WCNumberSpinner:</label>
+<wo:WCNumberSpinner id="numberSpinner" value="$formValues.numberSpinner" constraints.min="0" constraints.max="100"/>
+</div>
+
+<div>
+<span class="label">WCDateTimePicker:</span>
+<wo:WCDateTimePicker value="$formValues.dateTimePicker"/>
+</div>
+
+<div>
+<wo:WCButton label="Normal"/>
+<wo:WCButton label="Positive" class="pos"/>
+<wo:WCButton label="Negative" class="neg"/>
+</div>
+<div>
+<wo:WCButton label="Normal" disabled="true"/>
+<wo:WCButton label="Positive" class="pos" disabled="true"/>
+<wo:WCButton label="Negative" class="neg" disabled="true"/>
+</div>
+<div>
+<wo:WCButton label="Test Server-side Dialog" remote="true" action="$displayDialog">
+<script type="dojo/connect" event="onClick" args="e">
+//webcat.block(this.domNode);
+</script>
+</wo:WCButton>
+</div>
+<div>
+<wo name="SubmitForm"/>
+</div>
+
+</wo:WCForm>
+</wo:WCPageModule>
+
+<wo:WCPageModule title="Validated Form">
+<wo:WCForm>
+<table class="layout">
+<tr>
+<td><label for="validatedTextBox">Validated textbox:</label></td>
+<td>
+<wo name="ValidatedTextBox"/>
+</td>
+</tr>
+<tr>
+<td><label for="validatedPassword">Enter a password:</label></td>
+<td><wo:WCTextBox id="validatedPassword" value="$formValues.validatedPassword" remoteValidator="$validatePassword"/></td>
+</tr>
+<tr>
+<td><label for="validatedConfirmPassword">Confirm password:</label></td>
+<td><wo:WCTextBox id="validatedConfirmPassword" password="true" value="$formValues.validatedConfirmPassword" remoteValidator="$validateConfirmPassword"/></td>
+</tr>
+</table>
+<wo name="ValidateForm"/>
+</wo:WCForm>
+</wo:WCPageModule>
+
+</wo>

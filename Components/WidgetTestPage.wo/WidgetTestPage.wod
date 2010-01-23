@@ -1,0 +1,20 @@
+Page : WCPageWithNavigation {
+}
+
+ValidateForm : WCButton {
+    label = "Validate";
+    action = validateForm;
+    remote = true;
+}
+
+SubmitForm : WCButton {
+    label = "Submit";
+    action = submitForm;
+    remote = true;
+}
+
+ValidatedTextBox : WCTextBox {
+    id = "validatedTextBox";
+    value = formValues.validatedTextBox;
+    remoteValidator = validateTextBox;
+}

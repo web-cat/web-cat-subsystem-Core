@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.*;
 import er.extensions.eof.ERXConstant;
+import net.sf.webcat.ui.generators.JavascriptGenerator;
 import net.sf.webcat.ui.util.ComponentIDGenerator;
 import org.apache.log4j.*;
 
@@ -287,10 +288,12 @@ public class OptionEditPanel
 
 
     // ----------------------------------------------------------
-    public WOComponent clearValue()
+    public JavascriptGenerator clearValue()
     {
         setValue( null );
-        return null;
+
+        return new JavascriptGenerator().refresh(
+                (String) idFor.valueForKey("valueContainer"));
     }
 
 

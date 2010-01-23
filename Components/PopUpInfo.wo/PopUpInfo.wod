@@ -1,5 +1,6 @@
 Span: WOGenericContainer {
     elementName = "span";
+    class = "webcatPopUpInfo";
     id = idFor.tooltipTarget;
 }
 

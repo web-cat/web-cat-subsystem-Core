@@ -27,7 +27,6 @@ import net.sf.webcat.core.messaging.Message;
 import net.sf.webcat.core.messaging.MessageDescriptor;
 import net.sf.webcat.core.messaging.Protocol;
 import net.sf.webcat.ui.generators.JavascriptGenerator;
-import net.sf.webcat.ui.validation.ValidatingAction;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
