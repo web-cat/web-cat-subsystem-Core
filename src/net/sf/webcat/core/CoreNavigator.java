@@ -29,6 +29,7 @@ import net.sf.webcat.core.EntityUtils;
 import net.sf.webcat.core.INavigatorObject;
 import net.sf.webcat.core.Semester;
 import net.sf.webcat.core.WCComponent;
+import net.sf.webcat.ui.generators.JavascriptGenerator;
 import net.sf.webcat.ui.util.ComponentIDGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOComponent;
@@ -373,7 +374,9 @@ public class CoreNavigator
             log.debug("courseOfferings = " + courseOfferings);
             log.debug("selected course offering = " + selectedCourseOffering);
         }
-        return null;
+
+        return new JavascriptGenerator().refresh(
+                (String) idFor.valueForKey("coursePane"));
     }
 
 

@@ -1,7 +1,7 @@
 <wo:WCDiv dojoType="dijit.form.DropDownButton" id="$idFor.navigatorButton">
 <span>Change Course</span>
 <wo:WCDiv dojoType="dijit.TooltipDialog" title="Choose Course">
-<wo:WCForm>
+<wo:WCForm id="$idFor.form">
 <fieldset class="course">
 <legend>Selected Course</legend>
 <ol>
@@ -34,8 +34,15 @@
 </wo:if>
 </ol></fieldset>
 <div class="center">
-<wo name="OK">OK</wo>
-<wo:if negate="true" condition="$startOpen"><wo name="Cancel">Cancel</wo></wo:if>
+<wo name="OK"/>
+<wo:if negate="true" condition="$startOpen">
+<wo name="Cancel">
+<script type="dojo/connect" event="onClick" args="evt">
+dijit.byId('<wo:str value="$idFor.form"/>').reset();
+dijit.byId('<wo:str value="$idFor.navigatorButton"/>').closeDropDown();
+</script>
+</wo>
+</wo:if>
 </div>
 </wo:WCForm>
 </wo:WCDiv>
