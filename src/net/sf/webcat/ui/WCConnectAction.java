@@ -47,12 +47,12 @@ import er.extensions.components.ERXComponentUtilities;
  * normally would in a dojo/connect script tag. The bindings that specify which
  * action to execute are similar to those offered by DojoFormActionElement and
  * DojoRemoteHelper.
- * 
+ *
  * TODO should this element subclass WCActionFunction now to simply add script
  * tag wrappers around the generated function call? This would allow the
  * element to support synchronous actions as well as asynchronous ones without
  * too much effort.
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
@@ -73,7 +73,7 @@ public class WCConnectAction extends WOHTMLDynamicElement
             _associations.removeObjectForKey("directActionName");
         _remoteHelper = new DojoRemoteHelper(_associations);
     }
-    
+
 
     //~ Methods ...............................................................
 
@@ -87,8 +87,8 @@ public class WCConnectAction extends WOHTMLDynamicElement
 
         super.appendAttributesToResponse(response, context);
     }
-    
-    
+
+
     // ----------------------------------------------------------
     @Override
     public void appendChildrenToResponse(WOResponse response, WOContext context)
@@ -96,7 +96,7 @@ public class WCConnectAction extends WOHTMLDynamicElement
         super.appendChildrenToResponse(response, context);
 
         String elemName = nameInContext(context);
-        
+
         response.appendContentString("\n");
         response.appendContentString(_remoteHelper.partialSubmitCall(
                 "this", elemName, null, context));
@@ -117,8 +117,8 @@ public class WCConnectAction extends WOHTMLDynamicElement
             return context.elementID();
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     @Override
     public WOActionResults invokeAction(WORequest request, WOContext context)
@@ -128,7 +128,7 @@ public class WCConnectAction extends WOHTMLDynamicElement
         {
             return null;
         }
-        
+
         WOActionResults result = null;
 
         WOComponent component = context.component();
@@ -136,8 +136,9 @@ public class WCConnectAction extends WOHTMLDynamicElement
         AjaxUtils.createResponse(request, context);
         AjaxUtils.mutableUserInfo(request);
 
+        context.setActionInvoked(true);
         result = (WOActionResults) _action.valueInComponent(component);
-        
+
         AjaxUtils.updateMutableUserInfoWithAjaxInfo(context);
 
         if (result == context.page())
@@ -158,7 +159,7 @@ public class WCConnectAction extends WOHTMLDynamicElement
 
 
     //~ Static/instance variables .............................................
-    
+
     protected WOAssociation _jsId;
     protected WOAssociation _action;
     protected WOAssociation _actionClass;

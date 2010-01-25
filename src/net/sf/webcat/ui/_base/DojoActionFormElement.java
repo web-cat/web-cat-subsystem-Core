@@ -53,7 +53,7 @@ import er.extensions.components.ERXComponentUtilities;
  * ensure that both handlers are called correctly. In all cases, user-supplied
  * <tt>onClick</tt> handlers will be executed <i>before</i> the action handler.
  * </p>
- * 
+ *
  * <h2>Bindings</h2>
  * <table>
  * <tr>
@@ -63,7 +63,7 @@ import er.extensions.components.ERXComponentUtilities;
  * <tr>
  * <td>{@code directActionName}</td>
  * <td>The name of the direct action method (minus the "Action" suffix) to
- * invoke when this element is activated. Defaults to ÒdefaultÓ.</td>
+ * invoke when this element is activated. Defaults to ï¿½defaultï¿½.</td>
  * </tr>
  * <tr>
  * <td>{@code actionClass}</td>
@@ -139,7 +139,7 @@ import er.extensions.components.ERXComponentUtilities;
  * </b></td>
  * </tr>
  * </table>
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
@@ -153,12 +153,12 @@ public abstract class DojoActionFormElement extends DojoFormElement
             WOElement template)
     {
         super(name, someAssociations, template);
-        
+
         _action = _associations.removeObjectForKey("action");
         _actionClass = _associations.removeObjectForKey("actionClass");
         _directActionName =
             _associations.removeObjectForKey("directActionName");
-        
+
         _remoteHelper = new DojoRemoteHelper(_associations);
     }
 
@@ -207,9 +207,9 @@ public abstract class DojoActionFormElement extends DojoFormElement
      * dynamically creates a button and uses it to submit the form.
      * </p><p>
      * Important: Make sure to use WCForm (or, at the very least, ERXWOForm) so
-     * that the auto-detection of the containing form works correctly. 
+     * that the auto-detection of the containing form works correctly.
      * </p>
-     * 
+     *
      * @return true if the element needs a fake form submit to simulate a
      *     page-load submit; false if the element itself can perform the submit
      */
@@ -217,8 +217,8 @@ public abstract class DojoActionFormElement extends DojoFormElement
     {
         return false;
     }
-    
-    
+
+
     // ----------------------------------------------------------
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
@@ -234,8 +234,8 @@ public abstract class DojoActionFormElement extends DojoFormElement
             response.appendContentString(" />");
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     protected void appendNameAttributeToResponse(WOResponse response,
             WOContext context)
@@ -276,8 +276,8 @@ public abstract class DojoActionFormElement extends DojoFormElement
             response.appendContentString("\n</script>\n");
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     @Override
     public void appendChildrenToResponse(WOResponse response,
@@ -290,7 +290,7 @@ public abstract class DojoActionFormElement extends DojoFormElement
             appendOnClickScriptToResponse(response, context);
         }
     }
-    
+
 
     // ----------------------------------------------------------
     protected String shadowButtonIdInContext(WOContext context)
@@ -308,7 +308,7 @@ public abstract class DojoActionFormElement extends DojoFormElement
         WOComponent component = context.component();
 
         String actionUrl = null;
-        
+
         if (_directActionName != null)
         {
             // TODO may need work
@@ -329,8 +329,8 @@ public abstract class DojoActionFormElement extends DojoFormElement
                             nameInContext(context), null, context));
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public WOActionResults invokeAction(WORequest request, WOContext context)
     {
@@ -357,11 +357,12 @@ public abstract class DojoActionFormElement extends DojoFormElement
         AjaxUtils.createResponse(request, context);
         AjaxUtils.mutableUserInfo(request);
 
+        context.setActionInvoked(true);
         if (_action != null)
         {
             result = (WOActionResults) _action.valueInComponent(component);
         }
-        
+
         AjaxUtils.updateMutableUserInfoWithAjaxInfo(context);
 
         if (result == context.page())
@@ -387,7 +388,7 @@ public abstract class DojoActionFormElement extends DojoFormElement
     {
         WOActionResults actionResult = null;
         WOComponent component = context.component();
-        
+
         if(!isDisabledInContext(context) && context.wasFormSubmitted())
         {
             if(context.isMultipleSubmitForm())
@@ -395,13 +396,13 @@ public abstract class DojoActionFormElement extends DojoFormElement
                 if(request.formValueForKey(nameInContext(context)) != null)
                 {
                     context.setActionInvoked(true);
-                    
+
                     if(_action != null)
                     {
                         actionResult = (WOActionResults)
                             _action.valueInComponent(component);
                     }
-                    
+
                     if(actionResult == null)
                     {
                         actionResult = context.page();
@@ -411,13 +412,13 @@ public abstract class DojoActionFormElement extends DojoFormElement
             else
             {
                 context.setActionInvoked(true);
-                
+
                 if(_action != null)
                 {
                     actionResult = (WOActionResults)
                         _action.valueInComponent(component);
                 }
-                
+
                 if(actionResult == null)
                 {
                     actionResult = context.page();
@@ -428,13 +429,13 @@ public abstract class DojoActionFormElement extends DojoFormElement
         return actionResult;
     }
 
-    
+
     //~ Static/instance variables .............................................
-    
+
     protected WOAssociation _action;
     protected WOAssociation _actionClass;
     protected WOAssociation _directActionName;
-    
+
     protected DojoRemoteHelper _remoteHelper;
 
     private static final Logger log =
