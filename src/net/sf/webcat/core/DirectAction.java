@@ -119,6 +119,15 @@ public class DirectAction
                 startPage = pageWithName( session.currentPageName() );
             }
             WOActionResults result = startPage.generateResponse();
+
+            // Update the current theme in the cookie when the user logs in,
+            // so that it is always the most recent theme in situations where
+            // multiple users are using the same browser/client.
+            if (session.user().theme() != null)
+            {
+                session.user().theme().setAsLastUsedThemeInContext(context());
+            }
+
             return result;
         }
         else
