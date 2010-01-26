@@ -22,6 +22,10 @@
 package net.sf.webcat.core;
 
 import java.io.File;
+import com.webobjects.appserver.WOContext;
+import com.webobjects.appserver.WOCookie;
+import com.webobjects.appserver.WORequest;
+import com.webobjects.appserver.WOResponse;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.foundation.ERXValueUtilities;
@@ -62,6 +66,47 @@ public class Theme
         ensureThemesLoaded();
         return themeForDirName(
             EOSharedEditingContext.defaultSharedEditingContext(), dirName);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns the last used theme that was stored in the browser's cookies.
+     *
+     * @param context the context from which to retrieve the cookie
+     * @return The last-used theme stored in the cookie
+     */
+    public static Theme lastUsedThemeInContext(WOContext context)
+    {
+        String lastUsedTheme = context.request().cookieValueForKey(
+                COOKIE_LAST_USED_THEME);
+
+        if (lastUsedTheme != null)
+        {
+            return themeFromName(lastUsedTheme);
+        }
+        else
+        {
+            return themeFromName("dream-way");
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Stores this theme as the last used theme in the browser's cookies. This
+     * is used on pages such as the login page when a user session does not yet
+     * exist, but we would still like to present them with the theme they used
+     * last (on the same browser/client).
+     *
+     * @param context the context in which to store the cookie
+     */
+    public void setAsLastUsedThemeInContext(WOContext context)
+    {
+        String path = context.urlWithRequestHandlerKey(null, null, null);
+        WOCookie cookie = new WOCookie(COOKIE_LAST_USED_THEME, dirName(), path,
+                null, -1, false);
+        context.response().addCookie(cookie);
     }
 
 
@@ -470,4 +515,7 @@ public class Theme
     private static final String INHERIT_KEY    = "inherit";
     private static final String INHERIT_PREFIX = INHERIT_KEY + ".";
     private static final int INHERIT_PREFIX_LEN = INHERIT_PREFIX.length();
+
+    private static final String COOKIE_LAST_USED_THEME =
+        "net.sf.webcat.core.Theme.lastUsed";
 }

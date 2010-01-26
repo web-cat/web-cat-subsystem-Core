@@ -410,7 +410,10 @@ public class WCBasePage
         }
         else
         {
-            return Theme.defaultTheme();
+            Theme lastUsedTheme = Theme.lastUsedThemeInContext(context());
+
+            return (lastUsedTheme != null) ?
+                    lastUsedTheme : Theme.defaultTheme();
         }
     }
 

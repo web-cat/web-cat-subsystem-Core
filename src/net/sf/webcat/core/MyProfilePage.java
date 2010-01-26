@@ -351,6 +351,8 @@ public class MyProfilePage
     public WOComponent changeTheme()
     {
         user().setTheme(aTheme);
+        aTheme.setAsLastUsedThemeInContext(context());
+
         log.debug("Changing theme, before = " + user().theme());
         log.debug("user ec = " + user().editingContext()
             + ", theme ec = "
