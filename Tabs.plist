@@ -1,18 +1,4 @@
 {
-  admin = {
-    accessLevel = 100;
-    children = {
-      Home = {
-        children = {
-          "Widget Tests" = {
-            pageName    = net.sf.webcat.core.WidgetTestPage;
-            accessLevel = 100;
-            priority    = 99999;
-          };
-        };
-      };
-    };
-  };
   staff = {
     accessLevel = 40;
     priority    = 100;
