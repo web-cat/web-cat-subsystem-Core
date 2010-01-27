@@ -81,15 +81,27 @@ public class WCCourseComponent
 
         if (!force)
         {
-            _appendToResponse(response, context);
+            beforeAppendToResponse(response, context);
         }
 
         super.appendToResponse(response, context);
+
+        if (!force)
+        {
+            afterAppendToResponse(response, context);
+        }
     }
 
 
     // ----------------------------------------------------------
-    protected void _appendToResponse(WOResponse response, WOContext context)
+    protected void beforeAppendToResponse(WOResponse response, WOContext context)
+    {
+        // Overridden by subclasses.
+    }
+
+
+    // ----------------------------------------------------------
+    protected void afterAppendToResponse(WOResponse response, WOContext context)
     {
         // Overridden by subclasses.
     }
