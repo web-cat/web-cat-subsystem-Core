@@ -1,0 +1,83 @@
+.aristo .dijitMenu,
+.aristo .dijitMenuBar {
+	color: #000;
+	border: 1px solid #ACACAC;
+	margin: 0px;
+	padding: 0px;
+	background: #B1CDDD url("images/titleBar.png") repeat-x top left;
+	text-shadow: 0 1px 0 #e5f1f8;	
+}
+.aristo .dijitMenu {
+	color: #000;
+	background: #F4F4F4;
+	border-collapse: separate; 
+	border-spacing: 0;
+	-moz-border-radius-bottomleft: 5px;
+	-moz-border-radius-bottomright: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+	-webkit-border-bottom-right-radius: 5px;
+	-moz-box-shadow: 0px 4px 8px #515151;
+	-webkit-box-shadow: 0px 4px 8px #515151 !important;
+	text-shadow: 0 1px 0 #FFF;			
+}
+.dj_ie .aristo .dijitMenu {
+	border-collapse: collapse;
+}
+.aristo .dijitBorderContainer .dijitMenuBar {
+	border: 1px solid #979797;
+}
+.aristo .dijitMenuItem {
+	margin: 0;
+	padding: 5px;
+}
+.aristo .dijitMenu .dijitMenuItem {
+	
+	padding: 0;
+	display: block;
+}
+.aristo ul.dijitMenu .dijitMenuItem {
+	padding: 5px;
+}
+.aristo .dijitMenuPreviousButton, .aristo .dijitMenuNextButton {
+	font-style: italic;
+}
+.aristo .dijitMenuItem td {
+	padding: 2px;
+}
+.aristo .dijitMenuPassive .dijitMenuItemHover,
+.aristo .dijitMenuItemSelected {
+	background: #2020D0;
+	color: #FFF;
+	text-shadow: none;
+}
+.aristo .dijitMenuItemIcon {
+	width: 17px;
+	height: 17px;
+}
+.aristo .dijitMenuExpand {
+	position: relative;
+	top: 1px;
+	width: 9px;
+	height: 10px;
+	background-image: url('images/arrowSprite.png');
+	background-position: -9px 0px;
+}
+.aristo .dijitMenuSeparatorTop {
+	border-bottom: 1px solid #9b9b9b;
+}
+.aristo .dijitMenuSeparatorBottom {
+	border-top: 1px solid #e8e8e8;
+}
+.aristo .dijitCheckedMenuItemIconChar {
+	display: none;
+}
+.aristo .dijitCheckedMenuItemIcon {
+	background-image: url('images/checkmark.png');
+	background-position: -17px;
+}
+.dj_ie6 .aristo .dijitCheckedMenuItemIcon {
+	background-image: url('images/checkmark.gif');
+}
+.aristo .dijitCheckedMenuItemChecked .dijitCheckedMenuItemIcon {
+	background-position: 0;
+}

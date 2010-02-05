@@ -1,0 +1,10 @@
+
+.dijitRtl .aristo .dijitEditorIcon {
+	background-image: url('images/editor_rtl.gif'); 
+}
+.dijitRtl .aristo .dijitDisabled .dijitEditorIcon {
+	background-image: url('images/editorDisabled_rtl.gif'); 
+}
+.dijitRtl .aristo .dijitToolbar .dijitToolbarSeparator {
+	background-image: url('images/editor_rtl.gif');
+}

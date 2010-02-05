@@ -1,0 +1,54 @@
+.aristo .dijitTitlePaneTitle {
+	background: #C9C9C9 url("images/titleBar.png") repeat-x top left;
+	border: 1px solid #979797;
+	padding: 6px 4px 6px 8px;
+	cursor: pointer;
+}
+.aristo .dijitTitlePaneTitle-hover  {
+	background: #D0D0D0 url("images/accordionItemHover.png") top repeat-x;
+}
+.aristo .dijitTitlePaneTitle * {
+	vertical-align: middle;
+}
+.aristo .dijitTitlePane .dijitArrowNode {
+	cursor: pointer;
+	background-image: url('images/arrowSprite.png');
+	background-repeat: no-repeat;
+	height: 10px;
+	width: 9px;
+}
+.aristo .dijitTitlePane .dijitOpen .dijitArrowNode {
+	background-position: -18px 0px;
+}
+.aristo .dijitTitlePane .dijitClosed .dijitArrowNode {
+	background-position: -9px 0px;
+}
+.aristo .dijitTitlePane .dijitArrowNodeInner {
+	display:none;
+}
+.dijit_a11y .dijitTitlePane .dijitArrowNodeInner {
+	display:inline !important;
+	font-family:monospace;
+	cursor: pointer;
+	padding-bottom:.2em;
+}
+.dijit_a11y .dijitTitlePane .dijitArrowNode {
+	display:none;
+}
+.aristo .dijitTitlePaneContentOuter {
+	background: #ffffff;
+	border: 1px solid #979797;
+	border-top: 1px solid transparent;	
+}
+.aristo .dijitTitlePaneContentInner {
+	padding:10px;
+}
+.dj_ie6 .aristo .dijitTitlePaneContentOuter,
+.dj_ie6 .aristo .dijitTitlePane .dijitTitlePaneTitle {
+	zoom: 1;
+}
+.aristo .dijitTitlePaneTextNode {
+	margin-left: 4px;
+	margin-right: 4px;
+	text-shadow: 0 1px 0 #E5F1F8;
+}

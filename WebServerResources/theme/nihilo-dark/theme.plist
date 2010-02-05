@@ -20,6 +20,7 @@
     isForThemeDevelopers = true;
 
     extends = base;
+    dojoTheme = nihilo;
     cssOrder = (
         {
             file = "trans-nihilo.css";

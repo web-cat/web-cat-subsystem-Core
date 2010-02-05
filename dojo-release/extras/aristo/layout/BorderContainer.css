@@ -1,0 +1,56 @@
+
+.aristo .dijitBorderContainer {
+	background-color: #E9E9E9;
+	padding: 5px;
+}
+.aristo .dijitSplitContainer-child,
+.aristo .dijitBorderContainer-child {
+	
+	border: 1px solid #979797;
+}
+.aristo .dijitBorderContainer-dijitTabContainerTop,
+.aristo .dijitBorderContainer-dijitTabContainerBottom,
+.aristo .dijitBorderContainer-dijitTabContainerLeft,
+.aristo .dijitBorderContainer-dijitTabContainerRight {
+	
+	 border: none;
+}
+.aristo .dijitBorderContainer-dijitBorderContainer {
+	
+	border: none;
+	padding: 0px;
+}
+.aristo .dijitSplitterH,
+.aristo .dijitGutterH {
+	background:#E6E6E6;
+	border:0;
+	height:5px;
+}
+.aristo .dijitSplitterH .dijitSplitterThumb {
+	background:url("../images/splitContainerSizerH-thumb.png") no-repeat;
+	top:1px;
+	width:19px;
+	height:3px;
+}
+.aristo .dijitSplitterV,
+.aristo .dijitGutterV {
+	background:#E6E6E6;
+	border:0;
+	width:5px;
+}
+.aristo .dijitSplitterV .dijitSplitterThumb {
+	background:url("../images/splitContainerSizerV-thumb.png") no-repeat;
+	left:1px;
+	height:19px;
+	width:5px;
+}
+.aristo .dijitSplitterActive {
+	font-size: 1px;
+	opacity: 0.6;
+	filter: Alpha(Opacity=60);
+	margin: 0;
+}
+.aristo .dijitSplitterActive .dijitSplitterThumb {
+	opacity: 0.6;
+	filter: Alpha(Opacity=60);
+}

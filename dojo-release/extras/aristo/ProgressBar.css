@@ -1,0 +1,27 @@
+.aristo .dijitProgressBar {
+	margin:2px 0px 2px 0px;
+	padding: 2px 0;
+}
+.aristo .dijitProgressBarEmpty {
+	background: #F0F0F0 url("images/progressBarEmpty.png") repeat-x top left;
+	border-color: #A1A1A1 #C9C9C9 #E3E3E3 #A2A2A2;
+}
+.aristo .dijitProgressBarTile {
+	background: #6D8FA3 url("images/progressBarFull.png") repeat-x top left;
+}
+.aristo .dijitProgressBarFull {
+	padding: 2px 0;
+	border-right: 1px solid #7091A5;
+}
+.aristo .dijitProgressBarLabel {
+	color:#293a4b;
+}
+.aristo .dijitProgressBarIndeterminate {
+	border: none;
+	border-top: 1px solid #8EA8B8;
+	border-left: 1px solid #7698AB;
+	border-right: 1px solid #8EA8B8;
+}
+.aristo .dijitProgressBarIndeterminate .dijitProgressBarTile {
+	background: url("images/newProgressBarAnim.gif") repeat-x center center;
+}

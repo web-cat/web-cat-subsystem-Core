@@ -1,0 +1,242 @@
+
+.aristo .dijitTabPaneWrapper {
+	background:#fff;
+	border:1px solid #979797;
+	margin: 0;
+	padding: 0;
+}
+.aristo .dijitTab {
+	line-height:normal;
+	margin-right:4px;	
+	padding:0px;
+	border: 1px solid #9D9D9D;
+	background: #F7F7F7 url("../images/tabEnabled.png") repeat-x top left;
+	-moz-border-radius-topleft: 8px;
+	-moz-border-radius-topright: 8px;
+	-webkit-border-top-left-radius: 8px;
+	-webkit-border-top-right-radius: 8px;
+	-webkit-box-shadow: 0 -1px 2px rgba(157, 157, 157, 0.45);
+	-moz-box-shadow: 0 -1px 2px rgba(157, 157, 157, 0.45);
+	text-shadow: 0 1px 0 #FFF;
+}
+.aristo .dijitTabInnerDiv {
+	padding: 3px 6px 3px 3px;
+}
+.dijitTabSpacer {
+	font-size: 1px;
+}
+.aristo .dijitTabChecked {
+	color: #393939;
+	font-weight: bold;
+	background: #E6E6E6 url("../images/tabChecked.png") repeat-x top left;
+}
+.aristo .dijitTabHover {
+	background: #F7F7F7 url("../images/tabEnabled.png") repeat-x left 2px;
+}
+.aristo .dijitTabCheckedHover {
+	background: #E6E6E6 url("../images/tabChecked.png") repeat-x top left;
+}
+.aristo .dijitTab .dijitClosable .closeImage {
+	background: url("../images/tabClose.png") no-repeat right top;
+	width: 12px;
+	height: 12px;
+	position: relative;
+	top: -3px;
+	right: -3px;
+}
+.aristo .dijitTab .dijitTabButtonSpacer {
+	
+	height: 12px;
+	width: 1px;
+}
+.aristo .dijitTabContainerTabListNested .dijitTab {
+	background: none;
+	border: none;
+	top: 0px;		 
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;	
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+}
+.aristo .dijitTabContainerTabListNested .dijitTab .dijitTabContent {
+}
+.aristo .dijitTabContainerTabListNested .dijitTabHover .dijitTabContent .tabLabel {
+	text-decoration: underline;
+}
+.aristo .dijitTabContainerTabListNested .dijitTabChecked .dijitTabContent .tabLabel {
+	text-decoration: underline;
+	font-weight: bold;
+	
+}
+.aristo .dijitTabContainer .dijitTabPaneWrapperNested {
+	border: none;	
+}
+.aristo .dijitTab .closeImage {
+	background-image : url("../images/tabClose.png");
+}
+.dj_ie6 .aristo .dijitTab .closeImage {
+	background-image : url("../images/tabClose.gif");
+}
+.aristo .dijitTab .closeButton-hover .closeImage {
+	background-image : url("../images/tabCloseHover.png");
+}
+.dj_ie6 .aristo .dijitTab .closeButton-hover .closeImage {
+	background-image : url("../images/tabCloseHover.gif");
+}
+.aristo .dijitTabContainerTop-tabs {
+	margin-bottom: -1px;
+	border-color: #979797;
+}
+.aristo .dijitTabContainerTop-container {
+	border-top: none;
+}
+.aristo .dijitTabContainerTop-tabs .dijitTabChecked {
+	border-bottom-color: #E7E7E7;
+}
+.aristo .dijitTabContainerTopStrip,
+.aristo .dijitTabContainerBottomStrip {
+	padding-top: 4px;
+	padding-left: 3px;	
+}
+.aristo .dijitTabContainerBottomStrip {
+	padding-top: 0px;
+	padding-bottom: 2px;
+}
+.aristo .dijitTabContainerBottom-tabs {
+	margin-top: -1px;
+}
+.aristo .dijitTabContainerBottom-tabs .dijitTab {
+	background: #F7F7F7 url("../images/tabEnabledBottom.png") repeat-x bottom left;
+	-moz-border-radius: 0;
+	-webkit-border-radius:0;
+	-moz-border-radius-bottomleft: 8px;
+	-moz-border-radius-bottomright: 8px;
+	-webkit-border-bottom-left-radius: 8px;
+	-webkit-border-bottom-right-radius: 8px;	
+	-webkit-box-shadow: 0 1px 2px rgba(157, 157, 157, 0.45);
+	-moz-box-shadow: 0 1px 2px rgba(157, 157, 157, 0.45);
+}
+.aristo .dijitTabContainerBottom-tabs .dijitTabHover {
+	background: #F7F7F7 url("../images/tabEnabledBottom.png") repeat-x left -2px;
+}
+.aristo .dijitTabContainerBottom-container {
+	border-bottom: none;
+}
+.aristo .dijitTabContainerBottom-tabs .dijitTabChecked {
+	background: #E6E6E6 url("../images/tabCheckedBottom.png") repeat-x left 2px;	
+	border-top-color: #DFDFDF;
+}
+.aristo .dijitTabContainerBottom-spacer,
+.aristo .dijitTabContainerTop-spacer {
+	height: 4px;
+	border-top: 1px solid #AEAEAE;
+	border-bottom: 1px solid #AAAAAA;
+	background: #E6E6E6;
+	z-index: 9;
+}
+.aristo .dijitTabContainerRight-tabs {
+	margin-left: -1px;
+	border-color: #ccc;
+}
+.aristo .dijitTabContainerRight-container {
+	border-right: none;
+}
+.aristo .dijitTabContainerRight-tabs .dijitTabChecked {
+}
+.aristo .dijitTabContainerRightStrip {
+	padding-right: 2px;
+	padding-top: 3px;	
+	border: 1px solid #979797;
+}
+.aristo .dijitTabContainerRightStrip {
+	padding-left: 4px;
+	background: #E9E9E9;	
+}
+.aristo .dijitTabContainerLeft-tabs {
+	margin-right: -1px;
+	border-color: #979797;
+}
+.aristo .dijitTabContainerLeft-container {
+	border-left: none;
+}
+.aristo .dijitTabContainerLeft-tabs .dijitTabChecked {
+}
+.aristo .dijitTabContainerLeftStrip {
+	padding-left: 2px;
+	padding-top: 3px;	
+	border: 1px solid #979797;
+}
+.aristo .dijitTabContainerLeftStrip {
+	padding-right: 4px;
+	background: #E9E9E9;
+}
+.aristo .dijitTabContainerLeft-tabs .dijitTab,
+.aristo .dijitTabContainerRight-tabs .dijitTab {
+	margin-right:0px;
+	margin-bottom:4px;	
+}
+.aristo .dijitTabContainerLeft-spacer,
+.aristo .dijitTabContainerRight-spacer {
+	width: 4px;
+	border-top: 1px solid #979797;
+	border-bottom: 1px solid #979797;
+	background: #D3EBF9 url("../images/tabSpacer.png") repeat-x top left;
+	display: none;
+}
+.aristo .dijitTabContainerTop-dijitContentPane .dijitTabContainerTop-tabs {
+	border-left: 0px solid #ccc;
+	border-top: 0px solid #ccc;
+	border-right: 0px solid #ccc;
+	padding-top: 0px;
+	padding-left: 0px;	
+}
+.aristo .dijitTabContainer .tabStripButton {
+	background: none;
+	border: none;
+	margin-right: 0;
+	padding-top: 2px;
+	z-index: 12;
+	-moz-border-radius: 0;
+	-webkit-border-radius: 0;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;
+}
+.aristo .dijitTabContainerBottom .tabStripButton {
+	padding-top: 2px;
+}
+.aristo .tabStrip-disabled .tabStripButton .dijitTabInnerDiv {
+	padding-bottom: 3px;
+	padding-top: 1px;
+}
+.aristo .tabStripButton .dijitTabInnerDiv {
+	padding: 3px 2px 4px 2px;
+}
+.dj_ie6 .aristo .tabStripButton .dijitTabInnerDiv,
+.dj_ie7 .aristo .tabStripButton .dijitTabInnerDiv,
+.dj_opera .aristo .tabStripButton .dijitTabInnerDiv {
+	padding-bottom: 5px;
+}
+.dj_ie6 .aristo .tabStrip-disabled .tabStripButton .dijitTabInnerDiv,
+.dj_ie7 .aristo .tabStrip-disabled .tabStripButton .dijitTabInnerDiv,
+.dj_opera .aristo .tabStrip-disabled .tabStripButton .dijitTabInnerDiv {
+	padding-bottom: 4px;
+}
+.aristo .dijitTabContainer .tabStripButton {
+	width: 21px;
+}
+.aristo .dijitTabContainer .tabStripButton img {
+	height: 14px;
+	background: url("../images/spriteRoundedIconsSmall.png") no-repeat;
+}
+.dj_ie6 .aristo .dijitTabContainer .tabStripButton img {
+	background-image: url("../images/spriteRoundedIconsSmall.gif");
+}
+.aristo .dijitTabContainer .tabStripMenuButton img {
+	background-position: -15px top;
+}
+.aristo .dijitTabContainer .tabStripSlideButtonLeft img {
+	background-position: 0px top;
+}
+.aristo .dijitTabContainer .tabStripSlideButtonRight img {
+	background-position: -30px top;
+}

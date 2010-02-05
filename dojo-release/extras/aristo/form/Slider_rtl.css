@@ -1,0 +1,26 @@
+.dijitRtl .aristo .dijitSliderProgressBarH,
+.dijitRtl .aristo .dijitSliderRemainingBarH,
+.dijitRtl .aristo .dijitSliderLeftBumper,
+.dijitRtl .aristo .dijitSliderRightBumper,
+.dijitRtl .aristo .dijitSliderTopBumper {
+	background-position: top right;
+}
+.dijitRtl .aristo .dijitSliderProgressBarV,
+.dijitRtl .aristo .dijitSliderRemainingBarV,
+.dijitRtl .aristo .dijitSliderBottomBumper {
+	background-position: bottom right;
+}
+.dijitRtl .aristo .dijitSliderLeftBumper {
+	border-left-width: 0px;
+	border-right-width: 1px;
+}
+.dijitRtl .aristo .dijitSliderRightBumper {
+	border-left-width: 1px;
+	border-right-width: 0px;
+}
+.dijitRtl .aristo .dijitSliderIncrementIconH {
+	background-position: -7px 0px;
+}
+.dijitRtl .aristo .dijitSliderDecrementIconH {
+	background-position: -14px 0px;
+}

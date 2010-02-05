@@ -3,8 +3,8 @@
     dirName          = base;
     version.major    = 1;
     version.minor    = 0;
-    version.revision = 0;
-    version.date     = 20090301;
+    version.revision = 1;
+    version.date     = 20100204;
     provider         = "Virginia Tech Computer Science";
     provider.url     = "http://web-cat.cs.vt.edu/updates";
     license          = "GNU General Public License v.2";
@@ -21,7 +21,6 @@
     credits          = "Brought to you by ...";
     isForThemeDevelopers = true;
 
-    dojoTheme = nihilo;
     cssOrder = (
         {
             file = "layout.css";

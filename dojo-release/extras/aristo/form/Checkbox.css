@@ -1,0 +1,43 @@
+.aristo .dijitToggleButton .dijitCheckBoxIcon {
+	background-image: url('../images/checkmark.png');
+}
+.dj_ie6 .aristo .dijitToggleButton .dijitCheckBoxIcon {
+	background-image: url('../images/checkmark.gif');
+}
+.aristo .dijitCheckBox,
+.aristo .dijitCheckBoxIcon			{
+	background-image: url('../images/checkmark.png'); 
+	background-repeat: no-repeat;
+	width: 17px;
+	height: 17px;
+	margin: 0 2px 0 0;
+	padding: 0;
+}
+.dj_ie6 .aristo .dijitCheckBox,
+.dj_ie6 .aristo .dijitCheckBoxIcon			{
+	background-image: url('../images/checkmark.gif'); 
+}
+.aristo .dijitCheckBox,
+.aristo .dijitToggleButton .dijitCheckBoxIcon {
+	
+	background-position: -17px;
+}
+.aristo .dijitCheckBoxHover {
+	
+	background-position: -34px;
+}
+.aristo .dijitCheckBoxChecked,
+.aristo .dijitCheckBoxCheckedHover,
+.aristo .dijitToggleButtonChecked .dijitCheckBoxIcon {
+	
+	background-position: 0px;
+}
+.aristo .dijitToggleButtonDisabled .dijitCheckBoxIcon,
+.aristo .dijitCheckBoxDisabled {
+	
+	background-position: -51px;
+}
+.aristo .dijitCheckBoxCheckedDisabled {
+	
+	background-position: -68px;
+}

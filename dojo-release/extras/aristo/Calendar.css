@@ -1,0 +1,154 @@
+	
+.aristo .dijitCalendarIncrementControl {
+	width: 9px;
+	height: 10px;
+	background-image: url("images/arrowSprite.png");
+	background-repeat: no-repeat
+}
+.dj_ie6 .aristo .dijitCalendarIncrementControl {
+	font-size:.1em;
+	background-image: url("images/spriteRoundedIconsSmall.gif");
+}
+.aristo .dijitA11ySideArrow {
+	display: none;
+}
+.aristo .dijitCalendarDecrease {
+	background-position: top left;
+}
+.aristo .dijitCalendarIncrease {
+	background-position: -9px top;
+}
+.aristo table.dijitCalendarContainer {
+	font-size: 100%;
+	border-spacing: 0;
+	border-collapse: separate;
+	border: 1px solid #969696;
+	margin: 0;
+}
+.aristo .dijitCalendarMonthContainer th {
+	background: #C7C7C7 url("images/titleBar.png") repeat-x top left;
+	padding-top: .5em;
+	padding-bottom: .4em;
+	text-align:center;
+}
+.dj_ie6 .aristo .dijitCalendarMonthContainer th {
+	padding-top:.2em;
+	padding-bottom:.1em;
+}
+.aristo .dijitCalendarDayLabelTemplate {
+	background: #E1E1E1 url("images/calendarDayLabel.png") repeat-x top;
+	font-weight: bold;
+	font-size: 11px;
+	padding-top: 3px;
+	padding-bottom: 1px;
+	border-top: 1px solid #969696;
+	border-bottom: 1px solid #969696;
+	color: #4B4B4B;
+	text-align:center;
+	text-shadow: 0 1px 0 #FEFEFE;
+}
+.aristo .dijitCalendarBodyContainer {
+	border-bottom: 1px solid #969696;	
+}
+.aristo .dijitCalendarMonthLabel {
+	color: #4B4B4B;
+	font-weight: bold;
+	font-size: 12px;
+	text-shadow: 0 1px 0 #EEEEEE;
+}
+.aristo .dijitCalendarDateTemplate {
+	display: table-cell;
+	border-spacing: 2px;
+	background-color:white !important;
+}
+.dj_webkit .aristo .dijitCalendarDateTemplate,
+.dj_gecko .aristo .dijitCalendarDateTemplate {
+	border-spacing: 2px;
+}
+.dj_ie7 .aristo .dijitCalendarDateTemplate {
+	display: inline-block;
+	margin: 2px 0;
+}
+.aristo .dijitCalendarDateLabel {
+	display: table-cell;
+	width: 1.4em;
+	border-spacing: 2px;
+	font-size: 0.9em;
+	text-align: center;
+	line-height: 14px;
+	padding: 0.2em 0.3em 0.1em 0.4em;
+	letter-spacing: 1px;
+	border: 1px solid transparent;
+}
+.dj_ie7 .aristo .dijitCalendarDateLabel {
+	display: inline-block;
+	margin: 2px 0;
+}
+.dj_ie .aristo .dijitCalendarDateTemplate {
+	padding: 0;
+}
+.dj_ie7 .aristo .dijitCalendarDateTemplate {
+	padding: 0.1em .13em 0.02em .13em;
+}
+.aristo .dijitCalendarPreviousMonth,
+.aristo .dijitCalendarNextMonth {
+	color: #8D8D8D;
+}
+.aristo .dijitCalendarPreviousMonthDisabled,
+.aristo .dijitCalendarNextMonthDisabled	{
+}
+.aristo .dijitCalendarCurrentMonth .dijitCalendarDateLabel {
+	display: table-cell;
+	border: 1px solid #E3E3E3;	
+	border-spacing: 2px;
+}
+.aristo .dijitCalendarCurrentMonthDisabled {
+	background-color:#BBBBBB !important;
+}
+.aristo .dijitCalendarDisabledDate {
+	cursor:default !important;
+	text-decoration:line-through !important;
+}
+.aristo .dijitCalendarCurrentDate {
+	color: #3E3E3E !important;	
+	font-weight:bold;
+}
+.aristo .dijitCalendarHoveredDate .dijitCalendarDateLabel {
+	background-color: #EAEAEA !important;
+}
+.aristo .dijitCalendarSelectedDate .dijitCalendarDateLabel {
+	background: #C6C6C6 url("images/selectedDateBg.png") repeat-x top left !important;
+	color: #3E3E3E !important;
+	border-color: #979797;
+	text-shadow: 0 1px 0 #F5F5F5;
+}
+.aristo .dijitCalendarYearContainer {
+}
+.aristo .dijitCalendarYearLabel {
+	margin:0;
+	padding:0.5em 0;
+	color: #3E3E3E;
+	font-size: 12px;
+	font-weight: bold;
+	text-align:center;
+	background: #C6C6C6 url("images/calendarYearLabel.png") repeat-x top left;
+	border-top: 1px solid #969696;
+}
+.aristo .dijitCalendarSelectedYear {
+	padding: 0 0.4em;
+	background: #A4A4A4 url("images/buttonActive.png") repeat-x bottom left !important;
+	border: 1px solid #767676 !important;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	text-shadow: 0 1px 0 #F5F5F5;
+}
+.aristo .dijitCalendarNextYear,
+.aristo .dijitCalendarPreviousYear {
+	padding: 0 0.4em;	
+	font-weight: normal;
+	background: #A4A4A4 url("images/buttonEnabled.png") repeat-x top left;
+	border: 1px solid #A8A8A8 !important;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	text-shadow: 0 1px 0 #E8E8E8;
+}

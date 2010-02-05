@@ -1,0 +1,17 @@
+
+.aristo .dijitContentPane {
+	padding: 0px;
+}
+.aristo .dijitTabContainerTop-dijitContentPane,
+.aristo .dijitTabContainerLeft-dijitContentPane,
+.aristo .dijitTabContainerBottom-dijitContentPane,
+.aristo .dijitTabContainerRight-dijitContentPane,
+.aristo .dijitAccordionContainer-dijitContentPane {
+	background-color: #fff;
+	padding: 5px;
+}
+.aristo .dijitSplitContainer-dijitContentPane,
+.aristo .dijitBorderContainer-dijitContentPane {
+	background-color: #fff;		
+	padding: 5px;
+}

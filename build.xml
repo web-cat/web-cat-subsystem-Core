@@ -21,6 +21,10 @@
     <delete dir="WebServerResources/dijit"/>
     <delete dir="WebServerResources/dojox"/>
     <delete dir="WebServerResources/webcat"/>
+  	<delete dir="dojo-release/dijit/themes/aristo"/>
+  	<copy todir="dojo-release/dijit/themes/aristo">
+  		<fileset dir="dojo-release/extras/aristo"/>
+  	</copy>
   	<java
   	  dir="dojo-release/util/buildscripts"
   	  fork="true"

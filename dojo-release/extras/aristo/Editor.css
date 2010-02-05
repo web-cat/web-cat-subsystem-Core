@@ -1,0 +1,60 @@
+.dijitIEFixedToolbar {
+	position:absolute;
+	top: expression(eval((document.documentElement||document.body).scrollTop));
+}
+.aristo .dijitToolbar .dijitToolbarSeparator {
+	background: url('images/editor.png');
+}
+.aristo .dijitEditorIcon {
+	background-image: url('images/editor.png'); 
+	background-repeat: no-repeat;
+	width: 18px;
+	height: 18px;
+	text-align: center;
+}
+.aristo .dijitDisabled .dijitEditorIcon {
+	background-image: url('images/editorDisabled.png'); 
+}
+.aristo .dijitEditorIconSep { background-position: 0px; }
+.aristo .dijitEditorIconBackColor { background-position: -18px; }
+.aristo .dijitEditorIconBold { background-position: -36px; }
+.aristo .dijitEditorIconCancel { background-position: -54px; }
+.aristo .dijitEditorIconCopy { background-position: -72px; }
+.aristo .dijitEditorIconCreateLink { background-position: -90px; }
+.aristo .dijitEditorIconCut { background-position: -108px; }
+.aristo .dijitEditorIconDelete { background-position: -126px; }
+.aristo .dijitEditorIconForeColor { background-position: -144px; }
+.aristo .dijitEditorIconHiliteColor { background-position: -162px; }
+.aristo .dijitEditorIconIndent { background-position: -180px; }
+.aristo .dijitEditorIconInsertHorizontalRule { background-position: -198px; }
+.aristo .dijitEditorIconInsertImage { background-position: -216px; }
+.aristo .dijitEditorIconInsertOrderedList { background-position: -234px; }
+.aristo .dijitEditorIconInsertTable { background-position: -252px; }
+.aristo .dijitEditorIconInsertUnorderedList { background-position: -270px; }
+.aristo .dijitEditorIconItalic { background-position: -288px; }
+.aristo .dijitEditorIconJustifyCenter { background-position: -306px; }
+.aristo .dijitEditorIconJustifyFull { background-position: -324px; }
+.aristo .dijitEditorIconJustifyLeft { background-position: -342px; }
+.aristo .dijitEditorIconJustifyRight { background-position: -360px; }
+.aristo .dijitEditorIconLeftToRight { background-position: -378px; }
+.aristo .dijitEditorIconListBulletOutIndent { background-position: -396px; }
+.aristo .dijitEditorIconListBulletOutdent { background-position: -414px; }
+.aristo .dijitEditorIconListNumOutdent { background-position: -432px; }
+.aristo .dijitEditorIconListNumIndent { background-position: -450px; }
+.aristo .dijitEditorIconOutdent { background-position: -468px; }
+.aristo .dijitEditorIconPaste { background-position: -486px; }
+.aristo .dijitEditorIconRedo { background-position: -504px; }
+.aristo .dijitEditorIconRemoveFormat { background-position: -522px; }
+.aristo .dijitEditorIconRightToLeft { background-position: -540px; }
+.aristo .dijitEditorIconSave { background-position: -558px; }
+.aristo .dijitEditorIconSpace { background-position: -576px; }
+.aristo .dijitEditorIconStrikethrough { background-position: -594px; }
+.aristo .dijitEditorIconSubscript { background-position: -612px; }
+.aristo .dijitEditorIconSuperscript { background-position: -630px; }
+.aristo .dijitEditorIconUnderline { background-position: -648px; }
+.aristo .dijitEditorIconUndo { background-position: -666px; }
+.aristo .dijitEditorIconWikiword { background-position: -684px; }
+.aristo .dijitEditorIconToggleDir { background-position: -540px; }
+.aristo .dijitEditorIconTabIndent { background-position: -702px; }
+.aristo .dijitEditorIconSelectAll { background-position: -720px; }
+.aristo .dijitEditorIconUnlink { background-position: -738px; }

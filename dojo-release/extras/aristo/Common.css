@@ -1,0 +1,54 @@
+.dj_webkit .aristo *,
+.dj_gecko .aristo * ,
+.dj_ie .aristo *:focus {
+	outline: none;
+}
+.aristo .dojoDndItem {
+	border-top: 1px solid transparent;
+	border-bottom: 1px solid transparent;
+}
+.aristo .dojoDndItemBefore {
+	border-top: 1px dotted #333;
+	border-bottom: 1px solid transparent;
+}
+.aristo .dojoDndItemAfter {
+	border-top: 1px solid transparent;	
+	border-bottom: 1px dotted #333;
+}
+.aristo .dojoDndItemOver {
+	cursor:pointer;
+}
+.aristo.dojoDndMove table.dojoDndAvatar,
+.aristo.dojoDndCopy table.dojoDndAvatar {
+	border-collapse: separate;
+	background: #FFF;
+	border: 1px solid #F00;
+	color: #000;
+	padding: 0 1em;
+	-moz-border-radius: 5px;
+	-webkit-border-radius: 5px;
+	-moz-box-shadow: 0px 0px 5px #F00;
+	-webkit-box-shadow: 0px 0px 5px #F00;
+	text-shadow: #EFEFEF;
+	opacity: .8;
+}
+.aristo.dojoDndMove table.dojoDndAvatar.dojoDndAvatarCanDrop,
+.aristo.dojoDndCopy table.dojoDndAvatar.dojoDndAvatarCanDrop {
+	border-color: #07930E;
+	-moz-box-shadow: 0px 0px 5px #07930E;
+	-webkit-box-shadow: 0px 0px 5px #07930E;	
+}
+.aristo .dojoDndAvatar td { 
+}
+.aristo .dojoDndAvatar tr { 
+}
+.aristo .dojoDndAvatarHeader td	{
+	text-align: center;
+	border: 1px solid #333;	
+	-moz-border-radius: 7px;
+	-webkit-border-radius: 7px;
+	display: none;
+}
+.aristo .dojoDndAvatarItem td {
+	padding: 0px;
+}

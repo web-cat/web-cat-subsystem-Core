@@ -1,0 +1,112 @@
+.aristo .dijitToolbar {
+	line-height: 30px;
+	background: #C9C9C9 url("images/titleBar.png") repeat-x top left;
+	border: 1px solid #979797;
+}
+.dj_ie6 .aristo .dijitToolbar {
+	height: 10px;
+}
+.aristo .dijitToolbar .dijitComboButton:hover {
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+}
+.aristo .dijitToolbar .dijitButtonNode,
+.aristo .dijitToolbar .dijitComboButton .dijitButtonContents,
+.aristo .dijitToolbar .dijitComboButton .dijitDownArrowButton {
+	background: none;
+	margin: 0px;
+	padding: 0px;
+	border: none;
+	font-size: 12px;
+	line-height: 30px;
+	-moz-border-radius: 0px !important;
+	-webkit-border-radius: 0px !important;	
+}
+.dj_ie .aristo .dijitToolbar table.dijitComboButton {
+	position: relative;
+	top: -2px;
+}
+.dj_ie7 .aristo .dijitToolbar table.dijitComboButton {
+	margin: 0;
+	top: 0;
+}
+.dj_ie .aristo .dijitToolbar .dijitButtonNode {
+	line-height: normal;
+	margin: 0 2px;
+}
+.dj_ie7 .aristo .dijitToolbar .dijitButtonNode {
+	padding: 5px 0;
+}
+.aristo .dijitToolbar .dijitComboButton .dijitButtonContents,
+.aristo .dijitToolbar .dijitComboButton .dijitDownArrowButton {
+	line-height: 2.5em;
+}
+.dj_ie .aristo .dijitToolbar .dijitComboButton .dijitButtonContents,
+.dj_ie .aristo .dijitToolbar .dijitComboButton .dijitDownArrowButton {
+	line-height: 2.56em;
+}
+.dj_ie7 .aristo .dijitToolbar .dijitComboButton .dijitButtonContents,
+.dj_ie7 .aristo .dijitToolbar .dijitComboButton .dijitDownArrowButton {
+	min-height: 38px;
+}
+.dj_webkit .aristo .dijitToolbar .dijitComboButton .dijitButtonContents,
+.dj_webkit .aristo .dijitToolbar .dijitComboButton .dijitDownArrowButton {
+	line-height: 2.7em;
+}
+.aristo .dijitToolbar .dijitComboBox {
+	line-height: normal;
+}
+.aristo .dijitToolbar .dijitComboBox .dijitButtonNode {
+	height: 100%;	
+	padding: 0;
+	position: absolute;
+	right: 0;
+	top: -1px;
+	line-height: 23px;
+	background: #A7A7A7 url("images/buttonEnabled.png") repeat-x top left;
+	border-color: #919191;
+	border-width: 1px;
+	border-style: solid;
+	-moz-border-radius: 0px !important;
+	-webkit-border-radius: 0px !important;
+	-moz-box-shadow: none;
+	-webkit-box-shadow: none;		
+}
+.aristo .dijitToolbar .dijitHover .dijitButtonNode {
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
+}	
+	
+.aristo .dijitToolbar .dijitButton,
+.aristo .dijitToolbar .dijitToggleButton,
+.aristo .dijitToolbar .dijitDropDownButton,
+.aristo .dijitToolbar .dijitComboButton .dijitButtonContents,
+.aristo .dijitToolbar .dijitComboButton .dijitDownArrowButton  {
+	background: none;
+	padding: 1px;
+}
+.aristo .dijitToolbar .dijitButtonChecked,
+.aristo .dijitToolbar .dijitToggleButtonChecked {
+	background: #A8A8A8 url("images/accordionItemActive.png") repeat-x top left;	
+}
+.aristo .dijitToolbar .dijitComboBoxFocused .dijitButtonNode,
+.aristo .dijitToolbar .dijitSpinnerFocused .dijitButtonNode,
+.aristo .dijitToolbar .dijitSpinnerUpArrowActive .dijitButtonNode,
+.aristo .dijitToolbar .dijitSpinnerDownArrowActive .dijitButtonNode {
+	border-left-color:#8B8B8B;
+	background: #A4A4A4 url("../images/buttonActive.png") repeat-x bottom left;
+}
+.aristo .dijitToolbar .dijitButtonCheckedHover,
+.aristo .dijitToolbar .dijitToggleButtonCheckedHover {
+	background: #A4A4A4 url("images/accordionItemActive.png") repeat-x top left;	
+}
+.aristo .dijitToolbar .dijitButtonHover,
+.aristo .dijitToolbar .dijitToggleButtonHover,
+.aristo .dijitToolbar .dijitDropDownButtonHover,
+.aristo .dijitToolbar .dijitComboButtonHover .dijitButtonContents,
+.aristo .dijitToolbar .dijitComboButtonDownArrowHover .dijitDownArrowButton {
+	background: #A4A4A4 url("images/accordionItemActive.png") repeat-x top left;
+}
+.aristo .dijitToolbar label {	
+	padding: 3px 3px 0 6px;
+}

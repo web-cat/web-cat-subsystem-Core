@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2008-2009 Virginia Tech
+ |  Copyright (C) 2008-2010 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -24,8 +24,6 @@ package net.sf.webcat.core;
 import java.io.File;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOCookie;
-import com.webobjects.appserver.WORequest;
-import com.webobjects.appserver.WOResponse;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.foundation.ERXValueUtilities;
@@ -34,7 +32,7 @@ import er.extensions.foundation.ERXValueUtilities;
 /**
  * Represents a theme (stored in the Core framework).
  *
- * @author
+ *  @author stedwar2
  *  @author Last changed by $Author$
  *  @version $Revision$, $Date$
  */
@@ -58,14 +56,14 @@ public class Theme
      * Look up and return a theme object by its directory name (short
      * symbolic name, not its human-readable name).
      *
-     * @param dirName the subdirectory name of the theme
+     * @param themeDirName the subdirectory name of the theme
      * @return The matching theme object
      */
-    public static Theme themeFromName(String dirName)
+    public static Theme themeFromName(String themeDirName)
     {
         ensureThemesLoaded();
         return themeForDirName(
-            EOSharedEditingContext.defaultSharedEditingContext(), dirName);
+            EOSharedEditingContext.defaultSharedEditingContext(), themeDirName);
     }
 
 
@@ -254,7 +252,8 @@ public class Theme
     // ----------------------------------------------------------
     public String dojoTheme()
     {
-        Object result = valueForKeyPath("properties.dojoTheme");
+        Object result =
+            valueForKeyPath(INHERIT_PREFIX + "properties.dojoTheme");
         return (result == null)
             ? "nihilo"
             : result.toString();
@@ -274,22 +273,22 @@ public class Theme
                 Object cssFileList = properties().valueForKey("cssOrder");
                 if (cssFileList != null && cssFileList instanceof NSArray)
                 {
-                    NSArray cssFiles = (NSArray)cssFileList;
+                    @SuppressWarnings("unchecked")
+                    NSArray<NSDictionary<String, String>> cssFiles =
+                        (NSArray<NSDictionary<String, String>>)cssFileList;
                     String baseLocation =
                         "Core.framework/WebServerResources/theme/"
                         + dirName() + "/";
-                    for (int i = 0; i < cssFiles.count(); i++)
+                    for (NSDictionary<String, String> css : cssFiles)
                     {
-                        NSDictionary css =
-                            (NSDictionary)cssFiles.objectAtIndex(i);
                         linkTags += "<link rel=\"stylesheet\" type=\"text/css\""
                             + "href=\""
                             + WCResourceManager.resourceURLFor(
                                 baseLocation
-                                + css.valueForKey("file"),
+                                + css.get("file"),
                                 null)
                             + "\"";
-                        String media = (String)css.valueForKey("media");
+                        String media = css.get("media");
                         if (media != null)
                         {
                             linkTags += " media=\"" + media + "\"";
@@ -419,8 +418,8 @@ public class Theme
             MutableDictionary dict =
                 MutableDictionary.fromPropertyList(plist);
             setProperties(dict);
-            String name = (String)dict.objectForKey("name");
-            setName(name);
+            String themeName = (String)dict.objectForKey("name");
+            setName(themeName);
             setLastUpdate(now);
             setIsForThemeDevelopers(ERXValueUtilities.booleanValue(
                 dict.valueForKey("isForThemeDevelopers")));

@@ -1,0 +1,30 @@
+.dijitRtl .aristo .dijitTab {
+	margin-right:auto;
+	margin-left:4px;		
+	-moz-box-orient:horizontal;
+	text-align: right;
+}
+.dijitRtl .aristo .dijitTabContainerTopStrip,
+.dijitRtl .aristo .dijitTabContainerBottomStrip {
+	padding-right: 3px;
+	padding-left: 0px;
+}
+.dijitRtl .aristo .dijitTabInnerDiv {
+	padding:6px 9px 5px 8px;
+}
+.dijitRtl .aristo .dijitTabPaneWrapper {
+	#zoom: 1;
+}
+.dj_ie-rtl .aristo .dijitTabContainerLeft-tabs {
+	margin-left: 1px !important;
+}
+.dj_ie-rtl .aristo .dijitTabContainerRight-tabs {
+	margin-right: 1px !important;
+}
+.dijitRtl .aristo .dijitTabContainerLeft-tabs .dijitTab,
+.dijitRtl .aristo .dijitTabContainerRight-tabs .dijitTab {
+	margin-left:0px;
+}
+.dj_ie-rtl .aristo .dijitTab .dijitTabInnerDiv {
+	width : 1% !important;
+}

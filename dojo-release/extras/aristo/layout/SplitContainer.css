@@ -1,0 +1,27 @@
+.aristo .dijitSplitContainerSizerH {
+	background: #E6E6E6;
+	border:0;
+	width:5px;
+}
+.aristo .dijitSplitContainerSizerH .thumb {
+	background:url("../images/splitContainerSizerV-thumb.png") no-repeat #ccc;
+	left:1px;
+	width:3px;
+	height:19px;
+	overflow: hidden;
+}
+.aristo .dijitSplitContainerSizerV {
+	background: #E6E6E6;
+	border:0;
+	height:5px;
+}
+.aristo .dijitSplitContainerSizerV .thumb {
+	background:url("../images/splitContainerSizerH-thumb.png") no-repeat #ccc;
+	top:1px;
+	width:19px;
+	height:3px;
+	overflow: hidden;
+}
+.aristo .dijitSplitter {
+	border-color: #979797;
+}

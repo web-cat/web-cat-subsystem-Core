@@ -1,0 +1,44 @@
+.aristo .dijitToggleButton .dijitRadio,
+.aristo .dijitToggleButton .dijitRadioIcon {
+	background-image: url('../images/checkmark.png');
+}
+.dj_ie6 .aristo .dijitToggleButton .dijitRadio,
+.dj_ie6 .aristo .dijitToggleButton .dijitRadioIcon {
+	background-image: url('../images/checkmark.gif');
+}
+.aristo .dijitRadio,
+.aristo .dijitRadioIcon	{		
+	background-image: url('../images/checkmark.png'); 
+	background-repeat: no-repeat;
+	width: 17px;
+	height: 17px;
+	margin: 0;
+	padding: 0;
+}
+.dj_ie6 .aristo .dijitRadio,
+.dj_ie6 .aristo .dijitRadioIcon	{		
+	background-image: url('../images/checkmark.gif'); 
+}
+.aristo .dijitRadio,
+.aristo .dijitToggleButton .dijitRadioIcon {
+	
+	background-position: -102px;
+}
+.aristo .dijitRadioDisabled {
+	
+	background-position: -136px;
+}
+.aristo .dijitRadioHover {
+	
+	background-position: -119px;
+}
+.aristo .dijitRadioChecked,
+.aristo .dijitRadioCheckedHover,
+.aristo .dijitToggleButtonChecked .dijitRadioIcon {
+	
+	background-position: -85px;
+}
+.aristo .dijitRadioCheckedDisabled {
+	
+	background-position: -153px;
+}
