@@ -19,7 +19,7 @@
   <webobject name="NeedsAuthList">
   <tr><td class="R"><label for="AuthenticationDomain"><b>Institution:</b></label></td>
       <td><webobject name="AuthList"/></td></tr></webobject>
-  <tr><td></td><td><input type="submit" value=" Login "/><wo:if condition="$showForgotPasswordLink"> <wo:link directActionName="passwordChangeRequest">Forgot your password?</wo:link></wo:if><webobject name="HasSpecificAuthDomain"><webobject name="HiddenAuthDomain"/></webobject></td></tr>
+  <tr><td></td><td><input type="submit" value="Login" label="Login" dojoType="dijit.form.Button"/><wo:if condition="$showForgotPasswordLink"> <wo:link directActionName="passwordChangeRequest">Forgot your password?</wo:link></wo:if><webobject name="HasSpecificAuthDomain"><webobject name="HiddenAuthDomain"/></webobject></td></tr>
     </table>
 </webobject>
 </div></div>

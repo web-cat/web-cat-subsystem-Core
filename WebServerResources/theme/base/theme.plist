@@ -41,6 +41,10 @@
         {
             file = "print.css";
             media = "print";
+        },
+        {
+            file = "dojo.css";
+            media = "screen, projection, tv";
         }
     );
 

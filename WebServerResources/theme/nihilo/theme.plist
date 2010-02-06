@@ -1,9 +1,9 @@
 {
-    name             = "Nihilo Dark";
-    dirName          = nihilo-dark;
+    name             = "Nihilo";
+    dirName          = nihilo;
     version.major    = 1;
     version.minor    = 0;
-    version.revision = 1;
+    version.revision = 0;
     version.date     = 20100205;
     provider         = "Virginia Tech Computer Science";
     provider.url     = "http://web-cat.cs.vt.edu/updates";
@@ -15,14 +15,14 @@
     author           = "Stephen Edwards (edwards@cs.vt.edu)";
     authorUid        = edwards;
     description      = "A variation of the Base theme that also customizes
-        the Dojo nihilo style to use dark buttons and text styling suitable
-        for darker backgrounds.";
+        the Dojo nihilo style.";
     isForThemeDevelopers = true;
 
-    extends = nihilo;
+    extends = base;
+    dojoTheme = nihilo;
     cssOrder = (
         {
-            file = "nihilo-dark.css";
+            file = "nihilo.css";
             media = "screen, projection, tv";
         }
     );

@@ -1,0 +1,75 @@
+/* =================================================================== */
+/* @group Basic Overrides
+====================================================================== */
+.tundra .dijitCalendarContainer,
+.tundra .dijitTimePicker { line-height: 100%; }
+
+.tundra .dijitMenuItem {
+    font: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif !important;
+}
+
+
+/* @end
+====================================================================== */
+/* @group Collapsible Modules
+====================================================================== */
+
+.tundra .dijitTitlePane.inline .dijitTitlePaneTitle { margin-bottom: 4px; }
+
+.tundra .dijitTitlePaneContentOuter {
+    background: none;
+    border: none;
+    padding: 2px;
+    margin: 0;
+}
+
+.tundra .dijitTitlePaneContentOuter > .dijitReset {
+    color: inherit;
+}
+
+.tundra .dijitTabContainerTop-dijitContentPane,
+.tundra .dijitTabContainerLeft-dijitContentPane,
+.tundra .dijitTabContainerRight-dijitContentPane,
+.tundra .dijitTabContainerBottom-dijitContentPane,
+.tundra .dijitAccordionContainer-dijitContentPane {
+    background-color: transparent;
+}
+
+.tundra .dijitTabPaneWrapper {
+    background: none;
+    border-right-width: 2px;
+}
+
+.tundra .dijitTitlePane .dijitTitlePaneTitle {
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    font-size: 1.5em;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 0 0 0.3em 0;
+    line-height: 100%;
+    height: auto;
+    margin: 0 0 10px 0;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+}
+
+.tundra .dijitTitlePane .dijitTitlePane.inline .dijitTitlePaneTitle {
+    font-size: 1.1em;
+}
+
+.tundra .dijitTitlePane .dijitTitlePane .dijitTitlePaneTitle {
+    font-size: 1.3em;
+}
+
+.tundra .dijitTitlePane .dijitTitlePane .dijitTitlePane .dijitTitlePaneTitle {
+    font-size: 1.2em;
+}
+
+.tundra .dijitTitlePaneContentInner { padding: 0; }
+
+
+/* @end
+====================================================================== */

@@ -1,0 +1,30 @@
+{
+    name             = "Aristo";
+    dirName          = aristo;
+    version.major    = 1;
+    version.minor    = 0;
+    version.revision = 0;
+    version.date     = 20100205;
+    provider         = "Virginia Tech Computer Science";
+    provider.url     = "http://web-cat.cs.vt.edu/updates";
+    license          = "GNU General Public License v.2";
+    license.url      = "http://www.gnu.org/copyleft/gpl.html";
+    copyright        = "(c) 2010 Virginia Tech Department of Computer Science";
+    info.url         = "http://web-cat.cs.vt.edu/WCWiki/AristoLightTheme";
+    history.url      = "http://web-cat.cs.vt.edu/WCWiki/AristoLightTheme/ChangeHistory";
+    author           = "Stephen Edwards (edwards@cs.vt.edu)";
+    authorUid        = edwards;
+    description      = "A variation of the Base theme that uses
+        the Dojo aristo style.";
+    isForThemeDevelopers = true;
+
+    extends = base;
+    dojoTheme = aristo;
+    cssOrder = (
+        {
+            file = "aristo.css";
+            media = "screen, projection, tv";
+        }
+    );
+
+}

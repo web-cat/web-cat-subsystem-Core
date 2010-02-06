@@ -87,24 +87,28 @@ We should make sure these controls line up vertically to the best of our ability
 <label for="foo">Some text:</label> <input id="foo" type="checkbox" dojoType="dijit.form.CheckBox"/> <wo:WCTextBox value="~'textbox'"/> <wo:WCFilteringSelect list="~{'one', 'two', 'three'}"/> <wo:WCNumberSpinner value="0" constraints.min="0" constraints.max="100" constraints.places="0" /> <wo:WCButton label="Button"/>
 </p>
 
-<h3>Form Test</h3>
+<h3>Form with Fieldset Test</h3>
 <wo:WCForm>
-
-<div>
+<fieldset>
+<legend>Field Set</legend>
+<ol>
+<li>
 <label for="checkbox">WCCheckBox:</label>
 <wo:WCCheckBox id="checkbox" checked="$formValues.checkbox"/>
-</div>
+</li>
 
-<div>
+<li>
 <label for="numberSpinner">WCNumberSpinner:</label>
 <wo:WCNumberSpinner id="numberSpinner" value="$formValues.numberSpinner" constraints.min="0" constraints.max="100"/>
-</div>
+</li>
 
-<div>
-<span class="label">WCDateTimePicker:</span>
+<li>
+<label>WCDateTimePicker:</label>
 <wo:WCDateTimePicker value="$formValues.dateTimePicker"/>
-</div>
-
+<wo:WCTextBox value="$formValues.plainTextBox"/>
+</li>
+</ol>
+</fieldset>
 <div>
 <wo:WCButton label="Normal"/>
 <wo:WCButton label="Positive" class="pos"/>
@@ -127,27 +131,42 @@ We should make sure these controls line up vertically to the best of our ability
 </div>
 
 </wo:WCForm>
+
+<h3>No-Form Test</h3>
+
+<div>
+<label for="checkbox2">WCCheckBox:</label>
+<wo:WCCheckBox id="checkbox2" checked="$formValues.checkbox"/>
+</div>
+
+<div>
+<label for="numberSpinner2">WCNumberSpinner:</label>
+<wo:WCNumberSpinner id="numberSpinner2" value="$formValues.numberSpinner" constraints.min="0" constraints.max="100"/>
+</div>
+
+<div>
+<span class="label">WCDateTimePicker:</span>
+<wo:WCDateTimePicker value="$formValues.dateTimePicker"/>
+<wo:WCTextBox value="$formValues.plainTextBox"/>
+</div>
+
 </wo:WCPageModule>
 
 <wo:WCPageModule title="Validated Form">
 <wo:WCForm>
-<table class="layout">
-<tr>
-<td><label for="validatedTextBox">Validated textbox:</label></td>
-<td>
+<fieldset><legend>Enter Data and Press Validate</legend>
+<ol>
+<li><label for="validatedTextBox">Validated textbox:</label>
 <wo name="ValidatedTextBox"/>
-</td>
-</tr>
-<tr>
-<td><label for="validatedPassword">Enter a password:</label></td>
-<td><wo:WCTextBox id="validatedPassword" value="$formValues.validatedPassword" remoteValidator="$validatePassword"/></td>
-</tr>
-<tr>
-<td><label for="validatedConfirmPassword">Confirm password:</label></td>
-<td><wo:WCTextBox id="validatedConfirmPassword" password="true" value="$formValues.validatedConfirmPassword" remoteValidator="$validateConfirmPassword"/></td>
-</tr>
-</table>
-<wo name="ValidateForm"/>
+</li>
+<li><label for="validatedPassword">Enter a password:</label>
+<wo:WCTextBox id="validatedPassword" value="$formValues.validatedPassword" remoteValidator="$validatePassword"/>
+</li>
+<li><label for="validatedConfirmPassword">Confirm password:</label>
+<wo:WCTextBox id="validatedConfirmPassword" password="true" value="$formValues.validatedConfirmPassword" remoteValidator="$validateConfirmPassword"/>
+</li>
+<li><wo name="ValidateForm"/></li>
+</ol></fieldset>
 </wo:WCForm>
 </wo:WCPageModule>
 

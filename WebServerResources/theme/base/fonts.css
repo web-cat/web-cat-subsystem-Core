@@ -1,7 +1,7 @@
 /* default fonts */
 body {
-    font: 95% "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
-    line-height: 170%;
+    font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+    line-height: 150%;
 }
 
 th {

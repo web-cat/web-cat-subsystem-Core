@@ -1,10 +1,10 @@
 {
-    name             = "Aristo Light";
-    dirName          = aristo-light;
+    name             = "Soria";
+    dirName          = soria;
     version.major    = 1;
     version.minor    = 0;
     version.revision = 0;
-    version.date     = 20100204;
+    version.date     = 20100205;
     provider         = "Virginia Tech Computer Science";
     provider.url     = "http://web-cat.cs.vt.edu/updates";
     license          = "GNU General Public License v.2";
@@ -15,15 +15,14 @@
     author           = "Stephen Edwards (edwards@cs.vt.edu)";
     authorUid        = edwards;
     description      = "A variation of the Base theme that uses
-        the Dojo aristo style with light buttons and text styling suitable
-        for lighter backgrounds.";
+        the Dojo soria style.";
     isForThemeDevelopers = true;
 
     extends = base;
-    dojoTheme = aristo;
+    dojoTheme = soria;
     cssOrder = (
         {
-            file = "trans-aristo.css";
+            file = "soria.css";
             media = "screen, projection, tv";
         }
     );

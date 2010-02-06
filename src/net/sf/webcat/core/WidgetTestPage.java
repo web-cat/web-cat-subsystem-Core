@@ -12,6 +12,8 @@ public class WidgetTestPage extends WCComponent
     public WidgetTestPage(WOContext context)
     {
         super(context);
+        formValues.put("plainTextBox", "plain text box");
+        formValues.put("numberSpinner", new Integer(10));
     }
 
 
@@ -20,7 +22,6 @@ public class WidgetTestPage extends WCComponent
 
     public NSMutableDictionary<String, Object> formValues =
         new NSMutableDictionary<String, Object>();
-
 
     public String validateTextBox()
     {

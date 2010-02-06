@@ -1,0 +1,38 @@
+/* =================================================================== */
+/* @group Basic Overrides
+====================================================================== */
+
+.dijitTitlePane { overflow: visible; }
+
+/*
+.dijitTextBox,
+.dj_safari .dijitComboBox {
+    vertical-align: baseline;
+}
+*/
+
+/* For best alignment with plain text or labels on the same line */
+.dijitCheckBox.dijitInline {
+	vertical-align: bottom;
+}
+
+/* For best alignment with labels inside a form */
+form .dijitCheckBox.dijitInline {
+    vertical-align: top;
+}
+
+.dijitDateTextBox.dijitTextBox { width: 8em; }
+.dijitTimeTextBox.dijitTextBox { width: 7em; }
+
+.dijitMenu { line-height: 125%; }
+
+/* @end
+====================================================================== */
+/* @group Collapsible Modules
+====================================================================== */
+
+.dijitTitlePaneTitle { outline: 0; }
+
+
+/* @end
+====================================================================== */
