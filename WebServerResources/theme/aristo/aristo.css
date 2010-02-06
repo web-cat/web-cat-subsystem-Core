@@ -83,3 +83,26 @@
 
 /* @end
 ====================================================================== */
+/* @group Buttons
+====================================================================== */
+
+.dijitButton.pos .dijitButtonText { color: #080; }
+
+.aristo .dijitButtonHover.pos .dijitButtonNode {
+    -webkit-box-shadow: 0 0 5px rgba(26, 200, 80, 0.90);
+    -moz-box-shadow: 0 0 5px rgba(26, 200, 80, 0.90);
+}
+
+.dijitButton.neg .dijitButtonText { color: #800; }
+
+.aristo .dijitButtonHover.neg .dijitButtonNode {
+    -webkit-box-shadow: 0 0 5px rgba(171, 108, 26, 0.90);
+    -moz-box-shadow: 0 0 5px rgba(171, 108, 26, 0.90);
+}
+
+.dijitButton.dijitButtonDisabled.pos .dijitButtonText,
+.dijitButton.dijitButtonDisabled.neg .dijitButtonText { color: #7f7f7f; }
+
+
+/* @end
+====================================================================== */
