@@ -20,7 +20,7 @@
     preview          = "beach-preview.png";
     thumb            = "beach-thumb.png";
 
-    extends = nihilo-dark;
+    extends = aristo;
     cssOrder = (
         {
             file = "beach.css";
