@@ -16,7 +16,7 @@ djConfig = { parseOnLoad: true, baseUrl: "<wo name="DojoBaseUrl"/>", modulePaths
 <wo name="DojoJs"/>
 <script type="text/javascript">
 dojo.require("webcat.BasePage");
-<wo:loop list="$extraRequiresArray" item="$oneExtraRequire">dojo.require("<wo:str value="$extraRequires" />");
+<wo:loop list="$extraRequiresArray" item="$oneExtraRequire">dojo.require("<wo:str value="$oneExtraRequire" />");
 </wo:loop>// <!-- END_REQUIRES -->
 dojo.addOnLoad(function() {
     dijit.setWaiRole(dojo.body(), "application");
