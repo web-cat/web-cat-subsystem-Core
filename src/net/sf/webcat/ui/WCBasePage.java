@@ -160,7 +160,7 @@ public class WCBasePage
 
         NSMutableArray<String> array = new NSMutableArray<String>();
 
-        String[] requires = extraRequires.split(";");
+        String[] requires = extraRequires.split("[,;]\\s*");
         for (String require : requires)
         {
             if (require != null && require.length() > 0)
@@ -308,7 +308,7 @@ public class WCBasePage
         String result = null;
         if (extraCssFiles != null)
         {
-            String[] links = extraCssFiles.split(";");
+            String[] links = extraCssFiles.split("[,;]\\s*");
             StringBuffer buf = new StringBuffer(80 * links.length);
             for (String link : links)
             {
@@ -358,7 +358,7 @@ public class WCBasePage
             .valueForKey("customCss");
         if (customCss != null)
         {
-            String[] links = customCss.split(";");
+            String[] links = customCss.split("[,;]\\s*");
             StringBuffer buf = new StringBuffer(80 * links.length);
             for (String link : links)
             {
