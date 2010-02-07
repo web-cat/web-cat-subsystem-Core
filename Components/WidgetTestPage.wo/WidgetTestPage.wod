@@ -1,4 +1,5 @@
 Page : WCPageWithNavigation {
+    extraRequires = "dijit.Editor, dijit.form.VerticalSlider, dijit.form.HorizontalSlider, dijit.Menu, dijit.MenuBar, dijit.layout.TabContainer, dijit.PopupMenuBarItem";
 }
 
 ValidateForm : WCButton {

@@ -97,6 +97,31 @@ We should make sure these controls line up vertically to the best of our ability
 <wo:WCCheckBox id="checkbox" checked="$formValues.checkbox"/>
 </li>
 
+<li><label>Check boxes:</label>
+    <input id="check1" type="checkBox" dojoType="dijit.form.CheckBox"/>
+    <label for="check1" style="width:auto">unchecked</label>
+
+    <input id="check2" type="checkBox" dojoType="dijit.form.CheckBox" checked="checked"/>
+    <label for="check2" style="width:auto">checked</label>
+
+    <input id="check3" type="checkBox" dojoType="dijit.form.CheckBox" disabled="true"/>
+    <label for="check3" style="width:auto">disabled</label>
+
+    <input id="check4" type="checkBox" dojoType="dijit.form.CheckBox" checked="checked" disabled="true"/>
+    <label for="check4" style="width:auto">disabled and checked</label>
+</li>
+
+<li><label for="empty-space">Radio buttons:</label><input type="radio" name="g1" id="g1rb1" value="news" dojoType="dijit.form.RadioButton"/>
+    <label for="g1rb1" style="width:auto">news</label>
+    <input type="radio" name="g1" id="g1rb2" value="talk" dojoType="dijit.form.RadioButton" checked="true"/>
+    <label for="g1rb2" style="width:auto">talk</label>
+    <input type="radio" name="g1" id="g1rb3" value="weather" dojoType="dijit.form.RadioButton" disabled="true"/>
+    <label for="g1rb3" style="width:auto">weather (disabled)</label>
+</li>
+
+<li><label>Dropdown list:</label>
+</li>
+
 <li>
 <label for="numberSpinner">WCNumberSpinner:</label>
 <wo:WCNumberSpinner id="numberSpinner" value="$formValues.numberSpinner" constraints.min="0" constraints.max="100"/>
@@ -118,6 +143,32 @@ We should make sure these controls line up vertically to the best of our ability
 <wo:WCButton label="Normal" disabled="true"/>
 <wo:WCButton label="Positive" class="pos" disabled="true"/>
 <wo:WCButton label="Negative" class="neg" disabled="true"/>
+
+                <button dojoType="dijit.form.DropDownButton" iconClass="noteIcon">
+                    <span>Drop Down</span>
+                    <div dojoType="dijit.Menu" id="editMenu1" style="display: none;">
+
+                        <div dojoType="dijit.MenuItem"
+                            iconClass="dijitEditorIcon dijitEditorIconCut"
+                            onClick="console.debug('not actually cutting anything, just a test!')">
+                            Cut
+                        </div>
+
+                        <div dojoType="dijit.MenuItem"
+                             iconClass="dijitEditorIcon dijitEditorIconCopy"
+                            onClick="console.debug('not actually copying anything, just a test!')">
+                            Copy
+                        </div>
+
+                        <div dojoType="dijit.MenuItem"
+                             iconClass="dijitEditorIcon dijitEditorIconPaste"
+                            onClick="console.debug('not actually pasting anything, just a test!')">
+                            Paste
+                        </div>
+
+                    </div>
+                </button>
+
 </div>
 <div>
 <wo:WCButton label="Test Server-side Dialog" remote="true" action="$displayDialog">
@@ -168,6 +219,219 @@ We should make sure these controls line up vertically to the best of our ability
 <li><wo name="ValidateForm"/></li>
 </ol></fieldset>
 </wo:WCForm>
+</wo:WCPageModule>
+
+<wo:WCPageModule title="Text Areas">
+                <h2>dijit.form.Textarea</h2>
+                <p>Enabled:</p>
+
+                <textarea dojoType="dijit.form.Textarea" name="areText">This text area will expand and contract as you type text.
+
+                Lorem ipsum dolor sit amet,
+                consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+                dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci
+                tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat.
+                </textarea>
+
+                <p>Disabled:</p>
+                <textarea dojoType="dijit.form.Textarea" name="areText2" disabled>This text
+                area is disabled and you shouldn't be able to type in it.
+                </textarea>
+
+
+                <h2>dijit.form.SimpleTextarea</h2>
+
+                <p>Enabled:</p>
+                <textarea dojoType="dijit.form.SimpleTextarea" name="areText">This text area has a constant height and displays a scrollbar when necessary.
+
+                Lorem ipsum dolor sit amet,
+                consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+                dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci
+                tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis
+                autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat,
+                vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio
+                dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait
+                nulla facilisi.
+                </textarea>
+
+                <p>Disabled:</p>
+                <textarea dojoType="dijit.form.SimpleTextarea" name="areText2" disabled>Lorem ipsum dolor sit amet,
+                consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet
+                dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci
+                tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis
+                autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat,
+                vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio
+                dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait
+                nulla facilisi.
+                </textarea>
+</wo:WCPageModule>
+
+<wo:WCPageModule title="Editor">
+                <p>Enabled:</p>
+                <textarea height="175" dojoType="dijit.Editor" style="width:400px; height:175px; overflow:auto; ">
+                    <ul>
+                        <li>Lorem <a href="http://dojotoolkit.org">and a link</a>, what do you think?</li>
+                        <li>This is the Editor with a Toolbar attached.</li>
+                    </ul>
+                </textarea>
+
+                <p>Disabled:</p>
+                <textarea height="175" dojoType="dijit.Editor"
+                    style="width:400px; height:175px; overflow:auto; " disabled="true">
+                    <ul>
+                        <li>Lorem <a href="http://dojotoolkit.org">and a link</a>, what do you think?</li>
+                        <li>This is the Editor with a Toolbar attached.</li>
+                    </ul>
+                </textarea>
+</wo:WCPageModule>
+
+<wo:WCPageModule title="Sliders">
+                <p>Enabled</p>
+                <div style="float:right;">
+                <div dojoType="dijit.form.VerticalSlider"
+                    onChange="dojo.byId('slider2input').value=arguments[0];"
+                    value="10"
+                    maximum="100"
+                    minimum="0"
+                    discreteValues="11"
+                    style="height:176px; clear:both;"
+                    id="slider2">
+                        <ol dojoType="dijit.form.VerticalRuleLabels" container="leftDecoration"style="width:2em;" labelStyle="right:0px;">
+                            <li>0</li>
+                            <li>100</li>
+                        </ol>
+
+                        <div dojoType="dijit.form.VerticalRule" container="leftDecoration" count=11 style="width:5px;"></div>
+
+                        <div dojoType="dijit.form.VerticalRule" container="rightDecoration" count=11 style="width:5px;"></div>
+                        <ol dojoType="dijit.form.VerticalRuleLabels" container="rightDecoration"style="width:2em;" maximum="100" count="6" numericMargin="1" constraints="{pattern:'#'}"></ol>
+                </div>
+                <br/> Slider2 Value:<input disabled id="slider2input" size="3" value="10" autocomplete="off"/>
+                </div>
+
+                <div dojoType="dijit.form.HorizontalSlider"
+                    onChange="dojo.byId('slider1input').value=dojo.number.format(arguments[0]/100,{places:1,pattern:'#%'});"
+                    value="10"
+                    maximum="100"
+                    minimum="0"
+                    showButtons="false"
+                    intermediateChanges="true"
+                    style="width:50%; height: 20px;"
+                    id="horizontal1">
+                        <ol dojoType="dijit.form.HorizontalRuleLabels" container="topDecoration" style="height:1.2em;font-size:75%;" numericMargin="1" count="6"></ol>
+                        <div dojoType="dijit.form.HorizontalRule" container="topDecoration" count=11 style="height:5px;"></div>
+                        <div dojoType="dijit.form.HorizontalRule" container="bottomDecoration" count=5 style="height:5px;"></div>
+                        <ol dojoType="dijit.form.HorizontalRuleLabels" container="bottomDecoration" style="height:1em;font-size:75%;">
+                            <li>lowest</li>
+                            <li>normal</li>
+                            <li>highest</li>
+                        </ol>
+
+                </div>
+                <br/>Value: <input disabled id="slider1input" size="5" value="10.0%" autocomplete="off"/>
+
+                <div dojoType="dijit.form.HorizontalSlider"
+                    minimum="1"
+                    value="2"
+                    maximum="3"
+                    discreteValues="3"
+                    showButtons="false"
+                    intermediateChanges="true"
+                    style="width:300px; height: 40px;"
+                    id="horizontal2">
+                        <div dojoType="dijit.form.HorizontalRule" container="bottomDecoration" count=3 style="height:5px;"></div>
+                        <ol dojoType="dijit.form.HorizontalRuleLabels" container="bottomDecoration"style="height:1em;font-size:75%;">
+                            <li><img width=10 height=10 src="../tests/images/note.gif"/><br/><span style="font-size: small">small</span></li>
+                            <li><img width=15 height=15 src="../tests/images/note.gif"/><br/><span style="font-size: medium">medium</span></li>
+                            <li><img width=20 height=20 src="../tests/images/note.gif"/><br/><span style="font-size: large">large</span></li>
+                        </ol>
+                </div>
+
+                <p style="clear:both">Disabled</p>
+                <div style="float:right;">
+                <div dojoType="dijit.form.VerticalSlider"
+                    value="10"
+                    maximum="100"
+                    minimum="0"
+                    discreteValues="11"
+                    style="height:175px; clear:both"
+                    disabled>
+                        <ol dojoType="dijit.form.VerticalRuleLabels" container="leftDecoration"style="width:2em;" labelStyle="right:0px;">
+                            <li>0</li>
+                            <li>100</li>
+                        </ol>
+
+                        <div dojoType="dijit.form.VerticalRule" container="leftDecoration" count=11 style="width:5px;"></div>
+                        <div dojoType="dijit.form.VerticalRule" container="rightDecoration" count=11 style="width:5px;"></div>
+                        <ol dojoType="dijit.form.VerticalRuleLabels" container="rightDecoration"style="width:2em;" maximum="100" count="6" numericMargin="1" constraints="{pattern:'#'}"></ol>
+                </div>
+                </div>
+                <div dojoType="dijit.form.HorizontalSlider"
+                    value="10"
+                    maximum="100"
+                    minimum="0"
+                    showButtons="false"
+                    intermediateChanges="true"
+                    style="width:50%; height: 20px;"
+                    disabled>
+                        <ol dojoType="dijit.form.HorizontalRuleLabels" container="topDecoration" style="height:1.2em;font-size:75%;" numericMargin="1" count="6"></ol>
+                        <div dojoType="dijit.form.HorizontalRule" container="topDecoration" count=11 style="height:5px;"></div>
+                        <div dojoType="dijit.form.HorizontalRule" container="bottomDecoration" count=5 style="height:5px;"></div>
+                        <ol dojoType="dijit.form.HorizontalRuleLabels" container="bottomDecoration" style="height:1em;font-size:75%;">
+                            <li>lowest</li>
+                            <li>normal</li>
+                            <li>highest</li>
+                        </ol>
+                </div>
+
+                <div dojoType="dijit.form.HorizontalSlider"
+                    minimum="1"
+                    value="2"
+                    maximum="3"
+                    discreteValues="3"
+                    showButtons="false"
+                    intermediateChanges="true"
+                    style="width:300px; height: 40px;"
+                    disabled>
+                        <div dojoType="dijit.form.HorizontalRule" container="bottomDecoration" count=3 style="height:5px;"></div>
+                        <ol dojoType="dijit.form.HorizontalRuleLabels" container="bottomDecoration"style="height:1em;font-size:75%;">
+                            <li><img width=10 height=10 src="../tests/images/note.gif"/><br/><span style="font-size: small">small</span></li>
+                            <li><img width=15 height=15 src="../tests/images/note.gif"/><br/><span style="font-size: medium">medium</span></li>
+                            <li><img width=20 height=20 src="../tests/images/note.gif"/><br/><span style="font-size: large">large</span></li>
+                        </ol>
+                </div>
+  <br style="clear:both"/>
+</wo:WCPageModule>
+
+<wo:WCPageModule title="Progress Bars">
+                Regular:
+                <div style="width:400px;" maximum="200" id="setTestBar"
+                    progress="20" dojoType="dijit.ProgressBar"></div>
+
+                Indeterminate:
+                <div style="width:400px;" indeterminate="true" dojoType="dijit.ProgressBar"></div>
+</wo:WCPageModule>
+
+<wo:WCPageModule title="In-line Editing">
+                <p>dijit.InlineEditBox on &lt;h2&gt;:</p>
+
+                <h2 id="editable" style="font-size:larger;" dojoType="dijit.InlineEditBox">
+                    Click Me to Edit Me
+                </h2>
+
+                <p>dijit.InlineEditBox + dijit.form.Textarea on &lt;p&gt;:</p>
+
+                <p id="areaEditable" dojoType="dijit.InlineEditBox" editor="dijit.form.Textarea" autoSave="false">
+                    I'm one big paragraph.  Go ahead and edit me.  I dare you.
+                    The quick brown fox jumped over the lazy dog.  Blah blah blah blah blah blah blah ...
+                </p>
+
+                <p>dijit.form.DateTextBox:
+                <b><span id="backgroundArea" dojoType="dijit.InlineEditBox" editor="dijit.form.DateTextBox" width="170px">2/5/2010</span></b>
+
+                and dijit.form.TimeTextBox:
+                <b><span id="timePicker" dojoType="dijit.InlineEditBox" editor="dijit.form.TimeTextBox" width="150px">12:00 PM</span></b>
+                </p>
 </wo:WCPageModule>
 
 </wo>
