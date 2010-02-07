@@ -17,7 +17,10 @@
 /* Change buttons to symmetric vertical padding */
 .aristo .dijitButtonNode button { padding: 0.15em 0.6em 0.2em; font-size: smaller; }
 
+.aristo .dijitToolbar .dijitButtonNode button { padding: 0; }
+
 .aristo ul.dijitMenu .dijitMenuItem { padding: 3px 5px; }
+
 
 /* @end
 ====================================================================== */
