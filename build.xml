@@ -2,6 +2,14 @@
 
   <import file="framework.xml"/>
 
+  <!-- ...............................................................
+    Build dojo and themes after the basic framework is built but before
+    WebServerResources are copied.
+  -->
+  <target name="build.basic.woframework"
+    depends="common.build.basic.woframework, dojo.build, themes.build"/>
+
+
   <target name="setProps" depends="common.setProps">
     <property file="../Bootstrap/build.properties" prefix="bootstrap."/>
     <propertyfile
@@ -14,50 +22,66 @@
 
 
   <!-- ...............................................................
+    Generates Dijit images and CSS overrides for any Web-CAT themes that
+    contain a themebuilder.properties file.
+  -->
+  <target name="themes.build">
+      <apply executable="ruby"
+               dir="dojo-release/extras/themebuilder">
+            <arg file="dojo-release/extras/themebuilder/build-theme.rb"/>
+          <fileset dir="WebServerResources/theme">
+            <include name="**/themebuilder.properties"/>
+          </fileset>
+      </apply>
+  </target>
+
+
+  <!-- ...............................................................
     Compiles and shrinks the Dojo release.
   -->
   <target name="dojo.build">
-  	<delete dir="WebServerResources/dojo"/>
+      <delete dir="WebServerResources/dojo"/>
     <delete dir="WebServerResources/dijit"/>
     <delete dir="WebServerResources/dojox"/>
     <delete dir="WebServerResources/webcat"/>
-  	<delete dir="dojo-release/dijit/themes/aristo"/>
-  	<copy todir="dojo-release/dijit/themes/aristo">
-  		<fileset dir="dojo-release/extras/aristo"/>
-  	</copy>
-  	<java
-  	  dir="dojo-release/util/buildscripts"
-  	  fork="true"
-  	  classname="org.mozilla.javascript.tools.shell.Main">
-  	  <classpath>
-  	      <pathelement location="dojo-release/util/shrinksafe/js.jar"/>
+      <delete dir="dojo-release/dijit/themes/aristo"/>
+      <copy todir="dojo-release/dijit/themes/aristo">
+          <fileset dir="dojo-release/extras/aristo"/>
+      </copy>
+      <java
+        dir="dojo-release/util/buildscripts"
+        fork="true"
+        classname="org.mozilla.javascript.tools.shell.Main">
+        <classpath>
+            <pathelement location="dojo-release/util/shrinksafe/js.jar"/>
           <pathelement location="dojo-release/util/shrinksafe/shrinksafe.jar"/>
-  	  </classpath>
-  	  <arg value="build.js"/>
+        </classpath>
+        <arg value="build.js"/>
       <arg value="profileFile=../../webcat.profile.js"/>
-  	  <arg value="loader=xdomain"/>
-  	  <arg value="action=release"/>
-  	  <arg value="optimize=shrinksafe"/>
-  	  <arg value="copyTests=false"/>
+        <arg value="loader=xdomain"/>
+        <arg value="action=release"/>
+        <arg value="optimize=shrinksafe"/>
+        <arg value="cssOptimize=comments"/>
+        <arg value="copyTests=false"/>
         <!-- this is kind of a hack, but I couldn't get Dijit's CSS images to
              work when they were in a nested directory, and if I try to use
              WebServerResources as the release name, it DELETES IT (!) before
              building, so do everything in a temp directory and then copy the
              dojo,dijit,dojox folders directly -->
-  	  <arg value="releaseName=wcdojo"/>
-  	  <arg value="releaseDir=../../../__dojo-tmp/"/>
-  	</java>
-  	<copy todir="WebServerResources">
-  		<fileset dir="__dojo-tmp/wcdojo"/>
-  	</copy>
-  	<delete dir="__dojo-tmp"/>
-  	<echo>
-  	If you are running this task in Eclipse with automatic builds enabled,
+        <arg value="releaseName=wcdojo"/>
+        <arg value="releaseDir=../../../__dojo-tmp/"/>
+      </java>
+      <copy todir="WebServerResources">
+          <fileset dir="__dojo-tmp/wcdojo"/>
+      </copy>
+      <delete dir="__dojo-tmp"/>
+      <echo>
+      If you are running this task in Eclipse with automatic builds enabled,
     the "build" directory for the Core project may have become out-of-sync
-  	after this long file-based operation. It is recommended that you clean
+      after this long file-based operation. It is recommended that you clean
     the Core project now to ensure that all necessary web resources will
     be found.
-  	</echo>
+      </echo>
   </target>
 
 </project>
