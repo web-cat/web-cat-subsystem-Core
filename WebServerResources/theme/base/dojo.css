@@ -2,6 +2,8 @@
 /* @group Basic Overrides
 ====================================================================== */
 
+.dijitContentPane { overflow: visible; }
+
 .dijitTitlePane { overflow: visible; }
 
 /*
@@ -13,7 +15,7 @@
 
 /* For best alignment with plain text or labels on the same line */
 .dijitCheckBox.dijitInline {
-	vertical-align: bottom;
+    vertical-align: bottom;
 }
 
 /* For best alignment with labels inside a form */
