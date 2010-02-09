@@ -1,103 +1,104 @@
 .dijitReset {
-	line-height: normal;
+    line-height: normal;
 }
 
 .aristo .dijitInputField INPUT,
 .aristo .dijitTextBox,
 .aristo .dijitComboBox,
 .aristo .dijitSpinner {
-	margin: 0em 0.1em;
+    margin: 0em 0.1em;
 }
-.aristo input.dijitTextBox {
-	padding: 3px;
-	vertical-align: middle;
+.aristo input.dijitTextBox,
+.aristo .dijitTextBox .dijitInputField {
+    padding: 3px;
+    vertical-align: middle;
 }
 .aristo .dijitComboBox input,
 .aristo .dijitSpinner input {
-	padding: 3px 0px;
-} 
+    padding: 3px 0px;
+}
 .aristo .dijitComboBox .dijitInputField,
 .aristo .dijitSpinner .dijitInputField {
-	padding: 0px 3px;
+    padding: 0px 3px;
 }
 .aristo .dijitTextBox,
 .aristo .dijitComboBox,
 .aristo .dijitSpinner,
 .aristo .dijitTextArea {
-	font-size: 100%;
+    font-size: 100%;
 }
 .aristo .dijitTextArea {
-	padding: 3px;
+    padding: 3px;
 }
 .aristo .dijitTextBox,
 .aristo .dijitComboBox,
 .aristo .dijitSpinner,
 .aristo .dijitTextArea,
 .aristo .dijitInlineEditor input {
-	
-	background: #FFF url("../images/textInputBg.png") repeat-x top left;	
-	border: 1px solid #B0B0B0;
-	border-right-color: #C4C4C4;
-	border-bottom-color: #E6E6E6;
-	border-left-color: #C0C0C0;
-	-moz-border-radius: 5px;
-	-webkit-border-radius: 5px;
-	-moz-transition: -moz-box-shadow 0.2s linear;	
-	-webkit-transition: -webkit-box-shadow 0.2s linear;	
+
+    background: #FFF url("../images/textInputBg.png") repeat-x top left;
+    border: 1px solid #B0B0B0;
+    border-right-color: #C4C4C4;
+    border-bottom-color: #E6E6E6;
+    border-left-color: #C0C0C0;
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    -moz-transition: -moz-box-shadow 0.2s linear;
+    -webkit-transition: -webkit-box-shadow 0.2s linear;
 }
 .aristo .dijitComboBox {
-	position: relative;
-	padding-right: 20px; /* for validation icon */
-	border-right: none;
+    position: relative;
+    padding-right: 20px; /* for validation icon */
+    border-right: none;
 }
 .aristo .dijitInputLayoutContainer {
-	padding-right: 20px; /* for validation icon */
+    padding-right: 20px; /* for validation icon */
 }
 .aristo .dijitTextBoxHover,
 .aristo .dijitComboBoxHover,
 .aristo .dijitSpinnerHover,
 .aristo .dijitTextAreaHover,
 .aristo .dijitInlineEditorHover input {
-	border: 1px solid #6D808C;
-	border-right-color: #8195A1;
-	border-bottom-color: #E6E6E6;
-	border-left-color: #798D9A;
+    border: 1px solid #6D808C;
+    border-right-color: #8195A1;
+    border-bottom-color: #E6E6E6;
+    border-left-color: #798D9A;
 }
 .aristo .dijitComboBoxHover {
-	border-right: none;
+    border-right: none;
 }
 .aristo .dijitTextBoxDisabled,
 .aristo .dijitComboBoxDisabled,
 .aristo .dijitSpinnerDisabled,
 .aristo .dijitTextAreaDisabled {
-	color: gray !important;
+    color: gray !important;
 }
 .dj_webkit .aristo .dijitTextBoxDisabled,
 .dj_webkit .aristo .dijitComboBoxDisabled,
 .dj_webkit .aristo .dijitSpinnerDisabled,
 .dj_webkit .aristo .dijitTextAreaDisabled {
-	color: #eee;
+    color: #eee;
 }
 .aristo .dijitComboBox .dijitButtonNode,
 .aristo .dijitSpinnerButtonContainer {
-	line-height: 23px;
-	padding: 0;
-	-moz-border-radius: 0px;
-	-webkit-border-radius: 0px;
-	-moz-border-radius-bottomright: 5px;
-	-moz-border-radius-topright: 5px;
-	-webkit-border-top-right-radius: 5px;
-	-webkit-border-bottom-right-radius: 5px;
-	-moz-box-shadow: none;
-	-webkit-box-shadow: none;
+    line-height: 23px;
+    padding: 0;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius-bottomright: 5px;
+    -moz-border-radius-topright: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -webkit-border-bottom-right-radius: 5px;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
 }
 .aristo .dijitComboBox .dijitButtonNode,
 .aristo .dijitSpinnerButtonContainer {
-	height: 100%;	
-	position: absolute;
-	right: 0;
-	top: -1px;
-	border: 1px solid gray;	
+    height: 100%;
+    position: absolute;
+    right: 0;
+    top: -1px;
+    border: 1px solid gray;
 }
 .dj_webkit .aristo .dijitComboBox .dijitButtonNode {
 }
@@ -108,77 +109,77 @@
 .aristo .dijitTextBoxActive,
 .aristo .dijitComboBoxActive,
 .aristo .dijitTextAreaActive {
-	
-	border: 1px solid #6D808C;
-	border-right-color: #8195A1;
-	border-left-color: #798D9A;
-	-webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
-	-moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);	
+
+    border: 1px solid #6D808C;
+    border-right-color: #8195A1;
+    border-left-color: #798D9A;
+    -webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
+    -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
 }
 .aristo .dijitComboBoxActive,
 .aristo .dijitComboBoxFocused {
-	border-right: 0;
+    border-right: 0;
 }
 .aristo .dijitComboBoxFocused {
-	border-bottom-color: #949494;	
+    border-bottom-color: #949494;
 }
 .aristo .dijitComboBoxFocusedHover .dijitButtonNode,
 .aristo .dijitSpinnerFocused .dijitButtonNode,
 .aristo .dijitSpinnerUpArrowActive .dijitButtonNode,
 .aristo .dijitSpinnerDownArrowActive .dijitButtonNode {
-	border-left-color:#5679C1;
-	background: #81AFC8 url("../images/buttonActive.png") repeat-x bottom left;
+    border-left-color:#5679C1;
+    background: #81AFC8 url("../images/buttonActive.png") repeat-x bottom left;
 }
 .aristo .dijitSpinnerFocused .dijitDownArrowButton,
 .aristo .dijitSpinnerUpArrowActive .dijitDownArrowButton,
 .aristo .dijitSpinnerDownArrowActive .dijitDownArrowButton {
-	border-top-color:#366dba;
+    border-top-color:#366dba;
 }
 .aristo .dijitError {
-	background-color:#f9f7ba;
-	background-image:none;
+    background-color:#f9f7ba;
+    background-image:none;
 }
 .dj_ie6 .aristo .dijitError INPUT {
-	
-	background-color:#f9f7ba !important;
+
+    background-color:#f9f7ba !important;
 }
 .aristo .dijitErrorFocused {
-	background-color:#f9f999;
-	background-image:none;
+    background-color:#f9f999;
+    background-image:none;
 }
 .dj_ie6 .aristo .dijitErrorFocused INPUT {
-	
-	background-color:#f9f999 !important;
+
+    background-color:#f9f999 !important;
 }
 .aristo .dijitValidationIcon {
-	padding-top: 4px;
-	width: 16px;
-	background: transparent url('../images/warning.png') no-repeat center center;
+    padding-top: 5px;
+    width: 16px;
+    background: transparent url('../images/warning.png') no-repeat center center;
 }
 .aristo .dijitInlineValue {
-	
-	padding:3px;
-	margin:4px;
+
+    padding:3px;
+    margin:4px;
 }
 .aristo .dijitInlineEditor {
-	
-	display: inline-block;
-	display: -moz-inline-stack;
-	#display:inline;
-	
+
+    display: inline-block;
+    display: -moz-inline-stack;
+    #display:inline;
+
 }
 .dijitInlineEditor .saveButton,
 .dijitInlineEditor .cancelButton {
-	margin:3px 3px 3px 0px;
+    margin:3px 3px 3px 0px;
 }
 .RichTextEditable {
-	border:1px solid #bfbfbf;
-	border-top:0;
+    border:1px solid #bfbfbf;
+    border-top:0;
 }
 .aristo .dijitComboBoxHighlightMatch {
-	background-color:#a5beda;
+    background-color:#a5beda;
 }
 .aristo .dijitFocusedLabel {
-	
-	outline: 1px dotted #666666;
+
+    outline: 1px dotted #666666;
 }

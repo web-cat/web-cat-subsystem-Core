@@ -1,139 +1,137 @@
 
 .aristo .dijitDialog {
-	background: #BDBDBD;
-	border: 1px solid #979797;
-	padding: 0;
-	-moz-box-shadow: 0px 5px 12px #000;
-	-webkit-box-shadow: 0px 5px 12px #000;
-	outline: none;
-	-moz-border-radius-topleft: 12px;
-	-moz-border-radius-topright: 12px;
-	-moz-border-radius-bottomleft: 12px;
-	-moz-border-radius-bottomright: 12px;
-	-webkit-border-top-left-radius: 12px;
-	-webkit-border-top-right-radius: 12px;
-	-webkit-border-bottom-left-radius: 12px;
-	-webkit-border-bottom-right-radius: 12px;
+    background: #BDBDBD;
+    border: 1px solid #979797;
+    padding: 0;
+    -moz-box-shadow: 0px 5px 12px #000;
+    -webkit-box-shadow: 0px 5px 12px #000;
+    outline: none;
+    -moz-border-radius-topleft: 12px;
+    -moz-border-radius-topright: 12px;
+    -moz-border-radius-bottomleft: 12px;
+    -moz-border-radius-bottomright: 12px;
+    -webkit-border-top-left-radius: 12px;
+    -webkit-border-top-right-radius: 12px;
+    -webkit-border-bottom-left-radius: 12px;
+    -webkit-border-bottom-right-radius: 12px;
 }
 .aristo .dijitDialog .dijitDialogPaneContent {
-	background: #FFF;
-	border: 1px solid #979797;
-	margin: 0 4px 4px;
-	padding: 10px;
-	-moz-border-radius-topleft: 12px;
-	-moz-border-radius-topright: 12px;
-	-moz-border-radius-bottomleft: 12px;
-	-moz-border-radius-bottomright: 12px;
-	-webkit-border-top-left-radius: 12px;
-	-webkit-border-top-right-radius: 12px;
-	-webkit-border-bottom-left-radius: 12px;
-	-webkit-border-bottom-right-radius: 12px;
+    background: #FFF;
+    border: 1px solid #979797;
+    margin: 0 4px 4px;
+    padding: 10px;
+    -moz-border-radius-topleft: 12px;
+    -moz-border-radius-topright: 12px;
+    -moz-border-radius-bottomleft: 12px;
+    -moz-border-radius-bottomright: 12px;
+    -webkit-border-top-left-radius: 12px;
+    -webkit-border-top-right-radius: 12px;
+    -webkit-border-bottom-left-radius: 12px;
+    -webkit-border-bottom-right-radius: 12px;
 }
 .aristo .dijitDialogTitleBar {
-	background: #BDBDBD url("images/dialogTitleBar.png") repeat-x top left;
-	padding: 9px 6px;
-	text-align: center;
-	cursor: move;
-	outline:0; 
-	-moz-border-radius-topleft: 12px;
-	-moz-border-radius-topright: 12px;
-	-webkit-border-top-left-radius: 12px;
-	-webkit-border-top-right-radius: 12px;
-	text-shadow: 0 1px 0 #E6E6E6;
+    background: #BDBDBD url("images/dialogTitleBar.png") repeat-x top left;
+    padding: 9px 6px;
+    text-align: center;
+    cursor: move;
+    outline:0;
+    -moz-border-radius-topleft: 12px;
+    -moz-border-radius-topright: 12px;
+    -webkit-border-top-left-radius: 12px;
+    -webkit-border-top-right-radius: 12px;
+    text-shadow: 0 1px 0 #E6E6E6;
 }
 .aristo .dijitDialogTitle {
-	font-weight: bold;
-	font-size: 125%;
-	padding: 0px 4px;
+    font-weight: bold;
+    font-size: 125%;
+    padding: 0px 4px;
 }
 .aristo .dijitDialogCloseIcon {
-	background: url("images/dialogClose.png") no-repeat right top;
-	position: absolute;
-	vertical-align: middle;
-	right: 4px;
-	top: 4px;
-	height: 16px;
-	width: 16px;
-	cursor: pointer;
+    background: url("images/dialogClose.png") no-repeat right top;
+    position: absolute;
+    vertical-align: middle;
+    right: 4px;
+    top: 4px;
+    height: 16px;
+    width: 16px;
+    cursor: pointer;
 }
 .aristo .dijitDialogCloseIcon-hover {
 }
 .aristo .dijitDialogUnderlay {
-	background-color: #222;
-	opacity: 0.85;
+    background-color: #222;
+    opacity: 0.85;
 }
 .aristo .dijitTooltip,
 .aristo .dijitTooltipDialog {
-	background: transparent;	
+    background: transparent;
 }
 .dijitTooltipBelow {
-	padding-top: 11px;
+    padding-top: 11px;
 }
 .dijitTooltipAbove {
-	padding-bottom: 13px;
+    padding-bottom: 13px;
 }
 .aristo .dijitTooltipContainer {
-	color: #000;
-	background: #FFF8B8;
-	opacity: 0.95;
-	filter: alpha(opacity = 95);
-	border: 1px solid #979797;
-	padding: 5px 10px;	
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	-moz-box-shadow: 0px 4px 8px #515151;
-	-webkit-box-shadow: 0px 4px 8px #515151;	
+    color: #000;
+    background: #FFF8B8;
+    border: 1px solid #979797;
+    padding: 5px 10px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -moz-box-shadow: 0px 4px 8px #515151;
+    -webkit-box-shadow: 0px 4px 8px #515151;
 }
-	
+
 .aristo .dijitTooltipConnector {
-	border:0px;
-	z-index: 2;
+    border:0px;
+    z-index: 2;
 }
 .aristo .dijitTooltipABRight .dijitTooltipConnector {
-	left: auto !important;
-	right: 3px;
+    left: auto !important;
+    right: 3px;
 }
 .aristo .dijitTooltipBelow .dijitTooltipConnector {
-	top: -2px;
-	left: 7px;
-	background:url("images/tooltipConnectorUp.png") no-repeat top left;
-	width:16px;
-	height:14px;
+    top: -2px;
+    left: 7px;
+    background:url("images/tooltipConnectorUp.png") no-repeat top left;
+    width:16px;
+    height:14px;
 }
 .aristo .dijitTooltipAbove .dijitTooltipConnector {
-	bottom: 0px;
-	left: 7px;
-	background:url("images/tooltipConnectorDown.png") no-repeat top left;
-	width:16px;
-	height:14px;
+    bottom: 0px;
+    left: 7px;
+    background:url("images/tooltipConnectorDown.png") no-repeat top left;
+    width:16px;
+    height:14px;
 }
 .aristo .dijitTooltipLeft {
-	padding-right: 15px;
+    padding-right: 15px;
 }
 .aristo .dijitTooltipLeft .dijitTooltipConnector {
-	right: 0px;
-	bottom: 7px;
-	background:url("images/tooltipConnectorRight.png") no-repeat top left;
-	width:16px;
-	height:14px;
+    right: 0px;
+    bottom: 7px;
+    background:url("images/tooltipConnectorRight.png") no-repeat top left;
+    width:16px;
+    height:14px;
 }
 .aristo .dijitTooltipRight {
-	padding-left: 14px;
+    padding-left: 14px;
 }
 .aristo .dijitTooltipRight .dijitTooltipConnector {
-	left: 0px;
-	bottom: 7px;
-	background:url("images/tooltipConnectorLeft.png") no-repeat top left;
-	width:16px;
-	height:14px;
+    left: 0px;
+    bottom: 7px;
+    background:url("images/tooltipConnectorLeft.png") no-repeat top left;
+    width:16px;
+    height:14px;
 }
 
 .aristo .dijitPopup .dijitTooltipContainer,
 .aristo .dijitPopup .dijitMenu {
 /*	FIXME: not sure how to fix this
-	margin-left: 10px;
-	margin-right: 10px;
-	margin-bottom: 10px;
-	-moz-box-shadow: 0px 4px 8px #515151;
-	-webkit-box-shadow: 0px 4px 8px #515151;*/
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    -moz-box-shadow: 0px 4px 8px #515151;
+    -webkit-box-shadow: 0px 4px 8px #515151;*/
 }
