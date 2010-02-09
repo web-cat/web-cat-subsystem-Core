@@ -8,12 +8,6 @@
     font: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif !important;
 }
 
-/* to match the padding in plain text inputs */
-.aristo .dijitDateTextBox input,
-.aristo .dijitTimeTextBox input { padding-top: 3px; }
-.aristo .dijitDateTextBox,
-.aristo .dijitTimeTextBox { padding-left: 3px; }
-
 /* Change buttons to symmetric vertical padding */
 .aristo .dijitButtonNode button { padding: 0.15em 0.6em 0.2em; font-size: smaller; }
 
