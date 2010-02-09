@@ -23,6 +23,10 @@
     extends = aristo;
     cssOrder = (
         {
+            file = "dojo-overrides.css";
+            media = "screen, projection, tv";
+        },
+        {
             file = "dream-way.css";
             media = "screen, projection, tv";
         }
