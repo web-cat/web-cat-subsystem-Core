@@ -329,6 +329,7 @@ def generate_style_colors
     colors['button-hover-border-bottom-color'] = new_color('#999999').tint(color_for_tint, 100)
     colors['button-text-color'] = new_color('#202020').tint(color_for_tint, 100)
     colors['button-text-shadow-color'] = new_color('#EBEBEB')
+    colors['checkbox-hover-background-color'] = secondary_tint.color_with_alpha(0.5)
     colors['combobutton-separator-color'] = new_color('#DBDBDB').tint(color_for_tint, 100)
     colors['combobutton-disabled-separator-color'] = new_color('#DBDBDB')
 
@@ -521,7 +522,7 @@ def generate_checkbox_sprite_image
 
   img.composite! checkbox_tinted, 0, 0, OverCompositeOp
   img.composite! checkbox_check_tinted, 0, 0, OverCompositeOp
-  img.composite! checkbox_enabled, CHECKBOX_WIDTH * 1, 0, OverCompositeOp
+  img.composite! checkbox_tinted, CHECKBOX_WIDTH * 1, 0, OverCompositeOp
   img.composite! checkbox_tinted, CHECKBOX_WIDTH * 2, 0, OverCompositeOp
   img.composite! checkbox_disabled, CHECKBOX_WIDTH * 3, 0, OverCompositeOp
   img.composite! checkbox_disabled, CHECKBOX_WIDTH * 4, 0, OverCompositeOp
@@ -529,7 +530,7 @@ def generate_checkbox_sprite_image
 
   img.composite! radio_tinted, CHECKBOX_WIDTH * 5, 0, OverCompositeOp
   img.composite! radio_check_tinted, CHECKBOX_WIDTH * 5, 0, OverCompositeOp
-  img.composite! radio_enabled, CHECKBOX_WIDTH * 6, 0, OverCompositeOp
+  img.composite! radio_tinted, CHECKBOX_WIDTH * 6, 0, OverCompositeOp
   img.composite! radio_tinted, CHECKBOX_WIDTH * 7, 0, OverCompositeOp
   img.composite! radio_disabled, CHECKBOX_WIDTH * 8, 0, OverCompositeOp
   img.composite! radio_disabled, CHECKBOX_WIDTH * 9, 0, OverCompositeOp

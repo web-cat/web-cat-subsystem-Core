@@ -269,7 +269,36 @@
 .aristo .dijitCheckBoxIcon {
     background-image: url("images/checkbox-sprite.png");
 }
-
+.aristo .dijitCheckBox {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -moz-transition-property: background-color, -moz-box-shadow;
+    -moz-transition-duration: 0.2s;
+    -moz-transition-timing-function: linear;
+    -webkit-transition-property: background-color, -webkit-box-shadow;
+    -webkit-transition-duration: 0.2s;
+    -webkit-transition-timing-function: linear;
+}
+.aristo .dijitRadio {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -moz-transition-property: background-color, -moz-box-shadow;
+    -moz-transition-duration: 0.2s;
+    -moz-transition-timing-function: linear;
+    -webkit-transition-property: background-color, -webkit-box-shadow;
+    -webkit-transition-duration: 0.2s;
+    -webkit-transition-timing-function: linear;
+}
+.aristo .dijitCheckBoxHover {
+    background-color: ${checkbox-hover-background-color};
+    -webkit-box-shadow: 0 0 5px ${focus-ring-color};
+    -moz-box-shadow: 0 0 5px ${focus-ring-color};
+}
+.aristo .dijitRadioHover {
+    background-color: ${checkbox-hover-background-color};
+    -webkit-box-shadow: 0 0 5px ${focus-ring-color};
+    -moz-box-shadow: 0 0 5px ${focus-ring-color};
+}
 
 /* ========================================================================
  * Overrides for form/Common.css
