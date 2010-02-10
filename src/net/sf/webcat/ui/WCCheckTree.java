@@ -35,7 +35,7 @@ import er.extensions.foundation.ERXStringUtilities;
 // ------------------------------------------------------------------------
 /**
  * A subclass of {@link WCTree} that attaches check box widgets to each node.
- * 
+ *
  * <h2>Bindings</h2>
  * <table>
  * <tr>
@@ -50,7 +50,7 @@ import er.extensions.foundation.ERXStringUtilities;
  * only be checked if all of its children are checked).</td>
  * </tr>
  * </table>
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
@@ -61,19 +61,19 @@ public class WCCheckTree extends WCTree
     // ----------------------------------------------------------
     /**
      * Creates a new TreeComponent.
-     * 
+     *
      * @param context
      *            the context
      */
     public WCCheckTree(WOContext context)
     {
         super(context);
-        
+
         NSMutableArray<IItemDecorator> decorators =
             new NSMutableArray<IItemDecorator>();
         decorators.add(new CheckItemDecorator());
         this.decorators = decorators;
-        
+
         this.checkedItems = new NSMutableArray<Object>();
     }
 
@@ -136,7 +136,7 @@ public class WCCheckTree extends WCTree
         return JSONBridgeName() + "." + componentProxyName();
     }
 
-    
+
     // ----------------------------------------------------------
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
@@ -185,7 +185,7 @@ public class WCCheckTree extends WCTree
         {
             String itemId = items.getString(i);
             Object item = model.itemForId(itemId);
-            
+
             if (item != null)
             {
                 if (checked)
@@ -215,7 +215,7 @@ public class WCCheckTree extends WCTree
 
         WOAssociation association =
             _keyAssociations.objectForKey("checkedItems");
-        
+
         if (association != null &&
                 association.isValueSettableInComponent(parent()))
         {

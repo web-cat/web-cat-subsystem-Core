@@ -505,11 +505,11 @@ webcat.tree = {
         };
 
         node.checkbox = new dijit.form.CheckBox(checkboxArgs, node.leftDecoration);
-        node.checkbox.attr('checked', node.item.checked);
+        node.checkbox.attr('checked', node.item.checked || false);
 
         node.isChecked = function()
         {
-            return this.checkbox.attr('checked');
+            return this.checkbox.attr('checked') || false;
         };
 
         node.setChecked = function(newValue)
