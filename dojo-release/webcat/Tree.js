@@ -197,6 +197,12 @@ dojo.declare("webcat.DecoratedTreeNode", dijit._TreeNode,
 
     id: null,
 
+    // Copied from dijit._TreeNode to change labelNode from innerText to
+    // innerHTML.
+    attributeMap: dojo.delegate(dijit._Widget.prototype.attributeMap, {
+        label: {node: "labelNode", type: "innerHTML"},
+        tooltip: {node: "rowNode", type: "attribute", attribute: "title"}
+    }),
 
     //~ Methods ...............................................................
 
@@ -217,17 +223,23 @@ dojo.declare("webcat.DecoratedTreeNode", dijit._TreeNode,
 
 
     // ----------------------------------------------------------
-     setChildItems: function(/* Object[] */ items)
+    setChildItems: function(/* Object[] */ items)
     {
-        // Synchronized with Dojo 1.2.3.
-        //
+        // SYNCHRONIZED WITH DOJO 1.4.1.
 
         // summary:
         //		Sets the child items of this node, removing/adding nodes
         //		from current children to match specified items[] array.
+        //		Also, if this.persist == true, expands any children that were previously
+        // 		opened.
+        // returns:
+        //		Deferred object that fires after all previously opened children
+        //		have been expanded again (or fires instantly if there are no such children).
 
         var tree = this.tree,
-            model = tree.model;
+            model = tree.model,
+            defs = [];	// list of deferreds that need to fire before I am complete
+
 
         // Orphan all my existing children.
         // If items contains some of the same items as before then we will reattach them.
@@ -246,24 +258,41 @@ dojo.declare("webcat.DecoratedTreeNode", dijit._TreeNode,
             // released
             dojo.forEach(items, function(item){
                 var id = model.getIdentity(item),
-                    existingNode = tree._itemNodeMap[id],
-                    node =
-                        ( existingNode && !existingNode.getParent() ) ?
-                        existingNode :
-                        tree._createTreeNode({
+                    existingNodes = tree._itemNodesMap[id],
+                    node;
+                if(existingNodes){
+                    for(var i=0;i<existingNodes.length;i++){
+                        if(existingNodes[i] && !existingNodes[i].getParent()){
+                            node = existingNodes[i];
+                            node.attr('indent', this.indent+1);
+                            break;
+                        }
+                    }
+                }
+                if(!node){
+                    node = this.tree._createTreeNode({
+// BEGIN WEBCAT CHANGES
                             id: id,
+// END WEBCAT CHANGES
                             item: item,
                             tree: tree,
                             isExpandable: model.mayHaveChildren(item),
-                            label: tree.getLabel(item)
+                            label: tree.getLabel(item),
+                            tooltip: tree.getTooltip(item),
+                            indent: this.indent + 1
                         });
-                this.addChild(node);
-                // note: this won't work if there are two nodes for one item (multi-parented items); will be fixed later
-                tree._itemNodeMap[id] = node;
-                if(this.tree.persist){
-                    if(tree._openedItemIds[id]){
-                        tree._expandNode(node);
+                    if(existingNodes){
+                        existingNodes.push(node);
+                    }else{
+                        tree._itemNodesMap[id] = [node];
                     }
+                }
+                this.addChild(node);
+
+                // If node was previously opened then open it again now (this may trigger
+                // more data store accesses, recursively)
+                if(this.tree.autoExpand || this.tree._state(item)){
+                    defs.push(tree._expandNode(node));
                 }
             }, this);
 
@@ -281,14 +310,20 @@ dojo.declare("webcat.DecoratedTreeNode", dijit._TreeNode,
             this._setExpando(false);
         }
 
-        // On initial tree show, put focus on either the root node of the tree,
+        // On initial tree show, make the selected TreeNode as either the root node of the tree,
         // or the first child, if the root node is hidden
         if(this == tree.rootNode){
-            var fc = this.tree.showRoot ? this : this.getChildren()[0],
-                tabnode = fc ? fc.labelNode : this.domNode;
-            tabnode.setAttribute("tabIndex", "0");
-            tree.lastFocused = fc;
+            var fc = this.tree.showRoot ? this : this.getChildren()[0];
+            if(fc){
+                fc.setSelected(true);
+                tree.lastFocused = fc;
+            }else{
+                // fallback: no nodes in tree so focus on Tree <div> itself
+                tree.domNode.setAttribute("tabIndex", "0");
+            }
         }
+
+        return new dojo.DeferredList(defs);	// dojo.Deferred
     }
 });
 
@@ -322,37 +357,6 @@ dojo.declare("webcat.DecoratedTree", dijit.Tree,
 
 
     // ----------------------------------------------------------
-    _load: function()
-    {
-        // summary: initial load of the tree
-        // load root node (possibly hidden) and it's children
-        this.model.getRoot(
-            dojo.hitch(this, function(item){
-                var rn = this.rootNode = this._createTreeNode({
-                    item: item,
-                    tree: this,
-                    isExpandable: true,
-                    label: this.label || this.getLabel(item)
-                });
-                if(!this.showRoot){
-                    rn.rowNode.style.display="none";
-                }
-                this.domNode.appendChild(rn.domNode);
-                this._itemNodeMap[this.model.getIdentity(item)] = rn;
-
-                rn._updateLayout();		// sets "dijitTreeIsRoot" CSS classname
-
-                // load top level children
-                this._expandNode(rn);
-            }),
-            function(err){
-                console.error(this, ": error loading root: ", err);
-            }
-        );
-    },
-
-
-    // ----------------------------------------------------------
     getIconClass: function(item)
     {
         if (item && item.iconClass)
@@ -365,157 +369,152 @@ dojo.declare("webcat.DecoratedTree", dijit.Tree,
 
 //~ Global Functions ..........................................................
 
-// --------------------------------------------------------------
-/**
- * The handler that should be called when a DecoratedTree node is clicked. This
- * function performs the preOnClick -> server onClick -> postOnClick behavior
- * described in the Tree component documenation.
- */
-DecoratedTree_onClick = function(/* DecoratedTree */ tree,
-                                 /* object */ item,
-                                 /* DecoratedTreeNode */ node,
-                                 /* JSONBridge */ proxyReference)
-{
-    var continueHandling = true;
-
-    if (tree.preOnClick)
-        continueHandling = tree.preOnClick(item, node);
-
-    if (continueHandling)
+webcat.tree = {
+    // --------------------------------------------------------------
+    /**
+     * The handler that should be called when a DecoratedTree node is clicked. This
+     * function performs the preOnClick -> server onClick -> postOnClick behavior
+     * described in the Tree component documenation.
+     */
+    onNodeClick: function(/* DecoratedTree */ tree,
+                          /* object */ item,
+                          /* DecoratedTreeNode */ node,
+                          /* JSONBridge */ proxyReference)
     {
-        var serverResult = proxyReference.handleOnClick(item.itemId);
+        var continueHandling = true;
 
-        if (tree.postOnClick)
-            tree.postOnClick(item, node, serverResult);
-    }
-};
+        if (tree.preOnClick)
+            continueHandling = tree.preOnClick(item, node);
+
+        if (continueHandling)
+        {
+            var serverResult = proxyReference.handleOnClick(item.itemId);
+
+            if (tree.postOnClick)
+                tree.postOnClick(item, node, serverResult);
+        }
+    },
 
 
-// --------------------------------------------------------------
-/**
- * For a CheckTree with independentChecks set to false, this function fixes the
- * checked states of the ancestor nodes based on the checked states of their
- * children.
- */
-CheckTreeNode_fixChecksUp = function(/* DecoratedTreeNode */ node,
-                                     /* string[] */ touchedItems)
-{
-    if (node)
+    // --------------------------------------------------------------
+    /**
+     * For a CheckTree with independentChecks set to false, this function fixes the
+     * checked states of the ancestor nodes based on the checked states of their
+     * children.
+     */
+    fixChecksUp: function(/* DecoratedTreeNode */ node,
+                          /* string[] */ touchedItems)
     {
-        var allChecked = true;
+        if (node)
+        {
+            var allChecked = node.getChildren().every(function(child)
+            {
+                return child.isChecked();
+            });
 
+            if (allChecked != node.isChecked())
+            {
+                touchedItems.push(node.id);
+                node.setChecked(allChecked);
+            }
+
+            webcat.tree.fixChecksUp(node.getParent(), touchedItems);
+        }
+    },
+
+
+    // --------------------------------------------------------------
+    /**
+     * For a CheckTree with independentChecks set to false, this function fixes the
+     * checked states of the child nodes based on the checked states of the parent.
+     */
+    fixChecksDown: function(/* DecoratedTreeNode */ node,
+                            /* boolean */ newValue,
+                            /* string[] */ touchedItems)
+    {
         node.getChildren().forEach(function(child)
         {
-            allChecked = allChecked && child.isChecked();
+            if (newValue != child.isChecked())
+            {
+                touchedItems.push(child.id);
+                child.setChecked(newValue);
+            }
+
+            webcat.tree.fixChecksDown(child, newValue, touchedItems);
         });
+    },
 
-        if (allChecked != node.isChecked())
+
+    // --------------------------------------------------------------
+    /**
+     * The event handler that is called when the checked state of a node in the
+     * tree is changed by the user.
+     */
+    onCheckChanged: function(/* boolean */ newValue,
+                             /* DecoratedTreeNode */ node,
+                             /* DecoratedTree */ tree)
+    {
+        if (!tree._automaticCheckChange)
         {
-            touchedItems.push(node.id);
-            node.setChecked(allChecked);
-        }
+            // Keep track of the nodes that were changed by this operation.
+            var touchedItems = [ node.id ];
+            var indep = tree.decorationOptions.independentChecks;
 
-        CheckTreeNode_fixChecksUp(node.getParent(), touchedItems);
+            if (indep != true && !tree._automaticCheckChange)
+            {
+                tree._automaticCheckChange = true;
+
+                webcat.tree.fixChecksDown(node, newValue, touchedItems);
+                webcat.tree.fixChecksUp(node.getParent(), touchedItems);
+
+                tree._automaticCheckChange = false;
+            }
+
+            // Notify the server-side component that the check state has changed
+            // so that it can stay synchronized.
+
+            tree.checkTreeProxy._handleCheckChanged(function(result)
+            {
+                // Only pass the event along to an observer once the server-side
+                // component has been successfully synched.
+
+                if (tree.onCheckChanged)
+                    tree.onCheckChanged(node.item, newValue, node);
+            },
+            touchedItems, newValue);
+        }
+    },
+
+
+    // --------------------------------------------------------------
+    /**
+     * Handles the decorateNode event of a DecoratedTree for the CheckTree
+     * component. The node is decorated by adding a checkbox widget before the
+     * node's icon.
+     */
+    decorateCheckTreeNode: function(/* DecoratedTree */ tree,
+                                    /* DecoratedTreeNode */ node,
+                                    /* string */ formFieldName)
+    {
+        var checkboxArgs = {
+            name: formFieldName,
+            value: node.id,
+            onClick: function(e) {
+                webcat.tree.onCheckChanged(this.attr('checked'), node, tree)
+            }
+        };
+
+        node.checkbox = new dijit.form.CheckBox(checkboxArgs, node.leftDecoration);
+        node.checkbox.attr('checked', node.item.checked);
+
+        node.isChecked = function()
+        {
+            return this.checkbox.attr('checked');
+        };
+
+        node.setChecked = function(newValue)
+        {
+            this.checkbox.attr('checked', newValue);
+        };
     }
-};
-
-
-// --------------------------------------------------------------
-/**
- * For a CheckTree with independentChecks set to false, this function fixes the
- * checked states of the child nodes based on the checked states of the parent.
- */
-CheckTreeNode_fixChecksDown = function(/* DecoratedTreeNode */ node,
-                                       /* boolean */ newValue,
-                                       /* string[] */ touchedItems)
-{
-    node.getChildren().forEach(function(child)
-    {
-        if (newValue != child.isChecked())
-        {
-            touchedItems.push(child.id);
-            child.setChecked(newValue);
-        }
-
-        CheckTreeNode_fixChecksDown(child, newValue, touchedItems);
-    });
-};
-
-
-// --------------------------------------------------------------
-/**
- * The event handler that is called when the checked state of a node in the
- * tree is changed by the user.
- */
-CheckTreeNode_onCheckChangeHandler = function(/* boolean */ newValue,
-                                              /* DecoratedTreeNode */ node,
-                                              /* DecoratedTree */ tree)
-{
-    if (!tree._automaticCheckChange)
-    {
-        // Keep track of the nodes that were changed by this operation.
-        var touchedItems = [ node.id ];
-        var indep = tree.decorationOptions.independentChecks;
-
-        if (indep != true && !tree._automaticCheckChange)
-        {
-            tree._automaticCheckChange = true;
-
-            CheckTreeNode_fixChecksDown(node, newValue, touchedItems);
-            CheckTreeNode_fixChecksUp(node.getParent(), touchedItems);
-
-            tree._automaticCheckChange = false;
-        }
-
-        // Notify the server-side component that the check state has changed
-        // so that it can stay synchronized.
-
-        tree.checkTreeProxy._handleCheckChanged(function(result)
-        {
-            // Only pass the event along to an observer once the server-side
-            // component has been successfully synched.
-
-            if (tree.onCheckChanged)
-                tree.onCheckChanged(node.item, newValue, node);
-        },
-        touchedItems, newValue);
-    }
-};
-
-
-// --------------------------------------------------------------
-/**
- * Handles the decorateNode event of a DecoratedTree for the CheckTree
- * component. The node is decorated by adding a checkbox widget before the
- * node's icon.
- */
-CheckTree_decorateNode = function(/* DecoratedTree */ tree,
-                                  /* DecoratedTreeNode */ node,
-                                  /* string */ formFieldName)
-{
-    var onChangeHandler = function(newValue)
-    {
-        CheckTreeNode_onCheckChangeHandler(newValue, node, tree);
-    };
-
-    var checkboxArgs = {
-        name: formFieldName,
-        value: node.id,
-        onChange: onChangeHandler,
-    };
-
-    if (node.item.checked)
-        checkboxArgs.checked = "checked";
-
-    node.checkbox = new dijit.form.CheckBox(checkboxArgs, node.leftDecoration);
-
-    node.isChecked = function()
-    {
-        return this.checkbox.getValue() ? true : false;
-    };
-
-    node.setChecked = function(newValue)
-    {
-        this.checkbox.setChecked(newValue);
-    };
-};
+}; // end webcat.tree

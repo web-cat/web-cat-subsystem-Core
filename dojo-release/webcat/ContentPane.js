@@ -123,11 +123,7 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
                             dojo.xhrGet({
                                 url: n.src,
                                 sync: true,
-                                handleAs: 'javascript',
-                                load: function(response, ioArgs) {
-                                    dojo.eval(response);
-                                    return response;
-                                }
+                                handleAs: 'javascript'
                             });
                         }
                         else if (!/dojo\//.test(n.type))

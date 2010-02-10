@@ -5,6 +5,8 @@ dependencies = {
             resourceName: 'webcat.BasePage',
             dependencies: [
                 "dojo.cache",
+                "dojo.data.api.Identity",
+                "dojo.data.util.simpleFetch",
                 "dojo.dnd.Source",
                 "dojo.NodeList-fx",
                 "dojo.NodeList-traverse",
