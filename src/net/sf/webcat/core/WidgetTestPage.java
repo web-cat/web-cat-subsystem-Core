@@ -1,11 +1,18 @@
 package net.sf.webcat.core;
 
+import net.sf.webcat.ui.AbstractTreeModel;
 import net.sf.webcat.ui.generators.JavascriptFunction;
 import net.sf.webcat.ui.generators.JavascriptGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
+import com.webobjects.eocontrol.EOFetchSpecification;
+import com.webobjects.eocontrol.EOGenericRecord;
+import com.webobjects.eocontrol.EOSortOrdering;
+import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSKeyValueCoding;
+import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
+import er.extensions.eof.ERXS;
 
 public class WidgetTestPage extends WCComponent
 {
@@ -22,6 +29,68 @@ public class WidgetTestPage extends WCComponent
 
     public NSMutableDictionary<String, Object> formValues =
         new NSMutableDictionary<String, Object>();
+
+    public TreeModel treeModel = new TreeModel();
+    public NSMutableArray<String> checkedTreeItems;
+
+
+    //~ Public Nested Classes .................................................
+
+    public class TreeModel extends AbstractTreeModel
+    {
+        //~ Public Methods ....................................................
+
+        // ----------------------------------------------------------
+        @Override
+        protected NSArray<?> childrenOfItem(Object parentItem)
+        {
+            if (parentItem == null)
+            {
+                NSMutableArray<String> items = new NSMutableArray<String>();
+                items.addObject("1");
+                items.addObject("2");
+                items.addObject("3");
+                return items;
+            }
+            else if (parentItem instanceof String)
+            {
+                String parent = (String) parentItem;
+                if (parent.split("\\.").length < 4)
+                {
+                    NSMutableArray<String> items = new NSMutableArray<String>();
+                    items.addObject(parent + ".1");
+                    items.addObject(parent + ".2");
+                    items.addObject(parent + ".3");
+                    return items;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        // ----------------------------------------------------------
+        @Override
+        protected boolean itemHasChildren(Object parentItem)
+        {
+            if (parentItem instanceof String)
+            {
+                String parent = (String) parentItem;
+                return (parent.split("\\.").length < 4);
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
 
     public String validateTextBox()
     {

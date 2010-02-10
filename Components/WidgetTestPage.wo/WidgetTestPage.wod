@@ -19,3 +19,10 @@ ValidatedTextBox : WCTextBox {
     value = formValues.validatedTextBox;
     remoteValidator = validateTextBox;
 }
+
+Tree: WCCheckTree {
+    id = "tree";
+    model = treeModel;
+    checkedItems = checkedTreeItems;
+    showRoot = false;
+}
