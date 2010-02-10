@@ -24,7 +24,7 @@ DojoBaseUrl: WOString {
 DojoJs: WOGenericContainer {
     elementName = "script";
     type        = "text/javascript";
-    src         = "~resourceUrl(\"Core.framework/WebServerResources/dojo/dojo.xd.js\")";
+    src         = "~resourceUrl(\"Core.framework/WebServerResources/dojo/\" + dojoScriptName)";
 }
 
 DojoThemeCss: WOGenericElement {
