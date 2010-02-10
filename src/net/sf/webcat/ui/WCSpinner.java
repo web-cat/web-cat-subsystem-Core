@@ -66,7 +66,7 @@ public class WCSpinner extends DojoElement
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
-        super(name, someAssociations, template);
+        super("span", someAssociations, template);
     }
 
 
