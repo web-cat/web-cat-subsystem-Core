@@ -407,6 +407,16 @@ We should make sure these controls line up vertically to the best of our ability
                 Regular:
                 <div style="width:400px;" maximum="200" id="setTestBar"
                     progress="20" dojoType="dijit.ProgressBar"></div>
+                <div dojoType="dijit.form.HorizontalSlider"
+                    onChange="dijit.byId('setTestBar').attr('value', arguments[0]);"
+                    value="20"
+                    maximum="200"
+                    minimum="0"
+                    showButtons="false"
+                    intermediateChanges="true"
+                    style="width:400px; height: 20px;"
+                    id="progressSlider">
+                </div>
 
                 Indeterminate:
                 <div style="width:400px;" indeterminate="true" dojoType="dijit.ProgressBar"></div>
