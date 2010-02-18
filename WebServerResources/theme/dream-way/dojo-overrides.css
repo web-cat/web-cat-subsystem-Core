@@ -1,0 +1,862 @@
+/* ========================================================================
+ * Overrides for Calendar.css
+ */
+
+.aristo .dijitCalendarIncrementControl {
+    background-image: url("images/arrow-sprite.png");
+}
+.aristo table.dijitCalendarContainer {
+    border-color: #4F66A5;
+}
+.aristo .dijitCalendarMonthContainer th {
+    background-color: #B3C4F3;
+    background-image: url("images/button-enabled.png");
+}
+.aristo .dijitCalendarDayLabelTemplate {
+    background-color: #B3C4F3;
+    background-image: url("images/button-enabled.png");
+    border-top-color: #4F66A5;
+    border-bottom-color: #4F66A5;
+    color: #2E4071;
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+.aristo .dijitCalendarBodyContainer {
+    border-bottom-color: #4F66A5;
+}
+.aristo .dijitCalendarMonthLabel {
+    color: #15203D;
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+.aristo .dijitCalendarDateTemplate {
+    background-color: #FFFFFF !important;
+}
+.aristo .dijitCalendarPreviousMonth,
+.aristo .dijitCalendarNextMonth {
+    color: #8B8B8B;
+}
+.aristo .dijitCalendarCurrentMonth .dijitCalendarDateLabel {
+    border-color: #D9E3FD;
+}
+.aristo .dijitCalendarCurrentMonthDisabled {
+    background-color: #BBBBBC !important;
+}
+.aristo .dijitCalendarCurrentDate {
+    color: #15203D !important;
+}
+.aristo .dijitCalendarHoveredDate .dijitCalendarDateLabel {
+    background-color: #DEF2FF !important;
+}
+.aristo .dijitCalendarSelectedDate .dijitCalendarDateLabel {
+    background-color: #B3C4F3 !important;
+    background-image: url("images/button-enabled.png") !important;
+    border-color: #4F66A5;
+    color: #15203D !important;
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+.aristo .dijitCalendarYearLabel {
+    background-color: #C1D0F7;
+    background-image: none;
+    border-top-color: #4F66A5;
+    color: #15203D;
+}
+.aristo .dijitCalendarSelectedYear {
+    background-color: #B3C4F3 !important;
+    background-image: url("images/button-active.png") !important;
+    border-color: #4F66A5 !important;
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+.aristo .dijitCalendarNextYear,
+.aristo .dijitCalendarPreviousYear {
+    background-color: #B3C4F3;
+    background-image: url("images/button-enabled.png");
+    border-color: #4F66A5 !important;
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+
+
+/* ========================================================================
+ * Overrides for ColorPalette.css
+ */
+
+.aristo .dijitColorPalette {
+    background-color: #FFFFFF;
+    border-color: #4F66A5;
+}
+
+
+/* ========================================================================
+ * Overrides for Common.css
+ */
+
+.aristo .dojoDndItemBefore {
+    border-top-color: #333333;
+}
+.aristo .dojoDndItemAfter {
+    border-bottom-color: #333333;
+}
+.aristo.dojoDndMove table.dojoDndAvatar,
+.aristo.dojoDndCopy table.dojoDndAvatar {
+    background-color: #FFFFFF;
+    border-color: #FF0000;
+    color: #000000;
+    -moz-box-shadow: 0px 0px 5px #FF0000;
+    -webkit-box-shadow: 0px 0px 5px #FF0000;
+}
+.aristo.dojoDndMove table.dojoDndAvatar.dojoDndAvatarCanDrop,
+.aristo.dojoDndCopy table.dojoDndAvatar.dojoDndAvatarCanDrop {
+    border-color: #07930E;
+    -moz-box-shadow: 0px 0px 5px #07930E;
+    -webkit-box-shadow: 0px 0px 5px #07930E;
+}
+.aristo .dojoDndAvatarHeader td	{
+    border-color: #333333;
+}
+
+
+/* ========================================================================
+ * Overrides for Dialog.css
+ */
+
+.aristo .dijitDialog {
+    background-color: #AABDEF;
+    border-color: #4F66A5;
+    -moz-box-shadow: 0px 5px 12px #000000;
+    -webkit-box-shadow: 0px 5px 12px #000000;
+}
+.aristo .dijitDialog .dijitDialogPaneContent {
+    background-color: #FFFFFF;
+    border-color: #4F66A5;
+}
+.aristo .dijitDialogTitleBar {
+    background-color: #AABDEF;
+    background-image: url("images/dialog-titlebar.png");
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+.aristo .dijitDialogCloseIcon {
+    background-image: url("images/dialog-close.png");
+}
+.aristo .dijitDialogUnderlay {
+    background-color: #222222;
+}
+.aristo .dijitTooltipContainer {
+    background-color: #FFF8B8;
+    border-color: #979797;
+    color: #000000;
+    -moz-box-shadow: 0px 4px 8px #515151;
+    -webkit-box-shadow: 0px 4px 8px #515151;
+}
+.aristo .dijitTooltipBelow .dijitTooltipConnector {
+    background-image: url("images/tooltip-connector-up.png");
+}
+.aristo .dijitTooltipAbove .dijitTooltipConnector {
+    background-image: url("images/tooltip-connector-down.png");
+}
+.aristo .dijitTooltipLeft .dijitTooltipConnector {
+    background-image: url("images/tooltip-connector-right.png");
+}
+.aristo .dijitTooltipRight .dijitTooltipConnector {
+    background-image: url("images/tooltip-connector-left.png");
+}
+
+
+/* ========================================================================
+ * Overrides for form/Button.css
+ */
+
+.aristo .dijitButtonNode {
+    border-color: #4F66A5;
+    background-color: #B3C4F3;
+    background-image: url("images/button-enabled.png");
+}
+.aristo .dijitButtonText {
+    color: #15203D;
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+.aristo .dijitDisabled .dijitButtonText {
+    color: #7F7F7F;
+    text-shadow: 0 1px 0 #F5F5F5;
+}
+.aristo .dijitArrowButton {
+    color: #15203D;
+}
+.aristo .dijitButtonDisabled .dijitButtonNode,
+.aristo .dijitToggleButtonDisabled .dijitButtonNode,
+.aristo .dijitDropDownButtonDisabled .dijitButtonNode,
+.aristo .dijitComboButtonDisabled .dijitButtonNode,
+.aristo .dijitComboBoxDisabled,
+.aristo .dijitComboBoxDisabled .dijiButtonNode,
+.aristo .dijitSpinnerDisabled {
+    background-color: #C4C4C4;
+    background-image: url("images/button-disabled.png");
+    border-color: #A3A3A3;
+}
+.aristo .dijitComboButton .dijitArrowButton {
+    border-left-color: #CFDBFB;
+}
+.aristo table.dijitComboButton:hover .dijitButtonNode {
+    border-color: #A8BBEE;
+}
+.aristo table.dijitComboButton:hover .dijitButtonContents .dijitButtonNode {
+    border-color: #A8BBEE;
+}
+.aristo table.dijitComboButtonDisabled:hover .dijitButtonNode {
+    border-color: #A3A3A3;
+}
+.aristo table.dijitComboButtonDisabled .dijitDownArrowButton,
+.aristo table.dijitComboButtonDisabled:hover .dijitDownArrowButton {
+    border-color: #A3A3A3;
+    border-left-color: #DBDBDB;
+}
+.aristo .dijitButtonHover .dijitButtonNode,
+.aristo .dijitButtonNodeHover,
+.aristo .dijitToggleButtonHover .dijitButtonNode,
+.aristo .dijitDropDownButtonHover .dijitButtonNode {
+    background-color: #B3C4F3;
+    background-image: url("images/button-enabled.png");
+    border-color: #A8BBEE;
+    border-bottom-color: #8299D8;
+    -webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+    -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+}
+.aristo .dijitComboButtonHover,
+.aristo .dijitComboButtonDownArrowHover {
+    -webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+    -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+}
+.aristo .dijitSpinnerUpArrowActive .dijitSpinnerButtonContainer,
+.aristo .dijitSpinnerDownArrowActive .dijitSpinnerButtonContainer,
+.aristo .dijitButtonActive .dijitButtonNode,
+.aristo .dijitToggleButtonActive .dijitButtonNode,
+.aristo .dijitDropDownButtonActive .dijitButtonNode,
+.aristo .dijitComboButtonActive .dijitButtonNode,
+.aristo .dijitStackController .dijitToggleButtonChecked .dijitButtonNode {
+    background-color: #8FA5E1;
+    background-image: url("images/button-active.png");
+    border-color: #4F66A5;
+}
+.aristo .dijitComboBoxActive .dijitDownArrowButton {
+    border-left-color: #4F66A5;
+}
+.aristo .dijitComboButton .dijitHasDropDownOpen {
+    background-color: #8FA5E1;
+    background-image: url("images/button-active.png");
+    border-color: #4F66A5;
+}
+.aristo .dijitArrowButtonInner {
+    background-image: url("images/arrow-sprite.png");
+}
+.aristo .dijitComboBox .dijitArrowButton .dijitArrowButtonInner {
+    background-image: url("images/arrow-sprite.png");
+}
+.aristo .dijitComboBoxDisabled .dijitArrowButton,
+.aristo .dijitSpinnerDisabled .dijitSpinnerButtonContainer {
+    background-color: #C4C4C4 !important;
+    background-image: url("images/button-disabled.png") !important;
+    border-color: #A3A3A3;
+}
+.aristo .dijitSpinnerButtonContainer {
+    background-color: #B3C4F3;
+    background-image: url("images/button-enabled.png");
+}
+
+
+/* ========================================================================
+ * Overrides for form/Checkbox.css
+ */
+
+.aristo .dijitToggleButton .dijitCheckBoxIcon,
+.aristo .dijitCheckBox,
+.aristo .dijitCheckBoxIcon {
+    background-image: url("images/checkbox-sprite.png");
+}
+.aristo .dijitCheckBox {
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -moz-transition-property: background-color, -moz-box-shadow;
+    -moz-transition-duration: 0.2s;
+    -moz-transition-timing-function: linear;
+    -webkit-transition-property: background-color, -webkit-box-shadow;
+    -webkit-transition-duration: 0.2s;
+    -webkit-transition-timing-function: linear;
+}
+.aristo .dijitRadio {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -moz-transition-property: background-color, -moz-box-shadow;
+    -moz-transition-duration: 0.2s;
+    -moz-transition-timing-function: linear;
+    -webkit-transition-property: background-color, -webkit-box-shadow;
+    -webkit-transition-duration: 0.2s;
+    -webkit-transition-timing-function: linear;
+}
+.aristo .dijitCheckBoxHover {
+    background-color: rgba(26, 108, 171, 0.499992370489052);
+    -webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+    -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+}
+.aristo .dijitRadioHover {
+    background-color: rgba(26, 108, 171, 0.499992370489052);
+    -webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+    -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+}
+
+/* ========================================================================
+ * Overrides for form/Common.css
+ */
+
+.aristo .dijitTextBox,
+.aristo .dijitComboBox,
+.aristo .dijitSpinner,
+.aristo .dijitTextArea,
+.aristo .dijitInlineEditor input {
+    background-color: #FFFFFF;
+    background-image: url("images/input-background.png");
+    border-color: #8299D8;
+}
+.aristo .dijitTextBoxDisabled,
+.aristo .dijitComboBoxDisabled,
+.aristo .dijitSpinnerDisabled,
+.aristo .dijitTextAreaDisabled {
+    color: #888888 !important;
+    border-color: #999999;
+}
+.dj_webkit .aristo .dijitTextBoxDisabled,
+.dj_webkit .aristo .dijitComboBoxDisabled,
+.dj_webkit .aristo .dijitSpinnerDisabled,
+.dj_webkit .aristo .dijitTextAreaDisabled {
+    color: #888888;
+}
+.aristo .dijitComboBox .dijitButtonNode,
+.aristo .dijitSpinnerButtonContainer {
+    border-color: #4F66A5;
+}
+.aristo .dijitComboBoxDisabled .dijitButtonNode {
+    border-color: #999999;
+}
+.aristo .dijitTextBoxFocused,
+.aristo .dijitComboBoxFocused,
+.aristo .dijitSpinnerFocused,
+.aristo .dijitSpinnerUpArrowActive,
+.aristo .dijitSpinnerDownArrowActive,
+.aristo .dijitTextAreaFocused,
+.aristo .dijitTextBoxActive,
+.aristo .dijitComboBoxActive,
+.aristo .dijitTextAreaActive {
+    -webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+    -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+}
+.aristo .dijitComboBoxFocusedHover .dijitButtonNode {
+    background-color: #8FA5E1;
+    background-image: url("images/button-active.png");
+    border-left-color: #4F66A5;
+}
+.aristo .dijitError {
+    background-color: #F9F7BA;
+}
+.dj_ie6 .aristo .dijitError INPUT {
+    background-color: #F9F7BA !important;
+}
+.aristo .dijitErrorFocused {
+    background-color: #F9F7BA;
+}
+.dj_ie6 .aristo .dijitErrorFocused INPUT {
+    background-color: #F9F7BA !important;
+}
+.RichTextEditable {
+    border-color: #8299D8;
+}
+.aristo .dijitComboBoxHighlightMatch {
+    background-color: rgba(26, 108, 171, 0.499992370489052);
+}
+.aristo .dijitFocusedLabel {
+    outline-color: #666666;
+}
+
+
+/* ========================================================================
+ * Overrides for form/RadioButton.css
+ */
+
+.aristo .dijitToggleButton .dijitRadio,
+.aristo .dijitToggleButton .dijitRadioIcon,
+.aristo .dijitRadio,
+.aristo .dijitRadioIcon	{
+    background-image: url("images/checkbox-sprite.png");
+}
+
+
+/* ========================================================================
+ * Overrides for form/Slider.css
+ */
+
+.aristo .dijitSliderProgressBarH,
+.aristo .dijitSliderLeftBumper {
+    background-color: #398AC9;
+    background-image: url("images/slider-horiz-full.png");
+    border-color: #357AB0;
+}
+.aristo .dijitSliderProgressBarV,
+.aristo .dijitSliderBottomBumper {
+    background-color: #398AC9;
+    background-image: url("images/slider-vert-full.png");
+    border-color: #357AB0;
+}
+.aristo .dijitSliderRemainingBarV {
+.aristo .dijitSliderTopBumper,
+    background-color: #B3B3B3;
+    background-image: url("images/slider-vert-empty.png");
+    border-color: #B3B3B3;
+}
+.aristo .dijitSliderRemainingBarH,
+.aristo .dijitSliderRightBumper {
+    background-color: #CBCBCB;
+    background-image: url("images/slider-horiz-empty.png");
+    border-color: #919191;
+}
+.aristo .dijitSliderImageHandleH,
+.aristo .dijitSliderImageHandleV {
+    background-image: url("images/slider-thumb-enabled.png");
+}
+.aristo .dijitSliderFocused .dijitSliderImageHandleH,
+.aristo .dijitSliderFocused .dijitSliderImageHandleV {
+    background-image: url("images/slider-thumb-focused.png");
+}
+
+
+/* ========================================================================
+ * Overrides for layout/AccordianContainer.css
+ */
+
+
+.aristo .dijitAccordionContainer {
+    border-color: #4F66A5;
+    background-color: #FFFFFF;
+}
+.aristo .dijitAccordionTitle {
+    background-color: #B9C9F5;
+    background-image: url("images/titlebar.png");
+    border-top-color: #4F66A5;
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+.aristo .dijitAccordionTitle-hover  {
+    background-color: #C0CFF7;
+    background-image: url("images/titlebar-hover.png");
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+.aristo .dijitAccordionTitle-selected  {
+    background-color: #91A7E2;
+    background-image: url("images/titlebar-active.png");
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+
+
+/* ========================================================================
+ * Overrides for layout/BorderContainer.css
+ */
+
+.aristo .dijitBorderContainer {
+    background-color: #EBF0FF;
+}
+.aristo .dijitSplitContainer-child,
+.aristo .dijitBorderContainer-child {
+    border-color: #4F66A5;
+}
+.aristo .dijitSplitterH,
+.aristo .dijitGutterH {
+    background-color: #EBF0FF;
+}
+.aristo .dijitSplitterH .dijitSplitterThumb {
+/*	background-image: url("images/splitContainerSizerH-thumb.png");*/
+}
+.aristo .dijitSplitterV,
+.aristo .dijitGutterV {
+    background-color: #EBF0FF;
+}
+.aristo .dijitSplitterV .dijitSplitterThumb {
+/*	background-image: url("images/splitContainerSizerV-thumb.png");*/
+}
+
+
+/* ========================================================================
+ * Overrides for layout/ContentPane.css
+ */
+
+.aristo .dijitTabContainerTop-dijitContentPane,
+.aristo .dijitTabContainerLeft-dijitContentPane,
+.aristo .dijitTabContainerBottom-dijitContentPane,
+.aristo .dijitTabContainerRight-dijitContentPane,
+.aristo .dijitAccordionContainer-dijitContentPane {
+    background-color: #FFFFFF;
+}
+.aristo .dijitSplitContainer-dijitContentPane,
+.aristo .dijitBorderContainer-dijitContentPane {
+    background-color: #FFFFFF;
+}
+
+
+/* ========================================================================
+ * Overrides for layout/SplitContainer.css
+ */
+
+.aristo .dijitSplitContainerSizerH {
+    background-color: #EBF0FF;
+}
+.aristo .dijitSplitContainerSizerH .thumb {
+    background-color: #EBF0FF;
+/*	background-image: url("images/splitContainerSizerV-thumb.png");*/
+}
+.aristo .dijitSplitContainerSizerV {
+    background-color: #EBF0FF;
+}
+.aristo .dijitSplitContainerSizerV .thumb {
+    background-color: #EBF0FF;
+/*	background-image: url("images/splitContainerSizerH-thumb.png");*/
+}
+.aristo .dijitSplitter {
+    border-color: #4F66A5;
+}
+
+
+/* ========================================================================
+ * Overrides for layout/TabContainer.css
+ */
+
+/*.aristo .dijitTabPaneWrapper {
+    background-color: #FFFFFF;
+    border-color: #4F66A5;
+}
+.aristo .dijitTab {
+    border-color: #86A3B4;
+    background-color: #EBF0FF;
+    background-image: url("images/tabEnabled.png");
+    -webkit-box-shadow: 0 -1px 2px rgba(134, 163, 180, 0.449988555733577);
+    -moz-box-shadow: 0 -1px 2px rgba(134, 163, 180, 0.449988555733577);
+    text-shadow: 0 1px 0 #FFF;
+}
+.aristo .dijitTabChecked {
+    color: #1B4157;
+    background-color: #DBE8F0;
+    background-image: url("images/tabChecked.png");
+}
+.aristo .dijitTabHover {
+    background-color: #EBF0FF;
+    background-image: url("images/tabEnabled.png");
+}
+.aristo .dijitTabCheckedHover {
+    background-color: #DBE8F0;
+    background-image: url("images/tabChecked.png");
+}
+.aristo .dijitTab .dijitClosable .closeImage {
+    background-image: url("images/tabClose.png");
+}
+.aristo .dijitTab .closeImage {
+    background-image : url("images/tabClose.png");
+}
+.dj_ie6 .aristo .dijitTab .closeImage {
+    background-image : url("images/tabClose.gif");
+}
+.aristo .dijitTab .closeButton-hover .closeImage {
+    background-image : url("images/tabCloseHover.png");
+}
+.dj_ie6 .aristo .dijitTab .closeButton-hover .closeImage {
+    background-image : url("images/tabCloseHover.gif");
+}
+.aristo .dijitTabContainerTop-tabs {
+    border-color: #799FB5;
+}
+.aristo .dijitTabContainerTop-tabs .dijitTabChecked {
+    border-bottom-color: #DCE9F1;
+}
+.aristo .dijitTabContainerBottom-tabs .dijitTab {
+    background-color: #EBF0FF;
+    background-image: url("images/tabEnabledBottom.png");
+    -webkit-box-shadow: 0 1px 2px rgba(134, 163, 180, 0.449988555733577);
+    -moz-box-shadow: 0 1px 2px rgba(134, 163, 180, 0.449988555733577);
+}
+.aristo .dijitTabContainerBottom-tabs .dijitTabHover {
+    background-color: #EBF0FF;
+    background-image: url("images/tabEnabledBottom.png");
+}
+.aristo .dijitTabContainerBottom-tabs .dijitTabChecked {
+    background-color: #DBE8F0;
+    background-image: url("images/tabCheckedBottom.png");
+    border-top-color: #D4E3EA;
+}
+.aristo .dijitTabContainerBottom-spacer,
+.aristo .dijitTabContainerTop-spacer {
+    border-top-color: #96B4C6;
+    border-bottom-color: #91B1C3;
+    background: #DAEAF2;
+}
+.aristo .dijitTabContainerRight-tabs {
+    border-color: #ccc;
+}
+.aristo .dijitTabContainerRightStrip {
+    border-color: #799FB5;
+}
+.aristo .dijitTabContainerRightStrip {
+    background-color: #DEEAF3;
+}
+.aristo .dijitTabContainerLeft-tabs {
+    border-color: #799FB5;
+}
+.aristo .dijitTabContainerLeftStrip {
+    border-color: #799FB5;
+}
+.aristo .dijitTabContainerLeftStrip {
+    background-color: #DEEAF3;
+}
+.aristo .dijitTabContainerLeft-spacer,
+.aristo .dijitTabContainerRight-spacer {
+    border-top-color: #799FB5;
+    border-bottom-color: #799FB5;
+    background-color: #D3EBF9;
+    background-image: url("images/tabSpacer.png");
+}
+.aristo .dijitTabContainerTop-dijitContentPane .dijitTabContainerTop-tabs {
+    border-top-color: #ccc;
+    border-right-color: #ccc;
+    border-left-color: #ccc;
+}
+.aristo .dijitTabContainer .tabStripButton img {
+    background-image: url("images/rounded-icons-sprite.png");
+}*/
+
+
+/* ========================================================================
+ * Overrides for Menu.css
+ */
+
+.aristo .dijitMenuBar {
+    background-image: url("images/titlebar.png");
+}
+.aristo .dijitMenu,
+.aristo .dijitMenuBar {
+    background-color: #B9C9F5;
+    border-color: #ACACAC;
+    color: #000000
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+.aristo .dijitMenu {
+    background-color: #F4F4F4;
+    color: #000000;
+    -moz-box-shadow: 0px 4px 8px #515151;
+    -webkit-box-shadow: 0px 4px 8px #515151 !important;
+}
+.aristo .dijitBorderContainer .dijitMenuBar {
+    border-color: #4F66A5;
+}
+.aristo .dijitMenuPassive .dijitMenuItemHover,
+.aristo .dijitMenuItemSelected {
+    background-color: #1A6CAB;
+    color: #FFFFFF;
+}
+.aristo .dijitMenuExpand {
+    background-image: url("images/arrow-sprite.png");
+}
+.aristo .dijitMenuSeparatorTop {
+    border-bottom-color: #9B9B9B;
+}
+.aristo .dijitMenuSeparatorBottom {
+    border-top-color: #E8E8E8;
+}
+.aristo .dijitCheckedMenuItemIcon {
+    background-image: url("images/checkbox-sprite.png");
+}
+
+
+/* ========================================================================
+ * Overrides for ProgressBar.css
+ */
+
+.aristo .dijitProgressBarTile {
+    background-color: #F0F0F0;
+    background-image: url("images/progress-bar-empty.png");
+    border-color: #C8C8C8;
+}
+.aristo .dijitProgressBarTile {
+    background-color: #1A6CAB;
+    background-image: url("images/progress-bar-full.png");
+}
+.aristo .dijitProgressBarLabel {
+    font-weight: bold;
+    color: #15203D;
+    text-shadow: 0 0 2px #EBEBEB, 0 0 2px #EBEBEB;
+}
+.aristo .dijitProgressBarIndeterminate {
+    border-top-color: #8EA8B8;
+    border-left-color: #8EA8B8;
+    border-right-color: #8EA8B8;
+}
+.aristo .dijitProgressBarIndeterminate .dijitProgressBarTile {
+    background-image: url("images/progress-bar-indeterminate.gif");
+}
+
+
+/* ========================================================================
+ * Overrides for TimePicker.css
+ */
+
+.aristo .dijitTimePicker {
+    -moz-box-shadow: 2px 2px 4px #515151;
+    -webkit-box-shadow: 2px 2px 4px #515151 !important;
+}
+.aristo .dijitTimePickerTick,
+.aristo .dijitTimePickerMarker {
+    border-color: #A3A3A3;
+}
+.aristo .dijitTimePickerTick {
+    color: #15203D;
+}
+.aristo .dijitTimePickerMarker {
+    background-color: #B9C9F5;
+    background-image: url("images/titlebar.png");
+    border-bottom-color: #4F66A5;
+    color: #15203D;
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+.aristo .dijitTimePickerItemHover {
+    background-color: #C0CFF7;
+    background-image: url("images/titlebar-hover.png");
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+.aristo .dijitTimePickerItemSelected {
+    background-color: #91A7E2;
+    background-image: url("images/titlebar-active.png");
+    border-bottom-color: #A3A3A3;
+    color: #15203D;
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+
+
+/* ========================================================================
+ * Overrides for TitlePane.css
+ */
+
+.aristo .dijitTitlePaneTitle {
+    background-color: #B9C9F5;
+    background-image: url("images/titlebar.png");
+    border-color: #4F66A5;
+}
+.aristo .dijitTitlePaneTitle-hover {
+    background-color: #C0CFF7;
+    background-image: url("images/titlebar-hover.png");
+}
+.aristo .dijitTitlePane .dijitArrowNode {
+    background-image: url("images/arrow-sprite.png");
+}
+.aristo .dijitTitlePaneContentOuter {
+    border-color: #4F66A5;
+}
+.aristo .dijitTitlePaneTextNode {
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+
+
+/* ========================================================================
+ * Overrides for Toolbar.css
+ */
+
+.aristo .dijitToolbar {
+    background-color: #B9C9F5;
+    background-image: url("images/titlebar.png");
+    border-color: #4F66A5;
+}
+.aristo .dijitToolbar .dijitComboBox .dijitButtonNode {
+    background-color: #B3C4F3;
+    background-image: url("images/button-enabled.png");
+    background-repeat: repeat-x;
+    border-color: #4F66A5;
+}
+.aristo .dijitToolbar .dijitButtonChecked,
+.aristo .dijitToolbar .dijitToggleButtonChecked {
+    background: none;
+    border-color: #4F66A5;
+}
+.aristo .dijitToolbar .dijitButtonChecked .dijitButtonNode,
+.aristo .dijitToolbar .dijitToggleButtonChecked .dijitButtonNode,
+.aristo .dijitToolbar .dijitButtonActive .dijitButtonNode,
+.aristo .dijitToolbar .dijitToggleButtonActive .dijitButtonNode {
+    background-color: #8FA5E1;
+    background-image: url("images/button-active.png");
+    background-repeat: repeat-x;
+    background-position-y: bottom;
+}
+.aristo .dijitToolbar .dijitComboBoxFocused .dijitButtonNode,
+.aristo .dijitToolbar .dijitSpinnerFocused .dijitButtonNode,
+.aristo .dijitToolbar .dijitSpinnerUpArrowActive .dijitButtonNode,
+.aristo .dijitToolbar .dijitSpinnerDownArrowActive .dijitButtonNode {
+    background-color: #8FA5E1;
+    background-image: url("images/button-active.png");
+    background-repeat: repeat-x;
+    background-position-y: bottom;
+    border-left-color: #4F66A5;
+}
+.aristo .dijitToolbar .dijitButtonCheckedHover,
+.aristo .dijitToolbar .dijitToggleButtonCheckedHover {
+    background-color: #8FA5E1;
+    background-image: url("images/button-active.png");
+    background-repeat: repeat-x;
+    background-position-y: bottom;
+    border-color: #4F66A5;
+}
+.aristo .dijitToolbar .dijitButtonHover .dijitButtonNode,
+.aristo .dijitToolbar .dijitToggleButtonHover .dijitButtonNode,
+.aristo .dijitToolbar .dijitDropDownButtonHover .dijitButtonNode,
+.aristo .dijitToolbar .dijitComboButtonHover .dijitButtonContents .dijitButtonNode,
+.aristo .dijitToolbar .dijitComboButtonDownArrowHover .dijitDownArrowButton .dijitButtonNode {
+    background-color: #B3C4F3;
+    background-image: url("images/button-enabled.png");
+    background-repeat: repeat-x;
+    background-position-y: top;
+    border-color: #A8BBEE;
+}
+.aristo .dijitToolbar .dijitButtonDisabled .dijitButtonNode,
+.aristo .dijitToolbar .dijitToggleButtonDisabled .dijitButtonNode,
+.aristo .dijitToolbar .dijitDropDownButtonDisabled .dijitButtonNode,
+.aristo .dijitToolbar .dijitComboButtonDisabled .dijitButtonContents .dijitButtonNode,
+.aristo .dijitToolbar .dijitComboButtonDownArrowDisabled .dijitDownArrowButton .dijitButtonNode {
+    background-color: transparent;
+    background-image: none;
+}
+
+
+/* ========================================================================
+ * Overrides for Tree.css
+ */
+
+.aristo .dijitTreeNodeSelected,
+.aristo .dijitTreeNodeSelected:hover {
+    background-color: #1A6CAB;
+    border-top-color: #1A6CAB;
+    border-bottom-color: #1A6CAB;
+}
+.aristo .dijitTreeNodeSelected .dijitTreeLabel,
+.aristo .dijitTreeNodeSelected:hover .dijitTreeLabel {
+    color: #FFFFFF;
+}
+.aristo .dijitTreeNodeHover {
+    background-color: #B3C4F3;
+    background-image: url("images/button-enabled.png");
+    border-top-color: #B3C4F3;
+    border-bottom-color: #B3C4F3;
+    text-shadow: 0 1px 0 #EBEBEB;
+}
+/*.aristo .dijitTreeExpandoLoading {
+    background-image: url("images/treeExpand_loading.gif");
+}
+.aristo .dijitFolderOpened {
+    background-image: url("images/folderOpened.gif");
+}
+.aristo .dijitFolderClosed {
+    background-image: url("images/folderClosed.gif");
+}
+.aristo .dijitLeaf {
+    background-image: url("images/leaf.gif");
+}*/
+.aristo .dijitTreeNode .dojoDndItemBefore .dijitTreeContent {
+    border-top-color: #333333;
+}
+.aristo .dijitTreeNode .dojoDndItemAfter .dijitTreeContent {
+    border-bottom-color: #333333;
+}
