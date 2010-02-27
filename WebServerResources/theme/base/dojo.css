@@ -6,6 +6,8 @@
 
 .dijitTitlePane { overflow: visible; }
 
+.dijitTitlePaneContentOuter { overflow-x: auto; }
+
 /*
 .dijitTextBox,
 .dj_safari .dijitComboBox {
