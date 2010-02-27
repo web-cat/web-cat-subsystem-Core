@@ -14,13 +14,9 @@
 */
 
 /* For best alignment with plain text or labels on the same line */
-.dijitCheckBox.dijitInline {
-    vertical-align: bottom;
-}
-
-/* For best alignment with labels inside a form */
-form .dijitCheckBox.dijitInline {
-    vertical-align: top;
+.dijitCheckBox.dijitInline,
+.dijitRadio.dijitInline {
+	    vertical-align: text-top;
 }
 
 .dijitDateTextBox.dijitTextBox { width: 8em; }
