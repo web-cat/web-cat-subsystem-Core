@@ -142,6 +142,11 @@ public class WCPageWithNavigation
                 title = secondLevelSelection.label();
             }
         }
+        if (log.isDebugEnabled())
+        {
+            log.debug("my tab = " + myTab);
+            log.debug("my role = " + selectedRole);
+        }
     }
 
 
@@ -488,7 +493,7 @@ public class WCPageWithNavigation
             : thisPage.pageWithName(name);
     }
 
-    
+
     //~ Instance/static variables .............................................
 
     private TabDescriptor myTab;

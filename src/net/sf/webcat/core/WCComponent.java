@@ -231,6 +231,16 @@ public class WCComponent
 
 
     // ----------------------------------------------------------
+    public void reselectCurrentTab()
+    {
+        if (currentTab() != null)
+        {
+            currentTab().select();
+        }
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Determines whether the wizard page's "Cancel" button is visible.
      *
@@ -615,6 +625,10 @@ public class WCComponent
             log.debug("awake(): " + getClass().getName());
         }
         localContext();
+        if (currentTab != null)
+        {
+            reselectCurrentTab();
+        }
         super.awake();
         // Force currentTab to be initialized
         currentTab();
@@ -699,6 +713,7 @@ public class WCComponent
     @SuppressWarnings("unchecked")
     public final <T> T pageWithName(Class<T> pageClass)
     {
+        reselectCurrentTab();
         return (T)pageWithName(pageClass.getName());
     }
 
