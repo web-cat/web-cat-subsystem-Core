@@ -8,11 +8,6 @@
     font: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif !important;
 }
 
-/* Change buttons to symmetric vertical padding */
-.aristo .dijitButtonNode button { padding: 0.15em 0.6em 0.2em; font-size: smaller; }
-
-.aristo .dijitToolbar .dijitButtonNode button { padding: 0; }
-
 .aristo ul.dijitMenu .dijitMenuItem { padding: 3px 5px; }
 
 
@@ -99,6 +94,51 @@
 
 .dijitButton.dijitButtonDisabled.pos .dijitButtonText,
 .dijitButton.dijitButtonDisabled.neg .dijitButtonText { color: #7f7f7f; }
+
+/* Change buttons to symmetric vertical padding */
+.aristo .dijitButtonNode button { padding: 0.15em 0.6em 0.2em; font-size: smaller; }
+
+.aristo .dijitToolbar .dijitButtonNode button { padding: 0; }
+
+.aristo .dijitFileInputText,
+.aristo .dijitFileInputButton {
+    background: #B7B7B7 url("../../dijit/themes/aristo/images/buttonEnabled.png") repeat-x top left;
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-transition: -moz-box-shadow 0.2s linear;
+    -webkit-transition: -webkit-box-shadow 0.2s linear;
+    padding: 0.15em 0.6em 0.2em;
+    font-size: 13px;
+    font-weight: bold;
+    text-shadow: 0 1px 0 #EBEBEB;
+    color: #122B39;
+    text-align: center;
+    margin-top: -0.2em;
+}
+
+.aristo .dijitFileInputText:hover,
+.aristo .dijitFileInputButton:hover {
+    border: 1px solid #8AB0C6;
+    border-bottom: 1px solid #818181;
+    background: #B7B7B7 url("../images/buttonEnabled.png") repeat-x top left;
+    -webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
+    -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
+}
+
+.aristo .dijitFileInputText:active,
+.aristo .dijitFileInputButton:active {
+    border-color: #5679C1;
+    background: #949494 url("../images/buttonActive.png") repeat-x bottom left;
+}
+
+.aristo .dijitDisabled .dijitFileInputText,
+.aristo .dijitDisabled .dijitFileInputButton {
+    color: #7F7F7F;
+    text-shadow: 0 1px 0 #F5F5F5;
+    border-color: #A3A3A3;
+    background: #C4C4C4 url("../images/buttonDisabled.png") repeat-x top left;
+}
+
 
 
 /* @end

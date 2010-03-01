@@ -163,15 +163,21 @@
  * Overrides for form/Button.css
  */
 
+.aristo .dijitFileInputText,
+.aristo .dijitFileInputButton,
 .aristo .dijitButtonNode {
     border-color: ${button-border-color};
     background-color: ${button-background-color};
     background-image: url("images/button-enabled.png");
 }
+.aristo .dijitFileInputText,
+.aristo .dijitFileInputButton,
 .aristo .dijitButtonText {
     color: ${button-text-color};
     text-shadow: 0 1px 0 ${button-text-shadow-color};
 }
+.aristo .dijitDisabled .dijitFileInputText,
+.aristo .dijitDisabled .dijitFileInputButton,
 .aristo .dijitDisabled .dijitButtonText {
     color: ${button-disabled-text-color};
     text-shadow: 0 1px 0 ${button-disabled-text-shadow-color};
@@ -179,6 +185,8 @@
 .aristo .dijitArrowButton {
     color: ${button-text-color};
 }
+.aristo .dijitDisabled .dijitFileInputText,
+.aristo .dijitDisabled .dijitFileInputButton,
 .aristo .dijitButtonDisabled .dijitButtonNode,
 .aristo .dijitToggleButtonDisabled .dijitButtonNode,
 .aristo .dijitDropDownButtonDisabled .dijitButtonNode,
@@ -207,6 +215,8 @@
     border-color: ${button-disabled-border-color};
     border-left-color: ${combobutton-disabled-separator-color};
 }
+.aristo .dijitFileInputText:hover,
+.aristo .dijitFileInputButton:hover,
 .aristo .dijitButtonHover .dijitButtonNode,
 .aristo .dijitButtonNodeHover,
 .aristo .dijitToggleButtonHover .dijitButtonNode,
@@ -223,6 +233,8 @@
     -webkit-box-shadow: 0 0 5px ${focus-ring-color};
     -moz-box-shadow: 0 0 5px ${focus-ring-color};
 }
+.aristo .dijitFileInputText:active,
+.aristo .dijitFileInputButton:active,
 .aristo .dijitSpinnerUpArrowActive .dijitSpinnerButtonContainer,
 .aristo .dijitSpinnerDownArrowActive .dijitSpinnerButtonContainer,
 .aristo .dijitButtonActive .dijitButtonNode,
