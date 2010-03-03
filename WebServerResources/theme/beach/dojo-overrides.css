@@ -345,6 +345,7 @@
 .aristo .dijitComboBoxDisabled .dijitButtonNode {
     border-color: #999999;
 }
+.aristo .dijitTextBox.fakeControl:focus,
 .aristo .dijitTextBoxFocused,
 .aristo .dijitComboBoxFocused,
 .aristo .dijitSpinnerFocused,

@@ -139,6 +139,10 @@
     background: #C4C4C4 url("../images/buttonDisabled.png") repeat-x top left;
 }
 
+.aristo .dijitTextBox.fakeControl:focus {
+	-webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+    -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+}
 
 
 /* @end

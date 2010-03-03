@@ -1,4 +1,4 @@
-AuthList: WOPopUpButton {
+AuthList: WCFilteringSelect {
     list              = domainDisplayGroup.allObjects;
     selection         = domain;
     item              = domainItem;
@@ -56,15 +56,6 @@ LoginForm: WOForm {
     href = application.properties.base.url; // VALID // loginDirectAction;
 }
 
-Logo: WOImage {
-    filename = "images/Web-CAT-big2.gif";
-    width    = "100";
-    height   = "40";
-    alt      = "Web-CAT";
-    border   = "0";
-    align    = "middle";
-}
-
 MOTD: WOString {
     value = application.properties.coreMotd;
     escapeHTML = false;
@@ -87,16 +78,17 @@ NeedsAuthList: WOConditional {
 
 UserName: WOTextField {
     value = userName;
-    dojoType = "dijit.form.TextBox";
+//    dojoType = "dijit.form.TextBox";
     name  = "UserName";
     id    = "UserName";
-    ?size = "20";
+    class = "dijit dijitReset dijitLeft dijitTextBox fakeControl";
+    widgetid = "UserName";
 }
 
 UserPassword: WOPasswordField {
     value = password;
-    dojoType = "dijit.form.TextBox";
+//    dojoType = "dijit.form.TextBox";
     name  = "UserPassword";
     id    = "UserPassword";
-    ?size = "20";
+    class = "dijit dijitReset dijitLeft dijitTextBox fakeControl";
 }

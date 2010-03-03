@@ -345,6 +345,7 @@
 .aristo .dijitComboBoxDisabled .dijitButtonNode {
     border-color: ${input-disabled-border-color};
 }
+.aristo .dijitTextBox.fakeControl:focus,
 .aristo .dijitTextBoxFocused,
 .aristo .dijitComboBoxFocused,
 .aristo .dijitSpinnerFocused,
