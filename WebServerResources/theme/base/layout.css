@@ -577,12 +577,12 @@ form fieldset {
 
 fieldset { padding: .5em; }
 
-form legend {
+form fieldset legend {
     padding: 0 0.2em;
     font-weight: bold;
 }
 
-form label {
+form fieldset label {
     display: inline-block;
     /* line-height: 1.8; */
     vertical-align: top;
