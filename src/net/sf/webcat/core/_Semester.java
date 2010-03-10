@@ -155,6 +155,7 @@ public abstract class _Semester
     // To-many relationships ---
     // Fetch specifications ---
     public static final String ALL_OBJECTS_ORDERED_BY_START_DATE_FSPEC = "allObjectsOrderedByStartDate";
+    public static final String FOR_DATE_FSPEC = "forDate";
     public static final String ENTITY_NAME = "Semester";
 
 
@@ -805,6 +806,53 @@ public abstract class _Semester
                 + "): " + result );
         }
         return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve an object according to the <code>forDate</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @param dateBinding fetch spec parameter
+     * @return the object retrieved, or null if one was not found
+     */
+    public static Semester forDate(
+            EOEditingContext context,
+            NSTimestamp dateBinding
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "forDate", "Semester" );
+
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
+
+        if ( dateBinding != null )
+        {
+            bindings.setObjectForKey( dateBinding,
+                                      "date" );
+        }
+        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+
+        NSArray<Semester> result =
+            objectsWithFetchSpecification( context, spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "forDate(ec"
+                + ", " + dateBinding
+                + "): " + result );
+        }
+
+        if ( result.count() == 0 )
+        {
+            return null;
+        }
+        else
+        {
+            return result.objectAtIndex(0);
+        }
     }
 
 
