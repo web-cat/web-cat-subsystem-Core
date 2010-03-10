@@ -21,16 +21,10 @@
 
 package net.sf.webcat.core;
 
-import com.webobjects.appserver.*;
-import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import java.io.*;
-import java.net.*;
 import java.util.*;
-import java.util.jar.*;
-
 import net.sf.webcat.*;
-
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -82,10 +76,10 @@ public class SubsystemManager
 //                        (String)subs.objectAtIndex( i ) );
 //                }
 //            }
-            ArrayList subsystemNames = new ArrayList();
+            ArrayList<String> subsystemNames = new ArrayList<String>();
             // Have to look in the system properties, because that is where
             // all subsystem info will go, not in the config file
-            for ( Enumeration e = System.getProperties().keys();
+            for ( Enumeration<Object> e = System.getProperties().keys();
                   e.hasMoreElements(); )
             {
                 String key = (String)e.nextElement();
@@ -98,11 +92,15 @@ public class SubsystemManager
                 }
             }
             addSubsystemsInOrder(
-                subsystemNames, null, new HashMap(), properties );
-            initAllSubsystems();
+                subsystemNames,
+                null,
+                new HashMap<String, String>(),
+                properties);
         }
+        initAllSubsystems();
         envp();
         pluginProperties();
+        startAllSubsystems();
     }
 
 
@@ -154,9 +152,9 @@ public class SubsystemManager
      * @param name  The name of the subsystem to get
      * @return      The corresponding JarSubsystem
      */
-    public Subsystem subsystem( String name )
+    public Subsystem subsystem(String name)
     {
-        return (Subsystem)subsystems.get( name );
+        return subsystems.get(name);
     }
 
 
@@ -166,7 +164,7 @@ public class SubsystemManager
      *
      * @return An iterator for the names of all loaded subsystems
      */
-    public NSArray subsystems()
+    public NSArray<Subsystem> subsystems()
     {
         return subsystemArray;
     }
@@ -259,13 +257,12 @@ public class SubsystemManager
      * all registered subsystems.
      * @param s the session to initialize
      */
-    public void initializeSessionData( Session s )
+    public void initializeSessionData(Session s)
     {
-        NSArray subs = subsystems();
-        for ( int i = 0; i < subs.count(); i++ )
+        NSArray<Subsystem> subs = subsystems();
+        for (int i = 0; i < subs.count(); i++)
         {
-            ( (Subsystem)subs.objectAtIndex( i ) )
-                .initializeSessionData( s );
+            subs.objectAtIndex(i).initializeSessionData(s);
         }
     }
 
@@ -283,14 +280,12 @@ public class SubsystemManager
      *        for the subsystem's fragment to this buffer
      */
     public void collectSubsystemFragments(
-        String fragmentKey, StringBuffer htmlBuffer, StringBuffer wodBuffer )
+        String fragmentKey, StringBuffer htmlBuffer, StringBuffer wodBuffer)
     {
-        NSArray subs = subsystems();
-        for ( int i = 0; i < subs.count(); i++ )
+        for (Subsystem sub : subsystems())
         {
-            ( (Subsystem)subs.objectAtIndex( i ) )
-                .collectSubsystemFragments(
-                    fragmentKey, htmlBuffer, wodBuffer );
+            sub.collectSubsystemFragments(
+                fragmentKey, htmlBuffer, wodBuffer);
         }
     }
 
@@ -302,11 +297,11 @@ public class SubsystemManager
      * @param names a list of subsystem names to look for
      * @return true if all of the named subsystems are installed
      */
-    public boolean subsystemsAreInstalled( NSArray names )
+    public boolean subsystemsAreInstalled(NSArray<String> names)
     {
-        for ( int i = 0; i < names.count(); i++ )
+        for (String name : names)
         {
-            if ( subsystems.get( names.objectAtIndex( i ) ) == null )
+            if (subsystems.get(name) == null)
             {
                 return false;
             }
@@ -321,16 +316,14 @@ public class SubsystemManager
      * external commands.
      * @return a dictionary of ENV bindings
      */
-    public NSDictionary environment()
+    public NSDictionary<String, String> environment()
     {
         if ( envCache == null )
         {
-            NSMutableDictionary env = inheritedEnvironment();
-            NSArray subs = subsystems();
-            for ( int i = 0; i < subs.count(); i++ )
+            NSMutableDictionary<String, String> env = inheritedEnvironment();
+            for (Subsystem sub : subsystems())
             {
-                ( (Subsystem)subs.objectAtIndex( i ) )
-                    .addEnvironmentBindings( env );
+                sub.addEnvironmentBindings(env);
             }
             envCache = env;
             if ( log.isDebugEnabled() )
@@ -354,20 +347,18 @@ public class SubsystemManager
     {
         if ( envpCache == null )
         {
-            NSDictionary env = environment();
-            ArrayList envpList = new ArrayList();
-            for ( Enumeration e = env.keyEnumerator(); e.hasMoreElements(); )
+            NSDictionary<String, String> env = environment();
+            ArrayList<String> envpList = new ArrayList<String>();
+            for (String key : env.keySet())
             {
-                String key = (String)e.nextElement();
-                String val = env.objectForKey( key ).toString();
-                envpList.add( key + "=" + val );
+                String val = env.objectForKey(key).toString();
+                envpList.add(key + "=" + val);
             }
-            String[] envp =
-                (String[])envpList.toArray( new String[envpList.size()] );
+            String[] envp = envpList.toArray(new String[envpList.size()]);
             envpCache = envp;
-            if ( log.isDebugEnabled() )
+            if (log.isDebugEnabled())
             {
-                log.debug( "envp = " + arrayToString( envp ) );
+                log.debug("envp = " + arrayToString(envp));
             }
         }
         return envpCache;
@@ -379,21 +370,20 @@ public class SubsystemManager
      * Get the plug-in property definitions to be passed to plug-ins.
      * @return a dictionary of plug-in properties
      */
-    public NSDictionary pluginProperties()
+    public NSDictionary<String, String> pluginProperties()
     {
-        if ( pluginPropertiesCache == null )
+        if (pluginPropertiesCache == null)
         {
-            NSMutableDictionary properties = new NSMutableDictionary();
-            NSArray subs = subsystems();
-            for ( int i = 0; i < subs.count(); i++ )
+            NSMutableDictionary<String, String> properties =
+                new NSMutableDictionary<String, String>();
+            for (Subsystem sub : subsystems())
             {
-                ( (Subsystem)subs.objectAtIndex( i ) )
-                    .addPluginPropertyBindings( properties );
+                sub.addPluginPropertyBindings(properties);
             }
             pluginPropertiesCache = properties;
-            if ( log.isDebugEnabled() )
+            if (log.isDebugEnabled())
             {
-                log.debug( "plug-in properties = " + properties );
+                log.debug("plug-in properties = " + properties);
             }
         }
         return pluginPropertiesCache;
@@ -419,17 +409,16 @@ public class SubsystemManager
      */
     public void refreshSubsystemDescriptorsAndProviders()
     {
-        for ( Iterator i = FeatureProvider.providers().iterator();
+        for ( Iterator<?> i = FeatureProvider.providers().iterator();
             i.hasNext(); )
         {
             ( (FeatureProvider)i.next() ).refresh();
         }
         if ( subsystemArray != null )
         {
-            for ( int i = 0; i < subsystemArray.count(); i++ )
+            for (Subsystem sub : subsystemArray)
             {
-                ( (Subsystem)subsystemArray.objectAtIndex( i ) )
-                    .refreshDescriptor();
+                sub.refreshDescriptor();
             }
         }
     }
@@ -443,10 +432,24 @@ public class SubsystemManager
      */
     private void initAllSubsystems()
     {
-        NSArray subs = subsystems();
-        for ( int i = 0; i < subs.count(); i++ )
+        for (Subsystem sub : subsystems())
         {
-            ( (Subsystem)subs.objectAtIndex( i ) ).init();
+            sub.init();
+            sub.subsystemInitCompleted();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Calls {@link Subsystem#start()} for all registered subsystems.
+     */
+    private void startAllSubsystems()
+    {
+        for (Subsystem sub : subsystems())
+        {
+            sub.start();
+            sub.subsystemHasStarted();
         }
     }
 
@@ -485,13 +488,13 @@ public class SubsystemManager
      * @return true if any string in featureList is found in theSet, or if
      * theSet is null
      */
-    private boolean foundIn( String[] featureList, Map theSet )
+    private boolean foundIn(String[] featureList, Map<String, String> theSet)
     {
-        if ( featureList == null ) return false;
-        if ( theSet == null ) return true;
-        for ( int i = 0; i < featureList.length; i++ )
+        if (featureList == null) return false;
+        if (theSet == null) return true;
+        for (String feature : featureList)
         {
-            if ( theSet.containsKey( featureList[i] ) )
+            if (theSet.containsKey(feature))
             {
                 return true;
             }
@@ -509,13 +512,14 @@ public class SubsystemManager
      * @param theSet a set to check in
      * @return false if any string in featureList is missing in theSet
      */
-    private boolean missingFrom( String[] featureList, Map theSet )
+    private boolean missingFrom(
+        String[] featureList, Map<String, String> theSet)
     {
-        if ( featureList == null ) return false;
-        if ( theSet == null ) return true;
-        for ( int i = 0; i < featureList.length; i++ )
+        if (featureList == null) return false;
+        if (theSet == null) return true;
+        for (String key : featureList)
         {
-            if ( !theSet.containsKey( featureList[i] ) )
+            if (!theSet.containsKey(key))
             {
                 return true;
             }
@@ -530,12 +534,12 @@ public class SubsystemManager
      * @param featureList an array of strings to add
      * @param theSet the map to add them to
      */
-    private void addTo( String[] featureList, Map theSet )
+    private void addTo(String[] featureList, Map<String, String> theSet)
     {
-        if ( featureList == null ) return;
-        for ( int i = 0; i < featureList.length; i++ )
+        if (featureList == null) return;
+        for (String feature : featureList)
         {
-            theSet.put( featureList[i], featureList[i] );
+            theSet.put(feature, feature);
         }
     }
 
@@ -578,18 +582,18 @@ public class SubsystemManager
      * @param properties The application's property settings
      */
     private void addSubsystemsInOrder(
-        ArrayList    names,
-        Map          pendingFeatures,
-        Map          addedFeatures,
-        WCProperties properties )
+        ArrayList<String>   names,
+        Map<String, String> pendingFeatures,
+        Map<String, String> addedFeatures,
+        WCProperties        properties)
     {
         if ( names.size() == 0 ) return;
         int oldSize = names.size();
-        Map incompleteFeatures = new HashMap();
+        Map<String, String> incompleteFeatures = new HashMap<String, String>();
         log.debug( "starting subsystem list traversal: " + names );
         for ( int i = 0; i < names.size(); i++ )
         {
-            String name = (String)names.get( i );
+            String name = names.get(i);
             String[] depends = featureList(
                 properties.getProperty( name + DEPENDS_SUFFIX ) );
             String[] requires = featureList(
@@ -663,11 +667,12 @@ public class SubsystemManager
      * Load this application's current ENV bindings into a dictionary.
      * @return the current ENV bindings
      */
-    private NSMutableDictionary inheritedEnvironment()
+    private NSMutableDictionary<String, String> inheritedEnvironment()
     {
         if ( inheritedEnvCache == null )
         {
-            NSMutableDictionary env = new NSMutableDictionary();
+            NSMutableDictionary<String, String> env =
+                new NSMutableDictionary<String, String>();
             // Fill it up
 
             // First, try Unix command
@@ -710,11 +715,13 @@ public class SubsystemManager
     //~ Instance/static variables .............................................
 
     /** Map&lt;String, JarSubsystem&gt;: holds the loaded subsystems. */
-    private Map subsystems = new HashMap();
-    private NSMutableArray subsystemArray = new NSMutableArray();
-    private NSDictionary inheritedEnvCache = null;
-    private NSDictionary envCache = null;
-    private NSDictionary pluginPropertiesCache = null;
+    private Map<String, Subsystem> subsystems =
+        new HashMap<String, Subsystem>();
+    private NSMutableArray<Subsystem> subsystemArray =
+        new NSMutableArray<Subsystem>();
+    private NSDictionary<String, String> inheritedEnvCache = null;
+    private NSDictionary<String, String> envCache = null;
+    private NSDictionary<String, String> pluginPropertiesCache = null;
     private String[] envpCache = null;
 
     private static final String SUBSYSTEM_KEY_PREFIX = "subsystem.";

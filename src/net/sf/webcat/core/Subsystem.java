@@ -162,8 +162,8 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
-     * Carry out any subsystem-specific startup actions.  This method is
-     * called once all subsystems have been created, so any dependencies
+     * Carry out any subsystem-specific initialization actions.  This method
+     * is called once all subsystems have been created, so any dependencies
      * on services provided by other subsystems are fulfilled.  Subsystems
      * are init'ed in the same order they are created.  The default
      * implementation calls {@link #updateDbIfNecessary()} to update
@@ -179,6 +179,41 @@ public class Subsystem
         {
             log.debug("tabs for " + name() + " = " + subsystemTabTemplate);
         }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Determine if this subsystem has completed its initialization.
+     * @return True if this subsystem has been initialized.
+     */
+    public boolean isInitialized()
+    {
+        return isInitialized;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Carry out any subsystem-specific startup actions.  This method is
+     * called once all subsystems have been initialized.  Subsystems
+     * are started in the same order they are created.  Subclasses should
+     * override this method to perform custom startup actions.
+     */
+    public void start()
+    {
+        // Subclasses should override this as necessary
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Determine if this subsystem has started.
+     * @return True if this subsystem has been started.
+     */
+    public boolean hasStarted()
+    {
+        return hasStarted;
     }
 
 
@@ -225,9 +260,12 @@ public class Subsystem
                         + configFile.getPath() );
                     FileInputStream in = new FileInputStream( configFile );
                     NSData data = new NSData( in, (int)configFile.length() );
-                    options = (NSDictionary<String, Object>)
+                    @SuppressWarnings("unchecked")
+                    NSDictionary<String, Object> newOptions =
+                        (NSDictionary<String, Object>)
                         NSPropertyListSerialization
                             .propertyListFromData( data, "UTF-8" );
+                    options = newOptions;
                     in.close();
                 }
                 catch ( java.io.IOException e )
@@ -275,7 +313,7 @@ public class Subsystem
      *        for the subsystem's fragment to this buffer
      */
     public void collectSubsystemFragments(
-        String fragmentKey, StringBuffer htmlBuffer, StringBuffer wodBuffer )
+        String fragmentKey, StringBuffer htmlBuffer, StringBuffer wodBuffer)
     {
         // Subclasses should override this as necessary
     }
@@ -289,7 +327,7 @@ public class Subsystem
      * @param env the dictionary to add environment variable bindings to;
      * the full set of currently available bindings are passed in.
      */
-    public void addEnvironmentBindings( NSMutableDictionary env )
+    public void addEnvironmentBindings(NSMutableDictionary<String, String> env)
     {
         // Subclasses should override this as necessary
     }
@@ -303,7 +341,8 @@ public class Subsystem
      * @param properties the dictionary to add new properties to;
      * individual plug-in information may override these later.
      */
-    public void addPluginPropertyBindings( NSMutableDictionary properties )
+    public void addPluginPropertyBindings(
+        NSMutableDictionary<String, String> properties)
     {
         // Subclasses should override this as necessary
     }
@@ -516,21 +555,22 @@ public class Subsystem
      * @return true if the binding was added using either the userSettingKey
      * or the relativePath, or false otherwise
      */
-    protected boolean addFileBinding( NSMutableDictionary map,
-                                      String              key,
-                                      String              userSettingKey,
-                                      String              relativePath )
+    protected boolean addFileBinding(
+        NSMutableDictionary<String, String> map,
+        String key,
+        String userSettingKey,
+        String relativePath)
     {
         String userSetting = Application.configurationProperties()
-            .getProperty( userSettingKey );
-        if ( userSetting != null )
+            .getProperty(userSettingKey);
+        if (userSetting != null)
         {
-            map.takeValueForKey( userSetting, key );
+            map.takeValueForKey(userSetting, key);
             return true;
         }
         else
         {
-            return addFileBinding( map, key, relativePath );
+            return addFileBinding(map, key, relativePath);
         }
     }
 
@@ -548,7 +588,9 @@ public class Subsystem
      * added, or false otherwise
      */
     protected boolean addFileBinding(
-        NSMutableDictionary map, String key, String relativePath )
+        NSMutableDictionary<String, String> map,
+        String key,
+        String relativePath)
     {
         String rawPath = myResourcesDir() + "/" + relativePath;
         File file = new File( rawPath );
@@ -576,12 +618,46 @@ public class Subsystem
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Called by the subsystem manager to indicate this subsystem has
+     * been initialized--this method should <b>not</b> be called by
+     * anything else.
+     */
+    protected void subsystemInitCompleted()
+    {
+        // This isn't called inside init() because we don't want this
+        // value set until after subclasses have performed their
+        // overridden init() actions as well (which is likely after
+        // they call super.init()).
+        isInitialized = true;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Called by the subsystem manager to indicate this subsystem has
+     * been initialized--this method should <b>not</b> be called by
+     * anything else.
+     */
+    protected void subsystemHasStarted()
+    {
+        // This isn't called inside start() because we don't want this
+        // value set until after subclasses have performed their
+        // overridden start() actions as well (which is likely after
+        // they call super.start(), if they call it at all).
+        hasStarted = true;
+    }
+
+
     //~ Instance/static variables .............................................
 
     private String            name = getClass().getName();
     private String            myResourcesDir;
     private FeatureDescriptor descriptor;
     private NSDictionary<String, Object> options;
+    private boolean           isInitialized;
+    private boolean           hasStarted;
 
     private NSArray<TabDescriptor> subsystemTabTemplate;
 
