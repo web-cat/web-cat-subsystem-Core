@@ -98,7 +98,7 @@ public class LdapAuthenticator
         log.debug(baseName + ": host = " + host + ", context = " + base
             + ", user field = " + userField);
 
-        LdapConfig config = new LdapConfig(host, base);
+        AuthenticatorConfig config = new AuthenticatorConfig(host, base);
 
         String bindDN =  properties.getProperty( baseName + ".ldap.bindDN" );
         String bindPassword =
@@ -128,8 +128,18 @@ public class LdapAuthenticator
             log.debug(baseName + ": bindPassword = " + bindPassword);
         }
 
+        config.setSubtreeSearch(
+            properties.booleanForKey( baseName + ".ldap.searchSubtrees" ) );
+
+        String authFilter =
+            properties.getProperty( baseName + ".ldap.authFilter" );
+        if (authFilter != null && !authFilter.equals(""))
+        {
+            config.setAuthorizationFilter(authFilter);
+        }
+
+        config.setUserField(new String[] {userField});
         authenticator = new Authenticator(config);
-        authenticator.setUserField(userField);
 
         if (properties.booleanForKey(baseName + ".useTLS"))
         {
@@ -142,16 +152,6 @@ public class LdapAuthenticator
             {
                 log.error("Cannot use TLS:", e);
             }
-        }
-
-        authenticator.setSubtreeSearch(
-            properties.booleanForKey( baseName + ".ldap.searchSubtrees" ) );
-
-        String authFilter =
-            properties.getProperty( baseName + ".ldap.authFilter" );
-        if (authFilter != null && !authFilter.equals(""))
-        {
-            authenticator.setAuthorizationFilter(authFilter);
         }
 
         return result;
@@ -180,14 +180,28 @@ public class LdapAuthenticator
             log.debug( "user " + username + " validated" );
             try
             {
-                user = (User)EOUtilities.objectMatchingValues(
-                    ec, User.ENTITY_NAME,
-                    new NSDictionary(
-                        new Object[]{ username , domain              },
-                        new Object[]{ User.USER_NAME_KEY,
-                                      User.AUTHENTICATION_DOMAIN_KEY }
-                    ) );
-                if ( user.authenticationDomain() != domain )
+                user = User.uniqueObjectMatchingQualifier(
+                    ec,
+                    User.userName.is(username).and(
+                        User.authenticationDomain.is(domain)));
+                if (user == null)
+                {
+                    user = User.createUser(
+                        username,
+                        null,  // DO NOT MIRROR PASSWORD IN DATABASE
+                               // for security reasons
+                        domain,
+                        User.STUDENT_PRIVILEGES,
+                        ec
+                    );
+                    log.info( "new user '"
+                        + username
+                        + "' ("
+                        + domain.displayableName()
+                        + ") created"
+                        );
+                }
+                else if ( user.authenticationDomain() != domain )
                 {
                     if ( user.authenticationDomain() == null )
                     {
@@ -206,23 +220,6 @@ public class LdapAuthenticator
                         user = null;
                     }
                 }
-            }
-            catch ( EOObjectNotAvailableException e )
-            {
-                user = User.createUser(
-                         username,
-                         null,  // DO NOT MIRROR PASSWORD IN DATABASE
-                                // for security reasons
-                         domain,
-                         User.STUDENT_PRIVILEGES,
-                         ec
-                    );
-                log.info( "new user '"
-                          + username
-                          + "' ("
-                          + domain.displayableName()
-                          + ") created"
-                        );
             }
             catch ( EOUtilities.MoreThanOneException e )
             {
