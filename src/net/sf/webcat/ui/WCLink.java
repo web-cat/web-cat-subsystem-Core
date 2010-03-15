@@ -21,6 +21,7 @@
 
 package net.sf.webcat.ui;
 
+import net.sf.webcat.ui.util.JSHash;
 import net.sf.webcat.ui.util.DojoRemoteHelper;
 import org.apache.log4j.Logger;
 import com.webobjects.appserver.WOActionResults;
@@ -55,7 +56,7 @@ import er.extensions.components.ERXComponentUtilities;
  * the attributes/bindings <tt>onRemoteLoad</tt>, <tt>onRemoteError</tt>, and
  * <tt>onRemoteEnd</tt> for this functionality.
  * </p>
- * 
+ *
  * <h2>Bindings</h2>
  * <table>
  * <tr>
@@ -65,7 +66,7 @@ import er.extensions.components.ERXComponentUtilities;
  * <tr>
  * <td>{@code directActionName}</td>
  * <td>The name of the direct action method (minus the "Action" suffix) to
- * invoke when this element is activated. Defaults to ÒdefaultÓ.</td>
+ * invoke when this element is activated. Defaults to ï¿½defaultï¿½.</td>
  * </tr>
  * <tr>
  * <td>{@code actionClass}</td>
@@ -89,7 +90,7 @@ import er.extensions.components.ERXComponentUtilities;
  * request. This defaults to false unless any of the other "remote.*" bindings
  * are specified, in which case this is assumed to be true. Therefore, it is
  * not necessary to explicitly use this binding unless you want an Ajax request
- * that does not use any of the other "remote.*" bindings (a rare case).</td>
+ * that does not use any of the other "remote.*" bindings.</td>
  * </tr>
  * <tr>
  * <td>{@code remote.responseType}</td>
@@ -102,18 +103,6 @@ import er.extensions.components.ERXComponentUtilities;
  * evaluated and passed to the callback as an object; and "xml", where the
  * response is XML text that is parsed and passed to the callback as a Document
  * DOM object.</td>
- * </tr>
- * <tr>
- * <td>{@code remote.refreshPanes}</td>
- * <td>
- * The DOM id(s) of the dijit.ContentPane(s) (WCContentPane) that should be
- * refreshed upon a successful HTTP response code. This is essentially a
- * shortcut for <tt>remote.onLoad = "function(response, ioArgs) {
- * dijit.byId(id).refresh(); return response; }"</tt>, or a similar loop if
- * more than one id is specified; if a script is specified for
- * <tt>remote.onLoad</tt> <i>as well as</i> this argument, then the content
- * pane refresh occurs <b>after</b> that script is executed.
- * </td>
  * </tr>
  * <tr>
  * <td>@{code remote.synchronous}</td>
@@ -149,7 +138,7 @@ import er.extensions.components.ERXComponentUtilities;
  * proper callback chaining.</b></td>
  * </tr>
  * </table>
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
@@ -168,13 +157,13 @@ public class WCLink extends WOHTMLDynamicElement
         _otherQueryAssociations =
             _NSDictionaryUtilities.extractObjectsForKeysWithPrefix(
                     _associations, "?", true);
-        
+
         if (_otherQueryAssociations == null
                 || _otherQueryAssociations.count() <= 0)
         {
             _otherQueryAssociations = null;
         }
-        
+
         _action = _associations.removeObjectForKey("action");
         _string = _associations.removeObjectForKey("string");
         _href = _associations.removeObjectForKey("href");
@@ -221,7 +210,7 @@ public class WCLink extends WOHTMLDynamicElement
         }
     }
 
-    
+
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
@@ -290,7 +279,7 @@ public class WCLink extends WOHTMLDynamicElement
             WOContext context)
     {
         String fragmentIdentifier = fragmentIdentifierInContext(context);
-        
+
         if (fragmentIdentifier.length() > 0)
         {
             response.appendContentCharacter('#');
@@ -305,11 +294,11 @@ public class WCLink extends WOHTMLDynamicElement
     {
         String actionPath = computeActionStringInContext(_actionClass,
                 _directActionName, context);
-        
+
         NSDictionary<String, Object> queryDict =
             computeQueryDictionaryInContext(actionPath, _queryDictionary,
                     _otherQueryAssociations, true, context);
-        
+
         response.appendContentString(context._directActionURL(actionPath,
                 queryDict, secureInContext(context), 0, htmlEscapeURL));
 
@@ -338,13 +327,13 @@ public class WCLink extends WOHTMLDynamicElement
             WOContext context, boolean escapeHTML)
     {
         String staticURL = hrefInContext(context);
-        
+
         if (WOStaticURLUtilities.isRelativeURL(staticURL) &&
                 !WOStaticURLUtilities.isFragmentURL(staticURL))
         {
             String resourceURL =
                 context._urlForResourceNamed(staticURL, null, false);
-            
+
             if (resourceURL != null)
             {
                 response.appendContentString(resourceURL);
@@ -374,7 +363,7 @@ public class WCLink extends WOHTMLDynamicElement
             WOContext context)
     {
         super.appendAttributesToResponse(response, context);
-        
+
         if (_remoteHelper.isRemoteInContext(context))
         {
             response.appendContentString(" href=\"javascript:void(0);\"");
@@ -382,7 +371,7 @@ public class WCLink extends WOHTMLDynamicElement
         else
         {
             _appendOpeningHrefToResponse(response, context);
-            
+
             if (_actionClass != null || _directActionName != null)
             {
                 _appendCGIActionURLToResponse(response, context, true);
@@ -448,7 +437,7 @@ public class WCLink extends WOHTMLDynamicElement
         {
             WOComponent component = context.component();
             Object val = _string.valueInComponent(component);
-            
+
             if (val != null)
             {
                 String valueToAppend = val.toString();
@@ -459,7 +448,7 @@ public class WCLink extends WOHTMLDynamicElement
                     shouldEscapeHTML =
                         _escapeHTML.booleanValueInComponent(component);
                 }
-                
+
                 if (shouldEscapeHTML)
                 {
                     response.appendContentHTMLString(valueToAppend);
@@ -487,12 +476,12 @@ public class WCLink extends WOHTMLDynamicElement
     protected String hrefInContext(WOContext context)
     {
         Object value = null;
-        
+
         if (_href != null)
         {
             value = _href.valueInComponent(context.component());
         }
-        
+
         if (value != null)
         {
             return value.toString();
@@ -508,12 +497,12 @@ public class WCLink extends WOHTMLDynamicElement
     protected String fragmentIdentifierInContext(WOContext context)
     {
        Object value = null;
-        
+
         if (_fragmentIdentifier != null)
         {
             value = _fragmentIdentifier.valueInComponent(context.component());
         }
-        
+
         if (value != null)
         {
             return value.toString();
@@ -524,7 +513,7 @@ public class WCLink extends WOHTMLDynamicElement
         }
     }
 
-    
+
     // ----------------------------------------------------------
     protected boolean isDisabledInContext(WOContext context)
     {
@@ -549,26 +538,26 @@ public class WCLink extends WOHTMLDynamicElement
             WOContext context)
     {
         String onClick = null;
-        
+
         if (_onClick != null)
         {
             onClick = _onClick.valueInComponent(context.component()).toString();
         }
-        
+
         if (_remoteHelper.isRemoteInContext(context))
         {
             response.appendContentString(" onclick=\"");
-            
+
             if (onClick != null)
             {
                 response.appendContentString(onClick);
-                
+
                 if (!onClick.endsWith(";"))
                 {
                     response.appendContentCharacter(';');
                 }
             }
-            
+
             appendXhrGetToResponse(response, context);
             response.appendContentString("\"");
         }
@@ -592,7 +581,7 @@ public class WCLink extends WOHTMLDynamicElement
         WOComponent component = context.component();
 
         String actionUrl = null;
-        
+
         if (_directActionName != null)
         {
             actionUrl = context.directActionURLForActionNamed(
@@ -604,13 +593,15 @@ public class WCLink extends WOHTMLDynamicElement
         {
             actionUrl = AjaxUtils.ajaxComponentActionUrl(context);
         }
-        
-        response.appendContentString(
-                _remoteHelper.invokeRemoteActionCall("this", actionUrl, null,
-                        context));
+
+        JSHash requestOptions = new JSHash();
+        requestOptions.put("url", actionUrl);
+
+        response.appendContentString(_remoteHelper.remoteSubmitCall(
+                "this", requestOptions, context));
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public WOActionResults invokeAction(WORequest request, WOContext context)
     {
@@ -633,7 +624,7 @@ public class WCLink extends WOHTMLDynamicElement
         String nextPageName = null;
         WOActionResults invokedElement = null;
         WOComponent component = context.component();
-        
+
         if (context.elementID().equals(context.senderID()))
         {
             if (_disabled == null
@@ -643,13 +634,13 @@ public class WCLink extends WOHTMLDynamicElement
                 {
                     Object nextPageValue =
                         _pageName.valueInComponent(component);
-                    
+
                     if (nextPageValue != null)
                     {
                         nextPageName = nextPageValue.toString();
                     }
                 }
-                
+
                 if (_action != null)
                 {
                     invokedElement =
@@ -692,7 +683,7 @@ public class WCLink extends WOHTMLDynamicElement
         return invokedElement;
     }
 
-    
+
     // ----------------------------------------------------------
     protected WOActionResults invokeRemoteAction(WORequest request,
             WOContext context)
@@ -705,7 +696,7 @@ public class WCLink extends WOHTMLDynamicElement
         AjaxUtils.mutableUserInfo(request);
 
         result = (WOActionResults) _action.valueInComponent(component);
-        
+
         AjaxUtils.updateMutableUserInfoWithAjaxInfo(context);
 
         if (result == context.page())
@@ -724,9 +715,9 @@ public class WCLink extends WOHTMLDynamicElement
         return result;
     }
 
-    
+
     //~ Static/instance variables .............................................
-    
+
     protected WOAssociation _action;
     protected WOAssociation _string;
     protected WOAssociation _pageName;

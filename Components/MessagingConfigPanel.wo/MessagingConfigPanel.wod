@@ -1,7 +1,7 @@
 EditDialog : WCDialog {
     id = "~'editGlobalOptions_' + indexOfProtocol";
     title = "~'Edit Global Options for ' + protocol.name";
-    okAction = "optionsEdited";
+    okAction = optionsEdited;
 }
 
 EditImage : WOImage {
@@ -20,7 +20,7 @@ EditLink : WOGenericContainer {
 GlobalEditDialog : WCDialog {
     id = "~'editGlobalOptions_' + indexOfProtocol";
     title = "~'Edit Global Options for ' + protocol.name";
-    okAction = "optionsEdited";
+    okAction = optionsEdited;
 }
 
 GlobalEditLink : WOGenericContainer {

@@ -131,25 +131,26 @@ public class DojoRemoteHelper
 
 
     // ----------------------------------------------------------
-    public String partialSubmitCall(String sender,
-            String componentName,
-            DojoOptions contentOptions,
+    public String remoteSubmitCall(
+            String sendingWidget,
+            JSHash initialOptions,
             WOContext context)
     {
         WOComponent component = context.component();
 
         WOAssociation _responseType = associationWithName("responseType");
-        WOAssociation _refreshPanes = associationWithName("refreshPanes");
-        WOAssociation _form = associationWithName("form");
+        WOAssociation _submit = associationWithName("submit");
         WOAssociation _synchronous = associationWithName("synchronous");
-        WOAssociation _block = associationWithName("block");
 
-        DojoOptions options = new DojoOptions();
-
-        if (contentOptions != null && !contentOptions.isEmpty())
+        JSHash options = new JSHash();
+        if (initialOptions != null)
         {
-            options.putOptions("content", contentOptions);
+            options.merge(initialOptions);
         }
+
+        // If the user has provided a remote.responseType, use it; otherwise,
+        // default to "javascript", so that JavascriptGenerators returned by
+        // the remote action will be executed.
 
         String responseType = null;
         if (_responseType != null)
@@ -162,31 +163,29 @@ public class DojoRemoteHelper
             responseType = "javascript";
         }
 
-        if (responseType != null)
-        {
-            options.putValue("handleAs", responseType);
-        }
+        options.put("handleAs", responseType);
 
-        String formId = null;
-        if (_form != null)
-        {
-            formId = _form.valueInComponent(component).toString();
+        // Handle a partial submit.
 
-            if (formId != null)
+        if (_submit != null)
+        {
+            String submitId = _submit.valueInComponent(component).toString();
+
+            if (submitId != null)
             {
-                String formString = "dojo.byId('" + formId + "')";
-                options.putExpression("form", formString);
+                options.put("submit", submitId);
             }
         }
-        else
-        {
-            formId = ERXWOForm.formName(context, null);
 
-            if (formId != null)
-            {
-                options.putExpression("form",
-                        WCForm.formElementByName(formId));
-            }
+        // Whether or not this is a partial submit, we pass the form reference
+        // to the remote submit function; this is so we can access the form's
+        // action URL if necessary.
+
+        String formName = ERXWOForm.formName(context, null);
+        if (formName != null)
+        {
+            options.put("form",
+                    JSHash.code(WCForm.formElementByName(formName)));
         }
 
         // Append the synchronous flag.
@@ -198,92 +197,17 @@ public class DojoRemoteHelper
 
         if (synchronous)
         {
-            options.putValue("sync", true);
+            options.put("sync", true);
         }
 
         // Append the options dictionary to the script buffer.
 
         StringBuffer buffer = new StringBuffer();
 
-        buffer.append("webcat.partialSubmit(");
-        buffer.append(sender);
-        buffer.append(", '");
-        buffer.append(componentName);
-        buffer.append("', ");
+        buffer.append("webcat.remoteSubmit(");
+        buffer.append(sendingWidget);
+        buffer.append(", ");
         buffer.append(options.toString());
-
-        String refreshPanes = null;
-        if (_refreshPanes != null)
-        {
-            Object panes = _refreshPanes.valueInComponent(component);
-
-            if (panes instanceof List)
-            {
-                refreshPanes = DojoUtils.doubleToSingleQuotes(
-                        new JSONArray((List<?>) panes).toString());
-            }
-            else
-            {
-                try
-                {
-                    refreshPanes =
-                        DojoUtils.doubleToSingleQuotes(
-                                new JSONArray(panes.toString()).toString());
-                }
-                catch (JSONException e)
-                {
-                    refreshPanes = "'"
-                        + DojoUtils.doubleToSingleQuotes(panes.toString())
-                        + "'";
-                }
-            }
-        }
-
-        if (refreshPanes != null && refreshPanes.length() > 0)
-        {
-            buffer.append(", " + refreshPanes);
-        }
-        else
-        {
-            buffer.append(", null");
-        }
-
-        String block = null;
-        if (_block != null)
-        {
-            Object blockIds = _block.valueInComponent(component);
-
-            if (blockIds instanceof Boolean && (Boolean) blockIds)
-            {
-                block = "true";
-            }
-            else if (blockIds instanceof List)
-            {
-                block = DojoUtils.doubleToSingleQuotes(
-                        new JSONArray((List<?>) blockIds).toString());
-            }
-            else
-            {
-                try
-                {
-                    block =
-                        DojoUtils.doubleToSingleQuotes(
-                                new JSONArray(blockIds.toString()).toString());
-                }
-                catch (JSONException e)
-                {
-                    block = "'"
-                        + DojoUtils.doubleToSingleQuotes(blockIds.toString())
-                        + "'";
-                }
-            }
-        }
-
-        if (block != null && block.length() > 0)
-        {
-            buffer.append(", " + block);
-        }
-
         buffer.append(");");
 
         return buffer.toString();
@@ -291,16 +215,14 @@ public class DojoRemoteHelper
 
 
     // ----------------------------------------------------------
-    public String invokeRemoteActionCall(String sender, String url,
+/*    public String _invokeRemoteActionCall(String sender, String url,
             DojoOptions contentOptions, WOContext context)
     {
         WOComponent component = context.component();
 
         WOAssociation _responseType = associationWithName("responseType");
-        WOAssociation _refreshPanes = associationWithName("refreshPanes");
         WOAssociation _form = associationWithName("form");
         WOAssociation _synchronous = associationWithName("synchronous");
-        WOAssociation _block = associationWithName("block");
 
         DojoOptions options = new DojoOptions();
 
@@ -366,84 +288,11 @@ public class DojoRemoteHelper
         buffer.append(sender);
         buffer.append(", ");
         buffer.append(options.toString());
-
-        String refreshPanes = null;
-        if (_refreshPanes != null)
-        {
-            Object panes = _refreshPanes.valueInComponent(component);
-
-            if (panes instanceof List)
-            {
-                refreshPanes = DojoUtils.doubleToSingleQuotes(
-                        new JSONArray((List<?>) panes).toString());
-            }
-            else
-            {
-                try
-                {
-                    refreshPanes =
-                        DojoUtils.doubleToSingleQuotes(
-                                new JSONArray(panes.toString()).toString());
-                }
-                catch (JSONException e)
-                {
-                    refreshPanes = "'"
-                        + DojoUtils.doubleToSingleQuotes(panes.toString())
-                        + "'";
-                }
-            }
-        }
-
-        if (refreshPanes != null && refreshPanes.length() > 0)
-        {
-            buffer.append(", " + refreshPanes);
-        }
-        else
-        {
-            buffer.append(", null");
-        }
-
-        String block = null;
-        if (_block != null)
-        {
-            Object blockIds = _block.valueInComponent(component);
-
-            if (blockIds instanceof Boolean && (Boolean) blockIds)
-            {
-                block = "true";
-            }
-            else if (blockIds instanceof List)
-            {
-                block = DojoUtils.doubleToSingleQuotes(
-                        new JSONArray((List<?>) blockIds).toString());
-            }
-            else
-            {
-                try
-                {
-                    block =
-                        DojoUtils.doubleToSingleQuotes(
-                                new JSONArray(blockIds.toString()).toString());
-                }
-                catch (JSONException e)
-                {
-                    block = "'"
-                        + DojoUtils.doubleToSingleQuotes(blockIds.toString())
-                        + "'";
-                }
-            }
-        }
-
-        if (block != null && block.length() > 0)
-        {
-            buffer.append(", " + block);
-        }
-
         buffer.append(");");
 
         return buffer.toString();
     }
-
+*/
 
     //~ Static/instance variables .............................................
 

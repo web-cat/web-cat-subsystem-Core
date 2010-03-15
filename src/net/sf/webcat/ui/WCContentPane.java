@@ -40,14 +40,19 @@ import er.extensions.appserver.ERXWOContext;
  * its refresh method:  <code>dijit.byId("paneId").refresh()</code>
  *
  * <h2>Bindings</h2>
- * <table>
- * <tr>
- * <td>{@code refreshOnShow}</td>
- * <td>A boolean value indicating whether the pane should refresh (redownload)
- * its content when it goes from hidden to shown. Defaults to false.</td>
- * </tr>
- * </table>
- * 
+ *
+ * <dl>
+ * <dt>refreshOnShow</dt>
+ * <dd>A boolean value indicating whether the pane should refresh (redownload)
+ * its content when it goes from hidden to shown. Defaults to false.</dd>
+ *
+ * <dt>alwaysDynamic</dt>
+ * <dd>A boolean value indicating whether the pane's content should
+ * <b>always</b> be retrieved with an Ajax request, as opposed to being
+ * rendered during the normal page-load cycle. Defaults to false.</dd>
+ *
+ * </dl>
+ *
  * @author Tony Allevato
  * @version $Id$
  */
@@ -61,7 +66,7 @@ public class WCContentPane extends DojoElement
             WOElement template)
     {
         super(name, someAssociations, template);
-        
+
         _alwaysDynamic = _associations.removeObjectForKey("alwaysDynamic");
     }
 
@@ -85,36 +90,101 @@ public class WCContentPane extends DojoElement
 
 
     // ----------------------------------------------------------
-    public WOActionResults invokeAction(WORequest request, WOContext context)
+    protected boolean alwaysDynamicInContext(WOContext context)
     {
-        Object result = null;
-
-        if (AjaxUtils.shouldHandleRequest(request, context,
-                _containerID(context)))
+        if (_alwaysDynamic != null)
         {
-            result = handleRequest(request, context);
-            AjaxUtils.updateMutableUserInfoWithAjaxInfo(context);
-
-            if (result == context.page())
-            {
-                result = null;
-            }
-
-            if (result == null)
-            {
-                result = AjaxUtils.createResponse(request, context);
-            }
+            return _alwaysDynamic.booleanValueInComponent(context.component());
         }
-        else if (hasChildrenElements())
+        else
         {
-            result = super.invokeAction(request, context);
+            return false;
         }
-
-        return (WOActionResults) result;
     }
 
 
     // ----------------------------------------------------------
+    protected String containerIDOrName(WOContext context)
+    {
+        String id = (String) valueForBinding("id", context.component());
+
+        if (id == null)
+        {
+            id = ERXWOContext.safeIdentifierName(context, false);
+        }
+
+        return id;
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void takeValuesFromRequest(WORequest request, WOContext context)
+    {
+        //if (haveChildrenBeenAppended)
+        {
+            // If the request is not associated with this content pane, then we
+            // only try to invoke the action on its children if they have
+            // already been rendered on the page. This prevents potentially
+            // slow-running operations inside closed title panes from being
+            // executed until they are opened for the first time.
+
+            super.takeValuesFromRequest(request, context);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public WOActionResults invokeAction(WORequest request, WOContext context)
+    {
+        WOActionResults result = null;
+        boolean isAjax = ERXApplication.isAjaxRequest(request);
+
+        if (isAjax && AjaxUtils.shouldHandleRequest(request, context, null))
+        {
+            // If the request is associated with the element ID of this content
+            // pane, then it is coming from a get request on the href
+            // associated with the pane. We need to create a new response and
+            // append this element's children to it.
+
+            String id = containerIDOrName(context);
+
+            WOResponse response = AjaxUtils.createResponse(request, context);
+            AjaxUtils.setPageReplacementCacheKey(context, id);
+
+            appendChildrenToResponse(response, context);
+
+            AjaxUtils.updateMutableUserInfoWithAjaxInfo(context);
+
+            result = response;
+        }
+        else
+        {
+            result = super.invokeAction(request, context);
+        }
+
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void appendChildrenToResponse(WOResponse response, WOContext context)
+    {
+        WORequest request = context.request();
+        boolean isAjax = ERXApplication.isAjaxRequest(request);
+
+        if ((isAjax && AjaxUtils.shouldHandleRequest(request, context, null)) ||
+                (!isAjax && !alwaysDynamicInContext(context)))
+        {
+            super.appendChildrenToResponse(response, context);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
     public void appendAttributesToResponse(WOResponse response,
             WOContext context)
     {
@@ -130,64 +200,7 @@ public class WCContentPane extends DojoElement
     }
 
 
-    // ----------------------------------------------------------
-    public void appendChildrenToResponse(WOResponse response, WOContext context)
-    {
-        boolean isAjax = ERXApplication.isAjaxRequest(context.request());
-
-        if (isAjax || (!isAjax && !alwaysDynamicInContext(context)))
-        {
-            super.appendChildrenToResponse(response, context);
-        }
-    }
-    
-
-    // ----------------------------------------------------------
-    protected boolean alwaysDynamicInContext(WOContext context)
-    {
-        if (_alwaysDynamic != null)
-        {
-            return _alwaysDynamic.booleanValueInComponent(context.component());
-        }
-        else
-        {
-            return false;
-        }
-    }
-    
-    
-    // ----------------------------------------------------------
-    public WOActionResults handleRequest(WORequest request, WOContext context)
-    {
-        String id = _containerID(context);
-
-        WOResponse response = AjaxUtils.createResponse(request, context);
-        AjaxUtils.setPageReplacementCacheKey(context, id);
-
-        if (hasChildrenElements())
-        {
-            appendChildrenToResponse(response, context);
-        }
-
-        return null;
-    }
-
-
-    // ----------------------------------------------------------
-    protected String _containerID(WOContext context)
-    {
-        String id = (String) valueForBinding("id", context.component());
-
-        if (id == null)
-        {
-            id = ERXWOContext.safeIdentifierName(context, false);
-        }
-
-        return id;
-    }
-    
-
     //~ Static/instance variables .............................................
-    
+
     protected WOAssociation _alwaysDynamic;
 }

@@ -29,9 +29,7 @@ import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import net.sf.webcat.archives.*;
-import net.sf.webcat.archives.AbstractArchiveHandler;
-import net.sf.webcat.archives.ArchiveEntry;
-import net.sf.webcat.archives.IArchiveEntry;
+import net.sf.webcat.core.FileUtilities;
 
 //-------------------------------------------------------------------------
 /**

@@ -98,8 +98,8 @@ TextBox: WCTextBox {
 
 UseDefault: WCButton {
     label = "Use Default";
+    remote = true;
     action = clearValue;
-    remote.refreshPanes = idFor.valueContainer;
 }
 
 ValueContainer : WCContentSpan {

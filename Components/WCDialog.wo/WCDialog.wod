@@ -1,11 +1,12 @@
 Cancel : WCButton {
-    label = "Cancel";
-    class = "neg";
+    label = cancelLabel;
+    class = "~hasOkButton ? 'neg' : null";
 }
 
 Dialog : WCContentPane {
     dojoType = "webcat.Dialog";
     alwaysDynamic = true;
+    showsLoadingMessageOnRefresh = true;
     title = title;
     id = id;
 }
@@ -15,7 +16,7 @@ Form : WCForm {
 
 OK : WCButton {
     id = idFor.okButtonId;
-    label = "OK";
+    label = okLabel;
     class = "pos";
     action = okPressed;
     remote = true;

@@ -1,0 +1,18 @@
+/* =================================================================== */
+/* @group FileBrowserDialog button icons
+====================================================================== */
+
+.wcFileBrowserDialogIcon {
+    background-image: url('images/icons-FileBrowserDialog.png');
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
+    text-align: center;
+}
+
+.wcFileBrowserDialogIconCreateFolder { background-position:    0px; }
+.wcFileBrowserDialogIconUploadFile   { background-position:  -16px; }
+.wcFileBrowserDialogIconCommands     { background-position:  -32px; }
+
+/* @end
+====================================================================== */

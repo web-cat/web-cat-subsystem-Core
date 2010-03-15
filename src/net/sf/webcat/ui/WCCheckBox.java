@@ -34,7 +34,7 @@ import com.webobjects.foundation.NSDictionary;
 
 //--------------------------------------------------------------------------
 /**
- * A checkbox.
+ * A Dojo-styled checkbox.
  *
  * @author Tony Allevato
  * @version $Id$
@@ -48,7 +48,7 @@ public class WCCheckBox extends DojoFormElement
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
-        super("div", someAssociations, template);
+        super("span", someAssociations, template);
 
         _checked = _associations.removeObjectForKey("checked");
         _selection = _associations.removeObjectForKey("selection");
@@ -103,6 +103,8 @@ public class WCCheckBox extends DojoFormElement
     @Override
     public void takeValuesFromRequest(WORequest request, WOContext context)
     {
+        insertNameMappingIntoContext(context);
+
         WOComponent component = context.component();
 
         if(!isDisabledInContext(context) && context.wasFormSubmitted())
@@ -143,6 +145,8 @@ public class WCCheckBox extends DojoFormElement
                 }
             }
         }
+
+        removeNameMappingFromContext(context);
     }
 
 

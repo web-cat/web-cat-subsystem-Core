@@ -104,6 +104,14 @@ public class TableRow
 
 
     // ----------------------------------------------------------
+    public boolean isSelectable()
+    {
+        return ERXComponentUtilities.booleanValueForBinding(
+                this, "isSelectable", false);
+    }
+
+
+    // ----------------------------------------------------------
     public String dragHandle()
     {
         return (String) valueForBinding("dragHandle");
@@ -150,7 +158,7 @@ public class TableRow
 
         String cssClass = cssTag[tag];
 
-        if (dragHandle() != null)
+        if (dragHandle() != null || isSelectable())
         {
             cssClass += " dojoDndItem";
         }

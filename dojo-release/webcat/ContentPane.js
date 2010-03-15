@@ -84,7 +84,40 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
             this.inherited(arguments);
         }
     },
+
+
+    // ----------------------------------------------------------
+    /**
+     * Clears the ContentPane's content without resetting its href attribute
+     * (required so that it can refresh properly in the future).
+     */
+    clearContent: function()
+    {
+        this._setContent("", false);
+    },
  // END WEBCAT CHANGES
+
+
+    // ----------------------------------------------------------
+    _onShow: function()
+    {
+        if (!this.alwaysDynamic)
+        {
+            // If alwaysDynamic = false, then the content pane content is
+            // already rendered, but _onShow will still cause an unnecessary
+            // refresh. So, we clear out the href here temporarily to avoid
+            // that.
+
+            var oldHref = this.href;
+            this.href = null;
+            this.inherited(arguments);
+            this.href = oldHref;
+        }
+        else
+        {
+            this.inherited(arguments);
+        }
+    },
 
 
     // ----------------------------------------------------------

@@ -80,9 +80,9 @@ public class DojoConstraintsHelper
      * @return a string representing the constraints hash
      */
     public String constraintsFromBindingValues(WOContext context,
-            DojoOptions additionalConstraints)
+            JSHash additionalConstraints)
     {
-        DojoOptions constraints = new DojoOptions();
+        JSHash constraints = new JSHash();
 
         if (_constraintAssociations != null)
         {
@@ -123,14 +123,14 @@ public class DojoConstraintsHelper
                         }
                     }
 
-                    constraints.putValue(constraint, value);
+                    constraints.put(constraint, value);
                 }
             }
         }
 
         if (additionalConstraints != null)
         {
-            constraints.putAll(additionalConstraints);
+            constraints.merge(additionalConstraints);
         }
 
         if (!constraints.isEmpty())

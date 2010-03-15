@@ -1,6 +1,7 @@
 package net.sf.webcat.ui;
 
 import com.webobjects.appserver.WOAssociation;
+import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOElement;
 import com.webobjects.foundation.NSDictionary;
 
@@ -13,7 +14,7 @@ public class WCContentSpan extends WCContentPane
         super(name, someAssociations, template);
     }
 
-    
+
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------

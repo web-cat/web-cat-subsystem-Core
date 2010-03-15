@@ -1,0 +1,45 @@
+<wo name="Page">
+<wo:WCPageModule title="Background File Uploads">
+<wo:WCForm enctype="multipart/form-data">
+
+<div style="border: 1px solid gray; background-color: #CCCCCC">
+<p>Form values on last submit:</p>
+<b>A checkbox:</b> <wo:str value="$formValues.checkbox"/><br/>
+<b>A textbox:</b> <wo:str value="$formValues.textbox"/><br/>
+</div>
+
+<p>A checkbox: <wo:WCCheckBox checked="$formValues.checkbox"/></p>
+<p>A textbox: <wo:WCTextBox value="$formValues.textbox"/></p>
+<p>
+<wo:WCButton label="Left Button"/>
+<wo name="FileInput"/>
+<wo:WCButton label="Right Button"/>
+</p>
+
+<wo:WCContentPane id="fileInfo">
+<div style="border: 1px solid gray; background-color: #CCCCCC">
+<wo:if condition="$formValues.fileData">
+<p>
+A file with the path <b><wo:str value="$formValues.filePath"/></b> was uploaded.
+It is <b><wo:str value="$formValues.fileData.length"/> bytes</b> long and has
+MIME type <b><wo:str value="$formValues.fileMimeType"/></b>.
+</p>
+</wo:if><wo:else>
+When you upload a file, information about it will appear here.
+</wo:else>
+</div>
+</wo:WCContentPane>
+
+<wo name="FileBrowser"/>
+
+<wo:WCButton label="Display File Browser">
+    <script type="dojo/connect" event="onClick" args="e">
+        dijit.byId('fileBrowser').show();
+    </script>
+</wo:WCButton>
+
+<wo name="SubmitButton"/>
+
+</wo:WCForm>
+</wo:WCPageModule>
+</wo>

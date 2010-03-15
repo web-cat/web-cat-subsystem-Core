@@ -1,0 +1,21 @@
+EditorDialog : WCDialog {
+    title = title;
+    id = id;
+    refreshOnShow = true;
+    okAction = saveAndClose;
+    okLabel = "Save and Close";
+    cancelLabel = "Close Without Saving";
+}
+
+ViewerDialog : WCDialog {
+    title = title;
+    id = id;
+    cancelLabel = "Close";
+}
+
+TextArea : WCSimpleTextArea {
+    id = idFor.textArea;
+    rows = 80;
+    cols = 25;
+    value = fileContents;
+}

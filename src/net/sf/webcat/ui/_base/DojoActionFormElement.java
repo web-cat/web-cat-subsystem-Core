@@ -22,6 +22,7 @@
 package net.sf.webcat.ui._base;
 
 import net.sf.webcat.ui.WCForm;
+import net.sf.webcat.ui.util.JSHash;
 import net.sf.webcat.ui.util.DojoRemoteHelper;
 import org.apache.log4j.Logger;
 import com.webobjects.appserver.WOActionResults;
@@ -77,7 +78,7 @@ import er.extensions.components.ERXComponentUtilities;
  * request. This defaults to false unless any of the other "remote.*" bindings
  * are specified, in which case this is assumed to be true. Therefore, it is
  * not necessary to explicitly use this binding unless you want an Ajax request
- * that does not use any of the other "remote.*" bindings (a rare case).</td>
+ * that does not use any of the other "remote.*" bindings.</td>
  * </tr>
  * <tr>
  * <td>{@code remote.responseType}</td>
@@ -90,18 +91,6 @@ import er.extensions.components.ERXComponentUtilities;
  * evaluated and passed to the callback as an object; and "xml", where the
  * response is XML text that is parsed and passed to the callback as a Document
  * DOM object.</td>
- * </tr>
- * <tr>
- * <td>{@code remote.refreshPanes}</td>
- * <td>
- * The DOM id(s) of the dijit.ContentPane(s) (WCContentPane) that should be
- * refreshed upon a successful HTTP response code. This is essentially a
- * shortcut for <tt>remote.onLoad = "function(response, ioArgs) {
- * dijit.byId(id).refresh(); return response; }"</tt>, or a similar loop if
- * more than one id is specified; if a script is specified for
- * <tt>remote.onLoad</tt> <i>as well as</i> this argument, then the content
- * pane refresh occurs <b>after</b> that script is executed.
- * </td>
  * </tr>
  * <tr>
  * <td>{@code remote.synchronous}</td>
@@ -270,7 +259,7 @@ public abstract class DojoActionFormElement extends DojoFormElement
             response.appendContentString("<script type=\"dojo/connect\" "
                     + "event=\"onClick\" args=\"evt\">\n");
 
-            response.appendContentString(WCForm.scriptToPerformFakeFullSubmit(
+            response.appendContentString(WCForm.scriptToPerformFullSubmit(
                     context, nameInContext(context)));
 
             response.appendContentString("\n</script>\n");
@@ -306,28 +295,23 @@ public abstract class DojoActionFormElement extends DojoFormElement
             WOContext context)
     {
         WOComponent component = context.component();
-
-        String actionUrl = null;
+        JSHash requestOptions = null;
 
         if (_directActionName != null)
         {
-            // TODO may need work
+            // FIXME may need work, untested
 
-            actionUrl = context.directActionURLForActionNamed(
+            String actionUrl = context.directActionURLForActionNamed(
                     (String) _directActionName.valueInComponent(component),
                     ERXComponentUtilities.queryParametersInComponent(
                             _associations, component)).replaceAll("&amp;", "&");
 
-            response.appendContentString(
-                    _remoteHelper.invokeRemoteActionCall("this",
-                            actionUrl, null, context));
+            requestOptions = new JSHash();
+            requestOptions.put("url", actionUrl);
         }
-        else
-        {
-            response.appendContentString(
-                    _remoteHelper.partialSubmitCall("this",
-                            nameInContext(context), null, context));
-        }
+
+        response.appendContentString(_remoteHelper.remoteSubmitCall(
+                "this", requestOptions, context));
     }
 
 

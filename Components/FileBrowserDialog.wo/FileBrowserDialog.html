@@ -1,0 +1,294 @@
+<script type="text/javascript">
+dojo.declare("webcat.FileBrowser", null,
+{
+    componentIDPrefix: "",
+    fileListSelector: null,
+    fileWasDoubleClickedAction: null,
+
+    _initialStartup: true,
+    _contextMenu: null,
+    _contextMenuItems: [],
+    _fileInfo: {},
+    _selectedIndex: -1,
+
+    constructor: function(/*Object*/ args)
+    {
+        dojo.mixin(this, args);
+    },
+
+
+    _createContextMenu: function()
+    {
+        if (this._contextMenu)
+        {
+            this._contextMenu.destroy();
+            delete this._contextMenu;
+        }
+
+        this._contextMenu = new dijit.Menu();
+
+        this._contextMenuItems = [
+            {
+                feature: 'view',
+                menuItemOptions: {
+                    label: 'View...'
+                }
+            },
+            {
+                feature: 'edit',
+                menuItemOptions: {
+                    label: 'Edit...'
+                }
+            },
+            {
+                feature: 'download',
+                menuItemOptions: {
+                    label: 'Download...'
+                }
+            },
+            {
+                feature: 'rename',
+                menuItemOptions: {
+                    label: 'Rename...'
+                }
+            },
+            {
+                feature: 'delete',
+                menuItemOptions: {
+                    label: 'Delete...',
+                    onClick: dojo.hitch(this, function(e) {
+                        webcat.confirm({
+                            title: 'Confirm Delete',
+                            message: 'Are you sure you want to delete this file? ' +
+                                'This operation cannot be undone.',
+                            onYes: dojo.hitch(this, function() {
+                                this.deleteSelectedFileAction();
+                            })
+                        });
+                    })
+                }
+            }
+        ];
+
+        this._contextMenu.bindDomNode(this._nodeById('fileListContainer'));
+
+        dojo.connect(this._contextMenu, 'onOpen',
+            dojo.hitch(this, this._onContextMenuOpen));
+        dojo.connect(this._contextMenu, 'onClose',
+            dojo.hitch(this, this._onContextMenuClose));
+    },
+
+
+    _onContextMenuOpen: function()
+    {
+        var fileInfo = this._fileInfo[this._selectedIndex];
+        var numItems = 0;
+
+        if (fileInfo)
+        {
+            dojo.forEach(this._contextMenuItems, dojo.hitch(this, function(item) {
+                if (item.feature)
+                {
+                    if (fileInfo.features[item.feature])
+                    {
+                        this._contextMenu.addChild(
+                            new dijit.MenuItem(item.menuItemOptions));
+                        numItems++;
+                    }
+                }
+                else
+                {
+                    this._contextMenu.addChild(
+                        new dijit.MenuItem(item.menuItemOptions));
+                    numItems++;
+                }
+            }));
+
+            if (numItems == 0)
+            {
+                this._contextMenu.addChild(new dijit.MenuItem({
+                    label: "No actions available",
+                    disabled: true
+                }));
+            }
+        }
+    },
+
+
+    _onContextMenuClose: function()
+    {
+        dojo.forEach(this._contextMenu.getChildren(), dojo.hitch(this, function(child) {
+            this._contextMenu.removeChild(child);
+        }));
+    },
+
+
+    _nodeById: function(/*String*/ suffix)
+    {
+        return dojo.byId(this.componentIDPrefix + '_' + suffix);
+    },
+
+
+    _dijitById: function(/*String*/ suffix)
+    {
+        return dijit.byId(this.componentIDPrefix + '_' + suffix);
+    },
+
+
+    _fileWasDoubleClicked: function(/*Event*/ e)
+    {
+        webcat.block(this._nodeById('fileListContainer'));
+        this.fileWasDoubleClickedAction();
+    },
+
+
+    _resizeDialog: function()
+    {
+        var vp = dijit.getViewport();
+        var node = this._nodeById('fileListContainer');
+        dojo.style(node, 'width', (vp.w * 0.65) + 'px');
+        dojo.style(node, 'height', (vp.h * 0.40) + 'px');
+    },
+
+
+    _connectDoubleClickEvent: function()
+    {
+        dojo.connect(this._nodeById('fileList'), 'ondblclick',
+            dojo.hitch(this, this._fileWasDoubleClicked));
+    },
+
+
+    fileListDidLoad: function()
+    {
+        if (this._initialStartup)
+        {
+            this._resizeDialog();
+        }
+
+        webcat.unblock(this._nodeById('fileListContainer'));
+
+        this._createContextMenu();
+        this._connectDoubleClickEvent();
+
+        this._initialStartup = false;
+    },
+
+
+    connectSelectorEvents: function()
+    {
+        dojo.connect(this.fileListSelector, 'onSelectionChanged',
+            dojo.hitch(this, this._selectionChanged));
+    },
+
+
+    _selectionChanged: function()
+    {
+        var node = this.fileListSelector.getSelectedNodes()[0];
+        this._selectedIndex = dojo.query(
+            '.dojoDndItem', this._nodeById('fileList')).indexOf(node);
+        this._nodeById('selectedFileIndex').value = this._selectedIndex;
+    },
+
+
+    registerFileInfo: function(/*int*/ index, /*Object*/ fileInfo)
+    {
+        this._fileInfo[index] = fileInfo;
+    }
+});
+
+<wo:str value="$idFor.fileBrowser"/> = new webcat.FileBrowser({
+    componentIDPrefix: '<wo:str value="$idFor.ComponentIDPrefix"/>'
+});
+</script>
+
+<wo name="Dialog">
+
+<wo name="CreateFolderDialog">
+    <p>
+    <span>Name of new folder:</span>
+    <wo name="NewFolderName"/>
+    </p>
+    <script type="dojo/connect" event="onShow">
+        dijit.byId('<wo:str value="$idFor.newFolderName"/>').attr('value', '');
+    </script>
+</wo>
+
+<wo name="UploadFileDialog">
+    <p>
+        <span>Choose a file to upload:</span>
+        <wo name="FileToUpload"/>
+    </p>
+    <wo:WCContentPane id="$idFor.mustRenameContainer"><wo:if condition="$mustRenameUpload">
+    <p>
+        <span>A file with this name already exists. Please enter a new name for
+        the file you are uploading.</span><br/>
+        <wo name="UploadedFileName"/>
+    </p>
+    </wo:if></wo:WCContentPane>
+    <script type="dojo/connect" event="onShow">
+        dijit.byId('<wo:str value="$idFor.fileUpload"/>').reset();
+        dijit.byId('<wo:str value="$idFor.mustRenameContainer"/>').clearContent();
+    </script>
+</wo>
+
+<wo name="FileEditorDialog"/>
+
+<div style="text-align: center">
+    <span>Go to:</span>
+    <wo:WCContentSpan id="$idFor.ancestorListContainer">
+    <wo name="AncestorList">
+        <script type="dojo/connect" event="onChange">
+            webcat.block('<wo:str value="$idFor.fileListContainer"/>');
+        </script>
+        <wo name="AncestorSelectedConnection"/>
+    </wo>
+    </wo:WCContentSpan>
+    <wo name="GoToParent">
+        <script type="dojo/connect" event="onClick">
+            webcat.block('<wo:str value="$idFor.fileListContainer"/>');
+        </script>
+    </wo>
+    <wo name="CreateFolder">
+        <script type="dojo/connect" event="onClick">
+            dijit.byId('<wo:str value="$idFor.createFolderDialog"/>').show();
+        </script>
+    </wo>
+    <wo name="UploadFile">
+        <script type="dojo/connect" event="onClick">
+            dijit.byId('<wo:str value="$idFor.uploadFileDialog"/>').show();
+        </script>
+    </wo>
+</div>
+<wo name="FileListContainer">
+<script type="text/javascript">
+dojo.addOnLoad(function() {
+    <wo:str value="$idFor.fileBrowser"/>.fileListDidLoad();
+});
+</script>
+<wo name="FileList">
+<script type="dojo/connect">
+    <wo:str value="$idFor.fileBrowser"/>.connectSelectorEvents();
+</script>
+<wo name="FileRepetition">
+    <wo:tr index="$fileIndex" isSelectable="true">
+        <td>
+            <wo name="FileIcon"/>
+            <script type="text/javascript">
+            dojo.addOnLoad(function() {
+            <wo:str value="$idFor.fileBrowser"/>.registerFileInfo(
+                <wo:str value="$fileIndex"/>,
+                <wo:str value="$fileBrowserInfoOfOneFile" escapeHTML="false"/>);
+            });
+            </script>
+        </td>
+        <td style="width: 100%"><wo:str value="$nameOfOneFile"/></td>
+        <td style="white-space: nowrap"><wo:str value="$sizeOfOneFile"/></td>
+        <td style="white-space: nowrap"><wo:str value="$modificationDateOfOneFile"/></td>
+    </wo:tr>
+</wo>
+<wo name="FileWasDoubleClickedAction"/>
+</wo>
+<wo name="SelectedFileIndex"/>
+</wo>
+<wo name="DeleteSelectedFileAction"/>
+</wo>

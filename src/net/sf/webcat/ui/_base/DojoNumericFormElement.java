@@ -78,7 +78,7 @@ public abstract class DojoNumericFormElement extends DojoFormElement
     @Override
     public void takeValuesFromRequest(WORequest request, WOContext context)
     {
-        // Don't set the binding if the form control was disabled on the page.
+        insertNameMappingIntoContext(context);
 
         if(!isDisabledInContext(context) && context.wasFormSubmitted())
         {
@@ -91,7 +91,7 @@ public abstract class DojoNumericFormElement extends DojoFormElement
 
                 // Parse the string into an appropriate numerical type that
                 // will be set to the binding.
-                
+
                 // FIXME replace this code with code that mimics the use of
                 // formatters from WOTextField.
 
@@ -122,6 +122,6 @@ public abstract class DojoNumericFormElement extends DojoFormElement
             }
         }
 
-        super.takeValuesFromRequest(request, context);
+        removeNameMappingFromContext(context);
     }
 }

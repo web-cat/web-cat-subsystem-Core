@@ -45,6 +45,10 @@
         {
             file = "dojo.css";
             media = "screen, projection, tv";
+        },
+        {
+            file = "sprites.css";
+            media = "screen, projection, tv";
         }
     );
 

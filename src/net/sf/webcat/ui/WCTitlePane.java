@@ -1,143 +1,205 @@
-/*==========================================================================*\
- |  $Id$
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
- |
- |  This file is part of Web-CAT.
- |
- |  Web-CAT is free software; you can redistribute it and/or modify
- |  it under the terms of the GNU Affero General Public License as published
- |  by the Free Software Foundation; either version 3 of the License, or
- |  (at your option) any later version.
- |
- |  Web-CAT is distributed in the hope that it will be useful,
- |  but WITHOUT ANY WARRANTY; without even the implied warranty of
- |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- |  GNU General Public License for more details.
- |
- |  You should have received a copy of the GNU Affero General Public License
- |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
-\*==========================================================================*/
-
 package net.sf.webcat.ui;
 
-import com.webobjects.appserver.WOAssociation;
+import com.webobjects.appserver.WOApplication;
+import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOElement;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
-import com.webobjects.foundation.NSDictionary;
+import com.webobjects.appserver._private.WOElementID;
+import com.webobjects.foundation.NSBundle;
+import com.webobjects.foundation.NSKeyValueCoding;
+import com.webobjects.foundation.NSKeyValueCodingAdditions;
 import er.ajax.AjaxUtils;
+import er.extensions.components.ERXComponentUtilities;
+import er.extensions.foundation.ERXStringUtilities;
 
-//------------------------------------------------------------------------
-/**
- * An expandable/collapsable panel that displays a clickable title. The content
- * of the pane is loaded on-demand; that is, if the pane is closed on page-load,
- * then its children will not be rendered until it is opened for the first time.
- * 
- * <h2>Bindings</h2>
- * <table>
- * <tr>
- * <td>{@code title}</td>
- * <td>The title that will be displayed in the pane.</td>
- * </tr>
- * <tr>
- * <td>{@code open}</td>
- * <td>A boolean value indicating whether the title pane should be initially
- * open or not. Defaults to true.</td>
- * </tr>
- * <tr>
- * <td>{@code duration}</td>
- * <td>An integer specifying the number of milliseconds for the expand/collapse
- * effect of the pane. Defaults to 250.</td>
- * </tr>
- * </table>
- * 
- * @author Tony Allevato
- * @version $Id$
- */
-public class WCTitlePane extends WCContentPane
+public class WCTitlePane extends WOComponent
 {
     //~ Constructors ..........................................................
-    
+
     // ----------------------------------------------------------
-    public WCTitlePane(String name,
-            NSDictionary<String, WOAssociation> someAssociations,
-            WOElement element)
+    public WCTitlePane(WOContext context)
     {
-        super("div", someAssociations, element);
-        
-        _open = _associations.removeObjectForKey("open");
+        super(context);
+
+        titlePaneBindings = new BindingsProxy();
     }
-    
-    
+
+
     //~ KVC attributes (must be public) .......................................
 
+    public BindingsProxy titlePaneBindings;
+
+
+    //~ Methods ...............................................................
+
     // ----------------------------------------------------------
+    /**
+     * This component uses a template that is generated at runtime in order to
+     * pass its bindings directly to the content pane that it contains.
+     *
+     * @return the template
+     */
     @Override
-    public String dojoType()
+    public WOElement template()
     {
-        return "webcat.TitlePane";
-    }
-
-    
-    // ----------------------------------------------------------
-    @Override
-    public void appendAttributesToResponse(WOResponse response,
-            WOContext context)
-    {
-        super.appendAttributesToResponse(response, context);
-        
-        appendOpenAttributeToResponse(response, context);
-    }
-
-
-    // ----------------------------------------------------------
-    protected boolean openInContext(WOContext context)
-    {
-        if (_open != null)
+        if (cachedTemplate == null)
         {
-            return _open.booleanValueInComponent(context.component());
+            cachedTemplate = WOComponent.templateWithHTMLString(
+                    NSBundle.bundleForClass(getClass()).name(), name(),
+                    TEMPLATE_HTML, declarationStringWithBindings(), null,
+                    WOApplication.application().associationFactory(),
+                    WOApplication.application().namespaceProvider());
         }
-        else
-        {
-            return true;
-        }
+
+        return cachedTemplate;
     }
 
-
-    // ----------------------------------------------------------
-    protected void appendOpenAttributeToResponse(WOResponse response,
-            WOContext context)
-    {
-        if (_open != null)
-        {
-            appendTagAttributeToResponse(response, "open",
-                    openInContext(context));
-        }
-    }
-    
 
     // ----------------------------------------------------------
     @Override
-    public void appendChildrenToResponse(WOResponse response, WOContext context)
+    public boolean synchronizesVariablesWithBindings()
     {
+        return false;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns true if the content of this title pane should take part in the
+     * request/response cycle (that is, if it should be rendered or asked to
+     * take values or invoke actions).
+     *
+     * @return true if the content should be rendered; otherwise, false
+     */
+    public boolean shouldProcessContent()
+    {
+        WOContext context = context();
         WORequest request = context.request();
 
-        // If the title pane is set to be closed on page-load, then any future
-        // attempt to render its contents will occur as an Ajax request. So, we
-        // only want to render its children if the pane is open on page-load or
-        // on any Ajax request.
+        // We should allow control to pass to the title pane content if it is
+        // open when the page loads, or...
 
-        if (openInContext(context) || (AjaxUtils.isAjaxRequest(request) &&
-                AjaxUtils.shouldHandleRequest(request, context, null)))
+        boolean shouldProcess = valueForBooleanBinding("open", true);
+
+        if (!shouldProcess)
         {
-            super.appendChildrenToResponse(response, context);
+            boolean isAjax = AjaxUtils.isAjaxRequest(request);
+
+            if (context.elementID() != null && context.senderID() != null)
+            {
+                WOElementID elementID = new WOElementID(context.elementID());
+                elementID.deleteLastElementIDComponent();
+                String parentID = elementID.toString();
+
+                // ... if the request is an AJAX request that was sent by the
+                // enclosing content pane (meaning the pane is trying to load
+                // itself), or if the request is any request (AJAX or not) sent
+                // by a child of the pane (meaning it must have been opened and
+                // loaded for something inside it to send a request).
+
+                shouldProcess =
+                    (isAjax && parentID.equals(context.senderID())) ||
+                    context.senderID().startsWith(context.elementID());
+            }
+        }
+
+        return shouldProcess;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Passes any bindings associated with this WCTitlePane component to the
+     * WCContentPane that will be embedded inside it. This method essentially
+     * just adds a set of "binding = binding" lines to the WOD declaration of
+     * the template, and {@link #handleQueryWithUnboundKey(String)} will grab
+     * the correct values from this component to give to the content pane.
+     *
+     * @return the WOD template string
+     */
+    public String declarationStringWithBindings()
+    {
+        StringBuffer buffer = new StringBuffer(32);
+
+        for (String binding : bindingKeys())
+        {
+            buffer.append(binding);
+            buffer.append(" = titlePaneBindings.");
+            buffer.append(binding);
+            buffer.append(";\n");
+        }
+
+        String wod = TEMPLATE_WOD.replaceFirst("\\$\\{otherBindings\\}",
+                buffer.toString());
+
+        return wod;
+    }
+
+
+    //~ Private classes .......................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Allows the title pane's bindings to pass through seamlessly to the
+     * content pane contained in the template.
+     */
+    private class BindingsProxy implements NSKeyValueCoding
+    {
+        // ----------------------------------------------------------
+        public void takeValueForKey(Object value, String key)
+        {
+            WCTitlePane pane = WCTitlePane.this;
+
+            if (pane.hasBinding(key))
+            {
+                pane.setValueForBinding(value, key);
+            }
+            else
+            {
+                NSKeyValueCoding.DefaultImplementation.takeValueForKey(
+                        this, value, key);
+            }
+        }
+
+
+        // ----------------------------------------------------------
+        public Object valueForKey(String key)
+        {
+            WCTitlePane pane = WCTitlePane.this;
+
+            if (pane.hasBinding(key))
+            {
+                return pane.valueForBinding(key);
+            }
+            else
+            {
+                return NSKeyValueCoding.DefaultImplementation.valueForKey(
+                        this, key);
+            }
         }
     }
 
 
     //~ Static/instance variables .............................................
 
-    protected WOAssociation _open;
+    private WOElement cachedTemplate;
+
+    private static final String TEMPLATE_HTML =
+        "<wo name=\"TitlePane\">" +
+            "<wo name=\"ShouldProcessChildren\">" +
+                "<wo name=\"ComponentContent\" />" +
+            "</wo>" +
+        "</wo>";
+
+    private static final String TEMPLATE_WOD =
+        "TitlePane : WCContentPane {\n" +
+            "dojoType = \"webcat.TitlePane\";\n" +
+            "${otherBindings}" +
+        "}\n" +
+        "ShouldProcessChildren : WOConditional {\n" +
+            "condition = shouldProcessContent;\n" +
+        "}\n" +
+        "ComponentContent : WOComponentContent { }\n";
 }

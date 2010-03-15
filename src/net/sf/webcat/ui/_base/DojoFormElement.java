@@ -25,19 +25,20 @@ import java.util.List;
 import net.sf.webcat.ui.WCButton;
 import net.sf.webcat.ui.WCDateTextBox;
 import net.sf.webcat.ui.util.DojoConstraintsHelper;
-import net.sf.webcat.ui.util.DojoOptions;
+import net.sf.webcat.ui.util.JSHash;
 import com.webobjects.appserver.WOAssociation;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOElement;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSDictionary;
+import com.webobjects.foundation.NSMutableDictionary;
 
 // ------------------------------------------------------------------------
 /**
  * A base class for any Dojo elements that contain a form field that should be
  * submitted as part of a form submit operation on a page.
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
@@ -48,7 +49,7 @@ public abstract class DojoFormElement extends DojoElement
     // ----------------------------------------------------------
     /**
      * Creates a new Dojo form element.
-     * 
+     *
      * @param name
      * @param someAssociations
      * @param template
@@ -64,7 +65,7 @@ public abstract class DojoFormElement extends DojoElement
         _escapeHTML = _associations.objectForKey("escapeHTML");
         _hidden = _associations.objectForKey("hidden");
         _disabled = _associations.removeObjectForKey("disabled");
-        
+
         _constraintsHelper = new DojoConstraintsHelper(_associations);
     }
 
@@ -76,7 +77,7 @@ public abstract class DojoFormElement extends DojoElement
      * Gets the value of the "type" attribute that should be written along with
      * the tag, if it is an &lt;input&gt; element.
      * @param context TODO
-     * 
+     *
      * @return the value of the element's "type" attribute
      */
     protected String inputTypeInContext(WOContext context)
@@ -105,9 +106,61 @@ public abstract class DojoFormElement extends DojoElement
 
 
     // ----------------------------------------------------------
+    protected NSMutableDictionary<String, String> nameMappingFromContext(
+            WOContext context)
+    {
+        NSMutableDictionary<String, String> mapping =
+            (NSMutableDictionary<String, String>) context.userInfoForKey(
+                    NAME_MAPPING_USER_INFO_KEY);
+
+        if (mapping == null)
+        {
+            mapping = new NSMutableDictionary<String, String>();
+            context.setUserInfoForKey(mapping, NAME_MAPPING_USER_INFO_KEY);
+        }
+
+        return mapping;
+    }
+
+
+    // ----------------------------------------------------------
+    protected void insertNameMappingIntoContext(WOContext context)
+    {
+        String name = nameInContext(context);
+        String elementID = context.elementID();
+
+        if (name != null && !name.equals(elementID))
+        {
+            nameMappingFromContext(context).setObjectForKey(elementID, name);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    protected void removeNameMappingFromContext(WOContext context)
+    {
+        String name = nameInContext(context);
+
+        if (name != null)
+        {
+            nameMappingFromContext(context).removeObjectForKey(name);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * If a subclass overrides this and does not call the super implementation,
+     * it must call {@link #insertNameMappingIntoContext} before calling
+     * <tt>context.wasFormSubmitted</tt> and then call
+     * {@link #removeNameMappingFromContext} before returning if it wants to
+     * participate successfully in Ajax partial submits.
+     */
     @Override
     public void takeValuesFromRequest(WORequest request, WOContext context)
     {
+        insertNameMappingIntoContext(context);
+
         if (!isDisabledInContext(context) && context.wasFormSubmitted())
         {
             String name = nameInContext(context);
@@ -119,15 +172,17 @@ public abstract class DojoFormElement extends DojoElement
                 _value.setValue(value, context.component());
             }
         }
-        
+
         super.takeValuesFromRequest(request, context);
+
+        removeNameMappingFromContext(context);
     }
 
 
     // ----------------------------------------------------------
     /**
      * Gets the name of the element in the specified context.
-     * 
+     *
      * @param context
      *            the context
      * @return the name of the element
@@ -165,9 +220,9 @@ public abstract class DojoFormElement extends DojoElement
      * field for this element from the request, transforms it into an object
      * that is set in the "value" binding of the hosting component. Can be
      * overridden by subclasses if special handling of the value is required.
-     * 
+     *
      * The default implementation merely returns the same string.
-     * 
+     *
      * @param stringValue
      *            the string representation of the value of the field
      * @param context
@@ -186,11 +241,11 @@ public abstract class DojoFormElement extends DojoElement
      * Gets the string that will be written as the value of the "value"
      * attribute for this element, based on the specified object that was
      * retrieved from the component binding.
-     * 
+     *
      * Subclasses can override this to alter the way that the value is converted
      * to a string. The default implementation merely calls toString on the
      * object.
-     * 
+     *
      * @param value
      *            the object obtained by querying the "value" binding on the
      *            hosting component
@@ -229,7 +284,7 @@ public abstract class DojoFormElement extends DojoElement
     protected boolean isValueInInputValues(Object input, Object formValues)
     {
         boolean result = false;
-        
+
         if(input != null && formValues != null)
         {
             if(formValues instanceof List)
@@ -241,11 +296,11 @@ public abstract class DojoFormElement extends DojoElement
                 result = input.toString().equals(formValues);
             }
         }
-        
+
         return result;
     }
-    
-    
+
+
     // ----------------------------------------------------------
     protected void appendInputTypeAttributeToResponse(WOResponse response,
             WOContext context)
@@ -332,7 +387,7 @@ public abstract class DojoFormElement extends DojoElement
         }
     }
 
-    
+
     // ----------------------------------------------------------
     /**
      * Subclasses can override this method to provide a dictionary of
@@ -340,12 +395,12 @@ public abstract class DojoFormElement extends DojoElement
      * specified in the WOD file. This is useful mainly if an element binding
      * is intended to map to a constraint but is not named as such (for
      * example, the dateformat binding on WCDateTextBox).
-     * 
-     * @param context 
+     *
+     * @param context
      * @return a dictionary containing additional constraints that should be
      *     merged with any user-supplied constraints
      */
-    protected DojoOptions additionalConstraints(
+    protected JSHash additionalConstraints(
             WOContext context)
     {
         return null;
@@ -358,15 +413,15 @@ public abstract class DojoFormElement extends DojoElement
     {
         String constraints = _constraintsHelper.constraintsFromBindingValues(
                 context, additionalConstraints(context));
-        
+
         if (constraints != null)
         {
             _appendTagAttributeAndValueToResponse(response, "constraints",
                     constraints, true);
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     @Override
     public void appendAttributesToResponse(WOResponse response,
@@ -378,7 +433,7 @@ public abstract class DojoFormElement extends DojoElement
         appendDisabledAttributeToResponse(response, context);
         appendNameAttributeToResponse(response, context);
         appendValueAttributeToResponse(response, context);
-        
+
         appendConstraintsAttributeToResponse(response, context);
     }
 
@@ -390,6 +445,9 @@ public abstract class DojoFormElement extends DojoElement
     protected WOAssociation _value;
     protected WOAssociation _escapeHTML;
     protected WOAssociation _hidden;
-    
+
     private DojoConstraintsHelper _constraintsHelper;
+
+    /*package*/ static final String NAME_MAPPING_USER_INFO_KEY =
+        "webcat.ui._base.DojoFormElement.nameMappingKey";
 }

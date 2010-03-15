@@ -25,7 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import net.sf.webcat.ui._base.DojoFormElement;
-import net.sf.webcat.ui.util.DojoOptions;
+import net.sf.webcat.ui.util.JSHash;
 import com.webobjects.appserver.WOAssociation;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOElement;
@@ -52,70 +52,37 @@ public class WCTimeTextBox extends DojoFormElement
      * @param someAssociations
      * @param template
      */
-	public WCTimeTextBox(String name,
-			NSDictionary<String, WOAssociation> someAssociations,
-			WOElement template)
-	{
-		super("input", someAssociations, template);
+    public WCTimeTextBox(String name,
+            NSDictionary<String, WOAssociation> someAssociations,
+            WOElement template)
+    {
+        super("input", someAssociations, template);
 
-		_dateformat = _associations.removeObjectForKey("dateformat");
+        _dateformat = _associations.removeObjectForKey("dateformat");
         _timeZone = _associations.removeObjectForKey("timeZone");
-	}
+    }
 
 
     //~ Methods ...............................................................
 
-	// ----------------------------------------------------------
-	@Override
-	public String dojoType()
-	{
-		return "dijit.form.TimeTextBox";
-	}
+    // ----------------------------------------------------------
+    @Override
+    public String dojoType()
+    {
+        return "dijit.form.TimeTextBox";
+    }
 
 
-	// ----------------------------------------------------------
-	@Override
-	protected String stringValueForObject(Object value, WOContext context)
-	{
+    // ----------------------------------------------------------
+    @Override
+    protected String stringValueForObject(Object value, WOContext context)
+    {
         // Append the date set in the value binding, if it exists. Dojo
         // requires that this be string in ISO date format, so we convert it
         // before writing it out.
 
-	    synchronized (ISO_TIME_FORMAT)
-	    {
-	        if (_timeZone != null)
-	        {
-	            TimeZone tz =
-	                (TimeZone)_timeZone.valueInComponent(context.component());
-	            if (tz != null)
-	            {
-	                ISO_TIME_FORMAT.setTimeZone(tz);
-	            }
-	            else
-	            {
-                    ISO_TIME_FORMAT.setTimeZone(TimeZone.getDefault());
-	            }
-	        }
-            else
-            {
-                ISO_TIME_FORMAT.setTimeZone(TimeZone.getDefault());
-            }
-	        return ISO_TIME_FORMAT.format(value);
-	    }
-	}
-
-
-	// ----------------------------------------------------------
-	@Override
-    protected Object objectForStringValue(String stringValue, WOContext context)
-    {
-    	// When Dojo populates the shadowed text field with the selected date,
-    	// it always formats it in ISO date format.
-
-    	Object object;
-
-    	synchronized (ISO_TIME_FORMAT)
-    	{
+        synchronized (ISO_TIME_FORMAT)
+        {
             if (_timeZone != null)
             {
                 TimeZone tz =
@@ -133,38 +100,71 @@ public class WCTimeTextBox extends DojoFormElement
             {
                 ISO_TIME_FORMAT.setTimeZone(TimeZone.getDefault());
             }
-    	    try
-    	    {
-    	        object = new NSTimestamp(ISO_TIME_FORMAT.parse(stringValue));
-    	    }
-    	    catch (ParseException e)
-    	    {
-    	        object = null;
-    	    }
-    	}
-
-    	return object;
+            return ISO_TIME_FORMAT.format(value);
+        }
     }
 
 
-	// ----------------------------------------------------------
-	@Override
-    public DojoOptions additionalConstraints(WOContext context)
+    // ----------------------------------------------------------
+    @Override
+    protected Object objectForStringValue(String stringValue, WOContext context)
+    {
+        // When Dojo populates the shadowed text field with the selected date,
+        // it always formats it in ISO date format.
+
+        Object object;
+
+        synchronized (ISO_TIME_FORMAT)
+        {
+            if (_timeZone != null)
+            {
+                TimeZone tz =
+                    (TimeZone)_timeZone.valueInComponent(context.component());
+                if (tz != null)
+                {
+                    ISO_TIME_FORMAT.setTimeZone(tz);
+                }
+                else
+                {
+                    ISO_TIME_FORMAT.setTimeZone(TimeZone.getDefault());
+                }
+            }
+            else
+            {
+                ISO_TIME_FORMAT.setTimeZone(TimeZone.getDefault());
+            }
+            try
+            {
+                object = new NSTimestamp(ISO_TIME_FORMAT.parse(stringValue));
+            }
+            catch (ParseException e)
+            {
+                object = null;
+            }
+        }
+
+        return object;
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public JSHash additionalConstraints(WOContext context)
     {
         // Append constraints based on the date format, if one was provided.
 
-        DojoOptions manualConstraints = new DojoOptions();
+        JSHash manualConstraints = new JSHash();
 
         if (_dateformat != null)
         {
-        	String dateFormat =
-        		(String)_dateformat.valueInComponent(context.component());
+            String dateFormat =
+                (String)_dateformat.valueInComponent(context.component());
 
-        	if (dateFormat != null)
-        	{
-                manualConstraints.putValue("datePattern",
+            if (dateFormat != null)
+            {
+                manualConstraints.put("datePattern",
                         dateFormatToDatePattern(dateFormat));
-        	}
+            }
         }
 
         return manualConstraints;
@@ -188,75 +188,75 @@ public class WCTimeTextBox extends DojoFormElement
      */
     protected static String dateFormatToDatePattern(String dateFormat)
     {
-    	StringBuilder datePattern = new StringBuilder(32);
+        StringBuilder datePattern = new StringBuilder(32);
 
-    	int i = 0;
-    	while (i < dateFormat.length())
-    	{
-    		char ch = dateFormat.charAt(i);
+        int i = 0;
+        while (i < dateFormat.length())
+        {
+            char ch = dateFormat.charAt(i);
 
-    		if (ch == '%')
-    		{
-    			i++;
-    			ch = dateFormat.charAt(i);
+            if (ch == '%')
+            {
+                i++;
+                ch = dateFormat.charAt(i);
 
-    			switch (ch)
-    			{
-    			// Literal percent
-    			case '%': datePattern.append('%'); break;
+                switch (ch)
+                {
+                // Literal percent
+                case '%': datePattern.append('%'); break;
 
-    			// Abbreviated weekday name
-    			case 'a': datePattern.append('E'); break;
+                // Abbreviated weekday name
+                case 'a': datePattern.append('E'); break;
 
-    			// Full weekday name
-    			case 'A': datePattern.append("EE"); break;
+                // Full weekday name
+                case 'A': datePattern.append("EE"); break;
 
-    			// Abbreviated month name
-    			case 'b': datePattern.append("MMM"); break;
+                // Abbreviated month name
+                case 'b': datePattern.append("MMM"); break;
 
-    			// Full month name
-    			case 'B': datePattern.append("MMMM"); break;
+                // Full month name
+                case 'B': datePattern.append("MMMM"); break;
 
-    			// Day of the month as a decimal number, leading 0
-    			case 'd': datePattern.append("dd"); break;
+                // Day of the month as a decimal number, leading 0
+                case 'd': datePattern.append("dd"); break;
 
-    			// Day of the month as a decimal number, no leading 0
-    			case 'e': datePattern.append('d'); break;
+                // Day of the month as a decimal number, no leading 0
+                case 'e': datePattern.append('d'); break;
 
-    			// 24-hour clock, 00-23
-    			case 'H': datePattern.append("HH"); break;
+                // 24-hour clock, 00-23
+                case 'H': datePattern.append("HH"); break;
 
-    			// 12-hour clock, 01-12
-    			case 'I': datePattern.append('h'); break;
+                // 12-hour clock, 01-12
+                case 'I': datePattern.append('h'); break;
 
-    			// Month as decimal number, 01-12
-    			case 'm': datePattern.append('M'); break;
+                // Month as decimal number, 01-12
+                case 'm': datePattern.append('M'); break;
 
-    			// Minute as decimal number, 00-59
-    			case 'M': datePattern.append("mm"); break;
+                // Minute as decimal number, 00-59
+                case 'M': datePattern.append("mm"); break;
 
-    			// AM/PM designation
-    			case 'p': datePattern.append('a'); break;
+                // AM/PM designation
+                case 'p': datePattern.append('a'); break;
 
-    			// Seconds as decimal number, 00-59
-    			case 'S': datePattern.append("ss"); break;
+                // Seconds as decimal number, 00-59
+                case 'S': datePattern.append("ss"); break;
 
-    			// Year without century, 00-99
-    			case 'y': datePattern.append("yy"); break;
+                // Year without century, 00-99
+                case 'y': datePattern.append("yy"); break;
 
-    			// Yeah with century
-    			case 'Y': datePattern.append("yyyy"); break;
-    			}
-    		}
-    		else
-    		{
-    			datePattern.append(ch);
-    		}
+                // Yeah with century
+                case 'Y': datePattern.append("yyyy"); break;
+                }
+            }
+            else
+            {
+                datePattern.append(ch);
+            }
 
-    		i++;
-    	}
+            i++;
+        }
 
-    	return datePattern.toString();
+        return datePattern.toString();
     }
 
 

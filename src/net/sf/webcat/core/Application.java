@@ -229,6 +229,15 @@ public class Application
 
 
     // ----------------------------------------------------------
+    public void installPatches()
+    {
+        super.installPatches();
+
+        WCContext.installIntoApplication(this);
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * If installation has been completed, initialize all subsystems in the
      * application and prepare it for running.
@@ -2240,7 +2249,7 @@ public class Application
                 {
                     if ( target.isDirectory() )
                     {
-                        net.sf.webcat.archives.FileUtilities
+                        net.sf.webcat.core.FileUtilities
                             .deleteDirectory( target );
                     }
                     else
@@ -2249,7 +2258,7 @@ public class Application
                     }
                 }
                 target.mkdirs();
-                net.sf.webcat.archives.FileUtilities
+                net.sf.webcat.core.FileUtilities
                     .copyDirectoryContents(
                         webServerResources, target );
             }

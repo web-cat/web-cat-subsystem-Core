@@ -1,0 +1,21 @@
+Page : WCPageWithNavigation {
+}
+
+FileInput : WCFileUpload {
+    filePath = formValues.filePath;
+    data = formValues.fileData;
+    mimeType = formValues.fileMimeType;
+    action = fileWasUploaded;
+    remoteValidator = validateFileUpload;
+}
+
+FileBrowser : FileBrowserDialog {
+    id = "fileBrowser";
+    title = "Choose a File";
+}
+
+SubmitButton : WCButton {
+    label = "Submit";
+    action = submit;
+    remote = true;
+}

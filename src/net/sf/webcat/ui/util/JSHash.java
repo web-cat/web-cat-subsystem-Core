@@ -21,6 +21,7 @@
 
 package net.sf.webcat.ui.util;
 
+import java.util.HashSet;
 import com.webobjects.foundation.NSMutableDictionary;
 
 //--------------------------------------------------------------------------
@@ -36,7 +37,7 @@ import com.webobjects.foundation.NSMutableDictionary;
  * @author Tony Allevato
  * @version $Id$
  */
-public class DojoOptions
+public class JSHash
 {
     //~ Constructors ..........................................................
 
@@ -44,13 +45,78 @@ public class DojoOptions
     /**
      * Initializes an empty option set.
      */
-    public DojoOptions()
+    public JSHash()
     {
         options = new NSMutableDictionary<String, Object>();
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Initializes a new option set with the specified keys and values.
+     *
+     * @param keysAndValues a varargs list of alternating keys and values; the
+     *     keys should be strings
+     */
+    public JSHash(Object... keysAndValues)
+    {
+        this();
+
+        if (keysAndValues.length % 2 != 0)
+        {
+            throw new IllegalArgumentException("There should a value " +
+                "corresponding to every key that was passed.");
+        }
+
+        for (int i = 0; i < keysAndValues.length; i += 2)
+        {
+            Object key = keysAndValues[i];
+            Object value = keysAndValues[i + 1];
+
+            if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException("Keys should be strings.");
+            }
+
+            options.setObjectForKey(value, key);
+        }
+    }
+
+
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Gets an object that represents the specified Javascript code as an
+     * "expression". If you wish to put literal JS code into a hash, you must
+     * insert it with <tt>put(JSHash.code("code"))</tt> so that it does
+     * not get quoted in the string representation of the hash.
+     *
+     * @param code the Javascript code to convert
+     * @return an object that can be inserted into a JSHash
+     */
+    public static Object code(String code)
+    {
+        return new Code(code);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates a copy of this JSHash object. The result is a JSHash that is
+     * distinct from the original in that changes to the keys and values in one
+     * do not affect the other, but any values that are references to objects
+     * will refer to the same objects.
+     *
+     * @return a copy of this DojoOptions object
+     */
+    public JSHash clone()
+    {
+        JSHash copy = new JSHash();
+        copy.merge(this);
+        return copy;
+    }
+
 
     // ----------------------------------------------------------
     /**
@@ -76,7 +142,7 @@ public class DojoOptions
             buffer.append(':');
 
             Object value = options.objectForKey(key);
-            buffer.append(value.toString());
+            buffer.append(stringRepresentationOfValue(value));
 
             if (i != keys.length - 1)
             {
@@ -103,54 +169,14 @@ public class DojoOptions
 
     // ----------------------------------------------------------
     /**
-     * Puts a simple value into the options set. If the value is a number, the
-     * literal number will be used. If the value is a boolean, then a literal
-     * true or false value will be used. Otherwise, the value will be treated
-     * as a string (by calling toString) and it will be put into the options
-     * set as a single-quoted string literal.
+     * Inserts or sets a value in the hash.
      *
      * @param key the option key
      * @param value the option value
      */
-    public void putValue(String key, Object value)
+    public void put(String key, Object value)
     {
-        options.setObjectForKey(new ValueOption(value),
-                stringAsValidKey(key));
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Puts a JavaScript expression into the options set. That is, the string
-     * passed in as the expression will be put into the options set without
-     * modification or quoting so that it will be executed when the hash is
-     * evaluated on the client. No syntax validation is performed on the
-     * expression.
-     *
-     * @param key the option key
-     * @param expression the expression that will be evaluated to obtain the
-     *     value of the option
-     */
-    public void putExpression(String key, String expression)
-    {
-        options.setObjectForKey(new ExpressionOption(expression),
-                stringAsValidKey(key));
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Puts the specified options set as the value of a key in this option set.
-     * This allows nested hashes to be constructed.
-     *
-     * @param key the option key
-     * @param value the options set that will be used as the value of the
-     *     option
-     */
-    public void putOptions(String key, DojoOptions value)
-    {
-        options.setObjectForKey(new OptionsOption(value),
-                stringAsValidKey(key));
+        options.setObjectForKey(value, stringAsValidKey(key));
     }
 
 
@@ -160,12 +186,61 @@ public class DojoOptions
      *
      * @param opts the options set that will be merged into this one
      */
-    public void putAll(DojoOptions opts)
+    public void merge(JSHash opts)
     {
         for (String key : opts.options.keySet())
         {
             options.setObjectForKey(opts.options.objectForKey(key), key);
         }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Removes the value with the specified key, if it exists.
+     *
+     * @param key the key to remove
+     */
+    public void remove(String key)
+    {
+        options.removeObjectForKey(key);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the value with the specified key, if it exists.
+     *
+     * @param key the key to remove
+     * @return the value retrieved, or null if the value does not exist or is
+     *     not of the specified type
+     */
+    public Object get(String key)
+    {
+        return get(key, Object.class);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the value with the specified key, if it exists.
+     *
+     * @param <T> the type of the value to retrieve
+     * @param key the key to remove
+     * @param klass the type of the value to retrieve
+     * @return the value retrieved, or null if the value does not exist or is
+     *     not of the specified type
+     */
+    public <T> T get(String key, Class<? extends T> klass)
+    {
+        Object value = options.objectForKey(key);
+
+        if (klass.isInstance(value))
+        {
+            return klass.cast(value);
+        }
+
+        return null;
     }
 
 
@@ -186,7 +261,8 @@ public class DojoOptions
 
         if (str.length() > 0)
         {
-            if (!Character.isJavaIdentifierStart(str.charAt(0)))
+            if (javascriptKeywords.contains(str) ||
+                    !Character.isJavaIdentifierStart(str.charAt(0)))
             {
                 isIdentifier = false;
             }
@@ -255,15 +331,34 @@ public class DojoOptions
     }
 
 
+    // ----------------------------------------------------------
+    private String stringRepresentationOfValue(Object value)
+    {
+        if (value == null)
+        {
+            return "null";
+        }
+        else if (value instanceof JSHash || value instanceof Code ||
+                value instanceof Number || value instanceof Boolean)
+        {
+            return value.toString();
+        }
+        else
+        {
+            return singleQuote(value.toString());
+        }
+    }
+
+
     //~ Private classes .......................................................
 
     // ----------------------------------------------------------
-    private static class ValueOption
+    private static class Code
     {
         // ----------------------------------------------------------
-        public ValueOption(Object value)
+        public Code(String code)
         {
-            this.value = value;
+            this.code = code;
         }
 
 
@@ -271,90 +366,47 @@ public class DojoOptions
         @Override
         public String toString()
         {
-            if (value == null)
+            if (code == null)
             {
                 return "null";
             }
-            else if (value instanceof Number || value instanceof Boolean)
-            {
-                return value.toString();
-            }
             else
             {
-                return singleQuote(value.toString());
+                return code;
             }
         }
 
 
         //~ Static/instance variables .........................................
 
-        private Object value;
-    }
-
-
-    // ----------------------------------------------------------
-    private static class ExpressionOption
-    {
-        // ----------------------------------------------------------
-        public ExpressionOption(String expression)
-        {
-            this.expression = expression;
-        }
-
-
-        // ----------------------------------------------------------
-        @Override
-        public String toString()
-        {
-            if (expression == null)
-            {
-                return "null";
-            }
-            else
-            {
-                return expression;
-            }
-        }
-
-
-        //~ Static/instance variables .........................................
-
-        private String expression;
-    }
-
-
-    // ----------------------------------------------------------
-    private static class OptionsOption
-    {
-        // ----------------------------------------------------------
-        public OptionsOption(DojoOptions options)
-        {
-            this.options = options;
-        }
-
-
-        // ----------------------------------------------------------
-        @Override
-        public String toString()
-        {
-            if (options == null)
-            {
-                return "null";
-            }
-            else
-            {
-                return options.toString();
-            }
-        }
-
-
-        //~ Static/instance variables .........................................
-
-        private DojoOptions options;
+        private String code;
     }
 
 
     //~ Static/instance variables .............................................
 
     private NSMutableDictionary<String, Object> options;
+
+    private static final String[] javascriptKeywordsArray = {
+        "break", "else", "new", "var", "case", "finally", "return", "void",
+        "catch", "for", "switch", "while", "continue", "function", "this",
+        "with", "default", "if", "throw", "delete", "in", "try", "do",
+        "instanceof", "typeof", "abstract", "enum", "int", "short", "boolean",
+        "export", "interface", "static", "byte", "extends", "long", "super",
+        "char", "final", "native", "synchronized", "class", "float", "package",
+        "throws", "const", "goto", "private", "transient", "debugger",
+        "implements", "protected", "volatile", "double", "import", "public",
+        "null", "true", "false"
+    };
+
+    private static final HashSet<String> javascriptKeywords;
+
+    static
+    {
+        javascriptKeywords = new HashSet<String>();
+        for (String keyword : javascriptKeywordsArray)
+        {
+            javascriptKeywords.add(keyword);
+        }
+    }
 }

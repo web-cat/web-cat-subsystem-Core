@@ -201,9 +201,9 @@ dojo.declare("webcat.Blocker", null,
         if(!blockers[id])
         {
             blockers[id] = new webcat.Blocker(node, args);
+            blockers[id].show();
         }
 
-        blockers[id].show();
         return blockers[id];
     },
 

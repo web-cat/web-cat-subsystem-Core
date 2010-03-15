@@ -25,7 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.TimeZone;
 import net.sf.webcat.ui._base.DojoFormElement;
-import net.sf.webcat.ui.util.DojoOptions;
+import net.sf.webcat.ui.util.JSHash;
 import net.sf.webcat.ui.util.DojoUtils;
 import com.webobjects.appserver.WOAssociation;
 import com.webobjects.appserver.WOContext;
@@ -165,11 +165,11 @@ public class WCDateTextBox extends DojoFormElement
 
     // ----------------------------------------------------------
     @Override
-    public DojoOptions additionalConstraints(WOContext context)
+    public JSHash additionalConstraints(WOContext context)
     {
         // Append constraints based on the date format, if one was provided.
 
-        DojoOptions manualConstraints = new DojoOptions();
+        JSHash manualConstraints = new JSHash();
 
         if (_dateformat != null)
         {
@@ -178,7 +178,7 @@ public class WCDateTextBox extends DojoFormElement
 
             if (dateFormat != null)
             {
-                manualConstraints.putValue("datePattern",
+                manualConstraints.put("datePattern",
                         dateFormatToDatePattern(dateFormat));
             }
         }

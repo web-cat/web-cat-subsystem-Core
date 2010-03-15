@@ -292,8 +292,7 @@ public class OptionEditPanel
     {
         setValue( null );
 
-        return new JavascriptGenerator().refresh(
-                (String) idFor.valueForKey("valueContainer"));
+        return new JavascriptGenerator().refresh(idFor.get("valueContainer"));
     }
 
 
@@ -412,10 +411,10 @@ public class OptionEditPanel
         {
             File zipFile = new File( file.getName() + ".zip" );
             downloadPage.setFileName( zipFile );
-            downloadPage.setContentType( WCFile.mimeType( zipFile ) );
+            downloadPage.setContentType( FileUtilities.mimeType( zipFile ) );
             ByteArrayOutputStream boas = new ByteArrayOutputStream();
             ZipOutputStream       zos  = new ZipOutputStream( boas );
-            WCFile.appendToZip(
+            FileUtilities.appendToZip(
                 file,
                 zos,
                 file.getCanonicalPath().length() );
@@ -426,7 +425,7 @@ public class OptionEditPanel
         else
         {
             downloadPage.setFileName( file );
-            downloadPage.setContentType( WCFile.mimeType( file ) );
+            downloadPage.setContentType( FileUtilities.mimeType( file ) );
         }
         downloadPage.setStartDownload( true );
         return downloadPage;

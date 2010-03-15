@@ -26,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import net.sf.webcat.core.Application;
-import net.sf.webcat.ui.util.DojoOptions;
+import net.sf.webcat.ui.util.JSHash;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -167,6 +167,7 @@ public class JavascriptGenerator implements WOActionResults
      *
      * @param title the title of the dialog
      * @param message the message inside the dialog
+     * @return this generator, for chaining
      */
     public JavascriptGenerator alert(String title, String message)
     {
@@ -205,29 +206,36 @@ public class JavascriptGenerator implements WOActionResults
     public JavascriptGenerator alert(String title, String message,
             String okLabel, JavascriptFunction onClose)
     {
-        DojoOptions options = new DojoOptions();
+        JSHash options = new JSHash();
+        options.put("title", title);
+        options.put("message", message);
+        options.put("okLabel", okLabel);
+        options.put("onClose", onClose);
 
-        if (title != null)
-        {
-            options.putValue("title", title);
-        }
+        return alert(options);
+    }
 
-        if (message != null)
-        {
-            options.putValue("message", message);
-        }
 
-        if (okLabel != null)
-        {
-            options.putValue("okLabel", okLabel);
-        }
+    // ----------------------------------------------------------
+    /**
+     * Displays a themed modal alert dialog with the specified options.
+     *
+     * @param options the options for this alert
+     * @return this generator, for chaining
+     */
+    public JavascriptGenerator alert(JSHash options)
+    {
+        JSHash options_ = options.clone();
+
+        JavascriptFunction onClose = options_.get("onClose",
+                JavascriptFunction.class);
 
         if (onClose != null)
         {
-            options.putExpression("onClose", javascriptObjectFor(onClose));
+            options_.put("onClose", JSHash.code(javascriptObjectFor(onClose)));
         }
 
-        return call("webcat.alert", options);
+        return call("webcat.alert", options_);
     }
 
 
@@ -762,7 +770,7 @@ public class JavascriptGenerator implements WOActionResults
      */
     public JavascriptGenerator submit(String formName, String buttonName)
     {
-        return call("webcat.fakeFullSubmit", formName, buttonName);
+        return call("webcat.fullSubmit", formName, buttonName);
     }
 
 
@@ -953,7 +961,7 @@ public class JavascriptGenerator implements WOActionResults
             buffer.append("}");
             return buffer.toString();
         }
-        else if (object instanceof DojoOptions)
+        else if (object instanceof JSHash)
         {
             return object.toString();
         }
@@ -1066,4 +1074,7 @@ public class JavascriptGenerator implements WOActionResults
     //~ Static/instance variables .............................................
 
     /* package */ List<String> lines;
+
+    // A shortcut for accessing a JavascriptGenerator that does nothing.
+    public static final JavascriptGenerator NO_OP = new JavascriptGenerator();
 }

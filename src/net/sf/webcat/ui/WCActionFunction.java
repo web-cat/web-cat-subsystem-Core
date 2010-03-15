@@ -24,7 +24,7 @@ package net.sf.webcat.ui;
 import org.apache.log4j.Logger;
 import net.sf.webcat.core.Application;
 import net.sf.webcat.ui._base.DojoActionFormElement;
-import net.sf.webcat.ui.util.DojoOptions;
+import net.sf.webcat.ui.util.JSHash;
 import net.sf.webcat.ui.util.DojoRemoteHelper;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOAssociation;
@@ -46,16 +46,11 @@ import er.extensions.components.ERXComponentUtilities;
 /**
  * Generates a JavaScript function that can be called to execute an action,
  * either as a synchronous (page-load) request or a remote Ajax request.
- * 
+ *
  * As with other Dojo action elements, the "remoteness" of the request is
  * determined by the presence of any of the "remote.*" bindings. If they are
  * omitted, the request is synchronous.
- * 
- * TODO does not currently support form submits for Ajax requests (uses
- * webcat.invokeRemoteAction instead of webcat.partialSubmit). This means that
- * form contents will not be serialized and the server-side component bindings
- * will not be updated.
- * 
+ *
  * @author Tony ALlevato
  * @version $Id$
  */
@@ -71,11 +66,12 @@ public class WCActionFunction extends DojoActionFormElement
         super(name, someAssociations, template);
 
         _jsId = _associations.removeObjectForKey("jsId");
+        _waitForOnLoad = _associations.removeObjectForKey("waitForOnLoad");
     }
 
 
     //~ Methods ...............................................................
-    
+
     // ----------------------------------------------------------
     @Override
     public String dojoType()
@@ -90,8 +86,8 @@ public class WCActionFunction extends DojoActionFormElement
     {
         return true;
     }
-    
-    
+
+
     // ----------------------------------------------------------
     protected String jsIdInContext(WOContext context)
     {
@@ -105,19 +101,33 @@ public class WCActionFunction extends DojoActionFormElement
         }
     }
 
-    
+
+    // ----------------------------------------------------------
+    protected boolean waitForOnLoadInContext(WOContext context)
+    {
+        if (_waitForOnLoad != null)
+        {
+            return _waitForOnLoad.booleanValueInComponent(context.component());
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
     // ----------------------------------------------------------
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
         super.appendToResponse(response, context);
-        
+
         String id = jsIdInContext(context);
 
         WOComponent component = context.component();
 
         String actionUrl = null;
-        
+
         if (_directActionName != null)
         {
             actionUrl = context.directActionURLForActionNamed(
@@ -131,21 +141,38 @@ public class WCActionFunction extends DojoActionFormElement
         }
 
         StringBuffer script = new StringBuffer();
+
+        boolean waitForOnLoad = waitForOnLoadInContext(context);
+
+        if (waitForOnLoad)
+        {
+            script.append("dojo.addOnLoad(function() {\n");
+        }
+
         script.append(id);
         script.append(" = function(widget) {\n");
 
         if (_remoteHelper.isRemoteInContext(context))
         {
-            script.append(_remoteHelper.invokeRemoteActionCall(
-                    "widget", actionUrl, null, context));
+            JSHash requestOptions = new JSHash();
+            requestOptions.put("url", actionUrl);
+            requestOptions.put("sender", context.elementID());
+
+            script.append(_remoteHelper.remoteSubmitCall(
+                    "widget", requestOptions, context));
         }
         else
         {
-            script.append(WCForm.scriptToPerformFakeFullSubmit(
+            script.append(WCForm.scriptToPerformFullSubmit(
                     context, nameInContext(context)));
         }
 
         script.append("}");
+
+        if (waitForOnLoad)
+        {
+            script.append("\n});\n");
+        }
 
         if (Application.isAjaxRequest(context.request()))
         {
@@ -178,7 +205,7 @@ public class WCActionFunction extends DojoActionFormElement
         // Do nothing.
     }
 
-    
+
     // ----------------------------------------------------------
     @Override
     protected void _appendCloseTagToResponse(WOResponse response,
@@ -189,6 +216,7 @@ public class WCActionFunction extends DojoActionFormElement
 
 
     //~ Static/instance variables .............................................
-    
+
     protected WOAssociation _jsId;
+    protected WOAssociation _waitForOnLoad;
 }

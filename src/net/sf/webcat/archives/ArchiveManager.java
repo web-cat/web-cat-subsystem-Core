@@ -27,6 +27,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import net.sf.webcat.core.FileUtilities;
 
 
 //-------------------------------------------------------------------------

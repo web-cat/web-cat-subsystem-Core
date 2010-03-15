@@ -433,7 +433,7 @@ public class CourseOffering
                     File courseDir = new File(dir.toString());
                     if (courseDir.exists())
                     {
-                        net.sf.webcat.archives.FileUtilities.deleteDirectory(
+                        net.sf.webcat.core.FileUtilities.deleteDirectory(
                             courseDir);
                     }
                 }

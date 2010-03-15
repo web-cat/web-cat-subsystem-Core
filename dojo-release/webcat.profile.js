@@ -40,6 +40,8 @@ dependencies = {
                 "webcat.ComboBox",
                 "webcat.ContentPane",
                 "webcat.Dialog",
+                "webcat.FileInput",
+                "webcat.Selector",
                 "webcat.Spinner",
                 "webcat.Table",
                 "webcat.TableSource",

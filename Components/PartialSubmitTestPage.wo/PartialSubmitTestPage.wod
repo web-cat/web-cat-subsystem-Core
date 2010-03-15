@@ -1,0 +1,69 @@
+Page : WCPageWithNavigation {
+}
+
+FieldA: WCTextBox {
+    value = fieldA;
+}
+
+FieldB: WCTextBox {
+    value = fieldB;
+}
+
+FieldC: WCTextBox {
+    value = fieldC;
+}
+
+DialogField: WCTextBox {
+    value = dialogField;
+}
+
+Radio1: WCRadioButton {
+    name = "radio";
+    value = "one";
+    selection = radioSelection;
+}
+
+Radio2: WCRadioButton {
+    name = "radio";
+    value = "two";
+    selection = radioSelection;
+}
+
+Radio3: WCRadioButton {
+    name = "radio";
+    value = "three";
+    selection = radioSelection;
+}
+
+SubmitAllFields : WCButton {
+    label = "Submit All Fields";
+    remote = true;
+    action = submitAllFields;
+}
+
+SubmitFieldsBC1 : WCButton {
+    label = "Submit Only B and C with Action 1";
+    remote = true;
+    remote.submit = "child";
+    action = submitFieldsBC1;
+}
+
+SubmitFieldsBC2 : WCButton {
+    label = "Submit Only B and C with Action 2";
+    remote = true;
+    remote.submit = "child";
+    action = submitFieldsBC2;
+}
+
+SubmitFieldALink : WCLink {
+    remote = true;
+    remote.submit = "child2";
+    action = submitFieldA;
+}
+
+SubmitFieldCFunction : WCActionFunction {
+    jsId = "submitFieldCFunction";
+    remote = true;
+    remote.submit = "child2,child3";
+    action = submitFieldC;
+}

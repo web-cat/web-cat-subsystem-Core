@@ -65,7 +65,7 @@ public class WCForm extends ERXWOForm
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    public static String scriptToPerformFakeFullSubmit(WOContext context,
+    public static String scriptToPerformFullSubmit(WOContext context,
             String fieldName)
     {
         String formName = formName(context, null);
@@ -75,8 +75,7 @@ public class WCForm extends ERXWOForm
                     + "contained within a form.");
         }
 
-        return "webcat.fakeFullSubmit('" + formName + "', '"
-            + fieldName + "');";
+        return "webcat.fullSubmit('" + formName + "', '" + fieldName + "');";
     }
 
 
@@ -101,7 +100,7 @@ public class WCForm extends ERXWOForm
     {
         super.appendAttributesToResponse(response, context);
 
-        response._appendTagAttributeAndValue("dojoType", "dijit.form.Form",
+        response._appendTagAttributeAndValue("dojoType", "webcat.Form",
                 false);
         response._appendTagAttributeAndValue("jsId",
                 "form_" + _formName(context), false);

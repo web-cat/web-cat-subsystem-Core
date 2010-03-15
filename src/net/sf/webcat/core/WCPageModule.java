@@ -53,9 +53,16 @@ public class WCPageModule
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    public boolean isStateless()
+/*    public boolean isStateless()
     {
         return true;
+    }*/
+
+
+    // ----------------------------------------------------------
+    public boolean synchronizesVariablesWithBindings()
+    {
+        return false;
     }
 
 

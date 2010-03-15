@@ -201,7 +201,7 @@ public class CoreNavigator
      *
      * @return the result is ignored
      */
-    public WOActionResults updateSemesters()
+    public JavascriptGenerator updateSemesters()
     {
         log.debug("updateSemesters()");
         semesters = new NSMutableArray<INavigatorObject>();
@@ -241,7 +241,7 @@ public class CoreNavigator
      * @return the result is ignored
      */
     @SuppressWarnings("unchecked")
-    public WOActionResults updateCourseOfferings()
+    public JavascriptGenerator updateCourseOfferings()
     {
         log.debug("updateCourseOfferings()");
         courseOfferings = new NSMutableArray<INavigatorObject>();
@@ -375,8 +375,7 @@ public class CoreNavigator
             log.debug("selected course offering = " + selectedCourseOffering);
         }
 
-        return new JavascriptGenerator().refresh(
-                (String) idFor.valueForKey("coursePane"));
+        return new JavascriptGenerator().refresh(idFor.get("coursePane"));
     }
 
 

@@ -87,7 +87,7 @@ webcat.refreshContentPanes = webcat.refresh;
  * @param fieldName the name of the actual element that is requesting the
  *     submit
  */
-webcat.fakeFullSubmit = function(/* String */ formName, /* String */ fieldName)
+webcat.fullSubmit = function(/*String*/ formName, /*String*/ fieldName)
 {
     var form = dojo.query('form[name=' + formName + ']')[0];
     var button = dojo.create('button', {
@@ -103,41 +103,60 @@ webcat.fakeFullSubmit = function(/* String */ formName, /* String */ fieldName)
     // reloaded at this point anyway, it doesn't seem to matter.
 };
 
+// Old name for backwards compatibility
+webcat.fakeFullSubmit = webcat.fullSubmit;
 
-// ----------------------------------------------------------
+
+//----------------------------------------------------------
 /**
- * Performs a partial form submit via Ajax.
+ * Serializes any form elements that are children of the specified DOM node.
+ * This function is adapted from the dojo.formToObject function, which only
+ * supports serializing an entire form.
  *
- * @param widget the widget whose value should be submitted
- * @param scriptComponentName the component that is instigating the submit
- *     (i.e., a button that was clicked, or the component name of an element
- *     that generates a script that calls an action)
- * @param options a hash that contains options that will be passed to the XHR
- * @param refreshIds a string containing the ID of the content pane to refresh,
- *     or an array of IDs
- * @param blockIds a string containing the ID of the DOM element to block with
- *     an overlay, or an array of IDs, or the boolean "true" to block all of
- *     the panes specified by refreshIds
+ * @param node the DOM node containing the elements to serialize
+ * @return a Javascript object containing the values of the elements
  */
-webcat.partialSubmit = function(/* _Widget */ widget,
-    /* String */ scriptComponentName, /* Object */  options,
-    /* String|Array? */ refreshIds,
-    /* Boolean|String|Array? */ blockIds)
+webcat.serializeChildren = function(/*DOMNode|String*/ node)
 {
-    var actionUrl = options.form.getAttribute('action');
-    actionUrl = actionUrl.replace('/wo/', '/ajax/');
-
-    if (!options.content)
+    var _setValue = function(/*Object*/obj, /*String*/name, /*String*/value)
     {
-        options.content = {};
-    }
+        if (value === null)
+        {
+            return;
+        }
 
-    options.url = actionUrl;
-    options.content['AJAX_SUBMIT_BUTTON_NAME'] = scriptComponentName;
-    options.content['_partialSubmitID'] = widget.name;
-    options.content['WOIsmapCoords'] = new Date().getTime();
+        var val = obj[name];
+        if (typeof val == "string")  // inline'd type check
+        {
+            obj[name] = [val, value];
+        }
+        else if (dojo.isArray(val))
+        {
+            val.push(value);
+        }
+        else
+        {
+            obj[name] = value;
+        }
+    };
 
-    webcat.invokeRemoteAction(widget, options, refreshIds, blockIds);
+    var ret = {};
+    var exclude = "file|submit|image|reset|button|";
+
+    dojo.forEach(dojo.byId(node).getElementsByTagName('*'), function(item) {
+        var _in = item.name;
+        var type = (item.type || "").toLowerCase();
+        if(_in && type && exclude.indexOf(type) == -1 && !item.disabled)
+        {
+            _setValue(ret, _in, dojo.fieldToObject(item));
+            if(type == "image")
+            {
+                ret[_in + ".x"] = ret[_in + ".y"] = ret[_in].x = ret[_in].y = 0;
+            }
+        }
+    });
+
+    return ret; // Object
 };
 
 
@@ -146,93 +165,85 @@ webcat.partialSubmit = function(/* _Widget */ widget,
  * Invokes the action represented by the specified URL as an Ajax request, and
  * ensures that the appropriate callback handlers are called.
  *
- * @param widget the widget that contains the callbacks (onRemoteLoad/Error/End)
- *     that should be called when the request is completed
- * @param options a hash containing options that are passed to the XHR
- * @param refreshIds a string containing the ID of the content pane to refresh,
- *     or an array of IDs
- * @param blockIds a string containing the ID of the DOM element to block with
- *     an overlay, or an array of IDs, or the boolean "true" to block all of
- *     the panes specified by refreshIds
+ * @param widget a widget that contains the callbacks (onRemoteLoad/Error/End)
+ *     that should be called when the request is completed; can be null
+ * @param options a hash containing options that are passed to the XHR, as
+ *     well as the following additional option:
+ *
+ *     submit: a DOM node (or id) of a node that is the parent of the fields
+ *         that you wish to submit; if omitted, the entire form (options.form)
+ *         will be submitted
+ *
+ * If options.url is supplied, the request will be sent to that URL. If
+ * options.form is supplied but options.url is not, then the request will be
+ * sent to the form's action URL.
  */
-webcat.invokeRemoteAction = function(/* _Widget */ widget,
-    /* Object */ options, /* String|Array? */ refreshIds,
-    /* Boolean|String|Array? */ blockIds)
+webcat.remoteSubmit = function(/*_Widget*/ widget, /*Object*/ options)
 {
+//	try { throw 'foo'; } catch(e) { }
+
     var evalAttributeFunction = function(code) {
         return eval('__evalAttributeFunction__temp__ = ' + code);
     };
 
-    if (typeof blockIds == 'boolean' && blockIds == true)
+    options.content = options.content || {};
+
+    // Use the form's action URL if one wasn't already provided.
+
+    if (options.form && !options.url)
     {
-        blockIds = refreshIds;
+        var actionUrl = options.form.getAttribute('action');
+        actionUrl = actionUrl.replace('/wo/', '/ajax/');
+        options.url = actionUrl;
     }
 
-    blockIds = webcat._parseIds(blockIds);
+    // If this is a partial submit, serialize the subset of fields manually
+    // and then clear out options.form so that Dojo's XHR does not
+    // serialize the form again.
 
-    var blockFunction = function()
+    if (options.submit)
     {
-        if (blockIds)
-        {
-            dojo.forEach(blockIds, function(id) {
-                var widget = dijit.byId(id);
-                if (widget)
-                {
-                    webcat.block(widget.domNode);
-                }
-                else
-                {
-                    var node = dojo.byId(id);
-                    if (node)
-                    {
-                        webcat.block(node);
-                    }
-                }
-            });
-        }
-    };
+        dojo.forEach(webcat._parseIds(options.submit), function(node) {
+            var serialized = webcat.serializeChildren(node);
+            dojo.mixin(options.content, serialized);
+        });
 
-    var unblockFunction = function()
+        options.content['webcat.wasPartialSubmit'] = true;
+
+        delete options.submit;
+        delete options.form;
+    }
+
+    if (options.sender)
     {
-        if (blockIds)
+        options.content['AJAX_SUBMIT_BUTTON_NAME'] = options.sender;
+        delete options.sender;
+    }
+    else if (widget)
+    {
+        if (widget.name)
         {
-            dojo.forEach(blockIds, function(id) {
-                var widget = dijit.byId(id);
-                if (widget)
-                {
-                    webcat.unblock(widget.domNode);
-                }
-                else
-                {
-                    var node = dojo.byId(id);
-                    if (node)
-                    {
-                        webcat.unblock(node);
-                    }
-                }
-            });
+            options.content['AJAX_SUBMIT_BUTTON_NAME'] = widget.name;
         }
-    };
+        else if (widget.attr && widget.attr('name'))
+        {
+            options.content['AJAX_SUBMIT_BUTTON_NAME'] = widget.attr('name');
+        }
+    }
 
-    blockFunction();
+    options.content['WOIsmapCoords'] = new Date().getTime();
 
     // Set up the event handlers.
     var xhrOpts = {
         load: function(response, ioArgs) {
             var handler;
 
-            unblockFunction();
-
-            if (refreshIds)
-            {
-                webcat.refreshContentPanes(refreshIds);
-            }
-
-            if (widget.onRemoteLoad)
+            if (widget && widget.onRemoteLoad)
             {
                 handler = widget.onRemoteLoad;
             }
-            else if (widget.getAttribute && widget.getAttribute('onRemoteLoad'))
+            else if (widget && widget.getAttribute &&
+                widget.getAttribute('onRemoteLoad'))
             {
                 handler = evalAttributeFunction(
                     widget.getAttribute('onRemoteLoad'));
@@ -244,13 +255,12 @@ webcat.invokeRemoteAction = function(/* _Widget */ widget,
         error: function(response, ioArgs) {
             var handler;
 
-            unblockFunction();
-
-            if (widget.onRemoteError)
+            if (widget && widget.onRemoteError)
             {
                 handler = widget.onRemoteError;
             }
-            else if (widget.getAttribute && widget.getAttribute('onRemoteError'))
+            else if (widget && widget.getAttribute &&
+                widget.getAttribute('onRemoteError'))
             {
                 handler = evalAttributeFunction(
                     widget.getAttribute('onRemoteError'));
@@ -262,13 +272,12 @@ webcat.invokeRemoteAction = function(/* _Widget */ widget,
         handle: function(response, ioArgs) {
             var handler;
 
-            unblockFunction();
-
-            if (widget.onRemoteEnd)
+            if (widget && widget.onRemoteEnd)
             {
                 handler = widget.onRemoteEnd;
             }
-            else if (widget.getAttribute && widget.getAttribute('onRemoteEnd'))
+            else if (widget && widget.getAttribute &&
+                widget.getAttribute('onRemoteEnd'))
             {
                 handler = evalAttributeFunction(
                     widget.getAttribute('onRemoteEnd'));
@@ -340,7 +349,13 @@ webcat.alert = function(/* Object */ options)
 
     // Create the dialog content nodes and widgets.
 
-    var contentDiv = dojo.create('div');
+    var vp = dijit.getViewport();
+
+    var contentDiv = dojo.create('div', {
+        style: {
+            width: (vp.w * 0.5) + 'px'
+        }
+    });
 
     var messageDiv = dojo.create('div', {
         innerHTML: options.message,
@@ -426,7 +441,13 @@ webcat.confirm = function(/* Object */ options)
 
     // Create the dialog content nodes and widgets.
 
-    var contentDiv = dojo.create('div');
+    var vp = dijit.getViewport();
+
+    var contentDiv = dojo.create('div', {
+        style: {
+            width: (vp.w * 0.5) + 'px'
+        }
+    });
 
     var questionDiv = dojo.create('div', {
         innerHTML: options.message,

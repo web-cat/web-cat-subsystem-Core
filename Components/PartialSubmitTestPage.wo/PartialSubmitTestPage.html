@@ -1,0 +1,50 @@
+<wo name="Page">
+<wo:WCPageModule title="Partial Submit Test">
+<wo:WCForm>
+
+<div id="child2">
+<p>Field A: <wo name="FieldA"/></p>
+</div>
+<div id="child">
+<p>Field B: <wo name="FieldB"/></p>
+<div id="child3">
+<p>Field C: <wo name="FieldC"/></p>
+</div>
+<p><wo name="Radio1"/> 1 <wo name="Radio2"/> 2 <wo name="Radio3"/> 3</p>
+</div>
+
+<p>
+<wo name="SubmitAllFields"/> <wo name="SubmitFieldsBC1"/> <wo name="SubmitFieldsBC2"/> <br/>
+<span dojoType="dijit.form.CheckBox">
+<wo:WCConnectAction event="onChange" remote="true" remote.submit="child2" action="$submitFieldA"/>
+</span><span>Submit Field A when toggled</span> <br/>
+<wo name="SubmitFieldALink">Submit Field A when Clicked</wo>
+<span dojoType="dijit.form.Button" label="Submit Field C via a function">
+    <script type="dojo/connect" event="onClick">
+        submitFieldCFunction(this);
+    </script>
+</span>
+<wo name="SubmitFieldCFunction"/>
+</p>
+
+</wo:WCForm>
+
+<wo:WCDialog title="Dialog" id="dialog" okAction="$submitDialogField">
+    <p>A field inside a dialog: <wo name="DialogField"/></p>
+</wo:WCDialog>
+<p>
+<wo:WCButton label="Open Dialog">
+    <script type="dojo/connect" event="onClick">
+        dijit.byId('dialog').show();
+    </script>
+</wo:WCButton>
+</p>
+
+<wo:WCContentPane id="message">
+<pre>
+<wo:str value="$message"/>
+</pre>
+</wo:WCContentPane>
+
+</wo:WCPageModule>
+</wo>

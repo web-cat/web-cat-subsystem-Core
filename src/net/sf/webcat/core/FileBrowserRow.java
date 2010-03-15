@@ -421,7 +421,7 @@ public class FileBrowserRow
      */
     public boolean isViewable()
     {
-        return WCFile.showInline( file );
+        return FileUtilities.showInline( file );
     }
 
 
@@ -432,7 +432,7 @@ public class FileBrowserRow
      */
     public boolean canEdit()
     {
-        return isEditable && WCFile.isEditable( file );
+        return isEditable && FileUtilities.isEditable( file );
     }
 
 
@@ -457,8 +457,8 @@ public class FileBrowserRow
         DeliverFile nextPage = (DeliverFile)pageWithName(
             DeliverFile.class.getName() );
         nextPage.setFileName( file );
-        nextPage.setContentType( WCFile.mimeType( file ) );
-        nextPage.setStartDownload( !WCFile.showInline( file ) );
+        nextPage.setContentType( FileUtilities.mimeType( file ) );
+        nextPage.setStartDownload( !FileUtilities.showInline( file ) );
         return nextPage;
     }
 
@@ -565,10 +565,10 @@ public class FileBrowserRow
         {
             File zipFile = new File( file.getName() + ".zip" );
             nextPage.setFileName( zipFile );
-            nextPage.setContentType( WCFile.mimeType( zipFile ) );
+            nextPage.setContentType( FileUtilities.mimeType( zipFile ) );
             ByteArrayOutputStream boas = new ByteArrayOutputStream();
             ZipOutputStream       zos  = new ZipOutputStream( boas );
-            WCFile.appendToZip(
+            FileUtilities.appendToZip(
                 file,
                 zos,
                 file.getCanonicalPath().length() );
@@ -579,7 +579,7 @@ public class FileBrowserRow
         else
         {
             nextPage.setFileName( file );
-            nextPage.setContentType( WCFile.mimeType( file ) );
+            nextPage.setContentType( FileUtilities.mimeType( file ) );
         }
         nextPage.setStartDownload( true );
         return nextPage;
@@ -638,7 +638,7 @@ public class FileBrowserRow
      */
     public String iconURL()
     {
-        String result = WCFile.iconURL( file );
+        String result = FileUtilities.iconURL( file );
         log.debug( "iconURL(" + file + ") = " + result );
         return result;
     }
@@ -707,7 +707,7 @@ public class FileBrowserRow
             }
             else
             {
-                String myExt = WCFile.extensionOf( file ).toLowerCase();
+                String myExt = FileUtilities.extensionOf( file ).toLowerCase();
                 for ( int i = 0; i < allowSelectExtensions.count(); i++ )
                 {
                     if ( myExt.equals(

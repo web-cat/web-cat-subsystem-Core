@@ -1,20 +1,20 @@
 <wo name="Dialog"><wo name="Form">
-<div><wo:content/></div>
+<div>
+    <wo:content/>
+</div>
 <div style="text-align: center">
-<wo name="OK">
-    <script type="dojo/connect" event="onClick">
-    this.attr("disabled", true);
-    </script>
-    <script type="dojo/connect" event="onRemoteEnd">
-    dijit.byId('<wo:str value="$id"/>').hide();
-    <wo:if condition="$refreshPanesOnOk">webcat.refreshContentPanes('<wo:str value="$refreshPanesOnOk"/>');</wo:if>
-    </script>
-</wo>
-<wo name="Cancel">
-    <script type="dojo/connect" event="onClick">
-    dijit.byId('<wo:str value="$id"/>').hide();
-    </script>
-</wo>
+    <wo:if condition="$hasOkButton">
+    <wo name="OK">
+        <script type="dojo/connect" event="onClick">
+        this.attr("disabled", true);
+        </script>
+    </wo>
+    </wo>
+    <wo name="Cancel">
+        <script type="dojo/connect" event="onClick">
+        dijit.byId('<wo:str value="$id"/>').hide();
+        </script>
+    </wo>
 </div>
 </wo></wo>
 <script type="text/javascript">
