@@ -90,23 +90,24 @@ public class InstallPage8
         try
         {
             ( (Application)Application.application() ).initializeApplication();
-            ( (Application)Application.application() )
-                .notifyAdminsOfStartup();
-            Application.sendAdminEmail( "webcat@vt.edu", null, true,
-                    "New Web-CAT installation now active",
-                    "Congratulations, "
-                    + configuration.getProperty("coreAdminEmail")
-                    + ", you have completed this installation process for\n"
-                    + "Web-CAT and your server is now active.  If you are "
-                    + "configuring your\nserver to automatically restart, "
-                    + "please choose a time other than\n04:00 AM EDT (at "
-                    + "least 15 minutes or more away, please) to ensure that "
-                    + "any\nautomatic updates do not get cut off when the "
-                    + "primary Web-CAT update site\nreboots daily at that "
-                    + "time.\n\nFor support, see the Web-CAT wiki at:\n\n"
-                    + "http://web-cat.cs.vt.edu/WCWiki\n\nOr e-mail "
-                    + "the Web-CAT staff at: webcat@vt.edu.",
-                    null);
+            ( (Application)Application.application() ).notifyAdminsOfStartup();
+
+            String subject = "New Web-CAT installation now active";
+            String body = "Congratulations, "
+                + configuration.getProperty("coreAdminEmail")
+                + ", you have completed this installation process for\n"
+                + "Web-CAT and your server is now active.  If you are "
+                + "configuring your\nserver to automatically restart, "
+                + "please choose a time other than\n04:00 AM EDT (at "
+                + "least 15 minutes or more away, please) to ensure that "
+                + "any\nautomatic updates do not get cut off when the "
+                + "primary Web-CAT update site\nreboots daily at that "
+                + "time.\n\nFor support, see the Web-CAT wiki at:\n\n"
+                + "http://web-cat.cs.vt.edu/WCWiki\n\nOr e-mail "
+                + "the Web-CAT staff at: webcat@vt.edu.";
+
+            Application.sendAdminEmail(subject, body);
+            Application.sendSimpleEmail("webcat@vt.edu", subject, body);
         }
         catch ( Exception e )
         {

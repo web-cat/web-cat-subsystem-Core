@@ -278,7 +278,7 @@ public class DatabaseAuthenticator
                 properties.setProperty( "login.url", dest );
             }
             Application.sendSimpleEmail(
-                user.email() ,
+                user.email(),
                 properties.stringForKeyWithDefault(
                     "DatabaseAuthenticator.new.user.email.title",
                     "New Web-CAT Password" ),

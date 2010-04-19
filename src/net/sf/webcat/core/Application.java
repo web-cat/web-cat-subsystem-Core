@@ -42,6 +42,7 @@ import net.sf.webcat.core.messaging.EmailProtocol;
 import net.sf.webcat.core.messaging.Message;
 import net.sf.webcat.core.messaging.SMSProtocol;
 import net.sf.webcat.core.messaging.TwitterProtocol;
+import net.sf.webcat.core.messaging.UnexpectedExceptionMessage;
 import net.sf.webcat.dbupdate.*;
 import ognl.helperfunction.WOHelperFunctionHTMLTemplateParser;
 import ognl.helperfunction.WOTagProcessor;
@@ -161,6 +162,10 @@ public class Application
         setDefaultRequestHandler(
             requestHandlerForKey( directActionRequestHandlerKey() ) );
 
+        // Register the entity resource request handler.
+        registerRequestHandler(new EntityResourceRequestHandler(),
+                EntityResourceRequestHandler.REQUEST_HANDLER_KEY);
+
         if (!isDevelopmentModeSafe() && isDirectConnectEnabled())
         {
             setDirectConnectEnabled(false);
@@ -222,9 +227,9 @@ public class Application
     {
         new ApplicationStartupMessage().send();
 
-        sendAdminEmail( null, null, true, "Web-CAT starting up",
+/*        sendAdminEmail( null, null, true, "Web-CAT starting up",
             "Web-CAT is starting up at " + startTime,
-            null );
+            null );*/
     }
 
 
@@ -745,19 +750,16 @@ public class Application
             {
                 if ( runtime.freeMemory() < dieLimit )
                 {
-                    sendAdminEmail( null, null, true,
-                                    "Dying, out of memory...",
+                    sendAdminEmail( "Dying, out of memory...",
                                     "Cannot force GC to free more than "
-                                    + freeLimit + " bytes.  Terminating.",
-                                    null );
+                                    + freeLimit + " bytes.  Terminating." );
                     killInstance();
                 }
                 else
                 {
-                    sendAdminEmail( null, null, true,
-                                    "Running out of memory...",
+                    sendAdminEmail( "Running out of memory...",
                                     "Cannot force GC to free more than "
-                                    + freeLimit + " bytes.", null );
+                                    + freeLimit + " bytes." );
                 }
             }
         }
@@ -956,7 +958,7 @@ public class Application
         }
         else
         {
-            emailExceptionToAdmins( t, extraInfo, context, null );
+            new UnexpectedExceptionMessage(t, context, extraInfo, null).send();
         }
 
         if (context != null)
@@ -1070,7 +1072,7 @@ public class Application
      * @param attachments if non-null, a vector of string file names to
      *                    send as attachments on the message
      */
-    static public void sendAdminEmail( String  to,
+/*    static public void sendAdminEmail( String  to,
                                        NSArray users,
                                        boolean toAdmins,
                                        String  subject,
@@ -1260,6 +1262,22 @@ public class Application
                        );
             }
         }
+    }*/
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sends a text e-mail message to the specified recipient.
+     *
+     * @param to          the destination address
+     * @param subject     the subject line
+     * @param body        the body of the message
+     */
+    static public void sendSimpleEmail( String to,
+                                        String subject,
+                                        String body)
+    {
+        sendSimpleEmail(new NSArray<String>(to), subject, body, null);
     }
 
 
@@ -1267,15 +1285,234 @@ public class Application
     /**
      * Sends a text e-mail message to the specified recipient.
      *
-     * @param to          the to address
+     * @param to          the destination address
      * @param subject     the subject line
-     * @param messageText the body of the message
+     * @param body        the body of the message
+     * @param attachments the attachments
      */
     static public void sendSimpleEmail( String to,
                                         String subject,
-                                        String messageText )
+                                        String body,
+                                        NSDictionary<String, NSData> attachments)
     {
-        sendAdminEmail( to, null, false, subject, messageText, null );
+        sendSimpleEmail(new NSArray<String>(to), subject, body,
+                attachments);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sends a text e-mail message to the specified recipients.
+     *
+     * @param to          the destination addresses
+     * @param subject     the subject line
+     * @param body        the body of the message
+     * @param attachments the attachments
+     */
+    static public void sendSimpleEmail( NSArray<String> to,
+                                        String subject,
+                                        String body)
+    {
+        sendSimpleEmail(to, subject, body, null);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sends a text e-mail message to the specified recipients.
+     *
+     * @param to          the destination addresses
+     * @param subject     the subject line
+     * @param body        the body of the message
+     * @param attachments the attachments
+     */
+    static public void sendSimpleEmail( NSArray<String> to,
+                                        String subject,
+                                        String body,
+                                        NSDictionary<String, NSData> attachments)
+    {
+        try
+        {
+            // Define message
+            javax.mail.Message message =
+                new javax.mail.internet.MimeMessage(
+                        javax.mail.Session.getInstance(configurationProperties(), null)
+                    );
+
+            message.setFrom(new InternetAddress(
+                configurationProperties().getProperty("coreAdminEmail")));
+
+            // Add each recipient to the message.
+            for (String toAddress : to)
+            {
+                String defaultDomain =
+                    configurationProperties().getProperty("mail.default.domain");
+
+                if (toAddress.indexOf( '@' ) == -1 && defaultDomain != null)
+                {
+                    toAddress += "@" + defaultDomain;
+                }
+
+                message.addRecipient(javax.mail.Message.RecipientType.TO,
+                                     new InternetAddress(toAddress));
+            }
+
+            message.setSubject( appIdentifier() + subject );
+
+            // Create the message part
+            javax.mail.BodyPart messageBodyPart = new MimeBodyPart();
+
+            // Fill the message
+            messageBodyPart.setText( body );
+
+            // Create a Multipart
+            javax.mail.Multipart multipart = new MimeMultipart();
+
+            // Add part one
+            multipart.addBodyPart( messageBodyPart );
+
+            //
+            // The next parts are attachments
+            //
+            if (attachments != null)
+            {
+                for (String filename : attachments.allKeys())
+                {
+                    NSData attachmentData = attachments.objectForKey(filename);
+                    File file = new File(filename);
+
+                    // Create another body part
+                    messageBodyPart = new MimeBodyPart();
+
+                    // Don't include files bigger than this as e-mail
+                    // attachments
+                    if ( attachmentData.length() < maxAttachmentSize )
+                    {
+                        // Get the attachment
+                        DataSource source = new NSDataDataSource(
+                                file.getName(), attachmentData);
+
+                        // Set the data handler to the attachment
+                        messageBodyPart.setDataHandler(
+                            new DataHandler( source ) );
+
+                        // Set the filename
+                        messageBodyPart.setFileName(file.getName());
+                    }
+                    else
+                    {
+                        // Fill the message
+                        messageBodyPart.setText(
+                                "File "
+                                + file.getName()
+                                + " has been omitted from this message ("
+                                + attachmentData.length()
+                                + " bytes)\n"
+                            );
+                    }
+
+                    // Add attachment
+                    multipart.addBodyPart( messageBodyPart );
+                }
+            }
+
+            // Put parts in message
+            message.setContent( multipart );
+
+            // Send the message
+            if ("donotsendmail".equals(
+                    configurationProperties().getProperty( "mail.smtp.host" )))
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug( "E-MAIL DISABLED: unsent message:\nTo: "
+                        + to
+                        + "\nSubject: " + ( subject == null ? "null" : subject )
+                        + "\nBody:\n" + ( body == null ? "null" : body )
+                        );
+                }
+            }
+            else
+            {
+                // AJA 2010.01.12: Fix for the JAF/Mail issue that prevented mail
+                // from being sent from a servlet when running under Java 1.6:
+                // http://blog.hpxn.net/2009/12/02/tomcat-java-6-and-javamail-cant-load-dch/
+                ClassLoader originalClassLoader =
+                    Thread.currentThread().getContextClassLoader();
+
+                try
+                {
+                    Thread.currentThread().setContextClassLoader(
+                            Application.class.getClassLoader());
+
+                    javax.mail.Transport.send( message );
+                }
+                finally
+                {
+                    Thread.currentThread().setContextClassLoader(
+                            originalClassLoader);
+                }
+            }
+        }
+        catch ( Exception e )
+        {
+            String msg = e.getMessage();
+            if (msg != null && msg.contains("java.net.UnknownHostException:"))
+            {
+                log.error( "Exception sending mail message: " + e );
+            }
+            else
+            {
+                log.error( "Exception sending mail message:\n", e );
+                log.error( "unsent message:\nTo: "
+                       + ( to == null ? "null" : to )
+                       + "\nSubject: " + ( subject == null ? "null" : subject )
+                       + "\nBody:\n" + ( body == null ? "null" : body )
+                       );
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sends a text e-mail message to the system administrators.
+     *
+     * @param subject     the subject line
+     * @param body        the body of the message
+     */
+    public static void sendAdminEmail(String subject, String body)
+    {
+        String adminList =
+            configurationProperties().getProperty("adminNotifyAddrs");
+
+        if (adminList == null)
+        {
+            adminList = configurationProperties()
+                .getProperty("coreAdminEmail");
+        }
+        else
+        {
+            String primaryAdmin = configurationProperties()
+                .getProperty("coreAdminEmail");
+
+            if (primaryAdmin != null && !adminList.contains(primaryAdmin))
+            {
+                adminList = primaryAdmin + "," + adminList;
+            }
+        }
+
+        if (adminList == null)
+        {
+            log.error( "No bound admin e-mail addresses.  "
+                       + "Cannot send message:\n"
+                       + "Subject: " + subject + "\n"
+                       + "Message:\n" + body );
+            return;
+        }
+
+        String[] admins = adminList.split("\\s*,\\s*");
+        sendSimpleEmail(new NSArray<String>(admins), subject, body);
     }
 
 
@@ -1288,7 +1525,7 @@ public class Application
      * @param aContext    the context in which the exception occurred
      * @param msg         the text message accompanying the exception info
      */
-    static public void emailExceptionToAdmins( Throwable    anException,
+/*    static public void emailExceptionToAdmins( Throwable    anException,
                                                WOContext    aContext,
                                                String       msg )
     {
@@ -1300,7 +1537,7 @@ public class Application
                 : null,
             aContext,
             msg );
-    }
+    }*/
 
 
     // ----------------------------------------------------------
@@ -1382,7 +1619,7 @@ public class Application
      * @param aContext    the context in which the exception occurred
      * @param msg         the text message accompanying the exception info
      */
-    static public void emailExceptionToAdmins( Throwable    anException,
+/*    static public void emailExceptionToAdmins( Throwable    anException,
                                                NSDictionary extraInfo,
                                                WOContext    aContext,
                                                String       msg )
@@ -1412,7 +1649,7 @@ public class Application
                 ERXApplication.erxApplication().killInstance();
             }
         }
-    }
+    }*/
 
 
     // ----------------------------------------------------------
@@ -1948,7 +2185,7 @@ public class Application
     public void executeExternalCommand(String commandLine, File cwd)
         throws java.io.IOException, InterruptedException
     {
-        String[] cmdArray = null;
+/*        String[] cmdArray = null;
         Process proc = null;
 
         // Tack on the command shell prefix to the beginning, quoting the
@@ -1999,7 +2236,91 @@ public class Application
                 proc.destroy();
             }
             throw e;
+        }*/
+
+        Process proc = null;
+
+        try
+        {
+            proc = executeExternalCommandAsync(commandLine, cwd);
+            int exitCode = proc.waitFor();
+            log.debug( "external command returned exit code: " + exitCode );
         }
+        catch ( InterruptedException e )
+        {
+            // stopped by timeout
+            if ( proc != null )
+            {
+                proc.destroy();
+            }
+            throw e;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * <p>
+     * Execute an external command, using the appropriate command shell
+     * setting from the app configuration data, but does not wait for it to
+     * finish.  The Java Process object will be returned so that it can be
+     * manipulated and its input/output streams can be accessed.
+     * </p><p>
+     * If subsystems have already been initialized, their exported ENV settings
+     * will be passed to the command as well.
+     * </p>
+     *
+     * @param commandLine The command to execute
+     * @param cwd The (optional) working directory in which the command
+     * should be executed.  If null, the application's cwd will be used.
+     * @return the Java Process object that represents the external process
+     * @throws java.io.IOException if an error occurs communicating with
+     * the child process
+     * @throws InterruptedException if the child process gets interrupted
+     */
+    public Process executeExternalCommandAsync(String commandLine, File cwd)
+        throws java.io.IOException
+    {
+        String[] cmdArray = null;
+        Process proc = null;
+
+        // Tack on the command shell prefix to the beginning, quoting the
+        // whole argument sequence if necessary
+        {
+            String shell = net.sf.webcat.core.Application.cmdShell();
+            if ( shell != null && shell.length() > 0 )
+            {
+                if ( shell.charAt( shell.length() - 1 ) == '"' )
+                {
+                    cmdArray = shell.split( "\\s+" );
+                    cmdArray[cmdArray.length - 1] = commandLine;
+                }
+                else
+                {
+                    commandLine = shell + commandLine;
+                }
+            }
+        }
+
+        String[] envp = null;
+        // If subsystems are already loaded, get their ENV info:
+        if ( __subsystemManager != null )
+        {
+            envp = subsystemManager().envp();
+        }
+        if ( cmdArray != null )
+        {
+            log.debug("executeExternalCommand(): "
+                + Arrays.toString(cmdArray));
+            proc = Runtime.getRuntime().exec( cmdArray, envp, cwd );
+        }
+        else
+        {
+            log.debug("executeExternalCommand(): " + commandLine);
+            proc = Runtime.getRuntime().exec( commandLine, envp, cwd );
+        }
+
+        return proc;
     }
 
 
@@ -2339,6 +2660,7 @@ public class Application
         // Register Core messages.
 
         ApplicationStartupMessage.register();
+        UnexpectedExceptionMessage.register();
 
         // Register messaging protocols.
 
@@ -2418,7 +2740,7 @@ public class Application
                     log.error( "Bootstrap.jar is out of date: expected '"
                         + expectedVersion + "' but found '" + currentVersion
                         + "'");
-                    sendAdminEmail( null,null, true,
+                    sendAdminEmail(
                         "Please update your Bootstrap.jar",
                         "During startup, Web-CAT detected that an older "
                         + "version of Bootstrap.jar\nis installed.  Web-CAT "
@@ -2431,21 +2753,19 @@ public class Application
                         + "Please follow these instructions to download and "
                         + "install the latest\navailable version:\n\n"
                         + "http://web-cat.cs.vt.edu/WCWiki/"
-                        + "UpdateBootstrapJar\n",
-                        null );
+                        + "UpdateBootstrapJar\n" );
                 }
             }
         }
         else
         {
             log.error( "Unable to read expected bootstrap.project.version" );
-            sendAdminEmail( null,null, true,
+            sendAdminEmail(
                 "Unable to verify bootstrap version",
                 "During startup, Web-CAT was unable to read the expected\n"
                 + "bootstrap.project.version.  Your Web-CAT instance will "
                 + "continue\nrunning normally.  Please contact the Web-CAT "
-                + "team for assistance\nresolving this problem.\n",
-                null );
+                + "team for assistance\nresolving this problem.\n" );
         }
     }
 

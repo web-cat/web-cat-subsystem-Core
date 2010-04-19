@@ -125,11 +125,12 @@ public class FeedbackPage
             body.append( extraInfo );
             body.append( "\n" );
         }
-        Application.sendAdminEmail( null, null, true,
+
+        Application.sendAdminEmail(
             "Feedback: " + selectedCategory,
-            body.toString(),
-            null );
+            body.toString() );
         sent = true;
+
         return null;
     }
 

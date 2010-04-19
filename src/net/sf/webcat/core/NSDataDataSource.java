@@ -22,55 +22,64 @@
 package net.sf.webcat.core;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
+import javax.activation.DataSource;
+import javax.activation.FileTypeMap;
 import com.webobjects.foundation.NSData;
-import com.webobjects.foundation.NSMutableData;
-import com.webobjects.foundation.NSRange;
 
 //-------------------------------------------------------------------------
 /**
- * An output stream that uses an NSMutableData instance as its backing store.
+ * A data source used by the e-mail implementation to provide attachments that
+ * come from NSData objects.
  *
  * @author  Tony Allevato
  * @version $Id$
  */
-public class NSMutableDataOutputStream extends OutputStream
+public class NSDataDataSource implements DataSource
 {
-    //~ Constructor ...........................................................
+    //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    public NSMutableDataOutputStream()
+    public NSDataDataSource(String name, NSData data)
     {
-        data = new NSMutableData();
+        this.name = name;
+        this.data = data;
     }
 
 
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    public NSData data()
+    public String getContentType()
     {
-        return data;
+        return FileTypeMap.getDefaultFileTypeMap().getContentType(name);
     }
 
 
     // ----------------------------------------------------------
-    @Override
-    public void write(int b) throws IOException
+    public InputStream getInputStream() throws IOException
     {
-        data.appendByte((byte) b);
+        return data.stream();
     }
 
 
     // ----------------------------------------------------------
-    @Override
-    public void write(byte b[], int off, int len) throws IOException
+    public String getName()
     {
-        data.appendBytes(b, new NSRange(off, len));
+        return name;
+    }
+
+
+    // ----------------------------------------------------------
+    public OutputStream getOutputStream() throws IOException
+    {
+        return null;
     }
 
 
     //~ Static/instance variables .............................................
 
-    private NSMutableData data;
+    private String name;
+    private NSData data;
 }
