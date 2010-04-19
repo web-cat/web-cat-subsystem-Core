@@ -59,7 +59,7 @@ import er.extensions.foundation.ERXStringUtilities;
  * <i>columns</i> binding; this should be an array of dictionaries constructed
  * directly in code, loaded from a plist file, or obtained from the
  * {@link WCTableLayoutBuilder} utility class.
- * </p><p> 
+ * </p><p>
  * Each entry in the columns array is a dictionary with the following keys:
  * </p><p>
  * <ul>
@@ -76,10 +76,10 @@ import er.extensions.foundation.ERXStringUtilities;
  * <li><b>properties:</b> cell-specific properties that are passed along to
  * the cell component</li>
  * </p>
- * 
- * @binding id the DOM identifier of the table, also used as a prefix for
- *     other elements created by the component. If not provided, one is
- *     auto-generated
+ *
+ * @binding id for the content pane that wraps this table; can be used to
+ *     refresh the table manually after changes have been made to the data
+ *     model on the server
  * @binding canSort true if the rows in the table can be sorted by clicking
  *     the column title (defaults to false)
  * @binding displayGroup a WODisplayGroup that contains the data to be
@@ -101,29 +101,30 @@ import er.extensions.foundation.ERXStringUtilities;
  *     display group (defaults to false)
  * @binding multipleSelection true if the user should be able to select
  *     multiple items from the table; false if only a single item can be
- *     selected at a time (defaults to false)     
- * 
+ *     selected at a time (defaults to false)
+ *
  * @author Tony Allevato
  * @version $Id$
  */
 public class WCTable extends WOComponent
 {
     //~ Constructors ..........................................................
-    
+
     // ----------------------------------------------------------
     /**
      * Initializes a new ObjectTable.
-     * 
+     *
      * @param context
      */
     public WCTable(WOContext context)
     {
         super(context);
     }
-    
-    
+
+
     //~ KVC attributes (must be public) .......................................
 
+    public String id;
     public boolean canSort = false;
     public WODisplayGroup displayGroup;
     public NSArray<NSDictionary<String, Object>> columns;
@@ -133,11 +134,11 @@ public class WCTable extends WOComponent
     public boolean showsRowNumbers = false;
     public boolean allowsSelection = false;
     public boolean multipleSelection = false;
-    
+
     public Object objectInRepetition;
     public int indexInRepetition;
     public NSDictionary<String, Object> columnInRepetition;
-    public int columnIndexInRepetition;    
+    public int columnIndexInRepetition;
     public NSDictionary<String, Object> filterInRepetition;
     public int filterIndexInRepetition;
 
@@ -146,7 +147,7 @@ public class WCTable extends WOComponent
     private NSMutableDictionary<String, JSONObject> currentFilters;
     private int sortedColumnIndex = -1;
     private boolean sortedColumnAscending;
-    
+
 
     //~ Methods ...............................................................
 
@@ -159,6 +160,11 @@ public class WCTable extends WOComponent
             idFor = new ComponentIDGenerator(this);
         }
 
+        if (id == null)
+        {
+            id = idFor.get();
+        }
+
         if (currentFilters == null)
         {
             currentFilters = new NSMutableDictionary<String, JSONObject>();
@@ -166,19 +172,29 @@ public class WCTable extends WOComponent
 
         if (!isBatched)
         {
-        	batchSize = -1;
+            batchSize = -1;
         }
 
         if (batchSize == 0)
         {
-        	batchSize = 10;
+            batchSize = 10;
         }
 
         displayGroup.setNumberOfObjectsPerBatch(
-        		(batchSize == -1) ? displayGroup.allObjects().count() :
-        			batchSize);
+                (batchSize == -1) ? displayGroup.allObjects().count() :
+                    batchSize);
+
+        if (currentTable() != null)
+        {
+            Log.error("WCTable elements cannot be nested! The layout of "
+                    + "your table will not work as expected.");
+        }
+
+        setCurrentTable(this);
 
         super.appendToResponse(response, context);
+
+        setCurrentTable(null);
     }
 
 
@@ -186,14 +202,14 @@ public class WCTable extends WOComponent
     /**
      * Gets the full JavaScript reference to the proxy object that is used to
      * make RPC calls to the server-side component.
-     * 
-     * @return the full JavaScript reference to the proxy object 
+     *
+     * @return the full JavaScript reference to the proxy object
      */
     public String proxyReference()
     {
         return idFor.valueForKey("jsonrpc") + ".table";
     }
-    
+
 
     // ----------------------------------------------------------
     public String idForCurrentFilterEnabledCheckbox()
@@ -224,14 +240,14 @@ public class WCTable extends WOComponent
      * Called from within a columns repetition nested in a rows repetition,
      * this method gets the value for the current row and column that will be
      * passed to the cell component.
-     * 
+     *
      * @return the value of the current column in the current row of the table
      */
     public Object columnValueOfObjectInRepetition()
     {
         String keyPath = (String) columnInRepetition.objectForKey("keyPath");
         Object value;
-        
+
         if (keyPath == null)
         {
             value = objectInRepetition;
@@ -250,21 +266,21 @@ public class WCTable extends WOComponent
                         objectInRepetition, keyPath);
             }
         }
-        
+
         return value;
     }
-    
+
 
     // ----------------------------------------------------------
     /**
-     * @return true if the current column can be sorted, otherwise false 
+     * @return true if the current column can be sorted, otherwise false
      */
     public boolean columnInRepetitionCanBeSorted()
     {
         String keyPath = (String) columnInRepetition.objectForKey("keyPath");
         String sortingKeyPath = (String) columnInRepetition.objectForKey(
                 "sortingKeyPath");
-        
+
         return (sortingKeyPath != null ||
                 (keyPath != null && !keyPath.startsWith("~")));
     }
@@ -275,18 +291,18 @@ public class WCTable extends WOComponent
     {
         return (indexInRepetition % 2 == 0) ? "e" : "o";
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public boolean isRowInRepetitionSelected()
     {
         int index = indexInRepetition +
             displayGroup.indexOfFirstDisplayedObject() - 1;
-        
+
         return displayGroup.selectionIndexes().containsObject(index);
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public boolean isEntireBatchSelected()
     {
@@ -299,7 +315,7 @@ public class WCTable extends WOComponent
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -308,21 +324,21 @@ public class WCTable extends WOComponent
     /**
      * Gets the actual row number of the current row, displayed when the
      * showsRowNumbers binding is set to true.
-     * 
+     *
      * @return the actual row number for the current row (that is, the number
      *     of the object in the display group, not its displayed index)
      */
     public int actualRowNumber()
     {
-    	return indexInRepetition + displayGroup.indexOfFirstDisplayedObject();
+        return indexInRepetition + displayGroup.indexOfFirstDisplayedObject();
     }
-    
+
 
     // ----------------------------------------------------------
     /**
      * Selects or deselects the object at the specified index in the current
      * batch in the display group.
-     * 
+     *
      * @param index the object of the item in the current batch
      * @param state true to select the item, false to deselect it
      */
@@ -334,42 +350,42 @@ public class WCTable extends WOComponent
 
         if (multipleSelection)
         {
-	        NSMutableArray<Integer> selection =
-	            new NSMutableArray<Integer>(displayGroup.selectionIndexes());
-	        
-	        if (state)
-	        {
-	            if (!selection.containsObject(index))
-	            {
-	                selection.addObject(index);
-	            }
-	        }
-	        else
-	        {
-	            selection.removeObject(index);
-	        }
+            NSMutableArray<Integer> selection =
+                new NSMutableArray<Integer>(displayGroup.selectionIndexes());
 
-	        displayGroup.setSelectionIndexes(selection);
+            if (state)
+            {
+                if (!selection.containsObject(index))
+                {
+                    selection.addObject(index);
+                }
+            }
+            else
+            {
+                selection.removeObject(index);
+            }
+
+            displayGroup.setSelectionIndexes(selection);
         }
         else
         {
-        	if (state)
-        	{
-        		displayGroup.setSelectionIndexes(
-            		new NSArray<Integer>(index));
-        	}
-        	else
-        	{
-        		displayGroup.clearSelection();
-        	}
+            if (state)
+            {
+                displayGroup.setSelectionIndexes(
+                    new NSArray<Integer>(index));
+            }
+            else
+            {
+                displayGroup.clearSelection();
+            }
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Selects or deselects all the items in the current batch.
-     * 
+     *
      * @param state true to select the items, false to deselect them
      */
     public synchronized void selectAllObjectsInBatch(boolean state)
@@ -377,14 +393,14 @@ public class WCTable extends WOComponent
         if (state)
         {
             NSMutableArray<Integer> selection = new NSMutableArray<Integer>();
-            
+
             for (int i = displayGroup.indexOfFirstDisplayedObject() - 1;
                 i <= displayGroup.indexOfLastDisplayedObject() - 1;
                 i++)
             {
                 selection.addObject(i);
             }
-            
+
             displayGroup.setSelectionIndexes(selection);
         }
         else
@@ -392,12 +408,12 @@ public class WCTable extends WOComponent
             // We never allow objects to be selected that aren't in the
             // current batch anyway, so clearing the entire selection is the
             // easiest way to deal with this case.
-            
+
             displayGroup.clearSelection();
         }
     }
 
-    
+
     // ----------------------------------------------------------
     public synchronized void changeSortOrdering(int index)
     {
@@ -420,7 +436,7 @@ public class WCTable extends WOComponent
         NSSelector<?> selector = sortedColumnAscending ?
                 EOSortOrdering.CompareCaseInsensitiveAscending :
                 EOSortOrdering.CompareCaseInsensitiveDescending;
-        
+
         EOSortOrdering so = new EOSortOrdering(sortingKeyPath, selector);
 
         displayGroup.setSortOrderings(new NSArray<EOSortOrdering>(so));
@@ -428,35 +444,35 @@ public class WCTable extends WOComponent
         displayGroup.updateDisplayedObjects();
         displayGroup.setCurrentBatchIndex(1);
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public synchronized void changeBatchSize(int size)
     {
-    	batchSize = size;
-    	
+        batchSize = size;
+
         displayGroup.setNumberOfObjectsPerBatch(
-        		(batchSize == -1) ? displayGroup.allObjects().count() :
-        			batchSize);
+                (batchSize == -1) ? displayGroup.allObjects().count() :
+                    batchSize);
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public synchronized void changeFilter(String keyPath, JSONObject changes)
     {
         JSONObject filter = currentFilters.objectForKey(keyPath);
-        
+
         if (filter == null)
         {
             filter = new JSONObject();
             currentFilters.setObjectForKey(filter, keyPath);
         }
-        
+
         Iterator<String> it = changes.keys();
         while (it.hasNext())
         {
             String changeKey = it.next();
-            
+
             try
             {
                 Object value = changes.get(changeKey);
@@ -471,16 +487,16 @@ public class WCTable extends WOComponent
         updateDisplayGroupQualifier();
     }
 
-    
+
     // ----------------------------------------------------------
     private void updateDisplayGroupQualifier()
     {
         NSMutableArray<EOQualifier> quals = new NSMutableArray<EOQualifier>();
-        
+
         for (String keyPath : currentFilters.allKeys())
         {
             JSONObject filterArgs = currentFilters.objectForKey(keyPath);
-            
+
             try
             {
                 if (filterArgs.getBoolean("enabled"))
@@ -490,7 +506,7 @@ public class WCTable extends WOComponent
 
                     String format = keyPath + " %s %%@";
                     String qualString = null;
-                    
+
                     if ("is".equals(relation))
                     {
                             qualString = String.format(format, "=");
@@ -501,23 +517,23 @@ public class WCTable extends WOComponent
                     }
                     else if ("starts with".equals(relation))
                     {
-                            value = value.toString() + "*"; 
+                            value = value.toString() + "*";
                             qualString = String.format(format,
                                     "caseInsensitiveLike");
                     }
                     else if ("ends with".equals(relation))
                     {
-                            value = "*" + value.toString(); 
+                            value = "*" + value.toString();
                             qualString = String.format(format,
                                     "caseInsensitiveLike");
                     }
                     else if ("contains".equals(relation))
                     {
-                            value = "*" + value.toString() + "*"; 
+                            value = "*" + value.toString() + "*";
                             qualString = String.format(format,
                                     "caseInsensitiveLike");
                     }
-                    
+
                     quals.add(EOQualifier.qualifierWithQualifierFormat(
                             qualString, new NSArray<Object>(value)));
                 }
@@ -536,16 +552,16 @@ public class WCTable extends WOComponent
         {
             displayGroup.setQualifier(new EOAndQualifier(quals));
         }
-        
+
         displayGroup.updateDisplayedObjects();
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public boolean currentFilterIsEnabled()
     {
         String keyPath = (String) filterInRepetition.objectForKey("keyPath");
-        
+
         JSONObject filter = currentFilters.objectForKey(keyPath);
 
         if (filter != null)
@@ -564,13 +580,13 @@ public class WCTable extends WOComponent
             return false;
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public String currentFilterComparison()
     {
         String keyPath = (String) filterInRepetition.objectForKey("keyPath");
-        
+
         JSONObject filter = currentFilters.objectForKey(keyPath);
 
         if (filter != null)
@@ -590,12 +606,12 @@ public class WCTable extends WOComponent
         }
     }
 
-    
+
     // ----------------------------------------------------------
     public void setCurrentFilterIsEnabled(boolean value)
     {
         String keyPath = (String) filterInRepetition.objectForKey("keyPath");
-        
+
         JSONObject changes = new JSONObject();
         try
         {
@@ -605,16 +621,16 @@ public class WCTable extends WOComponent
         {
             // Do nothing.
         }
-        
+
         changeFilter(keyPath, changes);
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public Object currentFilterValue()
     {
         String keyPath = (String) filterInRepetition.objectForKey("keyPath");
-        
+
         JSONObject filter = currentFilters.objectForKey(keyPath);
 
         if (filter != null)
@@ -633,13 +649,13 @@ public class WCTable extends WOComponent
             return null;
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public void setCurrentFilterValue(Object value)
     {
         String keyPath = (String) filterInRepetition.objectForKey("keyPath");
-        
+
         JSONObject changes = new JSONObject();
         try
         {
@@ -649,10 +665,10 @@ public class WCTable extends WOComponent
         {
             // Do nothing.
         }
-        
+
         changeFilter(keyPath, changes);
     }
-    
+
 
     // ----------------------------------------------------------
     public boolean columnInRepetitionIsSorted()
@@ -667,11 +683,11 @@ public class WCTable extends WOComponent
         return sortedColumnAscending;
     }
 
-    
+
     // ----------------------------------------------------------
     /**
      * Sets the display group to point to the first batch of objects.
-     * 
+     *
      * @return null
      */
     public synchronized WOActionResults goToFirstBatch()
@@ -681,11 +697,11 @@ public class WCTable extends WOComponent
         return null;
     }
 
-    
+
     // ----------------------------------------------------------
     /**
      * Sets the display group to point to the previous batch of objects.
-     * 
+     *
      * @return null
      */
     public synchronized WOActionResults goToPreviousBatch()
@@ -699,7 +715,7 @@ public class WCTable extends WOComponent
     // ----------------------------------------------------------
     /**
      * Sets the display group to point to the next batch of objects.
-     * 
+     *
      * @return null
      */
     public synchronized WOActionResults goToNextBatch()
@@ -708,12 +724,12 @@ public class WCTable extends WOComponent
         displayGroup.displayNextBatch();
         return null;
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Sets the display group to point to the last batch of objects.
-     * 
+     *
      * @return null
      */
     public synchronized WOActionResults goToLastBatch()
@@ -723,7 +739,7 @@ public class WCTable extends WOComponent
         return null;
     }
 
-    
+
     // ----------------------------------------------------------
     @SuppressWarnings("unchecked")
     public synchronized void performActionOnObjectAtIndexInBatch(
@@ -732,14 +748,14 @@ public class WCTable extends WOComponent
         displayGroup.clearSelection();
         displayGroup.setSelectionIndexes(new NSArray<Integer>(
                 index + displayGroup.indexOfFirstDisplayedObject() - 1));
-        
+
         NSDictionary<String, Object> column =
             columns.objectAtIndex(columnIndex);
 
         NSDictionary<String, String> properties =
             (NSDictionary<String, String>) column.objectForKey("properties");
 
-        String actionName = properties.objectForKey("action"); 
+        String actionName = properties.objectForKey("action");
         performParentAction(actionName);
     }
 
@@ -751,29 +767,29 @@ public class WCTable extends WOComponent
         displayGroup.setSelectionIndexes(new NSArray<Integer>(
                 index + displayGroup.indexOfFirstDisplayedObject() - 1));
     }
-    
-    
+
+
     // ----------------------------------------------------------
     @Override
     public void awake()
     {
         super.awake();
 
-        if (currentTable() != null)
+/*        if (currentTable() != null)
         {
             Log.error("WCTable elements cannot be nested! The layout of "
                     + "your table will not work as expected.");
         }
 
-        setCurrentTable(this);
+        setCurrentTable(this);*/
     }
-    
+
 
     // ----------------------------------------------------------
     @Override
     public void sleep()
     {
-        setCurrentTable(null);
+//        setCurrentTable(null);
 
         super.sleep();
     }
@@ -785,8 +801,8 @@ public class WCTable extends WOComponent
         return (WCTable) ERXWOContext.contextDictionary().objectForKey(
                 CURRENT_DATA_TABLE_KEY);
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public static void setCurrentTable(WCTable table)
     {
@@ -814,7 +830,7 @@ public class WCTable extends WOComponent
     public static WCTableLayoutBuilder currentTableLayout()
     {
         WCTable table = currentTable();
-        
+
         if (table == null)
         {
             return null;
@@ -824,7 +840,7 @@ public class WCTable extends WOComponent
             WCTableLayoutBuilder layout =
                 (WCTableLayoutBuilder) ERXWOContext.contextDictionary().objectForKey(
                     CURRENT_DATA_TABLE_LAYOUT_KEY);
-            
+
             if (layout == null)
             {
                 layout = new WCTableLayoutBuilder();
@@ -835,32 +851,32 @@ public class WCTable extends WOComponent
             return layout;
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public static void commitTableLayoutChanges()
     {
         WCTable table = currentTable();
-        
+
         if (table != null)
         {
             WCTableLayoutBuilder layout =
                 (WCTableLayoutBuilder) ERXWOContext.contextDictionary().objectForKey(
                     CURRENT_DATA_TABLE_LAYOUT_KEY);
-            
+
             if (layout != null)
             {
                 table.columns = layout.asArray();
             }
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public static WCTableFilterBuilder currentFilters()
     {
         WCTable table = currentTable();
-        
+
         if (table == null)
         {
             return null;
@@ -870,7 +886,7 @@ public class WCTable extends WOComponent
             WCTableFilterBuilder filters =
                 (WCTableFilterBuilder) ERXWOContext.contextDictionary().objectForKey(
                     CURRENT_DATA_TABLE_FILTERS_KEY);
-            
+
             if (filters == null)
             {
                 filters = new WCTableFilterBuilder();
@@ -881,33 +897,33 @@ public class WCTable extends WOComponent
             return filters;
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     public static void commitFilterChanges()
     {
         WCTable table = currentTable();
-        
+
         if (table != null)
         {
             WCTableFilterBuilder filters =
                 (WCTableFilterBuilder) ERXWOContext.contextDictionary().objectForKey(
                     CURRENT_DATA_TABLE_FILTERS_KEY);
-            
+
             if (filters != null)
             {
                 table.filters = filters.asArray();
             }
         }
     }
-    
-    
+
+
     //~ Static/instance variables .............................................
-    
+
     private static final String CURRENT_DATA_TABLE_KEY =
-        "net.sf.webcat.ui.table.WCDataTable.currentTable";
+        "net.sf.webcat.ui.WCTable.currentTable";
     private static final String CURRENT_DATA_TABLE_LAYOUT_KEY =
-        "net.sf.webcat.ui.table.WCDataTable.currentTableLayout";
+        "net.sf.webcat.ui.WCTable.currentTableLayout";
     private static final String CURRENT_DATA_TABLE_FILTERS_KEY =
-        "net.sf.webcat.ui.table.WCDataTable.currentTableFilters";
+        "net.sf.webcat.ui.WCTable.currentTableFilters";
 }

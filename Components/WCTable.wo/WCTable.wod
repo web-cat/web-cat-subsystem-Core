@@ -4,7 +4,7 @@ Proxy : WCJSONRPC {
 }
 
 ContentPane : WCContentPane {
-    id = idFor.updateContainer;
+    id = id;
 }
 
 Columns : WORepetition {
@@ -66,6 +66,7 @@ TableInstance : WCDiv {
     dojoType = "webcat.Table";
     jsId = idFor.jsId;
     proxy = proxyReference;
+    contentPane = id;
     idPrefix = idFor.ComponentIDPrefix;
     multiSelect = multipleSelection;
 }

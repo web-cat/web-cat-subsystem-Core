@@ -36,6 +36,9 @@ dojo.declare("webcat.Table", null,
     proxy: null,
 
     // The prefix used for all of the widget IDs in the table.
+    contentPane: null,
+
+    // The prefix used for all of the widget IDs in the table.
     idPrefix: "",
 
     // True if multiple selection is allowed.
@@ -51,7 +54,6 @@ dojo.declare("webcat.Table", null,
 
         this.selectionCheckboxName = this.idPrefix + "_selectionState";
         this.allSelectionCheckboxID = this.idPrefix + "_allSelectionState";
-        this.updateContainerID = this.idPrefix + "_updateContainer";
 
         dojo.connect(window, "onresize", this, "_onWindowResized");
 
@@ -139,7 +141,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     performActionOnObjectAtIndexInBatch: function(index, columnIndex)
     {
-        webcat.block(this.updateContainerID);
+        webcat.block(this.contentPane);
 
         if (this.multiSelect)
         {
@@ -158,7 +160,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     changeSortOrdering: function(index)
     {
-        webcat.block(this.updateContainerID);
+        webcat.block(this.contentPane);
         this.proxy.changeSortOrdering(
             this._updateTableGenerator(), index);
     },
@@ -167,7 +169,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     changeBatchSize: function(size)
     {
-        webcat.block(this.updateContainerID);
+        webcat.block(this.contentPane);
         this.proxy.changeBatchSize(
             this._updateTableGenerator(), size);
     },
@@ -176,7 +178,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     goToFirstBatch: function()
     {
-        webcat.block(this.updateContainerID);
+        webcat.block(this.contentPane);
         this.proxy.goToFirstBatch(this._updateTableGenerator());
     },
 
@@ -184,7 +186,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     goToPreviousBatch: function()
     {
-        webcat.block(this.updateContainerID);
+        webcat.block(this.contentPane);
         this.proxy.goToPreviousBatch(this._updateTableGenerator());
     },
 
@@ -192,7 +194,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     goToNextBatch: function()
     {
-        webcat.block(this.updateContainerID);
+        webcat.block(this.contentPane);
         this.proxy.goToNextBatch(this._updateTableGenerator());
     },
 
@@ -200,7 +202,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     goToLastBatch: function()
     {
-        webcat.block(this.updateContainerID);
+        webcat.block(this.contentPane);
         this.proxy.goToLastBatch(this._updateTableGenerator());
     },
 
@@ -208,7 +210,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     changeFilter: function(keyPath, changes)
     {
-        webcat.block(this.updateContainerID);
+        webcat.block(this.contentPane);
         this.proxy.changeFilter(
             this._updateTableGenerator(), keyPath, changes);
     },
@@ -253,7 +255,7 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     _onWindowResized: function()
     {
-        var containerNode = dijit.byId(this.updateContainerID).domNode;
+        var containerNode = this.contentPane;
         var tableNode = dojo.query("table", containerNode)[0];
         var headerNodes = dojo.query("thead > tr > th[weight]", tableNode);
 
@@ -283,10 +285,10 @@ dojo.declare("webcat.Table", null,
     // ----------------------------------------------------------
     _updateTableGenerator: function()
     {
-        var ucid = this.updateContainerID;
+        var cp = this.contentPane;
         return function() {
-            eval("dijit.byId('" + ucid + "').refresh();" +
-                 "webcat.unblock('" + ucid + "');");
+            dijit.byNode(cp).refresh();
+            webcat.unblock(cp);
         };
     }
 });

@@ -44,6 +44,12 @@ dojo.declare("webcat.Spinner",
      */
     size: "small",
 
+    /**
+     * Indicates whether the spinner is currently spinning. This can also be
+     * set when the spinner is created to start it spinning initially.
+     */
+    isSpinning: false,
+
     templateString: dojo.cache("webcat", "templates/Spinner.html"),
 
 
@@ -71,6 +77,18 @@ dojo.declare("webcat.Spinner",
 
 
     // ----------------------------------------------------------
+    startup: function()
+    {
+        this.inherited(arguments);
+
+        if (this.isSpinning)
+        {
+            this.start();
+        }
+    },
+
+
+    // ----------------------------------------------------------
     /**
      * Ensures that the widget is removed from the animation cache when it is
      * destroyed (this can happen if stop() is never called).
@@ -87,6 +105,7 @@ dojo.declare("webcat.Spinner",
      */
     start: function()
     {
+        this.isSpinning = true;
         webcat._addSpinner(this);
         dojo.removeClass(this.domNode, "webcatSpinnerHidden");
     },
@@ -98,6 +117,7 @@ dojo.declare("webcat.Spinner",
      */
     stop: function()
     {
+        this.isSpinning = false;
         dojo.addClass(this.domNode, "webcatSpinnerHidden");
         webcat._removeSpinner(this);
     },

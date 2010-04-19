@@ -33,7 +33,7 @@ import com.webobjects.foundation.NSMutableDictionary;
  * {@code model} binding of the {@code Tree} element should be set to an
  * instance of an {@code AbstractTreeModel} subclass that provides the data and
  * visual representation of the items in the tree.
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
@@ -64,12 +64,12 @@ public abstract class AbstractTreeModel
      * This bundling allows the Dojo tree to gather all of the properties that
      * it needs for one level of the tree in one Ajax request, rather than
      * sending a separate request for each child and property that it needs.
-     * 
+     *
      * @param itemId
      *            the ID of an item whose children should be accessed
-     * 
+     *
      * @return a {@link JSONArray} containing data about the children
-     * 
+     *
      * @throws JSONException
      */
     public JSONArray _jsDataForChildrenOfItemWithId(String itemId)
@@ -95,15 +95,15 @@ public abstract class AbstractTreeModel
      * This bundling allows the Dojo tree to gather all of the properties that
      * it needs for one level of the tree in one Ajax request, rather than
      * sending a separate request for each child and property that it needs.
-     * 
+     *
      * @param itemId
      *            the ID of an item whose children should be accessed
      * @param decorators
      *            an array of objects that implement {@link IItemDecorator}
-     * 
+     *
      * @return a {@link JSONArray} containing data about the children
-     * 
-     * @throws JSONException 
+     *
+     * @throws JSONException
      */
     public JSONArray _jsDataForChildrenOfItemWithId(String itemId,
             NSArray<IItemDecorator> decorators) throws JSONException
@@ -124,38 +124,41 @@ public abstract class AbstractTreeModel
 
         JSONArray array = new JSONArray();
 
-        for (Object childItem : children)
+        if (children != null)
         {
-            JSONObject properties = new JSONObject();
-
-            String label = labelForItem(childItem);
-            properties.put("label", label);
-
-            String childId = idForItem(childItem);
-            if (childId == null)
-                childId = itemId + "/" + label.replace('/', '\\');
-
-            properties.put("itemId", childId);
-
-            boolean hasChildren = itemHasChildren(childItem);
-            properties.put("hasChildren", hasChildren);
-
-            String iconClass = iconClassForItem(childItem);
-            properties.put("iconClass", iconClass);
-
-            // Let any decorators attach their own properties to the item before
-            // it is returned.
-            if (decorators != null)
+            for (Object childItem : children)
             {
-                for (IItemDecorator decorator : decorators)
+                JSONObject properties = new JSONObject();
+
+                String label = labelForItem(childItem);
+                properties.put("label", label);
+
+                String childId = idForItem(childItem);
+                if (childId == null)
+                    childId = itemId + "/" + label.replace('/', '\\');
+
+                properties.put("itemId", childId);
+
+                boolean hasChildren = itemHasChildren(childItem);
+                properties.put("hasChildren", hasChildren);
+
+                String iconClass = iconClassForItem(childItem);
+                properties.put("iconClass", iconClass);
+
+                // Let any decorators attach their own properties to the item before
+                // it is returned.
+                if (decorators != null)
                 {
-                    decorator.decorateItem(childItem, properties);
+                    for (IItemDecorator decorator : decorators)
+                    {
+                        decorator.decorateItem(childItem, properties);
+                    }
                 }
+
+                array.put(properties);
+
+                itemLookupCache.setObjectForKey(childItem, childId);
             }
-
-            array.put(properties);
-
-            itemLookupCache.setObjectForKey(childItem, childId);
         }
 
         return array;
@@ -169,7 +172,7 @@ public abstract class AbstractTreeModel
      * Client code should only have to call this code if it is doing custom
      * event handling on a tree widget and needs to access a model item based on
      * the item ID passed to the event handler.
-     * 
+     *
      * @param itemId
      *            the item ID to look up
      * @return the model item that corresponds to the specified item ID
@@ -189,7 +192,7 @@ public abstract class AbstractTreeModel
      * event that computing the children of an item is an inefficient operation,
      * subclasses should override this to get this value without actually
      * computing the children.
-     * 
+     *
      * @param parentItem
      *            the parent item
      * @return true if the item has children; otherwise false
@@ -205,7 +208,7 @@ public abstract class AbstractTreeModel
     /**
      * Gets an array of items that represent the children of the specified item
      * in the tree.
-     * 
+     *
      * @param parentItem
      *            the parent item, or {@code null} to get the root items
      * @return an {@link NSArray} containing the children of the parent item
@@ -226,7 +229,7 @@ public abstract class AbstractTreeModel
      * breaking the layout of the tree widget; the intention here is to permit
      * rich formatting of the label.
      * </p>
-     * 
+     *
      * @param item
      *            the item
      * @return the label to display for the item
@@ -246,7 +249,7 @@ public abstract class AbstractTreeModel
      * default icon depending on whether the node is a leaf or has children.
      * Subclasses can override this method to provide different behavior for
      * individual items.
-     * 
+     *
      * @param item
      *            the item
      * @return the CSS class of the icon for this item, or null to display a
@@ -277,7 +280,7 @@ public abstract class AbstractTreeModel
      * will not change. If this is not the case, subclasses should override this
      * method and return values that are unique to the item, independent of its
      * location in the tree.
-     * 
+     *
      * @param item
      *            the item
      * @return the unique identifier for the item

@@ -113,7 +113,9 @@ public class WCForm extends ERXWOForm
         String varName = "validationResults_" + _formName(context);
 
         response.appendContentString("<script type=\"text/javascript\">\n");
-        response.appendContentString(varName + " = new webcat.ValidationResults();\n");
+        response.appendContentString("dojo.addOnLoad(function() {\n");
+        response.appendContentString("    " + varName + " = new webcat.ValidationResults();\n");
+        response.appendContentString("});\n");
         response.appendContentString("</script>\n");
 
         super.appendChildrenToResponse(response, context);
