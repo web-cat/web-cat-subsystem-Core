@@ -22,6 +22,7 @@
 package net.sf.webcat.core;
 
 import java.io.File;
+import net.sf.webcat.core.messaging.UnexpectedExceptionMessage;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOCookie;
 import com.webobjects.eocontrol.*;
@@ -299,11 +300,9 @@ public class Theme
             }
             catch (Exception e)
             {
-                Application.emailExceptionToAdmins(
-                    e,
-                    null,
-                    "Unexpected exception trying to decode theme properties "
-                    + "for theme: " + dirName() + "(" + id() + ").");
+                new UnexpectedExceptionMessage(e, null, null,
+                        "Unexpected exception trying to decode theme properties "
+                        + "for theme: " + dirName() + "(" + id() + ").").send();
             }
         }
         return linkTags;
@@ -427,8 +426,9 @@ public class Theme
         catch (Exception e)
         {
             log.error("Unable to refresh theme from " + plist, e);
-            Application.emailExceptionToAdmins(
-                e, null, "Error refreshing theme.");
+
+            new UnexpectedExceptionMessage(e, null, null,
+                    "Error refreshing theme.").send();
         }
     }
 

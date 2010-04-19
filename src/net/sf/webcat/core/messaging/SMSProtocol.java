@@ -46,7 +46,7 @@ public class SMSProtocol extends Protocol
     public void sendMessage(Message message, User user,
             ProtocolSettings settings) throws Exception
     {
-        String mobileNumber = settings.stringSettingForKey(
+/*        String mobileNumber = settings.stringSettingForKey(
                 MOBILE_NUMBER_SETTING, null);
         int providerIndex = settings.intSettingForKey(
                 MOBILE_PROVIDER_SETTING, -1);
@@ -59,7 +59,7 @@ public class SMSProtocol extends Protocol
             Application.sendAdminEmail(
                     gatewayEmail, null, false,
                     message.title(), message.fullBody(), null);
-        }
+        }*/
     }
 
 

@@ -34,8 +34,13 @@ next to the protocol name to edit them.
 <tbody>
     <wo:if condition="$messageDescriptors.count">
         <wo name="MessageRepetition">
+            <wo:if condition="$shouldInsertCategoryRow">
+                <tr><wo:WOGenericContainer elementName="td" colspan="~protocols.count + 1">
+                    <b><wo:str value="$messageDescriptor.category"/></b>
+                </wo:WOGenericContainer></tr>
+            </wo:if>
             <wo:tr index="$indexOfMessage">
-                <td><wo:str value="$messageDescriptor.description"/></td>
+                <td style="padding-left: 2em"><wo:str value="$messageDescriptor.description"/></td>
                 <wo name="ProtocolRepetition">
                     <td><wo name="MessageProtocolSelection"/></td>
                 </wo>

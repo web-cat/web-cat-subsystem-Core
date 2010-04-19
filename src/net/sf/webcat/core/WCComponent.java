@@ -24,6 +24,7 @@ package net.sf.webcat.core;
 import com.webobjects.appserver.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
+import net.sf.webcat.core.messaging.UnexpectedExceptionMessage;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -436,10 +437,8 @@ public class WCComponent
         }
         catch ( Exception e )
         {
-            Application.emailExceptionToAdmins(
-                e,
-                context(),
-                "Exception trying to save component's local changes" );
+            new UnexpectedExceptionMessage(e, context(), null,
+                "Exception trying to save component's local changes" ).send();
             // forces revert and refaultAllObjects
             cancelLocalChanges();
             String msg =

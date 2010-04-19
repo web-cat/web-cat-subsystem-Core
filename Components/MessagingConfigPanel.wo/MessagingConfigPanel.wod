@@ -1,6 +1,6 @@
 EditDialog : WCDialog {
-    id = "~'editGlobalOptions_' + indexOfProtocol";
-    title = "~'Edit Global Options for ' + protocol.name";
+    id = "~'editOptions_' + indexOfProtocol";
+    title = "~'Edit Options for ' + protocol.name";
     okAction = optionsEdited;
 }
 
@@ -14,7 +14,7 @@ EditImage : WOImage {
 EditLink : WOGenericContainer {
     elementName = "a";
     href = "javascript:void(0);";
-    onclick = "~'dijit.byId(\\'editGlobalOptions_' + indexOfProtocol + '\\').show();'";
+    onclick = editOptionsDialogShowCall;
 }
 
 GlobalEditDialog : WCDialog {
@@ -26,7 +26,7 @@ GlobalEditDialog : WCDialog {
 GlobalEditLink : WOGenericContainer {
     elementName = "a";
     href = "javascript:void(0);";
-    onclick = "~'dijit.byId(\\'editGlobalOptions_' + indexOfProtocol + '\\').show();'";
+    onclick = editGlobalOptionsDialogShowCall;
 }
 
 MessageProtocolSelection : WCCheckBox {

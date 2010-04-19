@@ -21,23 +21,36 @@
 
 package net.sf.webcat.core.messaging;
 
-import java.net.InetAddress;
-import org.apache.log4j.Logger;
 import net.sf.webcat.core.Application;
 import net.sf.webcat.core.User;
-import com.webobjects.eocontrol.EOEditingContext;
+import com.webobjects.appserver.WOContext;
 import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSDictionary;
 
 //-------------------------------------------------------------------------
 /**
- * A message that is broadcast when the system starts up.
+ * A message that is sent to system administrators when an unexpected exception
+ * occurs.
  *
  * @author Tony Allevato
  * @author  latest changes by: $Author$
  * @version $Revision$ $Date$
  */
-public class ApplicationStartupMessage extends SysAdminMessage
+public class UnexpectedExceptionMessage extends SysAdminMessage
 {
+    //~ Constructors ..........................................................
+
+    // ----------------------------------------------------------
+    public UnexpectedExceptionMessage(Throwable t, WOContext context,
+            NSDictionary extraInfo, String message)
+    {
+        this.exception = t;
+        this.extraInfo = extraInfo;
+        this.context = context;
+        this.message = message;
+    }
+
+
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
@@ -47,10 +60,10 @@ public class ApplicationStartupMessage extends SysAdminMessage
     public static void register()
     {
         Message.registerMessage(
-                ApplicationStartupMessage.class,
+                UnexpectedExceptionMessage.class,
                 "Application",
-                "Web-CAT Startup",
-                true,
+                "Unexpected Exception",
+                false,
                 User.WEBCAT_RW_PRIVILEGES);
     }
 
@@ -67,8 +80,15 @@ public class ApplicationStartupMessage extends SysAdminMessage
     @Override
     public String shortBody()
     {
-        return "The Web-CAT server hosted at " + hostString()
-            + " has started up.";
+        String body = ((Application) Application.application())
+            .informationForExceptionInContext(exception, extraInfo, context);
+
+        if (message != null)
+        {
+            body = message + "\n\n" + body;
+        }
+
+        return body;
     }
 
 
@@ -76,7 +96,7 @@ public class ApplicationStartupMessage extends SysAdminMessage
     @Override
     public String title()
     {
-        return "Web-CAT (" + hostString() + ") has started up";
+        return "Unexpected Exception";
     }
 
 
@@ -88,18 +108,10 @@ public class ApplicationStartupMessage extends SysAdminMessage
     }
 
 
-    //~ Private methods .......................................................
+    //~ Static/instance variables .............................................
 
-    // ----------------------------------------------------------
-    /**
-     * Gets a string representing the host name of the Web-CAT server that is
-     * starting up.
-     */
-    private String hostString()
-    {
-        String host = Application.application().host();
-        int port = Application.application().port().intValue();
-
-        return (port == 80) ? host : host + ":" + port;
-    }
+    private Throwable exception;
+    private NSDictionary extraInfo;
+    private WOContext context;
+    private String message;
 }

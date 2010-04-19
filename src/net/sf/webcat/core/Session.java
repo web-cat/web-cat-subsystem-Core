@@ -29,6 +29,7 @@ import er.extensions.foundation.ERXMutableDictionary;
 import java.util.*;
 
 import net.sf.webcat.core.WOEC.*;
+import net.sf.webcat.core.messaging.UnexpectedExceptionMessage;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.Level;
@@ -289,7 +290,7 @@ public class Session
             }
             catch ( Exception e )
             {
-                Application.emailExceptionToAdmins( e, context(), null );
+                new UnexpectedExceptionMessage(e, context(), null, null).send();
                 EOEditingContext ec = loginSession.editingContext();
                 loginSession = null;
                 ec.revert();
@@ -397,7 +398,7 @@ public class Session
             }
             catch ( Exception e )
             {
-                Application.emailExceptionToAdmins( e, context(), null );
+                new UnexpectedExceptionMessage(e, context(), null, null).send();
             }
         }
     }
@@ -453,7 +454,7 @@ public class Session
                 }
                 catch ( Exception e )
                 {
-                    Application.emailExceptionToAdmins( e, context(), null );
+                    new UnexpectedExceptionMessage(e, context(), null, null).send();
                     EOEditingContext ec = Application.newPeerEditingContext();
                     try
                     {
@@ -477,8 +478,8 @@ public class Session
                         }
                         catch ( Exception e2 )
                         {
-                            Application.emailExceptionToAdmins(
-                                e2, context(), null );
+                            new UnexpectedExceptionMessage(e2, context(),
+                                    null, null).send();
                         }
                     }
                     finally
@@ -491,7 +492,7 @@ public class Session
         }
         catch ( Exception e )
         {
-            Application.emailExceptionToAdmins( e, context(), null );
+            new UnexpectedExceptionMessage(e, context(), null, null).send();
         }
         primeUser = null;
         localUser = null;

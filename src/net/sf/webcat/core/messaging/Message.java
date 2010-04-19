@@ -196,6 +196,22 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
+     * Gets a value indicating whether this message should also be sent to the
+     * system administrator e-mail addresses specified in the Web-CAT
+     * installation wizard. The default behavior returns false, except for
+     * messages that extend SysAdminMessage, which returns true.
+     *
+     * @return true if the message should also be sent to system
+     *     administrators, false otherwise
+     */
+    public boolean isSentToSysAdmins()
+    {
+        return false;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * <p>
      * Gets the list of users who should receive this message. If the message
      * is meant to be broadcast system-wide only, then this method may return
@@ -296,7 +312,7 @@ public abstract class Message
      * @return a dictionary containing links to relevant content, keyed by
      *     plain-text labels that describe each link
      */
-    public NSDictionary<String, URL> links()
+    public NSDictionary<String, String> links()
     {
         return null;
     }
@@ -439,9 +455,47 @@ public abstract class Message
             }
         }
 
+        // Mail the message to system administrators if necessary.
+
+        if (isSentToSysAdmins())
+        {
+            sendMailToSysAdmins();
+        }
+
         // Store the message in the database.
 
         storeMessage(descriptor);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sends this message to the system notification e-mail addresses that are
+     * specified in the installation wizard.
+     */
+    private void sendMailToSysAdmins()
+    {
+        StringBuffer body = new StringBuffer();
+        body.append(fullBody());
+        body.append("\n\n");
+
+        NSDictionary<String, String> links = links();
+        if (links != null && links.count() > 0)
+        {
+            body.append("Links:\n");
+
+            for (String key : links.allKeys())
+            {
+                String url = links.objectForKey(key);
+
+                body.append(key);
+                body.append(": ");
+                body.append(url);
+                body.append("\n");
+            }
+        }
+
+        Application.sendAdminEmail(body.toString(), fullBody());
     }
 
 
