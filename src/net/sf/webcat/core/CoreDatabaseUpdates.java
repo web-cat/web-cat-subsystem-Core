@@ -242,6 +242,17 @@ public class CoreDatabaseUpdates
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Creates the ObjectQuery table.
+     * @throws SQLException on error
+     */
+    public void updateIncrement14() throws SQLException
+    {
+        createObjectQueryTable();
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
@@ -685,6 +696,30 @@ public class CoreDatabaseUpdates
             database().executeSQL(
                 "ALTER TABLE UserSentMessage ADD PRIMARY KEY "
                 + "(userId, sentMessageId)" );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates the ObjectQuery table, if needed.
+     * @throws SQLException on error
+     */
+    private void createObjectQueryTable() throws SQLException
+    {
+        if ( !database().hasTable( "ObjectQuery" ) )
+        {
+            log.info( "creating table ObjectQuery" );
+
+            database().executeSQL("CREATE TABLE ObjectQuery ("
+                + "OID INTEGER NOT NULL , "
+                + "description MEDIUMTEXT , "
+                + "userId INTEGER ,"
+                + "objectType TINYTEXT , "
+                + "queryInfo BLOB , "
+                + "CUPDATEMUTABLEFIELDS BIT NOT NULL)");
+            database().executeSQL(
+                "ALTER TABLE ObjectQuery ADD PRIMARY KEY (OID)");
         }
     }
 

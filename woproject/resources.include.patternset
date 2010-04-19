@@ -9,3 +9,4 @@ Tabs.plist
 filetype.properties
 config.plist
 **/*.settings.plist
+QueryAssistants.plist

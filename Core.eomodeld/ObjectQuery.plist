@@ -1,0 +1,39 @@
+{
+    attributes = (
+        {name = id; prototypeName = id; }, 
+        {columnName = description; name = description; prototypeName = mediumText; }, 
+        {columnName = userId; name = userId; prototypeName = foreignId; }, 
+        {columnName = objectType; name = objectType; prototypeName = tinyText; }, 
+        {
+            columnName = queryInfo; 
+            name = queryInfo; 
+            prototypeName = mutableDictionary; 
+            userInfo = {
+                adaptorValueConversionMethodName = archiveData; 
+                isMutable = true; 
+                valueClassName = "net.sf.webcat.core.MutableDictionary"; 
+                valueFactoryMethodName = objectWithArchiveData; 
+            }; 
+        }, 
+        {
+            name = updateMutableFields; 
+            prototypeName = updateMutableFields; 
+            userInfo = {isScalar = true; scalarDefault = false; type = boolean; }; 
+        }
+    ); 
+    attributesUsedForLocking = (description, userId, objectType, updateMutableFields); 
+    className = "net.sf.webcat.core.ObjectQuery"; 
+    classProperties = (description, user, objectType, queryInfo, updateMutableFields); 
+    externalName = ObjectQuery; 
+    name = ObjectQuery; 
+    primaryKeyAttributes = (id); 
+    relationships = (
+        {
+            destination = User; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = userId; }); 
+            name = user; 
+        }
+    ); 
+}

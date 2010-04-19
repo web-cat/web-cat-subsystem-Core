@@ -1,0 +1,125 @@
+<wo:WCScriptFragment filename="queryassistants/advanced.js"/>
+<wo name="RPC"/>
+<wo name="ContentAssistDataStore"/>
+<script type="text/javascript">
+<wo:str value="$idFor.advancedQueryAssistant"/> = new webcat.core.AdvancedQueryAssistant(<wo:str value="$idFor.JSONRPC"/>.page, "<wo:str value="$idFor.ComponentIDPrefix"/>", "<wo:str value="$objectType"/>", "<wo:str value="$contentAssistActionURL"/>");
+</script>
+
+<p>
+This query will include <b><wo:str value="$objectType"/></b>
+objects that satisfy <b>all</b> of the following conditions:
+</p>
+
+<wo name="CriteriaContainer">
+<wo:WCStyledTable>
+<tbody>
+    <wo:loop list="$model.criteria" item="$criterion" index="$index">
+        <wo:tr index="$index">
+            <td style="white-space: nowrap; font-size: small; text-align: left; width: 100%">
+                <wo name="RowBusyIndicator"/>
+                <wo name="KeyPath">
+                    <script type="dojo/connect" event="onKeyUp" args="evt">
+                        <wo:str value="$idFor.advancedQueryAssistant"/>.enqueueRowUpdateFromKeyUp(this, evt, <wo:str value="$index"/>);
+                    </script>
+                    <script type="dojo/connect" event="onChange" args="newValue">
+                        <wo:str value="$idFor.advancedQueryAssistant"/>.enqueueRowUpdate(this, newValue, <wo:str value="$index"/>);
+                    </script>
+                </wo>
+                <script type="text/javascript">
+                    <wo:str value="~idFor.updateRowAfterKeyPath + '_' + index"/> = function() {
+                        webcat.refresh('<wo:str value="~idFor.castTypeContainer + '_' + index"/>');
+                    }
+                </script>
+                <wo name="CastTypeContainer">
+                    <script type="dojo/connect" event="onLoad" args="data">
+                        <wo:str value="$idFor.advancedQueryAssistant"/>.stopBusyForRow(<wo:str value="$index"/>);
+                    </script>
+                    <wo:if condition="$isCurrentKeyPathValid">
+                        <wo:if condition="$doesCurrentKeyPathNeedCast">
+                            as
+                            <wo name="CastType">
+                                <script type="dojo/connect" event="onChange" args="evt">
+                                    <wo:str value="$idFor.advancedQueryAssistant"/>.updateCastType(this, evt, <wo:str value="$index"/>);
+                                </script>
+                            </wo>
+                            <script type="text/javascript">
+                                <wo:str value="~idFor.updateRowAfterCastType + '_' + index"/> = function() {
+                                    webcat.refresh('<wo:str value="~idFor.comparisonContainer + '_' + index"/>');
+                                }
+                            </script>
+                        </wo:if>
+                        <wo name="ComparisonContainer">
+                            <script type="dojo/method" event="onLoad" args="data">
+                                <wo:str value="$idFor.advancedQueryAssistant"/>.stopBusyForRow(<wo:str value="$index"/>);
+                            </script>
+                            <wo name="Comparison">
+                                <script type="dojo/connect" event="onChange" args="evt">
+                                    <wo:str value="$idFor.advancedQueryAssistant"/>.updateComparison(this, evt, <wo:str value="$index"/>);
+                                </script>
+                            </wo>
+                            <script type="text/javascript">
+                                <wo:str value="~idFor.updateRowAfterComparison + '_' + index"/> = function() {
+                                    webcat.refresh('<wo:str value="~idFor.comparandTypeContainer + '_' + index"/>');
+                                }
+                            </script>
+                            <wo name="ComparandTypeContainer">
+                                <script type="dojo/method" event="onLoad" args="data">
+                                    <wo:str value="$idFor.advancedQueryAssistant"/>.stopBusyForRow(<wo:str value="$index"/>);
+                                </script>
+                                <wo:if condition="$doesCurrentComparisonHaveSecondOperand">
+                                    <wo:if condition="$doesCurrentCriterionUseComparand">
+                                        the
+                                        <wo name="ComparandType">
+                                            <script type="dojo/connect" event="onChange" args="evt">
+                                                <wo:str value="$idFor.advancedQueryAssistant"/>.updateComparandType(this, evt, <wo:str value="$index"/>);
+                                            </script>
+                                        </wo>
+                                        <script type="text/javascript">
+                                            <wo:str value="~idFor.updateRowAfterComparandType + '_' + index"/> = function() {
+                                                webcat.refresh('<wo:str value="~idFor.valueContainer + '_' + index"/>');
+                                            }
+                                        </script>
+                                    </wo:if><wo:else>
+                                        <wo:if condition="~isCurrentCriterionOperandBetween() || doesCurrentComparisonSupportMultipleValues()">
+                                            the values
+                                        </wo:if><wo:else>
+                                            the value
+                                        </wo:else>
+                                    </wo:else>
+                                    <wo name="ValueContainer">
+                                        <script type="dojo/method" event="onLoad" args="data">
+                                            <wo:str value="$idFor.advancedQueryAssistant"/>.stopBusyForRow(<wo:str value="$index"/>);
+                                        </script>
+                                        <wo:if condition="$doesCurrentComparisonHaveSecondOperand">
+                                            <wo:if condition="$isCurrentCriterionOperandSimple">
+                                                <wo name="Value"/>
+                                            </wo:if>
+                                            <wo:if condition="$isCurrentCriterionOperandKeyPath">
+                                                <wo name="OtherKeyPath"/>
+                                            </wo:if>
+                                            <wo:if condition="$isCurrentCriterionOperandBetween">
+                                                <wo name="MinimumValue"/> and <wo name="MaximumValue"/>
+                                            </wo:if>
+                                        </wo:if>
+                                    </wo>
+                                </wo:if>
+                            </wo>
+                        </wo>
+                    </wo:if><wo:else>
+                        <wo:if condition="~currentKeyPath().trim().length() == 0">
+                            Enter the key path to filter on.
+                        </wo:if><wo:else>
+                            The key path is invalid.
+                        </wo:else>
+                    </wo:else>
+                </wo>
+            </td>
+            <td style="white-space: nowrap; text-align: right; vertical-align: top">
+                <wo name="RemoveCriterion">&minus;</wo>
+                <wo name="AddCriterion">+</wo>
+            </td>
+        </wo:tr>
+    </wo:loop>
+</tbody>
+</wo:WCStyledTable>
+</wo>

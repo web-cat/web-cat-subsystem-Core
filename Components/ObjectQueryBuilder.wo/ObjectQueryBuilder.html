@@ -1,0 +1,54 @@
+<wo:WCContentPane id="$idFor.queryAssistantContainer">
+<wo:if condition="$surrogate.isEditing">
+    <div class="floatLeft" style="width: 70%">
+        <p>
+        <wo:if condition="$description">
+        <b>Find:</b> <wo:str value="$description" /><br/>
+        </wo:if>
+        <b>Method:</b>
+        <wo:str value="$surrogate.displayableSummary" escapeHTML="false" />
+        </p>
+    </div>
+    <div class="floatRight">
+        <div class="changeSelectionBox">
+            To choose a different query method, <wo name="RevertEditing">click here.</wo>
+        </div>
+    </div>
+    <div class="clear">&nbsp;</div>
+    <wo:if condition="$surrogate.queryAssistant">
+        <wo name="QueryAssistantComponent" />
+    </wo:if>
+</wo:if><wo:else>
+    <wo:if condition="$description">
+    <p><b>Find:</b> <wo:str value="$description" /></p>
+    </wo:if>
+    <p>
+    To assist in the construction of a query for this data set,
+    please choose how you would like to select the objects for the query:
+    </p>
+    <ul>
+    <wo:loop list="$queryAssistants" item="$aQueryAssistant">
+        <li><p>
+        <wo name="ChooseQueryAssistant">
+           <wo:str value="$linkPartOfQueryAssistantDescription"/>
+        </wo>
+        <wo:str value="$nonLinkPartOfQueryAssistantDescription"/>
+        </p></li>
+    </wo:loop>
+    <wo:if condition="$savedQueries.count">
+        <li><p>Or, choose a previously saved query:
+            <wo name="SavedQueries" /> <wo name="UseSavedQuery" />
+        </p></li>
+    </wo:if>
+    </ul>
+</wo:else>
+
+<wo:if condition="$surrogate.queryAssistant">
+<h3>Save This Query</h3>
+<p>If you would like to save this query to use it again later, enter a
+short description for it below. If you do not wish to save it, leave the field
+blank.</p>
+<wo name="QueryDescription" />
+</wo:if>
+
+</wo:WCContentPane>

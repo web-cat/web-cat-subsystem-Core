@@ -27,6 +27,7 @@
         {className = "net.sf.webcat.core.Language"; name = Language; }, 
         {className = "net.sf.webcat.core.LoggedError"; name = LoggedError; }, 
         {className = "net.sf.webcat.core.LoginSession"; name = LoginSession; }, 
+        {className = "net.sf.webcat.core.ObjectQuery"; name = ObjectQuery; }, 
         {
             className = "net.sf.webcat.core.PasswordChangeRequest"; 
             name = PasswordChangeRequest; 

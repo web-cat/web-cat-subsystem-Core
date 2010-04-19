@@ -1,0 +1,99 @@
+RPC : WCJSONRPC {
+    name = idFor.JSONRPC;
+    proxyName = "page";
+}
+
+ContentAssistDataStore : WCDiv {
+    dojoType = "webcat.core.ContentAssistDataStore";
+    jsId = idFor.contentAssistDataStore;
+    url = contentAssistActionURL;
+}
+
+CriteriaContainer : WCContentPane {
+    id = idFor.criteriaContainer;
+}
+
+RowBusyIndicator : WCSpinner {
+    id = "~idFor.busy + '_' + index";
+}
+
+KeyPath : WCComboBox {
+    id = "~idFor.keyPath + '_' + index";
+    ignoreCase = false;
+    store = idFor.contentAssistDataStore;
+    query = "~'{rootType:\'' + objectType + '\'}'";
+    labelAttr = "label";
+    autoComplete = false;
+    value = currentKeyPath;
+}
+
+CastTypeContainer : WCContentSpan {
+    id = "~idFor.castTypeContainer + '_' + index";
+}
+
+CastType : WCFilteringSelect {
+    id = "~idFor.castType + '_' + index";
+    list = castTypes;
+    item = castType;
+    selection = currentCastType;
+    displayString = displayStringForCastType;
+}
+
+ComparisonContainer : WCContentSpan {
+    id = "~idFor.comparisonContainer + '_' + index";
+}
+
+Comparison : WCFilteringSelect {
+    id = "~idFor.comparison + '_' + index";
+    list = comparisonsForCurrentKeyPath;
+    selection = currentComparison;
+}
+
+ComparandTypeContainer : WCContentSpan {
+    id = "~idFor.comparandTypeContainer + '_' + index";
+}
+
+ComparandType : WCFilteringSelect {
+    id = "~idFor.comparandType + '_' + index";
+    list = validComparandTypesForCurrentComparison;
+    item = comparandType;
+    displayString = displayStringForComparandType;
+    selection = currentComparandType;
+}
+
+ValueContainer : WCContentSpan {
+    id = "~idFor.valueContainer + '_' + index";
+}
+
+OtherKeyPath : WCTextBox {
+    id = "~idFor.otherKeyPath + '_' + index";
+    value = currentRepresentedValue;
+}
+
+Value : net.sf.webcat.core.objectquery.AdvancedQueryValueComponent {
+    multipleSelect = doesCurrentComparisonSupportMultipleValues;
+    valueType = typeOfCurrentKeyPath;
+    representedValue = currentRepresentedValue;
+}
+
+MinimumValue : net.sf.webcat.core.objectquery.AdvancedQueryValueComponent {
+    multipleSelect = false;
+    valueType = typeOfCurrentKeyPath;
+    representedValue = minimumValueOfCurrentRepresentedValue;
+}
+
+MaximumValue : net.sf.webcat.core.objectquery.AdvancedQueryValueComponent {
+    multipleSelect = false;
+    valueType = typeOfCurrentKeyPath;
+    representedValue = maximumValueOfCurrentRepresentedValue;
+}
+
+AddCriterion: WCButton {
+    action = addCriterion;
+    remote = true;
+}
+
+RemoveCriterion: WCButton {
+    action = removeCriterion;
+    remote = true;
+}

@@ -1,0 +1,64 @@
+StringFieldSingle : WCTextBox {
+    value = stringValueOfRepresentedValue;
+    size = 15;
+}
+
+StringFieldMulti : WCTextBox {
+    value = commaDelimitedStringValuesOfRepresentedValueArray;
+    size = 20;
+//    default = "separate values with commas";
+}
+
+IntegerFieldSingle : WCTextBox {
+    value = integerValueOfRepresentedValue;
+    size = 10;
+    numberformat = "#";
+}
+
+IntegerFieldMulti : WCTextBox {
+    value = commaDelimitedIntegerValuesOfRepresentedValueArray;
+    size = 20;
+//    default = "separate values with commas";
+}
+
+DoubleFieldSingle : WCTextBox {
+    value = doubleValueOfRepresentedValue;
+    size = 10;
+    numberformat = "#.#";
+}
+
+DoubleFieldMulti : WCTextBox {
+    value = commaDelimitedDoubleValuesOfRepresentedValueArray;
+    size = 20;
+//    default = "separate values with commas";
+}
+
+BooleanFieldSingle : WCFilteringSelect {
+    list = booleanValues;
+    item = booleanValueInList;
+    displayString = displayStringForBooleanValue;
+    selection = booleanValueOfRepresentedValue;
+}
+
+TimestampFieldSingle : WCDateTimePicker {
+//    size = 20;
+//    formatter = session.timeFormatter;
+    value = timestampValueOfRepresentedValue;
+}
+
+EntityFieldSingle : WCFilteringSelect {
+    list = entityValues;
+    item = entityValueInList;
+    displayString = displayStringForEntityValue;
+    selection = entityValueOfRepresentedValue;
+    maximumWidth = 180;
+}
+
+EntityFieldMulti : WOBrowser {
+    list = entityValues;
+    item = entityValueInList;
+    displayString = displayStringForEntityValue;
+    selections = entityValuesOfRepresentedValueArray;
+    multiple = true;
+    style = "vertical-align: top";
+}

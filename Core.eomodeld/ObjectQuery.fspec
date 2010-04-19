@@ -1,0 +1,38 @@
+{
+    savedQueriesForObjectTypeAndUser = {
+        class = EOFetchSpecification; 
+        entityName = ObjectQuery; 
+        isDeep = NO; 
+        prefetchingRelationshipKeyPaths = (); 
+        qualifier = {
+            class = EOAndQualifier; 
+            qualifiers = (
+                {
+                    class = EOKeyValueQualifier; 
+                    key = user; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = user; class = EOQualifierVariable; }; 
+                }, 
+                {
+                    class = EOKeyValueQualifier; 
+                    key = objectType; 
+                    selectorName = "isEqualTo:"; 
+                    value = {"_key" = objectType; class = EOQualifierVariable; }; 
+                }, 
+                {
+                    class = EOKeyValueQualifier; 
+                    key = description; 
+                    selectorName = "isNotEqualTo:"; 
+                    value = {class = EONull; }; 
+                }
+            ); 
+        }; 
+        sortOrderings = (
+            {
+                class = EOSortOrdering; 
+                key = description; 
+                selectorName = compareCaseInsensitiveAscending; 
+            }
+        ); 
+    }; 
+}

@@ -215,6 +215,7 @@ public abstract class _User
     public static final String PARTICIPANTS_FOR_COURSE_FSPEC = "participantsForCourse";
     public static final String STAFF_FOR_COURSE_FSPEC = "staffForCourse";
     public static final String STUDENTS_FOR_COURSE_FSPEC = "studentsForCourse";
+    public static final String SYSTEM_ADMINS_FSPEC = "systemAdmins";
     public static final String USER_WITH_DOMAIN_AND_EMAIL_FSPEC = "userWithDomainAndEmail";
     public static final String USER_WITH_DOMAIN_AND_NAME_FSPEC = "userWithDomainAndName";
     public static final String USER_WITH_NAME_FSPEC = "userWithName";
@@ -2742,6 +2743,32 @@ public abstract class _User
         {
             log.debug( "studentsForCourse(ec"
                 + ", " + courseOfferingBinding
+                + "): " + result );
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve objects according to the <code>systemAdmins</code>
+     * fetch specification.
+     *
+     * @param context The editing context to use
+     * @return an NSArray of the entities retrieved
+     */
+    public static NSArray<User> systemAdmins(
+            EOEditingContext context
+        )
+    {
+        EOFetchSpecification spec = EOFetchSpecification
+            .fetchSpecificationNamed( "systemAdmins", "User" );
+
+        NSArray<User> result =
+            objectsWithFetchSpecification( context, spec );
+        if (log.isDebugEnabled())
+        {
+            log.debug( "systemAdmins(ec"
                 + "): " + result );
         }
         return result;

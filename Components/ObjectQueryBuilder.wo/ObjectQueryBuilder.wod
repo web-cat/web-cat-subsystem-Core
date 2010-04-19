@@ -1,0 +1,34 @@
+ChooseQueryAssistant: WCLink {
+    action = chooseQueryAssistant;
+    remote = true;
+}
+
+QueryAssistantComponent: WOSwitchComponent {
+    WOComponentName = surrogate.queryAssistant.editorComponentName;
+    objectType = objectType;
+    model = surrogate.model;
+}
+
+QueryDescription: WCTextBox {
+    value = surrogate.descriptionToSave;
+    size = 50;
+}
+
+RevertEditing: WCLink {
+    action = revertEditing;
+    remote = true;
+}
+
+SavedQueries: WCFilteringSelect {
+    id = idFor.savedQueryPicker;
+    list = savedQueries;
+    item = aSavedQuery;
+    displayString = aSavedQuery.description;
+    selection = selectedSavedQuery;
+}
+
+UseSavedQuery: WCButton {
+    label = "Use this query";
+    action = useSavedQuery;
+    remote = true;
+}

@@ -82,6 +82,17 @@
             ); 
         }; 
     }; 
+    systemAdmins = {
+        class = EOFetchSpecification; 
+        entityName = User; 
+        prefetchingRelationshipKeyPaths = (); 
+        qualifier = {
+            class = EOKeyValueQualifier; 
+            key = accessLevel; 
+            selectorName = "isGreaterThanOrEqualTo:"; 
+            value = {class = NSNumber; value = 90; }; 
+        }; 
+    }; 
     userWithDomainAndEmail = {
         class = EOFetchSpecification; 
         entityName = User; 
