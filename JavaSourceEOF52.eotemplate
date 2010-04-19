@@ -89,19 +89,19 @@ import org.apache.log4j.Logger;
      * inserted
 #foreach ($attribute in $entity.sortedClassAttributes)
 #if (!$attribute.allowsNull)
-     * @param ${attribute.name}
+     * @param ${attribute.name}Value
 #end
 #end
 #foreach ($relationship in $entity.sortedClassToOneRelationships)
 #if ($relationship.mandatory)
-     * @param ${relationship.name}
+     * @param ${relationship.name}Value
 #end
 #end
      * @return The newly created object
      */
     public static ${entity.classNameWithoutPackage} create(
         EOEditingContext editingContext#foreach ($attribute in $entity.sortedClassAttributes)#if (!$attribute.allowsNull),
-        #if ($attribute.userInfo.isScalar)${attribute.userInfo.type}#else${attribute.javaClassName}#end ${attribute.name}Value#end
+        #if ($attribute.userInfo.isScalar || $attribute.userInfo.isEnum)${attribute.userInfo.type}#else${attribute.javaClassName}#end ${attribute.name}Value#end
 #end#foreach ($relationship in $entity.sortedClassToOneRelationships)#if ($relationship.mandatory),
         ${relationship.actualDestination.classNameWithDefault} ${relationship.name}Value#end#end
 
@@ -397,6 +397,7 @@ import org.apache.log4j.Logger;
 
 #else## !isMutable
 #if ($attribute.userInfo.isScalar)
+#set ($attributeNeedsRaw = true)
     // ----------------------------------------------------------
     /**
      * Retrieve this object's <code>${attribute.name}</code> value.
@@ -440,13 +441,52 @@ import org.apache.log4j.Logger;
     }
 
 
+#elseif ($attribute.userInfo.isEnum)
+#set ($attributeNeedsRaw = true)
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>${attribute.name}</code> value.
+     * @return the value of the attribute
+     */
+    public ${attribute.userInfo.type} ${attribute.name}()
+    {
+        ${attribute.javaClassName} result =
+            (${attribute.javaClassName})storedValueForKey( "${attribute.name}" );
+        return ( result == null )
+            ? ${attribute.userInfo.type}.${attribute.userInfo.enumDefault}
+            : ${attribute.userInfo.type}.valueOf(result);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>${attribute.name}</code>
+     * property.
+     *
+     * @param value The new value for this property
+     */
+    public void set${attribute.capitalizedName}( ${attribute.userInfo.type} value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "set${attribute.capitalizedName}("
+                + "${attribute.userInfo.type}." + value
+                + "): was ${attribute.userInfo.type}."
+                + ${attribute.name}().name() );
+        }
+        set${attribute.capitalizedName}Raw( value.name() );
+    }
+
+
+#else
+#set ($attributeNeedsRaw = false)
 #end## isScalar
     // ----------------------------------------------------------
     /**
      * Retrieve this object's <code>${attribute.name}</code> value.
      * @return the value of the attribute
      */
-    public ${attribute.javaClassName} ${attribute.name}#if ($attribute.userInfo.isScalar)Raw#{end}()
+    public ${attribute.javaClassName} ${attribute.name}#if ($attributeNeedsRaw)Raw#{end}()
     {
         return (${attribute.javaClassName})storedValueForKey( "${attribute.name}" );
     }
@@ -459,12 +499,12 @@ import org.apache.log4j.Logger;
      *
      * @param value The new value for this property
      */
-    public void set${attribute.capitalizedName}#if ($attribute.userInfo.isScalar)Raw#{end}( ${attribute.javaClassName} value )
+    public void set${attribute.capitalizedName}#if ($attributeNeedsRaw)Raw#{end}( ${attribute.javaClassName} value )
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "set${attribute.capitalizedName}#if ($attribute.userInfo.isScalar)Raw#{end}("
-                + value + "): was " + ${attribute.name}#if ($attribute.userInfo.isScalar)Raw#{end}() );
+            log.debug( "set${attribute.capitalizedName}#if ($attributeNeedsRaw)Raw#{end}("
+                + value + "): was " + ${attribute.name}#if ($attributeNeedsRaw)Raw#{end}() );
         }
         takeStoredValueForKey( value, "${attribute.name}" );
     }
