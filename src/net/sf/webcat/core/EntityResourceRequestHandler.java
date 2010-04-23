@@ -119,7 +119,11 @@ public class EntityResourceRequestHandler extends WORequestHandler
     @Override
     public WOResponse handleRequest(WORequest request)
     {
-        WOResponse response = new WOResponse();
+        WOContext context =
+            Application.application().createContextForRequest(request);
+        WOResponse response =
+            Application.application().createResponseInContext(context);
+
         String handlerPath = request.requestHandlerPath();
 
         Scanner scanner = new Scanner(handlerPath);
@@ -132,24 +136,24 @@ public class EntityResourceRequestHandler extends WORequestHandler
         {
             sessionId = scanner.next();
 
-            // TODO make sessions work correctly
-/*            try
+            try
             {
-                session = (Session) Application.application().restoreSessionWithID(
-                        sessionId, request.context());
+                session = (Session)
+                    Application.application().restoreSessionWithID(
+                        sessionId, context);
             }
             catch (Exception e)
             {
                 // Do nothing; will be handled below.
-            }*/
+            }
         }
 
-/*        if (session == null)
+        if (session == null)
         {
             log.warn("No session found with id " + sessionId);
             response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
         }
-        else*/
+        else
         {
             String entity = null;
             long id = 0;
@@ -188,8 +192,7 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
             if (entity != null && id != 0 && path != null)
             {
-                ReadOnlyEditingContext ec =
-                    Application.newReadOnlyEditingContext();
+                EOEditingContext ec = session.sessionContext();
 
                 EOEntity ent = EOUtilities.entityNamed(ec, entity);
                 Class<?> entityClass = null;
@@ -208,11 +211,6 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
                 if (handler != null)
                 {
-/*                    System.out.println("session = " + sessionId);
-                    System.out.println("entity  = " + entity);
-                    System.out.println("id      = " + id);
-                    System.out.println("path    = " + path);
-*/
                     EOFetchSpecification fspec = new EOFetchSpecification(
                             entity, ERXQ.is("id", id), null);
                     NSArray<? extends EOEnterpriseObject> objects =
@@ -220,6 +218,8 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
                     if (objects != null && objects.count() > 0)
                     {
+                        // TODO verify access rights with session's user
+
                         generateResponse(response, handler,
                                 objects.objectAtIndex(0), path);
                     }
@@ -239,13 +239,16 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
                     response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
                 }
-
-                Application.releaseReadOnlyEditingContext(ec);
             }
             else
             {
                 response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
             }
+        }
+
+        if (session != null)
+        {
+            Application.application().saveSessionForContext(context);
         }
 
         return response;
@@ -318,6 +321,10 @@ public class EntityResourceRequestHandler extends WORequestHandler
             {
                 response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
             }
+        }
+        else
+        {
+            response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
         }
     }
 
