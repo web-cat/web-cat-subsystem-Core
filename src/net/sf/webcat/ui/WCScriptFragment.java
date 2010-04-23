@@ -59,41 +59,41 @@ import er.extensions.appserver.ERXResponseRewriter;
  * <dd>The framework that contains the script resource, or null to use the
  * framework of the hosting component.</dd>
  * </dl>
- * 
+ *
  * @author Tony Allevato
  * @version $Id$
  */
 public class WCScriptFragment extends WOHTMLDynamicElement
 {
     //~ Constructor ...........................................................
-    
+
     // ----------------------------------------------------------
     /**
      * Creates a new instance of the WCScriptFragment class.
-     * 
-     * @param name 
-     * @param someAssociations 
-     * @param template 
+     *
+     * @param name
+     * @param someAssociations
+     * @param template
      */
     public WCScriptFragment(String name,
             NSDictionary<String, WOAssociation> someAssociations,
             WOElement template)
     {
         super(name, someAssociations, template);
-        
+
         _location = someAssociations.objectForKey("location");
         _type = someAssociations.objectForKey("type");
         _filename = someAssociations.objectForKey("filename");
         _framework = someAssociations.objectForKey("framework");
     }
-    
+
 
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
     /**
      * Gets the value of the location binding in the specified context.
-     * 
+     *
      * @param context the context
      * @return the value of the scriptName binding
      */
@@ -104,12 +104,12 @@ public class WCScriptFragment extends WOHTMLDynamicElement
         else
             return null;
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Gets the value of the type binding in the specified context.
-     * 
+     *
      * @param context the context
      * @return the value of the type binding
      */
@@ -126,7 +126,7 @@ public class WCScriptFragment extends WOHTMLDynamicElement
     /**
      * Gets the resource URL of the script if the filename and (optional)
      * framework bindings are specified.
-     * 
+     *
      * @param aContext the context of the request
      * @return the resource URL of the script, or null if the filename is not
      *     specified
@@ -139,7 +139,7 @@ public class WCScriptFragment extends WOHTMLDynamicElement
         }
 
         WOComponent aComponent = aContext.component();
-        
+
         String filename = (String)_filename.valueInComponent(aComponent);
         String frameworkName = _frameworkNameInComponent(
                 _framework, aComponent);
@@ -151,17 +151,17 @@ public class WCScriptFragment extends WOHTMLDynamicElement
             scriptURL = WOApplication.application().resourceManager().
                 errorMessageUrlForResourceNamed(filename, frameworkName);
         }
-        
+
         return scriptURL;
     }
-    
+
 
     // ----------------------------------------------------------
     /**
      * Overriden to cause the component content (which should be JavaScript
      * code) to be inserted into the script specified by the "location"
      * association.
-     * 
+     *
      * @param response the response
      * @param context the context
      */
@@ -169,27 +169,42 @@ public class WCScriptFragment extends WOHTMLDynamicElement
     public void appendToResponse(WOResponse response, WOContext context)
     {
         WOResponse contentResponse = new WOResponse();
-        super.appendToResponse(contentResponse, context);
-        
+        super.appendChildrenToResponse(contentResponse, context);
+
         String location = locationInContext(context);
         String type = typeInContext(context);
         String scriptURL = _scriptURL(context);
         String script = contentResponse.contentString();
-        
+
         if ("onLoad".equalsIgnoreCase(location))
         {
             DojoUtils.addScriptCodeToOnLoad(response, context, script);
         }
         else if ("head".equalsIgnoreCase(location))
         {
-            ERXResponseRewriter.addScriptCodeInHead(response, context, script);
+            if (_filename != null)
+            {
+                String frameworkName = _frameworkNameInComponent(
+                        _framework, context.component());
+
+                ERXResponseRewriter.addScriptResourceInHead(response, context,
+                        frameworkName,
+                        (String) _filename.valueInComponent(
+                                context.component()));
+            }
+
+            if (script.trim().length() > 0)
+            {
+                ERXResponseRewriter.addScriptCodeInHead(
+                        response, context, script);
+            }
         }
         else
         {
             response.appendContentString("<script type=\"");
             response.appendContentString(type);
             response.appendContentString("\"");
-            
+
             if (scriptURL != null)
             {
                 response.appendContentString(" src=\"");
@@ -204,8 +219,8 @@ public class WCScriptFragment extends WOHTMLDynamicElement
             }
         }
     }
-    
-    
+
+
     //~ Static/instance variables .............................................
 
     protected WOAssociation _location;
