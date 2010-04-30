@@ -302,6 +302,77 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
+     * Gets the component class that this subsystem wants to plug-in to another
+     * page on the system. This mapping is defined in the
+     * SubsystemFragments.plist file located in the Resources of the
+     * subsystem.
+     *
+     * @param fragmentKey the unique fragment identifier
+     * @return a component class that is plugged into the page
+     */
+    public final Class<? extends WOComponent> subsystemFragmentForKey(
+            String fragmentKey)
+    {
+        if (!subsystemFragmentsLoaded)
+        {
+            subsystemFragmentsLoaded = true;
+
+            File file = new File(myResourcesDir(),
+                    SUBSYSTEM_FRAGMENTS_PLIST_FILENAME);
+
+            if (!file.exists())
+            {
+                return null;
+            }
+
+            try
+            {
+                subsystemFragments =
+                    new NSMutableDictionary<String, Class<? extends WOComponent>>();
+
+                NSDictionary<String, Object> plist = (NSDictionary<String, Object>)
+                    NSPropertyListSerialization.propertyListFromData(
+                            new NSData(new FileInputStream(file), 0), "UTF-8");
+
+                for (String key : plist.allKeys())
+                {
+                    String className = (String) plist.objectForKey(key);
+
+                    try
+                    {
+                        Class<?> klass = Class.forName(className);
+                        Class<? extends WOComponent> compKlass =
+                            klass.asSubclass(WOComponent.class);
+
+                        subsystemFragments.setObjectForKey(compKlass, key);
+                    }
+                    catch (ClassNotFoundException e)
+                    {
+                        log.warn("The class " + className + " for the "
+                                + "subsystem fragment '" + key + "' "
+                                + "could not be found.");
+                    }
+                }
+            }
+            catch (IOException e)
+            {
+                subsystemFragments = null;
+            }
+        }
+
+        if (subsystemFragments != null)
+        {
+            return subsystemFragments.objectForKey(fragmentKey);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Generate the component definitions and bindings for a given
      * pre-defined information fragment, so that the result can be
      * plugged into other pages defined elsewhere in the system.
@@ -312,7 +383,7 @@ public class Subsystem
      * @param wodBuffer add the binding definitions (the .wod file contents)
      *        for the subsystem's fragment to this buffer
      */
-    public void collectSubsystemFragments(
+    public final void collectSubsystemFragments(
         String fragmentKey, StringBuffer htmlBuffer, StringBuffer wodBuffer)
     {
         // Subclasses should override this as necessary
@@ -660,6 +731,13 @@ public class Subsystem
     private boolean           hasStarted;
 
     private NSArray<TabDescriptor> subsystemTabTemplate;
+
+    private NSMutableDictionary<String, Class<? extends WOComponent>>
+        subsystemFragments;
+    private boolean subsystemFragmentsLoaded;
+
+    private static final String SUBSYSTEM_FRAGMENTS_PLIST_FILENAME =
+        "SubsystemFragments.plist";
 
     static Logger log = Logger.getLogger( Subsystem.class );
 }

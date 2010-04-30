@@ -21,7 +21,12 @@
 
 package net.sf.webcat.core;
 
+import java.io.InputStream;
 import com.webobjects.appserver.*;
+import com.webobjects.appserver._private.WOComponentDefinition;
+import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSBundle;
+import com.webobjects.foundation._NSStringUtilities;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -67,18 +72,49 @@ public class SubsystemFragmentCollector
         if ( htmlTemplate == null )
         {
             log.debug( "initializing templates" );
+
+            Application application = (Application) Application.application();
+
+            NSArray<Class<? extends WOComponent>> fragments =
+                application.subsystemManager().subsystemFragmentsForKey(
+                        fragmentKey);
+
             StringBuffer htmlBuffer = new StringBuffer();
             StringBuffer wodBuffer = new StringBuffer();
-            ( (Application)Application.application() ).subsystemManager().
-                collectSubsystemFragments( fragmentKey, htmlBuffer, wodBuffer );
+
+            if (fragments != null)
+            {
+                int i = 1;
+                for (Class<? extends WOComponent> fragmentClass : fragments)
+                {
+                    String fullName = fragmentClass.getCanonicalName();
+                    String simpleName = fragmentClass.getSimpleName();
+
+                    htmlBuffer.append("<wo name=\"");
+                    htmlBuffer.append(simpleName);
+                    htmlBuffer.append(i);
+                    htmlBuffer.append("\"/>\n");
+
+                    wodBuffer.append(simpleName);
+                    wodBuffer.append(i);
+                    wodBuffer.append(": ");
+                    wodBuffer.append(fullName);
+                    wodBuffer.append("{ }\n");
+
+                    i++;
+                }
+            }
+
             htmlTemplate = htmlBuffer.toString();
             bindingDefinitions = wodBuffer.toString();
+
             if (log.isDebugEnabled())
             {
-                log.debug( "htmlTemplate =\n" + htmlTemplate );
-                log.debug( "bindingDefinitions =\n" + bindingDefinitions );
+                log.debug("htmlTemplate =\n" + htmlTemplate);
+                log.debug("bindingDefinitions =\n" + bindingDefinitions);
             }
         }
+
         return templateWithHTMLString( null, null,
                 htmlTemplate, bindingDefinitions, null,
                 Application.application().associationFactoryRegistry(),
