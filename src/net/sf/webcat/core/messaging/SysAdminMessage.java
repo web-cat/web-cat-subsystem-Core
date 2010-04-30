@@ -36,7 +36,7 @@ public abstract class SysAdminMessage extends Message
 
     // ----------------------------------------------------------
     @Override
-    public boolean isSentToSysAdmins()
+    public boolean isSevere()
     {
         return true;
     }

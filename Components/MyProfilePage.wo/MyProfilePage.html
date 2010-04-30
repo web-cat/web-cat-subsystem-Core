@@ -1,4 +1,5 @@
 <webobject name="Page">
+
 <wo:net.sf.webcat.core.WCPageModule title="Account Information">
 <p>You are <span class="hl"><webobject name="UserName"/></span> registered in
 the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
@@ -63,15 +64,7 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 </webobject></webobject>
 </wo:net.sf.webcat.core.WCPageModule>
 
-<wo:net.sf.webcat.core.WCPageModule title="Time Formats" open="false">
-<webobject name="Form2"><table class="layout">
-<tr><td class="R">Time zone:</td><td><webobject name="TimeZone"/></td></tr>
-<tr><td class="R">Format:</td><td><webobject name="DateFormat"/>
-  <webobject name="TimeFormat"/></td></tr>
-<tr><td></td>
-    <td><webobject name="ApplyTimeFormats"/></td></tr>
-</table></webobject>
-</wo:net.sf.webcat.core.WCPageModule>
+<wo:net.sf.webcat.core.SubsystemFragmentCollector fragmentKey="userProfile"/>
 
 <wo:net.sf.webcat.core.WCPageModule title="Display Theme" open="$openThemes">
 <wo:loop list="$allThemes" item="$aTheme">
@@ -96,10 +89,6 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 </td></tr></table></wo:WCForm>
 </wo:net.sf.webcat.core.WCPageModule>
 
-<wo:net.sf.webcat.core.WCPageModule title="Message Subscriptions" open="false">
-<wo name="MessagingConfigPanel"/>
-</wo:net.sf.webcat.core.WCPageModule>
-
 <wo:net.sf.webcat.core.WCPageModule title="Personalized Service URLs" open="false">
 <table class="layout"><tbody>
 <tr><td class="R">BlueJ submission definitions:</td>
@@ -116,4 +105,15 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
     <wo name="WebcalLinkInfo"/></td></tr>
 </tbody></table>
 </wo:net.sf.webcat.core.WCPageModule>
+
+<wo:net.sf.webcat.core.WCPageModule title="Time Formats" open="false">
+<webobject name="Form2"><table class="layout">
+<tr><td class="R">Time zone:</td><td><webobject name="TimeZone"/></td></tr>
+<tr><td class="R">Format:</td><td><webobject name="DateFormat"/>
+  <webobject name="TimeFormat"/></td></tr>
+<tr><td></td>
+    <td><webobject name="ApplyTimeFormats"/></td></tr>
+</table></webobject>
+</wo:net.sf.webcat.core.WCPageModule>
+
 </webobject>

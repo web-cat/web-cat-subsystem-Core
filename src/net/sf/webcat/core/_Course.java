@@ -62,8 +62,8 @@ public abstract class _Course
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
-     * @param name
-     * @param number
+     * @param nameValue
+     * @param numberValue
      * @return The newly created object
      */
     public static Course create(

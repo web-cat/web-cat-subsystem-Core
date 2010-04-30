@@ -63,9 +63,9 @@ public abstract class _Theme
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
-     * @param dirName
-     * @param isForThemeDevelopers
-     * @param updateMutableFields
+     * @param dirNameValue
+     * @param isForThemeDevelopersValue
+     * @param updateMutableFieldsValue
      * @return The newly created object
      */
     public static Theme create(

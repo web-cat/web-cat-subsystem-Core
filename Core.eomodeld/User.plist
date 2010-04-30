@@ -35,11 +35,6 @@
                 valueFactoryMethodName = objectWithArchiveData; 
             }; 
         }, 
-        {
-            columnName = protocolSettingsId; 
-            name = protocolSettingsId; 
-            prototypeName = foreignId; 
-        }, 
         {columnName = CTHEMEID; name = themeId; prototypeName = foreignId; }, 
         {
             columnName = CUNIVERSITYIDNO; 
@@ -62,7 +57,6 @@
         lastName, 
         password, 
         preferences, 
-        protocolSettingsId, 
         themeId, 
         universityIDNo, 
         updateMutableFields, 
@@ -88,9 +82,7 @@
         url, 
         userName, 
         graderFor, 
-        protocolSettings, 
-        sentMessages, 
-        messageSubscriptions
+        sentMessages
     ); 
     externalName = TUSER; 
     name = User; 
@@ -169,13 +161,6 @@
             joins = ({destinationAttribute = id; sourceAttribute = themeId; }); 
             name = theme; 
         }, 
-        {
-            destination = ProtocolSettings; 
-            isToMany = N; 
-            joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = id; sourceAttribute = protocolSettingsId; }); 
-            name = protocolSettings; 
-        }, 
         {definition = "userSentMessages.sentMessage"; name = sentMessages; }, 
         {
             deleteRule = EODeleteRuleCascade; 
@@ -185,13 +170,6 @@
             joins = ({destinationAttribute = userId; sourceAttribute = id; }); 
             name = userSentMessages; 
             propagatesPrimaryKey = Y; 
-        }, 
-        {
-            destination = UserMessageSubscription; 
-            isToMany = Y; 
-            joinSemantic = EOInnerJoin; 
-            joins = ({destinationAttribute = userId; sourceAttribute = id; }); 
-            name = messageSubscriptions; 
         }
     ); 
 }

@@ -100,6 +100,6 @@ public class ApplicationStartupMessage extends SysAdminMessage
         String host = Application.application().host();
         int port = Application.application().port().intValue();
 
-        return (port == 80) ? host : host + ":" + port;
+        return (port == 80 || port == -1) ? host : host + ":" + port;
     }
 }

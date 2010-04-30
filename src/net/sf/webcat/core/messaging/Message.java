@@ -21,19 +21,13 @@
 
 package net.sf.webcat.core.messaging;
 
-import java.net.URL;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import net.sf.webcat.core.Application;
-import net.sf.webcat.core.BroadcastMessageSubscription;
 import net.sf.webcat.core.MutableDictionary;
-import net.sf.webcat.core.ProtocolSettings;
 import net.sf.webcat.core.SentMessage;
 import net.sf.webcat.core.Subsystem;
 import net.sf.webcat.core.User;
-import net.sf.webcat.core.UserMessageSubscription;
 import org.apache.log4j.Logger;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.NSArray;
@@ -142,47 +136,6 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
-     * Registers a message-sending protocol with the messaging system.
-     *
-     * @param protocol the protocol instance to register
-     */
-    public static void registerProtocol(Protocol protocol)
-    {
-        if (protocol.isBroadcast())
-        {
-            broadcastProtocols.put(protocol.getClass(), protocol);
-        }
-        else
-        {
-            directProtocols.put(protocol.getClass(), protocol);
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Gets the currently registered protocols.
-     *
-     * @param isBroadcast true to get broadcast protocols, false to get direct
-     *     message protocols
-     * @return an array of protocols
-     */
-    public static NSArray<Protocol> registeredProtocols(boolean isBroadcast)
-    {
-        NSMutableArray<Protocol> protocols = new NSMutableArray<Protocol>();
-
-        for (Protocol protocol : isBroadcast ?
-                broadcastProtocols.values() : directProtocols.values())
-        {
-            protocols.addObject(protocol);
-        }
-
-        return protocols;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * A shorthand method for getting the message type name, which is the
      * canonical name of the message class.
      *
@@ -196,6 +149,40 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
+     * Gets the message descriptor for messages of this type.
+     *
+     * @return the message descriptor
+     */
+    public final MessageDescriptor messageDescriptor()
+    {
+        return descriptors.get(getClass());
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the message descriptor for messages of the given type.
+     *
+     * @param messageType the type of the message
+     * @return the message descriptor
+     */
+    public static MessageDescriptor messageDescriptorForMessageType(
+            String messageType)
+    {
+        try
+        {
+            Class<?> klass = Class.forName(messageType);
+            return descriptors.get(klass);
+        }
+        catch (ClassNotFoundException e)
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Gets a value indicating whether this message should also be sent to the
      * system administrator e-mail addresses specified in the Web-CAT
      * installation wizard. The default behavior returns false, except for
@@ -204,9 +191,28 @@ public abstract class Message
      * @return true if the message should also be sent to system
      *     administrators, false otherwise
      */
-    public boolean isSentToSysAdmins()
+    public boolean isSevere()
     {
         return false;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets an object that implements {@link IMessageSettings} that contains
+     * the settings to use for sending this message if it is a broadcast
+     * message. The default behavior returns null, which indicates that the
+     * system default settings should be used. Subclasses can override this
+     * and return another object (usually a {@link ProtocolSettings}) to modify
+     * the way the message is broadcast; for example, to post it to a
+     * course-specific Twitter feed instead of the system feed.
+     *
+     * @return an object that implements {@link IMessageSettings}, or null to
+     *     use the system settings
+     */
+    public IMessageSettings broadcastSettings()
+    {
+        return null;
     }
 
 
@@ -320,182 +326,21 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
-     * <p>
-     * Gets the protocol settings that should be used when broadcasting this
-     * message system-wide. The default behavior returns the global system
-     * settings; subclasses can override this to change the destination of the
-     * message, such as to a course-specific Twitter feed when the message is
-     * relevant to a particular course or assignment.
-     * </p><p>
-     * This method is only called during the message sending cycle.
-     * </p>
-     *
-     * @return the ProtocolSettings object to use when broadcasting the message
-     */
-    public ProtocolSettings broadcastProtocolSettings()
-    {
-        EOEditingContext ec = editingContext();
-
-        try
-        {
-            ec.lock();
-            return ProtocolSettings.systemSettings(ec);
-        }
-        finally
-        {
-            ec.unlock();
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * <p>
-     * Gets the protocol settings that should be used when sending this message
-     * to the specified user. The default behavior returns the user's protocol
-     * settings; subclasses should usually not need to override this method
-     * since the default behavior is usually appropriate.
-     * </p><p>
-     * This method is only called during the message sending cycle.
-     * </p>
-     *
-     * @param user the User to whom the message is being sent
-     * @return the ProtocolSettings object to use when sending the message
-     */
-    public ProtocolSettings protocolSettingsForUser(User user)
-    {
-        return user.protocolSettings();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Sends the message.
      */
     public final void send()
     {
-        editingContext = Application.newPeerEditingContext();
-
-        try
-        {
-            editingContext.lock();
-            sendInternal();
-        }
-        finally
-        {
-            editingContext.unlock();
-            Application.releasePeerEditingContext(editingContext);
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Sends the message, after the editing context has been locked.
-     *
-     * @param ec the editing context to use for fetching protocol settings
-     */
-    private void sendInternal()
-    {
-        MessageDescriptor descriptor = descriptors.get(getClass());
-
-        // Broadcast the message to any system-wide messaging protocols that
-        // apply.
-
-        if (descriptor.isBroadcast())
-        {
-            ProtocolSettings protocolSettings = broadcastProtocolSettings();
-            Set<Protocol> protocols = broadcastProtocolsToSend();
-
-            for (Protocol protocol : protocols)
-            {
-                try
-                {
-                    protocol.sendMessage(this, null, protocolSettings);
-                }
-                catch (Exception e)
-                {
-                    log.error("The following error occurred when sending " +
-                            "the broadcast message \"" + title() + "\"", e);
-                }
-            }
-        }
-
-        // Send the message directly to any users to whom the message applies,
-        // if they have notifications for a particular protocol enabled.
-
-        NSArray<User> users = users();
-        if (users != null)
-        {
-            for (User user : users)
-            {
-                // Sanity check to ensure that messages don't get sent to users
-                // who shouldn't receive them based on their access level.
-
-                if (user.accessLevel() >= descriptor.accessLevel())
-                {
-                    ProtocolSettings protocolSettings =
-                        protocolSettingsForUser(user);
-                    Set<Protocol> protocols = userProtocolsToSend(user);
-
-                    for (Protocol protocol : protocols)
-                    {
-                        try
-                        {
-                            protocol.sendMessage(this, user, protocolSettings);
-                        }
-                        catch (Exception e)
-                        {
-                            log.error("The following error occurred when " +
-                                    "sending the direct message \"" + title() +
-                                    "\" to user " + user.name(), e);
-                        }
-                    }
-                }
-            }
-        }
-
-        // Mail the message to system administrators if necessary.
-
-        if (isSentToSysAdmins())
-        {
-            sendMailToSysAdmins();
-        }
+        recycleEditingContext();
 
         // Store the message in the database.
 
-        storeMessage(descriptor);
-    }
+        storeMessage();
 
+        // Use the application's registered message dispatcher to send the
+        // message.
 
-    // ----------------------------------------------------------
-    /**
-     * Sends this message to the system notification e-mail addresses that are
-     * specified in the installation wizard.
-     */
-    private void sendMailToSysAdmins()
-    {
-        StringBuffer body = new StringBuffer();
-        body.append(fullBody());
-        body.append("\n\n");
-
-        NSDictionary<String, String> links = links();
-        if (links != null && links.count() > 0)
-        {
-            body.append("Links:\n");
-
-            for (String key : links.allKeys())
-            {
-                String url = links.objectForKey(key);
-
-                body.append(key);
-                body.append(": ");
-                body.append(url);
-                body.append("\n");
-            }
-        }
-
-        Application.sendAdminEmail(body.toString(), fullBody());
+        Application application = (Application) Application.application();
+        application.messageDispatcher().sendMessage(this);
     }
 
 
@@ -505,8 +350,10 @@ public abstract class Message
      *
      * @param descriptor the message descriptor for this message
      */
-    private void storeMessage(MessageDescriptor descriptor)
+    private void storeMessage()
     {
+        MessageDescriptor descriptor = messageDescriptor();
+
         // Create a representation of the message in the database so that it
         // can be viewed by users later.
 
@@ -545,142 +392,26 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
-     * Gets the set of protocols that the system administrator has enabled for
-     * this type of message.
-     *
-     * @return the set of Protocols that the system administrator has enabled
-     *     for broadcast messages
+     * Recycles the editing context after every 20 calls to {@link #send()}.
      */
-    private Set<Protocol> broadcastProtocolsToSend()
+    private void recycleEditingContext()
     {
-        String messageType = messageType();
+        recycleCount++;
 
-        Set<Protocol> protocolsToSend = new HashSet<Protocol>();
-
-        NSArray<BroadcastMessageSubscription> subscriptions =
-            BroadcastMessageSubscription.enabledSubscriptionsForMessageType(
-                    editingContext, messageType);
-
-        for (Protocol protocol : broadcastProtocols.values())
+        if (recycleCount == 20)
         {
-            if (protocol.isEnabledByDefault())
+            if (editingContext != null)
             {
-                protocolsToSend.add(protocol);
+                Application.releasePeerEditingContext(editingContext);
+                editingContext = null;
             }
+
+            recycleCount = 0;
         }
 
-        for (BroadcastMessageSubscription subscription : subscriptions)
+        if (editingContext == null)
         {
-            String type = subscription.protocolType();
-            Protocol protocol = protocolWithName(type, true);
-
-            if (protocol != null)
-            {
-                if (subscription.isEnabled())
-                {
-                    protocolsToSend.add(protocol);
-                }
-                else
-                {
-                    protocolsToSend.remove(protocol);
-                }
-            }
-            else
-            {
-                log.warn("Attempted to send broadcast message via " +
-                        "unregistered protocol: " + type);
-            }
-        }
-
-        return protocolsToSend;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Gets the set of protocols that the specified user has enabled for a
-     * particular message type.
-     *
-     * @param user the User who will be receiving a message
-     * @param ec the editing context
-     * @return the set of Protocols that this user has enabled
-     */
-    private Set<Protocol> userProtocolsToSend(User user)
-    {
-        String messageType = messageType();
-        EOEditingContext ec = user.editingContext();
-
-        Set<Protocol> protocolsToSend = new HashSet<Protocol>();
-
-        NSArray<UserMessageSubscription> subscriptions =
-            UserMessageSubscription.enabledSubscriptionsForMessageTypeAndUser(
-                    ec, messageType, user);
-
-        for (Protocol protocol : directProtocols.values())
-        {
-            if (protocol.isEnabledByDefault())
-            {
-                protocolsToSend.add(protocol);
-            }
-        }
-
-        for (UserMessageSubscription subscription : subscriptions)
-        {
-            String type = subscription.protocolType();
-            Protocol protocol = protocolWithName(type, false);
-
-            if (protocol != null)
-            {
-                if (subscription.isEnabled())
-                {
-                    protocolsToSend.add(protocol);
-                }
-                else
-                {
-                    protocolsToSend.remove(protocol);
-                }
-            }
-            else
-            {
-                log.warn("Attempted to send direct message via " +
-                        "unregistered protocol: " + type);
-            }
-        }
-
-        return protocolsToSend;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Gets the registered Protocol with the specified class name.
-     *
-     * @param className the fully-qualified class name of the protocol
-     * @param isBroadcast true if it is a broadcast protocol; false if it is a
-     *     direct-to-user protocol
-     * @return the Protocol object with the specified class name, or null if
-     *     none was found
-     */
-    private Protocol protocolWithName(String typename, boolean isBroadcast)
-    {
-        try
-        {
-            Class<?> klass = Class.forName(typename);
-            Class<? extends Protocol> protocolClass = klass.asSubclass(
-                    Protocol.class);
-
-            if (isBroadcast)
-            {
-                return broadcastProtocols.get(protocolClass);
-            }
-            else
-            {
-                return directProtocols.get(protocolClass);
-            }
-        }
-        catch (ClassNotFoundException e)
-        {
-            return null;
+            editingContext = Application.newPeerEditingContext();
         }
     }
 
@@ -693,7 +424,7 @@ public abstract class Message
      *
      * @return an editing context
      */
-    protected EOEditingContext editingContext()
+    public EOEditingContext editingContext()
     {
         return editingContext;
     }
@@ -701,15 +432,9 @@ public abstract class Message
 
     //~ Static/instance variables .............................................
 
+    private int recycleCount = 0;
     private EOEditingContext editingContext;
 
     private static Map<Class<? extends Message>, MessageDescriptor> descriptors =
         new HashMap<Class<? extends Message>, MessageDescriptor>();
-
-    private static Map<Class<? extends Protocol>, Protocol> broadcastProtocols =
-        new HashMap<Class<? extends Protocol>, Protocol>();
-    private static Map<Class<? extends Protocol>, Protocol> directProtocols =
-        new HashMap<Class<? extends Protocol>, Protocol>();
-
-    private static final Logger log = Logger.getLogger(Message.class);
 }

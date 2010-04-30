@@ -62,8 +62,8 @@ public abstract class _LoggedError
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
-     * @param line
-     * @param occurrences
+     * @param lineValue
+     * @param occurrencesValue
      * @return The newly created object
      */
     public static LoggedError create(

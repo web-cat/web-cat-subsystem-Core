@@ -36,3 +36,17 @@
 
 /* @end
 ====================================================================== */
+/* @group Drag and Drop
+====================================================================== */
+
+.dojoDndHandle {
+    display: inline-block;
+    vertical-align: middle;
+    width: 19px;
+    height: 17px;
+    cursor: move;
+    background-image: url(images/draghandle.png);
+}
+
+/* @end
+====================================================================== */

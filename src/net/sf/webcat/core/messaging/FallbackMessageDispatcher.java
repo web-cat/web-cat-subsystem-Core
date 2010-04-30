@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2009 Virginia Tech
+ |  Copyright (C) 2010 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,26 +22,67 @@
 package net.sf.webcat.core.messaging;
 
 import net.sf.webcat.core.Application;
-import net.sf.webcat.core.ProtocolSettings;
 import net.sf.webcat.core.User;
+import org.apache.log4j.Logger;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
 
 //-------------------------------------------------------------------------
 /**
- * A notification protocol that delivers messages via e-mail.
+ * The fallback message dispatcher is installed at earliest startup by Core so
+ * that, in the event of an error initializing the Notifications subsystem,
+ * urgent messages will still be e-mailed to the system administrator.
  *
- * @author Tony Allevato
- * @version $Id$
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
-public class EmailProtocol extends Protocol
+public class FallbackMessageDispatcher implements IMessageDispatcher
 {
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    @Override
-    public void sendMessage(Message message, User user,
-            ProtocolSettings protocolSettings) throws Exception
+    public void sendMessage(Message message)
+    {
+        MessageDescriptor descriptor = message.messageDescriptor();
+
+        String body = buildMessageBody(message);
+
+        // Just e-mail any broadcast messages to the system administrators.
+
+        if (descriptor.isBroadcast())
+        {
+            Application.sendAdminEmail(message.title(), body);
+        }
+
+        // Send the message directly to any users to whom the message applies,
+        // if they have notifications for a particular protocol enabled.
+
+        NSArray<User> users = message.users();
+        if (users != null)
+        {
+            for (User user : users)
+            {
+                // Sanity check to ensure that messages don't get sent to users
+                // who shouldn't receive them based on their access level.
+
+                if (user.accessLevel() >= descriptor.accessLevel())
+                {
+                    Application.sendSimpleEmail(
+                            user.email(), message.title(), body,
+                            message.attachments());
+                }
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sends this message to the system notification e-mail addresses that are
+     * specified in the installation wizard.
+     */
+    private String buildMessageBody(Message message)
     {
         StringBuffer body = new StringBuffer();
         body.append(message.fullBody());
@@ -63,32 +104,6 @@ public class EmailProtocol extends Protocol
             }
         }
 
-        Application.sendSimpleEmail(
-                user.email(), message.title(), body.toString(),
-                message.attachments());
-    }
-
-
-    // ----------------------------------------------------------
-    @Override
-    public boolean isBroadcast()
-    {
-        return false;
-    }
-
-
-    // ----------------------------------------------------------
-    @Override
-    public boolean isEnabledByDefault()
-    {
-        return true;
-    }
-
-
-    // ----------------------------------------------------------
-    @Override
-    public String name()
-    {
-        return "E-mail";
+        return body.toString();
     }
 }

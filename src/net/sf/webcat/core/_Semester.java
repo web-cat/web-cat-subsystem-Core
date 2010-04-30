@@ -62,7 +62,7 @@ public abstract class _Semester
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
-     * @param year
+     * @param yearValue
      * @return The newly created object
      */
     public static Semester create(

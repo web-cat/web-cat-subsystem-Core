@@ -63,10 +63,10 @@ public abstract class _User
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
-     * @param accessLevel
-     * @param updateMutableFields
-     * @param userName
-     * @param authenticationDomain
+     * @param accessLevelValue
+     * @param updateMutableFieldsValue
+     * @param userNameValue
+     * @param authenticationDomainValue
      * @return The newly created object
      */
     public static User create(
@@ -183,9 +183,6 @@ public abstract class _User
     public static final String AUTHENTICATION_DOMAIN_KEY = "authenticationDomain";
     public static final ERXKey<net.sf.webcat.core.AuthenticationDomain> authenticationDomain =
         new ERXKey<net.sf.webcat.core.AuthenticationDomain>(AUTHENTICATION_DOMAIN_KEY);
-    public static final String PROTOCOL_SETTINGS_KEY = "protocolSettings";
-    public static final ERXKey<net.sf.webcat.core.ProtocolSettings> protocolSettings =
-        new ERXKey<net.sf.webcat.core.ProtocolSettings>(PROTOCOL_SETTINGS_KEY);
     public static final String THEME_KEY = "theme";
     public static final ERXKey<net.sf.webcat.core.Theme> theme =
         new ERXKey<net.sf.webcat.core.Theme>(THEME_KEY);
@@ -199,9 +196,6 @@ public abstract class _User
     public static final String GRADER_FOR_KEY = "graderFor";
     public static final ERXKey<net.sf.webcat.core.CourseOffering> graderFor =
         new ERXKey<net.sf.webcat.core.CourseOffering>(GRADER_FOR_KEY);
-    public static final String MESSAGE_SUBSCRIPTIONS_KEY = "messageSubscriptions";
-    public static final ERXKey<net.sf.webcat.core.UserMessageSubscription> messageSubscriptions =
-        new ERXKey<net.sf.webcat.core.UserMessageSubscription>(MESSAGE_SUBSCRIPTIONS_KEY);
     public static final String PASSWORD_CHANGE_REQUEST_KEY = "passwordChangeRequest";
     public static final ERXKey<net.sf.webcat.core.PasswordChangeRequest> passwordChangeRequest =
         new ERXKey<net.sf.webcat.core.PasswordChangeRequest>(PASSWORD_CHANGE_REQUEST_KEY);
@@ -832,67 +826,6 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
-     * Retrieve the entity pointed to by the <code>protocolSettings</code>
-     * relationship.
-     * @return the entity in the relationship
-     */
-    public net.sf.webcat.core.ProtocolSettings protocolSettings()
-    {
-        return (net.sf.webcat.core.ProtocolSettings)storedValueForKey( "protocolSettings" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Set the entity pointed to by the <code>protocolSettings</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>setProtocolSettingsRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The new entity to relate to
-     */
-    public void setProtocolSettings( net.sf.webcat.core.ProtocolSettings value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "setProtocolSettings("
-                + value + "): was " + protocolSettings() );
-        }
-        takeStoredValueForKey( value, "protocolSettings" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Set the entity pointed to by the <code>protocolSettings</code>
-     * relationship.  This method is a type-safe version of
-     * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
-     *
-     * @param value The new entity to relate to
-     */
-    public void setProtocolSettingsRelationship(
-        net.sf.webcat.core.ProtocolSettings value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "setProtocolSettingsRelationship("
-                + value + "): was " + protocolSettings() );
-        }
-        if ( value == null )
-        {
-            net.sf.webcat.core.ProtocolSettings object = protocolSettings();
-            if ( object != null )
-                removeObjectFromBothSidesOfRelationshipWithKey( object, "protocolSettings" );
-        }
-        else
-        {
-            addObjectToBothSidesOfRelationshipWithKey( value, "protocolSettings" );
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Retrieve the entity pointed to by the <code>theme</code>
      * relationship.
      * @return the entity in the relationship
@@ -1482,184 +1415,6 @@ public abstract class _User
         for (net.sf.webcat.core.CourseOffering object : graderFor())
         {
             deleteGraderForRelationship(object);
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Retrieve the entities pointed to by the <code>messageSubscriptions</code>
-     * relationship.
-     * @return an NSArray of the entities in the relationship
-     */
-    @SuppressWarnings("unchecked")
-    public NSArray<net.sf.webcat.core.UserMessageSubscription> messageSubscriptions()
-    {
-        return (NSArray)storedValueForKey( "messageSubscriptions" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Replace the list of entities pointed to by the
-     * <code>messageSubscriptions</code> relationship.
-     *
-     * @param value The new set of entities to relate to
-     */
-    public void setMessageSubscriptions( NSMutableArray<net.sf.webcat.core.UserMessageSubscription>  value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "setMessageSubscriptions("
-                + value + "): was " + messageSubscriptions() );
-        }
-        takeStoredValueForKey( value, "messageSubscriptions" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Add a new entity to the <code>messageSubscriptions</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>addToMessageSubscriptionsRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The new entity to relate to
-     */
-    public void addToMessageSubscriptions( net.sf.webcat.core.UserMessageSubscription value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "addToMessageSubscriptions("
-                + value + "): was " + messageSubscriptions() );
-        }
-        NSMutableArray<net.sf.webcat.core.UserMessageSubscription> array =
-            (NSMutableArray<net.sf.webcat.core.UserMessageSubscription>)messageSubscriptions();
-        willChange();
-        array.addObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove a specific entity from the <code>messageSubscriptions</code>
-     * relationship (DO NOT USE--instead, use
-     * <code>removeFromMessageSubscriptionsRelationship()</code>.
-     * This method is provided for WebObjects use.
-     *
-     * @param value The entity to remove from the relationship
-     */
-    public void removeFromMessageSubscriptions( net.sf.webcat.core.UserMessageSubscription value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "RemoveFromMessageSubscriptions("
-                + value + "): was " + messageSubscriptions() );
-        }
-        NSMutableArray<net.sf.webcat.core.UserMessageSubscription> array =
-            (NSMutableArray<net.sf.webcat.core.UserMessageSubscription>)messageSubscriptions();
-        willChange();
-        array.removeObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Add a new entity to the <code>messageSubscriptions</code>
-     * relationship.
-     *
-     * @param value The new entity to relate to
-     */
-    public void addToMessageSubscriptionsRelationship( net.sf.webcat.core.UserMessageSubscription value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "addToMessageSubscriptionsRelationship("
-                + value + "): was " + messageSubscriptions() );
-        }
-        addObjectToBothSidesOfRelationshipWithKey(
-            value, "messageSubscriptions" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove a specific entity from the <code>messageSubscriptions</code>
-     * relationship.
-     *
-     * @param value The entity to remove from the relationship
-     */
-    public void removeFromMessageSubscriptionsRelationship( net.sf.webcat.core.UserMessageSubscription value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "removeFromMessageSubscriptionsRelationship("
-                + value + "): was " + messageSubscriptions() );
-        }
-        removeObjectFromBothSidesOfRelationshipWithKey(
-            value, "messageSubscriptions" );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Create a brand new object that is a member of the
-     * <code>messageSubscriptions</code> relationship.
-     *
-     * @return The new entity
-     */
-    public net.sf.webcat.core.UserMessageSubscription createMessageSubscriptionsRelationship()
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "createMessageSubscriptionsRelationship()" );
-        }
-        EOClassDescription eoClassDesc = EOClassDescription
-            .classDescriptionForEntityName( "UserMessageSubscription" );
-        EOEnterpriseObject eoObject = eoClassDesc
-            .createInstanceWithEditingContext( editingContext(), null );
-        editingContext().insertObject( eoObject );
-        addObjectToBothSidesOfRelationshipWithKey(
-            eoObject, "messageSubscriptions" );
-        return (net.sf.webcat.core.UserMessageSubscription)eoObject;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove and then delete a specific entity that is a member of the
-     * <code>messageSubscriptions</code> relationship.
-     *
-     * @param value The entity to remove from the relationship and then delete
-     */
-    public void deleteMessageSubscriptionsRelationship( net.sf.webcat.core.UserMessageSubscription value )
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "deleteMessageSubscriptionsRelationship("
-                + value + "): was " + messageSubscriptions() );
-        }
-        removeObjectFromBothSidesOfRelationshipWithKey(
-            value, "messageSubscriptions" );
-        editingContext().deleteObject( value );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Remove (and then delete, if owned) all entities that are members of the
-     * <code>messageSubscriptions</code> relationship.
-     */
-    public void deleteAllMessageSubscriptionsRelationships()
-    {
-        if (log.isDebugEnabled())
-        {
-            log.debug( "deleteAllMessageSubscriptionsRelationships(): was "
-                + messageSubscriptions() );
-        }
-        for (net.sf.webcat.core.UserMessageSubscription object : messageSubscriptions())
-        {
-            deleteMessageSubscriptionsRelationship(object);
         }
     }
 

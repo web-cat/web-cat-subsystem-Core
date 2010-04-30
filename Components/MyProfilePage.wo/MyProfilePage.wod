@@ -119,10 +119,6 @@ LastName: WOTextField {
     size = 40;
 }
 
-MessagingConfigPanel: net.sf.webcat.core.MessagingConfigPanel {
-    isShowingBroadcast = false;
-}
-
 NewPassword1: WOPasswordField {
     value = newPassword1;
     size  = 40;

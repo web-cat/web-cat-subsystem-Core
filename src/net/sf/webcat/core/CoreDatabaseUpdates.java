@@ -197,8 +197,9 @@ public class CoreDatabaseUpdates
      */
     public void updateIncrement10() throws SQLException
     {
-        createBroadcastMessageSubscriptionTable();
-        createUserMessageSubscriptionTable();
+        // This update increment used to create the
+        // BroadcastMessageSubscription and UserMessageSubscription tables, but
+        // they have now been moved into the Notification subsystem.
     }
 
 
@@ -210,7 +211,8 @@ public class CoreDatabaseUpdates
      */
     public void updateIncrement11() throws SQLException
     {
-        createProtocolSettingsTable();
+        // This update increment used to create the ProtocolSettings table, but
+        // it has now been moved into the Notification subsystem.
 
         database().executeSQL(
                 "ALTER TABLE TUSER ADD protocolSettingsId INTEGER" );
@@ -250,6 +252,19 @@ public class CoreDatabaseUpdates
     public void updateIncrement14() throws SQLException
     {
         createObjectQueryTable();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Drops the protocolSettingsId field from the TUSER table. This
+     * relationship has now been inverted since ProtocolSettings was moved up
+     * into the Notifications subsystem.
+     * @throws SQLException on error
+     */
+    public void updateIncrement15() throws SQLException
+    {
+        database().executeSQL("ALTER TABLE TUSER DROP protocolSettingsId");
     }
 
 
@@ -580,76 +595,6 @@ public class CoreDatabaseUpdates
                 + "CPROPERTIES BLOB , CUPDATEMUTABLEFIELDS BIT NOT NULL )" );
             database().executeSQL(
                 "ALTER TABLE TTHEMES ADD PRIMARY KEY (OID)" );
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Create the BroadcastMessagingSelection table, if needed.
-     * @throws SQLException on error
-     */
-    private void createBroadcastMessageSubscriptionTable() throws SQLException
-    {
-        if ( !database().hasTable( "BroadcastMessageSubscription" ) )
-        {
-            log.info( "creating table BroadcastMessageSubscription" );
-            database().executeSQL(
-                "CREATE TABLE BroadcastMessageSubscription "
-                + "(OID INTEGER NOT NULL, "
-                + "isEnabled BIT NOT NULL, "
-                + "messageType MEDIUMTEXT , "
-                + "protocolType MEDIUMTEXT )" );
-            database().executeSQL(
-                "ALTER TABLE BroadcastMessageSubscription ADD PRIMARY KEY (OID)"
-            );
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Create the UserMessagingSelection table, if needed.
-     * @throws SQLException on error
-     */
-    private void createUserMessageSubscriptionTable() throws SQLException
-    {
-        if ( !database().hasTable( "UserMessageSubscription" ) )
-        {
-            log.info( "creating table UserMessageSubscription" );
-            database().executeSQL(
-                "CREATE TABLE UserMessageSubscription "
-                + "(OID INTEGER NOT NULL, "
-                + "userId INTEGER, "
-                + "isEnabled BIT NOT NULL, "
-                + "messageType MEDIUMTEXT , "
-                + "protocolType MEDIUMTEXT )" );
-            database().executeSQL(
-                "ALTER TABLE UserMessageSubscription ADD PRIMARY KEY (OID)"
-            );
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Create the ProtocolSettings table, if needed.
-     * @throws SQLException on error
-     */
-    private void createProtocolSettingsTable() throws SQLException
-    {
-        if ( !database().hasTable( "ProtocolSettings" ) )
-        {
-            log.info( "creating table ProtocolSettings" );
-            database().executeSQL(
-                "CREATE TABLE ProtocolSettings "
-                + "(OID INTEGER NOT NULL, "
-                + "settings BLOB, "
-                + "parentId INTEGER, "
-                + "CUPDATEMUTABLEFIELDS BIT NOT NULL )" );
-            database().executeSQL(
-                "ALTER TABLE ProtocolSettings ADD PRIMARY KEY (OID)"
-            );
         }
     }
 

@@ -21,6 +21,7 @@
 
 package net.sf.webcat.core.messaging;
 
+import org.jfree.util.Log;
 import net.sf.webcat.core.Application;
 import net.sf.webcat.core.User;
 import com.webobjects.appserver.WOContext;

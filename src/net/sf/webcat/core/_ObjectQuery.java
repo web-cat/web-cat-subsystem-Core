@@ -63,7 +63,7 @@ public abstract class _ObjectQuery
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
-     * @param updateMutableFields
+     * @param updateMutableFieldsValue
      * @return The newly created object
      */
     public static ObjectQuery create(

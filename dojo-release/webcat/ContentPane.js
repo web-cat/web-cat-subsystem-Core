@@ -101,7 +101,7 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
     // ----------------------------------------------------------
     _onShow: function()
     {
-        if (!this.alwaysDynamic)
+        if (!this.alwaysDynamic && this.isLoaded)
         {
             // If alwaysDynamic = false, then the content pane content is
             // already rendered, but _onShow will still cause an unnecessary

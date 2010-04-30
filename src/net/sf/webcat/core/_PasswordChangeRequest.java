@@ -62,7 +62,7 @@ public abstract class _PasswordChangeRequest
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
-     * @param user
+     * @param userValue
      * @return The newly created object
      */
     public static PasswordChangeRequest create(

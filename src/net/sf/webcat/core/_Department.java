@@ -62,7 +62,7 @@ public abstract class _Department
      * attributes and relationships.
      * @param editingContext The context in which the new object will be
      * inserted
-     * @param abbreviation
+     * @param abbreviationValue
      * @return The newly created object
      */
     public static Department create(
