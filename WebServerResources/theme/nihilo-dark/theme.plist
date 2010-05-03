@@ -19,6 +19,7 @@
         for darker backgrounds.";
     isForThemeDevelopers = true;
 
+    isDark = true;
     extends = nihilo;
     cssOrder = (
         {

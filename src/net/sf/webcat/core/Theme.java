@@ -124,7 +124,7 @@ public class Theme
 
     // ----------------------------------------------------------
     /**
-     * Get a list of shared hteme objects that have already been loaded
+     * Get a list of shared theme objects that have already been loaded
      * into the shared editing context.
      * @return an array of all theme objects
      */
@@ -247,6 +247,17 @@ public class Theme
             keyPath = keyPath.substring(INHERIT_PREFIX_LEN);
         }
         super.takeValueForKey(value, keyPath);
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean isDark()
+    {
+        Object result =
+            valueForKeyPath(INHERIT_PREFIX + "properties.isDark");
+        return (result == null)
+            ? false
+            : Boolean.valueOf(result.toString());
     }
 
 
