@@ -21,6 +21,8 @@
 
 package net.sf.webcat.core;
 
+import java.util.StringTokenizer;
+
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
 import org.apache.log4j.Logger;
@@ -134,7 +136,7 @@ public class WCResourceManager
             result = result.substring( 0, pos + 1 ) + "/"
                 + result.substring( pos + 1 );
         }
-        return result;
+        return result.replaceAll("[/]([A-Za-z])%3A","$1:").replaceAll("[+][%]26[+]", " & ");
     }
 
 
