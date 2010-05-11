@@ -37,7 +37,7 @@ coreAdminEmail: WOTextField {
     name  = "coreAdminEmail";
 }
 
-Page : net.sf.webcat.core.install.InstallPageWrapper {
+Page : org.webcat.core.install.InstallPageWrapper {
     title  = "Administrator Account";
     stepNo = stepNo;
     errors = messages;

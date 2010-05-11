@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <wodefinitions>
-	<wo class="net.sf.webcat.core.TableRow" wocomponentcontent="true">
+	<wo class="org.webcat.core.TableRow" wocomponentcontent="true">
 		<binding name="index"/>
 
 		<validation message="&apos;index&apos; is a required binding">

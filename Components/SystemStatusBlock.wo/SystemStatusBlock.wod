@@ -1,4 +1,4 @@
-SubsystemRows: net.sf.webcat.core.SubsystemFragmentCollector {
+SubsystemRows: org.webcat.core.SubsystemFragmentCollector {
     index       = index;
     fragmentKey = "systemStatusRows";
 }
@@ -8,7 +8,7 @@ StartTime: WOString {
 	value     = application.startTime;
 }
 
-TR : net.sf.webcat.core.TableRow {
+TR : org.webcat.core.TableRow {
     index     = index;
     increment = true;
 }

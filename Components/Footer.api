@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <wodefinitions>
-        <wo wocomponentcontent="false" class="net.sf.webcat.core.Footer">
+        <wo wocomponentcontent="false" class="org.webcat.core.Footer">
         </wo>
 </wodefinitions>

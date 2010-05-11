@@ -3,14 +3,14 @@ Proxy : WCJSONRPC {
 	proxyName = componentProxyName;
 }
 
-TreeModel : net.sf.webcat.ui.WCDiv {
+TreeModel : org.webcat.ui.WCDiv {
 	dojoType = "webcat.JSONBridgeTreeModel";
 	jsId = modelJSId;
 	rootLabel = rootLabel;
 	proxy = fullProxyReference;
 }
 
-Tree : net.sf.webcat.ui.WCDiv {
+Tree : org.webcat.ui.WCDiv {
 	dojoType = "webcat.DecoratedTree";
 	id = id;
 	jsId = id;

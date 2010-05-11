@@ -10,19 +10,19 @@
         wantsStart = YES;
         children   = {
           Status = {
-            pageName   = net.sf.webcat.core.StatusPage;
+            pageName   = org.webcat.core.StatusPage;
             accessLevel = 40;
             priority   = 100;
             wantsStart = YES;
           };
           "My Profile" = {
-            pageName = net.sf.webcat.core.MyProfilePage;
+            pageName = org.webcat.core.MyProfilePage;
             accessLevel = 40;
             priority = 1001;
             id       = Profile;
           };
           Feedback = {
-            pageName = net.sf.webcat.core.FeedbackPage;
+            pageName = org.webcat.core.FeedbackPage;
             accessLevel = 40;
             priority = 1003;
             id       = Feedback;
@@ -40,17 +40,17 @@
         wantsStart = YES;
         children   = {
           Status = {
-            pageName   = net.sf.webcat.core.StatusPage;
+            pageName   = org.webcat.core.StatusPage;
             priority   = 100;
             wantsStart = YES;
           };
           "My Profile" = {
-            pageName = net.sf.webcat.core.MyProfilePage;
+            pageName = org.webcat.core.MyProfilePage;
             priority = 1001;
             id       = Profile;
           };
           Feedback = {
-            pageName = net.sf.webcat.core.FeedbackPage;
+            pageName = org.webcat.core.FeedbackPage;
             priority = 1002;
             id       = Feedback;
           };

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <wodefinitions>
-	<wo class="net.sf.webcat.core.ErrorDictionaryPanel" wocomponentcontent="false">
+	<wo class="org.webcat.core.ErrorDictionaryPanel" wocomponentcontent="false">
 
 		<binding name="errorMessages"/>
 		<binding name="extraErrorMessage"/>

@@ -1,4 +1,4 @@
-Page : net.sf.webcat.core.install.InstallPageWrapper {
+Page : org.webcat.core.install.InstallPageWrapper {
     title  = "Web-CAT License";
     stepNo = stepNo;
     errors = messages;

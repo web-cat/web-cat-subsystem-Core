@@ -19,7 +19,7 @@
         }
     ); 
     attributesUsedForLocking = (departmentId, name, number); 
-    className = "net.sf.webcat.core.Course"; 
+    className = "org.webcat.core.Course"; 
     classProperties = (coreSelections, department, name, number, offerings); 
     externalName = TCOURSE; 
     fetchSpecificationDictionary = {}; 

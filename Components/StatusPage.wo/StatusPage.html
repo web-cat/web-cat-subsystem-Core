@@ -1,12 +1,12 @@
-<wo:net.sf.webcat.core.WCPageWithNavigation title="Your Web-CAT Status">
+<wo:org.webcat.core.WCPageWithNavigation title="Your Web-CAT Status">
 
-<wo:net.sf.webcat.core.SubsystemFragmentCollector fragmentKey="homeStatus"/>
+<wo:org.webcat.core.SubsystemFragmentCollector fragmentKey="homeStatus"/>
 
 <wo:if condition="$application.properties.coreAnnouncements">
-<wo:net.sf.webcat.core.WCPageModule title="Announcements" open="true">
+<wo:org.webcat.core.WCPageModule title="Announcements" open="true">
 <wo:str value="$application.properties.coreAnnouncements" escapeHTML="false"/>
-</wo:net.sf.webcat.core.WCPageModule>
+</wo:org.webcat.core.WCPageModule>
 </wo:if>
 
-<wo:net.sf.webcat.core.SystemStatusBlock/>
-</wo:net.sf.webcat.core.WCPageWithNavigation>
+<wo:org.webcat.core.SystemStatusBlock/>
+</wo:org.webcat.core.WCPageWithNavigation>

@@ -11,7 +11,7 @@
  * modelName: Value is a String that specifies the fully-qualified name of the
  *     the class that represents the model that stores the state of this query
  *     assistant. This class must extend the
- *     net.sf.webcat.core.objectquery.AbstractQueryAssistantModel interface
+ *     org.webcat.core.objectquery.AbstractQueryAssistantModel interface
  *     and have a parameterless constructor.
  *
  * editorComponentName: Value is a String that specifies the full-qualified
@@ -31,9 +31,9 @@
  */
 
 {
-    "net.sf.webcat.core.objectquery.advancedQuery" = {
-        modelName = "net.sf.webcat.core.objectquery.AdvancedQueryModel";
-        editorComponentName = "net.sf.webcat.core.objectquery.AdvancedQueryAssistant";
+    "org.webcat.core.objectquery.advancedQuery" = {
+        modelName = "org.webcat.core.objectquery.AdvancedQueryModel";
+        editorComponentName = "org.webcat.core.objectquery.AdvancedQueryAssistant";
         description = "Construct an advanced query| to filter objects that satisfy a set of criteria.";
     };
 }

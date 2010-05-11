@@ -8,11 +8,11 @@ AuthList: WCFilteringSelect {
     id                = "AuthenticationDomain";
 }
 
-BarePage : net.sf.webcat.ui.WCBasePage {
+BarePage : org.webcat.ui.WCBasePage {
     title = "Login";
 }
 
-Errors: net.sf.webcat.core.ErrorDictionaryPanel {
+Errors: org.webcat.core.ErrorDictionaryPanel {
     errorMessages          = errors;
     shouldShowNewlineAbove = true;
     shouldShowNewlineBelow = true;
@@ -28,7 +28,7 @@ ExtraKeys: WORepetition {
     item = aKey;
 }
 
-Footer: net.sf.webcat.core.Footer {}
+Footer: org.webcat.core.Footer {}
 
 HasSpecificAuthDomain: WOConditional {
     condition = hasSpecificAuthDomain;

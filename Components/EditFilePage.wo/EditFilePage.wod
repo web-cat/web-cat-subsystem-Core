@@ -14,7 +14,7 @@ Filename: WOString {
     value = fileName;
 }
 
-Page: net.sf.webcat.core.WCPageWithNavigation {
+Page: org.webcat.core.WCPageWithNavigation {
     sideStepTitle = sideStepTitle;
 }
 

@@ -1,5 +1,5 @@
-Navigator: net.sf.webcat.core.CoreNavigator {
+Navigator: org.webcat.core.CoreNavigator {
 }
 
-Page: net.sf.webcat.core.WCPageWithNavigation {
+Page: org.webcat.core.WCPageWithNavigation {
 }

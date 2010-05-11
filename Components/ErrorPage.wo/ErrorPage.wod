@@ -1,4 +1,4 @@
-Footer: net.sf.webcat.core.Footer {}
+Footer: org.webcat.core.Footer {}
 
 IsLoggedIn: WOConditional {
 	condition = isLoggedIn;
@@ -22,7 +22,7 @@ MyForm: WOForcedForm {
     multipleSubmit = true;
 }
 
-Page: net.sf.webcat.ui.WCBasePage {
+Page: org.webcat.ui.WCBasePage {
     title = "Unexpected Exception";
 }
 

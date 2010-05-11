@@ -7,7 +7,7 @@ Form1: WOForm {
     multipleSubmit = true;
 }
 
-Page: net.sf.webcat.core.WCPageWithNavigation {
+Page: org.webcat.core.WCPageWithNavigation {
 }
 
 NotSent: WOConditional {

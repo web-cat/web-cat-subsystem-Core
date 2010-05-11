@@ -1,6 +1,6 @@
 <webobject name="Page">
 
-<wo:net.sf.webcat.core.WCPageModule title="Account Information">
+<wo:org.webcat.core.WCPageModule title="Account Information">
 <p>You are <span class="hl"><webobject name="UserName"/></span> registered in
 the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <webobject name="Form1">
@@ -18,9 +18,9 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <tr><td></td>
     <td><webobject name="ApplyChanges"/></td></tr>
 </table></webobject>
-</wo:net.sf.webcat.core.WCPageModule>
+</wo:org.webcat.core.WCPageModule>
 
-<wo:net.sf.webcat.core.WCPageModule title="Your Courses" open="false">
+<wo:org.webcat.core.WCPageModule title="Your Courses" open="false">
 <webobject name="EnrolledInCourses">
 <p>You are currently <b>enrolled in</b> these courses:</p>
 <table><thead><tr><th>Course</th><th>Name</th><th>Instructor</th></tr></thead><tbody>
@@ -62,11 +62,11 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 </webobject><webobject name="NotTeachingCourses">
 <p>You are not currently registered as the <b>instructor</b> for any courses.</p>
 </webobject></webobject>
-</wo:net.sf.webcat.core.WCPageModule>
+</wo:org.webcat.core.WCPageModule>
 
-<wo:net.sf.webcat.core.SubsystemFragmentCollector fragmentKey="userProfile"/>
+<wo:org.webcat.core.SubsystemFragmentCollector fragmentKey="userProfile"/>
 
-<wo:net.sf.webcat.core.WCPageModule title="Display Theme" open="$openThemes">
+<wo:org.webcat.core.WCPageModule title="Display Theme" open="$openThemes">
 <wo:loop list="$allThemes" item="$aTheme">
   <wo name="ThemeTable"><tr><td>
     <wo name="PreviewLink"><wo name="ThemeThumb"/></wo>
@@ -75,7 +75,7 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
     <wo:if condition="~(aTheme.id == session.theme.id)">
     (currently selected)
     </wo:if><wo:else><wo:link action="$changeTheme">Select</wo:link>
-    </wo:else><wo:if condition="~(@net.sf.webcat.core.Theme@defaultTheme().id() == aTheme.id)"> (default)</wo:if></td></tr>
+    </wo:else><wo:if condition="~(@org.webcat.core.Theme@defaultTheme().id() == aTheme.id)"> (default)</wo:if></td></tr>
   </wo>
 </wo:loop>
 <h2 style="clear:both">Customize Your Selected Theme</h2>
@@ -87,9 +87,9 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <tr><td></td><td>
 <wo:WCButton action="$applyThemeCustomizations">Save</wo:WCButton>
 </td></tr></table></wo:WCForm>
-</wo:net.sf.webcat.core.WCPageModule>
+</wo:org.webcat.core.WCPageModule>
 
-<wo:net.sf.webcat.core.WCPageModule title="Personalized Service URLs" open="false">
+<wo:org.webcat.core.WCPageModule title="Personalized Service URLs" open="false">
 <table class="layout"><tbody>
 <tr><td class="R">BlueJ submission definitions:</td>
     <td><wo:link href="$bluejUrl">copy and paste this link</wo:link>
@@ -104,9 +104,9 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
     <td><wo:link href="$webcalUrl">subscribe</wo:link> <wo:link href="$webcalUrl"><wo name="iCal"/></wo:link>
     <wo name="WebcalLinkInfo"/></td></tr>
 </tbody></table>
-</wo:net.sf.webcat.core.WCPageModule>
+</wo:org.webcat.core.WCPageModule>
 
-<wo:net.sf.webcat.core.WCPageModule title="Time Formats" open="false">
+<wo:org.webcat.core.WCPageModule title="Time Formats" open="false">
 <webobject name="Form2"><table class="layout">
 <tr><td class="R">Time zone:</td><td><webobject name="TimeZone"/></td></tr>
 <tr><td class="R">Format:</td><td><webobject name="DateFormat"/>
@@ -114,6 +114,6 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <tr><td></td>
     <td><webobject name="ApplyTimeFormats"/></td></tr>
 </table></webobject>
-</wo:net.sf.webcat.core.WCPageModule>
+</wo:org.webcat.core.WCPageModule>
 
 </webobject>

@@ -32,7 +32,7 @@
         }
     ); 
     attributesUsedForLocking = (season, year); 
-    className = "net.sf.webcat.core.Semester"; 
+    className = "org.webcat.core.Semester"; 
     classProperties = (season, semesterEndDate, semesterStartDate, year); 
     externalName = TSEMESTER; 
     name = Semester; 

@@ -1,4 +1,4 @@
-Errors: net.sf.webcat.core.ErrorDictionaryPanel {
+Errors: org.webcat.core.ErrorDictionaryPanel {
 	errorMessages          = errors;
 	shouldShowNewlineAbove = true;
 	shouldShowNewlineBelow = true;

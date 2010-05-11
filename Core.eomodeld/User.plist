@@ -31,7 +31,7 @@
             userInfo = {
                 adaptorValueConversionMethodName = archiveData; 
                 isMutable = true; 
-                valueClassName = "net.sf.webcat.core.MutableDictionary"; 
+                valueClassName = "org.webcat.core.MutableDictionary"; 
                 valueFactoryMethodName = objectWithArchiveData; 
             }; 
         }, 
@@ -63,7 +63,7 @@
         url, 
         userName
     ); 
-    className = "net.sf.webcat.core.User"; 
+    className = "org.webcat.core.User"; 
     classProperties = (
         accessLevel, 
         authenticationDomain, 

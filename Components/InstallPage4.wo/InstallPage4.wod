@@ -15,7 +15,7 @@ LoginURL: WOTextField {
     size  = 70;
 }
 
-Page : net.sf.webcat.core.install.InstallPageWrapper {
+Page : org.webcat.core.install.InstallPageWrapper {
     title  = "Set Site Parameters";
     stepNo = stepNo;
     errors = messages;

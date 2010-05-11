@@ -70,19 +70,19 @@ OtherKeyPath : WCTextBox {
     value = currentRepresentedValue;
 }
 
-Value : net.sf.webcat.core.objectquery.AdvancedQueryValueComponent {
+Value : org.webcat.core.objectquery.AdvancedQueryValueComponent {
     multipleSelect = doesCurrentComparisonSupportMultipleValues;
     valueType = typeOfCurrentKeyPath;
     representedValue = currentRepresentedValue;
 }
 
-MinimumValue : net.sf.webcat.core.objectquery.AdvancedQueryValueComponent {
+MinimumValue : org.webcat.core.objectquery.AdvancedQueryValueComponent {
     multipleSelect = false;
     valueType = typeOfCurrentKeyPath;
     representedValue = minimumValueOfCurrentRepresentedValue;
 }
 
-MaximumValue : net.sf.webcat.core.objectquery.AdvancedQueryValueComponent {
+MaximumValue : org.webcat.core.objectquery.AdvancedQueryValueComponent {
     multipleSelect = false;
     valueType = typeOfCurrentKeyPath;
     representedValue = maximumValueOfCurrentRepresentedValue;

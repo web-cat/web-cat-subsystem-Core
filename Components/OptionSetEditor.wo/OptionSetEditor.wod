@@ -25,7 +25,7 @@ OptionContainer: WOGenericContainer {
     style = initialOptionStyle;
 }
 
-OptionPanel: net.sf.webcat.core.OptionEditPanel {
+OptionPanel: org.webcat.core.OptionEditPanel {
     option         = option;
     optionValues   = optionValues;
     terse          = terse;

@@ -30,7 +30,7 @@
         timeFormat, 
         timeZoneName
     ); 
-    className = "net.sf.webcat.core.AuthenticationDomain"; 
+    className = "org.webcat.core.AuthenticationDomain"; 
     classProperties = (
         dateFormat, 
         defaultEmailDomain, 

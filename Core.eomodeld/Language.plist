@@ -6,7 +6,7 @@
         {columnName = CVERSION; name = version; prototypeName = tinyText; }
     ); 
     attributesUsedForLocking = (compiler, name, version); 
-    className = "net.sf.webcat.core.Language"; 
+    className = "org.webcat.core.Language"; 
     classProperties = (compiler, name, version); 
     externalName = TLANGUAGE; 
     fetchSpecificationDictionary = {}; 

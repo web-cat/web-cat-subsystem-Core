@@ -21,14 +21,24 @@
 
 package net.sf.webcat.core;
 
-import com.webobjects.foundation.*;
-import com.webobjects.foundation.NSArray.*;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
 import org.apache.log4j.Logger;
+import org.webcat.core.MutableContainer;
+import org.webcat.core.MutableDictionary;
+import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSData;
+import com.webobjects.foundation.NSDictionary;
+import com.webobjects.foundation.NSForwardException;
+import com.webobjects.foundation.NSLog;
+import com.webobjects.foundation.NSPropertyListSerialization;
+import com.webobjects.foundation.NSRange;
 
 //-------------------------------------------------------------------------
 /**
@@ -38,6 +48,10 @@ import org.apache.log4j.Logger;
  *
  *  See the description in {@link MutableDictionary} for critical
  *  usage details.
+ *
+ *  @deprecated use the org.webcat.core version of this class instead.
+ *  This version is only provided for database compatibility with the
+ *  Summer 2006-Spring 2010 semesters.
  *
  *  @author  Stephen Edwards
  *  @version $Id$

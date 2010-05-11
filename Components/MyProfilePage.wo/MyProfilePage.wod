@@ -10,7 +10,7 @@ ApplyTimeFormats: WCButton {
     class  = "pos";
 }
 
-BlueJLinkInfo: net.sf.webcat.core.PopUpInfo {
+BlueJLinkInfo: org.webcat.core.PopUpInfo {
     title   = "BlueJ Submission URL";
     message = "Web-CAT uses this URL to publish assignment definitions for use with the <a href=&quot;http://www.bluej.org/extensions/submitter/submitter.html&quot;>BlueJ submitter extension</a>. See the &quot;Configure BlueJ&quot; section of the <a href=&quot;http://web-cat.cs.vt.edu/WCWiki/ConfigureBlueJsSubmitter&quot;>ConfigureBlueJsSubmitter</a> recipe in the Web-CAT Cookbook.";
 }
@@ -35,12 +35,12 @@ CourseName: WOString {
     value = aCourseOffering.course.name;
 }
 
-CustomBackgroundInfo: net.sf.webcat.core.PopUpInfo {
+CustomBackgroundInfo: org.webcat.core.PopUpInfo {
     title   = "Custom Background URL";
     message = "You can provide a URL to an external image you wish to use as the background image on Web-CAT.  This image will be used instead of the default background for your selected theme.  You can use a URL to a publicly available image on the web, or to one you have uploaded to your personal web space on another server.";
 }
 
-CustomCssInfo: net.sf.webcat.core.PopUpInfo {
+CustomCssInfo: org.webcat.core.PopUpInfo {
     title   = "Custom CSS URL";
     message = "You can provide a URL to an external CSS (Cascading Style Sheet) file you have uploaded to your personal web space on another server.  Using CSS, you can override the look of most features in Web-CAT&apos;s user interface.";
 }
@@ -56,7 +56,7 @@ DomainName: WOString {
     value = user.authenticationDomain.displayableName;
 }
 
-EclipseLinkInfo: net.sf.webcat.core.PopUpInfo {
+EclipseLinkInfo: org.webcat.core.PopUpInfo {
     title   = "Eclipse Submission URL";
     message = "Web-CAT uses this URL to publish assignment definitions for use with the <a href=&quot;http://web-cat.cs.vt.edu/WCWiki/EclipsePlugins/SubmissionPlugin&quot;>Eclipse submitter plug-in</a>. See the &quot;Configure Eclipse&quot; section of the <a href=&quot;http://web-cat.cs.vt.edu/WCWiki/ConfigureEclipseSubmitter&quot>ConfigureEclipseSubmitter</a> recipe in the Web-CAT Cookbook.";
 }
@@ -99,7 +99,7 @@ iCal: WOImage {
     border    = 0;
 }
 
-iCalLinkInfo: net.sf.webcat.core.PopUpInfo {
+iCalLinkInfo: org.webcat.core.PopUpInfo {
     title   = "iCalendar Export URL";
     message = "Web-CAT uses this URL to publish assignment due date information for use by iCal-capable calendaring programs.  You can copy-and-paste this link into your calendar program to subscribe.  Alternately, if your browser and/or operating system supports the webcal protocol, use the subscription link below.";
 }
@@ -144,7 +144,7 @@ NotTeachingCourses: WOConditional {
     negate    = true;
 }
 
-Page : net.sf.webcat.core.WCPageWithNavigation {
+Page : org.webcat.core.WCPageWithNavigation {
     title         = "Manage Your Profile";
     extraRequires = "dojox.image.Lightbox";
     extraCssFiles = "Core.framework/WebServerResources/dojox/image/resources/Lightbox.css";
@@ -176,7 +176,7 @@ ThemeDescription: WOString {
 }
 
 PreviewLink: WOHyperlink {
-    href     = "~@net.sf.webcat.core.WCResourceManager@resourceURLFor(\"Core.framework/WebServerResources/theme/\" + aTheme.dirName + \"/\" + aTheme.inherit.properties.preview, null)";
+    href     = "~@org.webcat.core.WCResourceManager@resourceURLFor(\"Core.framework/WebServerResources/theme/\" + aTheme.dirName + \"/\" + aTheme.inherit.properties.preview, null)";
     dojoType = "dojox.image.Lightbox";
     group    = "Themes";
     title    = aTheme.name;
@@ -207,7 +207,7 @@ TimeZone: WOPopUpButton {
     displayString = zone.printableName;
 }
 
-TR: net.sf.webcat.core.TableRow {
+TR: org.webcat.core.TableRow {
     index = index;
 }
 
@@ -220,7 +220,7 @@ UserName: WOString {
     value = user.userName;
 }
 
-WebcalLinkInfo: net.sf.webcat.core.PopUpInfo {
+WebcalLinkInfo: org.webcat.core.PopUpInfo {
     title   = "Webcal Subscription";
     message = "If your browser and/or operating system supports the webcal protocol, click this link to subscribe to the calendar events for your courses.";
 }

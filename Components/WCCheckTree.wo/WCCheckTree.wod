@@ -3,7 +3,7 @@ Proxy : WCJSONRPC {
 	proxyName = componentProxyName;
 }
 
-Tree : net.sf.webcat.ui.WCTree {
+Tree : org.webcat.ui.WCTree {
 	id = id;
 	cssClass = cssClass;
 	style = style;

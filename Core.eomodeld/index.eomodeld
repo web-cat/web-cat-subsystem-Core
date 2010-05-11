@@ -10,28 +10,28 @@
     };
     entities = (
         {
-            className = "net.sf.webcat.core.AuthenticationDomain";
+            className = "org.webcat.core.AuthenticationDomain";
             name = AuthenticationDomain;
         },
-        {className = "net.sf.webcat.core.CoreSelections"; name = CoreSelections; },
-        {className = "net.sf.webcat.core.Course"; name = Course; },
-        {className = "net.sf.webcat.core.CourseOffering"; name = CourseOffering; },
+        {className = "org.webcat.core.CoreSelections"; name = CoreSelections; },
+        {className = "org.webcat.core.Course"; name = Course; },
+        {className = "org.webcat.core.CourseOffering"; name = CourseOffering; },
         {className = EOGenericRecord; name = CourseStudent; },
         {className = EOGenericRecord; name = CourseTA; },
-        {className = "net.sf.webcat.core.Department"; name = Department; },
+        {className = "org.webcat.core.Department"; name = Department; },
         {className = EOGenericRecord; name = InstructorCourse; },
-        {className = "net.sf.webcat.core.Language"; name = Language; },
-        {className = "net.sf.webcat.core.LoggedError"; name = LoggedError; },
-        {className = "net.sf.webcat.core.LoginSession"; name = LoginSession; },
-        {className = "net.sf.webcat.core.ObjectQuery"; name = ObjectQuery; },
+        {className = "org.webcat.core.Language"; name = Language; },
+        {className = "org.webcat.core.LoggedError"; name = LoggedError; },
+        {className = "org.webcat.core.LoginSession"; name = LoginSession; },
+        {className = "org.webcat.core.ObjectQuery"; name = ObjectQuery; },
         {
-            className = "net.sf.webcat.core.PasswordChangeRequest";
+            className = "org.webcat.core.PasswordChangeRequest";
             name = PasswordChangeRequest;
         },
-        {className = "net.sf.webcat.core.Semester"; name = Semester; },
-        {className = "net.sf.webcat.core.SentMessage"; name = SentMessage; },
-        {className = "net.sf.webcat.core.Theme"; name = Theme; },
-        {className = "net.sf.webcat.core.User"; name = User; },
+        {className = "org.webcat.core.Semester"; name = Semester; },
+        {className = "org.webcat.core.SentMessage"; name = SentMessage; },
+        {className = "org.webcat.core.Theme"; name = Theme; },
+        {className = "org.webcat.core.User"; name = User; },
         {className = EOGenericRecord; name = UserSentMessage; }
     );
 }

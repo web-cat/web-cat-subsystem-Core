@@ -12,7 +12,7 @@
         {columnName = CUSERID; name = userId; prototypeName = foreignId; }
     ); 
     attributesUsedForLocking = (sessionId, userId); 
-    className = "net.sf.webcat.core.LoginSession"; 
+    className = "org.webcat.core.LoginSession"; 
     classProperties = (expirationTime, sessionId, user); 
     externalName = TLOGINSESSION; 
     name = LoginSession; 

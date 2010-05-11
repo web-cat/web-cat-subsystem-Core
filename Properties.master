@@ -31,24 +31,24 @@ Core.description=\
 # see config.plist for docs on each property
 
 Core.archive.handler.list=(\
-    net.sf.webcat.archives.internal.ZipArchiveHandler,   \
-    net.sf.webcat.archives.internal.TarGzArchiveHandler, \
-    net.sf.webcat.archives.internal.TarArchiveHandler)
+    org.webcat.archives.internal.ZipArchiveHandler,   \
+    org.webcat.archives.internal.TarGzArchiveHandler, \
+    org.webcat.archives.internal.TarArchiveHandler)
 help.baseURL = http://web-cat.cs.vt.edu/Web-CAT.help/
 
 
 # -------------------------------------------------------------------
 # Core logging defaults
 # -------------------------------------------------------------------
-log4j.logger.net.sf.webcat.core.Application          = INFO
-log4j.logger.net.sf.webcat.core.install              = INFO
-log4j.logger.net.sf.webcat.core.Theme                = INFO
+log4j.logger.org.webcat.core.Application          = INFO
+log4j.logger.org.webcat.core.install              = INFO
+log4j.logger.org.webcat.core.Theme                = INFO
 
 # This entry ensures that one must specifically request that this be
 # turned on separately from turning on generic Application class logging,
 # since this dumps high volumes of info that is only desirable in special
 # circumstances.
-log4j.logger.net.sf.webcat.core.Application.requests = WARN
+log4j.logger.org.webcat.core.Application.requests = WARN
 
 # These duplicate settings in the main app properties file, but are
 # placed here for the near term to avoid an update of the main app bundle

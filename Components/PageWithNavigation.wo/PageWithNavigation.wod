@@ -1,4 +1,4 @@
-BarePage: net.sf.webcat.core.BarePage {
+BarePage: org.webcat.core.BarePage {
     title                = title;
     stylesheet           = stylesheet;
     externalJavascript   = externalJavascript;
@@ -14,7 +14,7 @@ DivContents: WOGenericContainer {
 	class       = "~(hasSteps && includePageWrapping) ? \"\" : \"nomenu\"";
 }
 
-Errors: net.sf.webcat.core.ErrorDictionaryPanel {
+Errors: org.webcat.core.ErrorDictionaryPanel {
 	errorMessages          = thisPage.messages;
 	extraErrorMessage      = application.deathMessage;
 	shouldShowNewlineBelow = true;
@@ -24,7 +24,7 @@ FeedbackLink: WOHyperlink {
 	action = goToFeedback;
 }
 
-Footer: net.sf.webcat.core.Footer {}
+Footer: org.webcat.core.Footer {}
 
 HasMenu: WOConditional {
     condition = hasSteps;

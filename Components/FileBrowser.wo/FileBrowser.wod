@@ -6,7 +6,7 @@ IncludeSeparator: WOConditional {
     condition = includeSeparator;
 }
 
-Row : net.sf.webcat.core.FileBrowserRow {
+Row : org.webcat.core.FileBrowserRow {
 	file                  = file;
 	baseFile              = file;
 	isExpanded            = isExpanded;

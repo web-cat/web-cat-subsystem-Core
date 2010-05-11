@@ -11,7 +11,7 @@
             userInfo = {
                 adaptorValueConversionMethodName = archiveData; 
                 isMutable = true; 
-                valueClassName = "net.sf.webcat.core.MutableDictionary"; 
+                valueClassName = "org.webcat.core.MutableDictionary"; 
                 valueFactoryMethodName = objectWithArchiveData; 
             }; 
         }, 
@@ -22,7 +22,7 @@
         }
     ); 
     attributesUsedForLocking = (description, userId, objectType, updateMutableFields); 
-    className = "net.sf.webcat.core.ObjectQuery"; 
+    className = "org.webcat.core.ObjectQuery"; 
     classProperties = (description, user, objectType, queryInfo, updateMutableFields); 
     externalName = ObjectQuery; 
     name = ObjectQuery; 

@@ -24,7 +24,7 @@ DBusername: WOTextField {
     name  = "dbConnectUserGLOBAL";
 }
 
-Page : net.sf.webcat.core.install.InstallPageWrapper {
+Page : org.webcat.core.install.InstallPageWrapper {
     title  = "MySQL Database Configuration";
     stepNo = stepNo;
     errors = messages;

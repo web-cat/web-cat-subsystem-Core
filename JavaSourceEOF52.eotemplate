@@ -55,14 +55,14 @@ import org.apache.log4j.Logger;
 #set ($alreadyFoundMutableAttribute = false)
 #foreach ($attribute in $entity.sortedClassAttributes)
 #if ($attribute.userInfo.isMutable && !$alreadyFoundMutableAttribute)
-    implements net.sf.webcat.core.MutableContainer.MutableContainerOwner
+    implements org.webcat.core.MutableContainer.MutableContainerOwner
 #set ($alreadyFoundMutableAttribute = true)
 #end
 #end
 #set ($alreadyFoundMigratoryAttribute = false)
 #foreach ($attribute in $entity.sortedClassAttributes)
 #if ($attribute.userInfo.needsMigration && !$alreadyFoundMigratoryAttribute)
-#if ($alreadyFoundMutableAttribute)    ,#else    implements#end net.sf.webcat.core.MigratoryAttributeOwner
+#if ($alreadyFoundMutableAttribute)    ,#else    implements#end org.webcat.core.MigratoryAttributeOwner
 #set ($alreadyFoundMigratoryAttribute = true)
 #end
 #end
@@ -608,7 +608,7 @@ import org.apache.log4j.Logger;
         // we're already trying to migrate and this "awake" is coming from the
         // child migration context.
 
-        if (!(ec instanceof net.sf.webcat.core.MigratingEditingContext))
+        if (!(ec instanceof org.webcat.core.MigratingEditingContext))
         {
             migrateAttributeValuesIfNeeded();
         }
@@ -634,8 +634,8 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
 #end
 #end )
         {
-            net.sf.webcat.core.MigratingEditingContext mec =
-                net.sf.webcat.core.Application.newMigratingEditingContext();
+            org.webcat.core.MigratingEditingContext mec =
+                org.webcat.core.Application.newMigratingEditingContext();
             ${entity.classNameWithoutPackage} migratingObject = localInstance(mec);
 
 #foreach ($attribute in $entity.sortedClassAttributes)
@@ -648,7 +648,7 @@ ${attribute.name}Raw() == null#set ($alreadyFoundOneMigratoryAttribute = true)
 #end
 #end
             mec.saveChanges();
-            net.sf.webcat.core.Application.releaseMigratingEditingContext(mec);
+            org.webcat.core.Application.releaseMigratingEditingContext(mec);
         }
     }
 

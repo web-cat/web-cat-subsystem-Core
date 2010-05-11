@@ -14,7 +14,7 @@
         {columnName = URL; name = url; prototypeName = tinyText; }
     ); 
     attributesUsedForLocking = (courseId, crn, label, moodleGroupId, moodleId, semesterId, url); 
-    className = "net.sf.webcat.core.CourseOffering"; 
+    className = "org.webcat.core.CourseOffering"; 
     classProperties = (
         coreSelections, 
         course, 

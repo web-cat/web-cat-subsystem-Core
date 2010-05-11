@@ -1,4 +1,4 @@
-Page: net.sf.webcat.core.WCPageWithNavigation {
+Page: org.webcat.core.WCPageWithNavigation {
     sideStepTitle        = sideStepTitle;
     hideSteps            = hideSteps;
     permalink            = permalink;

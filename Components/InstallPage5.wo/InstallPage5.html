@@ -59,7 +59,7 @@ function submitForm() { document.WizardForm.submit(); }
     </td>
   </tr>
 </wo:if>
-<wo:if condition="~chosenAuthStrategy == @net.sf.webcat.core.install.InstallPage5@DATABASE_STRATEGY">
+<wo:if condition="~chosenAuthStrategy == @org.webcat.core.install.InstallPage5@DATABASE_STRATEGY">
   <tr>
     <td class="t" colspan="3">
       <p>Web-CAT will store its own passwords internally within its database,
@@ -67,7 +67,7 @@ function submitForm() { document.WizardForm.submit(); }
     </td>
   </tr>
 </wo:if>
-<wo:if condition="~chosenAuthStrategy == @net.sf.webcat.core.install.InstallPage5@LDAP_STRATEGY">
+<wo:if condition="~chosenAuthStrategy == @org.webcat.core.install.InstallPage5@LDAP_STRATEGY">
 <tr>
   <td class="rtn">LDAP host name:</td>
   <td class="t"><webobject name="LdapHost"/></td>
@@ -145,14 +145,14 @@ function submitForm() { document.WizardForm.submit(); }
   </td>
 </tr>
 </wo:if>
-<wo:if condition="~chosenAuthStrategy == @net.sf.webcat.core.install.InstallPage5@CUSTOM_STRATEGY">
+<wo:if condition="~chosenAuthStrategy == @org.webcat.core.install.InstallPage5@CUSTOM_STRATEGY">
   <tr>
     <td class="t" colspan="3">
       <p>Custom authenticator class:<br/>
       <wo name="CustomAuthClass"/></p>
       <p><b class="warn">Caution: for advanced users only.</b>
       Web-CAT can use a user-provided class for authentication.  This class
-      must implement the <code>net.sf.webcat.core.UserAuthenticator</code>
+      must implement the <code>org.webcat.core.UserAuthenticator</code>
       interface.  In addition, you should have already placed this class (and
       any support classes it requires) on the application's CLASSPATH,
       preferably by adding your own jar(s) to the web application's

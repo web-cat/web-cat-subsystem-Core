@@ -71,7 +71,7 @@ EndDateSelector: WOImage {
 
 //  <input name="SemesterCreate" id="SemesterCreate" value="1" checked="true" type="checkbox">
 
-Page : net.sf.webcat.core.install.InstallPageWrapper {
+Page : org.webcat.core.install.InstallPageWrapper {
     title  = "Create Supporting Data";
     stepNo = stepNo;
     errors = messages;

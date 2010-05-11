@@ -47,7 +47,7 @@
         page, 
         stackTrace
     ); 
-    className = "net.sf.webcat.core.LoggedError"; 
+    className = "org.webcat.core.LoggedError"; 
     classProperties = (
         component, 
         exceptionName, 

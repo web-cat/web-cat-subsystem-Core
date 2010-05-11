@@ -10,7 +10,7 @@
         {columnName = CUSERID; name = userId; prototypeName = foreignId; }
     ); 
     attributesUsedForLocking = (courseId, courseOfferingId, userId); 
-    className = "net.sf.webcat.core.CoreSelections"; 
+    className = "org.webcat.core.CoreSelections"; 
     classProperties = (course, courseOffering, user); 
     externalName = TCORESELECTIONS; 
     fetchSpecificationDictionary = {}; 

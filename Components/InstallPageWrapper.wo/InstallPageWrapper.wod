@@ -7,7 +7,7 @@ BackButtonEnabled: WOConditional {
     condition = backEnabled;
 }
 
-BarePage : net.sf.webcat.core.BarePage {
+BarePage : org.webcat.core.BarePage {
 	title = title;
 	bodyClass = "user";
 	stylesheet = stylesheet;
@@ -79,7 +79,7 @@ td.rtn {
 </style>";
 }
 
-Errors: net.sf.webcat.core.ErrorDictionaryPanel {
+Errors: org.webcat.core.ErrorDictionaryPanel {
 	errorMessages          = errors;
 	shouldShowNewlineAbove = true;
 	shouldShowNewlineBelow = true;

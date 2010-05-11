@@ -230,7 +230,7 @@ SpacerRepetition : WORepetition {
 	index = spacerIndex;
 }
 
-SubFileBrowser : net.sf.webcat.core.FileBrowserRow {
+SubFileBrowser : org.webcat.core.FileBrowserRow {
 	file                  = subFileWalker;
 	baseFile              = baseFile;
 	depth                 = innerDepth;
@@ -254,7 +254,7 @@ SubFileRepetition : WORepetition {
 	index = subFileIndex;
 }
 
-TR1 : net.sf.webcat.core.TableRow {
+TR1 : org.webcat.core.TableRow {
 	index       = index;
 	increment   = true;
 	showCaution = isSelected;

@@ -58,7 +58,7 @@ NextButton: WOSubmitButton {
     name     = "NextButton";
 }
 
-Page: net.sf.webcat.core.PageWithNavigation {
+Page: org.webcat.core.PageWithNavigation {
     stylesheet           = stylesheet;
     externalJavascript   = externalJavascript;
     inlineHeaderContents = inlineHeaderContents;

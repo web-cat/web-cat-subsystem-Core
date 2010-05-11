@@ -24,12 +24,22 @@
 \*==========================================================================*/
 
 package edu.vt.cs.Web_CAT.Core;
-import com.webobjects.foundation.*;
-import er.extensions.foundation.ERXFileUtilities;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Enumeration;
-import net.sf.webcat.core.*;
 import org.apache.log4j.Logger;
+import org.webcat.core.MutableContainer;
+import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSData;
+import com.webobjects.foundation.NSDictionary;
+import com.webobjects.foundation.NSForwardException;
+import com.webobjects.foundation.NSLog;
+import com.webobjects.foundation.NSPropertyListSerialization;
+import er.extensions.foundation.ERXFileUtilities;
 
 //-------------------------------------------------------------------------
 /**
@@ -54,7 +64,7 @@ import org.apache.log4j.Logger;
  *  mutable class must provide both a {@link #hasChanged()} and a
  *  {@link #setHasChanged(boolean)} method (see below).
  *
- *  @deprecated use the net.sf.webcat.core version of this class instead.
+ *  @deprecated use the org.webcat.core version of this class instead.
  *  This version is only provided for database compatibility during the
  *  Spring 2006 semester.
  *
