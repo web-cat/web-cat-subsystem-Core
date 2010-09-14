@@ -1,0 +1,20 @@
+Proxy : WCJSONRPC {
+    name = idFor.jsonrpc;
+    proxyName = "userSelector";
+}
+
+JSInstance : WCDiv {
+    dojoType = "webcat.core.FilteringUserSelector";
+    jsId = idFor.jsId;
+    proxy = proxyReference;
+    idPrefix = idFor.ComponentIDPrefix;
+}
+
+SearchBusyIndicator : WCSpinner {
+    id = idFor.searchBusyIndicator;
+}
+
+ShowMoreUsersLink : WCLink {
+    remote = true;
+    action = showMoreUsers;
+}

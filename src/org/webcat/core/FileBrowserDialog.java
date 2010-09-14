@@ -129,6 +129,8 @@ public class FileBrowserDialog extends WCComponent
     public ComponentIDGenerator idFor;
 
 
+    //~ Methods ...............................................................
+
     // ----------------------------------------------------------
     @Override
     public void appendToResponse(WOResponse response, WOContext context)

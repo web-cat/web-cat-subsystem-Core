@@ -1,0 +1,78 @@
+<wo:WCScriptFragment filename="javascript/FilteringUserSelector.js"/>
+<style>
+tr.dojoDndItemOver {
+    background-color: #CCF;
+}
+tr.dojoDndItemAnchor, tr.dojoDndItemSelected {
+    background-color: #AAC;
+}
+</style>
+<wo name="Proxy"/>
+<div style="width: 100%; overflow: auto">
+<div style="width: 25em; float: left">
+    <b><wo:str value="$selectedListTitle"/>:</b><br/>
+    <wo:WCTextBox style="margin-bottom: 3px; visibility: hidden"/><br/>
+    <wo:WCContentPane id="$idFor.selectedUsersPane" style="border: 1px solid gray; height: 230px; overflow: auto">
+    <wo:if condition="$selectedUsers.count">
+        <wo:WCStyledTable style="width: 100%; margin: 0px; border: none" dojoType="dojo.dnd.Selector" jsId="$idFor.selectedUsersTable">
+        <tbody>
+            <wo:loop list="$selectedUsers" item="$aSelectedUser" index="$index">
+            <wo:tr index="$index" isSelectable="true">
+                <td><wo:str value="$aSelectedUser.name_LF"/></td>
+                <td><wo:str value="$aSelectedUser.userName"/></td>
+            </wo:tr>
+            </wo:loop>
+        </tbody>
+        </wo:WCStyledTable>
+    </wo:if><wo:else>
+       <wo:WCStyledTable style="width: 100%; margin: 0px"><tr><td style="text-align: center; vertical-align: middle">
+           <b>You do not currently have any users selected.</b>
+       </td></tr></wo:WCStyledTable>
+    </wo:else>
+    </wo:WCContentPane>
+    <wo:WCButton label="&gt;&gt; Remove Selected Users" style="width: 6em">
+        <script type="dojo/connect" event="onClick" args="evt">
+            <wo:str value="$idFor.jsId"/>.deleteFromSelectedUsers(this, evt);
+        </script>
+    </wo:WCButton>
+</div>
+<div style="width: 2em; float: left">&nbsp;</div>
+<div style="width: 25em; float: left">
+    <b><wo:str value="$availableListTitle"/>:</b><br/>
+    <span style="width: 7em; vertical-align: baseline">
+        Search:
+        <wo name="SearchBusyIndicator"/>
+    </span>
+    <wo:WCTextBox id="$idFor.searchField" style="width: 18em; margin-bottom: 3px; vertical-align: baseline">
+        <script type="dojo/connect" event="onKeyUp" args="evt">
+            <wo:str value="$idFor.jsId"/>.updateFilterFromKeyUp(this, evt);
+        </script>
+    </wo:WCTextBox><br/>
+    <wo:WCContentPane id="$idFor.availableUsersPane" style="border: 1px solid gray; height: 230px; overflow: auto">
+    <wo:WCStyledTable style="width: 100%; margin: 0px; border: none" dojoType="dojo.dnd.Selector"
+                      id="$idFor.availableUsersTable" jsId="$idFor.availableUsersTable">
+    <tbody>
+        <wo:loop list="$availableUsers" item="$anAvailableUser" index="$index">
+        <wo:tr index="$index" isSelectable="true">
+            <td><wo:str value="$anAvailableUser.name_LF"/></td>
+            <td><wo:str value="$anAvailableUser.userName"/></td>
+        </wo:tr>
+        </wo:loop>
+    </tbody>
+    <wo:if condition="$areMoreUsersAvailable">
+    <tfoot>
+        <tr>
+            <td colspan="2"><wo name="ShowMoreUsersLink">Show more users...</wo></td>
+        </tr>
+    <tfoot>
+    </wo:if>
+    </wo:WCStyledTable>
+    </wo:WCContentPane>
+    <wo:WCButton label="&lt;&lt; Add Selected Users" style="width: 6em">
+        <script type="dojo/connect" event="onClick" args="evt">
+            <wo:str value="$idFor.jsId"/>.addToSelectedUsers(this, evt);
+        </script>
+    </wo:WCButton><br/>
+</div>
+</div>
+<wo name="JSInstance"/>
