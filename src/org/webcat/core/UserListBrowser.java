@@ -81,6 +81,16 @@ public class UserListBrowser
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
+    @Override
+    public void appendToResponse(WOResponse response, WOContext context)
+    {
+        log.debug("entering appendToResponse()");
+        super.appendToResponse(response, context);
+        log.debug("leaving appendToResponse()");
+    }
+
+
+    // ----------------------------------------------------------
     public boolean synchronizesVariablesWithBindings()
     {
         return false;
@@ -92,20 +102,30 @@ public class UserListBrowser
     {
         if (initializeUserList)
         {
+            log.debug("initializing users list");
             if (canGetValueForBinding("master"))
             {
                 EOGenericRecord master =
                     (EOGenericRecord)valueForBinding("master");
+                String keypath = (String)valueForBinding("keyPath");
+                log.debug("setting data source master = " + master
+                    + ", keypath = " + keypath);
                 users.setDataSource(new EODetailDataSource(
-                    master.classDescription(),
-                    (String)valueForBinding("keyPath")));
+                    master.classDescription(), keypath));
             }
             else
             {
+                log.debug("setting data source to all users");
                 users.setDataSource(
                     new EODatabaseDataSource(localContext(), User.ENTITY_NAME));
             }
+            log.debug("data source = " + users.dataSource());
+            log.debug("    beginning fetch ...");
+            long start = System.currentTimeMillis();
             users.fetch();
+            long end = System.currentTimeMillis();
+            double time = (start - end) / 1000;
+            log.debug("    fetch complete (" + time + "s)");
             initializeUserList = false;
         }
         return users;
