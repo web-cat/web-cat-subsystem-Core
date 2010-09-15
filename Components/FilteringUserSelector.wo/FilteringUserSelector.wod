@@ -10,6 +10,23 @@ JSInstance : WCDiv {
     idPrefix = idFor.ComponentIDPrefix;
 }
 
+OK: WCButton {
+    action = okPressed;
+    remote = true;
+    class = "pos";
+    label = "OK";
+}
+
+Cancel: WCButton {
+    class = "neg";
+    label = "Cancel";
+}
+
+OpenDialog: WCButton {
+    onClick = openDialogScript;
+    label  = "~actionTitle + '...'";
+}
+
 SearchBusyIndicator : WCSpinner {
     id = idFor.searchBusyIndicator;
 }

@@ -23,6 +23,17 @@ import er.extensions.foundation.ERXArrayUtilities;
  * A reusable component that allows a user to select a set of users, for things
  * like course enrollment or assigning partners to a submission.
  *
+ * @binding simpleLayout if true, the user list will be a simple list of names
+ *     separated by BR tags, with the edit button underneath, suitable for
+ *     embedding in a small page element such as a table cell. If false (the
+ *     default), a fuller UI will be displayed
+ * @binding actionTitle the string displayed in the edit button and in the
+ *     title of the dialog
+ * @binding dialogMessage a message displayed in the dialog box
+ * @binding hidesTableOnEmptySelection if true, the master list of users will
+ *     be hidden if there are no users selected; if false, the list will be
+ *     shown as a table that reads "No users are currently selected." Defaults
+ *     to false.
  * @binding selectedListTitle the string to display for the title of the
  *     list of selected users; if omitted, "Selected Users" will be used
  * @binding availableListTitle the string to display for the title of the list
@@ -49,11 +60,16 @@ public class FilteringUserSelector extends WCComponent
     //~ KVC attributes (must be public) .......................................
 
     // Public bindings
+    public boolean simpleLayout;
+    public String actionTitle;
+    public String dialogMessage;
     public String selectedListTitle;
     public String availableListTitle;
+    public boolean hidesTableOnEmptySelection;
 
     // Used internally
     public ComponentIDGenerator idFor;
+    public NSMutableArray<User> editingUsers;
     public User aSelectedUser;
     public User anAvailableUser;
     public int index;
@@ -72,19 +88,17 @@ public class FilteringUserSelector extends WCComponent
             selectedUsers = new NSMutableArray<User>();
         }
 
+        if (editingUsers == null)
+        {
+            editingUsers = selectedUsers.mutableClone();
+        }
+
         if (availableUsers == null)
         {
             resetAvailableUsers();
         }
 
         super.appendToResponse(response, context);
-    }
-
-
-    // ----------------------------------------------------------
-    public WOActionResults okAction()
-    {
-        return (WOActionResults) valueForBinding("okAction");
     }
 
 
@@ -116,6 +130,13 @@ public class FilteringUserSelector extends WCComponent
 
 
     // ----------------------------------------------------------
+    public boolean isEmptySelectionAndHide()
+    {
+        return hidesTableOnEmptySelection && selectedUsers.count() == 0;
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Gets the full JavaScript reference to the proxy object that is used to
      * make RPC calls to the server-side component.
@@ -125,6 +146,20 @@ public class FilteringUserSelector extends WCComponent
     public String proxyReference()
     {
         return idFor.valueForKey("jsonrpc") + ".userSelector";
+    }
+
+
+    // ----------------------------------------------------------
+    public String actionTitle()
+    {
+        if (actionTitle == null)
+        {
+            return DEFAULT_ACTION_TITLE;
+        }
+        else
+        {
+            return actionTitle;
+        }
     }
 
 
@@ -168,8 +203,6 @@ public class FilteringUserSelector extends WCComponent
     {
         selectedUsers = new NSMutableArray<User>(
                 ERXArrayUtilities.arrayWithoutDuplicates(someUsers));
-
-        USER_SORT_CRITERIA.sort(selectedUsers);
     }
 
 
@@ -248,6 +281,20 @@ public class FilteringUserSelector extends WCComponent
 
 
     // ----------------------------------------------------------
+    public WOActionResults okPressed()
+    {
+        selectedUsers = editingUsers.mutableClone();
+//        pushValuesToParent();
+
+        JavascriptGenerator script = new JavascriptGenerator();
+        script.refresh(idFor.get("masterPane")).
+               dijit(idFor.get("dialog")).call("hide");
+
+        return script;
+    }
+
+
+    // ----------------------------------------------------------
     public void updateFilter(String aFilterString)
     {
         filterString = aFilterString;
@@ -266,9 +313,9 @@ public class FilteringUserSelector extends WCComponent
 
                 User user = availableUsers.objectAtIndex(availableIndex);
 
-                if (!selectedUsers.containsObject(user))
+                if (!editingUsers.containsObject(user))
                 {
-                    selectedUsers.addObject(user);
+                    editingUsers.addObject(user);
                 }
             }
             catch (JSONException e)
@@ -277,7 +324,7 @@ public class FilteringUserSelector extends WCComponent
             }
         }
 
-        USER_SORT_CRITERIA.sort(selectedUsers);
+        USER_SORT_CRITERIA.sort(editingUsers);
     }
 
 
@@ -304,7 +351,7 @@ public class FilteringUserSelector extends WCComponent
 
         for (int i = 0; i < indices.length; i++)
         {
-            selectedUsers.removeObjectAtIndex(indices[i] - displacement);
+            editingUsers.removeObjectAtIndex(indices[i] - displacement);
             displacement++;
         }
     }
@@ -320,9 +367,19 @@ public class FilteringUserSelector extends WCComponent
     }
 
 
+    // ----------------------------------------------------------
+    public String openDialogScript()
+    {
+        return "dijit.byId('" + idFor.get("dialog") + "').show();";
+    }
+
+
     //~ Static/instance variables .............................................
 
     private static final int BATCH_SIZE = 12;
+
+    private static final String DEFAULT_ACTION_TITLE =
+        "Edit Selected Users...";
 
     private static final String DEFAULT_SELECTED_LIST_TITLE =
         "Selected users";
