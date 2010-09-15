@@ -38,6 +38,40 @@ help.baseURL = http://web-cat.cs.vt.edu/Web-CAT.help/
 
 
 # -------------------------------------------------------------------
+# Run-time control
+# -------------------------------------------------------------------
+# forcibly die 24 hours after starting up (no refusal period)
+# ERTimeToLive = 86700
+# Or, start refusing new sessions 24 hours after starting up
+# ERTimeToDie = 86400
+# Forcibly die 180 seconds after starting to refuse new sessions
+ERTimeToKill = 180
+
+
+# -------------------------------------------------------------------
+# Configure WebObjects settings
+# -------------------------------------------------------------------
+WODefaultUndoStackLimit           = 0
+WOSessionTimeOut                  = 1800
+WOAllowsConcurrentRequestHandling = true
+
+
+# -------------------------------------------------------------------
+# Configure ERExtensions settings
+# -------------------------------------------------------------------
+dbConnectDriverGLOBAL = com.mysql.jdbc.Driver
+er.extensions.appserver.ERXApplication.useEditingContextUnlocker=true
+er.extensions.eof.ERXEC.defaultAutomaticLockUnlock = true
+er.extensions.eof.ERXEC.defaultCoalesceAutoLocks=true
+ognl.active          = true
+ognl.helperFunctions = true
+ognl.inlineBindings  = true
+er.extensions.logging.ERXNSLogLog4jBridge.ignoreNSLogSettings = true
+er.ajax.json.backtrackCacheSize = 100
+WOPageCacheSize      = 50
+
+
+# -------------------------------------------------------------------
 # Core logging defaults
 # -------------------------------------------------------------------
 log4j.logger.org.webcat.core.Application          = INFO
