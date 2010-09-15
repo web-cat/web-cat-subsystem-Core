@@ -3,7 +3,7 @@
     encoding = "UTF-8";
     variables = {
         users = {
-            class = WODisplayGroup;
+            class = ERXDisplayGroup;
             fetchesOnLoad = NO;
             formatForLikeQualifier = "%@*";
             localKeys = ();
