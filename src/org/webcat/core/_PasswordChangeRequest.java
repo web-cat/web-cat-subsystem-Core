@@ -29,8 +29,6 @@ import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
-import org.webcat.core.PasswordChangeRequest;
-import org.webcat.core._PasswordChangeRequest;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------

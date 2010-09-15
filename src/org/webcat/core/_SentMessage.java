@@ -29,8 +29,6 @@ import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
-import org.webcat.core.SentMessage;
-import org.webcat.core._SentMessage;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
