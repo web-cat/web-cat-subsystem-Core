@@ -189,6 +189,11 @@ public class Application
         registerRequestHandler(new EntityResourceRequestHandler(),
                 EntityResourceRequestHandler.REQUEST_HANDLER_KEY);
 
+        // Set page cache size from property
+        setPageCacheSize(
+            ERXValueUtilities.intValueWithDefault(
+                configurationProperties().valueForKey("WOPageCacheSize"), 30));
+
         if (!isDevelopmentModeSafe() && isDirectConnectEnabled())
         {
             setDirectConnectEnabled(false);
