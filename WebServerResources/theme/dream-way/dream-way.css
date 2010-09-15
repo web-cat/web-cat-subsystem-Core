@@ -171,6 +171,14 @@ table th {
     color: #eee;
 }
 
+.aristo table th .dijitTextBox,
+.aristo table th .dijitComboBox,
+.aristo table th .dijitSpinner,
+.aristo table th .dijitTextArea,
+.aristo table th .dijitInlineEditor input {
+    color: black;
+}
+
 table th a, table th a:active, table th a:link {
     color: #cce;
 }
