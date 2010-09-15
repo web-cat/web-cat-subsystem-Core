@@ -1,14 +1,16 @@
 <wo:WCScriptFragment filename="javascript/FilteringUserSelector.js"/>
 <wo:WCStylesheetFragment>
-tr.dojoDndItemOver {
+.filteringUserSelectorTable tr.dojoDndItemOver {
     background-color: #CCF;
 }
-tr.dojoDndItemAnchor, tr.dojoDndItemSelected {
+.filteringUserSelectorTable tr.dojoDndItemAnchor,
+.filteringUserSelectorTable tr.dojoDndItemSelected {
     background-color: #AAC;
 }
 </wo:WCStylesheetFragment>
 <wo name="Proxy"/>
 <wo:WCDiv id="$idFor.dialog" dojoType="webcat.Dialog" title="$actionTitle">
+<div>
     <p><wo:str value="$dialogMessage" escapeHTML="false"/></p>
     <div style="width: 25em; float: left">
         <b><wo:str value="$selectedListTitle"/>:</b><br/>
@@ -16,7 +18,7 @@ tr.dojoDndItemAnchor, tr.dojoDndItemSelected {
         <wo:WCContentPane id="$idFor.selectedUsersPane" style="border: 1px solid gray; height: 230px; overflow: auto">
         <wo:if condition="$editingUsers.count">
             <wo:WCStyledTable style="width: 100%; margin: 0px; border: none" dojoType="dojo.dnd.Selector" jsId="$idFor.selectedUsersTable">
-            <tbody>
+            <tbody class="filteringUserSelectorTable">
                 <wo:loop list="$editingUsers" item="$aSelectedUser" index="$index">
                 <wo:tr index="$index" isSelectable="true">
                     <td><wo:str value="$aSelectedUser.name_LF"/></td>
@@ -52,7 +54,7 @@ tr.dojoDndItemAnchor, tr.dojoDndItemSelected {
         <wo:WCContentPane id="$idFor.availableUsersPane" style="border: 1px solid gray; height: 230px; overflow: auto">
         <wo:WCStyledTable style="width: 100%; margin: 0px; border: none" dojoType="dojo.dnd.Selector"
                           id="$idFor.availableUsersTable" jsId="$idFor.availableUsersTable">
-        <tbody>
+        <tbody class="filteringUserSelectorTable">
             <wo:loop list="$availableUsers" item="$anAvailableUser" index="$index">
             <wo:tr index="$index" isSelectable="true">
                 <td><wo:str value="$anAvailableUser.name_LF"/></td>
@@ -75,15 +77,16 @@ tr.dojoDndItemAnchor, tr.dojoDndItemSelected {
             </script>
         </wo:WCButton><br/>
     </div>
-    <hr/>
-    <div style="text-align: center">
-        <wo name="OK"/>
-        <wo name="Cancel">
-            <script type="dojo/connect" event="onClick" args="evt">
-            dijit.byId('<wo:str value="$idFor.dialog"/>').hide();
-            </script>
-        </wo>
-    </div>
+</div>
+<hr/>
+<div style="text-align: center">
+    <wo name="OK"/>
+    <wo name="Cancel">
+        <script type="dojo/connect" event="onClick" args="evt">
+        dijit.byId('<wo:str value="$idFor.dialog"/>').hide();
+        </script>
+    </wo>
+</div>
 </wo:WCDiv>
 <wo name="JSInstance"/>
 
