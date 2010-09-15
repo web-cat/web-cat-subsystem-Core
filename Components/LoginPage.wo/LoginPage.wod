@@ -1,4 +1,4 @@
-AuthList: WCFilteringSelect {
+AuthList:  WOPopUpButton {
     list              = domainDisplayGroup.allObjects;
     selection         = domain;
     item              = domainItem;
