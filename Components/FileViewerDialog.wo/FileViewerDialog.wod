@@ -1,6 +1,6 @@
 EditorDialog : WCDialog {
     title = title;
-    id = id;    // VALID
+    id = idFor.dialog;
     refreshOnShow = true;
     okAction = saveAndClose;
     okLabel = "Save and Close";
@@ -9,7 +9,7 @@ EditorDialog : WCDialog {
 
 ViewerDialog : WCDialog {
     title = title;
-    id = id;    // VALID
+    id = idFor.dialog;
     cancelLabel = "Close";
 }
 
