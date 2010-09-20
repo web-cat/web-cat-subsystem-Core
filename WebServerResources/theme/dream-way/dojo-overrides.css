@@ -873,3 +873,13 @@
 .aristo .dijitTreeNode .dojoDndItemAfter .dijitTreeContent {
     border-bottom-color: #333333;
 }
+
+
+/* ========================================================================
+ * Other overrides
+ */
+
+.aristo tr.dojoDndItemAnchor {
+    background-color: #1A6CAB;
+    color: #FFFFFF !important;
+}
