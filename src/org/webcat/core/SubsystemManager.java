@@ -230,7 +230,10 @@ public class SubsystemManager
         }
         catch ( Exception e )
         {
-            log.error( "Exception loading subsystem:", e );
+            System.out.println( "Exception loading subsystem "
+                + name + " from class " + className + ".");
+            log.error( "Exception loading subsystem "
+                + name + " from class " + className + ":", e );
         }
     }
 
