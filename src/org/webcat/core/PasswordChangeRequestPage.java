@@ -185,7 +185,7 @@ public class PasswordChangeRequestPage
                         new ErrorDictionaryPanel.ErrorMessage(
                             Status.ERROR,
                             "Multiple accounts are registered for your "
-                            + "user name!  Contact your Web-CAT "
+                            + "e-mail address!  Contact your Web-CAT "
                             + "administrator for help.", false ), "5" );
                 }
                 finally
