@@ -21,9 +21,13 @@
 
 package org.webcat.core.messaging;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.log4j.Logger;
+import org.jfree.util.Log;
 import org.webcat.core.Application;
 import org.webcat.core.MutableDictionary;
 import org.webcat.core.SentMessage;
@@ -34,6 +38,7 @@ import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
+import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSTimestamp;
 
 //-------------------------------------------------------------------------
@@ -300,9 +305,66 @@ public abstract class Message
      *
      * @return a dictionary of attachments, keyed by the name of the attachment
      */
-    public NSDictionary<String, NSData> attachments()
+    public NSDictionary<String, String> attachments()
     {
         return null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * <p>
+     * Used by the message dispatcher to load the attachment data into memory.
+     * Clients should never call this method directly.
+     * </p>
+     *
+     * @return a dictionary of attachments, keyed by the name of the attachment
+     */
+    final public NSDictionary<String, NSData> attachmentData()
+    {
+        NSDictionary<String, String> attachmentPaths = attachments();
+
+        NSMutableDictionary<String, NSData> attachmentData =
+            new NSMutableDictionary<String, NSData>();
+
+        for (String name : attachmentPaths.allKeys())
+        {
+            String path = attachmentPaths.objectForKey(name);
+
+            try
+            {
+                NSData data = dataFromContentsOfFile(path);
+                attachmentData.setObjectForKey(data, name);
+            }
+            catch (IOException e)
+            {
+                Log.error("Exception occurred while loading the attachment "
+                        + path, e);
+            }
+        }
+
+        return attachmentData;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns an NSData object with the contents of the specified file.
+     *
+     * @param path the path to the file
+     * @return an NSData object containing the contents of the file
+     * @throws IOException if an I/O error occurred
+     */
+    private NSData dataFromContentsOfFile(String path) throws IOException
+    {
+        File file = new File(path);
+        FileInputStream stream = new FileInputStream(file);
+
+        NSData data = new NSData(stream, 0);
+
+        stream.close();
+
+        return data;
     }
 
 

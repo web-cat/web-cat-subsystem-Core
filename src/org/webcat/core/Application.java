@@ -1336,7 +1336,7 @@ public class Application
     static public void sendSimpleEmail( String to,
                                         String subject,
                                         String body,
-                                        NSDictionary<String, NSData> attachments)
+                                        NSDictionary<String, String> attachments)
     {
         sendSimpleEmail(new NSArray<String>(to), subject, body,
                 attachments);
@@ -1372,7 +1372,7 @@ public class Application
     static public void sendSimpleEmail( NSArray<String> to,
                                         String subject,
                                         String body,
-                                        NSDictionary<String, NSData> attachments)
+                                        NSDictionary<String, String> attachments)
     {
         try
         {
@@ -1421,19 +1421,18 @@ public class Application
             {
                 for (String filename : attachments.allKeys())
                 {
-                    NSData attachmentData = attachments.objectForKey(filename);
-                    File file = new File(filename);
+                    String attachmentPath = attachments.objectForKey(filename);
+                    File file = new File(attachmentPath);
 
                     // Create another body part
                     messageBodyPart = new MimeBodyPart();
 
                     // Don't include files bigger than this as e-mail
                     // attachments
-                    if ( attachmentData.length() < maxAttachmentSize )
+                    if ( file.length() < maxAttachmentSize )
                     {
                         // Get the attachment
-                        DataSource source = new NSDataDataSource(
-                                file.getName(), attachmentData);
+                        FileDataSource source = new FileDataSource(file);
 
                         // Set the data handler to the attachment
                         messageBodyPart.setDataHandler(
@@ -1449,7 +1448,7 @@ public class Application
                                 "File "
                                 + file.getName()
                                 + " has been omitted from this message ("
-                                + attachmentData.length()
+                                + file.length()
                                 + " bytes)\n"
                             );
                     }
