@@ -2,10 +2,6 @@ AllowSelection: WOConditional {
     condition = allowSelection;
 }
 
-IncludeSeparator: WOConditional {
-    condition = includeSeparator;
-}
-
 Row : org.webcat.core.FileBrowserRow {
 	file                  = file;
 	baseFile              = file;
