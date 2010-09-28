@@ -117,11 +117,11 @@ public abstract class _Theme
         Theme obj = null;
         if (id > 0)
         {
-            NSArray<Theme> results =
+            NSArray<Theme> objects =
                 objectsMatchingValues(ec, "id", new Integer(id));
-            if (results != null && results.count() > 0)
+            if (objects != null && objects.count() > 0)
             {
-                obj = results.objectAtIndex(0);
+                obj = objects.objectAtIndex(0);
             }
         }
         return obj;
@@ -258,11 +258,11 @@ public abstract class _Theme
      */
     public boolean isForThemeDevelopers()
     {
-        Integer result =
+        Integer returnValue =
             (Integer)storedValueForKey( "isForThemeDevelopers" );
-        return ( result == null )
+        return ( returnValue == null )
             ? false
-            : ( result.intValue() > 0 );
+            : ( returnValue.intValue() > 0 );
     }
 
 
@@ -483,11 +483,11 @@ public abstract class _Theme
      */
     public boolean updateMutableFields()
     {
-        Integer result =
+        Integer returnValue =
             (Integer)storedValueForKey( "updateMutableFields" );
-        return ( result == null )
+        return ( returnValue == null )
             ? false
-            : ( result.intValue() > 0 );
+            : ( returnValue.intValue() > 0 );
     }
 
 
@@ -872,10 +872,10 @@ public abstract class _Theme
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        NSArray<Theme> results =
+        NSArray<Theme> objects =
             objectsMatchingQualifier(context, qualifier, sortOrderings);
-        return (results.size() > 0)
-            ? results.get(0)
+        return (objects.size() > 0)
+            ? objects.get(0)
             : null;
     }
 
@@ -896,14 +896,14 @@ public abstract class _Theme
         EOEditingContext context,
         EOQualifier qualifier) throws EOUtilities.MoreThanOneException
     {
-        NSArray<Theme> results =
+        NSArray<Theme> objects =
             objectsMatchingQualifier(context, qualifier);
-        if (results.size() > 1)
+        if (objects.size() > 1)
         {
             throw new EOUtilities.MoreThanOneException(null);
         }
-        return (results.size() > 0)
-            ? results.get(0)
+        return (objects.size() > 0)
+            ? objects.get(0)
             : null;
     }
 
@@ -1033,16 +1033,16 @@ public abstract class _Theme
             sortOrderings);
         fspec.setFetchLimit(1);
 
-        NSArray<Theme> result =
+        NSArray<Theme> objects =
             objectsWithFetchSpecification( context, fspec );
 
-        if ( result.count() == 0 )
+        if ( objects.count() == 0 )
         {
             return null;
         }
         else
         {
-            return result.objectAtIndex(0);
+            return objects.objectAtIndex(0);
         }
     }
 
@@ -1224,14 +1224,14 @@ public abstract class _Theme
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "allObjectsOrderedByName", "Theme" );
 
-        NSArray<Theme> result =
+        NSArray<Theme> objects =
             objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "allObjectsOrderedByName(ec"
-                + "): " + result );
+                + "): " + objects );
         }
-        return result;
+        return objects;
     }
 
 
@@ -1262,22 +1262,22 @@ public abstract class _Theme
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<Theme> result =
+        NSArray<Theme> objects =
             objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "themeForDirName(ec"
                 + ", " + dirNameBinding
-                + "): " + result );
+                + "): " + objects );
         }
 
-        if ( result.count() == 0 )
+        if ( objects.count() == 0 )
         {
             return null;
         }
         else
         {
-            return result.objectAtIndex(0);
+            return objects.objectAtIndex(0);
         }
     }
 

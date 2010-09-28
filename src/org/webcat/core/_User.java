@@ -120,11 +120,11 @@ public abstract class _User
         User obj = null;
         if (id > 0)
         {
-            NSArray<User> results =
+            NSArray<User> objects =
                 objectsMatchingValues(ec, "id", new Integer(id));
-            if (results != null && results.count() > 0)
+            if (objects != null && objects.count() > 0)
             {
-                obj = results.objectAtIndex(0);
+                obj = objects.objectAtIndex(0);
             }
         }
         return obj;
@@ -270,11 +270,11 @@ public abstract class _User
      */
     public byte accessLevel()
     {
-        Integer result =
+        Integer returnValue =
             (Integer)storedValueForKey( "accessLevel" );
-        return ( result == null )
+        return ( returnValue == null )
             ? 0
-            : result.byteValue();
+            : returnValue.byteValue();
     }
 
 
@@ -582,11 +582,11 @@ public abstract class _User
      */
     public boolean updateMutableFields()
     {
-        Integer result =
+        Integer returnValue =
             (Integer)storedValueForKey( "updateMutableFields" );
-        return ( result == null )
+        return ( returnValue == null )
             ? false
-            : ( result.intValue() > 0 );
+            : ( returnValue.intValue() > 0 );
     }
 
 
@@ -2041,10 +2041,10 @@ public abstract class _User
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        NSArray<User> results =
+        NSArray<User> objects =
             objectsMatchingQualifier(context, qualifier, sortOrderings);
-        return (results.size() > 0)
-            ? results.get(0)
+        return (objects.size() > 0)
+            ? objects.get(0)
             : null;
     }
 
@@ -2065,14 +2065,14 @@ public abstract class _User
         EOEditingContext context,
         EOQualifier qualifier) throws EOUtilities.MoreThanOneException
     {
-        NSArray<User> results =
+        NSArray<User> objects =
             objectsMatchingQualifier(context, qualifier);
-        if (results.size() > 1)
+        if (objects.size() > 1)
         {
             throw new EOUtilities.MoreThanOneException(null);
         }
-        return (results.size() > 0)
-            ? results.get(0)
+        return (objects.size() > 0)
+            ? objects.get(0)
             : null;
     }
 
@@ -2202,16 +2202,16 @@ public abstract class _User
             sortOrderings);
         fspec.setFetchLimit(1);
 
-        NSArray<User> result =
+        NSArray<User> objects =
             objectsWithFetchSpecification( context, fspec );
 
-        if ( result.count() == 0 )
+        if ( objects.count() == 0 )
         {
             return null;
         }
         else
         {
-            return result.objectAtIndex(0);
+            return objects.objectAtIndex(0);
         }
     }
 
@@ -2412,16 +2412,16 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<User> result =
+        NSArray<User> objects =
             objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "participantsForCourse(ec"
                 + ", " + accessLevelBinding
                 + ", " + courseOfferingBinding
-                + "): " + result );
+                + "): " + objects );
         }
-        return result;
+        return objects;
     }
 
 
@@ -2452,15 +2452,15 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<User> result =
+        NSArray<User> objects =
             objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "staffForCourse(ec"
                 + ", " + courseOfferingBinding
-                + "): " + result );
+                + "): " + objects );
         }
-        return result;
+        return objects;
     }
 
 
@@ -2491,15 +2491,15 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<User> result =
+        NSArray<User> objects =
             objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "studentsForCourse(ec"
                 + ", " + courseOfferingBinding
-                + "): " + result );
+                + "): " + objects );
         }
-        return result;
+        return objects;
     }
 
 
@@ -2518,14 +2518,14 @@ public abstract class _User
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed( "systemAdmins", "User" );
 
-        NSArray<User> result =
+        NSArray<User> objects =
             objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "systemAdmins(ec"
-                + "): " + result );
+                + "): " + objects );
         }
-        return result;
+        return objects;
     }
 
 
@@ -2565,21 +2565,21 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<User> result =
+        NSArray<User> objects =
             objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "userWithDomainAndEmail(ec"
                 + ", " + domainBinding
                 + ", " + emailBinding
-                + "): " + result );
+                + "): " + objects );
         }
 
-        if ( result.count() == 0 )
+        if ( objects.count() == 0 )
         {
             return null;
         }
-        else if ( result.count() > 1 )
+        else if ( objects.count() > 1 )
         {
             throw new EOUtilities.MoreThanOneException(
                 "Multiple objects were found when only one was expected."
@@ -2587,7 +2587,7 @@ public abstract class _User
         }
         else
         {
-            return result.objectAtIndex(0);
+            return objects.objectAtIndex(0);
         }
     }
 
@@ -2628,21 +2628,21 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<User> result =
+        NSArray<User> objects =
             objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "userWithDomainAndName(ec"
                 + ", " + domainBinding
                 + ", " + userNameBinding
-                + "): " + result );
+                + "): " + objects );
         }
 
-        if ( result.count() == 0 )
+        if ( objects.count() == 0 )
         {
             return null;
         }
-        else if ( result.count() > 1 )
+        else if ( objects.count() > 1 )
         {
             throw new EOUtilities.MoreThanOneException(
                 "Multiple objects were found when only one was expected."
@@ -2650,7 +2650,7 @@ public abstract class _User
         }
         else
         {
-            return result.objectAtIndex(0);
+            return objects.objectAtIndex(0);
         }
     }
 
@@ -2684,20 +2684,20 @@ public abstract class _User
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<User> result =
+        NSArray<User> objects =
             objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
             log.debug( "userWithName(ec"
                 + ", " + nameBinding
-                + "): " + result );
+                + "): " + objects );
         }
 
-        if ( result.count() == 0 )
+        if ( objects.count() == 0 )
         {
             return null;
         }
-        else if ( result.count() > 1 )
+        else if ( objects.count() > 1 )
         {
             throw new EOUtilities.MoreThanOneException(
                 "Multiple objects were found when only one was expected."
@@ -2705,7 +2705,7 @@ public abstract class _User
         }
         else
         {
-            return result.objectAtIndex(0);
+            return objects.objectAtIndex(0);
         }
     }
 

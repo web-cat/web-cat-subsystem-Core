@@ -113,11 +113,11 @@ public abstract class _LoggedError
         LoggedError obj = null;
         if (id > 0)
         {
-            NSArray<LoggedError> results =
+            NSArray<LoggedError> objects =
                 objectsMatchingValues(ec, "id", new Integer(id));
-            if (results != null && results.count() > 0)
+            if (objects != null && objects.count() > 0)
             {
-                obj = results.objectAtIndex(0);
+                obj = objects.objectAtIndex(0);
             }
         }
         return obj;
@@ -349,11 +349,11 @@ public abstract class _LoggedError
      */
     public int line()
     {
-        Integer result =
+        Integer returnValue =
             (Integer)storedValueForKey( "line" );
-        return ( result == null )
+        return ( returnValue == null )
             ? 0
-            : result.intValue();
+            : returnValue.intValue();
     }
 
 
@@ -471,11 +471,11 @@ public abstract class _LoggedError
      */
     public int occurrences()
     {
-        Integer result =
+        Integer returnValue =
             (Integer)storedValueForKey( "occurrences" );
-        return ( result == null )
+        return ( returnValue == null )
             ? 0
-            : result.intValue();
+            : returnValue.intValue();
     }
 
 
@@ -674,10 +674,10 @@ public abstract class _LoggedError
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        NSArray<LoggedError> results =
+        NSArray<LoggedError> objects =
             objectsMatchingQualifier(context, qualifier, sortOrderings);
-        return (results.size() > 0)
-            ? results.get(0)
+        return (objects.size() > 0)
+            ? objects.get(0)
             : null;
     }
 
@@ -698,14 +698,14 @@ public abstract class _LoggedError
         EOEditingContext context,
         EOQualifier qualifier) throws EOUtilities.MoreThanOneException
     {
-        NSArray<LoggedError> results =
+        NSArray<LoggedError> objects =
             objectsMatchingQualifier(context, qualifier);
-        if (results.size() > 1)
+        if (objects.size() > 1)
         {
             throw new EOUtilities.MoreThanOneException(null);
         }
-        return (results.size() > 0)
-            ? results.get(0)
+        return (objects.size() > 0)
+            ? objects.get(0)
             : null;
     }
 
@@ -835,16 +835,16 @@ public abstract class _LoggedError
             sortOrderings);
         fspec.setFetchLimit(1);
 
-        NSArray<LoggedError> result =
+        NSArray<LoggedError> objects =
             objectsWithFetchSpecification( context, fspec );
 
-        if ( result.count() == 0 )
+        if ( objects.count() == 0 )
         {
             return null;
         }
         else
         {
-            return result.objectAtIndex(0);
+            return objects.objectAtIndex(0);
         }
     }
 
@@ -1059,7 +1059,7 @@ public abstract class _LoggedError
         }
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray<LoggedError> result =
+        NSArray<LoggedError> objects =
             objectsWithFetchSpecification( context, spec );
         if (log.isDebugEnabled())
         {
@@ -1068,9 +1068,9 @@ public abstract class _LoggedError
                 + ", " + lineBinding
                 + ", " + methodBinding
                 + ", " + nameBinding
-                + "): " + result );
+                + "): " + objects );
         }
-        return result;
+        return objects;
     }
 
 
