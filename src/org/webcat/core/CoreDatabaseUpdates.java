@@ -103,7 +103,7 @@ public class CoreDatabaseUpdates
 
     // ----------------------------------------------------------
     /**
-     * Changes course CRNs to strings.
+     * Add institution id to departments.
      * @throws SQLException on error
      */
     public void updateIncrement3() throws SQLException
@@ -266,6 +266,19 @@ public class CoreDatabaseUpdates
     {
         database().executeSQL("ALTER TABLE TUSER DROP protocolSettingsId");
     }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add indexes for better performance.
+     * @throws SQLException on error
+     */
+//    public void updateIncrement16() throws SQLException
+//    {
+//        database().executeSQL("ALTER TABLE TUSER ADD INDEX (CUSERNAME(8))");
+//        database().executeSQL(
+//            "ALTER TABLE TUSER ADD INDEX (CAUTHENTICATIONDOMAINID)");
+//    }
 
 
     //~ Private Methods .......................................................
