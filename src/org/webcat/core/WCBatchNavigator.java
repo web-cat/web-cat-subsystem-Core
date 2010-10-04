@@ -22,11 +22,8 @@
 package org.webcat.core;
 
 import com.webobjects.appserver.*;
-import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.eof.ERXConstant;
-import java.util.*;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.Session;
 import org.webcat.core.User;
@@ -38,8 +35,9 @@ import org.apache.log4j.Logger;
  *  A custom version of a batch navigator that has a different look than
  *  the one in WOExtensions.
  *
- *  @author Stephen Edwards
- *  @version $Id$
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class WCBatchNavigator
     extends WOComponent
@@ -279,8 +277,10 @@ public class WCBatchNavigator
      */
     public boolean canShowFewer()
     {
-        return ( (WODisplayGroup)valueForBinding( "displayGroup" ) ).
-            allObjects().count() > 1;
+        WODisplayGroup dg = (WODisplayGroup)valueForBinding("displayGroup");
+        boolean result = dg.allObjects().count() > 1;
+        log.debug("canShowFewer(): " + result);
+        return result;
     }
 
 
@@ -292,16 +292,23 @@ public class WCBatchNavigator
      */
     public boolean hasUserFilter()
     {
-        WODisplayGroup dg = (WODisplayGroup)valueForBinding( "displayGroup" );
-        return dg != null
-
+        WODisplayGroup dg = (WODisplayGroup)valueForBinding("displayGroup");
+        log.debug("hasUserFilter(): dg = " + dg);
+        if (dg != null)
+        {
+            log.debug("entity type = "
+                + dg.queryOperator().valueForKey("entityType"));
+        }
+        boolean result = dg != null
             // If this display group is known to contain users (but might
             // be filtered so none are showing right now!)
-            && ( "user".equals( dg.queryOperator().valueForKey( "entityType" ) )
+            && ("user".equals(dg.queryOperator().valueForKey("entityType"))
 
             // Or if this display group's first object is a user
-                 || ( dg.allObjects().count() > 0
-                      && dg.allObjects().objectAtIndex( 0 ) instanceof User ) );
+                 || (dg.allObjects().count() > 0
+                     && dg.allObjects().objectAtIndex(0) instanceof User));
+        log.debug("hasUserFilter() = " + result);
+        return result;
     }
 
 
