@@ -29,7 +29,6 @@ import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
-import com.webobjects.foundation.NSTimestampFormatter;
 import er.extensions.foundation.ERXArrayUtilities;
 
 // -------------------------------------------------------------------------
@@ -88,26 +87,26 @@ public class User
     /**
      * Creates a new user.
      *
-     * @param pid         The new username
-     * @param password    The user's password
+     * @param aUserName         The new username
+     * @param aPassword    The user's password
      * @param domain      The domain the user comes from
-     * @param accessLevel The user's access privilege level
+     * @param anAccessLevel The user's access privilege level
      * @param ec          The editing context in which to create the user
      * @return            The new user object
      */
-    public static User createUser( String               pid,
-                                   String               password,
-                                   AuthenticationDomain domain,
-                                   byte                 accessLevel,
-                                   EOEditingContext     ec )
+    public static User createUser(String               aUserName,
+                                  String               aPassword,
+                                  AuthenticationDomain domain,
+                                  byte                 anAccessLevel,
+                                  EOEditingContext     ec)
     {
         User u = new User();
-        ec.insertObject( u );
-        u.setPreferences( new MutableDictionary() );
-        u.setUserName( pid );
-        u.setPassword( password );
-        u.setAccessLevel( accessLevel );
-        u.setAuthenticationDomainRelationship( domain );
+        ec.insertObject(u);
+        u.setPreferences(new MutableDictionary());
+        u.setUserName(aUserName);
+        u.setPassword(aPassword);
+        u.setAccessLevel(anAccessLevel);
+        u.setAuthenticationDomainRelationship(domain);
         ec.saveChanges();
         return u;
     }
@@ -121,9 +120,9 @@ public class User
     public static class MultipleUsersFoundException
         extends RuntimeException
     {
-        public MultipleUsersFoundException( String msg )
+        public MultipleUsersFoundException(String msg)
         {
-            super( msg );
+            super(msg);
         }
     }
 
@@ -133,25 +132,25 @@ public class User
      * Looks up an existing user by user name and domain.
      *
      * @param ec          The editing context in which to lookup the user
-     * @param userName    The username to look up
+     * @param aUserName    The username to look up
      * @param domain      The domain the user comes from
      * @return            The user object, or null if none is found
      * @throws MultipleUsersFoundException if multiple users matching the
      * search criteria are found.
      */
-    public static User lookupUser( EOEditingContext     ec,
-                                   String               userName,
-                                   AuthenticationDomain domain )
+    public static User lookupUser(EOEditingContext     ec,
+                                  String               aUserName,
+                                  AuthenticationDomain domain)
     {
         try
         {
-            return userWithDomainAndName( ec, domain, userName );
+            return userWithDomainAndName(ec, domain, aUserName);
         }
         catch (EOUtilities.MoreThanOneException e)
         {
-            throw new MultipleUsersFoundException( "Multiple users found when "
-                + "searching for userName = " + userName + " and domain = "
-                + domain );
+            throw new MultipleUsersFoundException("Multiple users found when "
+                + "searching for userName = " + aUserName + " and domain = "
+                + domain);
         }
     }
 
@@ -161,20 +160,20 @@ public class User
      * Looks up an existing user by email address and domain.
      *
      * @param ec          The editing context in which to lookup the user
-     * @param email       The email address to look up
+     * @param eMail       The email address to look up
      * @param domain      The domain the user comes from
      * @return            The user object, or null if none is found
      * @throws MultipleUsersFoundException if multiple users matching the
      * search criteria are found.
      */
-    public static User lookupUserByEmail( EOEditingContext     ec,
-                                          String               email,
-                                          AuthenticationDomain domain )
+    public static User lookupUserByEmail(EOEditingContext     ec,
+                                         String               eMail,
+                                         AuthenticationDomain domain)
     {
         // First, try a raw database lookup
         try
         {
-            User user = userWithDomainAndEmail( ec, domain, email );
+            User user = userWithDomainAndEmail(ec, domain, eMail);
 
             if (user != null)
             {
@@ -183,9 +182,9 @@ public class User
         }
         catch (EOUtilities.MoreThanOneException e)
         {
-            throw new MultipleUsersFoundException( "Multiple users found when "
-                + "searching for email = " + email + " and domain = "
-                + domain );
+            throw new MultipleUsersFoundException("Multiple users found when "
+                + "searching for email = " + eMail + " and domain = "
+                + domain);
         }
 
         // But if that gives no results, it may be because the user does
@@ -193,17 +192,17 @@ public class User
         // and is instead using <username>@<domain.default> as their
         // e-mail address.  So extract the user name from the e-mail address
         // and check it instead.
-        String userName = email;
-        int pos = email.indexOf( '@' );
-        if ( pos >= 0 )
+        String theUserName = eMail;
+        int pos = eMail.indexOf('@');
+        if (pos >= 0)
         {
-            userName = userName.substring( 0, pos );
+            theUserName = theUserName.substring(0, pos);
         }
 
         // Look up by user name
-        User user = lookupUser( ec, userName, domain );
+        User user = lookupUser(ec, theUserName, domain);
         // Check that the located user has the correct e-mail address
-        if ( user != null && !email.equals( user.email() ) )
+        if (user != null && !eMail.equals(user.email()))
         {
             // What? e-mail addresses didn't match, so ignore that user
             user = null;
@@ -236,14 +235,22 @@ public class User
         boolean lastIsEmpty = ( last == null || last.equals( "" ) );
         boolean firstIsEmpty = ( first == null || first.equals( "" ) );
 
-        if ( lastIsEmpty && firstIsEmpty )
+        if (lastIsEmpty && firstIsEmpty)
+        {
             return userName();
-        else if ( lastIsEmpty )
+        }
+        else if (lastIsEmpty)
+        {
             return first;
-        else if ( firstIsEmpty )
+        }
+        else if (firstIsEmpty)
+        {
             return last;
+        }
         else
+        {
             return first + " " + last;
+        }
     }
 
 
@@ -255,55 +262,54 @@ public class User
      */
     public String name_LF()
     {
-        if ( name_LF_cache == null )
+        if (name_LF_cache == null)
         {
             String last  = lastName();
             String first = firstName();
             boolean lastIsEmpty = ( last == null || last.equals( "" ) );
             boolean firstIsEmpty = ( first == null || first.equals( "" ) );
 
-            if ( lastIsEmpty && firstIsEmpty )
+            if (lastIsEmpty && firstIsEmpty)
+            {
                 name_LF_cache = userName();
-            else if ( lastIsEmpty )
+            }
+            else if (lastIsEmpty)
+            {
                 name_LF_cache = first;
-            else if ( firstIsEmpty )
+            }
+            else if (firstIsEmpty)
+            {
                 name_LF_cache = last;
+            }
             else
+            {
                 name_LF_cache = last + ", " + first;
+            }
         }
         return name_LF_cache;
     }
 
 
     // ----------------------------------------------------------
-    /* (non-Javadoc)
-     * @see org.webcat.core._User#setFirstName(java.lang.String)
-     */
-    public void setFirstName( String value )
+    public void setFirstName(String value)
     {
-        super.setFirstName( value );
+        super.setFirstName(value);
         name_LF_cache = null;
     }
 
 
     // ----------------------------------------------------------
-    /* (non-Javadoc)
-     * @see org.webcat.core._User#setLastName(java.lang.String)
-     */
-    public void setLastName( String value )
+    public void setLastName(String value)
     {
-        super.setLastName( value );
+        super.setLastName(value);
         name_LF_cache = null;
     }
 
 
     // ----------------------------------------------------------
-    /* (non-Javadoc)
-     * @see org.webcat.core._User#setUserName(java.lang.String)
-     */
-    public void setUserName( String value )
+    public void setUserName(String value)
     {
-        super.setUserName( value );
+        super.setUserName(value);
         name_LF_cache = null;
     }
 
@@ -316,10 +322,14 @@ public class User
     public String nameAndUid()
     {
         String name  = name();
-        if ( name == null || name.equals( "" ) )
+        if (name == null || name.equals(""))
+        {
             return userName();
+        }
         else
+        {
             return name + " (" + userName() + ")";
+        }
     }
 
 
@@ -333,10 +343,14 @@ public class User
     {
         String last  = lastName();
 
-        if ( last == null || last.equals( "" ) )
+        if (last == null || last.equals(""))
+        {
             return userName();
+        }
         else
+        {
             return last;
+        }
     }
 
 
@@ -352,14 +366,14 @@ public class User
     public String email()
     {
         String result = super.email();
-        if ( result == null || result == "" )
+        if (result == null || result == "")
         {
             result = userName();
             AuthenticationDomain authDomain = authenticationDomain();
-            if ( authDomain != null )
+            if (authDomain != null)
             {
                 String domain = authDomain.defaultEmailDomain();
-                if ( domain != null && domain != "" )
+                if (domain != null && domain != "")
                 {
                     result = result + "@" + domain;
                 }
@@ -484,15 +498,15 @@ public class User
      * Internally, it uses the <code>CurrentUserAuthenticator</code>
      * class to perform authentication.
      *
-     * @param userName The user id to validate
-     * @param password The password to check
+     * @param aUserName The user id to validate
+     * @param aPassword The password to check
      * @param domain   The domain to which this user belongs
      * @param ec       The editing context in which to create the user object
      * @return True if the username/password combination is valid
      */
     public static User validate(
-            String userName,
-            String password,
+            String aUserName,
+            String aPassword,
             AuthenticationDomain domain,
             com.webobjects.eocontrol.EOEditingContext ec
         )
@@ -501,7 +515,7 @@ public class User
         if ( authenticator != null )
         {
             return authenticator.authenticate(
-                    userName, password, domain, ec );
+                    aUserName, aPassword, domain, ec );
         }
         else
         {
@@ -669,7 +683,7 @@ public class User
      */
     public NSArray<CourseOffering> graderFor()
     {
-        return studentView ? emptyArray : super.graderFor();
+        return studentView ? NO_COURSES : super.graderFor();
     }
 
 
@@ -718,7 +732,7 @@ public class User
     // ----------------------------------------------------------
     public NSArray<CourseOffering> teaching()
     {
-        return studentView ? emptyArray : super.teaching();
+        return studentView ? NO_COURSES : super.teaching();
     }
 
 
@@ -844,7 +858,7 @@ public class User
         }
         if ( graderFor_cache == null || graderFor_cache.count() == 0 )
         {
-            graderForButNotStudent_cache = emptyArray;
+            graderForButNotStudent_cache = NO_COURSES;
         }
         else
         {
@@ -946,7 +960,7 @@ public class User
         }
         if ( teaching_cache == null || teaching_cache.count() == 0 )
         {
-            instructorForButNotGraderOrStudent_cache = emptyArray;
+            instructorForButNotGraderOrStudent_cache = NO_COURSES;
         }
         else
         {
@@ -1090,7 +1104,7 @@ public class User
      */
     public NSArray<CourseOffering> adminForButNotStaff()
     {
-        if ( !hasAdminPrivileges() ) return emptyArray;
+        if ( !hasAdminPrivileges() ) return NO_COURSES;
         if ( graderFor_cache != graderFor() )
         {
             graderFor_cache = graderFor();
@@ -1135,7 +1149,8 @@ public class User
         NSArray<CourseOffering> result = adminForButNotStaff();
         if ( semester != null )
         {
-            result = ERXArrayUtilities
+            @SuppressWarnings("unchecked")
+            NSArray<CourseOffering> thisSemester = ERXArrayUtilities
                 .filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
@@ -1144,6 +1159,7 @@ public class User
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
                     ) );
+            result = thisSemester;
         }
         return result;
     }
@@ -1158,7 +1174,7 @@ public class User
      */
     public NSArray<CourseOffering> adminForButNoOtherRelationships()
     {
-        if ( !hasAdminPrivileges() ) return emptyArray;
+        if ( !hasAdminPrivileges() ) return NO_COURSES;
         if ( enrolledIn_cache != enrolledIn() )
         {
             enrolledIn_cache = enrolledIn();
@@ -1181,14 +1197,15 @@ public class User
 //            adminForButNoOtherRelationships_cache =
 //                CourseOffering.objectsForWithoutAnyRelationshipToUser(
 //                    editingContext(), this );
-            adminForButNoOtherRelationships_cache =
+            @SuppressWarnings("unchecked")
+            NSArray<CourseOffering> temp =
                 ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
-                    EOUtilities.objectsForEntityNamed( editingContext(),
-                        CourseOffering.ENTITY_NAME ),
+                    CourseOffering.allObjects(editingContext()),
                     CourseOffering.ENTITY_NAME,
-                    CourseOffering.OFFERINGS_WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC,
-                    userFilteringDictionary()
-                    );
+                    CourseOffering
+                        .OFFERINGS_WITHOUT_ANY_RELATIONSHIP_TO_USER_FSPEC,
+                    userFilteringDictionary());
+            adminForButNoOtherRelationships_cache = temp;
         }
         return adminForButNoOtherRelationships_cache;
     }
@@ -1209,15 +1226,17 @@ public class User
         NSArray<CourseOffering> result = adminForButNoOtherRelationships();
         if ( semester != null )
         {
-            result = ERXArrayUtilities
-                .filteredArrayWithEntityFetchSpecification(
+            @SuppressWarnings("unchecked")
+            NSArray<CourseOffering> thisSemester =
+                ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
                     CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
-                    new NSDictionary(
+                    new NSDictionary<String, Object>(
                         new Object[]{ semester                    },
-                        new Object[]{ CourseOffering.SEMESTER_KEY }
+                        new String[]{ CourseOffering.SEMESTER_KEY }
                     ) );
+            result = thisSemester;
         }
         return result;
     }
@@ -1231,7 +1250,7 @@ public class User
      */
     public CoreSelections getMyCoreSelections()
     {
-        NSArray cs = coreSelections();
+        NSArray<CoreSelections> cs = coreSelections();
         if (cs.count() == 0)
         {
             EOEditingContext ec = Application.newPeerEditingContext();
@@ -1251,7 +1270,7 @@ public class User
                 Application.releasePeerEditingContext( ec );
             }
         }
-        return (CoreSelections)cs.objectAtIndex(0);
+        return cs.objectAtIndex(0);
     }
 
 
@@ -1321,11 +1340,11 @@ public class User
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
-    private NSDictionary userFilteringDictionary()
+    private NSDictionary<String, User> userFilteringDictionary()
     {
         if ( userIsMe == null )
         {
-            userIsMe = new NSDictionary( this, "user" );
+            userIsMe = new NSDictionary<String, User>( this, "user" );
         }
         return userIsMe;
     }
@@ -1344,14 +1363,16 @@ public class User
     private String  name_LF_cache;
 
     private EOEditingContext ecForPrefs;
-    private NSDictionary userIsMe;
+    private NSDictionary<String, User> userIsMe;
 
     private boolean studentView = false;
 
     private static final String PREFIX = "user.";
-    private static final NSArray emptyArray = new NSArray();
-    private static final NSArray courseSortOrderings = new NSArray(
-        new Object[] {
+    private static final NSArray<CourseOffering> NO_COURSES =
+        new NSArray<CourseOffering>();
+    private static final NSArray<EOSortOrdering> courseSortOrderings =
+        new NSArray<EOSortOrdering>(
+        new EOSortOrdering[] {
             EOSortOrdering.sortOrderingWithKey(
                 CourseOffering.COURSE_NUMBER_KEY,
                 EOSortOrdering.CompareAscending ),
