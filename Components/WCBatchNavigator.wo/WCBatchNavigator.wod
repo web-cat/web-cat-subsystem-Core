@@ -1,15 +1,15 @@
 InstitutionPattern: WOPopUpButton {
-	list              = authDomains;
-	selection         = selectedAuthDomain;
-	item              = authDomain;
-	displayString     = authDomain.displayableName;
-	noSelectionString = "All institutions";
+    list              = authDomains;
+    selection         = selectedAuthDomain;
+    item              = authDomain;
+    displayString     = authDomain.displayableName;
+    noSelectionString = "All institutions";
 }
 
 BatchNumber: WOTextField {
-	numberformat = "0";
-	size = 3;
-	value = batchIndex;
+    numberformat = "0";
+    size = 3;
+    value = batchIndex;
 }
 
 CanShowFewer: WOConditional {
@@ -17,19 +17,19 @@ CanShowFewer: WOConditional {
 }
 
 Clear: WOImageButton {
-	alt       = "Clear filter settings";
-	border    = "0";
-	filename  = "images/clear.gif";
-	framework = "Core";
-	height    = "19";
-	title     = "Clear filter settings";
-	width     = "48";
-	style     = "vertical-align:middle;";
-	action    = clearFilter;
+    alt       = "Clear filter settings";
+    border    = "0";
+    filename  = "images/clear.gif";
+    framework = "Core";
+    height    = "19";
+    title     = "Clear filter settings";
+    width     = "48";
+    style     = "vertical-align:middle;";
+    action    = clearFilter;
 }
 
 Count: WOString {
-	value = ^displayGroup.allObjects.count;
+    value = ^displayGroup.allObjects.count;
 }
 
 Fewer: WOSubmitButton {
@@ -38,15 +38,15 @@ Fewer: WOSubmitButton {
 }
 
 Filter: WOImageButton {
-	alt       = "Apply filters";
-	border    = "0";
-	filename  = "images/filter.gif";
-	framework = "Core";
-	height    = "19";
-	title     = "Apply filters";
-	width     = "48";
-	style     = "vertical-align:middle;";
-	action    = filter;
+    alt       = "Apply filters";
+    border    = "0";
+    filename  = "images/filter.gif";
+    framework = "Core";
+    height    = "19";
+    title     = "Apply filters";
+    width     = "48";
+    style     = "vertical-align:middle;";
+    action    = filter;
 }
 
 FirstNamePattern: WOTextField {
@@ -55,20 +55,20 @@ FirstNamePattern: WOTextField {
 }
 
 FirstOp: WOPopUpButton {
-	list          = ^displayGroup.stringQualifierOperators;
-	selection     = ^displayGroup.queryOperator.firstName;
+    list          = ^displayGroup.stringQualifierOperators;
+    selection     = ^displayGroup.queryOperator.firstName;
 }
 
 Go: WOImageButton {
-	alt       = "Set page size/jump to page";
-	border    = "0";
-	filename  = "icons/go.gif";
-	framework = "Core";
-	height    = "19";
-	title     = "Set page size/jump to page";
-	width     = "40";
-	style     = "vertical-align:middle;";
-	action    = go;
+    alt       = "Set page size/jump to page";
+    border    = "0";
+    filename  = "icons/go.gif";
+    framework = "Core";
+    height    = "19";
+    title     = "Set page size/jump to page";
+    width     = "40";
+    style     = "vertical-align:middle;";
+    action    = go;
 }
 
 HasUserFilter: WOConditional {
@@ -76,19 +76,19 @@ HasUserFilter: WOConditional {
 }
 
 IsBatchedDisplay: WOConditional {
-	condition = ^displayGroup.hasMultipleBatches;
+    condition = ^displayGroup.hasMultipleBatches;
 }
 
 IsNotBatchedDisplay: WOConditional {
-	condition = ^displayGroup.hasMultipleBatches;
-	negate    = true;
+    condition = ^displayGroup.hasMultipleBatches;
+    negate    = true;
 }
 
 ItemsPerBatch: WOTextField {
-	align = "center";
-	numberformat = "0";
-	size = 2;
-	value = numberOfObjectsPerBatch;
+    align = "center";
+    numberformat = "0";
+    size = 2;
+    value = numberOfObjectsPerBatch;
 }
 
 LastNamePattern: WOTextField {
@@ -97,20 +97,20 @@ LastNamePattern: WOTextField {
 }
 
 LastOp: WOPopUpButton {
-	list          = ^displayGroup.stringQualifierOperators;
-	selection     = ^displayGroup.queryOperator.lastName;
+    list          = ^displayGroup.stringQualifierOperators;
+    selection     = ^displayGroup.queryOperator.lastName;
 }
 
 LeftArrow: WOImageButton {
-	alt       = "Show previous batch";
-	border    = "0";
-	filename  = "lft-OSarw.gif";
-	framework = "JavaWOExtensions";
-	height    = "16";
-	title     = "Show previous batch";
-	width     = "11";
-	style     = "vertical-align:middle;";
-	action    = ^displayGroup.displayPreviousBatch;
+    alt       = "Show previous batch";
+    border    = "0";
+    filename  = "lft-OSarw.gif";
+    framework = "JavaWOExtensions";
+    height    = "16";
+    title     = "Show previous batch";
+    width     = "11";
+    style     = "vertical-align:middle;";
+    action    = ^displayGroup.displayPreviousBatch;
 }
 
 MultipleInstitutions: WOConditional {
@@ -118,19 +118,19 @@ MultipleInstitutions: WOConditional {
 }
 
 RightArrow: WOImageButton {
-	alt       = "Show next batch";
-	border    = "0";
-	filename  = "rt-OSarw.gif";
-	framework = "JavaWOExtensions";
-	height    = "16";
-	title     = "Show next batch";
-	width     = "11";
-	style     = "vertical-align:middle;";
-	action    = ^displayGroup.displayNextBatch;
+    alt       = "Show next batch";
+    border    = "0";
+    filename  = "rt-OSarw.gif";
+    framework = "JavaWOExtensions";
+    height    = "16";
+    title     = "Show next batch";
+    width     = "11";
+    style     = "vertical-align:middle;";
+    action    = ^displayGroup.displayNextBatch;
 }
 
 TotalBatches: WOString {
-	value = ^displayGroup.batchCount;
+    value = ^displayGroup.batchCount;
 }
 
 UserNamePattern: WOTextField {
@@ -139,6 +139,6 @@ UserNamePattern: WOTextField {
 }
 
 UserNameOp: WOPopUpButton {
-	list          = ^displayGroup.stringQualifierOperators;
-	selection     = ^displayGroup.queryOperator.userName;
+    list          = ^displayGroup.stringQualifierOperators;
+    selection     = ^displayGroup.queryOperator.userName;
 }

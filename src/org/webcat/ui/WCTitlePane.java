@@ -75,20 +75,17 @@ public class WCTitlePane extends WOComponent
      */
     public boolean shouldProcessContent()
     {
-        WOContext context = context();
-        WORequest request = context.request();
-
-        // We should allow control to pass to the title pane content if it is
-        // open when the page loads, or...
-
-        boolean shouldProcess = valueForBooleanBinding("open", true);
-
-        if (!shouldProcess)
+        if (!wasContentRendered)
         {
-            boolean isAjax = AjaxUtils.isAjaxRequest(request);
+            WOContext context = context();
+
+            boolean isInitiallyOpen = valueForBooleanBinding("open", true);
+            boolean isLoadingNow = false;
 
             if (context.elementID() != null && context.senderID() != null)
             {
+                boolean isAjax = AjaxUtils.isAjaxRequest(context.request());
+
                 WOElementID elementID = new WOElementID(context.elementID());
                 elementID.deleteLastElementIDComponent();
                 String parentID = elementID.toString();
@@ -99,13 +96,14 @@ public class WCTitlePane extends WOComponent
                 // by a child of the pane (meaning it must have been opened and
                 // loaded for something inside it to send a request).
 
-                shouldProcess =
-                    (isAjax && parentID.equals(context.senderID())) ||
-                    context.senderID().startsWith(context.elementID());
+                isLoadingNow =
+                    (isAjax && parentID.equals(context.senderID()));
             }
+
+            wasContentRendered = isInitiallyOpen || isLoadingNow;
         }
 
-        return shouldProcess;
+        return wasContentRendered;
     }
 
 
@@ -185,6 +183,7 @@ public class WCTitlePane extends WOComponent
     //~ Static/instance variables .............................................
 
     private WOElement cachedTemplate;
+    private boolean wasContentRendered;
 
     private static final String TEMPLATE_HTML =
         "<wo name=\"TitlePane\">" +
