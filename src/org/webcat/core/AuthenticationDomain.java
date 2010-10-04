@@ -21,17 +21,12 @@
 
 package org.webcat.core;
 
-import com.sun.org.apache.xml.internal.serializer.*;
 import com.webobjects.foundation.*;
-import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
-
 import er.extensions.foundation.*;
-
 import java.io.File;
 import java.util.*;
-
 import org.webcat.core.Application;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.UserAuthenticator;
@@ -46,8 +41,9 @@ import org.apache.log4j.Logger;
  * that each represent a different authentication policy/mechanism for
  * different classes of user names.
  *
- * @author Stephen Edwards
- * @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class AuthenticationDomain
     extends _AuthenticationDomain
@@ -86,57 +82,57 @@ public class AuthenticationDomain
      *
      * @param value The new value for this property
      */
-    public void setPropertyName( String value )
+    public void setPropertyName(String value)
     {
-        if ( value != null && propertyName() != null
-             && !value.equals( propertyName() ) )
+        if (value != null && propertyName() != null
+            && !value.equals( propertyName()))
         {
             String oldSubdir = subdirName();
             cachedName = null;
             cachedSubdirName = null;
-            super.setPropertyName( value );
+            super.setPropertyName(value);
             String newSubdir = subdirName();
             // rename the three key directories
             {
-                File parent = new File( Application.configurationProperties()
-                                        .getProperty( "grader.submissiondir" ) );
-                File oldDir = new File( parent, oldSubdir );
-                oldDir.renameTo( new File( parent, newSubdir ) );
+                File parent = new File(Application.configurationProperties()
+                    .getProperty("grader.submissiondir"));
+                File oldDir = new File(parent, oldSubdir);
+                oldDir.renameTo(new File(parent, newSubdir));
             }
             {
-                File parent = new File( Application.configurationProperties()
-                                        .getProperty( "grader.workarea" ) );
-                File oldDir = new File( parent, oldSubdir );
-                oldDir.renameTo( new File( parent, newSubdir ) );
+                File parent = new File(Application.configurationProperties()
+                    .getProperty("grader.workarea"));
+                File oldDir = new File(parent, oldSubdir);
+                oldDir.renameTo(new File(parent, newSubdir));
             }
             {
                 String scriptRoot = Application.configurationProperties()
-                    .getProperty( "grader.scriptsroot" );
-                if ( scriptRoot == null )
+                    .getProperty("grader.scriptsroot");
+                if (scriptRoot == null)
                 {
-                    scriptRoot = org.webcat.core.Application.configurationProperties()
-                        .getProperty( "grader.submissiondir" )
+                    scriptRoot = Application.configurationProperties()
+                        .getProperty("grader.submissiondir")
                         + "/UserScripts";
                 }
-                File parent = new File( scriptRoot );
-                File oldDir = new File( parent, oldSubdir );
-                oldDir.renameTo( new File( parent, newSubdir ) );
+                File parent = new File(scriptRoot);
+                File oldDir = new File(parent, oldSubdir);
+                oldDir.renameTo(new File(parent, newSubdir));
 
                 String scriptDataRoot = Application.configurationProperties()
-                    .getProperty( "grader.scriptsdataroot" );
-                if ( scriptDataRoot == null )
+                    .getProperty("grader.scriptsdataroot");
+                if (scriptDataRoot == null)
                 {
                     scriptDataRoot = scriptRoot + "Data";
                 }
-                parent = new File( scriptDataRoot );
-                oldDir = new File( parent, oldSubdir );
-                oldDir.renameTo( new File( parent, newSubdir ) );
+                parent = new File(scriptDataRoot);
+                oldDir = new File(parent, oldSubdir);
+                oldDir.renameTo(new File(parent, newSubdir));
             }
         }
         else
         {
             cachedSubdirName = null;
-            super.setPropertyName( value );
+            super.setPropertyName(value);
         }
     }
 
@@ -149,7 +145,7 @@ public class AuthenticationDomain
      */
     public UserAuthenticator authenticator()
     {
-        return (UserAuthenticator)theAuthenticatorMap.get( propertyName() );
+        return theAuthenticatorMap.get(propertyName());
     }
 
 
@@ -161,16 +157,16 @@ public class AuthenticationDomain
      */
     public String name()
     {
-        if ( cachedName == null )
+        if (cachedName == null)
         {
             String name = propertyName();
             final String propertyPrefix = "authenticator.";
-            if ( name != null )
+            if (name != null)
             {
                 // strip the prefix on the property name
-                if ( name.startsWith( propertyPrefix ) )
+                if (name.startsWith(propertyPrefix))
                 {
-                    name = name.substring( propertyPrefix.length() );
+                    name = name.substring(propertyPrefix.length());
                 }
             }
             cachedName = name;
@@ -187,7 +183,7 @@ public class AuthenticationDomain
      */
     public String subdirName()
     {
-        if ( cachedSubdirName == null )
+        if (cachedSubdirName == null)
         {
             cachedSubdirName = subdirNameOf(name());
         }
@@ -204,14 +200,14 @@ public class AuthenticationDomain
      */
     public StringBuffer submissionBaseDirBuffer()
     {
-        StringBuffer dir = new StringBuffer( 50 );
+        StringBuffer dir = new StringBuffer(50);
         // Strictly speaking, this info is associated with the Grader
         // subsystem and should be located there, but it has leaked into
         // core because it is needed in too many places.
-        dir.append( org.webcat.core.Application
-            .configurationProperties().getProperty( "grader.submissiondir" ) );
-        dir.append( '/' );
-        dir.append( subdirName() );
+        dir.append(Application.configurationProperties()
+            .getProperty("grader.submissiondir"));
+        dir.append('/');
+        dir.append(subdirName());
         return dir;
     }
 
@@ -225,7 +221,7 @@ public class AuthenticationDomain
     public String timeZoneName()
     {
         String result = super.timeZoneName();
-        if ( result == null || result.equals( "" ) )
+        if (result == null || result.equals(""))
         {
             result = NSTimeZone.getDefault().getID();
         }
@@ -239,7 +235,7 @@ public class AuthenticationDomain
      * provide KVC access to that static method.
      * @return an NSArray of strings representing the date formats available
      */
-    public NSArray timeZones()
+    public NSArray<TimeZoneDescriptor> timeZones()
     {
         return availableTimeZones();
     }
@@ -254,7 +250,7 @@ public class AuthenticationDomain
     public String timeFormat()
     {
         String result = super.timeFormat();
-        if ( result == null || result.equals( "" ) )
+        if (result == null || result.equals(""))
         {
             result = globalDefaultTimeFormat();
         }
@@ -283,7 +279,7 @@ public class AuthenticationDomain
     public String dateFormat()
     {
         String result = super.dateFormat();
-        if ( result == null || result.equals( "" ) )
+        if (result == null || result.equals(""))
         {
             result = globalDefaultDateFormat();
         }
@@ -316,15 +312,13 @@ public class AuthenticationDomain
      * @param name the property name of the authenticator
      * @return The matching AuthenticationDomain object
      */
-    public static AuthenticationDomain authDomainByName( String name )
+    public static AuthenticationDomain authDomainByName(String name)
     {
         ensureAuthDomainsLoaded();
-        return (AuthenticationDomain)EOUtilities.objectMatchingKeyAndValue(
-                EOSharedEditingContext.defaultSharedEditingContext(),
-                ENTITY_NAME,
-                PROPERTY_NAME_KEY,
-                "authenticator." + name
-            );
+        return firstObjectMatchingQualifier(
+            EOSharedEditingContext.defaultSharedEditingContext(),
+            propertyName.eq("authenticator." + name),
+            null);
     }
 
 
@@ -349,34 +343,33 @@ public class AuthenticationDomain
      */
     public static AuthenticationDomain defaultDomain()
     {
-        if ( defaultDomain == null )
+        if (defaultDomain == null)
         {
             ensureAuthDomainsLoaded();
             // Set up a default domain, if possible
             String defaultDomainName = Application.configurationProperties()
-                .getProperty( "authenticator.default" );
-            if ( defaultDomainName != null )
+                .getProperty("authenticator.default");
+            if (defaultDomainName != null)
             {
                 try
                 {
-                    log.debug( "looking up default domain" );
-                    defaultDomain = authDomainByName( defaultDomainName );
+                    log.debug("looking up default domain");
+                    defaultDomain = authDomainByName(defaultDomainName);
                 }
-                catch ( EOObjectNotAvailableException e )
+                catch (EOObjectNotAvailableException e)
                 {
-                    log.error( "Default authentication domain ("
-                        + defaultDomainName + ") does not exist." );
+                    log.error("Default authentication domain ("
+                        + defaultDomainName + ") does not exist.");
                 }
-                catch ( EOUtilities.MoreThanOneException e )
+                catch (EOUtilities.MoreThanOneException e)
                 {
-                    log.error( "Multiple entries for default authentication "
-                        + "domain (" + defaultDomainName + ")" );
+                    log.error("Multiple entries for default authentication "
+                        + "domain (" + defaultDomainName + ")");
                 }
             }
-            if ( defaultDomain == null )
+            if (defaultDomain == null)
             {
-                defaultDomain = (AuthenticationDomain)authDomains()
-                    .objectAtIndex( 0 );
+                defaultDomain = authDomains().objectAtIndex(0);
             }
         }
         return defaultDomain;
@@ -390,7 +383,7 @@ public class AuthenticationDomain
      */
     public static void ensureAuthDomainsLoaded()
     {
-        if ( authDomains == null )
+        if (authDomains == null)
         {
             refreshAuthDomains();
         }
@@ -403,115 +396,119 @@ public class AuthenticationDomain
      */
     public static void refreshAuthDomains()
     {
-        log.debug( "refreshAuthDomains()" );
-        theAuthenticatorMap = new TreeMap();
+        log.debug("refreshAuthDomains()");
+        theAuthenticatorMap = new TreeMap<String, UserAuthenticator>();
         defaultDomain = null;
 
-        WCProperties     properties    = Application.configurationProperties();
-        Enumeration      propertyNames = properties.propertyNames();
-        final String     prefix        = "authenticator.";
-        EOEditingContext ec            = Application.newPeerEditingContext();
+        WCProperties     properties = Application.configurationProperties();
+        @SuppressWarnings("unchecked")
+        Enumeration<String> propertyNames =
+            (Enumeration<String>)properties.propertyNames();
+        final String     prefix = "authenticator.";
+        EOEditingContext ec = Application.newPeerEditingContext();
 
         try
         {
             ec.lock();
-            log.debug( "searching property list" );
+            log.debug("searching property list");
             // Disconnect from the shared editing context, since we're actually
             // making changes to objects in the shared context here.
-            ec.setSharedEditingContext( null );
-            while ( propertyNames.hasMoreElements() )
+            ec.setSharedEditingContext(null);
+            while (propertyNames.hasMoreElements())
             {
                 AuthenticationDomain domain = null;
-                String base = (String)propertyNames.nextElement();
+                String base = propertyNames.nextElement();
                 // log.debug ( "checking property: " + base );
-                if (    base.startsWith( prefix )
-                     && !base.equals( "authenticator.default" )
-                     && base.substring( prefix.length() ).indexOf( '.' ) == -1 )
+                if (   base.startsWith(prefix)
+                    && !base.equals("authenticator.default")
+                    && base.substring(prefix.length()).indexOf('.') == -1)
                 {
-                    log.debug ( "trying to register: " + base );
+                    log.debug ("trying to register: " + base);
                     UserAuthenticator ua = null;
-                    String uaClassName   = properties.getProperty( base );
-                    if ( uaClassName == null || uaClassName.equals( "" ) )
+                    String uaClassName   = properties.getProperty(base);
+                    if (uaClassName == null || uaClassName.equals(""))
                     {
                         uaClassName = properties.getProperty(
-                            "authenticator.default.class" );
+                            "authenticator.default.class");
                     }
                     try
                     {
                         ua = (UserAuthenticator)
-                            Class.forName( uaClassName ).newInstance();
-                        log.info( "registering " + base + " with " + uaClassName );
-                        ua.configure( base, properties );
-                        theAuthenticatorMap.put( base, ua );
+                            Class.forName(uaClassName).newInstance();
+                        log.info(
+                            "registering " + base + " with " + uaClassName);
+                        ua.configure(base, properties);
+                        theAuthenticatorMap.put(base, ua);
                         try
                         {
-                            domain = (AuthenticationDomain)
-                                EOUtilities.objectMatchingKeyAndValue(
-                                    ec,
-                                    AuthenticationDomain.ENTITY_NAME,
-                                    AuthenticationDomain.PROPERTY_NAME_KEY,
-                                    base
-                                    );
-                            log.debug( "domain is already in database" );
-                            if ( domain.propertyName() != base )
+                            int oldDebugLevel =
+                                NSLog.debug.allowedDebugLevel();
+                            NSLog.debug.setAllowedDebugLevel(
+                                NSLog.DebugLevelInformational);
+                            domain = uniqueObjectMatchingQualifier(ec,
+                                propertyName.eq(base));
+                            NSLog.debug.setAllowedDebugLevel(oldDebugLevel);
+                            if (domain != null)
                             {
-                                domain.setPropertyName( base );
+                                log.debug("domain is already in database");
+                                if (domain.propertyName() != base)
+                                {
+                                    domain.setPropertyName(base);
+                                }
+                                String thisDisplayableName =
+                                    properties.getProperty(
+                                        base + "." + DISPLAYABLE_NAME_KEY);
+                                if (thisDisplayableName != null
+                                    && domain.displayableName()
+                                       != thisDisplayableName)
+                                {
+                                    domain.setDisplayableName(
+                                        thisDisplayableName);
+                                }
+                                String emailDomain =
+                                    properties.getProperty(
+                                        base + "." + DEFAULT_EMAIL_DOMAIN_KEY);
+                                if (emailDomain != null
+                                    && domain.defaultEmailDomain() !=
+                                        emailDomain)
+                                {
+                                    domain.setDefaultEmailDomain(emailDomain);
+                                }
                             }
-                            String displayableName =
-                                properties.getProperty( base + "."
-                                    + AuthenticationDomain.DISPLAYABLE_NAME_KEY );
-                            if ( displayableName != null
-                                 && domain.displayableName()
-                                    != displayableName )
+                            else
                             {
-                                domain.setDisplayableName( displayableName );
-                            }
-                            String emailDomain =
-                                properties.getProperty( base + "."
-                                    + AuthenticationDomain.DEFAULT_EMAIL_DOMAIN_KEY );
-                            if ( emailDomain != null
-                                 && domain.defaultEmailDomain() != emailDomain )
-                            {
-                                domain.setDefaultEmailDomain( emailDomain );
+                                log.info("Adding to AuthenticationDomain "
+                                    + "table: " + base);
+                                domain = new AuthenticationDomain();
+                                ec.insertObject(domain);
+                                domain.setPropertyName(base);
+                                domain.setDisplayableName(
+                                    properties.getProperty(
+                                        base + "." + DISPLAYABLE_NAME_KEY));
+                                domain.setDefaultEmailDomain(
+                                    properties.getProperty(base
+                                        + "." + DEFAULT_EMAIL_DOMAIN_KEY));
                             }
                         }
-                        catch ( EOObjectNotAvailableException e )
+                        catch (EOUtilities.MoreThanOneException e)
                         {
-                            log.info( "Adding to AuthenticationDomain table: "
-                                      + base );
-                            domain = new AuthenticationDomain();
-                            ec.insertObject( domain );
-                            domain.setPropertyName( base );
-                            domain.setDisplayableName(
-                                properties.getProperty( base + "."
-                                    + AuthenticationDomain.DISPLAYABLE_NAME_KEY ));
-                            domain.setDefaultEmailDomain(
-                                properties.getProperty( base + "."
-                                + AuthenticationDomain.DEFAULT_EMAIL_DOMAIN_KEY ) );
+                            log.error("Error updating AuthenticationDomain "
+                                + "table for " + base, e);
                         }
-                        catch ( EOUtilities.MoreThanOneException e )
+                        if (domain != null)
                         {
-                            log.error( "Error updating AuthenticationDomain table "
-                                       + "for " + base, e );
-                        }
-                        if ( domain != null )
-                        {
-                            String emailDomain = properties.getProperty( base + "."
-                                + AuthenticationDomain.DEFAULT_EMAIL_DOMAIN_KEY );
-                            if ( emailDomain != null )
+                            String emailDomain = properties.getProperty(
+                                base + "." + DEFAULT_EMAIL_DOMAIN_KEY);
+                            if (emailDomain != null)
                             {
-                                domain.setDefaultEmailDomain( emailDomain );
+                                domain.setDefaultEmailDomain(emailDomain);
                             }
                         }
                     }
-                    catch ( Exception e )
+                    catch (Exception e)
                     {
-                        log.error( "refreshAuthDomains(): "
-                                   + "cannot create "
-                                   + uaClassName
-                                   + ":",
-                                   e
-                                   );
+                        log.error("refreshAuthDomains(): cannot create "
+                            + uaClassName + ":", e);
                     }
                 }
             }
@@ -520,24 +517,23 @@ public class AuthenticationDomain
         finally
         {
             ec.unlock();
-            Application.releasePeerEditingContext( ec );
+            Application.releasePeerEditingContext(ec);
         }
 
-        log.debug( "refreshing shared authentication domain objects" );
+        log.debug("refreshing shared authentication domain objects");
         authDomains = allObjectsOrderedByDisplayableName(
-            EOSharedEditingContext.defaultSharedEditingContext() );
+            EOSharedEditingContext.defaultSharedEditingContext());
 
         // TODO: can't do this yet, since the domain's authenticator class
         // and config settings are not stored in the database!
         // We'll need to change that, eventually.
 
         // confirm that  all domains are registered in the map
-//        for ( int i = 0; i < authDomains.count(); i++ )
+//        for (int i = 0; i < authDomains.count(); i++)
 //        {
-//            AuthenticationDomain domain = (AuthenticationDomain)
-//                authDomains.objectAtIndex( i );
+//            AuthenticationDomain domain = authDomains.objectAtIndex( i );
 //            String name = domain.propertyName();
-//            if ( theAuthenticatorMap.get( name ) == null )
+//            if (theAuthenticatorMap.get(name) == null)
 //            {
 //
 //            }
@@ -556,22 +552,24 @@ public class AuthenticationDomain
      */
     public static NSArray<String> availableTimeFormats()
     {
-        if ( timeFormats == null )
+        if (timeFormats == null)
         {
             try
             {
-                timeFormats = (NSArray<String>)Application
-                    .configurationProperties().arrayForKey( "timeFormats" );
+                @SuppressWarnings("unchecked")
+                NSArray<String> propValues = Application
+                    .configurationProperties().arrayForKey("timeFormats");
+                timeFormats = propValues;
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                log.error( "Exception parsing \"timeFormats\" property "
-                    + "setting as an NSArray:", e );
+                log.error("Exception parsing \"timeFormats\" property "
+                    + "setting as an NSArray:", e);
             }
-            if ( timeFormats == null )
+            if (timeFormats == null)
             {
                 timeFormats =
-                    new NSArray<String>( new String[]{"%I:%M%p", "%H:%M"} );
+                    new NSArray<String>(new String[]{"%I:%M%p", "%H:%M"});
             }
         }
         return timeFormats;
@@ -602,23 +600,25 @@ public class AuthenticationDomain
      */
     public static NSArray<String> availableDateFormats()
     {
-        if ( dateFormats == null )
+        if (dateFormats == null)
         {
             try
             {
-                dateFormats = (NSArray<String>)Application
-                    .configurationProperties().arrayForKey( "dateFormats" );
+                @SuppressWarnings("unchecked")
+                NSArray<String> propValues = Application
+                .configurationProperties().arrayForKey( "dateFormats" );
+                dateFormats = propValues;
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                log.error( "Exception parsing \"dateFormats\" property "
-                    + "setting as an NSArray:", e );
+                log.error("Exception parsing \"dateFormats\" property "
+                    + "setting as an NSArray:", e);
             }
-            if ( dateFormats == null )
+            if (dateFormats == null)
             {
-                dateFormats = new NSArray<String>( new String[]{
+                dateFormats = new NSArray<String>(new String[]{
                     "%m/%d/%y", "%m/%d/%Y", "%d.%m.%Y", "%d.%m.%y",
-                    "%y-%m-%d", "%Y-%m-%d", "%d-%b-%y", "%d-%b-%Y" } );
+                    "%y-%m-%d", "%Y-%m-%d", "%d-%b-%y", "%d-%b-%Y" });
             }
         }
         return dateFormats;
@@ -634,7 +634,7 @@ public class AuthenticationDomain
      */
     public static String globalDefaultDateFormat()
     {
-        return (String)availableDateFormats().objectAtIndex( 0 );
+        return availableDateFormats().objectAtIndex(0);
     }
 
 
@@ -648,29 +648,37 @@ public class AuthenticationDomain
         public String id;
         public String printableName;
 
-        public TimeZoneDescriptor( String id )
+        public TimeZoneDescriptor(String id)
         {
             this.id = id;
-            printableName = id.replaceAll( "_", " " ).replaceAll( "/", ": " );
+            printableName = id.replaceAll("_", " ").replaceAll("/", ": ");
         }
 
         public NSTimeZone timeZone()
         {
-            return NSTimeZone.timeZoneWithName( id, true );
+            return NSTimeZone.timeZoneWithName(id, true);
         }
 
-        public boolean equals( Object obj )
+        public boolean equals(Object obj)
         {
             boolean result = false;
-            if ( obj instanceof TimeZoneDescriptor )
+            if (obj == null)
+            {
+                // result = false
+            }
+            else if (obj == this)
+            {
+                result = true;
+            }
+            else if (obj instanceof TimeZoneDescriptor)
             {
                 TimeZoneDescriptor rhs = (TimeZoneDescriptor)obj;
-                result = ( id == null )
-                    ? ( rhs.id == null )
-                    : ( id.equals( rhs.id ) );
-                result = result && ( ( printableName == null )
-                    ? ( rhs.printableName == null )
-                    : ( printableName.equals( rhs.printableName ) ) );
+                result = (id == null)
+                    ? (rhs.id == null)
+                    : (id.equals(rhs.id));
+                result = result && ((printableName == null)
+                    ? (rhs.printableName == null)
+                    : (printableName.equals(rhs.printableName)));
             }
             return result;
         }
@@ -688,10 +696,11 @@ public class AuthenticationDomain
      */
     public static NSArray<TimeZoneDescriptor> availableTimeZones()
     {
-        if ( timeZones == null )
+        if (timeZones == null)
         {
-            NSMutableArray zones = new NSMutableArray<TimeZoneDescriptor>();
-            for (Object name : NSTimeZone.knownTimeZoneNames() )
+            NSMutableArray<TimeZoneDescriptor> zones =
+                new NSMutableArray<TimeZoneDescriptor>();
+            for (Object name : NSTimeZone.knownTimeZoneNames())
             {
                 zones.add(new TimeZoneDescriptor(name.toString()));
             }
@@ -710,11 +719,11 @@ public class AuthenticationDomain
      * @return The matching descriptor from the {@link #availableTimeZones()}
      * list
      */
-    public static TimeZoneDescriptor descriptorForZone( String id )
+    public static TimeZoneDescriptor descriptorForZone(String id)
     {
         for (TimeZoneDescriptor tzd : availableTimeZones())
         {
-            if ( tzd.id.equals( id ) )
+            if (tzd.id.equals(id))
             {
                 return tzd;
             }
@@ -724,25 +733,25 @@ public class AuthenticationDomain
 
 
     // ----------------------------------------------------------
-    public static String subdirNameOf( String name )
+    public static String subdirNameOf(String name)
     {
         String result = null;
-        if ( name != null )
+        if (name != null)
         {
-            char[] chars = new char[ name.length() ];
+            char[] chars = new char[name.length()];
             int  pos   = 0;
-            for ( int i = 0; i < name.length(); i++ )
+            for (int i = 0; i < name.length(); i++)
             {
-                char c = name.charAt( i );
-                if ( Character.isLetterOrDigit( c ) ||
-                     c == '_'                       ||
-                     c == '-' )
+                char c = name.charAt(i);
+                if (Character.isLetterOrDigit(c) ||
+                    c == '_'                     ||
+                    c == '-')
                 {
-                    chars[ pos ] = c;
+                    chars[pos] = c;
                     pos++;
                 }
             }
-            result = new String( chars, 0, pos );
+            result = new String(chars, 0, pos);
         }
         return result;
     }
@@ -752,12 +761,12 @@ public class AuthenticationDomain
 
     private static NSArray<AuthenticationDomain> authDomains;
     private static AuthenticationDomain defaultDomain;
-    private static Map theAuthenticatorMap;
+    private static Map<String, UserAuthenticator> theAuthenticatorMap;
     private String cachedSubdirName = null;
     private String cachedName = null;
     private static NSArray<String> timeFormats;
     private static NSArray<String> dateFormats;
     private static NSArray<TimeZoneDescriptor> timeZones;
 
-    static Logger log = Logger.getLogger( AuthenticationDomain.class );
+    static Logger log = Logger.getLogger(AuthenticationDomain.class);
 }
