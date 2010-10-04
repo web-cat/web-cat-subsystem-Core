@@ -118,10 +118,15 @@ a, a:active, a:link {
     text-decoration: none;
     color: #22d;
 }
+span.hl a, span.hl a:active, span.hl a:link {
+    color: #ddf;
+}
 a:visited { text-decoration: none; }
-a:hover {
+a:hover, span.hl a:hover {
     background-color: #ddf;
     color: #000;
+}
+a:hover {
     border-bottom: 1px dotted black;
 }
 
