@@ -22,15 +22,9 @@
 package org.webcat.core;
 
 import com.webobjects.foundation.*;
-import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
+import er.extensions.foundation.ERXArrayUtilities;
 import java.io.File;
-import org.webcat.core.AuthenticationDomain;
-import org.webcat.core.Course;
-import org.webcat.core.CourseOffering;
-import org.webcat.core.Semester;
-import org.webcat.core.User;
-import org.webcat.core._CourseOffering;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -62,18 +56,18 @@ public class CourseOffering
      * Look up a CourseOffering by CRN.  Assumes the editing
      * context is appropriately locked.
      * @param ec The editing context to use
-     * @param crn The CRN to look up
+     * @param theCrn The CRN to look up
      * @return The course offering, or null if no such CRN exists
      */
     public static CourseOffering offeringForCrn(
-        EOEditingContext ec, String crn )
+        EOEditingContext ec, String theCrn)
     {
         CourseOffering offering = null;
-        NSArray results = EOUtilities.objectsMatchingKeyAndValue( ec,
-            ENTITY_NAME, CRN_KEY, crn );
-        if ( results != null && results.count() > 0 )
+        NSArray<CourseOffering> results = objectsMatchingQualifier(
+            ec, CourseOffering.crn.eq(theCrn));
+        if (results != null && results.count() > 0)
         {
-            offering = (CourseOffering)results.objectAtIndex( 0 );
+            offering = results.objectAtIndex(0);
         }
         return offering;
     }
@@ -90,23 +84,16 @@ public class CourseOffering
 
     // ----------------------------------------------------------
     /**
-     * Creates a string containing a comma-separated list of
-     * instructor e-mail addresses.  Returns null if no instructors
-     * for this course offering have been defined.
+     * Returns the list of students in this course offering, sorted by
+     * user name.
      *
-     * @return the e-mail address(es) as a string
+     * @return the sorted list of enrolled students
      */
-    public NSArray studentsSortedByPID()
+    public NSArray<User> studentsSortedByPID()
     {
         return EOSortOrdering.sortedArrayUsingKeyOrderArray(
                students(),
-               new NSArray( new Object[]{
-                   new EOSortOrdering(
-                           User.USER_NAME_KEY,
-                           EOSortOrdering.CompareCaseInsensitiveAscending
-                       )
-               })
-           );
+               User.userName.ascInsensitives());
     }
 
 
@@ -120,10 +107,10 @@ public class CourseOffering
     {
         if ( cachedCompactName == null )
         {
-            String label = label();
-            if ( label == null || label.equals( "" ) )
+            String myLabel = label();
+            if ( myLabel == null || myLabel.equals( "" ) )
             {
-                label = crn();
+                myLabel = crn();
             }
             if ( course() == null )
             {
@@ -132,11 +119,11 @@ public class CourseOffering
                     "course offering with no associated course: " + crn()
                     + ((label() == null) ? "" : ("(" + label() + ")")));
                 // don't cache!
-                return "null(" + label + ")";
+                return "null(" + myLabel + ")";
             }
             else
             {
-                cachedCompactName = course().deptNumber() + "(" + label + ")";
+                cachedCompactName = course().deptNumber() + "(" + myLabel + ")";
             }
         }
         return cachedCompactName;
@@ -179,10 +166,10 @@ public class CourseOffering
      * @param user     The user to check
      * @return true if the user is an instructor of the offering
      */
-    public boolean isInstructor( User user )
+    public boolean isInstructor(User user)
     {
-        NSArray instructors = instructors();
-        return ( ( instructors.indexOfObject( user ) ) != NSArray.NotFound );
+        NSArray<User> myInstructors = instructors();
+        return (myInstructors.indexOfObject(user) != NSArray.NotFound);
     }
 
 
@@ -213,7 +200,7 @@ public class CourseOffering
      */
     public boolean isGrader( User user )
     {
-        NSArray tas = graders();
+        NSArray<User> tas = graders();
         return ( ( tas.indexOfObject( user ) ) != NSArray.NotFound );
     }
 
@@ -231,6 +218,26 @@ public class CourseOffering
     public NSArray<User> TAs()
     {
         return graders();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the array of students enrolled in this course offering, not
+     * including any course staff (instructors or graders).
+     *
+     * @return the array of students
+     */
+    public NSArray<User> studentsWithoutStaff()
+    {
+
+        NSMutableArray<User> studentsWithoutStaff =
+            students().mutableClone();
+        ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates(
+            studentsWithoutStaff, instructors());
+        ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates(
+            studentsWithoutStaff, graders());
+        return studentsWithoutStaff;
     }
 
 
@@ -429,18 +436,16 @@ public class CourseOffering
         {
             if (subdirToDelete != null)
             {
-                NSArray domains = AuthenticationDomain.authDomains();
-                for ( int i = 0; i < domains.count(); i++ )
+                NSArray<AuthenticationDomain> domains =
+                    AuthenticationDomain.authDomains();
+                for (AuthenticationDomain domain : domains)
                 {
-                    AuthenticationDomain domain =
-                        (AuthenticationDomain)domains.objectAtIndex( i );
                     StringBuffer dir = domain.submissionBaseDirBuffer();
                     dir.append(subdirToDelete);
                     File courseDir = new File(dir.toString());
                     if (courseDir.exists())
                     {
-                        org.webcat.core.FileUtilities.deleteDirectory(
-                            courseDir);
+                        FileUtilities.deleteDirectory(courseDir);
                     }
                 }
             }
@@ -464,11 +469,13 @@ public class CourseOffering
         EOFetchSpecification spec = EOFetchSpecification
             .fetchSpecificationNamed(
                 "offeringsForCourseOffering", "AssignmentOffering");
-        NSMutableDictionary bindings = new NSMutableDictionary();
+        NSMutableDictionary<String, Object> bindings =
+            new NSMutableDictionary<String, Object>();
         bindings.setObjectForKey( this, "courseOffering" );
         spec = spec.fetchSpecificationWithQualifierBindings( bindings );
 
-        NSArray result = editingContext().objectsWithFetchSpecification( spec );
+        NSArray<?> result =
+            editingContext().objectsWithFetchSpecification( spec );
         if (log.isDebugEnabled())
         {
             log.debug("hasAssignmentOfferings(): fetch = " + result);
@@ -482,12 +489,11 @@ public class CourseOffering
         String oldSemesterSubdir, String newSemesterSubdir,
         String oldCrnSubdir,      String newCrnSubdir )
     {
-        NSArray domains = AuthenticationDomain.authDomains();
+        NSArray<AuthenticationDomain> domains =
+            AuthenticationDomain.authDomains();
         String msgs = null;
-        for ( int i = 0; i < domains.count(); i++ )
+        for (AuthenticationDomain domain : domains)
         {
-            AuthenticationDomain domain =
-                (AuthenticationDomain)domains.objectAtIndex( i );
             StringBuffer dir = domain.submissionBaseDirBuffer();
             dir.append('/');
             int baseDirLen = dir.length();
@@ -532,7 +538,8 @@ public class CourseOffering
     // ----------------------------------------------------------
     private void saveOldDirComponents()
     {
-        if (crnDirNeedingRenaming == null || semesterDirNeedingRenaming == null)
+        if (crnDirNeedingRenaming == null
+            || semesterDirNeedingRenaming == null)
         {
             if ( crnDirNeedingRenaming == null && crn() != null )
             {
