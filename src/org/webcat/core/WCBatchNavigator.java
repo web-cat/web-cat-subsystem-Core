@@ -50,9 +50,9 @@ public class WCBatchNavigator
      *
      * @param aContext the context
      */
-    public WCBatchNavigator( WOContext aContext )
+    public WCBatchNavigator(WOContext aContext)
     {
-        super( aContext );
+        super(aContext);
     }
 
 
@@ -66,25 +66,25 @@ public class WCBatchNavigator
 
 
     // ----------------------------------------------------------
-    /* (non-Javadoc)
-     * @see org.webcat.core.WCComponentWithErrorMessages#appendToResponse(com.webobjects.appserver.WOResponse, com.webobjects.appserver.WOContext)
-     */
-    public void appendToResponse( WOResponse response, WOContext context )
+    public void appendToResponse(WOResponse response, WOContext context)
     {
-        if ( hasBinding( "persistentKey" )
-             && hasSession() )
+        if (newBatchSize != null)
         {
-            String key = (String)valueForBinding( "persistentKey" );
-            Object o = ( (Session)session() ).user().preferences()
-                .valueForKey( key );
-            if ( o != null && o instanceof Integer )
+            setNewNumberOfObjectsPerBatch();
+        }
+        else if (hasBinding( "persistentKey") && hasSession())
+        {
+            String key = (String)valueForBinding("persistentKey");
+            Object o = ((Session)session()).user().preferences()
+                .valueForKey(key);
+            if (o != null && o instanceof Integer)
             {
-                log.debug( "appendToResponse(): key " + key + " = " + o );
+                log.debug("appendToResponse(): key " + key + " = " + o);
                 setNumberOfObjectsPerBatchIfNecessary(
-                    ( (Integer)o ).intValue() );
+                    ((Integer)o).intValue());
             }
         }
-        super.appendToResponse( response, context );
+        super.appendToResponse(response, context);
     }
 
 
@@ -101,45 +101,43 @@ public class WCBatchNavigator
      *
      * @param index The page number
      */
-    public void setBatchIndex( Integer index )
+    public void setBatchIndex(Integer index)
     {
-        log.debug( "setBatchIndex(" + index + ")" );
+        log.debug("setBatchIndex(" + index + ")");
         int batchIndex;
 
         //Treat a null index as a 0 index. Negative numbers are handled
         //by the display group.
-        batchIndex = ( index != null )
-                          ? index.intValue()
-                          : 0;
-        ( (WODisplayGroup)valueForBinding( "displayGroup" ) ).
-            setCurrentBatchIndex( batchIndex );
+        batchIndex = (index != null)
+            ? index.intValue()
+            : 0;
+        group().setCurrentBatchIndex(batchIndex);
     }
 
 
     // ----------------------------------------------------------
-    private void setNumberOfObjectsPerBatchIfNecessary( int number )
+    private void setNumberOfObjectsPerBatchIfNecessary(int number)
     {
-        WODisplayGroup group =
-            ( (WODisplayGroup)valueForBinding( "displayGroup" ) );
+        WODisplayGroup group = group();
         int curSize = group.numberOfObjectsPerBatch();
-        log.debug( "setNumberOfObjectsPerBatchIfNecessary(" + number
-            + "), was " + curSize );
-        if ( curSize != number )
+        log.debug("setNumberOfObjectsPerBatchIfNecessary(" + number
+            + "), was " + curSize);
+        if (curSize != number)
         {
             // index is the one-based index of the first object shown in
             // the current batch
-            int index = ( group.currentBatchIndex() - 1 ) * curSize + 1;
-            if ( number <= 0 )
+            int index = (group.currentBatchIndex() - 1) * curSize + 1;
+            if (number <= 0)
             {
-                group.setNumberOfObjectsPerBatch( number );
+                group.setNumberOfObjectsPerBatch(number);
             }
             else
             {
                 // newPage is the one-based batch number that will show
                 // the object at the given index
                 int newBatch = index / number + 1;
-                group.setNumberOfObjectsPerBatch( number );
-                group.setCurrentBatchIndex( newBatch );
+                group.setNumberOfObjectsPerBatch(number);
+                group.setCurrentBatchIndex(newBatch);
             }
         }
     }
@@ -151,28 +149,40 @@ public class WCBatchNavigator
      *
      * @param number The number of objects to show
      */
-    public void setNumberOfObjectsPerBatch( Integer number )
+    public void setNumberOfObjectsPerBatch(Integer number)
     {
-        log.debug( "setNumberOfObjectsPerBatch(" + number + ")" );
+        newBatchSize = number;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the number of objects shown on each page/batch.
+     *
+     * @param number The number of objects to show
+     */
+    private void setNewNumberOfObjectsPerBatch()
+    {
+        log.debug("setNewNumberOfObjectsPerBatch() = " + newBatchSize);
         int num;
 
         //If a negative number is provided we default the number
         //of objects per batch to 0.
-        num = ( ( number != null ) && ( number.intValue() > 0 ) )
-                      ? number.intValue()
-                      : 0;
-        setNumberOfObjectsPerBatchIfNecessary( num );
-        if ( hasBinding( "persistentKey" )
-             && hasSession() )
+        num = (newBatchSize != null  &&  newBatchSize.intValue() > 0)
+            ? newBatchSize.intValue()
+            : 0;
+        setNumberOfObjectsPerBatchIfNecessary(num);
+        if (hasBinding("persistentKey") && hasSession())
         {
-            String key = (String)valueForBinding( "persistentKey" );
-            User user = ( (Session)session() ).user();
-            log.debug( "setNumberOfObjectsPerBatch(): key " + key + " <- "
-                + num + "(" + number + ")" );
+            String key = (String)valueForBinding("persistentKey");
+            User user = ((Session)session()).user();
+            log.debug("setNewNumberOfObjectsPerBatch(): key " + key + " <- "
+                + num + "(" + newBatchSize + ")");
             user.preferences().takeValueForKey(
-                ( number == null )
-                ? ERXConstant.integerForInt( num )
-                : number, key );
+                (newBatchSize == null)
+                    ? ERXConstant.integerForInt(num)
+                    : newBatchSize,
+                key);
             user.savePreferences();
         }
     }
@@ -186,8 +196,8 @@ public class WCBatchNavigator
      */
     public int batchIndex()
     {
-        return ( (WODisplayGroup)valueForBinding( "displayGroup" ) ).
-            currentBatchIndex();
+        int result = group().currentBatchIndex();
+        return result;
     }
 
 
@@ -199,8 +209,10 @@ public class WCBatchNavigator
      */
     public int numberOfObjectsPerBatch()
     {
-        return ( (WODisplayGroup)valueForBinding( "displayGroup" ) ).
-            numberOfObjectsPerBatch();
+        int result = newBatchSize == null
+            ? group().numberOfObjectsPerBatch()
+            : newBatchSize.intValue();
+        return result;
     }
 
 
@@ -208,6 +220,19 @@ public class WCBatchNavigator
     public WOComponent filter()
     {
         open = true;
+        WODisplayGroup dg = group();
+        if (dg != null)
+        {
+            if (hasUserFilter())
+            {
+                // Save an unused tag in the operator dictionary so we can
+                // tell that this display group is being actively filtered
+                // and what kind of entity it contains
+                dg.queryOperator().takeValueForKey(
+                    User.ENTITY_NAME, "entityType");
+                dg.qualifyDataSource();
+            }
+        }
         return go();
     }
 
@@ -222,21 +247,10 @@ public class WCBatchNavigator
      */
     public WOComponent go()
     {
-        if ( log.isDebugEnabled() )
+        if (log.isDebugEnabled())
         {
-            log.debug( "go(): batch = " + batchIndex() + ", size = "
-                + numberOfObjectsPerBatch() );
-        }
-        WODisplayGroup dg = (WODisplayGroup)valueForBinding( "displayGroup" );
-        if ( dg != null ) {
-            if ( hasUserFilter() )
-            {
-                // Save an unused tag in the operator dictionary so we can
-                // tell that this display group is being actively filtered
-                // and what kind of entity it contains
-                dg.queryOperator().takeValueForKey( "user", "entityType" );
-            }
-            dg.qualifyDataSource();
+            log.debug("go(): batch = " + batchIndex() + ", size = "
+                + numberOfObjectsPerBatch());
         }
         return null;
     }
@@ -252,17 +266,16 @@ public class WCBatchNavigator
      */
     public WOComponent fewer()
     {
-        int num = ( (WODisplayGroup)valueForBinding( "displayGroup" ) ).
-            allObjects().count() / 2;
-        if ( num == 0 )
+        int num = group().allObjects().count() / 2;
+        if (num == 0)
         {
             num++;
         }
-        setNumberOfObjectsPerBatch( ERXConstant.integerForInt( num ) );
-        if ( log.isDebugEnabled() )
+        setNumberOfObjectsPerBatch(ERXConstant.integerForInt(num));
+        if (log.isDebugEnabled())
         {
-            log.debug( "fewer(): now, batch = " + batchIndex() + ", size = "
-                + numberOfObjectsPerBatch() );
+            log.debug("fewer(): now, batch = " + batchIndex() + ", size = "
+                + numberOfObjectsPerBatch());
         }
         return null;
     }
@@ -277,7 +290,7 @@ public class WCBatchNavigator
      */
     public boolean canShowFewer()
     {
-        WODisplayGroup dg = (WODisplayGroup)valueForBinding("displayGroup");
+        WODisplayGroup dg = group();
         boolean result = dg.allObjects().count() > 1;
         log.debug("canShowFewer(): " + result);
         return result;
@@ -292,17 +305,12 @@ public class WCBatchNavigator
      */
     public boolean hasUserFilter()
     {
-        WODisplayGroup dg = (WODisplayGroup)valueForBinding("displayGroup");
-        log.debug("hasUserFilter(): dg = " + dg);
-        if (dg != null)
-        {
-            log.debug("entity type = "
-                + dg.queryOperator().valueForKey("entityType"));
-        }
+        WODisplayGroup dg = group();
         boolean result = dg != null
             // If this display group is known to contain users (but might
             // be filtered so none are showing right now!)
-            && ("user".equals(dg.queryOperator().valueForKey("entityType"))
+            && (User.ENTITY_NAME.equals(
+                dg.queryOperator().valueForKey("entityType"))
 
             // Or if this display group's first object is a user
                  || (dg.allObjects().count() > 0
@@ -319,8 +327,8 @@ public class WCBatchNavigator
      */
     public WOComponent clearFilter()
     {
-        WODisplayGroup dg = (WODisplayGroup)valueForBinding( "displayGroup" );
-        if ( dg != null )
+        WODisplayGroup dg = group();
+        if (dg != null)
         {
             dg.queryMatch().removeAllObjects();
             dg.queryOperator().removeAllObjects();
@@ -349,21 +357,20 @@ public class WCBatchNavigator
     // ----------------------------------------------------------
     public AuthenticationDomain selectedAuthDomain()
     {
-        if ( selectedAuthDomain == null )
+        if (selectedAuthDomain == null)
         {
-            WODisplayGroup dg =
-                (WODisplayGroup)valueForBinding( "displayGroup" );
-            if ( dg != null )
+            WODisplayGroup dg = group();
+            if (dg != null)
             {
                 String prop = (String)dg.queryMatch().valueForKey(
-                    "authenticationDomain.propertyName" );
-                if ( prop != null )
+                    "authenticationDomain.propertyName");
+                if (prop != null)
                 {
                     NSArray<AuthenticationDomain> domains =
                         AuthenticationDomain.authDomains();
                     for (AuthenticationDomain ad : domains)
                     {
-                        if ( prop.equals( ad.propertyName() ) )
+                        if (prop.equals(ad.propertyName()))
                         {
                             selectedAuthDomain = ad;
                             break;
@@ -377,24 +384,31 @@ public class WCBatchNavigator
 
 
     // ----------------------------------------------------------
-    public void setSelectedAuthDomain( AuthenticationDomain value )
+    public void setSelectedAuthDomain(AuthenticationDomain value)
     {
         selectedAuthDomain = value;
-        if ( value != null )
+        if (value != null)
         {
-            WODisplayGroup dg =
-                (WODisplayGroup)valueForBinding( "displayGroup" );
-            if ( dg != null )
+            WODisplayGroup dg = group();
+            if (dg != null)
             {
-                dg.queryMatch().takeValueForKey( value.propertyName(),
-                    "authenticationDomain.propertyName" );
+                dg.queryMatch().takeValueForKey(value.propertyName(),
+                    "authenticationDomain.propertyName");
             }
         }
+    }
+
+
+    // ----------------------------------------------------------
+    private WODisplayGroup group()
+    {
+        return (WODisplayGroup)valueForBinding("displayGroup");
     }
 
 
     //~ Instance/static variables .............................................
 
     private AuthenticationDomain selectedAuthDomain;
+    private Integer newBatchSize;
     static Logger log = Logger.getLogger( WCBatchNavigator.class );
 }
