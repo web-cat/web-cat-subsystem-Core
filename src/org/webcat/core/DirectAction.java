@@ -585,7 +585,15 @@ public class DirectAction
                 session.setUser( pcr.user().localInstance(
                         session.defaultEditingContext() ) );
                 pcr.delete();
-                ec.saveChanges();
+                try
+                {
+                    ec.saveChanges();
+                }
+                catch (Exception e)
+                {
+                    log.error("Unable to delete password change request "
+                        + pcr + " for user " + pcr.user(), e);
+                }
             }
         }
         finally
