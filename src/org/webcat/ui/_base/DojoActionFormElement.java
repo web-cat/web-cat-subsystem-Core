@@ -295,7 +295,7 @@ public abstract class DojoActionFormElement extends DojoFormElement
             WOContext context)
     {
         WOComponent component = context.component();
-        JSHash requestOptions = null;
+        JSHash requestOptions = new JSHash();
 
         if (_directActionName != null)
         {
@@ -306,7 +306,6 @@ public abstract class DojoActionFormElement extends DojoFormElement
                     ERXComponentUtilities.queryParametersInComponent(
                             _associations, component)).replaceAll("&amp;", "&");
 
-            requestOptions = new JSHash();
             requestOptions.put("url", actionUrl);
         }
 

@@ -78,7 +78,6 @@ public class ValidatingAction extends DualAction
      * Initializes a new instance of the ValidatingAction class.
      *
      * @param component the component on which the action is being invoked
-     * @param validators the validators used to validate the fields in the form
      */
     public ValidatingAction(WOComponent component)
     {

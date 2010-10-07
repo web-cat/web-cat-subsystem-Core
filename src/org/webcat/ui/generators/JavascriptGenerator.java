@@ -241,6 +241,60 @@ public class JavascriptGenerator implements WOActionResults
 
     // ----------------------------------------------------------
     /**
+     * Displays a themed modal confirmation dialog and executes the specified
+     * function when it is dismissed.
+     *
+     * @param title the title of the dialog
+     * @param message the message inside the dialog
+     * @param onYes the function to execute when the dialog is dismissed with
+     *     the Yes button
+     * @return this generator, for chaining
+     */
+    public JavascriptGenerator confirm(String title, String message,
+            JavascriptFunction onYes)
+    {
+        JSHash options = new JSHash();
+        options.put("title", title);
+        options.put("message", message);
+        options.put("onYes", onYes);
+
+        return confirm(options);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Displays a themed modal confirmation dialog with the specified options.
+     *
+     * @param options the options for this alert
+     * @return this generator, for chaining
+     */
+    public JavascriptGenerator confirm(JSHash options)
+    {
+        JSHash options_ = options.clone();
+
+        JavascriptFunction onYes = options_.get("onYes",
+                JavascriptFunction.class);
+
+        if (onYes != null)
+        {
+            options_.put("onYes", JSHash.code(javascriptObjectFor(onYes)));
+        }
+
+        JavascriptFunction onNo = options_.get("onNo",
+                JavascriptFunction.class);
+
+        if (onNo != null)
+        {
+            options_.put("onNo", JSHash.code(javascriptObjectFor(onNo)));
+        }
+
+        return call("webcat.confirm", options_);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * <p>
      * Creates an animation for a DOM element. The animation generated here
      * will be played automatically; there is no need to chain a call to

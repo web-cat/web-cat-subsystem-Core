@@ -1,0 +1,17 @@
+Page : org.webcat.core.WCPageWithNavigation {
+    title = "Confirming Action Test Page";
+}
+
+Checkbox : WCCheckBox {
+    checked = checkBoxChecked;
+}
+
+Textbox : WCTextBox {
+    value = textBoxValue;
+}
+
+Submit : WCButton {
+    label = "Ask for Confirmation";
+    remote = true;
+    action = processThings;
+}

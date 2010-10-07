@@ -180,8 +180,6 @@ webcat.serializeChildren = function(/*DOMNode|String*/ node)
  */
 webcat.remoteSubmit = function(/*_Widget*/ widget, /*Object*/ options)
 {
-//	try { throw 'foo'; } catch(e) { }
-
     var evalAttributeFunction = function(code) {
         return eval('__evalAttributeFunction__temp__ = ' + code);
     };
