@@ -278,6 +278,12 @@ public class CoreDatabaseUpdates
 //        database().executeSQL("ALTER TABLE TUSER ADD INDEX (CUSERNAME(8))");
 //        database().executeSQL(
 //            "ALTER TABLE TUSER ADD INDEX (CAUTHENTICATIONDOMAINID)");
+//        database().executeSQL(
+//            "ALTER TABLE TCOURSEOFFERING ADD INDEX (CCOURSEID)");
+//        database().executeSQL(
+//            "ALTER TABLE TCOURSEOFFERING ADD INDEX (CSEMESTER)");
+//        database().executeSQL(
+//            "ALTER TABLE TCOURSEOFFERING ADD INDEX (CCRN(8))");
 //    }
 
 
