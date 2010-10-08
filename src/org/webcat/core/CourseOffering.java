@@ -161,7 +161,7 @@ public class CourseOffering
     // ----------------------------------------------------------
     /**
      * Returns true if the given user is an instructor of this
-     * course offering
+     * course offering.
      *
      * @param user     The user to check
      * @return true if the user is an instructor of the offering
@@ -176,7 +176,7 @@ public class CourseOffering
     // ----------------------------------------------------------
     /**
      * Returns true if the given user is a grader (TA) for this
-     * course offering
+     * course offering.
      *
      * @param user     The user to check
      * @return true if the user is a grader for the offering
@@ -193,7 +193,7 @@ public class CourseOffering
     // ----------------------------------------------------------
     /**
      * Returns true if the given user is a grader (TA) for this
-     * course offering
+     * course offering.
      *
      * @param user     The user to check
      * @return true if the user is a grader for the offering
@@ -202,6 +202,20 @@ public class CourseOffering
     {
         NSArray<User> tas = graders();
         return ( ( tas.indexOfObject( user ) ) != NSArray.NotFound );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns true if the given user is a member of the staff (an
+     * instructor or grader) for this course offering.
+     *
+     * @param user     The user to check
+     * @return true if the user is staff for the offering
+     */
+    public boolean isStaff(User user)
+    {
+        return isInstructor(user) || isGrader(user);
     }
 
 
@@ -223,6 +237,41 @@ public class CourseOffering
 
     // ----------------------------------------------------------
     /**
+     * Gets the array of users that includes all course staff (instructors or
+     * graders).
+     *
+     * @return the array of users
+     */
+    public NSArray<User> staff()
+    {
+        NSMutableArray<User> staff = instructors().mutableClone();
+        ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates(
+            staff, graders());
+        return staff;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the array of users that includes students enrolled in this
+     * course offering together with all course staff (instructors or
+     * graders).
+     *
+     * @return the array of users
+     */
+    public NSArray<User> studentsAndStaff()
+    {
+        NSMutableArray<User> studentsAndStaff = students().mutableClone();
+        ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates(
+            studentsAndStaff, instructors());
+        ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates(
+            studentsAndStaff, graders());
+        return studentsAndStaff;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Gets the array of students enrolled in this course offering, not
      * including any course staff (instructors or graders).
      *
@@ -230,13 +279,9 @@ public class CourseOffering
      */
     public NSArray<User> studentsWithoutStaff()
     {
-
-        NSMutableArray<User> studentsWithoutStaff =
-            students().mutableClone();
-        ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates(
-            studentsWithoutStaff, instructors());
-        ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates(
-            studentsWithoutStaff, graders());
+        NSMutableArray<User> studentsWithoutStaff = students().mutableClone();
+        studentsWithoutStaff.removeObjectsInArray(instructors());
+        studentsWithoutStaff.removeObjectsInArray(graders());
         return studentsWithoutStaff;
     }
 
