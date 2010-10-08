@@ -276,6 +276,9 @@ public class Session
             if ( loginSession == null )
             {
                 Application.releasePeerEditingContext( ec );
+                log.error("updateLoginSession() cannot find login session for "
+                    + "user " + primeUser + " and sessionId = " + sessionID());
+                return;
             }
         }
         try
