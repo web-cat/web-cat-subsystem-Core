@@ -9,9 +9,9 @@ Core.version.revision=1
 
 Core.copyright=(c) 2006-2010 Virginia Tech Department of Computer Science
 Core.provider=Virginia Tech Computer Science
-Core.provider.url=http\://web-cat.cs.vt.edu/updates
-Core.info.url=http\://web-cat.cs.vt.edu/WCWiki/CoreSubsystem
-Core.history.url=http\://web-cat.cs.vt.edu/WCWiki/CoreSubsystem/ChangeHistory
+Core.provider.url=http\://web-cat.org/updates
+Core.info.url=http\://web-cat.org/WCWiki/CoreSubsystem
+Core.history.url=http\://web-cat.org/WCWiki/CoreSubsystem/ChangeHistory
 Core.license=GNU Affero General Public License v.3
 Core.license.url=http\://www.gnu.org/licenses/agpl.html
 Core.requires=\
@@ -34,7 +34,7 @@ Core.archive.handler.list=(\
     org.webcat.archives.internal.ZipArchiveHandler,   \
     org.webcat.archives.internal.TarGzArchiveHandler, \
     org.webcat.archives.internal.TarArchiveHandler)
-help.baseURL = http://web-cat.cs.vt.edu/Web-CAT.help/
+help.baseURL = http://web-cat.org/Web-CAT.help/
 
 
 # -------------------------------------------------------------------
