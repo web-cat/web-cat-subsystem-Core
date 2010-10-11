@@ -88,7 +88,7 @@ public abstract class ConfirmingAction extends DualAction
 
         WOContext currentContext = ERXWOContext.currentContext();
         formName = WCForm.formName(currentContext, null);
-        senderID = currentContext.senderID();
+        elementID = currentContext.elementID();
     }
 
 
@@ -183,12 +183,12 @@ public abstract class ConfirmingAction extends DualAction
      */
     protected void actionWasConfirmed(JavascriptGenerator page)
     {
-        page.submit(formName, senderID);
+        page.submit(formName, elementID);
     }
 
 
     //~ Static/instance variables .............................................
 
     private String formName;
-    private String senderID;
+    private String elementID;
 }

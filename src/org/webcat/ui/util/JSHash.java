@@ -188,9 +188,12 @@ public class JSHash
      */
     public void merge(JSHash opts)
     {
-        for (String key : opts.options.keySet())
+        if (opts != null)
         {
-            options.setObjectForKey(opts.options.objectForKey(key), key);
+            for (String key : opts.options.keySet())
+            {
+                options.setObjectForKey(opts.options.objectForKey(key), key);
+            }
         }
     }
 

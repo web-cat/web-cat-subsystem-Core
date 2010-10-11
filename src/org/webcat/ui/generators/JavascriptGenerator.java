@@ -241,60 +241,6 @@ public class JavascriptGenerator implements WOActionResults
 
     // ----------------------------------------------------------
     /**
-     * Displays a themed modal confirmation dialog and executes the specified
-     * function when it is dismissed.
-     *
-     * @param title the title of the dialog
-     * @param message the message inside the dialog
-     * @param onYes the function to execute when the dialog is dismissed with
-     *     the Yes button
-     * @return this generator, for chaining
-     */
-    public JavascriptGenerator confirm(String title, String message,
-            JavascriptFunction onYes)
-    {
-        JSHash options = new JSHash();
-        options.put("title", title);
-        options.put("message", message);
-        options.put("onYes", onYes);
-
-        return confirm(options);
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Displays a themed modal confirmation dialog with the specified options.
-     *
-     * @param options the options for this alert
-     * @return this generator, for chaining
-     */
-    public JavascriptGenerator confirm(JSHash options)
-    {
-        JSHash options_ = options.clone();
-
-        JavascriptFunction onYes = options_.get("onYes",
-                JavascriptFunction.class);
-
-        if (onYes != null)
-        {
-            options_.put("onYes", JSHash.code(javascriptObjectFor(onYes)));
-        }
-
-        JavascriptFunction onNo = options_.get("onNo",
-                JavascriptFunction.class);
-
-        if (onNo != null)
-        {
-            options_.put("onNo", JSHash.code(javascriptObjectFor(onNo)));
-        }
-
-        return call("webcat.confirm", options_);
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * <p>
      * Creates an animation for a DOM element. The animation generated here
      * will be played automatically; there is no need to chain a call to
@@ -559,6 +505,60 @@ public class JavascriptGenerator implements WOActionResults
 
     // ----------------------------------------------------------
     /**
+     * Displays a themed modal confirmation dialog and executes the specified
+     * function when it is dismissed.
+     *
+     * @param title the title of the dialog
+     * @param message the message inside the dialog
+     * @param onYes the function to execute when the dialog is dismissed with
+     *     the Yes button
+     * @return this generator, for chaining
+     */
+    public JavascriptGenerator confirm(String title, String message,
+            JavascriptFunction onYes)
+    {
+        JSHash options = new JSHash();
+        options.put("title", title);
+        options.put("message", message);
+        options.put("onYes", onYes);
+
+        return confirm(options);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Displays a themed modal confirmation dialog with the specified options.
+     *
+     * @param options the options for this alert
+     * @return this generator, for chaining
+     */
+    public JavascriptGenerator confirm(JSHash options)
+    {
+        JSHash options_ = options.clone();
+
+        JavascriptFunction onYes = options_.get("onYes",
+                JavascriptFunction.class);
+
+        if (onYes != null)
+        {
+            options_.put("onYes", JSHash.code(javascriptObjectFor(onYes)));
+        }
+
+        JavascriptFunction onNo = options_.get("onNo",
+                JavascriptFunction.class);
+
+        if (onNo != null)
+        {
+            options_.put("onNo", JSHash.code(javascriptObjectFor(onNo)));
+        }
+
+        return call("webcat.confirm", options_);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * <p>
      * Gets a widget by its Dijit ID.
      * </p><p>
@@ -790,6 +790,117 @@ public class JavascriptGenerator implements WOActionResults
     public JavascriptGenerator removeClass(String id, String cssClass)
     {
         return call("dojo.removeClass", id, cssClass);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * <p>
+     * Creates an animation that will smooth-scroll the specified element into
+     * view. It is assumed that the container element to be scrolled is the
+     * browser window.
+     * </p><p>
+     * You must call {@link AnimationProxy#play()} in order to start this
+     * animation.
+     * </p>
+     *
+     * @param id the id of the element to be scrolled into view
+     * @return an {@link AnimationProxy} object for chaining calls to this
+     *     animation
+     */
+    public AnimationProxy smoothScroll(String id)
+    {
+        return smoothScroll(id, null, null);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * <p>
+     * Creates an animation that will smooth-scroll the specified element into
+     * view. The scrolling will occur inside the specified container element.
+     * </p><p>
+     * You must call {@link AnimationProxy#play()} in order to start this
+     * animation.
+     * </p>
+     *
+     * @param id the id of the element to be scrolled into view
+     * @param container the container element to be scrolled. This can either
+     *     be a String element id, or object returned by
+     *     {@link org.webcat.ui.util.JSHash#code(String)} that computes the
+     *     element to be scrolled, or null to indicate the browser window
+     * @return an {@link AnimationProxy} object for chaining calls to this
+     *     animation
+     */
+    public AnimationProxy smoothScroll(String id, Object container)
+    {
+        return smoothScroll(id, container, null);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * <p>
+     * Creates an animation that will smooth-scroll the specified element into
+     * view, with the specified animation duration. The scrolling will occur
+     * inside the specified container element.
+     * </p><p>
+     * You must call {@link AnimationProxy#play()} in order to start this
+     * animation.
+     * </p>
+     *
+     * @param id the id of the element to be scrolled into view
+     * @param container the container element to be scrolled. This can either
+     *     be a String element id, or object returned by
+     *     {@link org.webcat.ui.util.JSHash#code(String)} that computes the
+     *     element to be scrolled, or null to indicate the browser window
+     * @param duration the duration of the animation, in milliseconds
+     * @return an {@link AnimationProxy} object for chaining calls to this
+     *     animation
+     */
+    public AnimationProxy smoothScroll(String id, Object container,
+            int duration)
+    {
+        return smoothScroll(id, container, new JSHash("duration", duration));
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * <p>
+     * Creates an animation that will smooth-scroll the specified element into
+     * view. The scrolling will occur inside the specified container element.
+     * </p><p>
+     * You must call {@link AnimationProxy#play()} in order to start this
+     * animation.
+     * </p>
+     *
+     * @param id the id of the element to be scrolled into view
+     * @param container the container element to be scrolled. This can either
+     *     be a String element id, or object returned by
+     *     {@link org.webcat.ui.util.JSHash#code(String)} that computes the
+     *     element to be scrolled, or null to indicate the browser window
+     * @param animationOptions a JSHash containing options that should be
+     *     passed to the underlying dojo.Animation
+     * @return an {@link AnimationProxy} object for chaining calls to this
+     *     animation
+     */
+    public AnimationProxy smoothScroll(String id, Object container,
+            JSHash animationOptions)
+    {
+        if (container == null)
+        {
+            container = JSHash.code("window");
+        }
+
+        JSHash options = new JSHash(
+                "node", id,
+                "win", container);
+
+        options.merge(animationOptions);
+
+        return new AnimationProxy(this, "dojox.fx.smoothScroll(" +
+                argumentsForCall(options) + ")");
     }
 
 
