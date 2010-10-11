@@ -18,6 +18,10 @@ body {
   background-position: top center;
 }
 
+body.showprogress * {
+    cursor: progress !important;
+}
+
 .RichTextEditable iframe body { padding: 5px; }
 
 #content {
@@ -592,8 +596,8 @@ form fieldset label {
 }
 
 form table label {
-	padding-right: 0;
-	width: auto;
+    padding-right: 0;
+    width: auto;
 }
 
 form label.trailing {

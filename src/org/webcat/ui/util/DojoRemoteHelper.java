@@ -46,21 +46,6 @@ import er.extensions.components._private.ERXWOForm;
  * <dd>The expected response type of the action being invoked remotely. In most
  * cases this can be omitted.</dd>
  *
- * <dt>refreshPanes</dt>
- * <dd>One or more WCContentPane identifiers that will be refreshed when the
- * action returns successfully. This can be specified as a string containing
- * a single identifier ("paneId"), a string containing an array of identifiers
- * in JSON notation ("[ 'paneId1', 'paneId2' ]"; note the single quotes around
- * the identifiers in this case), or bound to something that implements
- * java.util.List.</dd>
- *
- * <dt>block</dt>
- * <dd>Specifies whether a blocking overlay should be placed somewhere on the
- * page while the action is being executed. This can be set to the boolean
- * "true", in which case overlays will be placed over each of the content
- * panes specified by the refreshPanes binding, or it can be one or more
- * explicit identifiers of DOM elements on the page that will be blocked.</dd>
- *
  * <dt>form</dt>
  * <dd>The DOM identifier of the form to serialize with this request. By
  * default, this will be the form that contains the element in question.</dd>
@@ -141,6 +126,8 @@ public class DojoRemoteHelper
         WOAssociation _responseType = associationWithName("responseType");
         WOAssociation _submit = associationWithName("submit");
         WOAssociation _synchronous = associationWithName("synchronous");
+        WOAssociation _suppressBusyCursor =
+            associationWithName("suppressBusyCursor");
 
         JSHash options = new JSHash();
         if (initialOptions != null)
@@ -164,6 +151,12 @@ public class DojoRemoteHelper
         }
 
         options.put("handleAs", responseType);
+
+        if (_suppressBusyCursor != null &&
+                _suppressBusyCursor.booleanValueInComponent(component))
+        {
+            options.put("suppressBusyCursor", true);
+        }
 
         // Handle a partial submit.
 
@@ -213,86 +206,6 @@ public class DojoRemoteHelper
         return buffer.toString();
     }
 
-
-    // ----------------------------------------------------------
-/*    public String _invokeRemoteActionCall(String sender, String url,
-            DojoOptions contentOptions, WOContext context)
-    {
-        WOComponent component = context.component();
-
-        WOAssociation _responseType = associationWithName("responseType");
-        WOAssociation _form = associationWithName("form");
-        WOAssociation _synchronous = associationWithName("synchronous");
-
-        DojoOptions options = new DojoOptions();
-
-        if (contentOptions != null && !contentOptions.isEmpty())
-        {
-            options.putOptions("content", contentOptions);
-        }
-
-        String responseType = null;
-        if (_responseType != null)
-        {
-            responseType =
-                _responseType.valueInComponent(component).toString();
-        }
-        else
-        {
-            responseType = "javascript";
-        }
-
-        if (responseType != null)
-        {
-            options.putValue("handleAs", responseType);
-        }
-
-        String formId = null;
-        if (_form != null)
-        {
-            formId = _form.valueInComponent(component).toString();
-
-            if (formId != null)
-            {
-                options.putExpression("form", "dojo.byId('" + formId + "')");
-            }
-        }
-        else
-        {
-            formId = ERXWOForm.formName(context, null);
-
-            if (formId != null)
-            {
-                options.putExpression("form",
-                        WCForm.formElementByName(formId));
-            }
-        }
-
-        options.putValue("url", url);
-
-        // Append the synchronous flag.
-        boolean synchronous = false;
-        if (_synchronous != null)
-        {
-            synchronous = _synchronous.booleanValueInComponent(component);
-        }
-
-        if (synchronous)
-        {
-            options.putValue("sync", true);
-        }
-
-        StringBuffer buffer = new StringBuffer();
-
-        buffer.append("webcat.invokeRemoteAction(");
-        buffer.append(sender);
-        buffer.append(", ");
-        buffer.append(options.toString());
-        buffer.append(");");
-
-        return buffer.toString();
-    }
-*/
 
     //~ Static/instance variables .............................................
 

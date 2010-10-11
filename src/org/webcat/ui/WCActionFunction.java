@@ -51,6 +51,10 @@ import er.extensions.components.ERXComponentUtilities;
  * determined by the presence of any of the "remote.*" bindings. If they are
  * omitted, the request is synchronous.
  *
+ * @binding jsId the Javascript name of the function
+ * @binding waitForOnLoad if true, the function will be generated in a block
+ *     inside a dojo.addOnLoad handler
+ *
  * @author Tony ALlevato
  * @version $Id$
  */

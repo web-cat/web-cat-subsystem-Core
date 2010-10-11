@@ -160,6 +160,38 @@ webcat.serializeChildren = function(/*DOMNode|String*/ node)
 };
 
 
+//----------------------------------------------------------
+/**
+ * webcat.pushBusyCursor() and webcat.popBusyCursor() can be used to change the
+ * mouse cursor to a "progress" indicator for indicating that an Ajax request
+ * is occurring in the background. These functions should be used in pairs
+ * because they stack.
+ */
+(function() {
+    var _busyCursorCount = 0;
+
+    dojo.mixin(webcat,
+    {
+        pushBusyCursor: function() {
+            _busyCursorCount++;
+            dojo.addClass(dojo.body(), 'showprogress');
+        },
+
+        popBusyCursor: function() {
+            if (_busyCursorCount > 0)
+            {
+                _busyCursorCount--;
+
+                if (_busyCursorCount == 0)
+                {
+                    dojo.removeClass(dojo.body(), 'showprogress');
+                }
+            }
+        }
+    });
+})();
+
+
 // ----------------------------------------------------------
 /**
  * Invokes the action represented by the specified URL as an Ajax request, and
@@ -188,7 +220,7 @@ webcat.remoteSubmit = function(/*_Widget*/ widget, /*Object*/ options)
 
     // Use the form's action URL if one wasn't already provided.
 
-    if (options.form && !options.url)
+    if (options.form)
     {
         var actionUrl = options.form.getAttribute('action');
         actionUrl = actionUrl.replace('/wo/', '/ajax/');
@@ -198,6 +230,11 @@ webcat.remoteSubmit = function(/*_Widget*/ widget, /*Object*/ options)
     // If this is a partial submit, serialize the subset of fields manually
     // and then clear out options.form so that Dojo's XHR does not
     // serialize the form again.
+
+    if (!options.suppressBusyCursor)
+    {
+        webcat.pushBusyCursor();
+    }
 
     if (options.submit)
     {
@@ -269,6 +306,11 @@ webcat.remoteSubmit = function(/*_Widget*/ widget, /*Object*/ options)
 
         handle: function(response, ioArgs) {
             var handler;
+
+            if (!options.suppressBusyCursor)
+            {
+                webcat.popBusyCursor();
+            }
 
             if (widget && widget.onRemoteEnd)
             {

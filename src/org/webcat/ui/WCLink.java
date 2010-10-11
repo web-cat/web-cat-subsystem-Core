@@ -42,12 +42,16 @@ import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation._NSDictionaryUtilities;
 import er.ajax.AjaxUtils;
 import er.extensions.components.ERXComponentUtilities;
+import er.extensions.components._private.ERXWOForm;
 
 //------------------------------------------------------------------------
 /**
  * <p>
  * A hyperlink that can execute an action, both in the form of an ordinary
- * page-load and via an Ajax interface.
+ * page-load and via an Ajax interface. Another enhancement compared to
+ * WOHyperlink is that WCLinks that are nested in a form cause that form to be
+ * submitted (causing bindings on the page to be synchronized, just as with
+ * submit buttons).
  * </p><p>
  * Unlike the other action elements such as WCButton, WCMenuItem, etc., the
  * WCLink is an ordinary HTML anchor tag and <b>not</b> a Dojo widget. This
@@ -66,7 +70,7 @@ import er.extensions.components.ERXComponentUtilities;
  * <tr>
  * <td>{@code directActionName}</td>
  * <td>The name of the direct action method (minus the "Action" suffix) to
- * invoke when this element is activated. Defaults to �default�.</td>
+ * invoke when this element is activated. Defaults to "default".</td>
  * </tr>
  * <tr>
  * <td>{@code actionClass}</td>
@@ -77,6 +81,13 @@ import er.extensions.components.ERXComponentUtilities;
  * <td>{@code pageName}</td>
  * <td>The name of a WebObjects component that should be instantiated and
  * returned.</td>
+ * </tr>
+ * <tr>
+ * <td>{@code ignoreForm}</td>
+ * <td>Normally, links inside forms cause that form to be submitted so that
+ * bindings are synchronized before the action is executed. If this is set to
+ * true, the link will not submit the form (duplicating the functionality of
+ * built-in WOHyperlinks).</td>
  * </tr>
  * <tr>
  * <td>{@code onClick}</td>
@@ -177,6 +188,7 @@ public class WCLink extends WOHTMLDynamicElement
             _associations.removeObjectForKey("fragmentIdentifier");
         _escapeHTML = _associations.removeObjectForKey("escapeHTML");
         _onClick = _associations.removeObjectForKey("onClick");
+        _ignoreForm = _associations.removeObjectForKey("ignoreForm");
         _remoteHelper = new DojoRemoteHelper(_associations);
 
         if (_action == null && _href == null && _pageName == null
@@ -370,28 +382,36 @@ public class WCLink extends WOHTMLDynamicElement
         }
         else
         {
-            _appendOpeningHrefToResponse(response, context);
+            String formName = ERXWOForm.formName(context, null);
+            if (!isIgnoreFormInContext(context) && formName != null)
+            {
+                response.appendContentString(" href=\"javascript:void(0);\"");
+            }
+            else
+            {
+                _appendOpeningHrefToResponse(response, context);
 
-            if (_actionClass != null || _directActionName != null)
-            {
-                _appendCGIActionURLToResponse(response, context, true);
-            }
-            else if(_action != null || _pageName != null)
-            {
-                _appendComponentActionURLToResponse(response, context, true);
-            }
-            else if(_href != null)
-            {
-                _appendStaticURLToResponse(response, context, true);
-            }
-            else if(_fragmentIdentifier != null
-                    && fragmentIdentifierInContext(context).length() > 0)
-            {
-                _appendQueryStringToResponse(response, context, "", true, true);
-                _appendFragmentToResponse(response, context);
-            }
+                if (_actionClass != null || _directActionName != null)
+                {
+                    _appendCGIActionURLToResponse(response, context, true);
+                }
+                else if(_action != null || _pageName != null)
+                {
+                    _appendComponentActionURLToResponse(response, context, true);
+                }
+                else if(_href != null)
+                {
+                    _appendStaticURLToResponse(response, context, true);
+                }
+                else if(_fragmentIdentifier != null
+                        && fragmentIdentifierInContext(context).length() > 0)
+                {
+                    _appendQueryStringToResponse(response, context, "", true, true);
+                    _appendFragmentToResponse(response, context);
+                }
 
-            _appendClosingHrefToResponse(response, context);
+                _appendClosingHrefToResponse(response, context);
+            }
         }
 
         appendOnClickAttributeToResponse(response, context);
@@ -534,6 +554,20 @@ public class WCLink extends WOHTMLDynamicElement
 
 
     // ----------------------------------------------------------
+    protected boolean isIgnoreFormInContext(WOContext context)
+    {
+        if (_ignoreForm != null)
+        {
+            return _ignoreForm.booleanValueInComponent(context.component());
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    // ----------------------------------------------------------
     protected void appendOnClickAttributeToResponse(WOResponse response,
             WOContext context)
     {
@@ -563,6 +597,20 @@ public class WCLink extends WOHTMLDynamicElement
         }
         else
         {
+            String formName = ERXWOForm.formName(context, null);
+            if (!isIgnoreFormInContext(context) && formName != null)
+            {
+                String senderID = context.elementID();
+
+                if (onClick == null)
+                {
+                    onClick = "";
+                }
+
+                onClick += "; webcat.fullSubmit('"
+                    + formName + "','" + senderID + "');";
+            }
+
             if (onClick != null)
             {
                 response.appendContentString(" onclick=\"");
@@ -597,6 +645,16 @@ public class WCLink extends WOHTMLDynamicElement
         JSHash requestOptions = new JSHash();
         requestOptions.put("url", actionUrl);
 
+        // If we're inside a form, include the name of the element as the
+        // sender. This is unnecessary for buttons, but required for other
+        // types of action elements, like WCMenuItem.
+
+        String formName = ERXWOForm.formName(context, null);
+        if (!isIgnoreFormInContext(context) && formName != null)
+        {
+            requestOptions.put("sender", context.elementID());
+        }
+
         response.appendContentString(_remoteHelper.remoteSubmitCall(
                 "this", requestOptions, context));
     }
@@ -618,6 +676,15 @@ public class WCLink extends WOHTMLDynamicElement
 
 
     // ----------------------------------------------------------
+    protected boolean shouldHandleAction(WORequest request, WOContext context)
+    {
+        return (context.elementID().equals(context.senderID())) ||
+                (context.wasFormSubmitted() && context.isMultipleSubmitForm()
+                        && request.formValueForKey(context.elementID()) != null);
+    }
+
+
+    // ----------------------------------------------------------
     public WOActionResults invokeStandardAction(WORequest aRequest,
             WOContext context)
     {
@@ -625,11 +692,13 @@ public class WCLink extends WOHTMLDynamicElement
         WOActionResults invokedElement = null;
         WOComponent component = context.component();
 
-        if (context.elementID().equals(context.senderID()))
+        if (shouldHandleAction(aRequest, context))
         {
             if (_disabled == null
                     || !_disabled.booleanValueInComponent(component))
             {
+                context.setActionInvoked(true);
+
                 if (_pageName != null)
                 {
                     Object nextPageValue =
@@ -729,6 +798,7 @@ public class WCLink extends WOHTMLDynamicElement
     protected WOAssociation _actionClass;
     protected WOAssociation _directActionName;
     protected WOAssociation _onClick;
+    protected WOAssociation _ignoreForm;
     protected NSDictionary<String, WOAssociation> _otherQueryAssociations;
 
     protected DojoRemoteHelper _remoteHelper;

@@ -37,6 +37,7 @@ import er.ajax.AjaxUtils;
 import er.extensions.appserver.ERXResponseRewriter;
 import er.extensions.appserver.ERXWOContext;
 import er.extensions.components.ERXComponentUtilities;
+import er.extensions.components._private.ERXWOForm;
 
 //------------------------------------------------------------------------
 /**
@@ -64,7 +65,7 @@ import er.extensions.components.ERXComponentUtilities;
  * <tr>
  * <td>{@code directActionName}</td>
  * <td>The name of the direct action method (minus the "Action" suffix) to
- * invoke when this element is activated. Defaults to �default�.</td>
+ * invoke when this element is activated. Defaults to "default".</td>
  * </tr>
  * <tr>
  * <td>{@code actionClass}</td>
@@ -307,6 +308,16 @@ public abstract class DojoActionFormElement extends DojoFormElement
                             _associations, component)).replaceAll("&amp;", "&");
 
             requestOptions.put("url", actionUrl);
+        }
+
+        // If we're inside a form, include the name of the element as the
+        // sender. This is unnecessary for buttons, but required for other
+        // types of action elements, like WCMenuItem.
+
+        String formName = ERXWOForm.formName(context, null);
+        if (formName != null)
+        {
+            requestOptions.put("sender", nameInContext(context));
         }
 
         response.appendContentString(_remoteHelper.remoteSubmitCall(
