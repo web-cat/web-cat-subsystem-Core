@@ -23,11 +23,11 @@
     </tr></wo></table>
 </wo:if><wo:if condition="$isFile">
     <wo name="ValueContainer"><wo name="File"/></wo>
-    <wo:if condition="$canBrowse"><wo:if condition="$hasValue"> <wo name="Download"/></wo:if><wo name="Browse"/><wo:if condition="$hasValue"> <wo name="UseDefault"/></wo:if>
+    <wo:if condition="$canBrowse"><wo:if condition="$hasValue"> <wo name="Download"><wo name="DownloadIcon"/></wo></wo:if><wo name="Browse"/><wo:if condition="$hasValue"> <wo name="UseDefault"/></wo:if>
     </wo:if><wo:else><b class="warn">Cannot browse files</b></wo:else>
 </wo:if><wo:if condition="$isFileOrDir">
     <wo name="ValueContainer"><wo name="File"/></wo>
-    <wo:if condition="$canBrowse"><wo:if condition="$hasValue"> <wo name="Download"/></wo:if><wo name="Browse"/><wo:if condition="$hasValue"> <wo name="UseDefault"/></wo:if>
+    <wo:if condition="$canBrowse"><wo:if condition="$hasValue"> <wo name="Download"><wo name="DownloadIcon"/></wo></wo:if><wo name="Browse"/><wo:if condition="$hasValue"> <wo name="UseDefault"/></wo:if>
     </wo:if><wo:else><b class="warn">Cannot browse files</b></wo:else>
 </wo:if><wo:if condition="$isShortText">
     <wo name="TextBox"/>

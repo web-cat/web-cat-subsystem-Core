@@ -29,16 +29,19 @@ DoubleBox: WCTextBox {
     value = value;
 }
 
-Download: WOActiveImage {
+Download: WOHyperlink {
     action   = downloadFile;
+}
+
+DownloadIcon: WOImage {
     filename = "icons/download.gif";
     framework = "Core";
     alt      = "[Download]";
     title    = "Download";
     width    = "18";
     height   = "18";
-//    style     = "vertical-align:middle;";
     class    = "icon";
+    border   = "0";
 }
 
 File: WOString {
