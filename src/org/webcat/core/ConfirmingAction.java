@@ -165,7 +165,8 @@ public abstract class ConfirmingAction extends DualAction
     // ----------------------------------------------------------
     /**
      * <p>
-     * Called if the "Yes" button on the confirmation dialog was selected. The
+     * Generates the Javascript code that should be executed on the client
+     * if the "Yes" button on the confirmation dialog was selected. The
      * default behavior is to execute a Javascript statement that will cause
      * the form to be submitted as a standard page-load action. Subclasses may
      * override this if they wish to provide alternate behavior; for example,

@@ -15,3 +15,14 @@ Submit : WCButton {
     remote = true;
     action = processThings;
 }
+
+SubmitLink : WCLink {
+    remote = true;
+    action = processThings;
+}
+
+SubmitMenuItem : WCMenuItem {
+    label = "Ask for Confirmation (should synchronize bindings)";
+    remote = true;
+    action = processThings;
+}

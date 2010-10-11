@@ -2,6 +2,15 @@
 <wo:WCForm>
     <p>Text box: <wo name="Textbox"/></p>
     <p>Check box: <wo name="Checkbox"/></p>
-    <p><wo name="Submit"/></p>
+    <p><wo name="Submit"/> (should synchronize bindings)</p>
+    <p><wo name="SubmitLink">Ask for Confirmation</wo> (should synchronize bindings)</p>
+    <p><wo:WCDiv dojoType="dijit.form.DropDownButton" label="Drop-down">
+        <wo:WCDiv dojoType="dijit.Menu">
+            <wo name="SubmitMenuItem"/>
+        </wo:WCDiv>
+    </wo:WCDiv></p>
+    <p><wo:WCLink action="$dummyAction">WCLink inside form (should synchronize)</wo:WCLink></p>
+    <p><wo:WOHyperlink action="$dummyAction">WOHyperlink inside form (should not synchronize)</wo:WOHyperlink></p>
 </wo:WCForm>
+<p><wo:WCLink action="$dummyAction">Link outside form (should not synchronize)</wo:WCLink></p>
 </wo:WCPageModule></wo>

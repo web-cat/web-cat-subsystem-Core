@@ -17,6 +17,14 @@ public class ConfirmingActionTestPage extends WCComponent
 
 
     // ----------------------------------------------------------
+    public WOActionResults dummyAction()
+    {
+        System.out.println("Executing dummy action");
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
     public WOActionResults processThings()
     {
         return new ConfirmingAction(this) {
