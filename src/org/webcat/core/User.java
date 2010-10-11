@@ -29,6 +29,7 @@ import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
+import er.extensions.eof.ERXKey;
 import er.extensions.foundation.ERXArrayUtilities;
 
 // -------------------------------------------------------------------------
@@ -80,6 +81,8 @@ public class User
     public static final String TIME_FORMAT_KEY    = "timeFormat";
     public static final String DATE_FORMAT_KEY    = "dateFormat";
 
+    public static final ERXKey<String> name_LF =
+        new ERXKey<String>("name_LF");
 
     //~ Methods ...............................................................
 
