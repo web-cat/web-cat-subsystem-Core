@@ -30,6 +30,7 @@ import com.webobjects.foundation.*;
 import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
+import org.webcat.core.EOBasedKeyGenerator;
 
 // -------------------------------------------------------------------------
 /**
@@ -179,6 +180,8 @@ public abstract class _CourseOffering
     public static final String OFFERINGS_WITHOUT_STUDENT_OR_GRADER_FSPEC = "offeringsWithoutStudentOrGrader";
     public static final String OFFERINGS_WITHOUT_USER_AS_STAFF_FSPEC = "offeringsWithoutUserAsStaff";
     public static final String ENTITY_NAME = "CourseOffering";
+
+    public final EOBasedKeyGenerator generateKey = new EOBasedKeyGenerator(this);
 
 
     //~ Methods ...............................................................

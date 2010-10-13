@@ -30,6 +30,7 @@ import com.webobjects.foundation.*;
 import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
+import org.webcat.core.EOBasedKeyGenerator;
 
 // -------------------------------------------------------------------------
 /**
@@ -177,6 +178,8 @@ public abstract class _LoggedError
     // Fetch specifications ---
     public static final String ERRORS_WITH_EXCEPTION_LOCATION_FSPEC = "errorsWithExceptionLocation";
     public static final String ENTITY_NAME = "LoggedError";
+
+    public final EOBasedKeyGenerator generateKey = new EOBasedKeyGenerator(this);
 
 
     //~ Methods ...............................................................

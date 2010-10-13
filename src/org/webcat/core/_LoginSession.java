@@ -30,6 +30,7 @@ import com.webobjects.foundation.*;
 import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
+import org.webcat.core.EOBasedKeyGenerator;
 
 // -------------------------------------------------------------------------
 /**
@@ -150,6 +151,8 @@ public abstract class _LoginSession
     // Fetch specifications ---
     public static final String SESSIONS_WITH_USER_PID_FSPEC = "sessionsWithUserPid";
     public static final String ENTITY_NAME = "LoginSession";
+
+    public final EOBasedKeyGenerator generateKey = new EOBasedKeyGenerator(this);
 
 
     //~ Methods ...............................................................

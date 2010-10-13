@@ -1340,6 +1340,40 @@ public class User
     }
 
 
+    /*
+     * The following two overrides cause changes to preferences to be
+     * auto-saved when the modification is made by pushing a value into a KVC
+     * binding.
+     */
+
+    // ----------------------------------------------------------
+    @Override
+    public void takeValueForKey(Object value, String key)
+    {
+        super.takeValueForKey(value, key);
+
+        if (PREFERENCES_KEY.equals(key))
+        {
+            savePreferences();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void takeValueForKeyPath(Object value, String keyPath)
+    {
+        super.takeValueForKeyPath(value, keyPath);
+
+        int dotIndex = keyPath.indexOf('.');
+        if (dotIndex == -1 && PREFERENCES_KEY.equals(keyPath)
+                || PREFERENCES_KEY.equals(keyPath.substring(0, dotIndex)))
+        {
+            savePreferences();
+        }
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------

@@ -30,6 +30,7 @@ import com.webobjects.foundation.*;
 import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
+import org.webcat.core.EOBasedKeyGenerator;
 
 // -------------------------------------------------------------------------
 /**
@@ -160,6 +161,8 @@ public abstract class _ObjectQuery
     // Fetch specifications ---
     public static final String SAVED_QUERIES_FOR_OBJECT_TYPE_AND_USER_FSPEC = "savedQueriesForObjectTypeAndUser";
     public static final String ENTITY_NAME = "ObjectQuery";
+
+    public final EOBasedKeyGenerator generateKey = new EOBasedKeyGenerator(this);
 
 
     //~ Methods ...............................................................

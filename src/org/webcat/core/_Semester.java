@@ -30,6 +30,7 @@ import com.webobjects.foundation.*;
 import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
+import org.webcat.core.EOBasedKeyGenerator;
 
 // -------------------------------------------------------------------------
 /**
@@ -157,6 +158,8 @@ public abstract class _Semester
     public static final String ALL_OBJECTS_ORDERED_BY_START_DATE_FSPEC = "allObjectsOrderedByStartDate";
     public static final String FOR_DATE_FSPEC = "forDate";
     public static final String ENTITY_NAME = "Semester";
+
+    public final EOBasedKeyGenerator generateKey = new EOBasedKeyGenerator(this);
 
 
     //~ Methods ...............................................................

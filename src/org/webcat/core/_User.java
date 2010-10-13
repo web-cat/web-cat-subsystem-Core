@@ -30,6 +30,7 @@ import com.webobjects.foundation.*;
 import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
+import org.webcat.core.EOBasedKeyGenerator;
 
 // -------------------------------------------------------------------------
 /**
@@ -214,6 +215,8 @@ public abstract class _User
     public static final String USER_WITH_DOMAIN_AND_NAME_FSPEC = "userWithDomainAndName";
     public static final String USER_WITH_NAME_FSPEC = "userWithName";
     public static final String ENTITY_NAME = "User";
+
+    public final EOBasedKeyGenerator generateKey = new EOBasedKeyGenerator(this);
 
 
     //~ Methods ...............................................................
