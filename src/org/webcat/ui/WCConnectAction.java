@@ -22,6 +22,8 @@
 package org.webcat.ui;
 
 import org.apache.log4j.Logger;
+import org.webcat.core.Application;
+import org.webcat.ui._base.DojoActionFormElement;
 import org.webcat.ui.util.DojoRemoteHelper;
 import org.webcat.ui.util.JSHash;
 import com.webobjects.appserver.WOActionResults;
@@ -52,7 +54,7 @@ import er.extensions.components.ERXComponentUtilities;
  * @author Tony Allevato
  * @version $Id$
  */
-public class WCConnectAction extends WOHTMLDynamicElement
+public class WCConnectAction extends DojoActionFormElement
 {
     //~ Constructors ..........................................................
 
@@ -62,16 +64,26 @@ public class WCConnectAction extends WOHTMLDynamicElement
             WOElement template)
     {
         super("script", someAssociations, template);
-
-        _action = _associations.removeObjectForKey("action");
-        _actionClass = _associations.removeObjectForKey("actionClass");
-        _directActionName =
-            _associations.removeObjectForKey("directActionName");
-        _remoteHelper = new DojoRemoteHelper(_associations);
     }
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    @Override
+    public String dojoType()
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    protected boolean usesFakeFullSubmit()
+    {
+        return true;
+    }
+
 
     // ----------------------------------------------------------
     @Override
@@ -91,79 +103,61 @@ public class WCConnectAction extends WOHTMLDynamicElement
     {
         super.appendChildrenToResponse(response, context);
 
-        String elemName = nameInContext(context);
-        JSHash requestOptions = new JSHash();
-        requestOptions.put("sender", elemName);
+        WOComponent component = context.component();
 
-        response.appendContentString("\n");
-        response.appendContentString(_remoteHelper.remoteSubmitCall(
-                "this", requestOptions, context));
-        response.appendContentString("\n");
-    }
+        String actionUrl = null;
 
-
-    // ----------------------------------------------------------
-    protected String nameInContext(WOContext context)
-    {
-        if (_associations != null && _associations.objectForKey("name") != null)
+        if (_directActionName != null)
         {
-            return _associations.objectForKey("name").valueInComponent(
-                    context.component()).toString();
+            actionUrl = context.directActionURLForActionNamed(
+                    (String) _directActionName.valueInComponent(component),
+                    ERXComponentUtilities.queryParametersInComponent(
+                            _associations, component)).replaceAll("&amp;", "&");
         }
         else
         {
-            return context.elementID();
+            actionUrl = AjaxUtils.ajaxComponentActionUrl(context);
         }
+
+        StringBuffer script = new StringBuffer();
+
+        script.append("\n");
+
+        if (_remoteHelper.isRemoteInContext(context))
+        {
+            JSHash requestOptions = new JSHash();
+            requestOptions.put("url", actionUrl);
+            requestOptions.put("sender", context.elementID());
+
+            script.append(_remoteHelper.remoteSubmitCall(
+                    "this", requestOptions, context));
+        }
+        else
+        {
+            script.append(WCForm.scriptToPerformFullSubmit(
+                    context, nameInContext(context)));
+        }
+
+        script.append("\n");
+
+        response.appendContentString(script.toString());
     }
 
 
     // ----------------------------------------------------------
     @Override
-    public WOActionResults invokeAction(WORequest request, WOContext context)
+    protected void appendOnClickScriptToResponse(WOResponse response,
+            WOContext context)
     {
-        if (!AjaxUtils.isAjaxRequest(request) ||
-                !AjaxUtils.shouldHandleRequest(request, context, null))
-        {
-            return null;
-        }
-
-        WOActionResults result = null;
-
-        WOComponent component = context.component();
-
-        AjaxUtils.createResponse(request, context);
-        AjaxUtils.mutableUserInfo(request);
-
-        context.setActionInvoked(true);
-        result = (WOActionResults) _action.valueInComponent(component);
-
-        AjaxUtils.updateMutableUserInfoWithAjaxInfo(context);
-
-        if (result == context.page())
-        {
-            log.warn("An Ajax request attempted to return the page, which "
-                    + "is almost certainly an error.");
-
-            result = null;
-        }
-
-        if (result == null)
-        {
-            result = AjaxUtils.createResponse(request, context);
-        }
-
-        return result;
+        // Do nothing.
     }
 
 
-    //~ Static/instance variables .............................................
-
-    protected WOAssociation _jsId;
-    protected WOAssociation _action;
-    protected WOAssociation _actionClass;
-    protected WOAssociation _directActionName;
-
-    protected DojoRemoteHelper _remoteHelper;
-
-    private static final Logger log = Logger.getLogger(WCConnectAction.class);
+    // ----------------------------------------------------------
+    @Override
+    protected void appendNameAttributeToResponse(WOResponse response,
+            WOContext context)
+    {
+        // Do nothing.
+    }
 }
