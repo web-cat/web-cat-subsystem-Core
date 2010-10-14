@@ -23,7 +23,6 @@ package org.webcat.core;
 
 import org.webcat.dbupdate.UpdateSet;
 import java.sql.SQLException;
-import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -32,7 +31,8 @@ import org.apache.log4j.Logger;
  * for this class uses its parent class' logger.
  *
  * @author  Stephen Edwards
- * @version $Id$
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class CoreDatabaseUpdates
     extends UpdateSet
@@ -273,18 +273,42 @@ public class CoreDatabaseUpdates
      * Add indexes for better performance.
      * @throws SQLException on error
      */
-//    public void updateIncrement16() throws SQLException
-//    {
-//        database().executeSQL("ALTER TABLE TUSER ADD INDEX (CUSERNAME(8))");
-//        database().executeSQL(
-//            "ALTER TABLE TUSER ADD INDEX (CAUTHENTICATIONDOMAINID)");
-//        database().executeSQL(
-//            "ALTER TABLE TCOURSEOFFERING ADD INDEX (CCOURSEID)");
-//        database().executeSQL(
-//            "ALTER TABLE TCOURSEOFFERING ADD INDEX (CSEMESTER)");
-//        database().executeSQL(
-//            "ALTER TABLE TCOURSEOFFERING ADD INDEX (CCRN(8))");
-//    }
+    public void updateIncrement16() throws SQLException
+    {
+        // Indices for CoreSelections
+        createIndexFor("TCORESELECTIONS", "CUSERID");
+        createIndexFor("TCORESELECTIONS", "CCOURSEID");
+        createIndexFor("TCORESELECTIONS", "CCOURSEOFFERINGID");
+
+        // Indices for Course
+        createIndexFor("TCOURSE", "CDEPARTMENTID");
+
+        // Indices for CourseOffering
+        createIndexFor("TCOURSEOFFERING", "CCOURSEID");
+        createIndexFor("TCOURSEOFFERING", "CCRN(8)");
+        createIndexFor("TCOURSEOFFERING", "CSEMESTER");
+
+        // Indices for LoginSession
+        createIndexFor("TLOGINSESSION", "CSESSIONID(10)");
+        createIndexFor("TLOGINSESSION", "CUSERID");
+
+        // Indices for ObjectQuery
+        createIndexFor("ObjectQuery", "userId");
+
+        // Indices for Semester
+        createIndexFor("TSEMESTER", "CSEMESTERSTARTDATE");
+
+        // Indices for Theme
+        createIndexFor("TTHEMES", "CNAME(12)");
+
+        // Indices for User
+        createIndexFor("TUSER", "CUSERNAME(8)");
+        createIndexFor("TUSER", "CAUTHENTICATIONDOMAINID");
+
+        // Indices for UserSentMessage
+        createIndexFor("UserSentMessage", "userId");
+        createIndexFor("UserSentMessage", "sentMessageId");
+    }
 
 
     //~ Private Methods .......................................................
@@ -686,9 +710,4 @@ public class CoreDatabaseUpdates
                 "ALTER TABLE ObjectQuery ADD PRIMARY KEY (OID)");
         }
     }
-
-
-    //~ Instance/static variables .............................................
-
-    static Logger log = Logger.getLogger( UpdateSet.class );
 }
