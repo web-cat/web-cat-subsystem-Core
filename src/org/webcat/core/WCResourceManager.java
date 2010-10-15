@@ -21,10 +21,13 @@
 
 package org.webcat.core;
 
-import java.util.StringTokenizer;
-
+import java.net.MalformedURLException;
+import java.util.HashMap;
+import java.util.Map;
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
+import er.extensions.appserver.ERXResourceManager;
+import er.extensions.foundation.ERXMutableURL;
 import org.webcat.core.Application;
 import org.webcat.core.WCResourceManager;
 import org.apache.log4j.Logger;
@@ -40,11 +43,12 @@ import org.apache.log4j.Logger;
  *  allowing absolute URLs to be used in a deployed application's
  *  frameworksBaseURL() setting.
  *
- *  @author  stedwar2
- *  @version $Id$
+ *  @author  Stephen Edwards
+ *  @author  Latest changes by: $Author$
+ *  @version $Revision$, $Date$
  */
 public class WCResourceManager
-    extends er.extensions.appserver.ERXResourceManager
+    extends ERXResourceManager
 {
     //~ Constructors ..........................................................
 
@@ -69,6 +73,7 @@ public class WCResourceManager
     //~ Public Methods ........................................................
 
     // ----------------------------------------------------------
+    @SuppressWarnings("unchecked")
     public String urlForResourceNamed(
         String    aResourceName,
         String    aFrameworkName,
@@ -99,10 +104,10 @@ public class WCResourceManager
 
     // ----------------------------------------------------------
     public static String resourceURLFor(
-        String    aResourceName,
-        String    aFrameworkName,
-        NSArray   aLanguageList,
-        WORequest aRequest )
+        String     aResourceName,
+        String     aFrameworkName,
+        NSArray<?> aLanguageList,
+        WORequest  aRequest )
     {
         if (aRequest == null) aRequest = exemplarRequest;
         return ( (WCResourceManager) Application.application()
@@ -122,6 +127,148 @@ public class WCResourceManager
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Controls resource version numbers via version build datestamps
+     * stored for each subsystem, and appends the query parameter
+     * "?xxx" to WebServerResource URLs.
+     */
+    public static class WCVersionManager
+        implements IVersionManager
+    {
+        // ----------------------------------------------------------
+        /**
+         * Returns the variant of the given resource URL adjusted to include
+         * version information.
+         * @param resourceUrl
+         *            the original resource URL
+         * @param name
+         *            the name of the resource being loaded
+         * @param bundleName
+         *            the name of the bundle that contains the resource
+         * @param languages
+         *            the languages requested
+         * @param request
+         *            the request
+         * @return a versioned variant of the resourceUrl
+         */
+        @SuppressWarnings("unchecked")
+        public String versionedUrlForResourceNamed(
+            String resourceUrl,
+            String name,
+            String bundleName,
+            NSArray languages,
+            WORequest request)
+        {
+            String version = versionFor(bundleName);
+            if (version != null)
+            {
+                try
+                {
+                    ERXMutableURL url = new ERXMutableURL(resourceUrl);
+                    url.addQueryParameter("", version);
+                    resourceUrl = url.toExternalForm();
+                }
+                catch (MalformedURLException e)
+                {
+                    log.error("Failed to construct URL from '"
+                        + resourceUrl + "'.", e);
+                }
+            }
+            return resourceUrl;
+        }
+
+
+        // ----------------------------------------------------------
+        private String defaultVersion()
+        {
+            if (defaultVersion == null)
+            {
+                defaultVersion = Application.wcApplication().version();
+                int pos = defaultVersion.lastIndexOf('.');
+                if (pos >= 0)
+                {
+                    defaultVersion = defaultVersion.substring(pos + 1);
+                }
+            }
+            return defaultVersion;
+        }
+
+
+        // ----------------------------------------------------------
+        private String versionFor(String bundleName)
+        {
+            if (bundleName == null)
+            {
+                return defaultVersion();
+            }
+
+            String version = bundleVersion.get(bundleName);
+            if (version == null)
+            {
+                SubsystemManager manager = Application.wcApplication()
+                    .subsystemManager();
+                Subsystem bundle = manager.subsystem(bundleName);
+                if (bundle == null)
+                {
+                    // Could be a framework that is nested inside a subsystem
+                    for (Subsystem sub : manager.subsystems())
+                    {
+                        // First, cache the version for this subsystem, if
+                        // we haven't already
+                        if (bundleVersion.get(sub.name()) == null)
+                        {
+                            bundleVersion.put(
+                                sub.name(), sub.descriptor().versionDate());
+                        }
+
+                        // Now check for dependencies
+                        String alsoContains = sub.descriptor()
+                            .getProperty("alsoContains");
+                        if (alsoContains != null)
+                        {
+                            alsoContains =
+                                alsoContains.replace(".framework", "");
+                            String[] contains = alsoContains.split(",\\s*");
+                            for (String subsub : contains)
+                            {
+                                bundleVersion.put(
+                                    subsub, sub.descriptor().versionDate());
+                                if (bundleName.equals(subsub))
+                                {
+                                    bundle = sub;
+                                }
+                            }
+                        }
+                        if (bundle != null)
+                        {
+                            break;
+                        }
+                    }
+                }
+                if (bundle != null)
+                {
+                    version = bundle.descriptor().versionDate();
+                    bundleVersion.put(bundleName, version);
+                }
+            }
+            if (version == null)
+            {
+                version = defaultVersion();
+                bundleVersion.put(bundleName, version);
+            }
+            return version;
+        }
+
+
+        //~ Instance/static variables .........................................
+
+        private String defaultVersion;
+        private Map<String, String> bundleVersion =
+            new HashMap<String, String>();
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
@@ -138,7 +285,8 @@ public class WCResourceManager
             result = result.substring( 0, pos + 1 ) + "/"
                 + result.substring( pos + 1 );
         }
-        return result.replaceAll("[/]([A-Za-z])%3A","$1:").replaceAll("[+][%]26[+]", " & ");
+        return result.replaceAll("[/]([A-Za-z])%3A","$1:")
+            .replaceAll("[+][%]26[+]", " & ");
     }
 
 
