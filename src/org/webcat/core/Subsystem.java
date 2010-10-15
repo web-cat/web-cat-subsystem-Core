@@ -47,8 +47,8 @@ import com.webobjects.foundation.NSPropertyListSerialization;
  *  communicate with subsystems.
  *
  *  @author Stephen Edwards
- * @author Last changed by $Author$
- * @version $Revision$, $Date$
+ *  @author Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class Subsystem
 {
@@ -339,9 +339,11 @@ public class Subsystem
                 subsystemFragments =
                     new NSMutableDictionary<String, Class<? extends WOComponent>>();
 
-                NSDictionary<String, Object> plist = (NSDictionary<String, Object>)
+                @SuppressWarnings("unchecked")
+                NSDictionary<String, Object> plist =
+                    (NSDictionary<String, Object>)
                     NSPropertyListSerialization.propertyListFromData(
-                            new NSData(new FileInputStream(file), 0), "UTF-8");
+                        new NSData(new FileInputStream(file), 0), "UTF-8");
 
                 for (String key : plist.allKeys())
                 {
