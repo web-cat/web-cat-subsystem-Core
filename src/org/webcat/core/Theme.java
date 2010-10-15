@@ -37,8 +37,8 @@ import er.extensions.foundation.ERXValueUtilities;
 /**
  * Represents a theme (stored in the Core framework).
  *
- *  @author stedwar2
- *  @author Last changed by $Author$
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
  *  @version $Revision$, $Date$
  */
 public class Theme
@@ -464,7 +464,7 @@ public class Theme
         if (themeBaseDir == null)
         {
             themeBaseDir = new File(
-                ((Application)Application.application()).subsystemManager()
+                Application.wcApplication().subsystemManager()
                     .subsystem("Core").myResourcesDir(),
                 "../WebServerResources/theme");
 

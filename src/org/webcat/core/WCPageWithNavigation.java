@@ -40,8 +40,8 @@ import org.webcat.core.WCPageWithNavigation;
  * BarePage (which is also uses), mostly to inherit all the same KVC
  * keys, which it passes on to its BarePage container.
  *
- * @author Stephen Edwards
- * @author Last changed by $Author$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
 public class WCPageWithNavigation
@@ -172,8 +172,7 @@ public class WCPageWithNavigation
                       + " logging out" );
             ( (Session)session() ).userLogout();
         }
-        return ( (Application)Application.application() )
-            .gotoLoginPage( context() );
+        return Application.wcApplication().gotoLoginPage( context() );
     }
 
 

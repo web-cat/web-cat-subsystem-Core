@@ -47,8 +47,9 @@ import org.webcat.core.install.*;
 /**
  * The default direct action class for Web-CAT.
  *
- * @author Stephen Edwards
- * @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class DirectAction
     extends ERXDirectAction
@@ -83,7 +84,7 @@ public class DirectAction
      */
     public WOActionResults defaultAction()
     {
-        if ( ( (Application)Application.application() ).needsInstallation() )
+        if ( Application.wcApplication().needsInstallation() )
         {
             return ( new install( request() ) ).defaultAction();
         }
@@ -655,8 +656,8 @@ public class DirectAction
         // class in the Grader subsystem.
         log.debug( "entering cmsRequestAction()" );
         log.debug( "hasSession() = " + context().hasSession() );
-        Subsystem subsystem = ( (Application)( Application.application() ) )
-            .subsystemManager().subsystem( "Grader" );
+        Subsystem subsystem = Application.wcApplication().subsystemManager()
+            .subsystem( "Grader" );
         WOActionResults result = null;
         result = subsystem.handleDirectAction(
             request(), null /*(Session)session()*/, context() );
@@ -683,7 +684,7 @@ public class DirectAction
         if ( tryLogin( request(), errors ) )
         {
             log.debug( "calling subsystem handler" );
-            Subsystem subsystem = ( (Application)( Application.application() ) )
+            Subsystem subsystem = Application.wcApplication()
                     .subsystemManager().subsystem( "Grader" );
             result = subsystem.handleDirectAction( request(),
                                                    (Session)session(),
@@ -733,7 +734,7 @@ public class DirectAction
         if ( mySession != null )
         {
             log.debug( "calling subsystem handler" );
-            Subsystem subsystem = ( (Application)( Application.application() ) )
+            Subsystem subsystem = Application.wcApplication()
                     .subsystemManager().subsystem( "Grader" );
             result = subsystem.handleDirectAction(
                             request(), mySession, context() );

@@ -409,6 +409,18 @@ public class Application
 
     // ----------------------------------------------------------
     /**
+     * A subclass-specific version of the inherited application() static
+     * method.
+     * @return The singleton instance of this class.
+     */
+    public static Application wcApplication()
+    {
+        return (Application)application();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Access the application's subsystem manager.
      *
      * @return The subsystem manager

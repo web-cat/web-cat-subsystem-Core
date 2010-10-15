@@ -38,7 +38,7 @@ import org.apache.log4j.Logger;
  *  in pages/components defined elsewhere in the application (like in Core).
  *
  *  @author  Stephen Edwards
- *  @author Last changed by $Author$
+ *  @author  Last changed by $Author$
  *  @version $Revision$, $Date$
  */
 public class SubsystemFragmentCollector
@@ -75,11 +75,9 @@ public class SubsystemFragmentCollector
         {
             log.debug( "initializing templates" );
 
-            Application application = (Application) Application.application();
-
             NSArray<Class<? extends WOComponent>> fragments =
-                application.subsystemManager().subsystemFragmentsForKey(
-                        fragmentKey);
+                Application.wcApplication().subsystemManager()
+                    .subsystemFragmentsForKey(fragmentKey);
 
             StringBuffer htmlBuffer = new StringBuffer();
             StringBuffer wodBuffer = new StringBuffer();

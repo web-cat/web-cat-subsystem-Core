@@ -40,8 +40,9 @@ import com.webobjects.foundation.NSTimestampFormatter;
 /**
  * The current user session.
  *
- * @author Stephen Edwards
- * @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class Session
     extends er.extensions.appserver.ERXSession
@@ -130,8 +131,8 @@ public class Session
         log.debug( "setUser: userPreferences = "
             + (primeUser == null
                 ? null : primeUser.preferences() ) );
-        ( (Application)Application.application() ).subsystemManager().
-            initializeSessionData( this );
+        Application.wcApplication().subsystemManager()
+            .initializeSessionData( this );
         if ( ! properties().booleanForKey( "core.suppressAccessControl" ) )
         {
             tabs.filterByAccessLevel( u.accessLevel() );

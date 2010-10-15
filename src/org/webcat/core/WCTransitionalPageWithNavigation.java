@@ -45,8 +45,9 @@ import org.webcat.core.WCTransitionalPageWithNavigation;
  * BarePage (which is also uses), mostly to inherit all the same KVC
  * keys, which it passes on to its BarePage container.
  *
- * @author Stephen Edwards
- * @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class WCTransitionalPageWithNavigation
     extends WCTransitionalBasePage
@@ -170,8 +171,7 @@ public class WCTransitionalPageWithNavigation
                       + " logging out" );
             ( (Session)session() ).userLogout();
         }
-        return ( (Application)Application.application() )
-            .gotoLoginPage( context() );
+        return Application.wcApplication().gotoLoginPage( context() );
     }
 
 
