@@ -401,8 +401,7 @@ public abstract class Message
         // Use the application's registered message dispatcher to send the
         // message.
 
-        Application application = (Application) Application.application();
-        application.messageDispatcher().sendMessage(this);
+        Application.wcApplication().messageDispatcher().sendMessage(this);
     }
 
 

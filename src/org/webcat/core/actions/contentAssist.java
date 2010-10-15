@@ -446,9 +446,8 @@ public class contentAssist
         NSMutableDictionary<String, String> subsystemVersions =
             new NSMutableDictionary<String, String>();
 
-        NSArray<Subsystem> subsystems =
-            ((Application)Application.application()).
-            subsystemManager().subsystems();
+        NSArray<Subsystem> subsystems = Application.wcApplication()
+            .subsystemManager().subsystems();
 
         for (Subsystem subsystem : subsystems)
         {

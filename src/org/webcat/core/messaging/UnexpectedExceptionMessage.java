@@ -81,7 +81,7 @@ public class UnexpectedExceptionMessage extends SysAdminMessage
     @Override
     public String shortBody()
     {
-        String body = ((Application) Application.application())
+        String body = Application.wcApplication()
             .informationForExceptionInContext(exception, extraInfo, context);
 
         if (message != null)

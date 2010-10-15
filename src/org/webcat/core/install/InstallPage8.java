@@ -87,12 +87,11 @@ public class InstallPage8
         configSaved = configuration.attemptToSave();
         configuration.updateToSystemProperties();
         // configuration.setProperty( "configStep", "" + stepNo() );
-        ( (Application)Application.application() )
-            .setNeedsInstallation( false );
+        Application.wcApplication().setNeedsInstallation( false );
         try
         {
-            ( (Application)Application.application() ).initializeApplication();
-            ( (Application)Application.application() ).notifyAdminsOfStartup();
+            Application.wcApplication().initializeApplication();
+            Application.wcApplication().notifyAdminsOfStartup();
 
             String subject = "New Web-CAT installation now active";
             String body = "Congratulations, "

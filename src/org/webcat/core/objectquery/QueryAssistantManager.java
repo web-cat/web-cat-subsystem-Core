@@ -71,14 +71,13 @@ public class QueryAssistantManager
      */
     private QueryAssistantManager()
     {
-        Application application = (Application) Application.application();
-
         assistants =
             new NSMutableDictionary<String, QueryAssistantDescriptor>();
         entitiesToIds =
             new NSMutableDictionary<String, NSMutableArray<String>>();
 
-        SubsystemManager subsystemManager = application.subsystemManager();
+        SubsystemManager subsystemManager =
+            Application.wcApplication().subsystemManager();
         for (Subsystem subsystem : subsystemManager.subsystems())
         {
             try
