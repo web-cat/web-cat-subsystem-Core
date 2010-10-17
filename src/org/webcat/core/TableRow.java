@@ -47,21 +47,11 @@ public class TableRow
      *
      * @param context The page's context
      */
-    public TableRow( WOContext context )
+    public TableRow(WOContext context)
     {
-        super( context );
+        super(context);
     }
 
-
-    //~ KVC Attributes (must be public) .......................................
-
-/*    public  int     index;
-    public  Boolean showError   = Boolean.FALSE;
-    public  Boolean showCaution = Boolean.FALSE;
-    public  Boolean increment   = Boolean.FALSE;
-    public  String  id;
-    public  String  dragHandle;
-*/
 
     //~ Methods ...............................................................
 
@@ -78,6 +68,14 @@ public class TableRow
     {
         return ERXComponentUtilities.booleanValueForBinding(
                 this, "showCaution", false);
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean isSelected()
+    {
+        return ERXComponentUtilities.booleanValueForBinding(
+                this, "isSelected", false);
     }
 
 
@@ -100,7 +98,7 @@ public class TableRow
     // ----------------------------------------------------------
     public String id()
     {
-        return (String) valueForBinding("id");
+        return (String)valueForBinding("id");
     }
 
 
@@ -115,30 +113,30 @@ public class TableRow
     // ----------------------------------------------------------
     public String dragHandle()
     {
-        return (String) valueForBinding("dragHandle");
+        return (String)valueForBinding("dragHandle");
     }
 
 
     // ----------------------------------------------------------
     public String dndType()
     {
-        return (String) valueForBinding("dndType");
+        return (String)valueForBinding("dndType");
     }
 
 
     // ----------------------------------------------------------
     public String dndData()
     {
-        return (String) valueForBinding("dndData");
+        return (String)valueForBinding("dndData");
     }
 
 
     // ----------------------------------------------------------
-    public void appendToResponse( WOResponse response, WOContext context )
+    public void appendToResponse(WOResponse response, WOContext context)
     {
-        super.appendToResponse( response, context );
+        super.appendToResponse(response, context);
 
-        if ( increment() && hasBinding("index") )
+        if (increment() && hasBinding("index"))
         {
             setValueForBinding(index() + 1, "index");
         }
@@ -153,17 +151,23 @@ public class TableRow
      */
     public String cssClass()
     {
-        int tag = index() % 2;
-        if ( showCaution() ) tag += 2;
-        if ( showError()   ) tag += 4;
-
-        String cssClass = cssTag[tag];
-
+        String cssClass = (index() % 2 == 1) ? "e" : "o";
+        if (showCaution())
+        {
+            cssClass += " caution";
+        }
+        if (showError())
+        {
+            cssClass += " error";
+        }
+        if (isSelected())
+        {
+            cssClass += " selected";
+        }
         if (dragHandle() != null || isSelectable())
         {
             cssClass += " dojoDndItem";
         }
-
         return cssClass;
     }
 
@@ -177,19 +181,5 @@ public class TableRow
 
     //~ Instance/static variables .............................................
 
-    // Remember, the first row is indexed as 0, so index numbers that
-    // are even should really be labeled with "odd" css styles and vice
-    // versa.
-    static final String cssTag[] = new String[] {
-        "o",
-        "e",
-        "oc",
-        "ec",
-        "oe",
-        "ee",
-        "oe",
-        "ee"
-    };
-
-    static Logger log = Logger.getLogger( TableRow.class );
+    static Logger log = Logger.getLogger(TableRow.class);
 }
