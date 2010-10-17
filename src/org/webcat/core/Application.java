@@ -26,8 +26,8 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import com.webobjects.woextensions.*;
+import er.extensions.ERXExtensions;
 import er.extensions.appserver.*;
-import er.extensions.eof.ERXConstant;
 import er.extensions.foundation.*;
 import java.io.File;
 import java.io.StringWriter;
@@ -47,7 +47,6 @@ import org.webcat.core.Language;
 import org.webcat.core.LoggedError;
 import org.webcat.core.LoginSession;
 import org.webcat.core.MigratingEditingContext;
-import org.webcat.core.NSDataDataSource;
 import org.webcat.core.ReadOnlyEditingContext;
 import org.webcat.core.Session;
 import org.webcat.core.SubsystemEOMRedirector;
@@ -69,7 +68,6 @@ import org.webcat.archives.*;
 import org.webcat.core.messaging.ApplicationStartupMessage;
 import org.webcat.core.messaging.FallbackMessageDispatcher;
 import org.webcat.core.messaging.IMessageDispatcher;
-import org.webcat.core.messaging.Message;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
 
 // -------------------------------------------------------------------------
@@ -139,7 +137,7 @@ public class Application
         if ( log.isInfoEnabled() )
         {
             log.info( "Web-CAT v" + version()
-                + "\nCopyright (C) 2006-2008 Virginia Tech\n\n"
+                + "\nCopyright (C) 2006-2010 Virginia Tech\n\n"
                 + "Web-CAT comes with ABSOLUTELY NO WARRANTY; this is "
                 + "free software\n"
                 + "under the terms of the GNU Affero General Public License "
@@ -284,46 +282,43 @@ public class Application
 
         // Apply any pending database updates for the core
         UpdateEngine.instance().database().setConnectionInfoFromProperties(
-                        configurationProperties() );
+            configurationProperties());
         UpdateEngine.instance().applyNecessaryUpdates(
-                        new CoreDatabaseUpdates() );
+            new CoreDatabaseUpdates());
 
         // Set the eo model delegator
-        EOModelGroup.defaultGroup().setDelegate(
-                new SubsystemEOMRedirector()
-            );
+        EOModelGroup.defaultGroup().setDelegate(new SubsystemEOMRedirector());
 
         // register for database channel needed notification
         NSNotificationCenter.defaultCenter().addObserver(
-                this,
-                new NSSelector( "createAdditionalDatabaseChannel",
-                                new Class[] { NSNotification.class } ),
-                EODatabaseContext.DatabaseChannelNeededNotification,
-                null
-            );
+            this,
+            new NSSelector<Void>("createAdditionalDatabaseChannel",
+                new Class<?>[] { NSNotification.class }),
+            EODatabaseContext.DatabaseChannelNeededNotification,
+            null);
 
-        // log.debug( "models = " + EOModelGroup.defaultGroup() );
+        // log.debug("models = " + EOModelGroup.defaultGroup());
 
-        //set up the SMTP server to use for sending Emails
+        // set up the SMTP server to use for sending Emails
         {
             // This is just support for legacy properties used by Web-CAT
             String host =
-                configurationProperties().getProperty( "mail.smtp.host" );
-            if ( host == null || "".equals( host ) )
+                configurationProperties().getProperty("mail.smtp.host");
+            if (host == null || "".equals(host))
             {
-                log.info( "attempting to set mail.smtp.host from WOSMTPHost" );
+                log.info("attempting to set mail.smtp.host from WOSMTPHost");
                 configurationProperties().setProperty(
-                    "mail.smtp.host", SMTPHost() );
+                    "mail.smtp.host", SMTPHost());
                 configurationProperties().attemptToSave();
                 configurationProperties().updateToSystemProperties();
             }
             else
             {
-                setSMTPHost( host );
+                setSMTPHost(host);
             }
         }
-        log.info( "Using SMTP host " + SMTPHost() );
-        log.debug( "cmdShell = " + cmdShell() );
+        log.info("Using SMTP host " + SMTPHost());
+        log.debug("cmdShell = " + cmdShell());
 
         //      add handlers for main MIME types
         MailcapCommandMap mc =
@@ -352,9 +347,9 @@ public class Application
             try
             {
                 EOUtilities.objectsForEntityNamed(
-                    ec, LoginSession.ENTITY_NAME );
+                    ec, LoginSession.ENTITY_NAME);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
                 // Silently swallow it, then retry on the next line
             }
@@ -367,7 +362,7 @@ public class Application
         finally
         {
             ec.unlock();
-            releasePeerEditingContext( ec );
+            releasePeerEditingContext(ec);
         }
         NSLog.debug.setIsEnabled(nsLogDebugEnabled);
 
@@ -376,8 +371,8 @@ public class Application
         Language.refreshLanguages();
         Theme.refreshThemes();
 
-        NSLog.debug.setAllowedDebugLevel( NSLog.DebugLevelInformational );
-        NSLog.allowDebugLoggingForGroups( NSLog.DebugGroupMultithreading );
+        NSLog.debug.setAllowedDebugLevel(NSLog.DebugLevelInformational);
+        NSLog.allowDebugLoggingForGroups(NSLog.DebugGroupMultithreading);
 
         // Add useful tag shortcuts for inline component tags.
         WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
@@ -410,7 +405,7 @@ public class Application
     // ----------------------------------------------------------
     /**
      * A subclass-specific version of the inherited application() static
-     * method.
+      * method.
      * @return The singleton instance of this class.
      */
     public static Application wcApplication()
@@ -476,7 +471,7 @@ public class Application
      *
      * @return the class for the Session objects
      */
-    protected Class _sessionClass()
+    protected Class<?> _sessionClass()
     {
         return Session.class;
     }
@@ -1053,7 +1048,7 @@ public class Application
             handlePotentiallyFatalException( exception );
 
             // Not a fatal exception, business as usual.
-            NSDictionary extraInfo =
+            NSDictionary<?, ?> extraInfo =
                 extraInformationForExceptionInContext( exception, context );
             WOResponse response =
                 reportException( exception, extraInfo, context );
@@ -1086,10 +1081,10 @@ public class Application
 
 
     // ----------------------------------------------------------
-    public NSMutableDictionary extraInformationForExceptionInContext(
+    public NSMutableDictionary<?, ?> extraInformationForExceptionInContext(
         Exception exception, WOContext context )
     {
-        NSMutableDictionary result =
+        NSMutableDictionary<?, ?> result =
             super.extraInformationForExceptionInContext( exception, context );
         if (  context != null
            && context.hasSession()
@@ -1732,9 +1727,9 @@ public class Application
      * @return a printable description of the error
      */
     public synchronized String informationForExceptionInContext(
-            Throwable    anException,
-            NSDictionary extraInfo,
-            WOContext    aContext )
+            Throwable          anException,
+            NSDictionary<?, ?> extraInfo,
+            WOContext          aContext )
     {
         Session s = ( aContext != null  &&  aContext.hasSession() )
         ? (Session)aContext.session()
@@ -1827,7 +1822,7 @@ public class Application
                 {
                     errorBuffer.append(
                         "\n\nExtra information:\n--------------------\n" );
-                    for ( Enumeration e = extraInfo.keyEnumerator();
+                    for ( Enumeration<?> e = extraInfo.keyEnumerator();
                           e.hasMoreElements(); )
                     {
                         Object key = e.nextElement();
@@ -1870,8 +1865,8 @@ public class Application
                     // somewhat more readable).
                     WOExceptionParser exParser =
                         new WOExceptionParser( anException );
-                    Enumeration traceEnum =
-                        ( exParser.stackTrace() ).objectEnumerator();
+                    Enumeration<?> traceEnum =
+                        exParser.stackTrace().objectEnumerator();
 
                     // Append each trace line
                     while ( traceEnum.hasMoreElements() )
@@ -1890,7 +1885,7 @@ public class Application
                 {
                     errorBuffer.append(
                         "\n\nExtra information:\n--------------------\n" );
-                    for ( Enumeration e = extraInfo.keyEnumerator();
+                    for ( Enumeration<?> e = extraInfo.keyEnumerator();
                           e.hasMoreElements(); )
                     {
                         Object key = e.nextElement();
@@ -2023,7 +2018,8 @@ public class Application
         if ( arg0 )
         {
             setDirectConnectEnabled( false );
-            int timeToKill = configurationProperties().intForKey( "ERTimeToKill" );
+            int timeToKill = configurationProperties().intForKey(
+                "ERTimeToKill");
             if ( timeToKill > 0 )
             {
                 dieTime = ( new NSTimestamp() )
@@ -2055,6 +2051,7 @@ public class Application
 
 
     // ----------------------------------------------------------
+    @SuppressWarnings("deprecation")
     public String deathMessage()
     {
         if ( dieTime != null && deathMessage == null )
@@ -2172,7 +2169,7 @@ public class Application
             int minor = 0;
             int revision = 0;
             int date = 0;
-            for ( Enumeration keys = System.getProperties().keys();
+            for ( Enumeration<Object> keys = System.getProperties().keys();
                   keys.hasMoreElements(); )
             {
                 String key = keys.nextElement().toString();
@@ -2431,188 +2428,189 @@ public class Application
     // ----------------------------------------------------------
     private void updateStaticHtmlResources()
     {
-        if ( !isRunningAsServlet() )
-        {
-            // If we're not running as a servlet, there's no updating to do
-            log.debug( "Skipping static HTML resource updates" );
-            return;
-        }
-
-        File woaDir = configurationProperties().file().getParentFile();
-        File appBase = woaDir.getParentFile().getParentFile();
-        File staticResourceBaseDir = appBase;
-        File frameworkDir =
-            new File( woaDir, "Contents/Frameworks/Library/Frameworks" );
-        if ( !frameworkDir.exists() )
-        {
-            frameworkDir =
-                new File( woaDir, "Contents/Library/Frameworks" );
-        }
-        boolean forceUpdate = false;
-        String staticHtmlDirName = configurationProperties()
-            .getProperty( "static.html.dir" );
-        String lastStaticHtmlDirName = configurationProperties()
-            .getProperty( "last.static.html.dir" );
         String staticHtmlBase = configurationProperties().getProperty(
-            "static.html.baseURL" );
+            "static.html.baseURL");
 
-        if ( staticHtmlDirName != null && staticHtmlBase != null )
+        if (isRunningAsServlet())
         {
-            // Only use the static HTML dir parameter if the app is also
-            // configured to use an external static HTML base URL for
-            // resources.
-            staticHtmlDirName = staticHtmlDirName.replace( '\\', '/' );
-            File dir = new File( staticHtmlDirName );
-            if ( !dir.exists() )
+            File woaDir = configurationProperties().file().getParentFile();
+            File appBase = woaDir.getParentFile().getParentFile();
+            File staticResourceBaseDir = appBase;
+            File frameworkDir =
+                new File(woaDir, "Contents/Frameworks/Library/Frameworks");
+            if (!frameworkDir.exists())
             {
-                try
+                frameworkDir =
+                    new File(woaDir, "Contents/Library/Frameworks");
+            }
+            String staticHtmlDirName = configurationProperties()
+                .getProperty("static.html.dir");
+            String lastStaticHtmlDirName = configurationProperties()
+                .getProperty("last.static.html.dir");
+
+            if (staticHtmlDirName != null && staticHtmlBase != null)
+            {
+                // Only use the static HTML dir parameter if the app is also
+                // configured to use an external static HTML base URL for
+                // resources.
+                staticHtmlDirName = staticHtmlDirName.replace('\\', '/');
+                File dir = new File(staticHtmlDirName);
+                if (!dir.exists())
                 {
-                    dir.mkdirs();
+                    try
+                    {
+                        dir.mkdirs();
+                    }
+                    catch (Exception e)
+                    {
+                        log.error("Exception attempting to create static HTML "
+                            + "resource dir '" + staticHtmlDirName + "':", e);
+                    }
                 }
-                catch ( Exception e )
+                if (dir.exists())
                 {
-                    log.error( "Exception attempting to create static HTML "
-                        + "resource dir '" + staticHtmlDirName + "':", e );
+                    staticResourceBaseDir = dir;
                 }
             }
-            if ( dir.exists() )
+            else
             {
-                staticResourceBaseDir = dir;
+                // If there is no static HTML dir specified, or if there is
+                // no base URL given, then the servlet will have to serve all
+                // these resources, and therefore we need to store static
+                // resources in the app base dir.
+
+                // But we still need a value we can use to compare against the
+                // previous value, to see if the location has changed
+                staticHtmlDirName = appBase.getAbsolutePath()
+                    .replace('\\', '/');
+            }
+
+            if (log.isDebugEnabled())
+            {
+                log.debug("updateStaticHtmlResources: staticHtmlDir = "
+                    + staticHtmlDirName);
+                log.debug("updateStaticHtmlResources: lastStaticHtmlDir = "
+                    + lastStaticHtmlDirName);
+                log.debug("appBase = " + appBase.getAbsolutePath());
+                log.debug("staticResourceBase = " + staticResourceBaseDir);
+            }
+
+            // Note: we can't use the subsystem manager yet, since the
+            // application has not been fully initialized yet and that data
+            // isn't available at this point.
+            for (File framework : frameworkDir.listFiles())
+            {
+                log.debug("Checking for static html resources in => "
+                    + framework.getName());
+                String frameworkName = framework.getName();
+                if (!frameworkName.endsWith(".framework"))
+                {
+                    continue;
+                }
+                frameworkName = frameworkName.substring(0,
+                    frameworkName.length() - ".framework".length());
+                String frameworkDatestamp = configurationProperties().
+                    getProperty(frameworkName + ".version.date");
+                // frameworkLastUpdated will be null for frameworks that are
+                // not packaged subsystems
+                if (frameworkDatestamp != null)
+                {
+                    String lastUpdated = configurationProperties().getProperty(
+                        "static.HTML.date." + frameworkName, "00000000");
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("Comparing last update " + lastUpdated +
+                            " against " + frameworkName + " datestamp of: "
+                            + frameworkDatestamp);
+                    }
+                    if (!lastUpdated.equals(frameworkDatestamp))
+                    {
+                        log.debug("Updating resources for " + frameworkName);
+                        updateExecutablePermissionsForFramework(
+                            frameworkName, framework);
+                        updateStaticHtmlResourcesForFramework(
+                            framework, staticResourceBaseDir);
+                        // Now check the additional included frameworks too
+                        String alsoContainsList = configurationProperties()
+                            .getProperty(frameworkName + ".alsoContains");
+                        if (alsoContainsList != null)
+                        {
+                            for (String fw : alsoContainsList.split(",\\s*"))
+                            {
+                                File otherFramework =
+                                    new File(frameworkDir, fw);
+                                if (log.isDebugEnabled())
+                                {
+                                    String includedName = fw.substring(0,
+                                        fw.length() - ".framework".length());
+                                    log.debug("Updating resources for "
+                                        + includedName);
+                                }
+                                updateStaticHtmlResourcesForFramework(
+                                    otherFramework, staticResourceBaseDir);
+                            }
+                        }
+                        configurationProperties().setProperty(
+                            "static.HTML.date." + frameworkName,
+                            frameworkDatestamp);
+                    }
+                    else
+                    {
+                        log.debug("Already up to date: " + frameworkName);
+                    }
+                }
+            }
+
+            // Attempt to update the "last saved" info
+            configurationProperties().setProperty("last.static.html.dir",
+                staticResourceBaseDir.getAbsolutePath().replace('\\', '/'));
+            configurationProperties().attemptToSave();
+
+            if (staticHtmlBase == null)
+            {
+                staticHtmlBase = configurationProperties().getProperty(
+                    "base.url");
+                if (staticHtmlBase != null)
+                {
+                    if (staticHtmlBase.endsWith(".woa"))
+                    {
+                        int loc = staticHtmlBase.lastIndexOf('/');
+                        if (loc > 0)
+                        {
+                            staticHtmlBase = staticHtmlBase.substring(0, loc);
+                        }
+                    }
+                    if (staticHtmlBase.endsWith("WebObjects"))
+                    {
+                        int loc = staticHtmlBase.lastIndexOf('/');
+                        if (loc > 0)
+                        {
+                            staticHtmlBase = staticHtmlBase.substring(0, loc);
+                        }
+                    }
+                    if (!staticHtmlBase.endsWith("/"))
+                    {
+                        staticHtmlBase = staticHtmlBase + "/";
+                    }
+                }
             }
         }
         else
         {
-            // If there is no static HTML dir specified, or if there is
-            // no base URL given, then the servlet will have to serve all
-            // these resources, and therefore we need to store static
-            // resources in the app base dir.
-
-            // But we still need a value we can use to compare against the
-            // previous value, to see if the location has changed
-            staticHtmlDirName = appBase.getAbsolutePath().replace( '\\', '/' );
+            // If we're not running as a servlet, there's no updating to do
+            log.debug("Skipping static HTML resource updates");
         }
-        if ( lastStaticHtmlDirName == null
-            || !staticHtmlDirName.equals( lastStaticHtmlDirName ) )
+        if (staticHtmlBase != null)
         {
-            forceUpdate = true;
-        }
-
-        if ( log.isDebugEnabled() )
-        {
-            log.debug( "updateStaticHtmlResources: staticHtmlDir = "
-                + staticHtmlDirName );
-            log.debug( "updateStaticHtmlResources: lastStaticHtmlDir = "
-                + lastStaticHtmlDirName );
-            log.debug( "appBase = " + appBase.getAbsolutePath() );
-            log.debug( "staticResourceBase = " + staticResourceBaseDir );
-        }
-
-        // Note: we can't use the subsystem manager yet, since the
-        // application has not been fully initialized yet and that data
-        // isn't available at this point.
-        File[] framework = frameworkDir.listFiles();
-        for ( int i = 0; i < framework.length; i++ )
-        {
-            log.debug( "Checking for static html resources in => "
-                + framework[i].getName() );
-            String frameworkName = framework[i].getName();
-            if ( !frameworkName.endsWith( ".framework" ) ) continue;
-            frameworkName = frameworkName.substring( 0,
-                frameworkName.length() - ".framework".length() );
-            String frameworkDatestamp = configurationProperties().
-                getProperty( frameworkName + ".version.date" );
-            // frameworkLastUpdated will be null for frameworks that are
-            // not packaged subsystems
-            if (frameworkDatestamp != null)
-            {
-                String lastUpdated = configurationProperties().getProperty(
-                    "static.HTML.date." + frameworkName, "00000000");
-                if (log.isDebugEnabled())
-                {
-                    log.debug("Comparing last update " + lastUpdated +
-                        " against " + frameworkName + " datestamp of: "
-                        + frameworkDatestamp);
-                }
-                if (!lastUpdated.equals(frameworkDatestamp))
-                {
-                    log.debug("Updating resources for " + frameworkName);
-                    updateExecutablePermissionsForFramework(
-                        frameworkName, framework[i] );
-                    updateStaticHtmlResourcesForFramework(
-                        framework[i], staticResourceBaseDir );
-                    // Now check the additional included frameworks too
-                    String alsoContainsList = configurationProperties()
-                        .getProperty( frameworkName + ".alsoContains" );
-                    if ( alsoContainsList != null )
-                    {
-                        for ( String fw : alsoContainsList.split( ",\\s*" ) )
-                        {
-                            File otherFramework = new File( frameworkDir, fw );
-                            if (log.isDebugEnabled())
-                            {
-                                String includedName = fw.substring(
-                                    0, fw.length() - ".framework".length());
-                                log.debug(
-                                    "Updating resources for " + includedName);
-                            }
-                            updateStaticHtmlResourcesForFramework(
-                                otherFramework, staticResourceBaseDir );
-                        }
-                    }
-                    configurationProperties().setProperty(
-                        "static.HTML.date." + frameworkName,
-                        frameworkDatestamp);
-                }
-                else
-                {
-                    log.debug("Already up to date: " + frameworkName);
-                }
-            }
-        }
-
-        // Attempt to update the "last saved" info
-        configurationProperties().setProperty( "last.static.html.dir",
-            staticResourceBaseDir.getAbsolutePath().replace( '\\', '/' ) );
-        configurationProperties().attemptToSave();
-
-        if ( staticHtmlBase == null )
-        {
-            staticHtmlBase = configurationProperties().getProperty(
-                "base.url" );
-            if ( staticHtmlBase != null )
-            {
-                if ( staticHtmlBase.endsWith( ".woa" ) )
-                {
-                    int loc = staticHtmlBase.lastIndexOf( '/' );
-                    if ( loc > 0 )
-                    {
-                        staticHtmlBase = staticHtmlBase.substring( 0, loc );
-                    }
-                }
-                if ( staticHtmlBase.endsWith( "WebObjects" ) )
-                {
-                    int loc = staticHtmlBase.lastIndexOf( '/' );
-                    if ( loc > 0 )
-                    {
-                        staticHtmlBase = staticHtmlBase.substring( 0, loc );
-                    }
-                }
-                if ( !staticHtmlBase.endsWith( "/" ) )
-                {
-                    staticHtmlBase = staticHtmlBase + "/";
-                }
-            }
-        }
-        if ( staticHtmlBase != null )
-        {
-            log.debug(
-                "attempting to set frameworks Base URL = " + staticHtmlBase );
-            setFrameworksBaseURL( staticHtmlBase );
+            log.debug("attempting to set frameworks Base URL = "
+                + staticHtmlBase);
+            setFrameworksBaseURL(staticHtmlBase);
             staticHtmlResourcesNeedInitializing = false;
+
             // Dump any cached data using the previous frameworks base url
             resourceManager().flushDataCache();
         }
-        log.debug( "frameworks Base URL = " + frameworksBaseURL() );
+        log.debug("frameworks Base URL = " + frameworksBaseURL());
     }
 
 
@@ -2844,23 +2842,23 @@ public class Application
     // ----------------------------------------------------------
     private static void loadArchiveManagers()
     {
-        NSArray handlers = configurationProperties().arrayForKey(
-            "Core.archive.handler.list" );
-        if ( handlers != null )
+        @SuppressWarnings("unchecked")
+        NSArray<String> handlers = configurationProperties().arrayForKey(
+            "Core.archive.handler.list");
+        if (handlers != null)
         {
             ArchiveManager manager = ArchiveManager.getInstance();
-            for ( int i = 0; i < handlers.count(); i++ )
+            for (String name : handlers)
             {
-                String name = (String)handlers.objectAtIndex( i );
                 try
                 {
                     manager.addHandler(
                         (IArchiveHandler)DelegatingUrlClassLoader
-                        .getClassLoader().loadClass( name ).newInstance() );
+                        .getClassLoader().loadClass(name).newInstance());
                 }
-                catch ( Exception e )
+                catch (Exception e)
                 {
-                    log.error( "Exception loading archive handler: ", e );
+                    log.error("Exception loading archive handler: ", e);
                 }
             }
         }
@@ -2872,21 +2870,23 @@ public class Application
     // Force the ERXExtensions bundle to be initialized before this class by
     // referencing it here.
     @SuppressWarnings( "unused" )
-    private static er.extensions.ERXExtensions forcedInitialization1 = null;
+    private static ERXExtensions forcedInitialization1 = null;
     @SuppressWarnings( "unused" )
-    private static er.extensions.foundation.ERXProperties forcedInitialization2 = null;
+    private static ERXProperties forcedInitialization2 = null;
 
     public static int userCount = 0;
 
     private static final int maxAttachmentSize = 100000; // bytes
 
     // Add more options here (e.g. for IIS, NSAPI, etc.), if necessary...
-    private static final NSArray HOST_NAME_KEYS = new NSArray(new Object[]
-        {"x-webobjects-server-name", "server_name", "Host", "http_host"});
+    private static final NSArray<String> HOST_NAME_KEYS = new NSArray<String>(
+        new String[]{
+            "x-webobjects-server-name", "server_name", "Host", "http_host"});
 
     // Add more options here (e.g. for IIS, NSAPI, etc.), if necessary...
-    private static final NSArray SERVER_PORT_KEYS = new NSArray(new Object[]
-        {"x-webobjects-server-port", "SERVER_PORT"});
+    private static final NSArray<String> SERVER_PORT_KEYS =
+        new NSArray<String>(new String[]{
+            "x-webobjects-server-port", "SERVER_PORT"});
 
     private static String version;
     private static NSTimestamp startTime = new NSTimestamp();
