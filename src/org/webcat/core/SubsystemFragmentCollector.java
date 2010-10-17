@@ -81,6 +81,20 @@ public class SubsystemFragmentCollector
 
             StringBuffer htmlBuffer = new StringBuffer();
             StringBuffer wodBuffer = new StringBuffer();
+            StringBuffer bindingBuffer = new StringBuffer();
+
+            for (String key : bindingKeys())
+            {
+                if (!key.equals(FRAGMENT_KEY_KEY))
+                {
+                    bindingBuffer.append(key);
+                    bindingBuffer.append("=");
+                    bindingBuffer.append(key);
+                    bindingBuffer.append(";");
+                }
+            }
+
+            String bindings = bindingBuffer.toString();
 
             if (fragments != null)
             {
@@ -99,7 +113,9 @@ public class SubsystemFragmentCollector
                     wodBuffer.append(i);
                     wodBuffer.append(": ");
                     wodBuffer.append(fullName);
-                    wodBuffer.append("{ }\n");
+                    wodBuffer.append("{");
+                    wodBuffer.append(bindings);
+                    wodBuffer.append("}\n");
 
                     i++;
                 }
