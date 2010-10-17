@@ -435,7 +435,7 @@ public class WCBasePage
         String url = WCResourceManager.resourceURLFor(basePath + subPath,
                 context().request());
 
-        url = url.substring(0, url.length() - subPath.length());
+        url = url.replaceFirst(subPath + "(\\?.*)?", "");
         return url;
     }
 
