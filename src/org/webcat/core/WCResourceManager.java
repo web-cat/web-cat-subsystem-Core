@@ -97,8 +97,8 @@ public class WCResourceManager
                     pos + FRAMEWORK_SUFFIX.length() );
             }
         }
-        return standardizeURL(super.urlForResourceNamed(
-            aResourceName, aFrameworkName, aLanguageList, aRequest ));
+        return super.urlForResourceNamed(
+            aResourceName, aFrameworkName, aLanguageList, aRequest );
     }
 
 
@@ -160,6 +160,7 @@ public class WCResourceManager
             NSArray languages,
             WORequest request)
         {
+            resourceUrl = standardizeURL(resourceUrl);
             String version = versionFor(bundleName);
             if (version != null)
             {
@@ -272,7 +273,7 @@ public class WCResourceManager
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
-    private String standardizeURL( String url )
+    private static String standardizeURL( String url )
     {
         String result = url;
         int pos = result.indexOf( ':' );
