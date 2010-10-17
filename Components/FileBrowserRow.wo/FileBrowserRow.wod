@@ -255,9 +255,9 @@ SubFileRepetition : WORepetition {
 }
 
 TR1 : org.webcat.core.TableRow {
-	index       = index;
-	increment   = true;
-	showCaution = isSelected;
+	index      = index;
+	increment  = true;
+	isSelected = isSelected;
 }
 
 VerticalSpacer: WOImage {
