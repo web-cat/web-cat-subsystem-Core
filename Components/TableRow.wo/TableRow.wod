@@ -1,6 +1,3 @@
-Content: WOComponentContent {
-}
-
 TR: WOGenericContainer {
     elementName = "tr";
     class       = cssClass;
