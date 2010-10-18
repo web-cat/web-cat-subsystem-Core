@@ -1,0 +1,140 @@
+/* =================================================================== */
+/* @group Basic Overrides
+====================================================================== */
+
+.dijitReset,
+.dijitTextArea { color: black; }
+
+.RichTextEditable html, .RichTextEditable iframe html { color: inherit; }
+
+.aristo .dijitProgressBarEmpty { border-color: white; }
+
+.aristo .dijitTimePickerTick { color: #555; }
+
+
+/* @end
+====================================================================== */
+/* @group Collapsible Modules
+====================================================================== */
+
+.aristo .dijitTitlePane .dijitTitlePaneTitle {
+    color: #eee;
+    border-bottom-color: #eee;
+}
+
+.aristo .dijitTitlePaneFocused .dijitTitlePaneTextNode { color: #eee; }
+
+.aristo .dijitOpen .dijitTitlePaneTextNode { color: #eee; }
+
+.aristo .dijitTitlePaneTextNode { text-shadow: none; }
+
+
+/* @end
+====================================================================== */
+/* @group Buttons
+====================================================================== */
+
+/*
+.aristo .dijitFileInputButton,
+.aristo .dijitFileInputText,
+.aristo .dijitDropDownButton .dijitButtonNode,
+.aristo .dijitButton .dijitButtonNode {
+    border-color: #888;
+    border-bottom-color: #333;
+    background: black;
+}
+
+.aristo .dijitFileInputButton,
+.aristo .dijitFileInputText,
+.aristo .dijitDropDownButton .dijitButtonNode button,
+.aristo .dijitButton .dijitButtonNode button {
+    background-color: black;
+    background-image: url(buttonEnabled.png);
+}
+
+.aristo .dijitDropDownButton .dijitReset.dijitButtonNode .dijitReset,
+.aristo .dijitFileInputText,
+.aristo .dijitFileInputButton,
+.aristo .dijitButton .dijitReset.dijitButtonNode .dijitReset {
+    color: #ccc;
+}
+
+.aristo .dijitButton.pos .dijitReset.dijitButtonNode .dijitReset {
+    color: #7c7;
+}
+
+.aristo .dijitButton.neg .dijitReset.dijitButtonNode .dijitReset {
+    color: #c77;
+}
+
+.aristo .dijitDropDownButton .dijitDropDownButtonDisabled .dijitReset.dijitButtonNode .dijitReset,
+.aristo .dijitButton .dijitButtonDisabled .dijitReset.dijitButtonNode .dijitReset {
+    color: black;
+}
+
+.aristo .dijitButtonDisabled .dijitButtonNode,
+.aristo .dijitButtonDisabled .dijitButtonNode button {
+    background-color: #777;
+}
+
+.aristo .dijitButtonDisabled .dijitReset.dijitButtonNode .dijitReset {
+    color: #333;
+}
+
+.aristo .dijitFileInputButton:hover,
+.aristo .dijitFileInputText:hover,
+.aristo .dijitDropDownButtonHover .dijitReset.dijitButtonNode,
+.aristo .dijitButtonHover .dijitReset.dijitButtonNode {
+    background-color: #222;
+    border-color: #999;
+    border-bottom-color: #444;
+}
+
+.aristo .dijitDropDownButtonHover .dijitReset.dijitButtonNode button,
+.aristo .dijitButtonHover .dijitReset.dijitButtonNode button {
+    background-color: #111;
+}
+
+.aristo .dijitButtonHover.pos .dijitReset.dijitButtonNode {
+    background-color: #242;
+}
+.aristo .dijitButtonHover.pos .dijitReset.dijitButtonNode button {
+    background-color: #131;
+}
+
+.aristo .dijitButtonHover.pos .dijitReset.dijitButtonNode .dijitReset {
+    color: #afa;
+}
+
+.aristo .dijitButtonHover.neg .dijitReset.dijitButtonNode {
+    background-color: #422;
+}
+.aristo .dijitButtonHover.neg .dijitReset.dijitButtonNode button {
+    background-color: #311;
+}
+
+.aristo .dijitButtonHover.neg .dijitReset.dijitButtonNode .dijitReset {
+    color: #faa;
+}
+
+.aristo .dijitFileInputButton:hover,
+.aristo .dijitFileInputText:hover,
+.aristo .dijitDropDownButtonHover .dijitReset.dijitButtonNode .dijitReset,
+.aristo .dijitButtonHover .dijitReset.dijitButtonNode .dijitReset {
+    color: white;
+}
+*/
+
+
+/* @end
+====================================================================== */
+/* @group Sliders
+====================================================================== */
+
+.dijitRuleLabel { color: #ccc; }
+
+.dijitRuleMark { border-color: #ccc; }
+
+
+/* @end
+====================================================================== */

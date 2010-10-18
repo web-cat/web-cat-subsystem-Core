@@ -21,6 +21,7 @@
     thumb            = "colourise-thumb.png";
 
     extends = nihilo-dark;
+//    extends = aristo-dark;
     cssOrder = (
         {
             file = "colourise.css";

@@ -127,7 +127,7 @@ a:hover {
 h1, h2, h3, h4, h5, h6 { color: #542a2a; }
 .disabled { color: #555; }
 b, strong { color: #111; }
-.check { color: green; }
+.check { color: #0a0; }
 .warn  { color: #d00; }
 .date { color: #777; }
 
@@ -188,25 +188,37 @@ table thead {
 
 .batchnav { background-image: url(../base/images/black-20.png); }
 
-/*TR.o  { background-color: transparent; } */
+/* tr.o  { background-color: transparent; } */
 tr.e  { background-image: url(../base/images/black-05.png); }
 
-/* Need to revise
-TR.oe { background-color: #faa; }
-TR.ee { background-color: #f99; }
-TR.oc { background-color: #ef4; }
-TR.ec { background-color: #de0; }
-*/
+.selected,
+tr.o.selected,
+.theme-thumb.selected { background-color: #aec9ef; border: 1px solid #aaa; }
+tr.e.selected, tr.e .selected {
+    background-image: none;
+    background-color: #a5bfe3;
+}
 
-/* deprecated
-TD.n  { text-align: right;  }
-TD.s  { text-align: center; }
-TD.L  { text-align: left;   }
-TD.R  { text-align: right;  }
-*/
+.caution, tr.o.caution, tr.o.caution.selected { background-color: #ef4; }
+tr.e.caution,
+tr.e .caution,
+tr.e.caution.selected {
+    background-image: none;
+    background-color: #de3;
+}
 
-.theme-thumb.selected {
-    border: 1px solid #aaa;
+.error,
+tr.o.error,
+tr.o.caution.error,
+tr.o.error.selected,
+tr.o.caution.error.selected { background-color: #faa; }
+tr.e.error,
+tr.e .error,
+tr.e.caution.error,
+tr.e.error.selected,
+tr.e.caution.error.selected {
+    background-image: none;
+    background-color: #f99;
 }
 
 

@@ -160,16 +160,52 @@ table thead {
 }
 
 .batchnav { background-image: url(../base/images/white-15.png); }
-/*TR.o  { background-color: transparent; } */TR.e  { background-image: url(../base/images/white-10.png); }
+/* tr.o  { background-color: transparent; } */
+tr.e  { background-image: url(../base/images/white-10.png); }
 
-/* Need to revise
-TR.oe { background-color: #faa; }TR.ee { background-color: #f99; }TR.oc { background-color: #ef4; }TR.ec { background-color: #de0; }
-*/
+.selected,
+tr.o.selected,
+.theme-thumb.selected {
+    background-image: url(../base/images/white-20.png);
+    border: 1px solid #ccc;
+}
+tr.e.selected, tr.e .selected {
+    color: black;
+    background-image: url(../base/images/white-30.png);
+    border: 1px solid #ccc;
+}
 
-/* deprecated
-TD.n  { text-align: right;  }TD.s  { text-align: center; }TD.L  { text-align: left;   }TD.R  { text-align: right;  }*/
+.caution, tr.o.caution, tr.o.caution.selected {
+    color: black;
+    background-image: url(../base/images/white-15.png);
+    background-color: #552;
+}
+tr.e.caution,
+tr.e .caution,
+tr.e.caution.selected {
+    color: black;
+    background-image: url(../base/images/white-25.png);
+    background-color: #552;
+}
 
-.theme-thumb.selected { border: 1px solid #ccc; }
+.error,
+tr.o.error,
+tr.o.caution.error,
+tr.o.error.selected,
+tr.o.caution.error.selected {
+    color: black;
+    background-image: url(../base/images/white-15.png);
+    background-color: #522;
+}
+tr.e.error,
+tr.e .error,
+tr.e.caution.error,
+tr.e.error.selected,
+tr.e.caution.error.selected {
+    color: black;
+    background-image: url(../base/images/white-25.png);
+    background-color: #522;
+}
 
 
 	/*

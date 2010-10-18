@@ -202,7 +202,9 @@ table thead {
 /* tr.o  { background-color: transparent; } */
 tr.e  { background-image: url(../base/images/black-05.png); }
 
-.selected, tr.o.selected { background-color: #aec9ef; }
+.selected,
+tr.o.selected,
+.theme-thumb.selected { background-color: #aec9ef; border: 1px solid #888; }
 tr.e.selected, tr.e .selected {
     background-image: none;
     background-color: #a5bfe3;
@@ -229,8 +231,6 @@ tr.e.caution.error.selected {
 	background-image: none;
 	background-color: #f99;
 }
-
-.theme-thumb.selected { border: 1px solid #115; }
 
 
     /*
