@@ -20,31 +20,58 @@
     </propertyfile>
   </target>
 
+  <target name="clean" depends="common.clean, dojo.clean" />
 
   <!-- ...............................................................
     Generates Dijit images and CSS overrides for any Web-CAT themes that
     contain a themebuilder.properties file.
   -->
-  <target name="themes.build">
-      <apply executable="ruby"
-               dir="dojo-release/extras/themebuilder">
-            <arg file="dojo-release/extras/themebuilder/build-theme.rb"/>
-          <fileset dir="WebServerResources/theme">
-            <include name="**/themebuilder.properties"/>
-          </fileset>
-      </apply>
+  <target name="themes.check">
+  	<!-- just check one generated image file against the set of sources to
+  	     see if the ruby script has been run -->
+    <uptodate property="themes.uptodate"
+    	targetfile="WebServerResources/theme/dream-way/images/button-enabled.png">
+      <srcfiles dir="dojo-release/extras/themebuilder/">
+        <exclude name="**/CVS/"/>
+      </srcfiles>
+    </uptodate>
+  </target>
+
+  <target name="themes.build" depends="themes.check" unless="themes.uptodate">
+    <apply executable="ruby" dir="dojo-release/extras/themebuilder">
+      <arg file="dojo-release/extras/themebuilder/build-theme.rb"/>
+      <fileset dir="WebServerResources/theme">
+        <include name="**/themebuilder.properties"/>
+      </fileset>
+    </apply>
   </target>
 
 
   <!-- ...............................................................
     Compiles and shrinks the Dojo release.
   -->
-  <target name="dojo.build">
-      <delete dir="WebServerResources/dojo"/>
+  <target name="dojo.check">
+    <!-- just check one generated javascript file against the set of sources
+         to see if the dojo ditribution has been rebuilt -->
+    <uptodate property="dojo.uptodate"
+        targetfile="WebServerResources/webcat/BasePage.js">
+      <srcfiles dir="dojo-release">
+        <exclude name="extras/themebuilder/"/>
+      	<exclude name="**/CVS/"/>
+      </srcfiles>
+    </uptodate>
+  </target>
+
+  <target name="dojo.clean">
+    <delete dir="WebServerResources/dojo"/>
     <delete dir="WebServerResources/dijit"/>
     <delete dir="WebServerResources/dojox"/>
     <delete dir="WebServerResources/webcat"/>
-      <delete dir="dojo-release/dijit/themes/aristo"/>
+    <delete dir="dojo-release/dijit/themes/aristo"/>
+  </target>
+
+  <target name="dojo.build" depends="dojo.check" unless="dojo.uptodate">
+      <antcall target="dojo.clean"/>
       <copy todir="dojo-release/dijit/themes/aristo">
           <fileset dir="dojo-release/extras/aristo"/>
       </copy>
