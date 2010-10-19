@@ -26,7 +26,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.log4j.Logger;
 import org.jfree.util.Log;
 import org.webcat.core.Application;
 import org.webcat.core.MutableDictionary;
@@ -55,8 +54,9 @@ import com.webobjects.foundation.NSTimestamp;
  * context returned by the {@link #editingContext()} method is valid.
  * </p>
  *
- * @author Tony Allevato
- * @version $Id$
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public abstract class Message
 {
