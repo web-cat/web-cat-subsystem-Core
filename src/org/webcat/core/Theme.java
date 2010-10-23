@@ -158,7 +158,9 @@ public class Theme
     {
         if (baseIsNotSet)
         {
-            String baseName = (String)properties().valueForKey("extends");
+            String baseName = properties() != null
+                ? (String)properties().valueForKey("extends")
+                : null;
             if (baseName != null)
             {
                 base = themeFromName(baseName);
