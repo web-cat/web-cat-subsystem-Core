@@ -41,8 +41,9 @@ import com.webobjects.foundation.NSMutableDictionary;
  * Manages the Subsystem's stored on disk. A subsystem is either a WebObjects
  * framework or a separate jar file that contains a framework.
  *
- *  @author Stephen Edwards
- *  @version $Id$
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class SubsystemManager
 {
@@ -64,40 +65,40 @@ public class SubsystemManager
      *
      * @param properties The application's property settings
      */
-    public SubsystemManager( WCProperties properties )
+    public SubsystemManager(WCProperties properties)
     {
-        log.debug( "creating subsystem manager" );
-        if ( properties != null )
+        log.debug("creating subsystem manager");
+        if (properties != null)
         {
-//            String jarDir = properties.getProperty( "subsystem.jar.dir" );
-//            if ( jarDir != null )
+//            String jarDir = properties.getProperty("subsystem.jar.dir");
+//            if (jarDir != null)
 //            {
-//                addSubsystemJarsFromDirectory( jarDir );
+//                addSubsystemJarsFromDirectory(jarDir);
 //            }
 //
 //            NSArray subs =
-//                properties.arrayForKey( "subsystem.unjarred.classes" );
-//            if ( subs != null )
+//                properties.arrayForKey("subsystem.unjarred.classes");
+//            if (subs != null)
 //            {
-//                for ( int i = 0; i < subs.count(); i++ )
+//                for (int i = 0; i < subs.count(); i++)
 //                {
 //                    addSubsystemFromClassName(
-//                        (String)subs.objectAtIndex( i ) );
+//                        (String)subs.objectAtIndex(i));
 //                }
 //            }
             ArrayList<String> subsystemNames = new ArrayList<String>();
             // Have to look in the system properties, because that is where
             // all subsystem info will go, not in the config file
-            for ( Enumeration<Object> e = System.getProperties().keys();
-                  e.hasMoreElements(); )
+            for (Enumeration<Object> e = System.getProperties().keys();
+                  e.hasMoreElements();)
             {
                 String key = (String)e.nextElement();
-                if (  key.startsWith( SUBSYSTEM_KEY_PREFIX )
-                   && key.indexOf( '.', SUBSYSTEM_KEY_PREFIX.length() ) == -1 )
+                if ( key.startsWith(SUBSYSTEM_KEY_PREFIX)
+                   && key.indexOf('.', SUBSYSTEM_KEY_PREFIX.length()) == -1)
                 {
                     String name =
-                        key.substring( SUBSYSTEM_KEY_PREFIX.length() );
-                    subsystemNames.add( name );
+                        key.substring(SUBSYSTEM_KEY_PREFIX.length());
+                    subsystemNames.add(name);
                 }
             }
             addSubsystemsInOrder(
@@ -122,31 +123,31 @@ public class SubsystemManager
      *
      * @param directory  The root directory for loading the jar'ed subsystems
      */
-//    public void addSubsystemJarsFromDirectory( String directory )
+//    public void addSubsystemJarsFromDirectory(String directory)
 //    {
-//        File root = new File( directory );
+//        File root = new File(directory);
 //
 //        // Get list of all .jar files in the directory
-//        File[] jars = root.listFiles( new FilenameFilter() {
-//            public boolean accept( File dir, String name )
+//        File[] jars = root.listFiles(new FilenameFilter() {
+//            public boolean accept(File dir, String name)
 //            {
-//                return name.endsWith( ".jar" );
+//                return name.endsWith(".jar");
 //            }
-//        } );
+//        });
 //
-//        if ( jars != null )
+//        if (jars != null)
 //        {
 //            // Add the jar files
-//            for ( int i = 0; i < jars.length; ++i )
+//            for (int i = 0; i < jars.length; ++i)
 //            {
 //                try
 //                {
-//                    addSubsystemFromJarFile( jars[i] );
+//                    addSubsystemFromJarFile(jars[i]);
 //                }
-//                catch ( Exception e )
+//                catch (Exception e)
 //                {
-//                    log.error( "Exception adding subsystem: "
-//                               + jars[i].toString() + ":", e );
+//                    log.error("Exception adding subsystem: "
+//                               + jars[i].toString() + ":", e);
 //                }
 //            }
 //        }
@@ -186,10 +187,10 @@ public class SubsystemManager
      * @param name  The file name of the JAR file that contains the subsystem
      * @throws IOException
      */
-//    public void addSubsystemFromJarFile( String name )
+//    public void addSubsystemFromJarFile(String name)
 //        throws IOException
 //    {
-//        addSubsystemFromJarFile( new File( name ) );
+//        addSubsystemFromJarFile(new File(name));
 //    }
 
 
@@ -200,13 +201,13 @@ public class SubsystemManager
      * @param file  The file of the JAR file that contains the subsystem
      * @throws IOException
      */
-//    public void addSubsystemFromJarFile( File file )
+//    public void addSubsystemFromJarFile(File file)
 //         throws IOException
 //    {
-//        JarSubsystem s = JarSubsystem.initializeSubsystemFromJar( file );
-//        if ( s != null )
+//        JarSubsystem s = JarSubsystem.initializeSubsystemFromJar(file);
+//        if (s != null)
 //        {
-//            addSubsystem( s );
+//            addSubsystem(s);
 //        }
 //    }
 
@@ -218,22 +219,22 @@ public class SubsystemManager
      * @param name the symbolic name to use for this subsystem
      * @param className the class name to load
      */
-    public void addSubsystemFromClassName( String name, String className )
+    public void addSubsystemFromClassName(String name, String className)
     {
-        log.debug( "attempting to load subsystem " + name + " using class '"
+        log.debug("attempting to load subsystem " + name + " using class '"
             + className + "'");
         try
         {
-            addSubsystem( name,
+            addSubsystem(name,
                 (Subsystem)DelegatingUrlClassLoader.getClassLoader()
-                    .loadClass( className ).newInstance() );
+                    .loadClass(className).newInstance());
         }
-        catch ( Exception e )
+        catch (Exception e)
         {
-            System.out.println( "Exception loading subsystem "
+            System.out.println("Exception loading subsystem "
                 + name + " from class " + className + ".");
-            log.error( "Exception loading subsystem "
-                + name + " from class " + className + ":", e );
+            log.error("Exception loading subsystem "
+                + name + " from class " + className + ":", e);
         }
     }
 
@@ -245,20 +246,20 @@ public class SubsystemManager
      * @param name  The subsystem's name
      * @param s     The subsystem object to add
      */
-    public void addSubsystem( String name, Subsystem s )
+    public void addSubsystem(String name, Subsystem s)
     {
-        if ( name == null ) name = s.name();
-        if ( !subsystems.containsKey( name ) )
+        if (name == null) name = s.name();
+        if (!subsystems.containsKey(name))
         {
-            log.info( "Registering subsystem " + s.name() + " as " + name );
-            s.setName( name );
-            subsystems.put( name, s );
-            subsystemArray.addObject( s );
+            log.info("Registering subsystem " + s.name() + " as " + name);
+            s.setName(name);
+            subsystems.put(name, s);
+            subsystemArray.addObject(s);
             clearSubsystemPropertyCache();
         }
         else
         {
-            log.error( "Subsystem already registered: " + name );
+            log.error("Subsystem already registered: " + name);
         }
     }
 
@@ -337,7 +338,7 @@ public class SubsystemManager
      */
     public NSDictionary<String, String> environment()
     {
-        if ( envCache == null )
+        if (envCache == null)
         {
             NSMutableDictionary<String, String> env = inheritedEnvironment();
             for (Subsystem sub : subsystems())
@@ -345,9 +346,9 @@ public class SubsystemManager
                 sub.addEnvironmentBindings(env);
             }
             envCache = env;
-            if ( log.isDebugEnabled() )
+            if (log.isDebugEnabled())
             {
-                log.debug( "plug-in ENV = " + env );
+                log.debug("plug-in ENV = " + env);
             }
         }
         return envCache;
@@ -364,7 +365,7 @@ public class SubsystemManager
      */
     public String[] envp()
     {
-        if ( envpCache == null )
+        if (envpCache == null)
         {
             NSDictionary<String, String> env = environment();
             ArrayList<String> envpList = new ArrayList<String>();
@@ -428,12 +429,12 @@ public class SubsystemManager
      */
     public void refreshSubsystemDescriptorsAndProviders()
     {
-        for ( Iterator<?> i = FeatureProvider.providers().iterator();
-            i.hasNext(); )
+        for (Iterator<?> i = FeatureProvider.providers().iterator();
+            i.hasNext();)
         {
-            ( (FeatureProvider)i.next() ).refresh();
+            ((FeatureProvider)i.next()).refresh();
         }
-        if ( subsystemArray != null )
+        if (subsystemArray != null)
         {
             for (Subsystem sub : subsystemArray)
             {
@@ -453,8 +454,10 @@ public class SubsystemManager
     {
         for (Subsystem sub : subsystems())
         {
+            log.debug("initializing subsystem " + sub.name());
             sub.init();
             sub.subsystemInitCompleted();
+            log.debug("subsystem " + sub.name() + " initialized");
         }
     }
 
@@ -467,8 +470,10 @@ public class SubsystemManager
     {
         for (Subsystem sub : subsystems())
         {
+            log.debug("starting subsystem " + sub.name());
             sub.start();
             sub.subsystemHasStarted();
+            log.debug("subsystem " + sub.name() + " started");
         }
     }
 
@@ -482,15 +487,15 @@ public class SubsystemManager
      * any whitespace surrounding commas are ignored; if rawList is null or
      * empty, then null is returned.
      */
-    private String[] featureList( String rawList )
+    private String[] featureList(String rawList)
     {
         String[] result = null;
-        if ( rawList != null )
+        if (rawList != null)
         {
             rawList = rawList.trim();
-            if ( !rawList.equals( "" ) )
+            if (!rawList.equals(""))
             {
-                result = rawList.split( "\\s*,\\s*" );
+                result = rawList.split("\\s*,\\s*");
             }
         }
         return result;
@@ -568,20 +573,20 @@ public class SubsystemManager
      * Generate a string from an array of strings.
      * @param array the array to convert
      */
-    private String arrayToString( String[] array )
+    private String arrayToString(String[] array)
     {
-        if ( array == null ) return null;
+        if (array == null) return null;
         StringBuffer buffer = new StringBuffer();
-        buffer.append( "[ " );
-        for ( int i = 0; i < array.length; i++ )
+        buffer.append("[ ");
+        for (int i = 0; i < array.length; i++)
         {
-            if ( i > 0 )
+            if (i > 0)
             {
-                buffer.append( ", " );
+                buffer.append(", ");
             }
-            buffer.append( array[i] );
+            buffer.append(array[i]);
         }
-        buffer.append( " ]" );
+        buffer.append(" ]");
         return buffer.toString();
     }
 
@@ -606,77 +611,77 @@ public class SubsystemManager
         Map<String, String> addedFeatures,
         WCProperties        properties)
     {
-        if ( names.size() == 0 ) return;
+        if (names.size() == 0) return;
         int oldSize = names.size();
         Map<String, String> incompleteFeatures = new HashMap<String, String>();
-        log.debug( "starting subsystem list traversal: " + names );
-        for ( int i = 0; i < names.size(); i++ )
+        log.debug("starting subsystem list traversal: " + names);
+        for (int i = 0; i < names.size(); i++)
         {
             String name = names.get(i);
             String[] depends = featureList(
-                properties.getProperty( name + DEPENDS_SUFFIX ) );
+                properties.getProperty(name + DEPENDS_SUFFIX));
             String[] requires = featureList(
-                properties.getProperty( name + REQUIRES_SUFFIX ) );
-            if ( foundIn( depends, pendingFeatures )
-                 || foundIn( requires, pendingFeatures ) )
+                properties.getProperty(name + REQUIRES_SUFFIX));
+            if (foundIn(depends, pendingFeatures)
+                 || foundIn(requires, pendingFeatures))
             {
-                if ( log.isDebugEnabled() )
+                if (log.isDebugEnabled())
                 {
-                    log.debug( "skipping " + name + ": depends = "
-                        + arrayToString( depends ) + "; requires = "
-                        + arrayToString( requires ) );
+                    log.debug("skipping " + name + ": depends = "
+                        + arrayToString(depends) + "; requires = "
+                        + arrayToString(requires));
                 }
-                incompleteFeatures.put( name, name );
-                addTo( featureList(
-                    properties.getProperty( name + PROVIDES_SUFFIX ) ),
-                    incompleteFeatures );
+                incompleteFeatures.put(name, name);
+                addTo(featureList(
+                    properties.getProperty(name + PROVIDES_SUFFIX)),
+                    incompleteFeatures);
             }
             else
             {
-                if ( log.isDebugEnabled() )
+                if (log.isDebugEnabled())
                 {
-                    log.debug( "loading " + name + ": depends = "
-                        + arrayToString( depends ) + "; requires = "
-                        + arrayToString( requires ) );
+                    log.debug("loading " + name + ": depends = "
+                        + arrayToString(depends) + "; requires = "
+                        + arrayToString(requires));
                 }
-                names.remove( i );
+                names.remove(i);
                 i--;
-                if ( missingFrom( requires, addedFeatures ) )
+                if (missingFrom(requires, addedFeatures))
                 {
-                    log.error( "unable to load subsystem '" + name
+                    log.error("unable to load subsystem '" + name
                         + "': one or more required subsystems are missing: "
-                        + arrayToString( requires ) );
+                        + arrayToString(requires));
                 }
                 else
                 {
-                    addedFeatures.put( name, name );
-                    addTo( featureList(
-                        properties.getProperty( name + PROVIDES_SUFFIX ) ),
-                        addedFeatures );
+                    addedFeatures.put(name, name);
+                    addTo(featureList(
+                        properties.getProperty(name + PROVIDES_SUFFIX)),
+                        addedFeatures);
                     String className =
-                        properties.getProperty( SUBSYSTEM_KEY_PREFIX + name );
+                        properties.getProperty(SUBSYSTEM_KEY_PREFIX + name);
 
                     // Use a default class if no class name is specified
                     // in the property
-                    if ( className == null || className.equals( "" ) )
+                    if (className == null || className.equals(""))
                     {
                         className = Subsystem.class.getName();
                     }
 
-                    addSubsystemFromClassName( name, className );
+                    addSubsystemFromClassName(name, className);
                 }
             }
         }
-        if ( oldSize == names.size() )
+        if (oldSize == names.size())
         {
             log.error(
                 "cyclic or missing dependencies among subsystems detected: "
-                + names );
+                + names);
         }
         else
         {
             addSubsystemsInOrder(
-                names, incompleteFeatures, addedFeatures, properties );
+                names, incompleteFeatures, addedFeatures, properties);
         }
     }
 
@@ -688,7 +693,7 @@ public class SubsystemManager
      */
     private NSMutableDictionary<String, String> inheritedEnvironment()
     {
-        if ( inheritedEnvCache == null )
+        if (inheritedEnvCache == null)
         {
             NSMutableDictionary<String, String> env =
                 new NSMutableDictionary<String, String>();
@@ -699,32 +704,32 @@ public class SubsystemManager
             {
                 Process process = Runtime.getRuntime().exec(
                     Application.isRunningOnWindows()
-                        ? "cmd /c set" : "printenv" );
+                        ? "cmd /c set" : "printenv");
                 BufferedReader in = new BufferedReader(
-                    new InputStreamReader( process.getInputStream() ) );
+                    new InputStreamReader(process.getInputStream()));
                 String line = in.readLine();
-                while ( line != null )
+                while (line != null)
                 {
-                    int pos = line.indexOf( '=' );
-                    if ( pos > 0 )
+                    int pos = line.indexOf('=');
+                    if (pos > 0)
                     {
-                        String key = line.substring( 0, pos );
-                        String val = line.substring( pos + 1 );
-                        env.takeValueForKey( val, key );
+                        String key = line.substring(0, pos);
+                        String val = line.substring(pos + 1);
+                        env.takeValueForKey(val, key);
                     }
                     line = in.readLine();
                 }
             }
-            catch ( java.io.IOException e )
+            catch (java.io.IOException e)
             {
                 log.error(
-                    "Error attempting to parse default ENV settings:", e );
+                    "Error attempting to parse default ENV settings:", e);
             }
 
             inheritedEnvCache = env;
-            if ( log.isDebugEnabled() )
+            if (log.isDebugEnabled())
             {
-                log.debug( "inherited ENV = " + env );
+                log.debug("inherited ENV = " + env);
             }
         }
         return inheritedEnvCache.mutableClone();
@@ -748,5 +753,5 @@ public class SubsystemManager
     private static final String REQUIRES_SUFFIX      = ".requires";
     private static final String PROVIDES_SUFFIX      = ".provides";
 
-    static Logger log = Logger.getLogger( SubsystemManager.class );
+    static Logger log = Logger.getLogger(SubsystemManager.class);
 }
