@@ -117,6 +117,27 @@ public class WCResourceManager
 
 
     // ----------------------------------------------------------
+    public static String versionlessResourceURLFor(
+        String     aResourceName,
+        String     aFrameworkName,
+        NSArray<?> aLanguageList,
+        WORequest  aRequest )
+    {
+        String result = resourceURLFor(
+            aResourceName, aFrameworkName, aLanguageList, aRequest);
+        if (result != null)
+        {
+            int pos = result.lastIndexOf('?');
+            if (pos >= 0)
+            {
+                result = result.substring(0, pos);
+            }
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
     public static String resourceURLFor(
         String aResourceName, WORequest aRequest )
     {
