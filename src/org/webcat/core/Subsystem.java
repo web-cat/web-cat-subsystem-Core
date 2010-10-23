@@ -24,7 +24,6 @@ package org.webcat.core;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Iterator;
 import org.apache.log4j.Logger;
 import net.sf.webcat.FeatureDescriptor;
 import net.sf.webcat.WCServletAdaptor;
@@ -46,8 +45,8 @@ import com.webobjects.foundation.NSPropertyListSerialization;
  *  The subsystem interface that defines the API used by the Core to
  *  communicate with subsystems.
  *
- *  @author Stephen Edwards
- *  @author Last changed by $Author$
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
  *  @version $Revision$, $Date$
  */
 public class Subsystem
@@ -90,7 +89,7 @@ public class Subsystem
      * Set the short (one-word) human-readable name for this subsystem.
      * @param newName the name to use
      */
-    public void setName( String newName )
+    public void setName(String newName)
     {
         name = newName;
     }
@@ -103,17 +102,15 @@ public class Subsystem
      */
     public FeatureDescriptor descriptor()
     {
-        if ( descriptor == null )
+        if (descriptor == null)
         {
             // First, look to see if there is an appropriate subsystem updater
             WCServletAdaptor adaptor = WCServletAdaptor.getInstance();
-            if ( adaptor != null )
+            if (adaptor != null)
             {
-                for ( Iterator<?> i = adaptor.subsystems().iterator();
-                      i.hasNext(); )
+                for (FeatureDescriptor sd : adaptor.subsystems())
                 {
-                    FeatureDescriptor sd = (FeatureDescriptor)i.next();
-                    if ( name.equals( sd.name() ) )
+                    if (name.equals(sd.name()))
                     {
                         // found it!
                         descriptor = sd;
@@ -122,10 +119,12 @@ public class Subsystem
                 }
             }
             // Otherwise, try to create one directly from properties
-            if ( descriptor == null )
+            if (descriptor == null)
             {
-                descriptor = new FeatureDescriptor( name(),
-                    Application.configurationProperties(), false );
+                log.warn("Unable to find feature descriptor for " + name()
+                    + " via adaptor.  Creating one from properties.");
+                descriptor = new FeatureDescriptor(
+                    name(), Application.configurationProperties(), false);
             }
         }
         return descriptor;
@@ -235,15 +234,15 @@ public class Subsystem
      * @return the parameter definitions as an NSDictionary, or
      * null if none are found
      */
-    @SuppressWarnings( "deprecation" )
+    @SuppressWarnings("deprecation")
     public NSDictionary<String, Object> parameterDescriptions()
     {
-        if ( options == null )
+        if (options == null)
         {
-            File configFile = new File( myResourcesDir() + "/config.plist" );
-            log.debug( "Attempting to locate parameter descriptions in: "
-                + configFile.getPath() );
-            if ( !configFile.exists() )
+            File configFile = new File(myResourcesDir() + "/config.plist");
+            log.debug("Attempting to locate parameter descriptions in: "
+                + configFile.getPath());
+            if (!configFile.exists())
             {
                 // If not found, try looking directly in the bundle, in case
                 // the resources dir was overridden by properties (like on
@@ -252,43 +251,43 @@ public class Subsystem
                 // in production.  See the comments in myResourcesDir()
                 // regarding the resourcePath() method being deprecated.
                 NSBundle myBundle = myBundle();
-                if ( myBundle != null )
+                if (myBundle != null)
                 {
                     configFile = new File(
-                        myBundle.resourcePath() + "/config.plist" );
+                        myBundle.resourcePath() + "/config.plist");
                     log.debug(
                         "Attempting to locate parameter descriptions in: "
-                        + configFile.getPath() );
+                        + configFile.getPath());
                 }
             }
-            if ( configFile.exists() )
+            if (configFile.exists())
             {
                 try
                 {
-                    log.debug( "loading parameter descriptions from: "
-                        + configFile.getPath() );
-                    FileInputStream in = new FileInputStream( configFile );
-                    NSData data = new NSData( in, (int)configFile.length() );
+                    log.debug("loading parameter descriptions from: "
+                        + configFile.getPath());
+                    FileInputStream in = new FileInputStream(configFile);
+                    NSData data = new NSData(in, (int)configFile.length());
                     @SuppressWarnings("unchecked")
                     NSDictionary<String, Object> newOptions =
                         (NSDictionary<String, Object>)
                         NSPropertyListSerialization
-                            .propertyListFromData( data, "UTF-8" );
+                            .propertyListFromData(data, "UTF-8");
                     options = newOptions;
                     in.close();
                 }
-                catch ( java.io.IOException e )
+                catch (java.io.IOException e)
                 {
                     log.error(
                         "error reading from subsystem configuration file "
                         + configFile.getPath(),
-                        e );
+                        e);
                 }
             }
-            if ( log.isDebugEnabled() )
+            if (log.isDebugEnabled())
             {
-                log.debug( "loaded parameter descriptions for subsystem "
-                    + name() + ":\n" + options );
+                log.debug("loaded parameter descriptions for subsystem "
+                    + name() + ":\n" + options);
             }
         }
         return options;
@@ -303,9 +302,9 @@ public class Subsystem
      *
      * @param s The new session object
      */
-    public void initializeSessionData( Session s )
+    public void initializeSessionData(Session s)
     {
-        s.tabs.mergeClonedChildren( subsystemTabTemplate );
+        s.tabs.mergeClonedChildren(subsystemTabTemplate);
     }
 
 
@@ -336,8 +335,8 @@ public class Subsystem
 
             try
             {
-                subsystemFragments =
-                    new NSMutableDictionary<String, Class<? extends WOComponent>>();
+                subsystemFragments = new NSMutableDictionary
+                    <String, Class<? extends WOComponent>>();
 
                 @SuppressWarnings("unchecked")
                 NSDictionary<String, Object> plist =
@@ -362,6 +361,12 @@ public class Subsystem
                         log.warn("The class " + className + " for the "
                                 + "subsystem fragment '" + key + "' "
                                 + "could not be found.");
+                    }
+                    catch (ClassCastException e)
+                    {
+                        log.warn("The class " + className + " for the "
+                                + "subsystem fragment '" + key + "' "
+                                + "is not a subclass of WOComponent.");
                     }
                 }
             }
@@ -443,14 +448,13 @@ public class Subsystem
     public WOActionResults handleDirectAction(
             WORequest request,
             Session   session,
-            WOContext context )
+            WOContext context)
     {
         throw new RuntimeException(
             "invalid subsystem direct action request: "
             + "\n---request---\n" + request
             + "\n\n---session---\n" + session
-            + "\n\n---context---\n" + context
-            );
+            + "\n\n---context---\n" + context);
     }
 
 
@@ -463,20 +467,20 @@ public class Subsystem
      *
      * @return The Resources directory name as a string
      */
-    @SuppressWarnings( "deprecation" )
+    @SuppressWarnings("deprecation")
     public String myResourcesDir()
     {
-        if ( myResourcesDir == null )
+        if (myResourcesDir == null)
         {
             // First, look for an overriding property, like those that
             // might be used for non-servlet deployment scenarios.
             myResourcesDir = Application.configurationProperties()
-                .getProperty( name() + ".Resources" );
+                .getProperty(name() + ".Resources");
         }
-        if ( myResourcesDir == null )
+        if (myResourcesDir == null)
         {
             NSBundle myBundle = myBundle();
-            if ( myBundle != null )
+            if (myBundle != null)
             {
                 // Note that the resourcePath() method is deprecated, but it
                 // is the best way to get what we need here, so we'll use it
@@ -498,14 +502,14 @@ public class Subsystem
      */
     protected NSBundle myBundle()
     {
-        NSBundle result = NSBundle.bundleForName( name() );
-        if ( result == null  && getClass() != Subsystem.class )
+        NSBundle result = NSBundle.bundleForName(name());
+        if (result == null  && getClass() != Subsystem.class)
         {
-            result = NSBundle.bundleForClass( getClass() );
+            result = NSBundle.bundleForClass(getClass());
         }
-        if ( result == null && !"webcat".equals( name() ) )
+        if (result == null && !"webcat".equals(name()))
         {
-            log.error( "cannot find bundle for subsystem " + name() );
+            log.error("cannot find bundle for subsystem " + name());
         }
         return result;
     }
@@ -598,7 +602,7 @@ public class Subsystem
         try
         {
             Class<?> updaterClass = DelegatingUrlClassLoader.getClassLoader()
-                .loadClass( className );
+                .loadClass(className);
             result = updaterClass.asSubclass(UpdateSet.class);
         }
         catch (ClassCastException e)
@@ -675,26 +679,26 @@ public class Subsystem
         String relativePath)
     {
         String rawPath = myResourcesDir() + "/" + relativePath;
-        File file = new File( rawPath );
-        if ( file.exists() )
+        File file = new File(rawPath);
+        if (file.exists())
         {
             try
             {
                 String path = file.getCanonicalPath();
-                map.takeValueForKey( path, key );
+                map.takeValueForKey(path, key);
                 return true;
             }
-            catch ( java.io.IOException e )
+            catch (java.io.IOException e)
             {
-                log.error( "Attempting to get canonical path for " + rawPath
+                log.error("Attempting to get canonical path for " + rawPath
                     + " in " + getClass().getName(),
-                    e );
+                    e);
             }
         }
         else
         {
-            log.error( "Cannot locate " + relativePath
-                + " in Resources directory for " + getClass().getName() );
+            log.error("Cannot locate " + relativePath
+                + " in Resources directory for " + getClass().getName());
         }
         return false;
     }
@@ -706,7 +710,7 @@ public class Subsystem
      * been initialized--this method should <b>not</b> be called by
      * anything else.
      */
-    protected void subsystemInitCompleted()
+    protected final void subsystemInitCompleted()
     {
         // This isn't called inside init() because we don't want this
         // value set until after subclasses have performed their
@@ -722,7 +726,7 @@ public class Subsystem
      * been initialized--this method should <b>not</b> be called by
      * anything else.
      */
-    protected void subsystemHasStarted()
+    protected final void subsystemHasStarted()
     {
         // This isn't called inside start() because we don't want this
         // value set until after subclasses have performed their
@@ -750,5 +754,5 @@ public class Subsystem
     private static final String SUBSYSTEM_FRAGMENTS_PLIST_FILENAME =
         "SubsystemFragments.plist";
 
-    static Logger log = Logger.getLogger( Subsystem.class );
+    static Logger log = Logger.getLogger(Subsystem.class);
 }
