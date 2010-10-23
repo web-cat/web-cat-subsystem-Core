@@ -299,6 +299,22 @@ blockquote {
 .hidden { display: none;  }
 .center { text-align: center; }
 
+span.selected { padding: 0 2px; }
+span.error {
+    padding: 0 2px 0 20px;
+    background-image: url("../../icons/exclaim.png");
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: 2px 0;
+}
+span.caution {
+	padding: 0 2px 0 20px;
+	background-image: url("../../icons/caution.png");
+	background-repeat: no-repeat;
+	background-attachment: scroll;
+	background-position: 2px 0;
+}
+
 img { border: 0; }
 a img { border: 0; }
 
@@ -340,6 +356,8 @@ tr.R > td.center, tr.R > td.c { text-align: center; }
 .sm { font-size: smaller }
 .nowrap { white-space: nowrap; }
 .top { vertical-align: top; }
+.top, .top th, .top td {
+	vertical-align: text-top; padding-top: 0; padding-bottom: 0.2em; }
 .nlbefore { margin-top: 1em; }
 .nlafter  { margin-bottom: 1em; }
 .kn, tr.kn > td { margin-bottom: 0; padding-bottom: 0; }

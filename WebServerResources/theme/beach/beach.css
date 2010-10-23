@@ -194,18 +194,19 @@ tr.e  { background-image: url(../base/images/black-05.png); }
 .selected,
 tr.o.selected,
 .theme-thumb.selected { background-color: #aec9ef; border: 1px solid #aaa; }
-tr.e.selected, tr.e .selected {
+tr.e.selected {
     background-image: none;
     background-color: #a5bfe3;
 }
+tr.e span.selected { background-color: #a5bfe3; }
 
 .caution, tr.o.caution, tr.o.caution.selected { background-color: #ef4; }
 tr.e.caution,
-tr.e .caution,
 tr.e.caution.selected {
     background-image: none;
     background-color: #de3;
 }
+tr.e span.caution { background-color: #de3; }
 
 .error,
 tr.o.error,
@@ -213,13 +214,13 @@ tr.o.caution.error,
 tr.o.error.selected,
 tr.o.caution.error.selected { background-color: #faa; }
 tr.e.error,
-tr.e .error,
 tr.e.caution.error,
 tr.e.error.selected,
 tr.e.caution.error.selected {
     background-image: none;
     background-color: #f99;
 }
+tr.e span.error { background-color: #f99; }
 
 
     /*

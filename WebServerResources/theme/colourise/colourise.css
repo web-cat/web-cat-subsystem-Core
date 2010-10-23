@@ -183,7 +183,7 @@ tr.o.selected,
 	background-image: url(../base/images/white-20.png);
     border: 1px solid #48780E;
 }
-tr.e.selected, tr.e .selected {
+tr.e.selected {
 	color: black;
     background-image: url(../base/images/white-30.png);
     border: 1px solid #48780E;
@@ -195,7 +195,6 @@ tr.e.selected, tr.e .selected {
 	background-color: #552;
 }
 tr.e.caution,
-tr.e .caution,
 tr.e.caution.selected {
 	color: black;
     background-image: url(../base/images/white-25.png);
@@ -212,7 +211,6 @@ tr.o.caution.error.selected {
 	background-color: #522;
 }
 tr.e.error,
-tr.e .error,
 tr.e.caution.error,
 tr.e.error.selected,
 tr.e.caution.error.selected {
