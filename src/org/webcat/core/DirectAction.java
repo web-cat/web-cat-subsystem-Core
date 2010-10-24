@@ -25,7 +25,6 @@ import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
-import er.extensions.appserver.ERXDirectAction;
 import er.extensions.foundation.ERXValueUtilities;
 import org.webcat.core.Application;
 import org.webcat.core.AuthenticationDomain;
@@ -41,6 +40,7 @@ import org.webcat.core.TabDescriptor;
 import org.webcat.core.User;
 import org.webcat.core.WCComponent;
 import org.apache.log4j.Logger;
+import org.webcat.core.actions.WCDirectActionWithSession;
 import org.webcat.core.install.*;
 
 //-------------------------------------------------------------------------
@@ -52,7 +52,7 @@ import org.webcat.core.install.*;
  * @version $Revision$, $Date$
  */
 public class DirectAction
-    extends ERXDirectAction
+    extends WCDirectActionWithSession
 {
     //~ Constructors ..........................................................
 
@@ -62,9 +62,13 @@ public class DirectAction
      *
      * @param aRequest The request to respond to
      */
-    public DirectAction( WORequest aRequest )
+    public DirectAction(WORequest aRequest)
     {
-        super( aRequest );
+        super(aRequest);
+        if (log.isDebugEnabled())
+        {
+            log.debug("DirectAction.<init>: " + hashCode());
+        }
     }
 
 
@@ -82,55 +86,58 @@ public class DirectAction
      * request, in which case a session is created and the session's current
      * page is returned
      */
+    @SuppressWarnings("unchecked")
     public WOActionResults defaultAction()
     {
-        if ( Application.wcApplication().needsInstallation() )
+        if (Application.wcApplication().needsInstallation())
         {
-            return ( new install( request() ) ).defaultAction();
+            return (new install(request())).defaultAction();
         }
-        NSMutableDictionary errors = new NSMutableDictionary();
+        NSMutableDictionary<?, ?> errors =
+            new NSMutableDictionary<Object, Object>();
         NSMutableDictionary extra = request().formValues().mutableClone();
-        for ( String key : keysToScreen )
+        for (String key : keysToScreen)
         {
-            extra.removeObjectForKey( key );
+            extra.removeObjectForKey(key);
         }
-        if ( log.isDebugEnabled() )
+        if (log.isDebugEnabled())
         {
-            log.debug( "defaultAction(): extra keys = " + extra );
-            log.debug( "formValues = " + request().formValues());
+            log.debug("defaultAction(): extra keys = " + extra);
+            log.debug("formValues = " + request().formValues());
         }
 
-        if ( tryLogin( request(), errors ) )
+        if (tryLogin(request(), errors))
         {
-            String pageId = request().stringFormValueForKey( "page" );
-            log.debug( "target page = " + pageId );
+            Session session = (Session)session();
+            String pageId = request().stringFormValueForKey("page");
+            log.debug("target page = " + pageId);
             WOComponent startPage = null;
-            if ( pageId != null )
+            if (pageId != null)
             {
                 TabDescriptor previousPage = session.tabs.selectedDescendant();
 
                 // Try to go to the targeted page, if possible
-                if ( session.tabs.selectById( pageId ) != null
+                if (session.tabs.selectById(pageId) != null
                      && session.tabs.selectedDescendant().accessLevel() <=
-                         session.user().accessLevel() )
+                         session.user().accessLevel())
                 {
-                    log.debug( "found target page, validating ..." );
-                    startPage = pageWithName( session.currentPageName() );
+                    log.debug("found target page, validating ...");
+                    startPage = pageWithName(session.currentPageName());
                     // Try to configure the targeted page with the given
                     // parameters, if possible
-                    if ( ! ( startPage instanceof WCComponent
-                         && ( (WCComponent)startPage ).startWith( extra ) ) )
+                    if (!(startPage instanceof WCComponent
+                         && ((WCComponent)startPage).startWith(extra)))
                     {
                         // If we can't jump to this page successfully
                         startPage = null;
                         previousPage.select();
-                        log.debug( "target page validation failed" );
+                        log.debug("target page validation failed");
                     }
                 }
             }
-            if ( startPage == null )
+            if (startPage == null)
             {
-                startPage = pageWithName( session.currentPageName() );
+                startPage = pageWithName(session.currentPageName());
             }
             WOActionResults result = startPage.generateResponse();
 
@@ -146,15 +153,14 @@ public class DirectAction
         }
         else
         {
-            log.debug( "login failed" );
-            LoginPage loginPage = (LoginPage)pageWithName(
-                org.webcat.core.LoginPage.class.getName() );
+            log.debug("login failed");
+            LoginPage loginPage = pageWithName(org.webcat.core.LoginPage.class);
             loginPage.errors   = errors;
-            loginPage.userName = request().stringFormValueForKey( "UserName" );
+            loginPage.userName = request().stringFormValueForKey("UserName");
             loginPage.extraKeys = extra;
-            if ( domain != null )
+            if (domain != null)
             {
-                loginPage.domain   = domain;
+                loginPage.domain = domain;
             }
             return loginPage;
         }
@@ -175,222 +181,147 @@ public class DirectAction
      *                validation errors to report back to the user on failure
      * @return True on success
      */
-    protected boolean tryLogin( WORequest request, NSMutableDictionary errors )
+    protected boolean tryLogin(
+        WORequest request, NSMutableDictionary<?, ?> errors)
     {
         boolean result = false;
-        if ( request.formValues().count() == 0
-             || ( request.formValues().count() == 1
-                  && request.stringFormValueForKey( "next" ) != null )
-             || ( request.formValues().count() == 1
-                  && request.stringFormValueForKey( "institution" ) != null )
-             || ( request.formValues().count() > 0
-                  && request.formValueForKey( "u" ) == null
-                  && request.formValueForKey( "UserName" ) == null
-                  && request.formValueForKey( "p" ) == null
-                  && request.formValueForKey( "UserPassword" ) == null
-                  && request.formValueForKey( "AuthenticationDomain" ) == null
-                ) )
+        if (request.formValues().count() == 0
+            || (request.formValues().count() == 1
+                 && request.stringFormValueForKey("next") != null)
+            || (request.formValues().count() == 1
+                && request.stringFormValueForKey("institution") != null)
+            || (request.formValues().count() > 0
+                && request.formValueForKey("u") == null
+                && request.formValueForKey("UserName") == null
+                && request.formValueForKey("p") == null
+                && request.formValueForKey("UserPassword") == null
+                && request.formValueForKey("AuthenticationDomain") == null))
         {
             return result;
         }
 
-        String userName = request.stringFormValueForKey( "UserName" );
-        if ( userName == null )
-            userName = request.stringFormValueForKey( "u" );
+        String userName = request.stringFormValueForKey("UserName");
+        if (userName == null)
+        {
+            userName = request.stringFormValueForKey("u");
+        }
 
-        String password = request.stringFormValueForKey( "UserPassword" );
-        if ( password == null )
-            password = request.stringFormValueForKey( "p" );
+        String password = request.stringFormValueForKey("UserPassword");
+        if (password == null)
+        {
+            password = request.stringFormValueForKey("p");
+        }
 
         Object authIndexObj =
-            request().formValueForKey( "AuthenticationDomain" );
+            request().formValueForKey("AuthenticationDomain");
         int authIndex = -1;
-        String auth = request.stringFormValueForKey( "d" );
+        String auth = request.stringFormValueForKey("d");
         domain = null;
 
-        if ( userName == null )
+        if (userName == null)
         {
-            errors.setObjectForKey( "Please enter your user name.",
-                                    "userName" );
+            errors.setObjectForKey(
+                "Please enter your user name.", "userName");
         }
-        if ( password == null )
+        if (password == null)
         {
-            errors.setObjectForKey( "Please enter your password.",
-                                    "password" );
+            errors.setObjectForKey(
+                "Please enter your password.", "password");
         }
         try
         {
             // This conversion handles null correctly
             authIndex = ERXValueUtilities.intValueWithDefault(
-                            authIndexObj, -1 );
+                            authIndexObj, -1);
         }
-        catch ( Exception e )
+        catch (Exception e)
         {
             // Silently ignore failed conversions, which will be
             // treated as no selection
         }
         // also check for auth == null
-        if ( authIndex >= 0 )
+        if (authIndex >= 0)
         {
-            domain = (AuthenticationDomain)AuthenticationDomain
-                .authDomains().objectAtIndex( authIndex );
+            domain = AuthenticationDomain.authDomains().get(authIndex);
         }
-        else if ( auth != null )
+        else if (auth != null)
         {
             try
             {
-                log.debug( "tryLogin(): looking up domain" );
-                domain = AuthenticationDomain.authDomainByName( auth );
+                log.debug("tryLogin(): looking up domain");
+                domain = AuthenticationDomain.authDomainByName(auth);
             }
-            catch ( EOObjectNotAvailableException e )
+            catch (EOObjectNotAvailableException e)
             {
                 errors.setObjectForKey(
                     "Illegal institution/affiliation provided ("
                     + e + ").",
-                    "authDomain"
-                    );
+                    "authDomain");
             }
-            catch ( EOUtilities.MoreThanOneException e )
+            catch (EOUtilities.MoreThanOneException e)
             {
                 errors.setObjectForKey(
                     "Ambiguous institution/affiliation provided ("
                     + e + ").",
-                    "authDomain"
-                    );
+                    "authDomain");
             }
         }
-        else if ( AuthenticationDomain.authDomains().count() == 1 )
+        else if (AuthenticationDomain.authDomains().count() == 1)
         {
             // If there is just one authentication domain, then use it, since
             // no choice will appear on the login page
-            domain = (AuthenticationDomain)AuthenticationDomain
-                .authDomains().objectAtIndex( 0 );
+            domain = AuthenticationDomain.authDomains().objectAtIndex(0);
         }
         else
         {
             errors.setObjectForKey(
                 "Please select your institution/affiliation.",
-                "authDomain" );
+                "authDomain");
         }
 
         // The second half of this condition is here just to satisfy the
         // null pointer error detection in Java 6, since we know it can't
         // be null from the error count
-        if ( errors.count() == 0 && userName != null )
+        if (errors.count() == 0 && userName != null)
         {
             userName = userName.toLowerCase();
             EOEditingContext ec = Application.newPeerEditingContext();
             try
             {
-            ec.lock();
-//            domain = (AuthenticationDomain)EOUtilities.localInstanceOfObject(
-//                ec, domain );
-            log.debug( "tryLogin(): looking up user" );
-            user = User.validate( userName, password, domain, ec );
-            if ( user == null )
-            {
-                log.info( "Failed login attempt: " + userName
-                          + " (" + domain.displayableName() + ")" );
-                errors.setObjectForKey(
-                    "Your login information could not be validated.  "
-                    + "Be sure you typed your user name and password "
-                    + "correctly, and selected the proper "
-                    + "institution/affiliation.",
-                    "failedAuthentication" );
-            }
-            else
-            {
-                result = true;
-                LoginSession ls =
-                    LoginSession.getLoginSessionForUser( ec, user );
-                if ( ls != null )
+                ec.lock();
+                log.debug( "tryLogin(): looking up user" );
+                user = User.validate(userName, password, domain, ec);
+                if (user == null)
                 {
-                    // Remember the existing session id for restoration
-                    wosid = ls.sessionId();
+                    log.info("Failed login attempt: " + userName
+                        + " (" + domain.displayableName() + ")");
+                    errors.setObjectForKey(
+                        "Your login information could not be validated.  "
+                        + "Be sure you typed your user name and password "
+                        + "correctly, and selected the proper "
+                        + "institution/affiliation.",
+                        "failedAuthentication");
                 }
-                session = (Session)session();
-//                session.setUser(
-//                    (User)EOUtilities.localInstanceOfObject(
-//                        session.defaultEditingContext(), user ) );
-            }
+                else
+                {
+                    result = true;
+                    LoginSession ls =
+                        LoginSession.getLoginSessionForUser(ec, user);
+                    if (ls != null)
+                    {
+                        // Remember the existing session id for restoration
+                        rememberWosid(ls.sessionId());
+                    }
+                    session();
+                }
             }
             finally
             {
                 ec.unlock();
-                Application.releasePeerEditingContext( ec );
+                Application.releasePeerEditingContext(ec);
             }
         }
         return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Restores the session associated with this request, if possible.
-     */
-    protected void restoreSession()
-    {
-        log.debug( "restoreSession()" );
-        String thisWosid = wosid();
-        if ( session == null && thisWosid != null )
-        {
-            if (context().hasSession())
-            {
-                session = (Session)context().session();
-            }
-            else
-            {
-                session = (Session)Application.application()
-                    .restoreSessionWithID( thisWosid, context() );
-                log.debug( "restoreSession(): session = " + session );
-            }
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Saves the session associated with this request, if possible.
-     */
-    protected void saveSession()
-    {
-        log.debug( "saveSession()" );
-        WOContext context = context();
-        if ( session != null && context != null )
-        {
-            log.debug( "saveSession(): attempting to save session = "
-                     + session );
-            Application.application().saveSessionForContext( context );
-            session = null;
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Returns an existing session, if there is one.
-     *
-     * @return the session if there is one, or null otherwise
-     */
-    public WOSession existingSession()
-    {
-        log.debug( "existingSession()" );
-        if ( session != null )
-        {
-            log.debug( "existingSession(): returning one we created" );
-            return session;
-        }
-
-        restoreSession();
-        if ( session != null )
-        {
-            log.debug( "existingSession(): returning restored session" );
-            return session;
-        }
-
-        log.debug( "existingSession(): returning super.existingSession()" );
-        session = (Session)super.existingSession();
-        return session;
     }
 
 
@@ -400,142 +331,48 @@ public class DirectAction
      *
      * @return the session object
      */
+    @Override
     public WOSession session()
     {
-        log.debug( "session()" );
-        Session mySession = (Session)existingSession();
-        if ( mySession == null )
+        log.debug("session()");
+        Session mySession = (Session)super.session();
+        if (mySession != null && !mySession.isLoggedIn())
         {
-            log.debug( "session(): calling super.session()" );
-            mySession = (Session)context().session();
-        }
-
-        if ( mySession == null )
-        {
-            log.debug( "session(): null session" );
-        }
-        else if ( !mySession.isLoggedIn() )
-        {
-            if ( user == null )
+            if (user == null)
             {
-                log.debug( "session(): no user available yet" );
+                log.debug("session(): no user available yet");
             }
             else
             {
-                log.debug( "session(): no user associated with session" );
+                log.debug("session(): no user associated with session");
                 EOEditingContext ec = mySession.defaultEditingContext();
-                ec.lock();
-                user = user.localInstance( ec );
-                String sessionID = mySession.setUser( user );
-                Application.userCount++;
-                log.info( "login: "
-                          + user.userName()
-                          + " ("
-                          + user.authenticationDomain().displayableName()
-                          + ") (now "
-                          + Application.userCount
-                          + " users)" );
-                if ( !sessionID.equals( mySession.sessionID() ) )
+                try
                 {
-                    log.error( "session(): mismatched session IDs: have "
-                               + mySession.sessionID()
-                               + " but expected " + sessionID );
+                    ec.lock();
+                    user = user.localInstance(ec);
+                    String sessionID = mySession.setUser(user);
+                    Application.userCount++;
+                    log.info("login: "
+                        + user.userName()
+                        + " ("
+                        + user.authenticationDomain().displayableName()
+                        + ") (now "
+                        + Application.userCount
+                        + " users)");
+                    if (!sessionID.equals(mySession.sessionID()))
+                    {
+                        log.error("session(): mismatched session IDs: have "
+                            + mySession.sessionID()
+                            + " but expected " + sessionID);
+                    }
                 }
-                ec.unlock();
-                if ( this.session == null )
+                finally
                 {
-                    this.session = mySession;
+                    ec.unlock();
                 }
-//              log.debug( "session(): session is now " + session );
             }
-        }
-        if (session == null)
-        {
-            session = mySession;
         }
         return mySession;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Returns the session ID for this request, if there is one.
-     *
-     * @return the session object
-     */
-    public String wosid()
-    {
-        String result = wosid;
-        if ( result == null )
-        {
-            log.debug( "wosid(): attempting to get ID from request" );
-            result = request().sessionID();
-        }
-        log.debug( "wosid() = " + result );
-        return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Dispatch an action.
-     * @param actionName The name of the action to dispatch
-     * @return the action's result
-     */
-    public WOActionResults performActionNamed( String actionName )
-    {
-        log.debug( "performActionNamed( " + actionName + " )" );
-        return performActionNamed( actionName, this );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Dispatch an action.
-     * @param actionName The name of the action to dispatch
-     * @param owner      The DirectAction object on which the action
-     *                   will be invoked
-     * @return the action's result
-     */
-    public static WOActionResults performActionNamed( String       actionName,
-                                                      DirectAction owner )
-    {
-        log.debug( "performActionNamed( " + actionName + " )" );
-        return owner.performSynchronousActionNamed( actionName );
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Dispatch an action.
-     * @param actionName The name of the action to dispatch
-     * @return the action's result
-     */
-    public synchronized WOActionResults performSynchronousActionNamed(
-        String actionName )
-    {
-        log.debug( "performSynchronousActionNamed( " + actionName + " )" );
-        WOActionResults result = null;
-        try
-        {
-            result = super.performActionNamed( actionName );
-        }
-        catch (NSForwardException e)
-        {
-            if (e.originalException() instanceof
-                java.lang.NoSuchMethodException)
-            {
-                // assume this was a bad request with an invalid action
-                // name, and just go to the login page instead.
-                result = defaultAction();
-            }
-            else
-            {
-                throw e;
-            }
-        }
-        saveSession();
-        return result;
     }
 
 
@@ -552,39 +389,42 @@ public class DirectAction
      * @return True on success
      */
     protected boolean tryPasswordReset(
-        WORequest request, NSMutableDictionary errors )
+        WORequest request, NSMutableDictionary<?, ?> errors)
     {
         boolean result = false;
         EOEditingContext ec = Application.newPeerEditingContext();
-        String code = request().stringFormValueForKey( "code" );
-        if ( code == null ) { return result; }
+        String code = request().stringFormValueForKey("code");
+        if (code == null)
+        {
+            return result;
+        }
         try
         {
             ec.lock();
-            log.debug( "tryPasswordReset(): looking up code" );
+            log.debug("tryPasswordReset(): looking up code");
             PasswordChangeRequest pcr =
-                PasswordChangeRequest.requestForCode( ec, code );
-            if ( pcr == null )
+                PasswordChangeRequest.requestForCode(ec, code);
+            if (pcr == null)
             {
-                log.info( "Invalid password change code: " + code );
+                log.info("Invalid password change code: " + code);
                 errors.setObjectForKey(
                     "The password change link you used has expired or is "
                     + "invalid.  You may request another one.",
-                    "invalidCode" );
+                    "invalidCode");
             }
             else
             {
                 result = true;
                 LoginSession ls =
-                    LoginSession.getLoginSessionForUser( ec, pcr.user() );
-                if ( ls != null )
+                    LoginSession.getLoginSessionForUser(ec, pcr.user());
+                if (ls != null)
                 {
                     // Remember the existing session id for restoration
-                    wosid = ls.sessionId();
+                    rememberWosid(ls.sessionId());
                 }
-                session = (Session)session();
-                session.setUser( pcr.user().localInstance(
-                        session.defaultEditingContext() ) );
+                Session session = (Session)session();
+                session.setUser(pcr.user().localInstance(
+                        session.defaultEditingContext()));
                 pcr.delete();
                 try
                 {
@@ -600,7 +440,7 @@ public class DirectAction
         finally
         {
             ec.unlock();
-            Application.releasePeerEditingContext( ec );
+            Application.releasePeerEditingContext(ec);
         }
         return result;
     }
@@ -620,23 +460,23 @@ public class DirectAction
      */
     public WOActionResults passwordChangeRequestAction()
     {
-        NSMutableDictionary errors = new NSMutableDictionary();
+        NSMutableDictionary<?, ?> errors =
+            new NSMutableDictionary<Object, Object>();
 
-        if ( tryPasswordReset( request(), errors ) )
+        if (tryPasswordReset(request(), errors))
         {
             WCComponent result = (WCComponent)pageWithName(
-                session.tabs.selectById( "Profile" ).pageName() );
-            result.confirmationMessage( "To change your password, enter a "
-                + "new password and confirm it below." );
+                ((Session)session()).tabs.selectById("Profile").pageName());
+            result.confirmationMessage("To change your password, enter a "
+                + "new password and confirm it below.");
             return result.generateResponse();
         }
         else
         {
-            PasswordChangeRequestPage page =
-                (PasswordChangeRequestPage)pageWithName(
-                org.webcat.core.PasswordChangeRequestPage.class.getName() );
+            PasswordChangeRequestPage page = pageWithName(
+                org.webcat.core.PasswordChangeRequestPage.class);
             // careful: don't clobber any errors that are already there!
-            page.errors.addEntriesFromDictionary( errors );
+            page.errors.addEntriesFromDictionary(errors);
             return page;
         }
     }
@@ -654,14 +494,14 @@ public class DirectAction
     {
         // TODO: this entire action should be moved to a separate
         // class in the Grader subsystem.
-        log.debug( "entering cmsRequestAction()" );
-        log.debug( "hasSession() = " + context().hasSession() );
+        log.debug("entering cmsRequestAction()");
+        log.debug("hasSession() = " + context().hasSession());
         Subsystem subsystem = Application.wcApplication().subsystemManager()
-            .subsystem( "Grader" );
+            .subsystem("Grader");
         WOActionResults result = null;
         result = subsystem.handleDirectAction(
-            request(), null /*(Session)session()*/, context() );
-        log.debug( "exiting cmsRequestAction()" );
+            request(), null /*(Session)session()*/, context());
+        log.debug("exiting cmsRequestAction()");
         return result;
     }
 
@@ -677,34 +517,27 @@ public class DirectAction
     {
         // TODO: this entire action should be moved to a separate
         // class in the Grader subsystem.
-        NSMutableDictionary errors = new NSMutableDictionary();
-        log.debug( "entering submitAction()" );
-        log.debug( "hasSession() = " + context().hasSession() );
+        NSMutableDictionary<?, ?> errors =
+            new NSMutableDictionary<Object, Object>();
+        log.debug("entering submitAction()");
+        log.debug("hasSession() = " + context().hasSession());
         WOActionResults result = null;
-        if ( tryLogin( request(), errors ) )
+        if (tryLogin(request(), errors))
         {
-            log.debug( "calling subsystem handler" );
+            log.debug("calling subsystem handler");
             Subsystem subsystem = Application.wcApplication()
-                    .subsystemManager().subsystem( "Grader" );
-            result = subsystem.handleDirectAction( request(),
-                                                   (Session)session(),
-                                                   context() );
-//          result = pageWithName( "org.webcat.core.SubmitDebug" );
-//          ( (SubmitDebug)result ).message =
-//              "authentication succeeded";
-//          log.debug( "hasSession() = " + context().hasSession() );
-//          session.sleep();
+                .subsystemManager().subsystem("Grader");
+            result = subsystem.handleDirectAction(
+                request(), (Session)session(), context());
         }
         else
         {
-            log.debug( "authentication error, aborting submission" );
-            SubmitDebug page =
-                (SubmitDebug)pageWithName( SubmitDebug.class.getName() );
+            log.debug("authentication error, aborting submission");
+            SubmitDebug page = pageWithName(SubmitDebug.class);
             page.errors = errors;
             result = page.generateResponse();
         }
-        log.debug( "exiting submitAction()" );
-//      session = null;
+        log.debug("exiting submitAction()");
         return result;
     }
 
@@ -720,47 +553,33 @@ public class DirectAction
     {
         // TODO: this entire action should be moved to a separate
         // class in the Grader subsystem.
-        log.debug( "entering reportAction()" );
-        log.debug( "hasSession() = " + context().hasSession() );
-        log.debug( "check 2 = " + request().isSessionIDInRequest() );
-//      WOContext context = Application.application()
-//          .createContextForRequest( request() );
-//      log.debug( "hasSession() = " + context.hasSession() );
-//      session = (Session)context.session();
-//      session = session();
-//      log.debug( "session = " + session );
+        log.debug("entering reportAction()");
+        log.debug("hasSession() = " + context().hasSession());
+        log.debug("check 2 = " + request().isSessionIDInRequest());
         WOActionResults result = null;
         Session mySession = (Session)session();
-        if ( mySession != null )
+        if (mySession != null)
         {
-            log.debug( "calling subsystem handler" );
+            log.debug("calling subsystem handler");
             Subsystem subsystem = Application.wcApplication()
-                    .subsystemManager().subsystem( "Grader" );
+                .subsystemManager().subsystem("Grader");
             result = subsystem.handleDirectAction(
-                            request(), mySession, context() );
-//          result = pageWithName( "org.webcat.core.SubmitDebug" );
-//          ( (SubmitDebug)result ).message =
-//              "authentication succeeded";
-//          log.debug( "hasSession() = " + context().hasSession() );
-//          session.sleep();
+                request(), mySession, context());
         }
         else
         {
-            log.debug( "No session, so aborting" );
-            SubmitDebug page =
-                (SubmitDebug)pageWithName( SubmitDebug.class.getName() );
+            log.debug("No session, so aborting");
+            SubmitDebug page = pageWithName(SubmitDebug.class);
             String msg =
                 "Your login session no longer exists.  Try logging in "
                 + "through <a href=\""
-                + context().urlWithRequestHandlerKey( "wa", "default", null )
+                + context().urlWithRequestHandlerKey("wa", "default", null)
                 + "\">Web-CAT's main page</a> to view your report.";
-            page.errors = new NSDictionary( msg, msg );
+            page.errors = new NSDictionary<Object, Object>(msg, msg);
             result = page.generateResponse();
         }
-        log.debug( "exiting reportAction()" );
-        // Omit session saving, since we need to use it in the
-        // response generation for this page
-        session = null;
+        log.debug("exiting reportAction()");
+        forgetSession();
         return result;
     }
 
@@ -793,10 +612,20 @@ public class DirectAction
     }
 
 
+    // ----------------------------------------------------------
+    @Override
+    protected boolean actionShouldWaitForInitialization(String actionName)
+    {
+        if ("default".equals(actionName))
+        {
+            return false;
+        }
+        return super.actionShouldWaitForInitialization(actionName);
+    }
+
+
     //~ Instance/static variables .............................................
 
-    private Session              session = null;
-    private String               wosid   = null;
     private User                 user    = null;
     private AuthenticationDomain domain  = null;
 
@@ -810,5 +639,5 @@ public class DirectAction
         "AuthenticationDomain"
     };
 
-    static Logger log = Logger.getLogger( DirectAction.class );
+    static Logger log = Logger.getLogger(DirectAction.class);
 }
