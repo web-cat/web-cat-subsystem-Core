@@ -28,6 +28,7 @@ import com.webobjects.appserver.WOCookie;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOSharedEditingContext;
 import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSKeyValueCodingAdditions;
 import com.webobjects.foundation.NSTimestamp;
@@ -461,15 +462,17 @@ public class Theme
 
 
     // ----------------------------------------------------------
+    @SuppressWarnings("deprecation")
     private static File themeBaseDir()
     {
         if (themeBaseDir == null)
         {
+            // We *cannot* use the subsystem itself to find this
+            // information, since this method is called before the
+            // subsystem manager has initialized the subsystems!
             themeBaseDir = new File(
-                Application.wcApplication().subsystemManager()
-                    .subsystem("Core").myResourcesDir(),
-                "../WebServerResources/theme");
-
+                NSBundle.bundleForName("Core").bundlePath(),
+                "WebServerResources/theme");
         }
         return themeBaseDir;
     }
