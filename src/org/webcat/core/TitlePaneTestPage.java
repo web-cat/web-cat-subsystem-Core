@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2010 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -24,14 +24,27 @@ package org.webcat.core;
 import org.webcat.core.WCComponent;
 import com.webobjects.appserver.WOContext;
 
-public class TitlePaneTestPage extends WCComponent
+//-------------------------------------------------------------------------
+/**
+ * A test page for title panes.
+ *
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
+ */
+public class TitlePaneTestPage
+    extends WCComponent
 {
+    //~ Constructor ...........................................................
+
     // ----------------------------------------------------------
     public TitlePaneTestPage(WOContext context)
     {
         super(context);
     }
 
+
+    //~ Methods ...............................................................
 
     // ----------------------------------------------------------
     public String closedTitlePane1Value()
