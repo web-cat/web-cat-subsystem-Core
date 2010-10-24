@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2010 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,9 +22,6 @@
 package org.webcat.core;
 
 import com.webobjects.appserver.*;
-import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
-import com.webobjects.foundation.*;
 import java.util.StringTokenizer;
 import org.webcat.core.Application;
 import org.webcat.core.BarePage;
@@ -36,8 +33,9 @@ import org.apache.log4j.Logger;
  * Places a titlebar and a grey window-looking rectangle around and behind its
  * contents.
  *
- * @author Stephen Edwards
- * @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class BarePage
     extends WOComponent
