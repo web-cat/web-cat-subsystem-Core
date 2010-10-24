@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2010 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -77,8 +77,8 @@ import org.webcat.core.messaging.UnexpectedExceptionMessage;
  * properties and subsystem objects, and provides for centralized handling
  * of exception handling for the Web-CAT application.
  *
- * @author Stephen Edwards
- * @author Last changed by $Author$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
 public class Application
@@ -104,15 +104,15 @@ public class Application
         super();
 
         // Set UTF-8 encoding, to support localization
-        WOMessage.setDefaultEncoding( "UTF-8" );
-        WOMessage.setDefaultURLEncoding( "UTF-8" );
-        ERXMessageEncoding.setDefaultEncoding( "UTF8" );
-        ERXMessageEncoding.setDefaultEncodingForAllLanguages( "UTF8" );
+        WOMessage.setDefaultEncoding("UTF-8");
+        WOMessage.setDefaultURLEncoding("UTF-8");
+        ERXMessageEncoding.setDefaultEncoding("UTF8");
+        ERXMessageEncoding.setDefaultEncodingForAllLanguages("UTF8");
 
         // We'll use plain WO sessions, even in a servlet context, since
         // restoring sessions through the WCServletSessionStore doesn't
         // really work.
-        setSessionStoreClassName( "WOServerSessionStore" );
+        setSessionStoreClassName("WOServerSessionStore");
 
         // I'm not sure these do anything, since the corresponding
         // notifications should have occurred before this constructor
@@ -121,22 +121,20 @@ public class Application
         // that is broken.
         NSNotificationCenter.defaultCenter().addObserver(
             this,
-            new NSSelector( "logNotification",
-                            new Class[] { NSNotification.class } ),
+            new NSSelector("logNotification",
+                           new Class[] { NSNotification.class }),
             NSBundle.BundleDidLoadNotification,
-            null
-        );
+            null);
         NSNotificationCenter.defaultCenter().addObserver(
             this,
-            new NSSelector( "logNotification",
-                            new Class[] { NSNotification.class } ),
+            new NSSelector("logNotification",
+                           new Class[] { NSNotification.class }),
             NSBundle.LoadedClassesNotification,
-            null
-        );
+            null);
 
-        if ( log.isInfoEnabled() )
+        if (log.isInfoEnabled())
         {
-            log.info( "Web-CAT v" + version()
+            log.info("Web-CAT v" + version()
                 + "\nCopyright (C) 2006-2010 Virginia Tech\n\n"
                 + "Web-CAT comes with ABSOLUTELY NO WARRANTY; this is "
                 + "free software\n"
@@ -145,63 +143,64 @@ public class Application
                 + "http://www.gnu.org/licenses/agpl.html\n"
                 + "For full source code, see:\n"
                 + "http://www.sourceforge.net/projects/web-cat\n");
-            log.info( "Properties loaded from:" );
-            NSArray dirs =
-                ERXProperties.pathsForUserAndBundleProperties();
-            for ( int i = 0; i < dirs.count(); i++ )
+            log.info("Properties loaded from:");
+            NSArray<?> dirs = ERXProperties.pathsForUserAndBundleProperties();
+            for (Object dir : dirs)
             {
-                log.info( "\t" + dirs.objectAtIndex( i ) );
+                log.info("\t" + dir);
             }
             dirs = ERXProperties.optionalConfigurationFiles();
-            if ( dirs == null )
+            if (dirs == null)
             {
-                log.info( "no optional configuration files specified." );
+                log.info("no optional configuration files specified.");
             }
             else
             {
-                log.info( "Also loading properties from optional files:" );
-                for ( int i = 0; i < dirs.count(); i++ )
+                log.info("Also loading properties from optional files:");
+                for (Object dir : dirs)
                 {
-                    log.info( "\t" + dirs.objectAtIndex( i ) );
+                    log.info("\t" + dir);
                 }
             }
         }
-        if ( log.isDebugEnabled() )
+        if (log.isDebugEnabled())
         {
             try
             {
-                File here = new File( "." );
-                log.debug( "current dir = " + here.getCanonicalPath() );
+                File here = new File(".");
+                log.debug("current dir = " + here.getCanonicalPath());
             }
-            catch ( java.io.IOException e )
+            catch (java.io.IOException e)
             {
-                log.error( "exception checking cwd: ", e );
+                log.error("exception checking cwd: ", e);
             }
         }
 
         // Present the first page via the default DirectAction.
         setDefaultRequestHandler(
-            requestHandlerForKey( directActionRequestHandlerKey() ) );
+            requestHandlerForKey(directActionRequestHandlerKey()));
 
         // Register the entity resource request handler.
         registerRequestHandler(new EntityResourceRequestHandler(),
-                EntityResourceRequestHandler.REQUEST_HANDLER_KEY);
+            EntityResourceRequestHandler.REQUEST_HANDLER_KEY);
 
         // Set page cache size from property
-        setPageCacheSize(
-            ERXValueUtilities.intValueWithDefault(
-                configurationProperties().valueForKey("WOPageCacheSize"), 30));
+        setPageCacheSize(ERXValueUtilities.intValueWithDefault(
+            configurationProperties().valueForKey("WOPageCacheSize"), 30));
+
+        updateStaticHtmlResources();
+        WOEC.installWOECFactory();
 
         if (!isDevelopmentModeSafe() && isDirectConnectEnabled())
         {
             setDirectConnectEnabled(false);
         }
 
-        if ( configurationProperties().hasUsableConfiguration() )
+        if (configurationProperties().hasUsableConfiguration())
         {
-            log.debug( "initializing application" );
+            log.debug("initializing application");
             initializeApplication();
-            setNeedsInstallation( false );
+            setNeedsInstallation(false);
             notifyAdminsOfStartup();
         }
     }
@@ -215,9 +214,62 @@ public class Application
      *
      * @param argv The command line arguments
      */
-    public static void main( String argv[] )
+    public static void main(String argv[])
     {
-        er.extensions.appserver.ERXApplication.main( argv, Application.class );
+        er.extensions.appserver.ERXApplication.main(argv, Application.class);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Pause the calling thread until the constructor for the singleton
+     * instance of this class has been created.
+     */
+    public static void waitForConstructorToComplete()
+    {
+        // Just ensure the instance exists, so we can ignore the result
+        wcApplication().needsInstallation();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Pause the calling thread until the application has been completely
+     * initialized (i.e., after the constructor and initializeApplication()
+     * have both completed).
+     */
+    public static void waitForInitializationToComplete()
+    {
+        int count = 0;
+        boolean logEntryAndExit = !initializationComplete;
+        if (logEntryAndExit && log.isDebugEnabled())
+        {
+            log.debug("Thread " + Thread.currentThread().getName()
+                + " waiting for intialization to complete");
+        }
+        while (!initializationComplete)
+        {
+            try
+            {
+                Thread.sleep(500);
+            }
+            catch (InterruptedException e)
+            {
+                // ignore
+            }
+            count++;
+            if (count % 1000 == 0)
+            {
+                log.error("Client thread " + Thread.currentThread().getName()
+                    + " is still waiting for initialization to complete ("
+                    + (count/2) + " sec).");
+            }
+        }
+        if (logEntryAndExit && log.isDebugEnabled())
+        {
+            log.debug("Thread " + Thread.currentThread().getName()
+                + ": intialization completed");
+        }
     }
 
 
@@ -238,7 +290,7 @@ public class Application
      * Tell this application whether or not it needs to run its self-installer.
      * @param value true if installation is needed
      */
-    public void setNeedsInstallation( boolean value )
+    public void setNeedsInstallation(boolean value)
     {
         needsInstallation = value;
     }
@@ -252,10 +304,6 @@ public class Application
     public void notifyAdminsOfStartup()
     {
         new ApplicationStartupMessage().send();
-
-/*        sendAdminEmail( null, null, true, "Web-CAT starting up",
-            "Web-CAT is starting up at " + startTime,
-            null );*/
     }
 
 
@@ -263,7 +311,6 @@ public class Application
     public void installPatches()
     {
         super.installPatches();
-
         WCContext.installIntoApplication(this);
     }
 
@@ -275,10 +322,7 @@ public class Application
      */
     public void initializeApplication()
     {
-        updateStaticHtmlResources();
-
         loadArchiveManagers();
-        WOEC.installWOECFactory();
 
         // Apply any pending database updates for the core
         UpdateEngine.instance().database().setConnectionInfoFromProperties(
@@ -396,9 +440,11 @@ public class Application
         initializeMessagingSystem();
 
         // Ensure subsystems are all loaded
-        subsystemManager();
+        __subsystemManager = new SubsystemManager(configurationProperties());
+//        subsystemManager();
         startTime = new NSTimestamp();
         checkBootstrapVersion();
+        initializationComplete = true;
     }
 
 
@@ -422,15 +468,19 @@ public class Application
      */
     public SubsystemManager subsystemManager()
     {
-        if ( __subsystemManager == null )
-            __subsystemManager = new SubsystemManager( configurationProperties() );
+        if (__subsystemManager == null)
+        {
+            // Wait until initialization is complete before letting the
+            // caller proceed
+            waitForInitializationToComplete();
+        }
         return __subsystemManager;
     }
 
-    public void logNotification( NSNotification notification )
+    public void logNotification(NSNotification notification)
     {
-        log.info( "notification posted: " + notification );
-        log.info( "notification object: " + notification.object() );
+        log.info("notification posted: " + notification);
+        log.info("notification object: " + notification.object());
     }
 
 
@@ -441,22 +491,22 @@ public class Application
      *
      * @param notification The notification received
      */
-    public void createAdditionalDatabaseChannel( NSNotification notification )
+    public void createAdditionalDatabaseChannel(NSNotification notification)
     {
         EODatabaseContext dbContext = (EODatabaseContext)notification.object();
-        EODatabaseChannel dbChannel = new EODatabaseChannel( dbContext );
-        if ( dbContext != null )
+        EODatabaseChannel dbChannel = new EODatabaseChannel(dbContext);
+        if (dbContext != null)
         {
             // consensus is that if you need more than 5 open channels,
             // you might want to re-think something in your code or model
-            if ( dbContext.registeredChannels().count() < 5 )
+            if (dbContext.registeredChannels().count() < 5)
             {
-                log.debug( "createAdditionalDatabaseChannel()" );
-                dbContext.registerChannel( dbChannel );
+                log.debug("createAdditionalDatabaseChannel()");
+                dbContext.registerChannel(dbChannel);
             }
             else
             {
-                log.error( "requesting > 5 database channels" );
+                log.error("requesting > 5 database channels");
             }
         }
     }
@@ -487,10 +537,9 @@ public class Application
      */
     public WOSession restoreSessionWithID(
             String    sessionID,
-            WOContext context
-        )
+            WOContext context)
     {
-        WOSession result = super.restoreSessionWithID( sessionID, context );
+        WOSession result = super.restoreSessionWithID(sessionID, context);
         return result;
     }
 
@@ -501,21 +550,21 @@ public class Application
      * @param context the context of the request
      * @return The login page
      */
-    public WORedirect gotoLoginPage( WOContext context )
+    public WORedirect gotoLoginPage(WOContext context)
     {
-        WORedirect redirect = (WORedirect)pageWithName( "WORedirect", context );
-        String dest = configurationProperties().getProperty(  "login.url" );
-        if ( dest == null )
+        WORedirect redirect = (WORedirect)pageWithName("WORedirect", context);
+        String dest = configurationProperties().getProperty("login.url");
+        if (dest == null)
         {
-            dest = configurationProperties().getProperty( "base.url" );
+            dest = configurationProperties().getProperty("base.url");
         }
-        if ( dest == null )
+        if (dest == null)
         {
             dest = completeURLWithRequestHandlerKey(
-                context, null, null, null, false, 0 );
+                context, null, null, null, false, 0);
         }
-        log.debug( "gotoLoginPage: " + dest );
-        redirect.setUrl( dest );
+        log.debug("gotoLoginPage: " + dest);
+        redirect.setUrl(dest);
         return redirect;
     }
 
@@ -546,7 +595,7 @@ public class Application
             aQueryString,
             isSecure,
             somePort,
-            false );
+            false);
     }
 
 
@@ -569,49 +618,47 @@ public class Application
             String    aQueryString,
             boolean   isSecure,
             int       somePort,
-            boolean   forceSecureSetting )
+            boolean   forceSecureSetting)
     {
         WORequest request = context.request();
         String dest = context.completeURLWithRequestHandlerKey(
-                requestHandlerKey,
-                aRequestHandlerPath,
-                aQueryString,
-                isSecure,
-                somePort
-            );
-        log.debug( "prior to munging, dest = " + dest );
-        if ( urlHostPrefix == null )
+            requestHandlerKey,
+            aRequestHandlerPath,
+            aQueryString,
+            isSecure,
+            somePort);
+        log.debug("prior to munging, dest = " + dest);
+        if (urlHostPrefix == null)
         {
-            String result =
-                configurationProperties().getProperty( "base.url" );
-            if ( result != null )
+            String result = configurationProperties().getProperty("base.url");
+            if (result != null)
             {
-                Matcher matcher = Pattern.compile( "^http(s)?://[^/]*",
-                    Pattern.CASE_INSENSITIVE ).matcher( result );
-                if ( matcher.find() )
+                Matcher matcher = Pattern.compile("^http(s)?://[^/]*",
+                    Pattern.CASE_INSENSITIVE ).matcher(result);
+                if (matcher.find())
                 {
                     urlHostPrefix = matcher.group() + "/";
                 }
             }
             if (urlHostPrefix == null && request != null)
             {
-                urlHostPrefix = "http://" + hostName( request ) + "/";
+                urlHostPrefix = "http://" + hostName(request) + "/";
             }
             log.debug("urlHostPrefix = " + urlHostPrefix);
         }
-        if ( urlHostPrefix != null )
+        if (urlHostPrefix != null)
         {
-            dest = dest.replaceFirst( "^http(s)?://[^/]*(/)?", urlHostPrefix );
+            dest = dest.replaceFirst("^http(s)?://[^/]*(/)?", urlHostPrefix);
         }
-        dest = dest.replaceFirst( "^http(s)?:",
+        dest = dest.replaceFirst("^http(s)?:",
             "http"
-            + ( (  ( forceSecureSetting && isSecure )
-                || ( !forceSecureSetting
-                     && request != null
-                     && isSecure(request) ) )
-                ? "s" : "" )
+            + (((forceSecureSetting && isSecure)
+                || (!forceSecureSetting
+                    && request != null
+                    && isSecure(request)))
+                ? "s" : "")
             + ":");
-        log.debug( "link = " + dest );
+        log.debug("link = " + dest);
         return dest;
     }
 
@@ -623,14 +670,14 @@ public class Application
      */
     static public boolean useSecureConnectionsByDefault()
     {
-        if ( defaultsToSecure == null )
+        if (defaultsToSecure == null)
         {
-            String base = configurationProperties().getProperty( "base.url" );
-            if ( base != null )
+            String base = configurationProperties().getProperty("base.url");
+            if (base != null)
             {
                 defaultsToSecure = Boolean.valueOf(
-                    base.startsWith( "https" )
-                    || base.startsWith(  "HTTPS" ) );
+                    base.startsWith("https")
+                    || base.startsWith("HTTPS"));
             }
         }
         return defaultsToSecure == null
@@ -648,11 +695,9 @@ public class Application
      * @return <code>true</code> if the request was made via https/SSL,
      * <code>false</code> otherwise.
      */
-    static public boolean isSecure( WORequest request )
+    static public boolean isSecure(WORequest request)
     {
         /** require [valid_param] request != null; **/
-
-        boolean isSecure = false;
 
         // The method of determining whether the request was via HTTPS depends
         // on the adaptor / the web server.
@@ -660,26 +705,24 @@ public class Application
         // First we try and see if the request was made on the standard
         // https port
         String serverPort = null;
-        for ( int i = 0; serverPort == null
-                         && i < SERVER_PORT_KEYS.count(); i++ )
+        for (int i = 0; serverPort == null
+                        && i < SERVER_PORT_KEYS.count(); i++)
         {
             serverPort = request.headerForKey(
-                SERVER_PORT_KEYS.objectAtIndex( i ) );
+                SERVER_PORT_KEYS.objectAtIndex(i));
         }
 
         // Apache and some other web servers use this to indicate HTTPS mode.
         // This is much better as it does not depend on the port number used.
-        String httpsMode = request.headerForKey( "https" );
+        String httpsMode = request.headerForKey("https");
 
         // If either the https header is 'on' or the server port is 443 then
         // we consider this to be an HTTP request.
-        isSecure = ( httpsMode != null  &&  httpsMode.equalsIgnoreCase( "on" ) )
-                || ( serverPort != null  &&  serverPort.equals( "443" ) )
-                || ( httpsMode == null
-                     && serverPort == null
-                     && useSecureConnectionsByDefault() );
-
-        return isSecure;
+        return (httpsMode  != null  &&  httpsMode.equalsIgnoreCase("on"))
+            || (serverPort != null  &&  serverPort.equals("443"))
+            || (httpsMode == null
+                && serverPort == null
+                && useSecureConnectionsByDefault());
     }
 
 
@@ -692,14 +735,14 @@ public class Application
      * @param request the request to get the hostname from
      * @return the host name used in this request.
      */
-    static public String hostName( WORequest request )
+    static public String hostName(WORequest request)
     {
         /** require [valid_param] request != null; **/
 
         String hostName = null;
-        for (int i = 0; (hostName == null) && (i < HOST_NAME_KEYS.count()); i++)
+        for (int i = 0; hostName == null && i < HOST_NAME_KEYS.count(); i++)
         {
-            hostName = request.headerForKey( HOST_NAME_KEYS.objectAtIndex(i) );
+            hostName = request.headerForKey(HOST_NAME_KEYS.objectAtIndex(i));
         }
 
         return hostName;
@@ -716,21 +759,19 @@ public class Application
      * @return The login page
      */
     public WOResponse handleSessionRestorationErrorInContext(
-            WOContext context
-        )
+        WOContext context)
     {
-        log.debug( "handleSessionRestorationErrorInContext()" );
-        return gotoLoginPage( context ).generateResponse();
+        log.debug("handleSessionRestorationErrorInContext()");
+        return gotoLoginPage(context).generateResponse();
     }
 
 
     // ----------------------------------------------------------
     public WOResponse handleSessionCreationErrorInContext(
-            WOContext context
-        )
+        WOContext context)
     {
-        log.debug( "handleSessionCreationErrorInContext()" );
-        return super.handleSessionCreationErrorInContext( context );
+        log.debug("handleSessionCreationErrorInContext()");
+        return super.handleSessionCreationErrorInContext(context);
     }
 
 
@@ -742,17 +783,17 @@ public class Application
      * @param context The context for the retrieval
      * @return        The component
      */
-    public WOComponent pageWithName( String name, WOContext context )
+    public WOComponent pageWithName(String name, WOContext context)
     {
-        if ( requestLog.isDebugEnabled() )
+        if (requestLog.isDebugEnabled())
         {
-            requestLog.debug( "pageWithName( "
-                + ( ( name == null ) ? "<null>" : name )
+            requestLog.debug("pageWithName( "
+                + ((name == null) ? "<null>" : name)
                 + ", "
                 + context
-                + " )" );
+                + " )");
         }
-        return super.pageWithName( name, context );
+        return super.pageWithName(name, context);
     }
 
 
@@ -765,20 +806,20 @@ public class Application
     {
         final int iterationLimit = 10;
         Runtime runtime = Runtime.getRuntime();
-        log.info( "Forcing full garbage collection..." );
+        log.info("Forcing full garbage collection...");
         long isFree = runtime.freeMemory();
         long wasFree;
         int iterations = 0;
-        log.info( " wasFree: " + isFree + "..." );
+        log.info("    wasFree: " + isFree + "...");
         do
         {
             wasFree = isFree;
             runtime.gc();
             isFree = runtime.freeMemory();
-        } while ( isFree > wasFree && iterations++ < iterationLimit );
+        } while (isFree > wasFree && iterations++ < iterationLimit);
         runtime.runFinalization();
-        log.info( "isFree: " + isFree + ", total mem : " +
-                  runtime.totalMemory() + "..." );
+        log.info("    isFree: " + isFree + ", total mem : "
+            + runtime.totalMemory() + "...");
     }
 
 
@@ -786,68 +827,68 @@ public class Application
     /**
      * Overrides parent implementation to add heap check and force
      * garbage collection when necessary.
-     * @see er.extensions.appserver.ERXApplication#dispatchRequest(com.webobjects.appserver.WORequest)
      */
-    public WOResponse dispatchRequest( WORequest aRequest )
+    @Override
+    public WOResponse dispatchRequest(WORequest aRequest)
     {
         Runtime runtime = Runtime.getRuntime();
         final int freeLimit = 100000;
         final int dieLimit  =   5000;
-        if ( runtime.freeMemory() < freeLimit )
+        if (runtime.freeMemory() < freeLimit)
         {
             forceFullGarbageCollection();
-            if ( runtime.freeMemory() < freeLimit )
+            if (runtime.freeMemory() < freeLimit)
             {
-                if ( runtime.freeMemory() < dieLimit )
+                if (runtime.freeMemory() < dieLimit)
                 {
-                    sendAdminEmail( "Dying, out of memory...",
-                                    "Cannot force GC to free more than "
-                                    + freeLimit + " bytes.  Terminating." );
+                    sendAdminEmail("Dying, out of memory...",
+                                   "Cannot force GC to free more than "
+                                   + freeLimit + " bytes.  Terminating.");
                     killInstance();
                 }
                 else
                 {
-                    sendAdminEmail( "Running out of memory...",
-                                    "Cannot force GC to free more than "
-                                    + freeLimit + " bytes." );
+                    sendAdminEmail("Running out of memory...",
+                                   "Cannot force GC to free more than "
+                                   + freeLimit + " bytes.");
                 }
             }
         }
-        if ( dieTime != null )
+        if (dieTime != null)
         {
-            if ( dieTime.before( new NSTimestamp() ) )
+            if (dieTime.before(new NSTimestamp()))
             {
                 killInstance();
             }
         }
-        else if ( isRefusingNewSessions() )
+        else if (isRefusingNewSessions())
         {
-            dieTime = ( new NSTimestamp() )
+            dieTime = (new NSTimestamp())
             .timestampByAddingGregorianUnits(
-                    0,  // years
-                    0,  // months
-                    0,  // days
-                    0,  // hours
-                    5,  // minutes
-                    0   // seconds
+                0,  // years
+                0,  // months
+                0,  // days
+                0,  // hours
+                5,  // minutes
+                0   // seconds
                 );
         }
-        if ( requestLog.isDebugEnabled() )
+        if (requestLog.isDebugEnabled())
         {
-            requestLog.debug( "dispatchRequest(): method = "
-                + aRequest.method() );
-            requestLog.debug( "\tqueryString = " + aRequest.queryString() );
-            requestLog.debug( "\trequestHandlerKey = "
-                + aRequest.requestHandlerKey() );
-            requestLog.debug( "\trequestHandlerPath = "
-                + aRequest.requestHandlerPath() );
-            requestLog.debug( "\turi = " + aRequest.uri() );
-            requestLog.debug( "\tcookies = " + aRequest.cookies() );
+            requestLog.debug("dispatchRequest(): method = "
+                + aRequest.method());
+            requestLog.debug("\tqueryString = " + aRequest.queryString());
+            requestLog.debug("\trequestHandlerKey = "
+                + aRequest.requestHandlerKey());
+            requestLog.debug("\trequestHandlerPath = "
+                + aRequest.requestHandlerPath());
+            requestLog.debug("\turi = " + aRequest.uri());
+            requestLog.debug("\tcookies = " + aRequest.cookies());
         }
-        WOResponse result = super.dispatchRequest( aRequest );
-        if ( requestLog.isDebugEnabled() )
+        WOResponse result = super.dispatchRequest(aRequest);
+        if (requestLog.isDebugEnabled())
         {
-            requestLog.debug( "dispatchRequest() result:\n" + result  );
+            requestLog.debug("dispatchRequest() result:\n" + result);
         }
         return result;
     }
@@ -879,14 +920,14 @@ public class Application
     static public String configurationFileName()
     {
         String configFileName = ERXSystem.getProperty(
-            "webobjects.user.dir" );
-        if ( configFileName == null || configFileName.equals( "" ) )
+            "webobjects.user.dir");
+        if (configFileName == null || configFileName.equals(""))
         {
-            configFileName = ERXSystem.getProperty( "user.dir" );
+            configFileName = ERXSystem.getProperty("user.dir");
         }
-        configFileName = configFileName.replace( '\\', '/' );
-        if ( configFileName.length() > 0
-             && !configFileName.endsWith( "/" ) )
+        configFileName = configFileName.replace('\\', '/');
+        if (configFileName.length() > 0
+            && !configFileName.endsWith("/"))
         {
             configFileName += "/";
         }
@@ -902,9 +943,9 @@ public class Application
      */
     static public WCConfigurationFile configurationProperties()
     {
-        if ( __properties == null )
+        if (__properties == null)
         {
-            __properties = new WCConfigurationFile( configurationFileName() );
+            __properties = new WCConfigurationFile(configurationFileName());
             __properties.updateToSystemProperties();
         }
         return __properties;
@@ -918,11 +959,11 @@ public class Application
      */
     static public String appIdentifier()
     {
-        if ( __appIdentifier == null )
+        if (__appIdentifier == null)
         {
-            String appIdentifierRaw =
-                configurationProperties().getProperty( "coreApplicationIdentifier" );
-            __appIdentifier = ( appIdentifierRaw == null )
+            String appIdentifierRaw = configurationProperties().getProperty(
+                "coreApplicationIdentifier");
+            __appIdentifier = (appIdentifierRaw == null)
                 ? "[Web-CAT] "
                 : "[" + appIdentifierRaw + "] ";
         }
@@ -934,7 +975,6 @@ public class Application
     /**
      * Overrides default WO version to include XP as a supported
      * platform.
-     * @see com.webobjects.appserver.WOApplication#_isForeignSupportedDevelopmentPlatform()
      */
     public boolean _isForeignSupportedDevelopmentPlatform()
     {
@@ -942,17 +982,18 @@ public class Application
             isAdditionalForeignSupportedDevelopmentPlatform();
     }
 
+
     // ----------------------------------------------------------
     /**
      * Overrides default WO version to force deployment-mode behavior
      * until valid configuration has been reached.
-     * @see com.webobjects.appserver.WOApplication#_rapidTurnaroundActiveForAnyProject()
      */
     public boolean _rapidTurnaroundActiveForAnyProject()
     {
         return staticHtmlResourcesNeedInitializing
             || super._rapidTurnaroundActiveForAnyProject();
     }
+
 
     // ----------------------------------------------------------
     /**
@@ -961,8 +1002,8 @@ public class Application
      */
     protected boolean isAdditionalForeignSupportedDevelopmentPlatform()
     {
-        String s = System.getProperty( "os.name" );
-        return s != null && s.equals( "Windows XP" );
+        String s = System.getProperty("os.name");
+        return s != null && s.equals("Windows XP");
     }
 
 
@@ -973,8 +1014,8 @@ public class Application
      */
     public static boolean isRunningOnWindows()
     {
-        String s = System.getProperty( "os.name" );
-        return s != null  &&  s.indexOf( "Windows" ) >= 0;
+        String s = System.getProperty("os.name");
+        return s != null  &&  s.indexOf("Windows") >= 0;
     }
 
 
@@ -987,15 +1028,14 @@ public class Application
      *        happening when the exception was thrown
      * @param context   the context in which the exception occurred
      * @return an error page
-     * @see er.extensions.appserver.ERXApplication#reportException(java.lang.Throwable, com.webobjects.foundation.NSDictionary)
      */
     @SuppressWarnings("unchecked")
-    public WOResponse reportException( Exception    exception,
-                                       NSDictionary extraInfo,
-                                       WOContext    context )
+    public WOResponse reportException(Exception    exception,
+                                      NSDictionary extraInfo,
+                                      WOContext    context)
     {
         Throwable t = exception instanceof NSForwardException
-            ? ( (NSForwardException) exception ).originalException()
+            ? ((NSForwardException) exception).originalException()
             : exception;
 
         if (t != null
@@ -1015,8 +1055,8 @@ public class Application
         {
             // Return a "clean" error page
             WOComponent errorPage =
-                pageWithName( ErrorPage.class.getName(), context );
-            errorPage.takeValueForKey( t, "exception" );
+                pageWithName(ErrorPage.class.getName(), context);
+            errorPage.takeValueForKey(t, "exception");
             return errorPage.generateResponse();
         }
         else
@@ -1038,28 +1078,29 @@ public class Application
      * @param context   the context in which the exception occurred
      * @return          the error message page
      */
-    public WOResponse handleException( Exception exception,
-                                       WOContext context )
+    public WOResponse handleException(Exception exception, WOContext context)
     {
         try
         {
             // We first want to test if we ran out of memory. If so we need
             // to quit ASAP.
-            handlePotentiallyFatalException( exception );
+            handlePotentiallyFatalException(exception);
 
             // Not a fatal exception, business as usual.
             NSDictionary<?, ?> extraInfo =
-                extraInformationForExceptionInContext( exception, context );
+                extraInformationForExceptionInContext(exception, context);
             WOResponse response =
-                reportException( exception, extraInfo, context );
-            if ( response == null && context != null)
-                response = super.handleException( exception, context );
+                reportException(exception, extraInfo, context);
+            if (response == null && context != null)
+            {
+                response = super.handleException(exception, context);
+            }
             return response;
         }
-        catch ( Throwable t )
+        catch (Throwable t)
         {
-            log.error( "handleException failed", t );
-            return super.handleException( exception, context );
+            log.error("handleException failed", t);
+            return super.handleException(exception, context);
         }
     }
 
@@ -1072,247 +1113,37 @@ public class Application
      * @param context   the context in which the exception occurred
      * @return          the error message page
      */
-    public WOResponse handlePageRestorationErrorInContext( WOContext context )
+    public WOResponse handlePageRestorationErrorInContext(WOContext context)
     {
         return pageWithName(
-            WCPageRestorationErrorPage.class.getName(), context )
+            WCPageRestorationErrorPage.class.getName(), context)
             .generateResponse();
     }
 
 
     // ----------------------------------------------------------
     public NSMutableDictionary<?, ?> extraInformationForExceptionInContext(
-        Exception exception, WOContext context )
+        Exception exception, WOContext context)
     {
         NSMutableDictionary<?, ?> result =
-            super.extraInformationForExceptionInContext( exception, context );
-        if (  context != null
-           && context.hasSession()
-           && context.session() instanceof Session )
+            super.extraInformationForExceptionInContext(exception, context);
+        if (   context != null
+            && context.hasSession()
+            && context.session() instanceof Session)
         {
             Session s = (Session)context.session();
             TabDescriptor currentTab =
-                ( s.tabs == null )
+                (s.tabs == null)
                     ? null
                     : s.tabs.selectedDescendant();
             result.setObjectForKey(
-                ( currentTab == null )
+                (currentTab == null)
                     ? "null"
                     : currentTab.printableTabLocation(),
-                "current tab" );
+                "current tab");
         }
         return result;
     }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Sends an e-mail message, optionally with attachments.  If
-     * no domain is specified for the To: address, then the
-     * property mail.default.domain is used.  If the To: address
-     * is null or if toAdmins is true, then the message is also
-     * sent to the administrator notification list.
-     *
-     * @param to          the To: address
-     * @param users       Additional list of User objects to add to the
-     *                    recipient list
-     * @param toAdmins    if true, send to the admin notification list too
-     * @param subject     the subject line
-     * @param body        the text of the e-mail message
-     * @param attachments if non-null, a vector of string file names to
-     *                    send as attachments on the message
-     */
-/*    static public void sendAdminEmail( String  to,
-                                       NSArray users,
-                                       boolean toAdmins,
-                                       String  subject,
-                                       String  body,
-                                       Vector  attachments )
-    {
-        try
-        {
-            // Define message
-            javax.mail.Message message =
-                new javax.mail.internet.MimeMessage(
-                        javax.mail.Session.getInstance( configurationProperties(), null )
-                    );
-            message.setFrom( new InternetAddress(
-                configurationProperties().getProperty( "coreAdminEmail" ) ) );
-            if ( to != null )
-            {
-                String defaultDomain =
-                    configurationProperties().getProperty( "mail.default.domain" );
-                if ( to.indexOf( '@' ) == -1  &&  defaultDomain != null )
-                {
-                    to += "@" + defaultDomain;
-                }
-                message.addRecipient( javax.mail.Message.RecipientType.TO,
-                                      new InternetAddress( to ) );
-            }
-            if ( to == null || toAdmins )
-            {
-                String adminList =
-                    configurationProperties().getProperty( "adminNotifyAddrs" );
-                if ( adminList == null )
-                {
-                    adminList = configurationProperties()
-                        .getProperty( "coreAdminEmail" );
-                }
-                else
-                {
-                    String primaryAdmin = configurationProperties()
-                        .getProperty( "coreAdminEmail" );
-                    if ( primaryAdmin != null
-                         && !adminList.contains( primaryAdmin ) )
-                    {
-                        adminList = primaryAdmin + "," + adminList;
-                    }
-                }
-                if ( adminList == null )
-                {
-                    log.error( "No bound admin e-mail addresses.  "
-                               + "Cannot send message:\n"
-                               + "Subject: " + subject + "\n"
-                               + "Message:\n" + body );
-                    return;
-                }
-                String[] admins = adminList.split( "\\s*,\\s*" );
-                for ( int i = 0; i < admins.length; i++ )
-                {
-                    message.addRecipient(
-                            javax.mail.Message.RecipientType.TO,
-                            new InternetAddress( admins[i] )
-                        );
-                }
-            }
-            if ( users != null )
-            {
-                for ( int i = 0; i < users.count(); i++ )
-                {
-                    User thisUser = (User)users.objectAtIndex( i );
-                    message.addRecipient(
-                            javax.mail.Message.RecipientType.TO,
-                            new InternetAddress( thisUser.email() )
-                        );
-                }
-            }
-            message.setSubject( appIdentifier() + subject );
-
-            // Create the message part
-            javax.mail.BodyPart messageBodyPart = new MimeBodyPart();
-
-            // Fill the message
-            messageBodyPart.setText( body );
-
-            // Create a Multipart
-            javax.mail.Multipart multipart = new MimeMultipart();
-
-            // Add part one
-            multipart.addBodyPart( messageBodyPart );
-
-            //
-            // The next parts are attachments
-            //
-            if ( attachments != null )
-            {
-                for ( Enumeration e = attachments.elements();
-                      e.hasMoreElements(); )
-                {
-                    String filename = (String)e.nextElement();
-                    File file = new File( filename );
-
-                    // Create another body part
-                    messageBodyPart = new MimeBodyPart();
-
-                    // Don't include files bigger than this as e-mail
-                    // attachments
-                    if ( file.length() < maxAttachmentSize )
-                    {
-                        // Get the attachment
-                        DataSource source = new FileDataSource( file );
-
-                        // Set the data handler to the attachment
-                        messageBodyPart.setDataHandler(
-                            new DataHandler( source ) );
-
-                        // Set the filename
-                        messageBodyPart.setFileName( file.getName() );
-                    }
-                    else
-                    {
-                        // Fill the message
-                        messageBodyPart.setText(
-                                "File "
-                                + file.getName()
-                                + " has been omitted from this message ("
-                                + file.length()
-                                + " bytes)\n"
-                            );
-                    }
-
-                    // Add attachment
-                    multipart.addBodyPart( messageBodyPart );
-                }
-            }
-
-            // Put parts in message
-            message.setContent( multipart );
-
-            // Send the message
-            if ("donotsendmail".equals(
-                    configurationProperties().getProperty( "mail.smtp.host" )))
-            {
-                if (log.isDebugEnabled())
-                {
-                    log.debug( "E-MAIL DISABLED: unsent message:\nTo: "
-                        + ( to == null ? "null" : to )
-                        + "\ntoAdmins: " + toAdmins
-                        + "\nSubject: " + ( subject == null ? "null" : subject )
-                        + "\nBody:\n" + ( body == null ? "null" : body )
-                        );
-                }
-            }
-            else
-            {
-                // AJA 2010.01.12: Fix (?) for the JAF/Mail issue that prevented mail
-                // from being sent from a servlet when running under Java 1.6:
-                // http://blog.hpxn.net/2009/12/02/tomcat-java-6-and-javamail-cant-load-dch/
-                ClassLoader originalClassLoader =
-                    Thread.currentThread().getContextClassLoader();
-
-                try
-                {
-                    Thread.currentThread().setContextClassLoader(
-                            Application.class.getClassLoader());
-
-                    javax.mail.Transport.send( message );
-                }
-                finally
-                {
-                    Thread.currentThread().setContextClassLoader(
-                            originalClassLoader);
-                }
-            }
-        }
-        catch ( Exception e )
-        {
-            String msg = e.getMessage();
-            if (msg != null && msg.contains("java.net.UnknownHostException:"))
-            {
-                log.error( "Exception sending mail message: " + e );
-            }
-            else
-            {
-                log.error( "Exception sending mail message:\n", e );
-                log.error( "unsent message:\nTo: "
-                       + ( to == null ? "null" : to )
-                       + "\ntoAdmins: " + toAdmins
-                       + "\nSubject: " + ( subject == null ? "null" : subject )
-                       + "\nBody:\n" + ( body == null ? "null" : body )
-                       );
-            }
-        }
-    }*/
 
 
     // ----------------------------------------------------------
@@ -1323,9 +1154,7 @@ public class Application
      * @param subject     the subject line
      * @param body        the body of the message
      */
-    static public void sendSimpleEmail( String to,
-                                        String subject,
-                                        String body)
+    static public void sendSimpleEmail(String to, String subject, String body)
     {
         sendSimpleEmail(new NSArray<String>(to), subject, body, null);
     }
@@ -1340,13 +1169,13 @@ public class Application
      * @param body        the body of the message
      * @param attachments the attachments
      */
-    static public void sendSimpleEmail( String to,
-                                        String subject,
-                                        String body,
-                                        NSDictionary<String, String> attachments)
+    static public void sendSimpleEmail(
+        String to,
+        String subject,
+        String body,
+        NSDictionary<String, String> attachments)
     {
-        sendSimpleEmail(new NSArray<String>(to), subject, body,
-                attachments);
+        sendSimpleEmail(new NSArray<String>(to), subject, body, attachments);
     }
 
 
@@ -1359,9 +1188,9 @@ public class Application
      * @param body        the body of the message
      * @param attachments the attachments
      */
-    static public void sendSimpleEmail( NSArray<String> to,
-                                        String subject,
-                                        String body)
+    static public void sendSimpleEmail(NSArray<String> to,
+                                       String subject,
+                                       String body)
     {
         sendSimpleEmail(to, subject, body, null);
     }
@@ -1376,18 +1205,18 @@ public class Application
      * @param body        the body of the message
      * @param attachments the attachments
      */
-    static public void sendSimpleEmail( NSArray<String> to,
-                                        String subject,
-                                        String body,
-                                        NSDictionary<String, String> attachments)
+    static public void sendSimpleEmail(NSArray<String> to,
+                                       String subject,
+                                       String body,
+                                       NSDictionary<String, String> attachments)
     {
         try
         {
             // Define message
             javax.mail.Message message =
                 new javax.mail.internet.MimeMessage(
-                        javax.mail.Session.getInstance(configurationProperties(), null)
-                    );
+                        javax.mail.Session.getInstance(
+                            configurationProperties(), null));
 
             message.setFrom(new InternetAddress(
                 configurationProperties().getProperty("coreAdminEmail")));
@@ -1395,8 +1224,8 @@ public class Application
             // Add each recipient to the message.
             for (String toAddress : to)
             {
-                String defaultDomain =
-                    configurationProperties().getProperty("mail.default.domain");
+                String defaultDomain = configurationProperties()
+                    .getProperty("mail.default.domain");
 
                 if (toAddress.indexOf( '@' ) == -1 && defaultDomain != null)
                 {
@@ -1407,19 +1236,19 @@ public class Application
                                      new InternetAddress(toAddress));
             }
 
-            message.setSubject( appIdentifier() + subject );
+            message.setSubject(appIdentifier() + subject);
 
             // Create the message part
             javax.mail.BodyPart messageBodyPart = new MimeBodyPart();
 
             // Fill the message
-            messageBodyPart.setText( body );
+            messageBodyPart.setText(body);
 
             // Create a Multipart
             javax.mail.Multipart multipart = new MimeMultipart();
 
             // Add part one
-            multipart.addBodyPart( messageBodyPart );
+            multipart.addBodyPart(messageBodyPart);
 
             //
             // The next parts are attachments
@@ -1436,14 +1265,14 @@ public class Application
 
                     // Don't include files bigger than this as e-mail
                     // attachments
-                    if ( file.length() < maxAttachmentSize )
+                    if (file.length() < maxAttachmentSize)
                     {
                         // Get the attachment
                         FileDataSource source = new FileDataSource(file);
 
                         // Set the data handler to the attachment
                         messageBodyPart.setDataHandler(
-                            new DataHandler( source ) );
+                            new DataHandler(source));
 
                         // Set the filename
                         messageBodyPart.setFileName(file.getName());
@@ -1452,39 +1281,38 @@ public class Application
                     {
                         // Fill the message
                         messageBodyPart.setText(
-                                "File "
-                                + file.getName()
-                                + " has been omitted from this message ("
-                                + file.length()
-                                + " bytes)\n"
-                            );
+                            "File "
+                            + file.getName()
+                            + " has been omitted from this message ("
+                            + file.length()
+                            + " bytes)\n");
                     }
 
                     // Add attachment
-                    multipart.addBodyPart( messageBodyPart );
+                    multipart.addBodyPart(messageBodyPart);
                 }
             }
 
             // Put parts in message
-            message.setContent( multipart );
+            message.setContent(multipart);
 
             // Send the message
             if ("donotsendmail".equals(
-                    configurationProperties().getProperty( "mail.smtp.host" )))
+                configurationProperties().getProperty("mail.smtp.host")))
             {
                 if (log.isDebugEnabled())
                 {
-                    log.debug( "E-MAIL DISABLED: unsent message:\nTo: "
+                    log.debug("E-MAIL DISABLED: unsent message:\nTo: "
                         + to
-                        + "\nSubject: " + ( subject == null ? "null" : subject )
-                        + "\nBody:\n" + ( body == null ? "null" : body )
-                        );
+                        + "\nSubject: " + (subject == null ? "null" : subject)
+                        + "\nBody:\n" + (body == null ? "null" : body));
                 }
             }
             else
             {
-                // AJA 2010.01.12: Fix for the JAF/Mail issue that prevented mail
-                // from being sent from a servlet when running under Java 1.6:
+                // AJA 2010.01.12: Fix for the JAF/Mail issue that prevented
+                // mail from being sent from a servlet when running under
+                // Java 1.6:
                 // http://blog.hpxn.net/2009/12/02/tomcat-java-6-and-javamail-cant-load-dch/
                 ClassLoader originalClassLoader =
                     Thread.currentThread().getContextClassLoader();
@@ -1493,8 +1321,7 @@ public class Application
                 {
                     Thread.currentThread().setContextClassLoader(
                             Application.class.getClassLoader());
-
-                    javax.mail.Transport.send( message );
+                    javax.mail.Transport.send(message);
                 }
                 finally
                 {
@@ -1503,21 +1330,20 @@ public class Application
                 }
             }
         }
-        catch ( Exception e )
+        catch (Exception e)
         {
             String msg = e.getMessage();
             if (msg != null && msg.contains("java.net.UnknownHostException:"))
             {
-                log.error( "Exception sending mail message: " + e );
+                log.error("Exception sending mail message: " + e);
             }
             else
             {
-                log.error( "Exception sending mail message:\n", e );
-                log.error( "unsent message:\nTo: "
-                       + ( to == null ? "null" : to )
-                       + "\nSubject: " + ( subject == null ? "null" : subject )
-                       + "\nBody:\n" + ( body == null ? "null" : body )
-                       );
+                log.error("Exception sending mail message:\n", e);
+                log.error("unsent message:\nTo: "
+                       + (to == null ? "null" : to)
+                       + "\nSubject: " + (subject == null ? "null" : subject)
+                       + "\nBody:\n" + (body == null ? "null" : body));
             }
         }
     }
@@ -1553,10 +1379,10 @@ public class Application
 
         if (adminList == null)
         {
-            log.error( "No bound admin e-mail addresses.  "
-                       + "Cannot send message:\n"
-                       + "Subject: " + subject + "\n"
-                       + "Message:\n" + body );
+            log.error("No bound admin e-mail addresses.  "
+                      + "Cannot send message:\n"
+                      + "Subject: " + subject + "\n"
+                      + "Message:\n" + body);
             return;
         }
 
@@ -1567,85 +1393,60 @@ public class Application
 
     // ----------------------------------------------------------
     /**
-     * Sends an exception notification report by e-mail to the
-     * administor notification list.
-     *
-     * @param anException the exception that occurred
-     * @param aContext    the context in which the exception occurred
-     * @param msg         the text message accompanying the exception info
-     */
-/*    static public void emailExceptionToAdmins( Throwable    anException,
-                                               WOContext    aContext,
-                                               String       msg )
-    {
-        emailExceptionToAdmins(
-            anException,
-            ( anException instanceof Exception )
-                ? erxApplication().extraInformationForExceptionInContext(
-                  (Exception)anException, aContext )
-                : null,
-            aContext,
-            msg );
-    }*/
-
-
-    // ----------------------------------------------------------
-    /**
      * Generate a string of extra info for the given context (can be used
      * for debugging output).
      * @param context the context for this request (can be null, if desired)
      * @return the extra information in a formatted, human-readable,
      *         multi-line string
      */
-    public static String extraInfoForContext( WOContext context )
+    public static String extraInfoForContext(WOContext context)
     {
-        if (context != null && context.page() != null )
+        if (context != null && context.page() != null)
         {
             StringBuffer buffer = new StringBuffer();
-            buffer.append( "CurrentPage = " );
-            buffer.append( context.page().name() );
-            buffer.append( "\n" );
+            buffer.append("CurrentPage = ");
+            buffer.append(context.page().name());
+            buffer.append("\n");
 
-            if ( context.component() != null )
+            if (context.component() != null)
             {
-                buffer.append( "CurrentComponent = " );
-                buffer.append( context.component().name() );
-                buffer.append( "\n" );
-                if ( context.component().parent() != null )
+                buffer.append("CurrentComponent = ");
+                buffer.append(context.component().name());
+                buffer.append("\n");
+                if (context.component().parent() != null)
                 {
                     WOComponent component = context.component();
-                    while ( component.parent() != null )
+                    while (component.parent() != null)
                     {
                         component = component.parent();
-                        buffer.append( "    parent = " );
-                        buffer.append( component.name() );
-                        buffer.append( "\n" );
+                        buffer.append("    parent = ");
+                        buffer.append(component.name());
+                        buffer.append("\n");
                     }
                 }
             }
-            buffer.append( "uri = " );
-            buffer.append( context.request().uri() );
-            buffer.append( "\n" );
-            if ( context.hasSession() )
+            buffer.append("uri = ");
+            buffer.append(context.request().uri());
+            buffer.append("\n");
+            if (context.hasSession())
             {
-                if ( context.session().statistics() != null )
+                if (context.session().statistics() != null)
                 {
-                    buffer.append( "PreviousPageList = " );
-                    buffer.append( context.session().statistics() );
-                    buffer.append( "\n" );
+                    buffer.append("PreviousPageList = ");
+                    buffer.append(context.session().statistics());
+                    buffer.append("\n");
                 }
-                if ( context.session() instanceof Session )
+                if (context.session() instanceof Session)
                 {
                     Session s = (Session)context.session();
-                    TabDescriptor currentTab =
-                        ( s.tabs == null )
-                            ? null
-                            : s.tabs.selectedDescendant();
-                    buffer.append( "current tab = " );
-                    buffer.append( ( currentTab == null )
-                            ? "null"
-                            : currentTab.printableTabLocation() );
-                    buffer.append( "\n" );
+                    TabDescriptor currentTab = (s.tabs == null)
+                        ? null
+                        : s.tabs.selectedDescendant();
+                    buffer.append("current tab = ");
+                    buffer.append((currentTab == null)
+                        ? "null"
+                        : currentTab.printableTabLocation());
+                    buffer.append("\n");
                 }
             }
             return buffer.toString();
@@ -1659,53 +1460,11 @@ public class Application
 
     // ----------------------------------------------------------
     /**
-     * Sends an exception notification report by e-mail to the
-     * administor notification list.
+     * Gets a value indicating whether the application is running as a
+     * servlet.
      *
-     * @param anException the exception that occurred
-     * @param extraInfo   dictionary of extra information about what was
-     *                    happening when the exception was thrown
-     * @param aContext    the context in which the exception occurred
-     * @param msg         the text message accompanying the exception info
-     */
-/*    static public void emailExceptionToAdmins( Throwable    anException,
-                                               NSDictionary extraInfo,
-                                               WOContext    aContext,
-                                               String       msg )
-    {
-        String body = ( (Application)application() )
-            .informationForExceptionInContext( anException,
-                                               extraInfo,
-                                               aContext );
-        if ( msg != null )
-        {
-            body = msg + "\n\n" + body;
-        }
-        sendAdminEmail( null,
-                        null,
-                        true,
-                        "Unexpected Exception",
-                        body,
-                        null );
-        log.error( body );
-        if ( anException instanceof java.io.IOException )
-        {
-            String exceptionMsg = anException.getMessage();
-            if ( exceptionMsg != null
-                 && exceptionMsg.indexOf( "Too many open" ) >= 0 )
-            {
-                log.fatal( "Aborting: " + exceptionMsg );
-                ERXApplication.erxApplication().killInstance();
-            }
-        }
-    }*/
-
-
-    // ----------------------------------------------------------
-    /**
-     * Gets a value indicating whether the application is running as a servlet.
-     *
-     * @return true if the application is running as a servlet, otherwise false
+     * @return True if the application is running as a servlet, otherwise
+     *         false.
      */
     public static boolean isRunningAsServlet()
     {
@@ -1727,37 +1486,37 @@ public class Application
      * @return a printable description of the error
      */
     public synchronized String informationForExceptionInContext(
-            Throwable          anException,
-            NSDictionary<?, ?> extraInfo,
-            WOContext          aContext )
+        Throwable          anException,
+        NSDictionary<?, ?> extraInfo,
+        WOContext          aContext)
     {
-        Session s = ( aContext != null  &&  aContext.hasSession() )
-        ? (Session)aContext.session()
-        : null;
+        Session s = (aContext != null  &&  aContext.hasSession())
+            ? (Session)aContext.session()
+            : null;
 
         // Set up a buffer for the content
         StringBuffer errorBuffer = new StringBuffer();
 
-        if ( s != null  &&  s.primeUser() != null )
+        if (s != null  &&  s.primeUser() != null)
         {
             // Get the pid of the user of the session
-            errorBuffer.append( "User     :   " );
-            errorBuffer.append( s.primeUser().nameAndUid() );
+            errorBuffer.append("User     :   ");
+            errorBuffer.append(s.primeUser().nameAndUid());
         }
 
         // Get the date and time for the exception
         NSTimestamp now = new NSTimestamp();
-        errorBuffer.append( "\nDate/time:   " );
-        errorBuffer.append(  now.toString() );
-        if ( aContext != null && aContext.request() != null)
+        errorBuffer.append("\nDate/time:   ");
+        errorBuffer.append(now.toString());
+        if (aContext != null && aContext.request() != null)
         {
-            errorBuffer.append( "\nRequest: " );
+            errorBuffer.append("\nRequest: ");
             errorBuffer.append(aContext.request().uri());
-            errorBuffer.append( "\nReferer: " );
+            errorBuffer.append("\nReferer: ");
             errorBuffer.append(aContext.request().headerForKey("referer"));
         }
 
-        if ( errorLoggingContext == null )
+        if (errorLoggingContext == null)
         {
             errorLoggingContext = newPeerEditingContext();
         }
@@ -1768,95 +1527,96 @@ public class Application
             if (!needsInstallation())
             {
                 loggedError = LoggedError.objectForException(
-                    errorLoggingContext, anException );
+                    errorLoggingContext, anException);
             }
 
-            if ( loggedError != null )
+            if (loggedError != null)
             {
-                loggedError.setOccurrences( loggedError.occurrences() + 1 );
-                loggedError.setMostRecent( now );
-                errorBuffer.append( "\nOccurrences: " );
-                errorBuffer.append( loggedError.occurrences() );
+                loggedError.setOccurrences(loggedError.occurrences() + 1);
+                loggedError.setMostRecent(now);
+                errorBuffer.append("\nOccurrences: ");
+                errorBuffer.append(loggedError.occurrences());
             }
-            if ( aContext != null
-                 && aContext.component() != null )
+            if (   aContext != null
+                && aContext.component() != null)
             {
                 // Get the current component
-                errorBuffer.append( "\nComponent:   " );
+                errorBuffer.append("\nComponent:   ");
                 String name = aContext.component().name();
-                if ( name == null )
+                if (name == null)
                 {
                     name = aContext.component().getClass().getName();
                 }
-                if ( loggedError != null )
+                if (loggedError != null)
                 {
-                    loggedError.setComponent( name );
+                    loggedError.setComponent(name);
                 }
-                errorBuffer.append( name );
+                errorBuffer.append(name);
             }
-            if ( aContext != null && aContext.page() != null
-                 && loggedError != null )
+            if (   aContext        != null
+                && aContext.page() != null
+                && loggedError     != null)
             {
-                loggedError.setPage( aContext.page().name() );
+                loggedError.setPage(aContext.page().name());
             }
 
             // Get the session associated (if any)
-            if ( s != null )
+            if (s != null)
             {
-                errorBuffer.append( "\nSessionID: " + s.sessionID() );
+                errorBuffer.append("\nSessionID: " + s.sessionID());
             }
 
-            if ( anException != null )
+            if (anException != null)
             {
                 // Get the full message for the exception
-                errorBuffer.append( "\n\nException:\n----------\n" );
-                errorBuffer.append( anException.getClass().getName() );
-                errorBuffer.append( ":\n" );
-                errorBuffer.append( anException.getMessage() );
-                if ( anException.getMessage() != null && loggedError != null )
+                errorBuffer.append("\n\nException:\n----------\n");
+                errorBuffer.append(anException.getClass().getName());
+                errorBuffer.append(":\n");
+                errorBuffer.append(anException.getMessage());
+                if (anException.getMessage() != null && loggedError != null)
                 {
-                    loggedError.setMessage( anException.getMessage() );
+                    loggedError.setMessage(anException.getMessage());
                 }
 
-                if ( extraInfo != null )
+                if (extraInfo != null)
                 {
                     errorBuffer.append(
-                        "\n\nExtra information:\n--------------------\n" );
-                    for ( Enumeration<?> e = extraInfo.keyEnumerator();
-                          e.hasMoreElements(); )
+                        "\n\nExtra information:\n--------------------\n");
+                    for (Enumeration<?> e = extraInfo.keyEnumerator();
+                         e.hasMoreElements();)
                     {
                         Object key = e.nextElement();
                         if (!"Session".equals(key))
                         {
-                            Object value = extraInfo.objectForKey( key );
-                            errorBuffer.append( key );
-                            errorBuffer.append( "\t= " );
-                            errorBuffer.append( value );
-                            errorBuffer.append( '\n' );
+                            Object value = extraInfo.objectForKey(key);
+                            errorBuffer.append(key);
+                            errorBuffer.append("\t= ");
+                            errorBuffer.append(value);
+                            errorBuffer.append('\n');
                         }
                     }
                 }
 
                 // Get the stack trace for the exception
-                errorBuffer.append( "\nStack trace:\n-----------------\n" );
-                if ( loggedError != null )
+                errorBuffer.append("\nStack trace:\n-----------------\n");
+                if (loggedError != null)
                 {
                     StringWriter writer = new StringWriter();
-                    PrintWriter pwriter = new PrintWriter( writer );
-                    anException.printStackTrace( pwriter );
+                    PrintWriter pwriter = new PrintWriter(writer);
+                    anException.printStackTrace(pwriter);
                     pwriter.close();
-                    loggedError.setStackTrace( writer.getBuffer().toString() );
+                    loggedError.setStackTrace(writer.getBuffer().toString());
                 }
-                if ( !isRunningAsServlet() )
+                if (!isRunningAsServlet())
                 {
                     // If we're not running as a servlet, then assume we're in
                     // a developer environment and generate fully compliant
                     // stack trace info for IDE parsing:
                     StringWriter writer = new StringWriter();
-                    PrintWriter pwriter = new PrintWriter( writer );
-                    anException.printStackTrace( pwriter );
+                    PrintWriter pwriter = new PrintWriter(writer);
+                    anException.printStackTrace(pwriter);
                     pwriter.close();
-                    errorBuffer.append( writer.getBuffer() );
+                    errorBuffer.append(writer.getBuffer());
                 }
                 else
                 {
@@ -1864,55 +1624,54 @@ public class Application
                     // presentation to make e-mail messages lighter (and also
                     // somewhat more readable).
                     WOExceptionParser exParser =
-                        new WOExceptionParser( anException );
+                        new WOExceptionParser(anException);
                     Enumeration<?> traceEnum =
                         exParser.stackTrace().objectEnumerator();
 
                     // Append each trace line
-                    while ( traceEnum.hasMoreElements() )
+                    while (traceEnum.hasMoreElements())
                     {
                         WOParsedErrorLine aLine =
                             (WOParsedErrorLine)traceEnum.nextElement();
-                        errorBuffer.append( "at " + aLine.methodName() + "("
+                        errorBuffer.append("at " + aLine.methodName() + "("
                             + aLine.fileName() + ":"
-                            + aLine.lineNumber() + ")\n" );
+                            + aLine.lineNumber() + ")\n");
                     }
                 }
             }
             else
             {
-                if ( extraInfo != null )
+                if (extraInfo != null)
                 {
                     errorBuffer.append(
-                        "\n\nExtra information:\n--------------------\n" );
-                    for ( Enumeration<?> e = extraInfo.keyEnumerator();
-                          e.hasMoreElements(); )
+                        "\n\nExtra information:\n--------------------\n");
+                    for (Enumeration<?> e = extraInfo.keyEnumerator();
+                         e.hasMoreElements();)
                     {
                         Object key = e.nextElement();
-                        Object value = extraInfo.objectForKey( key );
-                        errorBuffer.append( key );
-                        errorBuffer.append( "\t= " );
-                        errorBuffer.append( value );
-                        errorBuffer.append( '\n' );
+                        Object value = extraInfo.objectForKey(key);
+                        errorBuffer.append(key);
+                        errorBuffer.append("\t= ");
+                        errorBuffer.append(value);
+                        errorBuffer.append('\n');
                     }
                 }
             }
             errorLoggingContext.saveChanges();
         }
-        catch ( Exception e )
+        catch (Exception e)
         {
             EOEditingContext old = errorLoggingContext;
             errorLoggingContext = null;
             try
             {
-                releasePeerEditingContext( old );
+                releasePeerEditingContext(old);
             }
-            catch ( Exception e2 )
+            catch (Exception e2)
             {
-                log.fatal( "error releasing error logging editing context",
-                           e2 );
-                log.fatal( "original exception causing error logging context "
-                           + "to be released", e );
+                log.fatal("error releasing error logging editing context", e2);
+                log.fatal("original exception causing error logging context "
+                          + "to be released", e);
             }
         }
         finally
@@ -1937,7 +1696,7 @@ public class Application
     public static EOEditingContext newPeerEditingContext()
     {
         EOEditingContext result = er.extensions.eof.ERXEC.newEditingContext();
-        result.setUndoManager( null );
+        result.setUndoManager(null);
         return result;
     }
 
@@ -1947,7 +1706,7 @@ public class Application
      * Used to get rid of a peer editing context that will no longer be used.
      * @param ec the editing context to release
      */
-    public static void releasePeerEditingContext( EOEditingContext ec )
+    public static void releasePeerEditingContext(EOEditingContext ec)
     {
         ec.dispose();
     }
@@ -1964,7 +1723,7 @@ public class Application
     public static ReadOnlyEditingContext newReadOnlyEditingContext()
     {
         ReadOnlyEditingContext result = new ReadOnlyEditingContext();
-        result.setUndoManager( null );
+        result.setUndoManager(null);
         return result;
     }
 
@@ -1975,8 +1734,7 @@ public class Application
      * used.
      * @param ec the editing context to release
      */
-    public static void releaseReadOnlyEditingContext(
-            ReadOnlyEditingContext ec )
+    public static void releaseReadOnlyEditingContext(ReadOnlyEditingContext ec)
     {
         ec.dispose();
     }
@@ -1992,7 +1750,7 @@ public class Application
     public static MigratingEditingContext newMigratingEditingContext()
     {
         MigratingEditingContext result = new MigratingEditingContext();
-        result.setUndoManager( null );
+        result.setUndoManager(null);
         return result;
     }
 
@@ -2004,35 +1762,35 @@ public class Application
      * @param ec the editing context to release
      */
     public static void releaseMigratingEditingContext(
-            MigratingEditingContext ec )
+        MigratingEditingContext ec)
     {
         ec.dispose();
     }
 
 
     // ----------------------------------------------------------
-    @SuppressWarnings( "deprecation" )
-    public void refuseNewSessions( boolean arg0 )
+    @SuppressWarnings("deprecation")
+    public void refuseNewSessions(boolean refuse)
     {
         boolean isDirectConnectEnabled = isDirectConnectEnabled();
-        if ( arg0 )
+        if (refuse)
         {
-            setDirectConnectEnabled( false );
+            setDirectConnectEnabled(false);
             int timeToKill = configurationProperties().intForKey(
                 "ERTimeToKill");
-            if ( timeToKill > 0 )
+            if (timeToKill > 0)
             {
-                dieTime = ( new NSTimestamp() )
+                dieTime = (new NSTimestamp())
                     .timestampByAddingGregorianUnits(
-                                    0, 0, 0, 0, 0, timeToKill );
+                        0, 0, 0, 0, 0, timeToKill);
             }
         }
         else
         {
             dieTime = null;
         }
-        super.refuseNewSessions( arg0 );
-        setDirectConnectEnabled( isDirectConnectEnabled );
+        super.refuseNewSessions(refuse);
+        setDirectConnectEnabled(isDirectConnectEnabled);
     }
 
 
@@ -2054,16 +1812,16 @@ public class Application
     @SuppressWarnings("deprecation")
     public String deathMessage()
     {
-        if ( dieTime != null && deathMessage == null )
+        if (dieTime != null && deathMessage == null)
         {
-            StringBuffer buffer = new StringBuffer( 200 );
-            buffer.append( "<b>Immediate shutdown:</b> " );
-            buffer.append( "Web-CAT will be going off-line at " );
+            StringBuffer buffer = new StringBuffer(200);
+            buffer.append("<b>Immediate shutdown:</b> ");
+            buffer.append("Web-CAT will be going off-line at ");
             NSTimestampFormatter formatter =
-                new NSTimestampFormatter( "%I:%M%p" );
-            java.text.FieldPosition pos = new java.text.FieldPosition( 0 );
-            formatter.format( dieTime, buffer, pos );
-            buffer.append( ".  Save your work and logout." );
+                new NSTimestampFormatter("%I:%M%p");
+            java.text.FieldPosition pos = new java.text.FieldPosition(0);
+            formatter.format(dieTime, buffer, pos);
+            buffer.append(".  Save your work and logout.");
             deathMessage = buffer.toString();
         }
         return deathMessage;
@@ -2073,12 +1831,12 @@ public class Application
     // ----------------------------------------------------------
     public static String cmdShell()
     {
-        if ( cmdShell == null )
+        if (cmdShell == null)
         {
-            cmdShell = configurationProperties().getProperty( "cmdShell" );
-            if ( cmdShell == null )
+            cmdShell = configurationProperties().getProperty("cmdShell");
+            if (cmdShell == null)
             {
-                if ( isRunningOnWindows() )
+                if (isRunningOnWindows())
                 {
                     cmdShell = "cmd /c";
                 }
@@ -2088,9 +1846,9 @@ public class Application
                 }
             }
             int len = cmdShell.length();
-            if ( len > 0
-                 && cmdShell.charAt( len - 1 ) != ' '
-                 && cmdShell.charAt( len - 1 ) != '"' )
+            if (len > 0
+                && cmdShell.charAt( len - 1 ) != ' '
+                && cmdShell.charAt( len - 1 ) != '"')
             {
                 cmdShell += " ";
             }
@@ -2106,37 +1864,35 @@ public class Application
     public void killInstance()
     {
         String killAction =
-            configurationProperties().getProperty( "coreKillAction" );
-        if ( killAction == null )
+            configurationProperties().getProperty("coreKillAction");
+        if (killAction == null)
         {
-            log.fatal( "Using default kill action",
-                new Exception( "from here" ) );
+            log.fatal("Using default kill action", new Exception("from here"));
             super.killInstance();
         }
         else
         {
             String cmd = cmdShell() + killAction;
-            log.fatal( "Killing application using: " + cmd,
-                new Exception( "from here" ) );
+            log.fatal("Killing application using: " + cmd,
+                new Exception("from here"));
             Process proc = null;
             try
             {
-                proc = Runtime.getRuntime().exec( cmd );
+                proc = Runtime.getRuntime().exec(cmd);
                 proc.waitFor();
                 // wait for ten seconds to give the kill command time to
                 // work externally, since immediate return of the process
                 // may not always mean its work is complete
-                Thread.sleep( 10000 );
+                Thread.sleep(10000);
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
                 // stopped by timeout
-                if ( proc != null )
+                if (proc != null)
                 {
                     proc.destroy();
                 }
-                log.fatal( "exception executing kill action '" + cmd + "'",
-                    e );
+                log.fatal("exception executing kill action '" + cmd + "'", e);
                 super.killInstance();
             }
         }
@@ -2144,16 +1900,14 @@ public class Application
 
 
     // ----------------------------------------------------------
-    /* (non-Javadoc)
-     * @see com.webobjects.appserver.WOApplication#sessionStore()
-     */
+    @Override
     public WOSessionStore sessionStore()
     {
         WOSessionStore store = super.sessionStore();
-        if ( log.isDebugEnabled() )
+        if (log.isDebugEnabled())
         {
-            log.debug( "sessionStore() class = " + store.getClass().getName() );
-            log.debug( "sessionStore() = " + store );
+            log.debug("sessionStore() class = " + store.getClass().getName());
+            log.debug("sessionStore() = " + store);
         }
         return store;
     }
@@ -2162,53 +1916,53 @@ public class Application
     // ----------------------------------------------------------
     public String version()
     {
-        if ( version == null )
+        if (version == null)
         {
             WCConfigurationFile config = properties();
             int major = 0;
             int minor = 0;
             int revision = 0;
             int date = 0;
-            for ( Enumeration<Object> keys = System.getProperties().keys();
-                  keys.hasMoreElements(); )
+            for (Enumeration<Object> keys = System.getProperties().keys();
+                 keys.hasMoreElements();)
             {
                 String key = keys.nextElement().toString();
-                if ( key.endsWith( "version.major" ) )
+                if (key.endsWith("version.major"))
                 {
-                    int thisMajor = config.intForKey( key );
-                    if ( thisMajor > major )
+                    int thisMajor = config.intForKey(key);
+                    if (thisMajor > major)
                     {
                         major = thisMajor;
                     }
                 }
-                else if ( key.endsWith( "version.minor" ) )
+                else if (key.endsWith( "version.minor"))
                 {
-                    int thisMinor = config.intForKey( key );
-                    if ( thisMinor > minor )
+                    int thisMinor = config.intForKey(key);
+                    if (thisMinor > minor)
                     {
                         minor = thisMinor;
                     }
                 }
-                else if ( key.endsWith( "version.revision" ) )
+                else if ( key.endsWith("version.revision"))
                 {
-                    int thisRevision = config.intForKey( key );
-                    if ( thisRevision > revision )
+                    int thisRevision = config.intForKey(key);
+                    if (thisRevision > revision)
                     {
                         revision = thisRevision;
                     }
                 }
-                else if ( key.endsWith( "version.date" ) )
+                else if (key.endsWith("version.date"))
                 {
-                    int thisDate = config.intForKey( key );
-                    if ( thisDate > date )
+                    int thisDate = config.intForKey(key);
+                    if (thisDate > date)
                     {
                         date = thisDate;
                     }
                 }
             }
-            version =   "" + config.intForKey( "webcat.version.major" ) + "."
-                + config.intForKey( "webcat.version.minor" ) + "."
-                + config.intForKey( "webcat.version.revision" ) + "/"
+            version =   "" + config.intForKey("webcat.version.major") + "."
+                + config.intForKey("webcat.version.minor") + "."
+                + config.intForKey("webcat.version.revision") + "/"
                 + major + "." + minor + "." + revision + "." + date;
         }
         return version;
@@ -2219,8 +1973,10 @@ public class Application
     public String sessionStoreClassName()
     {
         String result = super.sessionStoreClassName();
-        if ( log.isDebugEnabled() )
-            log.debug( "sessionStoreClassName() = " + result );
+        if (log.isDebugEnabled())
+        {
+            log.debug("sessionStoreClassName() = " + result);
+        }
         return result;
     }
 
@@ -2248,71 +2004,18 @@ public class Application
     public void executeExternalCommand(String commandLine, File cwd)
         throws java.io.IOException, InterruptedException
     {
-/*        String[] cmdArray = null;
-        Process proc = null;
-
-        // Tack on the command shell prefix to the beginning, quoting the
-        // whole argument sequence if necessary
-        {
-            String shell = org.webcat.core.Application.cmdShell();
-            if ( shell != null && shell.length() > 0 )
-            {
-                if ( shell.charAt( shell.length() - 1 ) == '"' )
-                {
-                    cmdArray = shell.split( "\\s+" );
-                    cmdArray[cmdArray.length - 1] = commandLine;
-                }
-                else
-                {
-                    commandLine = shell + commandLine;
-                }
-            }
-        }
-
-        try
-        {
-            String[] envp = null;
-            // If subsystems are already loaded, get their ENV info:
-            if ( __subsystemManager != null )
-            {
-                envp = subsystemManager().envp();
-            }
-            if ( cmdArray != null )
-            {
-                log.debug("executeExternalCommand(): "
-                    + Arrays.toString(cmdArray));
-                proc = Runtime.getRuntime().exec( cmdArray, envp, cwd );
-            }
-            else
-            {
-                log.debug("executeExternalCommand(): " + commandLine);
-                proc = Runtime.getRuntime().exec( commandLine, envp, cwd );
-            }
-            int exitCode = proc.waitFor();
-            log.debug( "external command returned exit code: " + exitCode );
-        }
-        catch ( InterruptedException e )
-        {
-            // stopped by timeout
-            if ( proc != null )
-            {
-                proc.destroy();
-            }
-            throw e;
-        }*/
-
         Process proc = null;
 
         try
         {
             proc = executeExternalCommandAsync(commandLine, cwd);
             int exitCode = proc.waitFor();
-            log.debug( "external command returned exit code: " + exitCode );
+            log.debug("external command returned exit code: " + exitCode);
         }
-        catch ( InterruptedException e )
+        catch (InterruptedException e)
         {
             // stopped by timeout
-            if ( proc != null )
+            if (proc != null)
             {
                 proc.destroy();
             }
@@ -2351,11 +2054,11 @@ public class Application
         // whole argument sequence if necessary
         {
             String shell = org.webcat.core.Application.cmdShell();
-            if ( shell != null && shell.length() > 0 )
+            if (shell != null && shell.length() > 0)
             {
-                if ( shell.charAt( shell.length() - 1 ) == '"' )
+                if (shell.charAt(shell.length() - 1) == '"')
                 {
-                    cmdArray = shell.split( "\\s+" );
+                    cmdArray = shell.split("\\s+");
                     cmdArray[cmdArray.length - 1] = commandLine;
                 }
                 else
@@ -2367,20 +2070,20 @@ public class Application
 
         String[] envp = null;
         // If subsystems are already loaded, get their ENV info:
-        if ( __subsystemManager != null )
+        if (__subsystemManager != null)
         {
             envp = subsystemManager().envp();
         }
-        if ( cmdArray != null )
+        if (cmdArray != null)
         {
             log.debug("executeExternalCommand(): "
                 + Arrays.toString(cmdArray));
-            proc = Runtime.getRuntime().exec( cmdArray, envp, cwd );
+            proc = Runtime.getRuntime().exec(cmdArray, envp, cwd);
         }
         else
         {
             log.debug("executeExternalCommand(): " + commandLine);
-            proc = Runtime.getRuntime().exec( commandLine, envp, cwd );
+            proc = Runtime.getRuntime().exec(commandLine, envp, cwd);
         }
 
         return proc;
@@ -2616,26 +2319,23 @@ public class Application
 
     // ----------------------------------------------------------
     private void updateStaticHtmlResourcesForFramework(
-        File framework, File staticResourceBaseDir )
+        File framework, File staticResourceBaseDir)
     {
-        File webServerResources =
-            new File( framework, "WebServerResources" );
-        if ( webServerResources.isDirectory() )
+        File webServerResources = new File(framework, "WebServerResources");
+        if (webServerResources.isDirectory())
         {
-            log.info(
-                "Copying static html resources from => "
-                + framework.getName() );
+            log.info("Copying static html resources from => "
+                + framework.getName());
             try
             {
-                File target = new File( staticResourceBaseDir,
+                File target = new File(staticResourceBaseDir,
                         framework.getName()
-                        + "/" + webServerResources.getName() );
-                if ( target.exists() )
+                        + "/" + webServerResources.getName());
+                if (target.exists())
                 {
-                    if ( target.isDirectory() )
+                    if (target.isDirectory())
                     {
-                        org.webcat.core.FileUtilities
-                            .deleteDirectory( target );
+                        FileUtilities.deleteDirectory(target);
                     }
                     else
                     {
@@ -2643,17 +2343,15 @@ public class Application
                     }
                 }
                 target.mkdirs();
-                org.webcat.core.FileUtilities
-                    .copyDirectoryContents(
-                        webServerResources, target );
+                FileUtilities.copyDirectoryContents(
+                    webServerResources, target);
             }
-            catch ( java.io.IOException e )
+            catch (java.io.IOException e)
             {
-                log.error(
-                    "Exception copying static html resource from '"
+                log.error("Exception copying static html resource from '"
                     + webServerResources + "' to '"
                     + staticResourceBaseDir + "'",
-                    e );
+                    e);
             }
         }
     }
@@ -2661,38 +2359,41 @@ public class Application
 
     // ----------------------------------------------------------
     private void updateExecutablePermissionsForFramework(
-        String frameworkName, File frameworkDir )
+        String frameworkName, File frameworkDir)
     {
         // No need for file perms on windows
-        if (isRunningOnWindows()) return;
+        if (isRunningOnWindows())
+        {
+            return;
+        }
 
         // Otherwise, attempt to add executable permissions to necessary
         // files
         String execFileList = configurationProperties()
-            .getProperty( frameworkName + ".chmodx" );
-        if ( execFileList != null )
+            .getProperty(frameworkName + ".chmodx");
+        if (execFileList != null)
         {
-            for ( String fileName : execFileList.split( ",\\s*" ) )
+            for (String fileName : execFileList.split(",\\s*"))
             {
-                File file = new File( frameworkDir, fileName );
-                if ( file.exists() )
+                File file = new File(frameworkDir, fileName);
+                if (file.exists())
                 {
                     // Make it executable, if possible.
                     // First, build the chmod command line.  Start with
                     // file name, and escape any space chars (other shell-
                     // special chars are not escaped!)
                     String cmd = file.toString();
-                    cmd = cmd.replaceAll( " ", "\\\\ " );
+                    cmd = cmd.replaceAll(" ", "\\\\ ");
 
                     // Now add the chmod part
                     cmd = "chmod a+x " + cmd;
 
                     // And any configured shell prefix
                     String shell = org.webcat.core.Application.cmdShell();
-                    if ( shell != null && shell.length() > 0 )
+                    if (shell != null && shell.length() > 0)
                     {
                         cmd = shell + cmd;
-                        if ( shell.charAt( shell.length() - 1 ) == '"' )
+                        if (shell.charAt(shell.length() - 1) == '"')
                         {
                             cmd += "\"";
                         }
@@ -2702,7 +2403,7 @@ public class Application
                     try
                     {
                         log.info(cmd);
-                        executeExternalCommand( cmd, file.getParentFile() );
+                        executeExternalCommand(cmd, file.getParentFile());
                     }
                     catch (Exception e)
                     {
@@ -2780,14 +2481,14 @@ public class Application
     private void checkBootstrapVersion()
     {
         String expectedVersion = configurationProperties().getProperty(
-            "bootstrap.project.version" );
-        if ( expectedVersion != null )
+            "bootstrap.project.version");
+        if (expectedVersion != null)
         {
             net.sf.webcat.WCServletAdaptor adaptor =
                 net.sf.webcat.WCServletAdaptor.getInstance();
             // Bootstrapping is only enabled when running as a servlet,
             // so we can only check the version at that time
-            if ( adaptor != null )
+            if (adaptor != null)
             {
                 String currentVersion = null;
                 // Use reflection to get the current version, in case the
@@ -2796,21 +2497,19 @@ public class Application
                 try
                 {
                     currentVersion = (String)adaptor.getClass()
-                        .getMethod( "version" ).invoke( adaptor );
+                        .getMethod("version").invoke(adaptor);
                 }
-                catch ( Exception e )
+                catch (Exception e)
                 {
-                    log.error( "exception retrieving Bootstrap.jar version:",
-                        e );
+                    log.error("exception retrieving Bootstrap.jar version:", e);
                 }
 
-                if ( !expectedVersion.equals( currentVersion ) )
+                if (!expectedVersion.equals(currentVersion))
                 {
-                    log.error( "Bootstrap.jar is out of date: expected '"
+                    log.error("Bootstrap.jar is out of date: expected '"
                         + expectedVersion + "' but found '" + currentVersion
                         + "'");
-                    sendAdminEmail(
-                        "Please update your Bootstrap.jar",
+                    sendAdminEmail( "Please update your Bootstrap.jar",
                         "During startup, Web-CAT detected that an older "
                         + "version of Bootstrap.jar\nis installed.  Web-CAT "
                         + "expected version '"
@@ -2821,20 +2520,19 @@ public class Application
                         + "support and it can only be\nupdated manually.\n\n"
                         + "Please follow these instructions to download and "
                         + "install the latest\navailable version:\n\n"
-                        + "http://web-cat.cs.vt.edu/WCWiki/"
-                        + "UpdateBootstrapJar\n" );
+                        + "http://web-cat.org/WCWiki/"
+                        + "UpdateBootstrapJar\n");
                 }
             }
         }
         else
         {
-            log.error( "Unable to read expected bootstrap.project.version" );
-            sendAdminEmail(
-                "Unable to verify bootstrap version",
+            log.error("Unable to read expected bootstrap.project.version");
+            sendAdminEmail( "Unable to verify bootstrap version",
                 "During startup, Web-CAT was unable to read the expected\n"
                 + "bootstrap.project.version.  Your Web-CAT instance will "
                 + "continue\nrunning normally.  Please contact the Web-CAT "
-                + "team for assistance\nresolving this problem.\n" );
+                + "team for assistance\nresolving this problem.\n");
         }
     }
 
@@ -2869,9 +2567,9 @@ public class Application
 
     // Force the ERXExtensions bundle to be initialized before this class by
     // referencing it here.
-    @SuppressWarnings( "unused" )
+    @SuppressWarnings("unused")
     private static ERXExtensions forcedInitialization1 = null;
-    @SuppressWarnings( "unused" )
+    @SuppressWarnings("unused")
     private static ERXProperties forcedInitialization2 = null;
 
     public static int userCount = 0;
@@ -2899,14 +2597,14 @@ public class Application
     private static Boolean defaultsToSecure;
     private static String urlHostPrefix;
 
-    private boolean needsInstallation = true;
-    private boolean staticHtmlResourcesNeedInitializing = true;
+    private static boolean staticHtmlResourcesNeedInitializing = true;
+    private static boolean initializationComplete = false;
+    private static boolean needsInstallation = true;
 
     private IMessageDispatcher messageDispatcher;
-
     private EOEditingContext errorLoggingContext;
 
-    static Logger log = Logger.getLogger( Application.class );
-    static Logger requestLog = Logger.getLogger( Application.class.getName()
-        + ".requests" );
+    static Logger log = Logger.getLogger(Application.class);
+    static Logger requestLog = Logger.getLogger(Application.class.getName()
+        + ".requests");
 }
