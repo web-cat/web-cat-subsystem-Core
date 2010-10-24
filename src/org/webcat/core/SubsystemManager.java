@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2010 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -67,25 +67,12 @@ public class SubsystemManager
      */
     public SubsystemManager(WCProperties properties)
     {
-        log.debug("creating subsystem manager");
+        if (log.isDebugEnabled())
+        {
+            log.debug("creating subsystem manager", new Exception("from here"));
+        }
         if (properties != null)
         {
-//            String jarDir = properties.getProperty("subsystem.jar.dir");
-//            if (jarDir != null)
-//            {
-//                addSubsystemJarsFromDirectory(jarDir);
-//            }
-//
-//            NSArray subs =
-//                properties.arrayForKey("subsystem.unjarred.classes");
-//            if (subs != null)
-//            {
-//                for (int i = 0; i < subs.count(); i++)
-//                {
-//                    addSubsystemFromClassName(
-//                        (String)subs.objectAtIndex(i));
-//                }
-//            }
             ArrayList<String> subsystemNames = new ArrayList<String>();
             // Have to look in the system properties, because that is where
             // all subsystem info will go, not in the config file
@@ -118,45 +105,6 @@ public class SubsystemManager
 
     // ----------------------------------------------------------
     /**
-     * Search a given directory for jars, and load the subsystem
-     * contained in each one.
-     *
-     * @param directory  The root directory for loading the jar'ed subsystems
-     */
-//    public void addSubsystemJarsFromDirectory(String directory)
-//    {
-//        File root = new File(directory);
-//
-//        // Get list of all .jar files in the directory
-//        File[] jars = root.listFiles(new FilenameFilter() {
-//            public boolean accept(File dir, String name)
-//            {
-//                return name.endsWith(".jar");
-//            }
-//        });
-//
-//        if (jars != null)
-//        {
-//            // Add the jar files
-//            for (int i = 0; i < jars.length; ++i)
-//            {
-//                try
-//                {
-//                    addSubsystemFromJarFile(jars[i]);
-//                }
-//                catch (Exception e)
-//                {
-//                    log.error("Exception adding subsystem: "
-//                               + jars[i].toString() + ":", e);
-//                }
-//            }
-//        }
-//
-//    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Get the requested subsystem.
      *
      * @param name  The name of the subsystem to get
@@ -182,38 +130,6 @@ public class SubsystemManager
 
     // ----------------------------------------------------------
     /**
-     * Add a JarSubsystem to the manager, given a file name.
-     *
-     * @param name  The file name of the JAR file that contains the subsystem
-     * @throws IOException
-     */
-//    public void addSubsystemFromJarFile(String name)
-//        throws IOException
-//    {
-//        addSubsystemFromJarFile(new File(name));
-//    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Add a JarSubsystem to the manager, given a file object.
-     *
-     * @param file  The file of the JAR file that contains the subsystem
-     * @throws IOException
-     */
-//    public void addSubsystemFromJarFile(File file)
-//         throws IOException
-//    {
-//        JarSubsystem s = JarSubsystem.initializeSubsystemFromJar(file);
-//        if (s != null)
-//        {
-//            addSubsystem(s);
-//        }
-//    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Add a Subsystem to the manager, given a class name.
      *
      * @param name the symbolic name to use for this subsystem
@@ -231,8 +147,6 @@ public class SubsystemManager
         }
         catch (Exception e)
         {
-            System.out.println("Exception loading subsystem "
-                + name + " from class " + className + ".");
             log.error("Exception loading subsystem "
                 + name + " from class " + className + ":", e);
         }
