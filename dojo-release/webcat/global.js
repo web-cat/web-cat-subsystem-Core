@@ -50,22 +50,35 @@ webcat._parseIds = function(/* String|Array */ ids)
 }
 
 
-// ----------------------------------------------------------
+//----------------------------------------------------------
 /**
  * A convenience method that calls the refresh() method on one or more
  * dijit.ContentPane elements.
  *
  * @param ids a string representing a single identifier to refresh, or an
  *     array of identifiers
+ * @param onAfterRefresh a function to be executed after the refresh has
+ *     completed and the new content has loaded
  */
-webcat.refresh = function(/* String|Array */ ids)
+webcat.refresh = function(/* String|Array */ ids, /*Function?*/ onAfterRefresh)
 {
     var idArray = webcat._parseIds(ids);
+    var deferredArray = [];
 
     dojo.forEach(idArray, function(id) {
         var widget = dijit.byId(id);
-        if (widget && widget.refresh) widget.refresh();
+        if (widget && widget.refresh)
+        {
+            var deferred = widget.refresh();
+            deferredArray.push(deferred);
+        }
     });
+
+    if (deferredArray.length > 0 && onAfterRefresh)
+    {
+        var dl = new dojo.DeferredList(deferredArray);
+        dl.addCallback(function(res) { onAfterRefresh(); });
+    }
 };
 
 // Old name for backwards compatibility
@@ -158,6 +171,39 @@ webcat.serializeChildren = function(/*DOMNode|String*/ node)
 
     return ret; // Object
 };
+
+
+//----------------------------------------------------------
+/**
+ * webcat.isEventKeyDead is used in onKeyUp handlers that are attached to
+ * controls like search fields. The function is called to check if the key
+ * should be ignored (so that, for example, pressing a cursor key does not
+ * cause an unnecessary refresh when the actual field content hasn't changed).
+ */
+(function() {
+
+    var deadKeys = {};
+    deadKeys[dojo.keys.TAB] = true;
+    deadKeys[dojo.keys.ENTER] = true;
+    deadKeys[dojo.keys.ESCAPE] = true;
+    deadKeys[dojo.keys.LEFT_ARROW] = true;
+    deadKeys[dojo.keys.RIGHT_ARROW] = true;
+    deadKeys[dojo.keys.UP_ARROW] = true;
+    deadKeys[dojo.keys.DOWN_ARROW] = true;
+    deadKeys[dojo.keys.HOME] = true;
+    deadKeys[dojo.keys.END] = true;
+    deadKeys[dojo.keys.PAGE_UP] = true;
+    deadKeys[dojo.keys.PAGE_DOWN] = true;
+    deadKeys[dojo.keys.SHIFT] = true;
+    deadKeys[dojo.keys.CTRL] = true;
+    deadKeys[dojo.keys.ALT] = true;
+
+    webcat.isEventKeyDead = function(event)
+    {
+        return (event.keyCode == null || (deadKeys[event.keyCode] || false));
+    };
+
+})();
 
 
 //----------------------------------------------------------

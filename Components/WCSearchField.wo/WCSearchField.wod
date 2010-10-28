@@ -1,0 +1,44 @@
+Container: WOGenericContainer {
+    elementName = "span";
+    id = idFor.searchContainer;
+}
+
+ClearField: WCLink {
+    href = "javascript:void(0);";
+    remote = true;
+    onClick = onClearClickScript;
+}
+
+ClearImage: WOImage {
+    framework = "Core";
+    filename = "icons/cross-white.png";
+    alt = "Clear search field";
+    width = 16;
+    height = 16;
+    valign = "middle";
+}
+
+Field: WCTextBox {
+    id = id;
+    value = searchText;
+    style = style;
+}
+
+Label: WOGenericContainer {
+    elementName = "label";
+    for = id;
+    style = "vertical-align: middle;";
+}
+
+SearchAction: WCActionFunction {
+    jsId = idFor.searchAction;
+    remote = true;
+    remote.submit = idFor.searchContainer;
+    action = action;
+    remote.onRemoteEnd = "~'dijit.byId(\'' + idFor.spinner + '\').stop();'";
+}
+
+Spinner: WCSpinner {
+    id = idFor.spinner;
+    size = "small";
+}

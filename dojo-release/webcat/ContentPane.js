@@ -72,6 +72,16 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
     {
         this._initialStartup = true;
         this.inherited(arguments);
+
+        if ("open" in this)
+        {
+            this.isLoaded = this.open;
+        }
+        else if (!this.alwaysDynamic)
+        {
+            this.isLoaded = true;
+        }
+
         this._initialStartup = false;
     },
 

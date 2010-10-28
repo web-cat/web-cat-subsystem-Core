@@ -1,0 +1,16 @@
+<th>
+<wo:str value="$title"/>
+<wo:if condition="$sortOnKeyPaths">
+    <wo name="SortLink">
+        <wo:if condition="$isCurrentSortOrder">
+            <wo:if condition="$isAscending">
+                <wo name="AscendingImage"/>
+            </wo:if><wo:else>
+                <wo name="DescendingImage"/>
+            </wo:else>
+        </wo:if><wo:else>
+            <wo name="UnsortedImage"/>
+        </wo:else>
+    </wo>
+</wo:if>
+</th>

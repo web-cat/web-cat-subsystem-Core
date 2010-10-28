@@ -1,0 +1,10 @@
+<wo name="Container">
+<wo name="Label">Search:</wo> <wo name="Spinner"/>
+<wo name="Field">
+<script type="dojo/connect" event="onKeyUp" args="evt">
+dijit.byId('<wo:str value="$idFor.spinner"/>').start();
+webcat.searchField.handleKeyUp(this, evt, <wo:str value="$idFor.searchAction"/>);
+</script>
+</wo><wo name="ClearField"><wo name="ClearImage"/></wo>
+<wo name="SearchAction"/>
+</wo>

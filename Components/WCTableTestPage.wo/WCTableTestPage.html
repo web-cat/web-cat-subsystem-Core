@@ -1,0 +1,25 @@
+<wo name="Page">
+
+<wo:WCPageModule title="Table Test" open="false">
+
+<wo name="Table">
+    <wo:WCTableHeadings>
+        <wo:WCTableHeading title="Index" sortOnKeyPaths="index"/>
+        <wo:WCTableHeading title="Index Squared" sortOnKeyPaths="indexSquared"/>
+        <wo:WCTableHeading title="Backward Index" sortOnKeyPaths="backwardIndex"/>
+    </wo:WCTableHeadings>
+    <wo:WCTableRows item="$anObject">
+        <wo:WCTableRow>
+            <td><wo:str value="$anObject.index"/></td>
+            <td><wo:str value="$anObject.indexSquared"/></td>
+            <td><wo:str value="$anObject.backwardIndex"/></td>
+        </wo:WCTableRow>
+    </wo:WCTableRows>
+</wo>
+
+<p>
+<wo name="DoSomething"/>
+</p>
+
+</wo:WCPageModule>
+</wo>

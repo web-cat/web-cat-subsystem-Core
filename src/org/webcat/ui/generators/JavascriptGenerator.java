@@ -115,19 +115,43 @@ public class JavascriptGenerator implements WOActionResults
     @Override
     public String toString()
     {
+        return toString(false);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the generated Javascript code as a string.
+     *
+     * @param inline true if the code string should be generated so that it is
+     *     appropriate for use in an inline tag attribute (no line breaks)
+     * @return the generated Javascript code
+     */
+    public String toString(boolean inline)
+    {
         StringBuffer buffer = new StringBuffer();
 
         for (String line : lines)
         {
+            if (inline)
+            {
+                line = line.replaceAll("\r?\n", " ");
+                line = line.replaceAll("(?<!\\\\)\"", "'");
+            }
             buffer.append(line);
+
             if (line.charAt(line.length() - 1) != ';')
             {
                 buffer.append(';');
             }
-            buffer.append('\n');
+
+            if (!inline)
+            {
+                buffer.append('\n');
+            }
         }
 
-        if (isDevelopmentMode())
+        if (isDevelopmentMode() && !inline)
         {
             return "try {\n"
                 + buffer.toString()
@@ -752,6 +776,22 @@ public class JavascriptGenerator implements WOActionResults
     public JavascriptGenerator refresh(String... ids)
     {
         return loopOnMultipleArgs("webcat.refresh", ids);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Refreshes one or more content panes.
+     *
+     * @param onAfterRefresh a Javascript function that will be executed after
+     *     the panes are refreshed and the new content is loaded
+     * @param ids the Dijit IDs of the content panes
+     * @return this generator, for chaining
+     */
+    public JavascriptGenerator refresh(JavascriptFunction onAfterRefresh,
+                                       String... ids)
+    {
+        return call("webcat.refresh", ids, onAfterRefresh);
     }
 
 

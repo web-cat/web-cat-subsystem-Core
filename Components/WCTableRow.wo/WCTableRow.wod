@@ -1,0 +1,15 @@
+Checkbox: WCCheckBox {
+    name = selectionControlGroupName;
+    checked = isRowSelected;
+}
+
+RadioButton: WCRadioButton {
+    name = selectionControlGroupName;
+    checked = isRowSelected;
+}
+
+TableRow: org.webcat.core.TableRow {
+    index = indexFromParent;
+    showCaution = showCaution;
+    showError = showError;
+}

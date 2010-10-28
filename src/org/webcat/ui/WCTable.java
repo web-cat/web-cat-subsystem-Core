@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,101 +21,63 @@
 
 package org.webcat.ui;
 
-import java.util.Iterator;
-import ognl.webobjects.WOOgnl;
-import org.jfree.util.Log;
-import org.json.JSONException;
-import org.json.JSONObject;
+import org.webcat.core.WCComponent;
+import org.webcat.ui.generators.JavascriptFunction;
+import org.webcat.ui.generators.JavascriptGenerator;
 import org.webcat.ui.util.ComponentIDGenerator;
-import org.webcat.ui.util.WCTableFilterBuilder;
-import org.webcat.ui.util.WCTableLayoutBuilder;
 import com.webobjects.appserver.WOActionResults;
-import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WODisplayGroup;
+import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
-import com.webobjects.eocontrol.EOAndQualifier;
+import com.webobjects.eocontrol.EOOrQualifier;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSDictionary;
-import com.webobjects.foundation.NSKeyValueCodingAdditions;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSSelector;
+import er.extensions.appserver.ERXDisplayGroup;
 import er.extensions.appserver.ERXWOContext;
-import er.extensions.foundation.ERXStringUtilities;
+import er.extensions.eof.ERXQ;
+import er.extensions.eof.ERXS;
+import er.extensions.eof.ERXSortOrdering.ERXSortOrderings;
 
-//------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 /**
  * <p>
- * The ObjectTable component supports displaying complex data and objects in
- * a tabular format. The data source is a WODisplayGroup that contains the
- * array of objects to be displayed. These objects can be anything that supports
- * key-value coding, such as enterprise objects or dictionaries.
- * </p><p>
- * The column layout is provided either in markup (by nesting
- * {@link WCTableColumn} elements) or by explicitly setting the
- * <i>columns</i> binding; this should be an array of dictionaries constructed
- * directly in code, loaded from a plist file, or obtained from the
- * {@link WCTableLayoutBuilder} utility class.
- * </p><p>
- * Each entry in the columns array is a dictionary with the following keys:
- * </p><p>
- * <ul>
- * <li><b>name:</b> a String, the title of the column to be displayed in the
- * table header</li>
- * <li><b>componentName:</b> a String, the name of the component that will be
- * used to render the cell's content</li>
- * <li><b>keyPath:</b> the key path, rooted from each object in the display
- * group, that specifies the value for the column. If omitted, the object
- * itself is passed in as the value (to permit complex rendering that may
- * involve multiple properties of the object)</li>
- * <li><b>sortingKeyPath:</b> the key path used to access the value that will
- * be used when sorting this column, if different from the keyPath above</li>
- * <li><b>properties:</b> cell-specific properties that are passed along to
- * the cell component</li>
+ * A reusable table component that is bound to a display group, and provides
+ * options to select rows, sort on table headings, and paging.
  * </p>
+ * <dl>
+ * <dt>id (<code>String</code>)</dt>
+ * <dd>The widget id for the content pane that will surround the table. This
+ * can be used to refresh the table contents in response to events that occur
+ * outside the table.</dd>
+ * <dt>displayGroup (<code>ERXDisplayGroup&lt;?&gt;</code>)</dt>
+ * <dd>The display group that contains the objects that this table will
+ * display.</dd>
+ * <dt>settingsKey (<code>String</code>)</dt>
+ * <dd>A key prefix that will be used to persist the table's settings in the
+ * current user's preferences.</dd>
+ * <dt>canSelectRows (<code>boolean</code>)</dt>
+ * <dd>Indicates whether checkbox or radio button controls will be inserted at
+ * the front of each table row to allow the user to select them.</dd>
+ * <dt>multipleSelection (<code>boolean</code>)</dt>
+ * <dd>Indicates whether multiple rows can be selected at once (using
+ * checkboxes) or if only one row can be selected at a time (using radio
+ * buttons).</dd>
+ * </dl>
  *
- * @binding id for the content pane that wraps this table; can be used to
- *     refresh the table manually after changes have been made to the data
- *     model on the server
- * @binding canSort true if the rows in the table can be sorted by clicking
- *     the column title (defaults to false)
- * @binding displayGroup a WODisplayGroup that contains the data to be
- *     displayed in the table and also manages the current selection
- * @binding columns an array of dictionaries that describe the columns in
- *     the table; this can be loaded from a plist file or generated in code
- *     with the {@link WCTableLayoutBuilder} class
- * @binding isBatched true if the table displays a fixed-size batch of
- *     objects and provides controls for changing the batch size and
- *     navigating the pages of the table (defaults to false)
- * @binding batchSize the number of items to display on each page of the
- *     table; this value overrides the batch size of the associated
- *     display group (defaults to 10)
- * @binding showsRowNumbers true if the table should display an extra
- *     column at the far left that shows the row number of each item
- *     in the table (defaults to false)
- * @binding allowsSelection true if the user should be able to select
- *     rows in the table; the current selection is reflected by the
- *     display group (defaults to false)
- * @binding multipleSelection true if the user should be able to select
- *     multiple items from the table; false if only a single item can be
- *     selected at a time (defaults to false)
- *
- * @author Tony Allevato
- * @version $Id$
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
-public class WCTable extends WOComponent
+public class WCTable extends WCComponent
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    /**
-     * Initializes a new ObjectTable.
-     *
-     * @param context
-     */
     public WCTable(WOContext context)
     {
         super(context);
@@ -125,28 +87,14 @@ public class WCTable extends WOComponent
     //~ KVC attributes (must be public) .......................................
 
     public String id;
-    public boolean canSort = false;
-    public WODisplayGroup displayGroup;
-    public NSArray<NSDictionary<String, Object>> columns;
-    public NSArray<NSDictionary<String, Object>> filters;
-    public boolean isBatched = false;
-    public int batchSize = 0;
-    public boolean showsRowNumbers = false;
-    public boolean allowsSelection = false;
-    public boolean multipleSelection = false;
 
-    public Object objectInRepetition;
-    public int indexInRepetition;
-    public NSDictionary<String, Object> columnInRepetition;
-    public int columnIndexInRepetition;
-    public NSDictionary<String, Object> filterInRepetition;
-    public int filterIndexInRepetition;
+    public ERXDisplayGroup<?> displayGroup;
+    public String settingsKey;
+    public boolean canSelectRows = false;
+    public boolean multipleSelection = false;
+    public String searchOnKeyPaths;
 
     public ComponentIDGenerator idFor;
-
-    private NSMutableDictionary<String, JSONObject> currentFilters;
-    private int sortedColumnIndex = -1;
-    private boolean sortedColumnAscending;
 
 
     //~ Methods ...............................................................
@@ -155,643 +103,303 @@ public class WCTable extends WOComponent
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
-        if (idFor == null)
-        {
-            idFor = new ComponentIDGenerator(this);
-        }
+        idFor = new ComponentIDGenerator(this);
 
         if (id == null)
         {
             id = idFor.get();
         }
 
-        if (currentFilters == null)
-        {
-            currentFilters = new NSMutableDictionary<String, JSONObject>();
-        }
+        setInitialSortOrdering();
 
-        if (!isBatched)
-        {
-            batchSize = -1;
-        }
-
-        if (batchSize == 0)
-        {
-            batchSize = 10;
-        }
-
-        displayGroup.setNumberOfObjectsPerBatch(
-                (batchSize == -1) ? displayGroup.allObjects().count() :
-                    batchSize);
-
-        if (currentTable() != null)
-        {
-            Log.error("WCTable elements cannot be nested! The layout of "
-                    + "your table will not work as expected.");
-        }
-
-        setCurrentTable(this);
+        WCTable oldTable = setCurrentTable(this);
 
         super.appendToResponse(response, context);
 
-        setCurrentTable(null);
+        setCurrentTable(oldTable);
     }
 
 
     // ----------------------------------------------------------
-    /**
-     * Gets the full JavaScript reference to the proxy object that is used to
-     * make RPC calls to the server-side component.
-     *
-     * @return the full JavaScript reference to the proxy object
-     */
-    public String proxyReference()
+    @Override
+    public void takeValuesFromRequest(WORequest request, WOContext context)
     {
-        return idFor.valueForKey("jsonrpc") + ".table";
+        WCTable oldTable = setCurrentTable(this);
+
+        super.takeValuesFromRequest(request, context);
+
+        setCurrentTable(oldTable);
     }
 
 
     // ----------------------------------------------------------
-    public String idForCurrentFilterEnabledCheckbox()
+    @Override
+    public WOActionResults invokeAction(WORequest request, WOContext context)
     {
-        return idFor.valueForKey("filter") + "_" +
-            filterIndexInRepetition + "_enabled";
+        WCTable oldTable = setCurrentTable(this);
+
+        WOActionResults result = super.invokeAction(request, context);
+
+        setCurrentTable(oldTable);
+
+        return result;
     }
 
 
     // ----------------------------------------------------------
-    public String idForCurrentFilterComparisonButton()
+    public void setSearchOnKeyPaths(String keyPaths)
     {
-        return idFor.valueForKey("filter") + "_" +
-            filterIndexInRepetition + "_comparison";
-    }
+        searchOnKeyPaths = keyPaths;
 
-
-    // ----------------------------------------------------------
-    public String idForCurrentFilterValueWidget()
-    {
-        return idFor.valueForKey("filter") + "_" +
-            filterIndexInRepetition + "_value";
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Called from within a columns repetition nested in a rows repetition,
-     * this method gets the value for the current row and column that will be
-     * passed to the cell component.
-     *
-     * @return the value of the current column in the current row of the table
-     */
-    public Object columnValueOfObjectInRepetition()
-    {
-        String keyPath = (String) columnInRepetition.objectForKey("keyPath");
-        Object value;
-
-        if (keyPath == null)
+        if (keyPaths == null)
         {
-            value = objectInRepetition;
+            searchOnKeyPathArray = null;
         }
         else
         {
-            if (keyPath.startsWith("~"))
+            searchOnKeyPathArray = new NSMutableArray<String>();
+
+            String[] keyPathArray = searchOnKeyPaths.split(",");
+            for (String keyPath : keyPathArray)
             {
-                String expression = keyPath.substring(1);
-                value = WOOgnl.factory().getValue(expression,
-                        objectInRepetition);
-            }
-            else
-            {
-                value = NSKeyValueCodingAdditions.Utility.valueForKeyPath(
-                        objectInRepetition, keyPath);
-            }
-        }
-
-        return value;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * @return true if the current column can be sorted, otherwise false
-     */
-    public boolean columnInRepetitionCanBeSorted()
-    {
-        String keyPath = (String) columnInRepetition.objectForKey("keyPath");
-        String sortingKeyPath = (String) columnInRepetition.objectForKey(
-                "sortingKeyPath");
-
-        return (sortingKeyPath != null ||
-                (keyPath != null && !keyPath.startsWith("~")));
-    }
-
-
-    // ----------------------------------------------------------
-    public String cssClassOfRowInRepetition()
-    {
-        return (indexInRepetition % 2 == 0) ? "e" : "o";
-    }
-
-
-    // ----------------------------------------------------------
-    public boolean isRowInRepetitionSelected()
-    {
-        int index = indexInRepetition +
-            displayGroup.indexOfFirstDisplayedObject() - 1;
-
-        return displayGroup.selectionIndexes().containsObject(index);
-    }
-
-
-    // ----------------------------------------------------------
-    public boolean isEntireBatchSelected()
-    {
-        for (int i = displayGroup.indexOfFirstDisplayedObject() - 1;
-            i <= displayGroup.indexOfLastDisplayedObject() - 1;
-            i++)
-        {
-            if (!displayGroup.selectionIndexes().containsObject(i))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Gets the actual row number of the current row, displayed when the
-     * showsRowNumbers binding is set to true.
-     *
-     * @return the actual row number for the current row (that is, the number
-     *     of the object in the display group, not its displayed index)
-     */
-    public int actualRowNumber()
-    {
-        return indexInRepetition + displayGroup.indexOfFirstDisplayedObject();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Selects or deselects the object at the specified index in the current
-     * batch in the display group.
-     *
-     * @param index the object of the item in the current batch
-     * @param state true to select the item, false to deselect it
-     */
-    @SuppressWarnings("unchecked")
-    public synchronized void selectObjectAtIndexInBatch(
-            int index, boolean state)
-    {
-        index += displayGroup.indexOfFirstDisplayedObject() - 1;
-
-        if (multipleSelection)
-        {
-            NSMutableArray<Integer> selection =
-                new NSMutableArray<Integer>(displayGroup.selectionIndexes());
-
-            if (state)
-            {
-                if (!selection.containsObject(index))
-                {
-                    selection.addObject(index);
-                }
-            }
-            else
-            {
-                selection.removeObject(index);
-            }
-
-            displayGroup.setSelectionIndexes(selection);
-        }
-        else
-        {
-            if (state)
-            {
-                displayGroup.setSelectionIndexes(
-                    new NSArray<Integer>(index));
-            }
-            else
-            {
-                displayGroup.clearSelection();
+                searchOnKeyPathArray.addObject(keyPath);
             }
         }
     }
 
 
     // ----------------------------------------------------------
-    /**
-     * Selects or deselects all the items in the current batch.
-     *
-     * @param state true to select the items, false to deselect them
-     */
-    public synchronized void selectAllObjectsInBatch(boolean state)
+    private EOQualifier qualifierFromSearchString(String searchString)
     {
-        if (state)
-        {
-            NSMutableArray<Integer> selection = new NSMutableArray<Integer>();
-
-            for (int i = displayGroup.indexOfFirstDisplayedObject() - 1;
-                i <= displayGroup.indexOfLastDisplayedObject() - 1;
-                i++)
-            {
-                selection.addObject(i);
-            }
-
-            displayGroup.setSelectionIndexes(selection);
-        }
-        else
-        {
-            // We never allow objects to be selected that aren't in the
-            // current batch anyway, so clearing the entire selection is the
-            // easiest way to deal with this case.
-
-            displayGroup.clearSelection();
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    public synchronized void changeSortOrdering(int index)
-    {
-        if (index == sortedColumnIndex)
-        {
-            sortedColumnAscending = !sortedColumnAscending;
-        }
-        else
-        {
-            sortedColumnIndex = index;
-            sortedColumnAscending = true;
-        }
-
-        NSDictionary<String, Object> column = columns.objectAtIndex(index);
-
-        String sortingKeyPath = (String) column.objectForKey("sortingKeyPath");
-        if (sortingKeyPath == null)
-            sortingKeyPath = (String) column.objectForKey("keyPath");
-
-        NSSelector<?> selector = sortedColumnAscending ?
-                EOSortOrdering.CompareCaseInsensitiveAscending :
-                EOSortOrdering.CompareCaseInsensitiveDescending;
-
-        EOSortOrdering so = new EOSortOrdering(sortingKeyPath, selector);
-
-        displayGroup.setSortOrderings(new NSArray<EOSortOrdering>(so));
-        displayGroup.clearSelection();
-        displayGroup.updateDisplayedObjects();
-        displayGroup.setCurrentBatchIndex(1);
-    }
-
-
-    // ----------------------------------------------------------
-    public synchronized void changeBatchSize(int size)
-    {
-        batchSize = size;
-
-        displayGroup.setNumberOfObjectsPerBatch(
-                (batchSize == -1) ? displayGroup.allObjects().count() :
-                    batchSize);
-    }
-
-
-    // ----------------------------------------------------------
-    public synchronized void changeFilter(String keyPath, JSONObject changes)
-    {
-        JSONObject filter = currentFilters.objectForKey(keyPath);
-
-        if (filter == null)
-        {
-            filter = new JSONObject();
-            currentFilters.setObjectForKey(filter, keyPath);
-        }
-
-        Iterator<String> it = changes.keys();
-        while (it.hasNext())
-        {
-            String changeKey = it.next();
-
-            try
-            {
-                Object value = changes.get(changeKey);
-                filter.put(changeKey, value);
-            }
-            catch (JSONException e)
-            {
-                // Do nothing.
-            }
-        }
-
-        updateDisplayGroupQualifier();
-    }
-
-
-    // ----------------------------------------------------------
-    private void updateDisplayGroupQualifier()
-    {
-        NSMutableArray<EOQualifier> quals = new NSMutableArray<EOQualifier>();
-
-        for (String keyPath : currentFilters.allKeys())
-        {
-            JSONObject filterArgs = currentFilters.objectForKey(keyPath);
-
-            try
-            {
-                if (filterArgs.getBoolean("enabled"))
-                {
-                    String relation = filterArgs.getString("relation");
-                    Object value = filterArgs.get("value");
-
-                    String format = keyPath + " %s %%@";
-                    String qualString = null;
-
-                    if ("is".equals(relation))
-                    {
-                            qualString = String.format(format, "=");
-                    }
-                    else if ("is not".equals(relation))
-                    {
-                            qualString = String.format(format, "<>");
-                    }
-                    else if ("starts with".equals(relation))
-                    {
-                            value = value.toString() + "*";
-                            qualString = String.format(format,
-                                    "caseInsensitiveLike");
-                    }
-                    else if ("ends with".equals(relation))
-                    {
-                            value = "*" + value.toString();
-                            qualString = String.format(format,
-                                    "caseInsensitiveLike");
-                    }
-                    else if ("contains".equals(relation))
-                    {
-                            value = "*" + value.toString() + "*";
-                            qualString = String.format(format,
-                                    "caseInsensitiveLike");
-                    }
-
-                    quals.add(EOQualifier.qualifierWithQualifierFormat(
-                            qualString, new NSArray<Object>(value)));
-                }
-            }
-            catch (JSONException e)
-            {
-                // Do nothing.
-            }
-        }
-
-        if (quals.isEmpty())
-        {
-            displayGroup.setQualifier(null);
-        }
-        else
-        {
-            displayGroup.setQualifier(new EOAndQualifier(quals));
-        }
-
-        displayGroup.updateDisplayedObjects();
-    }
-
-
-    // ----------------------------------------------------------
-    public boolean currentFilterIsEnabled()
-    {
-        String keyPath = (String) filterInRepetition.objectForKey("keyPath");
-
-        JSONObject filter = currentFilters.objectForKey(keyPath);
-
-        if (filter != null)
-        {
-            try
-            {
-                return filter.getBoolean("enabled");
-            }
-            catch (JSONException e)
-            {
-                return false;
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    public String currentFilterComparison()
-    {
-        String keyPath = (String) filterInRepetition.objectForKey("keyPath");
-
-        JSONObject filter = currentFilters.objectForKey(keyPath);
-
-        if (filter != null)
-        {
-            try
-            {
-                return filter.getString("relation");
-            }
-            catch (JSONException e)
-            {
-                return "is";
-            }
-        }
-        else
-        {
-            return "is";
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    public void setCurrentFilterIsEnabled(boolean value)
-    {
-        String keyPath = (String) filterInRepetition.objectForKey("keyPath");
-
-        JSONObject changes = new JSONObject();
-        try
-        {
-            changes.put("enabled", value);
-        }
-        catch (JSONException e)
-        {
-            // Do nothing.
-        }
-
-        changeFilter(keyPath, changes);
-    }
-
-
-    // ----------------------------------------------------------
-    public Object currentFilterValue()
-    {
-        String keyPath = (String) filterInRepetition.objectForKey("keyPath");
-
-        JSONObject filter = currentFilters.objectForKey(keyPath);
-
-        if (filter != null)
-        {
-            try
-            {
-                return filter.get("value");
-            }
-            catch (JSONException e)
-            {
-                return null;
-            }
-        }
-        else
+        if (searchOnKeyPathArray == null || searchString == null)
         {
             return null;
         }
-    }
-
-
-    // ----------------------------------------------------------
-    public void setCurrentFilterValue(Object value)
-    {
-        String keyPath = (String) filterInRepetition.objectForKey("keyPath");
-
-        JSONObject changes = new JSONObject();
-        try
+        else
         {
-            changes.put("value", value);
+            NSMutableArray<EOQualifier> quals =
+                new NSMutableArray<EOQualifier>(searchOnKeyPathArray.count());
+
+            for (String keyPath : searchOnKeyPathArray)
+            {
+                quals.addObject(ERXQ.contains(keyPath, searchString));
+            }
+
+            return new EOOrQualifier(quals);
         }
-        catch (JSONException e)
+    }
+
+
+    // ----------------------------------------------------------
+    private void setInitialSortOrdering()
+    {
+        String keyPaths = persistentSortOrdering();
+        Boolean ascending = persistentSortIsAscending();
+
+        if (keyPaths != null)
         {
-            // Do nothing.
+            sortDisplayGroup(keyPaths, ascending);
+            needsInitialSort = false;
+        }
+        else
+        {
+            needsInitialSort = true;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    private String persistentSortOrdering()
+    {
+        if (settingsKey == null)
+        {
+            return null;
+        }
+        else
+        {
+            return (String) user().preferences().valueForKeyPath(
+                    settingsKey + "_sortOrdering");
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    private void setPersistentSortOrdering(String ordering, boolean ascending)
+    {
+        if (settingsKey != null)
+        {
+            user().preferences().takeValueForKey(
+                    ordering, settingsKey + "_sortOrdering");
+            user().preferences().takeValueForKey(
+                    ascending, settingsKey + "_sortIsAscending");
+            user().savePreferences();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    private Boolean persistentSortIsAscending()
+    {
+        if (settingsKey == null)
+        {
+            return null;
+        }
+        else
+        {
+            return (Boolean) user().preferences().valueForKeyPath(
+                    settingsKey + "_sortIsAscending");
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public String sortOrderingKeyPathsFromDisplayGroup()
+    {
+        NSArray<EOSortOrdering> orderings = displayGroup.sortOrderings();
+
+        StringBuffer keyPaths = new StringBuffer();
+
+        if (orderings != null && orderings.count() > 0)
+        {
+            keyPaths.append(orderings.objectAtIndex(0).key());
+
+            for (int i = 1; i < orderings.count(); i++)
+            {
+                keyPaths.append(",");
+                keyPaths.append(orderings.objectAtIndex(1).key());
+            }
         }
 
-        changeFilter(keyPath, changes);
+        return keyPaths.toString();
     }
 
 
     // ----------------------------------------------------------
-    public boolean columnInRepetitionIsSorted()
+    public boolean isDisplayGroupSortOrderingAscending()
     {
-        return (columnIndexInRepetition == sortedColumnIndex);
+        NSArray<EOSortOrdering> orderings = displayGroup.sortOrderings();
+
+        if (orderings != null && orderings.count() > 0)
+        {
+            NSSelector selector = orderings.objectAtIndex(0).selector();
+
+            return ERXS.INS_ASC.equals(selector) || ERXS.ASC.equals(selector);
+        }
+        else
+        {
+            return true;
+        }
     }
 
 
     // ----------------------------------------------------------
-    public boolean columnInRepetitionIsAscending()
+    protected void sortDisplayGroup(String keyPaths, boolean ascending)
     {
-        return sortedColumnAscending;
+        ERXSortOrderings orderings = new ERXSortOrderings();
+
+        String[] keyPathArray = keyPaths.split(",");
+        for (String keyPath : keyPathArray)
+        {
+            orderings.addObject(ERXS.sortOrder(keyPath.trim(),
+                    ascending ? ERXS.INS_ASC : ERXS.INS_DESC));
+        }
+
+        displayGroup.clearSelection();
+        displayGroup.setSortOrderings(orderings);
+        displayGroup.updateDisplayedObjects();
     }
 
 
     // ----------------------------------------------------------
-    /**
-     * Sets the display group to point to the first batch of objects.
-     *
-     * @return null
-     */
-    public synchronized WOActionResults goToFirstBatch()
+    public JavascriptGenerator sortUsingKeyPaths(String keyPaths,
+                                                 boolean ascending)
     {
+        setPersistentSortOrdering(keyPaths, ascending);
+        sortDisplayGroup(keyPaths, ascending);
+        return refreshTable();
+    }
+
+
+    // ----------------------------------------------------------
+    public String searchText()
+    {
+        return searchText;
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator filterUsingSearchString(String searchString)
+    {
+        searchText = searchString;
+
         displayGroup.clearSelection();
         displayGroup.setCurrentBatchIndex(1);
-        return null;
+        displayGroup.setQualifier(qualifierFromSearchString(searchString));
+        displayGroup.updateDisplayedObjects();
+        JavascriptGenerator js = refreshTable(new JavascriptFunction() {
+            @Override
+            public void generate(JavascriptGenerator g)
+            {
+                g.dijit(idFor.get("searchField")).call("focus");
+            }
+        });
+        return js;
     }
 
 
     // ----------------------------------------------------------
-    /**
-     * Sets the display group to point to the previous batch of objects.
-     *
-     * @return null
-     */
-    public synchronized WOActionResults goToPreviousBatch()
+    public JavascriptGenerator refreshTable()
     {
-        displayGroup.clearSelection();
-        displayGroup.displayPreviousBatch();
-        return null;
+        return refreshTable(null);
     }
 
 
     // ----------------------------------------------------------
-    /**
-     * Sets the display group to point to the next batch of objects.
-     *
-     * @return null
-     */
-    public synchronized WOActionResults goToNextBatch()
+    public JavascriptGenerator refreshTable(JavascriptFunction onAfterRefresh)
     {
-        displayGroup.clearSelection();
-        displayGroup.displayNextBatch();
-        return null;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Sets the display group to point to the last batch of objects.
-     *
-     * @return null
-     */
-    public synchronized WOActionResults goToLastBatch()
-    {
-        displayGroup.clearSelection();
-        displayGroup.setCurrentBatchIndex(displayGroup.batchCount());
-        return null;
-    }
-
-
-    // ----------------------------------------------------------
-    @SuppressWarnings("unchecked")
-    public synchronized void performActionOnObjectAtIndexInBatch(
-            int index, int columnIndex)
-    {
-        displayGroup.clearSelection();
-        displayGroup.setSelectionIndexes(new NSArray<Integer>(
-                index + displayGroup.indexOfFirstDisplayedObject() - 1));
-
-        NSDictionary<String, Object> column =
-            columns.objectAtIndex(columnIndex);
-
-        NSDictionary<String, String> properties =
-            (NSDictionary<String, String>) column.objectForKey("properties");
-
-        String actionName = properties.objectForKey("action");
-        performParentAction(actionName);
-    }
-
-
-    // ----------------------------------------------------------
-    public synchronized void selectOnlyObjectAtIndexInBatch(int index)
-    {
-        displayGroup.clearSelection();
-        displayGroup.setSelectionIndexes(new NSArray<Integer>(
-                index + displayGroup.indexOfFirstDisplayedObject() - 1));
-    }
-
-
-    // ----------------------------------------------------------
-    @Override
-    public void awake()
-    {
-        super.awake();
-
-/*        if (currentTable() != null)
+        if (onAfterRefresh == null)
         {
-            Log.error("WCTable elements cannot be nested! The layout of "
-                    + "your table will not work as expected.");
+            return new JavascriptGenerator().refresh(id);
         }
-
-        setCurrentTable(this);*/
+        else
+        {
+            return new JavascriptGenerator().refresh(onAfterRefresh, id);
+        }
     }
 
 
     // ----------------------------------------------------------
-    @Override
-    public void sleep()
+    public String tableBodyId()
     {
-//        setCurrentTable(null);
+        return id + "__tbody";
+    }
 
-        super.sleep();
+
+    // ----------------------------------------------------------
+    public static String renderTableBusyScript(String gridId)
+    {
+        NSMutableDictionary<String, Object> props =
+            new NSMutableDictionary<String, Object>();
+        props.setObjectForKey(0.25, "opacity");
+
+        JavascriptGenerator js = new JavascriptGenerator();
+        // TODO change this id to be more general
+        js.animateProperty(gridId + "__tbody", props, 250, null).play();
+        return js.toString(true);
+    }
+
+
+    // ----------------------------------------------------------
+    // TODO rewrite this function to use the one above
+    public String renderTableBusyScript()
+    {
+        NSMutableDictionary<String, Object> props =
+            new NSMutableDictionary<String, Object>();
+        props.setObjectForKey(0.25, "opacity");
+
+        JavascriptGenerator js = new JavascriptGenerator();
+        js.animateProperty(tableBodyId(), props, 250, null).play();
+        return js.toString(true);
     }
 
 
@@ -799,131 +407,47 @@ public class WCTable extends WOComponent
     public static WCTable currentTable()
     {
         return (WCTable) ERXWOContext.contextDictionary().objectForKey(
-                CURRENT_DATA_TABLE_KEY);
+                CURRENT_TABLE_KEY);
     }
 
 
     // ----------------------------------------------------------
-    public static void setCurrentTable(WCTable table)
+    public static WCTable setCurrentTable(WCTable table)
     {
+        WCTable oldTable =
+            (WCTable) ERXWOContext.contextDictionary().objectForKey(
+                CURRENT_TABLE_KEY);
+
         if (table == null)
         {
             ERXWOContext.contextDictionary().removeObjectForKey(
-                    CURRENT_DATA_TABLE_KEY);
+                    CURRENT_TABLE_KEY);
         }
         else
         {
             ERXWOContext.contextDictionary().setObjectForKey(table,
-                    CURRENT_DATA_TABLE_KEY);
+                    CURRENT_TABLE_KEY);
         }
 
-        // Clear out the previous state when the table component is awakened
-        // (this is important if we have multiple tables on the same page).
-        ERXWOContext.contextDictionary().removeObjectForKey(
-                CURRENT_DATA_TABLE_LAYOUT_KEY);
-        ERXWOContext.contextDictionary().removeObjectForKey(
-                CURRENT_DATA_TABLE_FILTERS_KEY);
+        return oldTable;
     }
 
 
     // ----------------------------------------------------------
-    public static WCTableLayoutBuilder currentTableLayout()
+    public int numberOfColumns()
     {
-        WCTable table = currentTable();
-
-        if (table == null)
-        {
-            return null;
-        }
-        else
-        {
-            WCTableLayoutBuilder layout =
-                (WCTableLayoutBuilder) ERXWOContext.contextDictionary().objectForKey(
-                    CURRENT_DATA_TABLE_LAYOUT_KEY);
-
-            if (layout == null)
-            {
-                layout = new WCTableLayoutBuilder();
-                ERXWOContext.contextDictionary().setObjectForKey(layout,
-                        CURRENT_DATA_TABLE_LAYOUT_KEY);
-            }
-
-            return layout;
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    public static void commitTableLayoutChanges()
-    {
-        WCTable table = currentTable();
-
-        if (table != null)
-        {
-            WCTableLayoutBuilder layout =
-                (WCTableLayoutBuilder) ERXWOContext.contextDictionary().objectForKey(
-                    CURRENT_DATA_TABLE_LAYOUT_KEY);
-
-            if (layout != null)
-            {
-                table.columns = layout.asArray();
-            }
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    public static WCTableFilterBuilder currentFilters()
-    {
-        WCTable table = currentTable();
-
-        if (table == null)
-        {
-            return null;
-        }
-        else
-        {
-            WCTableFilterBuilder filters =
-                (WCTableFilterBuilder) ERXWOContext.contextDictionary().objectForKey(
-                    CURRENT_DATA_TABLE_FILTERS_KEY);
-
-            if (filters == null)
-            {
-                filters = new WCTableFilterBuilder();
-                ERXWOContext.contextDictionary().setObjectForKey(filters,
-                        CURRENT_DATA_TABLE_FILTERS_KEY);
-            }
-
-            return filters;
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    public static void commitFilterChanges()
-    {
-        WCTable table = currentTable();
-
-        if (table != null)
-        {
-            WCTableFilterBuilder filters =
-                (WCTableFilterBuilder) ERXWOContext.contextDictionary().objectForKey(
-                    CURRENT_DATA_TABLE_FILTERS_KEY);
-
-            if (filters != null)
-            {
-                table.filters = filters.asArray();
-            }
-        }
+        return numberOfColumns;
     }
 
 
     //~ Static/instance variables .............................................
 
-    private static final String CURRENT_DATA_TABLE_KEY =
+    private static final String CURRENT_TABLE_KEY =
         "org.webcat.ui.WCTable.currentTable";
-    private static final String CURRENT_DATA_TABLE_LAYOUT_KEY =
-        "org.webcat.ui.WCTable.currentTableLayout";
-    private static final String CURRENT_DATA_TABLE_FILTERS_KEY =
-        "org.webcat.ui.WCTable.currentTableFilters";
+
+    protected boolean needsInitialSort = false;
+    protected int numberOfColumns = 0;
+
+    private String searchText;
+    private NSMutableArray<String> searchOnKeyPathArray;
 }

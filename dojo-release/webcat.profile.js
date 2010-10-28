@@ -44,6 +44,7 @@ dependencies = {
                 "webcat.FileInput",
                 "webcat.Form",
                 "webcat.Selector",
+                "webcat.SearchField",
                 "webcat.Spinner",
                 "webcat.Table",
                 "webcat.TableSource",

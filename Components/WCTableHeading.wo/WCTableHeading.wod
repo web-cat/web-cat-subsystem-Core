@@ -1,0 +1,26 @@
+AscendingImage: WOImage {
+    width = 11;
+    height = 11;
+    framework = "Core";
+    filename = "icons/Ascending.gif";
+}
+
+DescendingImage: WOImage {
+    width = 11;
+    height = 11;
+    framework = "Core";
+    filename = "icons/Descending.gif";
+}
+
+SortLink: WCLink {
+    remote = true;
+    action = sort;
+    onClick = table.renderTableBusyScript;
+}
+
+UnsortedImage: WOImage {
+    width = 11;
+    height = 11;
+    framework = "Core";
+    filename = "icons/Unsorted.gif";
+}

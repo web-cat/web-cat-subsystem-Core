@@ -234,6 +234,12 @@ public class WCLink extends WOHTMLDynamicElement
         {
             super._appendOpenTagToResponse(response, context);
         }
+        else
+        {
+            response.appendContentString("<span");
+            appendAttributesToResponse(response, context);
+            response.appendContentCharacter('>');
+        }
     }
 
 
@@ -245,6 +251,10 @@ public class WCLink extends WOHTMLDynamicElement
         if(!isDisabledInContext(context))
         {
             super._appendCloseTagToResponse(response, context);
+        }
+        else
+        {
+            response.appendContentString("</span>");
         }
     }
 
@@ -375,6 +385,11 @@ public class WCLink extends WOHTMLDynamicElement
             WOContext context)
     {
         super.appendAttributesToResponse(response, context);
+
+        if (isDisabledInContext(context))
+        {
+            return;
+        }
 
         if (_remoteHelper.isRemoteInContext(context))
         {
@@ -764,7 +779,11 @@ public class WCLink extends WOHTMLDynamicElement
         AjaxUtils.createResponse(request, context);
         AjaxUtils.mutableUserInfo(request);
 
-        result = (WOActionResults) _action.valueInComponent(component);
+        context.setActionInvoked(true);
+        if (_action != null)
+        {
+            result = (WOActionResults) _action.valueInComponent(component);
+        }
 
         AjaxUtils.updateMutableUserInfoWithAjaxInfo(context);
 

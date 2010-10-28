@@ -43,7 +43,7 @@ public class TableRow
 
     // ----------------------------------------------------------
     /**
-     * Creates a new WCTableRow object.
+     * Creates a new TableRow object.
      *
      * @param context The page's context
      */

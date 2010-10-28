@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -19,61 +19,64 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package org.webcat.ui;
+package org.webcat.ui._base;
 
+import org.webcat.ui.WCTable;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.foundation.NSDictionary;
+import com.webobjects.appserver.WODisplayGroup;
+import er.extensions.appserver.ERXDisplayGroup;
 
-//------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 /**
- * An abstract class that all ObjectTable cell classes must extend.
- * 
- * @author Tony Allevato
- * @version $Id$
+ * A class that can be extended by components that reside inside a WCTable,
+ * and provides convenience methods for referring to that table and its
+ * display group.
+ *
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
-public abstract class WCTableCell extends WOComponent
+public class WCTableSubcomponent extends WOComponent
 {
     //~ Constructors ..........................................................
-    
+
     // ----------------------------------------------------------
-    public WCTableCell(WOContext context)
+    /**
+     * Initializes a new instance of the WCTableSubComponent class.
+     *
+     * @param context the context
+     */
+    public WCTableSubcomponent(WOContext context)
     {
         super(context);
     }
 
 
-    //~ KVC attributes (must be public) .......................................
+    //~ Methods ...............................................................
 
-    public Object value;
-    public NSDictionary<String, Object> properties;
-
-    public String jsWrapperID;
-    public int columnIndex;
-    public int indexInBatch;
-    
-    
     // ----------------------------------------------------------
     /**
-     * Sets the dictionary of cell-specific properties for this cell.
-     * Subclasses can override this method to intercept the dictionary and do
-     * any other initialization that is necessary (for example, the StringCell
-     * converts numberFormat and dateFormat strings into a true Format object).
-     * 
-     * If overridden, subclasses must call the superclass method.
-     * 
-     * @param props a dictionary containing cell-specific properties
+     * Gets the table that this subcomponent is nested inside.
+     *
+     * @return the table that contains this subcomponent
      */
-    public void setProperties(NSDictionary<String, Object> props)
+    public WCTable table()
     {
-        properties = props;
+        return WCTable.currentTable();
     }
 
 
     // ----------------------------------------------------------
-    @Override
-    public void pushValuesToParent()
+    /**
+     * A convenience method to return the display group that is bound to the
+     * table that contains this subcomponent.
+     *
+     * @return the display group that is bound to the table that contains this
+     *     subcomponent
+     */
+    public ERXDisplayGroup<?> displayGroup()
     {
-        // Do nothing.
+        return table().displayGroup;
     }
 }

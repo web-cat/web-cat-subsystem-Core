@@ -1,72 +1,25 @@
-Proxy : WCJSONRPC {
-    name = idFor.jsonrpc;
-    proxyName = "table";
-}
-
-ContentPane : WCContentPane {
+ContentPane: WCContentPane {
     id = id;
 }
 
-Columns : WORepetition {
-    list = columns;
-    item = columnInRepetition;
-    index = columnIndexInRepetition;
-}
-
-ColumnHeader: WOGenericContainer {
+FooterCell: WOGenericContainer {
     elementName = "th";
-    weight = columnInRepetition.properties.weight;
+    class = "pagination";
+    style = "text-align: right; vertical-align: middle;";
+    colspan = numberOfColumns;
 }
 
-GoToBeginning : WCButton {
-    iconClass = "webcatTableToolbarIcon webcatTableToolbarIconFirst";
-    label = "Go to first batch";
-    showLabel = false;
+PaginationBar: WCPaginationBar {
+    displayGroup = displayGroup;
+    action = refreshTable;
+    onChange = renderTableBusyScript;
+    settingsKey = settingsKey;
 }
 
-GoBack : WCButton {
-    iconClass = "webcatTableToolbarIcon webcatTableToolbarIconPrevious";
-    label = "Go to previous batch";
-    showLabel = false;
-}
-
-GoNext : WCButton {
-    iconClass = "webcatTableToolbarIcon webcatTableToolbarIconNext";
-    label = "Go to next batch";
-    showLabel = false;
-}
-
-GoToEnd : WCButton {
-    iconClass = "webcatTableToolbarIcon webcatTableToolbarIconLast";
-    label = "Go to last batch";
-    showLabel = false;
-}
-
-Rows : WORepetition {
-    list = displayGroup.displayedObjects;
-    item = objectInRepetition;
-    index = indexInRepetition;
-}
-
-ColumnValue : WOSwitchComponent {
-    WOComponentName = columnInRepetition.componentName;
-    properties = columnInRepetition.properties;
-    value = columnValueOfObjectInRepetition;
-    jsWrapperID = idFor.jsId;
-    indexInBatch = indexInRepetition;
-    columnIndex = columnIndexInRepetition;
-}
-
-SortLink: WOHyperlink {
-    href    = "javascript:void(0);";
-    onclick = "~idFor.jsId + \".changeSortOrdering(\" + columnIndexInRepetition + \");\"";
-}
-
-TableInstance : WCDiv {
+TableJSInstance: WCDiv {
     dojoType = "webcat.Table";
-    jsId = idFor.jsId;
-    proxy = proxyReference;
+    jsId = idFor.table;
     contentPane = id;
     idPrefix = idFor.ComponentIDPrefix;
-    multiSelect = multipleSelection;
+    style = "display: none;";
 }

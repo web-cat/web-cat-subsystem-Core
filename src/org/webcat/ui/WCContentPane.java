@@ -173,10 +173,12 @@ public class WCContentPane extends DojoElement
     public void appendChildrenToResponse(WOResponse response, WOContext context)
     {
         WORequest request = context.request();
-        boolean isAjax = ERXApplication.isAjaxRequest(request);
 
-        if ((isAjax && AjaxUtils.shouldHandleRequest(request, context, null)) ||
-                (!isAjax && !alwaysDynamicInContext(context)))
+        boolean isAjax = ERXApplication.isAjaxRequest(request);
+        boolean shouldHandleAjax =
+            isAjax && context.elementID().startsWith(context.senderID());
+
+        if (shouldHandleAjax || (!isAjax && !alwaysDynamicInContext(context)))
         {
             super.appendChildrenToResponse(response, context);
         }

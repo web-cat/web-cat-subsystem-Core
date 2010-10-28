@@ -1,0 +1,32 @@
+CurrentPageSize: WOGenericContainer {
+    elementName = "a";
+    href = "javascript:void(0);";
+    onClick = "~'dijit.byId(\'' + idFor.pageSizeMenu + '\')._openMyself(event, this);'";
+}
+
+GoToFirstPage: WCLink {
+    string = "1";
+    disabled = isFirstPageCurrentPage;
+    class = cssClassForFirstPage;
+    remote = true;
+    action = goToFirstPage;
+    onClick = onChange;
+}
+
+GoToLastPage: WCLink {
+    string = numberOfPages;
+    disabled = isLastPageCurrentPage;
+    class = cssClassForLastPage;
+    remote = true;
+    action = goToLastPage;
+    onClick = onChange;
+}
+
+GoToAPageNumber: WCLink {
+    string = aPageNumber;
+    disabled = isAPageNumberCurrentPage;
+    class = cssClassForAPageNumber;
+    remote = true;
+    action = goToAPageNumber;
+    onClick = onChange;
+}

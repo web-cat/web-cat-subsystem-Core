@@ -1,0 +1,27 @@
+<span>
+<span style="font-size: smaller">
+Viewing
+<wo:if condition="$displayGroup.filteredObjects.count">
+    <wo:str value="$displayGroup.indexOfFirstDisplayedObject"/>&ndash;<wo:str value="$displayGroup.indexOfLastDisplayedObject"/>
+    of <wo:str value="$displayGroup.filteredObjects.count"/>,
+</wo:if>
+<wo name="CurrentPageSize">
+    <wo:str value="$displayGroup.numberOfObjectsPerBatch"/>
+</wo> per page</span> |
+<wo name="GoToFirstPage"/>
+<wo:if condition="$isGapAfterFirstPage">...</wo:if>
+<wo:loop list="$surroundingPageNumbers" item="$aPageNumber">
+    <wo name="GoToAPageNumber"/>
+</wo:loop>
+<wo:if condition="$isGapBeforeLastPage">...</wo:if>
+<wo:if condition="~numberOfPages gt 1">
+    <wo name="GoToLastPage"/>
+</wo:if>
+<wo:WCDiv id="$idFor.pageSizeMenu" dojoType="dijit.Menu" style="display: none">
+    <wo:WCMenuItem label="10" onClick="$onChange" action="$changePageSizeTo10" remote="true"/>
+    <wo:WCMenuItem label="25" onClick="$onChange" action="$changePageSizeTo25" remote="true"/>
+    <wo:WCMenuItem label="50" onClick="$onChange" action="$changePageSizeTo50" remote="true"/>
+    <wo:WCMenuItem label="100" onClick="$onChange" action="$changePageSizeTo100" remote="true"/>
+    <wo:WCMenuItem label="200" onClick="$onChange" action="$changePageSizeTo200" remote="true"/>
+</wo:WCDiv>
+</span>

@@ -423,6 +423,8 @@ public class Application
             "org.webcat.core.TableRow", "tr");
         WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
             "WOComponentContent", "content");
+        WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
+            "org.webcat.ui.WCTableString", "tstr");
 
         AjaxUpdateContainerTagProcessor tp =
             new AjaxUpdateContainerTagProcessor();

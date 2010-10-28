@@ -1,0 +1,16 @@
+EmptyPlaceholderCell: WOGenericContainer {
+    elementName = "td";
+    colspan = table.numberOfColumns;
+    style = "padding: 1em;";
+}
+
+RowRepetition: WORepetition {
+    list = displayGroup.displayedObjects;
+    item = item;
+    index = rowIndex;
+}
+
+TableBody: WOGenericContainer {
+    elementName = "tbody";
+    id = table.tableBodyId;
+}

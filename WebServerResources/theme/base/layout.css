@@ -85,6 +85,12 @@ body.showprogress * {
     margin-top: 2px;
 }
 
+#roles a, #utils a {
+    -webkit-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.2);
+}
+
 #footer {
     float: left;
     width: 100%;
@@ -136,6 +142,9 @@ way to fit your requirements.
 #mainMenu li {
     float: left;
     margin: 0.4em;
+    -webkit-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
+    -moz-box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.25);
 }
 #mainMenu li li { float: none; }
 /* a hack for IE5.x and IE6 */
@@ -165,7 +174,12 @@ way to fit your requirements.
 }
 #mainMenu a:hover ul { left: -1px; }
 
-#mainMenu ul { position: absolute; left: -9999px; top: -9999px;}
+#mainMenu ul {
+    position: absolute; left: -9999px; top: -9999px;
+    -webkit-box-shadow: 0px 0px 8px black;
+    -moz-box-shadow: 0px 0px 8px black;
+    box-shadow: 0px 0px 8px black;
+}
 
 /* it could have been this simple if all browsers understood */
 /* show next level */
@@ -226,6 +240,12 @@ way to fit your requirements.
 h1 {
     margin: 0 0 1.2em;
     clear: both;
+}
+
+.module {
+    -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.33);
+    -moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.33);
+    box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.33);
 }
 
 .module.title h1 {
@@ -448,6 +468,14 @@ table.layout {
     border: none;
 }
 
+table.layout.minimal {
+    margin: 0;
+}
+
+table.layout.minimal td {
+    padding: 0;
+}
+
 table.layout.nomargin {
     margin: 0 -0.6em;
 }
@@ -559,6 +587,41 @@ table td {
 
     table tr#divider table.percentbar td { border: none; }
 
+
+    /* @end
+    ================================================================== */
+
+
+    /*
+    ================================================================== */
+    /* @group Paginated tables
+    ================================================================== */
+
+    table .pagination {
+        text-align: right;
+        white-space: nowrap;
+        padding: 5px 0px 5px 0px;
+    }
+
+    table thead .pagination {
+        text-align: right;
+        white-space: nowrap;
+        padding-bottom: 8px;
+    }
+
+    table .pagination .active {
+        background-color: rgba(255, 255, 255, 0.75);
+        border: 1px solid gray;
+        margin: 0px 2px;
+        padding: 0px 2px;
+    }
+
+    table .pagination .current {
+        border: 1px solid gray;
+        background-color: #A0C0FF;
+        margin: 0px 2px;
+        padding: 0px 2px;
+    }
 
     /* @end
     ================================================================== */

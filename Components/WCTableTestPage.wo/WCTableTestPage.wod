@@ -1,0 +1,21 @@
+DoSomething: WCButton {
+    label = "Do Something with Selected Items";
+    action = doSomethingWithSelectedItems;
+    remote = true;
+    onClick = renderGridBusyScript;
+}
+
+Form: WCForm {
+}
+
+Page: SaveCancelPage {
+    title = "WCTable Test Page";
+}
+
+Table: WCTable {
+    id = "testGrid";
+    displayGroup = objects;
+    canSelectRows = true;
+    multipleSelection = true;
+}
+

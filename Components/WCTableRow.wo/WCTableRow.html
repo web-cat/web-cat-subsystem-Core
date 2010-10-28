@@ -1,0 +1,12 @@
+<wo name="TableRow">
+<wo:if condition="$table.canSelectRows">
+<td><wo:if condition="$table.multipleSelection">
+    <wo name="Checkbox">
+        <script type="dojo/connect" event="onClick" args="e">
+            <wo:str value="$table.idFor.table"/>.rowSelectionChanged(
+                <wo:str value="$indexFromParent"/>, this.attr('checked'));
+        </script>
+    </wo>
+</wo:if><wo:else><wo name="RadioButton"/></wo:else></td></wo:if>
+<wo:content/>
+</wo>

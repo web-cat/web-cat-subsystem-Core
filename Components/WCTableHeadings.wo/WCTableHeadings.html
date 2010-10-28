@@ -1,0 +1,25 @@
+<thead>
+<wo:if condition="$shouldDisplayToolbar">
+    <tr><wo name="ToolbarHeader">
+        <table class="layout minimal" style="width: 100%"><tr>
+        <wo:if condition="$shouldDisplaySearchField">
+            <td style="padding-left: 0.6em; text-align: left; vertical-align: middle"><wo name="SearchField"/></td>
+        </wo:if>
+        <wo:if condition="$shouldDisplayPaginationControls">
+            <td style="padding: 0 0.6em; text-align: right; vertical-align: middle"><wo name="PaginationBar"/></td>
+        </wo:if>
+        </tr></table>
+    </wo></tr>
+</wo:if>
+<tr>
+<wo:if condition="$table.canSelectRows">
+    <th><wo:if condition="$table.multipleSelection">
+        <wo name="AllRowsSelected">
+            <script type="dojo/connect" event="onClick" args="e">
+            <wo:str value="$table.idFor.table"/>.selectAllRows(this.attr('checked'));
+            </script>
+        </wo>
+    </wo:if></th>
+</wo:if>
+<wo:content/></tr>
+</thead>

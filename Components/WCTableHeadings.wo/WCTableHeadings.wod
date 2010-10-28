@@ -1,0 +1,36 @@
+AllRowsSelected: WCCheckBox {
+    id = allSelectionCheckBoxName;
+    name = allSelectionCheckBoxName;
+    checked = areAllRowsSelected;
+}
+
+PaginationBar: WCPaginationBar {
+    displayGroup = displayGroup;
+    action = table.refreshTable;
+    onChange = table.renderTableBusyScript;
+    settingsKey = table.settingsKey;
+}
+
+SearchAction: WCActionFunction {
+    jsId = table.idFor.searchAction;
+    remote = true;
+    remote.submit = table.idFor.searchBar;
+    action = search;
+}
+
+SearchBusyIndicator : WCSpinner {
+    id = table.idFor.searchBusyIndicator;
+}
+
+SearchField: WCSearchField {
+    id = table.idFor.searchField;
+    searchText = searchString;
+    action = search;
+    style = "width: 10em;";
+}
+
+ToolbarHeader: WOGenericContainer {
+    elementName = "th";
+    class = "pagination";
+    colspan = numberOfColumns;
+}
