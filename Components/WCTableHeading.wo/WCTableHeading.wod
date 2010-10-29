@@ -18,6 +18,11 @@ SortLink: WCLink {
     onClick = table.renderTableBusyScript;
 }
 
+TH: WOGenericContainer {
+    elementName = "th";
+    otherTagString = passthroughAttributes;
+}
+
 UnsortedImage: WOImage {
     width = 11;
     height = 11;

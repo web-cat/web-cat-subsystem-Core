@@ -24,6 +24,7 @@ package org.webcat.ui;
 import org.webcat.ui._base.WCTableSubcomponent;
 import org.webcat.ui.generators.JavascriptGenerator;
 import com.webobjects.appserver.WOActionResults;
+import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOElement;
 import com.webobjects.appserver.WOResponse;
@@ -32,6 +33,7 @@ import com.webobjects.appserver._private.WODynamicGroup;
 import com.webobjects.appserver._private.WOHTMLBareString;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableArray;
+import er.extensions.appserver.ERXWOContext;
 
 //-------------------------------------------------------------------------
 /**
@@ -87,54 +89,40 @@ public class WCTableHeadings extends WCTableSubcomponent
     {
         if (cachedNumberOfColumns == null)
         {
+            // This is a big hack. We ask the children of WCTableHeadings to
+            // append themselves to a temporary response, and then we count the
+            // number of occurrences of "<th" that are in it.
+
             int count = 0;
 
             WOElement childTemplate = _childTemplate();
-            if (childTemplate instanceof WODynamicGroup)
+            WOComponent component = context().component();
+
+            ERXWOContext.contextDictionary().setObjectForKey(true,
+                    WCTableHeading.COUNTING_HEADINGS_KEY);
+            context()._setCurrentComponent(component.parent());
+
+            WOResponse fakeResponse = new WOResponse();
+            childTemplate.appendToResponse(fakeResponse, context());
+            String headings = fakeResponse.contentString().toLowerCase();
+
+            context()._setCurrentComponent(component);
+            ERXWOContext.contextDictionary().removeObjectForKey(
+                    WCTableHeading.COUNTING_HEADINGS_KEY);
+
+            int index = -1;
+            while ((index = headings.indexOf("<th", index + 1)) != -1)
             {
-                WODynamicGroup childGroup = (WODynamicGroup) childTemplate;
-
-                for (WOElement child : childGroup.childrenElements())
-                {
-                    if (child instanceof WOComponentReference)
-                    {
-                        WOComponentReference compRef =
-                            (WOComponentReference) child;
-
-                        if (compRef._name.equals(
-                                WCTableHeading.class.getCanonicalName()))
-                        {
-                            count++;
-                        }
-                    }
-                    else if (child instanceof WOHTMLBareString)
-                    {
-                        WOHTMLBareString bareString = (WOHTMLBareString) child;
-
-                        // What a hack...
-                        WOResponse response = new WOResponse();
-                        bareString.appendToResponse(response, context());
-                        String str = response.contentString().toLowerCase();
-
-                        // Count the number of occurrences of "<th" in the
-                        // string.
-
-                        int index = -1;
-                        while ((index = str.indexOf("<th", index + 1)) != -1)
-                        {
-                            count++;
-                        }
-                    }
-                }
-
-                if (table().canSelectRows)
-                {
-                    count++;
-                }
-
-                cachedNumberOfColumns = count;
-                table().numberOfColumns = count;
+                count++;
             }
+
+            if (table().canSelectRows)
+            {
+                count++;
+            }
+
+            cachedNumberOfColumns = count;
+            table().numberOfColumns = count;
         }
 
         return cachedNumberOfColumns;

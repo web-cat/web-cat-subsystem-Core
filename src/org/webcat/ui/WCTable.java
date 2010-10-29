@@ -203,7 +203,8 @@ public class WCTable extends WCComponent
         }
         else
         {
-            needsInitialSort = true;
+            NSArray<EOSortOrdering> orderings = displayGroup.sortOrderings();
+            needsInitialSort = (orderings == null || orderings.count() == 0);
         }
     }
 

@@ -1,4 +1,5 @@
-<th>
+<wo name="TH">
+<wo:not condition="$isCountingHeadings">
 <wo:str value="$title"/>
 <wo:if condition="$sortOnKeyPaths">
     <wo name="SortLink">
@@ -13,4 +14,5 @@
         </wo:else>
     </wo>
 </wo:if>
-</th>
+</wo:not>
+</wo>

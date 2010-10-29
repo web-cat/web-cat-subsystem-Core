@@ -26,7 +26,9 @@ import org.webcat.ui.generators.JavascriptGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
+import com.webobjects.appserver.WOMessage;
 import com.webobjects.appserver.WOResponse;
+import er.extensions.appserver.ERXWOContext;
 
 //-------------------------------------------------------------------------
 /**
@@ -73,13 +75,25 @@ public class WCTableHeading extends WCTableSubcomponent
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
-        if (sortOnKeyPaths != null && table().needsInitialSort)
+        if (!isCountingHeadings()
+                && sortOnKeyPaths != null && table().needsInitialSort)
         {
             table().sortDisplayGroup(sortOnKeyPaths, true);
             table().needsInitialSort = false;
         }
 
         super.appendToResponse(response, context);
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean isCountingHeadings()
+    {
+        Boolean value =
+            (Boolean) ERXWOContext.contextDictionary().objectForKey(
+                COUNTING_HEADINGS_KEY);
+
+        return (value != null) ? value : false;
     }
 
 
@@ -116,5 +130,34 @@ public class WCTableHeading extends WCTableSubcomponent
     }
 
 
+    // ----------------------------------------------------------
+    public String passthroughAttributes()
+    {
+        return passthroughAttributes;
+    }
+
+
+    // ----------------------------------------------------------
+    public void handleTakeValueForUnboundKey(Object value, String key)
+    {
+        if (passthroughAttributes == null)
+        {
+            passthroughAttributes = "";
+        }
+
+        if (value != null)
+        {
+            passthroughAttributes += " " + key + "=\""
+                + WOMessage.stringByEscapingHTMLAttributeValue(
+                        value.toString()) + "\"";
+        }
+    }
+
+
     //~ Static/instance variables .............................................
+
+    private String passthroughAttributes;
+
+    protected static final String COUNTING_HEADINGS_KEY =
+        "org.webcat.ui.WCTableHeading.isCountingHeadings";
 }
