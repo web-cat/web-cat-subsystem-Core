@@ -2,8 +2,9 @@
 <wo name="Label">Search:</wo> <wo name="Spinner"/>
 <wo name="Field">
 <script type="dojo/connect" event="onKeyUp" args="evt">
-dijit.byId('<wo:str value="$idFor.spinner"/>').start();
-webcat.searchField.handleKeyUp(this, evt, <wo:str value="$idFor.searchAction"/>);
+webcat.searchField.handleKeyUp({
+    widget: this, event: evt, callback: <wo:str value="$idFor.searchAction"/>,
+    spinner: dijit.byId('<wo:str value="$idFor.spinner"/>') });
 </script>
 </wo><wo name="ClearField"><wo name="ClearImage"/></wo>
 <wo name="SearchAction"/>

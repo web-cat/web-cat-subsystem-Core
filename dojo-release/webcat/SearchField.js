@@ -24,25 +24,34 @@ dojo.require("webcat.global");
 
 webcat.searchField = { };
 
-// --------------------------------------------------------------
-webcat.searchField.handleKeyUp = function(widget, event, callback)
+//--------------------------------------------------------------
+webcat.searchField.handleKeyUp = function(/*Object*/ options)
 {
-    if (webcat.isEventKeyDead(event))
+    if (webcat.isEventKeyDead(options.event))
     {
         return;
     }
 
-    webcat.searchField.forceChange(widget, callback);
+    webcat.searchField.forceChange(options);
 };
 
 //--------------------------------------------------------------
-webcat.searchField.forceChange = function(widget, callback)
+webcat.searchField.forceChange = function(options)
 {
+    var widget = options.widget;
+
     if (widget._webcat_searchField_updateFilterTimeoutId)
     {
        clearTimeout(widget._webcat_searchField_updateFilterTimeoutId);
     }
 
+    if (options.spinner)
+    {
+        options.spinner.start();
+    }
+
     widget._webcat_searchField_updateFilterTimeoutId = setTimeout(
-        dojo.hitch(this, function() { callback(widget); }), 500);
+        dojo.hitch(this, function() {
+            options.callback(widget);
+        }), 500);
 };
