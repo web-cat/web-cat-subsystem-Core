@@ -22,7 +22,6 @@ Field: WCTextBox {
     id = id;
     value = searchText;
     style = style;
-    class = "WCSearchField";
 }
 
 Label: WOGenericContainer {

@@ -30,6 +30,7 @@ import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableArray;
 import er.extensions.appserver.ERXDisplayGroup;
+import er.extensions.components.ERXComponentUtilities;
 
 //-------------------------------------------------------------------------
 /**
@@ -43,6 +44,10 @@ import er.extensions.appserver.ERXDisplayGroup;
  * <dd>The action to execute when the user causes a change in the state of the
  * pagination bar (selecting a different page, or changing the size of the
  * batch).</dd>
+ * <dt>fixedPageSize (<code>boolean</code>)</dt>
+ * <dd>If true, the user will not be able to change the page size. This can be
+ * desirable if the table is inside a dialog box and should remain small on the
+ * screen.</dd>
  * <dt>displayGroup (<code>ERXDisplayGroup&lt;?&gt;</code>)</dt>
  * <dd>The display group that is being paged.</dd>
  * <dt>onChange (<code>String</code>)</dt>
@@ -114,6 +119,14 @@ public class WCPaginationBar extends WCComponent
     public WOActionResults action()
     {
         return (WOActionResults) valueForBinding("action");
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean fixedPageSize()
+    {
+        return ERXComponentUtilities.booleanValueForBinding(
+                this, "fixedPageSize", false);
     }
 
 

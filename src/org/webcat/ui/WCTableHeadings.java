@@ -72,6 +72,8 @@ public class WCTableHeadings extends WCTableSubcomponent
                     + "immediate child of WCTable.");
         }
 
+        cachedNumberOfColumns = null;
+
         super.appendToResponse(response, context);
     }
 

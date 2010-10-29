@@ -16,6 +16,11 @@ PaginationBar: WCPaginationBar {
     settingsKey = settingsKey;
 }
 
+TableElement: WOGenericContainer {
+    elementName = "table";
+    otherTagString = passthroughAttributes;
+}
+
 TableJSInstance: WCDiv {
     dojoType = "webcat.Table";
     jsId = idFor.table;

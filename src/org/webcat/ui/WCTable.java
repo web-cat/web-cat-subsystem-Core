@@ -28,6 +28,7 @@ import org.webcat.ui.util.ComponentIDGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WODisplayGroup;
+import com.webobjects.appserver.WOMessage;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.eocontrol.EOOrQualifier;
@@ -57,6 +58,10 @@ import er.extensions.eof.ERXSortOrdering.ERXSortOrderings;
  * <dt>displayGroup (<code>ERXDisplayGroup&lt;?&gt;</code>)</dt>
  * <dd>The display group that contains the objects that this table will
  * display.</dd>
+ * <dt>fixedPageSize (<code>boolean</code>)</dt>
+ * <dd>If true, the user will not be able to change the page size. This can be
+ * desirable if the table is inside a dialog box and should remain small on the
+ * screen.</dd>
  * <dt>settingsKey (<code>String</code>)</dt>
  * <dd>A key prefix that will be used to persist the table's settings in the
  * current user's preferences.</dd>
@@ -81,6 +86,8 @@ public class WCTable extends WCComponent
     public WCTable(WOContext context)
     {
         super(context);
+
+        idFor = new ComponentIDGenerator(this);
     }
 
 
@@ -91,6 +98,7 @@ public class WCTable extends WCComponent
     public ERXDisplayGroup<?> displayGroup;
     public String settingsKey;
     public boolean canSelectRows = false;
+    public boolean fixedPageSize = false;
     public boolean multipleSelection = false;
     public String searchOnKeyPaths;
 
@@ -103,8 +111,6 @@ public class WCTable extends WCComponent
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
-        idFor = new ComponentIDGenerator(this);
-
         if (id == null)
         {
             id = idFor.get();
@@ -441,10 +447,36 @@ public class WCTable extends WCComponent
     }
 
 
+    // ----------------------------------------------------------
+    public String passthroughAttributes()
+    {
+        return passthroughAttributes;
+    }
+
+
+    // ----------------------------------------------------------
+    public void handleTakeValueForUnboundKey(Object value, String key)
+    {
+        if (passthroughAttributes == null)
+        {
+            passthroughAttributes = "";
+        }
+
+        if (value != null)
+        {
+            passthroughAttributes += " " + key + "=\""
+                + WOMessage.stringByEscapingHTMLAttributeValue(
+                        value.toString()) + "\"";
+        }
+    }
+
+
     //~ Static/instance variables .............................................
 
     private static final String CURRENT_TABLE_KEY =
         "org.webcat.ui.WCTable.currentTable";
+
+    private String passthroughAttributes;
 
     protected boolean needsInitialSort = false;
     protected int numberOfColumns = 0;

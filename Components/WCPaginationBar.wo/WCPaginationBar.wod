@@ -1,4 +1,4 @@
-CurrentPageSize: WOGenericContainer {
+CurrentPageSizeLink: WOGenericContainer {
     elementName = "a";
     href = "javascript:void(0);";
     onClick = "~'dijit.byId(\'' + idFor.pageSizeMenu + '\')._openMyself(event, this);'";

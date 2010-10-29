@@ -101,35 +101,21 @@ public class WCTableRow extends WCTableSubcomponent
         int index = indexFromParent() +
             displayGroup().indexOfFirstDisplayedObject() - 1;
 
-        if (table().multipleSelection)
+        NSMutableArray<Integer> selection =
+            new NSMutableArray<Integer>(displayGroup().selectionIndexes());
+
+        if (selected)
         {
-            NSMutableArray<Integer> selection =
-                new NSMutableArray<Integer>(displayGroup().selectionIndexes());
-
-            if (selected)
+            if (!selection.containsObject(index))
             {
-                if (!selection.containsObject(index))
-                {
-                    selection.addObject(index);
-                }
+                selection.addObject(index);
             }
-            else
-            {
-                selection.removeObject(index);
-            }
-
-            displayGroup().setSelectionIndexes(selection);
         }
         else
         {
-            if (selected)
-            {
-                displayGroup().setSelectionIndexes(new NSArray<Integer>(index));
-            }
-            else
-            {
-                displayGroup().clearSelection();
-            }
+            selection.removeObject(index);
         }
+
+        displayGroup().setSelectionIndexes(selection);
     }
 }

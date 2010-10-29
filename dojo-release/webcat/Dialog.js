@@ -32,8 +32,37 @@ dojo.require("webcat.ContentPane");
  * @author Tony Allevato
  * @version $Id$
  */
-dojo.declare(
-    "webcat.Dialog",
-    [webcat.ContentPane, dijit._DialogBase],
-    {}
-);
+dojo.declare("webcat.Dialog", [webcat.ContentPane, dijit._DialogBase],
+{
+    // ----------------------------------------------------------
+    startup: function()
+    {
+        if (this.alwaysDynamic)
+        {
+            this.showsLoadingMessageOnRefresh = true;
+        }
+    },
+
+
+    // ----------------------------------------------------------
+    show: function()
+    {
+        if (this.alwaysDynamic)
+        {
+            this.destroyDescendants();
+            this.isLoaded = false;
+        }
+
+        this.inherited(arguments);
+    },
+
+
+    // ----------------------------------------------------------
+    onShow: function()
+    {
+        if (this.alwaysDynamic && !this._xhrDfd)
+        {
+            this.refresh();
+        }
+    }
+});
