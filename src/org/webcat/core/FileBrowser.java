@@ -23,6 +23,7 @@ package org.webcat.core;
 
 import java.io.File;
 import org.apache.log4j.Logger;
+import org.webcat.ui.util.ComponentIDGenerator;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResponse;
@@ -33,7 +34,8 @@ import com.webobjects.foundation.NSArray;
  *  A directory contents table.
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class FileBrowser
     extends WOComponent
@@ -54,7 +56,6 @@ public class FileBrowser
 
     //~ KVC Attributes (must be public) .......................................
 
-    public String                title;
     public File                  file;
     public boolean               isEditable            = false;
     public boolean               allowSelection        = false;
@@ -65,8 +66,12 @@ public class FileBrowser
     public Integer               initialExpansionDepth = null;
     public FileSelectionListener fileSelectionListener = null;
     public boolean               allowSelectDir        = false;
-    public NSArray               allowSelectExtensions = null;
+    public NSArray<String>       allowSelectExtensions = null;
     public String                currentSelection;
+    public ComponentIDGenerator  idFor;
+    public String                formId;
+    public String                alsoRefresh;
+    public NSArray<String>       focusedFiles;
 
     public EditFilePage.FileEditListener fileEditListener = null;
 
@@ -80,21 +85,66 @@ public class FileBrowser
      * @param response The response being built
      * @param context  The context of the request
      */
-    public void appendToResponse( WOResponse response, WOContext context )
+    public void appendToResponse(WOResponse response, WOContext context)
     {
-        index = 0;
-        log.debug( "file = " + file );
-        super.appendToResponse( response, context );
+        idFor = new ComponentIDGenerator(this);
+        log.debug("file = " + file);
+        super.appendToResponse(response, context);
     }
 
 
+    // ----------------------------------------------------------
+    public String browserId()
+    {
+        return idFor.valueForKey("browser").toString();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * This property is read-only, so the setter does nothing and is
+     * provided only for synchronized binding pushing.
+     */
+    public void setBrowserId(String value)
+    {
+        // ignore values
+    }
+
+
+    // ----------------------------------------------------------
+    public String buttonGroup()
+    {
+        return idFor.valueForKey("group").toString();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * This property is read-only, so the setter does nothing and is
+     * provided only for synchronized binding pushing.
+     */
+    public void setButtonGroup(String value)
+    {
+        // ignore values
+    }
+
+
+    // ----------------------------------------------------------
+    public String restartRowNumbering()
+    {
+        index = 0;
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
     public static interface FileSelectionListener
     {
-        WOComponent selectFile( String filePath );
+        WOComponent selectFile(String filePath);
     }
 
 
     //~ Instance/static variables .............................................
 
-    static Logger log = Logger.getLogger( FileBrowser.class );
+    static Logger log = Logger.getLogger(FileBrowser.class);
 }

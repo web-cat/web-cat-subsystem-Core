@@ -1,69 +1,55 @@
-AllowSelection: WOConditional {
-    condition = allowSelection;
+Collapse1: WCLink {
+    action = toggleExpansion;
+    remote = true;
 }
 
-CanDelete: WOConditional {
-    condition = canDelete;
-}
-
-CanEdit : WOConditional {
-    condition = canEdit;
-}
-
-CanEditAny : WOConditional {
-    condition = isEditable;
-}
-
-CannotDelete: WOConditional {
-    condition = canDelete;
-    negate    = true;
-}
-
-CanSelectThis : WOConditional {
-    condition = canSelectThis;
-}
-
-Collapse1: WOActiveImage {
-	action    = toggleExpansion;
+Collapse1Icon: WOImage {
 	filename  = "icons/minus.gif";
 	framework = "Core";
 	width     = 21;
 	height    = 17;
 	alt       = "Collapse Folder";
 	title     = "Collapse Folder";
+	class     = "icon";
 }
 
-Collapse2: WOActiveImage {
-	action    = toggleExpansion;
+Collapse2: WCLink {
+    action = toggleExpansion;
+    remote = true;
+}
+
+Collapse2Icon: WOImage {
 	filename  = "icons/diropen.gif";
 	framework = "Core";
 	width     = 22;
 	height    = 19;
 	alt       = "Collapse Folder";
 	title     = "Collapse Folder";
+    class     = "icon";
 }
 
-DeleteFile: WOActiveImage {
-	action    = deleteFile;
-	filename  = "icons/trash.gif";
-	framework = "Core";
-	width     = 14;
-	height    = 17;
-	alt       = "[Delete]";
-	title     = deleteFileTitle;
-	onClick   = deleteFileOnClick;
+DeleteFile: WCLink {
+	action = deleteFile;
+	remote = true;
 }
 
-DownloadFile: WOHyperlink {
-	action   = downloadFile;
+DeleteFileIcon: WOImage {
+    filename  = "icons/trash.gif";
+    framework = "Core";
+    width     = 14;
+    height    = 17;
+    alt       = "[Delete]";
+    title     = deleteFileTitle;
+    class     = "icon";
 }
 
 DownloadFileIcon: WOImage {
-	filename = downloadIcon;
+	filename  = downloadIcon;
 	framework = "Core";
-	alt      = "[Download]";
-	title    = "Download";
-	border   = "0";
+	alt       = "[Download]";
+	title     = "Download";
+	border    = "0";
+    class     = "icon";
 }
 
 EditFile: WOActiveImage {
@@ -74,6 +60,7 @@ EditFile: WOActiveImage {
 	height    = 17;
 	alt       = "[Edit]";
 	title     = "Edit this file";
+    class     = "icon";
 }
 
 EmptySpacer: WOImage {
@@ -82,6 +69,7 @@ EmptySpacer: WOImage {
 	width     = 22;
 	height    = 17;
 	alt       = "";
+    class     = "icon";
 }
 
 ExpandBottomSpacer: WOImage {
@@ -90,6 +78,7 @@ ExpandBottomSpacer: WOImage {
 	width     = 22;
 	height    = 17;
 	alt       = "";
+    class     = "icon";
 }
 
 ExpandSpacer: WOImage {
@@ -98,31 +87,46 @@ ExpandSpacer: WOImage {
 	width     = 22;
 	height    = 17;
 	alt       = "";
+    class     = "icon";
 }
 
-Expand1: WOActiveImage {
-	action    = toggleExpansion;
-	filename  = "icons/plus.gif";
-	framework = "Core";
-	width     = 20;
-	height    = 17;
-	alt       = "Expand Folder";
-	title     = "Expand Folder";
+Expand1: WCLink {
+	action = toggleExpansion;
+	remote = true;
 }
 
-Expand2: WOActiveImage {
-	action    = toggleExpansion;
+Expand1Icon: WOImage {
+    filename  = "icons/plus.gif";
+    framework = "Core";
+    width     = 20;
+    height    = 17;
+    alt       = "Expand Folder";
+    title     = "Expand Folder";
+    class     = "icon";
+}
+
+Expand2: WCLink {
+    action = toggleExpansion;
+    remote = true;
+}
+
+Expand2Icon: WOImage {
 	filename  = "icons/dir.gif";
 	framework = "Core";
 	width     = 20;
 	height    = 17;
 	alt       = "Expand Folder";
 	title     = "Expand Folder";
+    class     = "icon";
 }
 
 FileIcon1: WOImage {
 	filename  = iconURL;
 	framework = "Core";
+    alt       = "File";
+    title     = "File";
+    border    = "0";
+    class     = "icon";
 }
 
 FileIcon2: WOImage {
@@ -131,73 +135,12 @@ FileIcon2: WOImage {
 	alt       = "View File";
 	title     = "View File";
 	border    = "0";
+    class     = "icon";
 }
 
 FileIcon2ViewFile: WOHyperlink {
 	action    = viewFile;
 	target    = "viewFile";
-}
-
-IsArchive : WOConditional {
-	condition = isArchive;
-}
-
-IsDirectory : WOConditional {
-	condition = isDirectory;
-}
-
-IsEmptySpacer : WOConditional {
-	condition = spacerWalker.last;
-}
-
-IsExpanded : WOConditional {
-    condition = isExpanded;
-}
-
-IsFinalSpacerRep : WOConditional {
-    condition = isFinalSpacerRep;
-}
-
-IsLastInParent : WOConditional {
-    condition = isLast;
-}
-
-IsNonemptySpacer : WOConditional {
-	condition = spacerWalker.last;
-	negate = true;
-}
-
-IsNotDirectory : WOConditional {
-	condition = isDirectory;
-	negate = true;
-}
-
-IsNotExpanded : WOConditional {
-    condition = isExpanded;
-    negate = true;
-}
-
-IsNotFinalSpacerRep : WOConditional {
-    condition = isFinalSpacerRep;
-    negate = true;
-}
-
-IsNotLastInParent : WOConditional {
-    condition = isLast;
-    negate = true;
-}
-
-IsNotViewable : WOConditional {
-	condition = isViewable;
-	negate = true;
-}
-
-IsViewable : WOConditional {
-	condition = isViewable;
-}
-
-Name1 : WOString {
-	value = file.getName;
 }
 
 Name2 : WOHyperlink {
@@ -212,6 +155,7 @@ NoDeleteFile: WOImage {
 	width     = 14;
 	height    = 17;
 	alt       = "";
+    class     = "icon";
 }
 
 Select: WOActiveImage {
@@ -222,12 +166,6 @@ Select: WOActiveImage {
 	height    = 17;
 	alt       = "Select";
 	title     = "Select this entry";
-}
-
-SpacerRepetition : WORepetition {
-	list = isLastEntry;
-	item = spacerWalker;
-	index = spacerIndex;
 }
 
 SubFileBrowser : org.webcat.core.FileBrowserRow {
@@ -246,6 +184,11 @@ SubFileBrowser : org.webcat.core.FileBrowserRow {
 	fileEditListener      = fileEditListener;
     applyChangesOnMod     = applyChangesOnMod;
     currentSelection      = currentSelection;
+    paneId                = paneId;
+    formId                = formId;
+    buttonGroup           = buttonGroup;
+    alsoRefresh           = alsoRefresh;
+    focusedFiles          = focusedFiles;
 }
 
 SubFileRepetition : WORepetition {
@@ -266,4 +209,5 @@ VerticalSpacer: WOImage {
 	width     = 22;
 	height    = 17;
 	alt       = "";
+    class     = "icon";
 }

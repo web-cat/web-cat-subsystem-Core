@@ -26,12 +26,15 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.zip.ZipOutputStream;
 import org.apache.log4j.Logger;
+import org.webcat.ui.generators.JavascriptGenerator;
+import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSMutableArray;
+import com.webobjects.foundation.NSTimestamp;
 import er.extensions.foundation.ERXFileUtilities;
 
 //-------------------------------------------------------------------------
@@ -39,7 +42,8 @@ import er.extensions.foundation.ERXFileUtilities;
  *  One row in a directory contents table.
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class FileBrowserRow
     extends WOComponent
@@ -60,30 +64,35 @@ public class FileBrowserRow
 
     //~ KVC Attributes (must be public) .......................................
 
-    public Boolean isExpanded     = null;
-    public boolean isEditable     = false;
-    public boolean allowSelection = false;
-    public boolean isLast         = true;
-    public File    file;
-    public File    baseFile;
-    public int     depth          = 0;
-    public int     myRowNumber    = -1;
-    public int     index;
-    public Integer initialExpansionDepth;
-    public boolean allowSelectDir        = false;
-    public NSArray allowSelectExtensions = null;
-    public boolean applyChangesOnMod     = false;
-    public String  currentSelection;
+    public Boolean         isExpanded     = null;
+    public boolean         isEditable     = false;
+    public boolean         allowSelection = false;
+    public boolean         isLast         = true;
+    public File            file;
+    public File            baseFile;
+    public int             depth          = 0;
+    public int             myRowNumber    = -1;
+    public int             index;
+    public Integer         initialExpansionDepth;
+    public boolean         allowSelectDir        = false;
+    public NSArray<String> allowSelectExtensions = null;
+    public boolean         applyChangesOnMod     = false;
+    public String          currentSelection;
+    public String          paneId;
+    public String          formId;
+    public String          buttonGroup;
+    public String          alsoRefresh;
+    public NSArray<String> focusedFiles;
 
     // For the spacer repetition
-    public int     spacerIndex;
-    public NSMutableArray isLastEntry;
+    public int spacerIndex;
+    public NSMutableArray<IsLastEntryAtThisLevel> isLastEntry;
     public IsLastEntryAtThisLevel spacerWalker;
 
     // For the sub-file repetition
-    public int     subFileIndex;
-    public NSArray contents = emptyContents;
-    public File    subFileWalker;
+    public int           subFileIndex;
+    public NSArray<File> contents = emptyContents;
+    public File          subFileWalker;
 
     public FileBrowser.FileSelectionListener fileSelectionListener = null;
     public EditFilePage.FileEditListener     fileEditListener      = null;
@@ -94,14 +103,14 @@ public class FileBrowserRow
     private static class NotDotOrDotDot
         implements FilenameFilter
     {
-        public boolean accept( File file, String name )
+        public boolean accept(File file, String name)
         {
-            return !name.equals( "." )
-                && !name.equals( ".." );
+            return !name.equals(".")
+                && !name.equals("..");
         }
     }
     private static final FilenameFilter notDotOrDotDot = new NotDotOrDotDot();
-    private static final NSArray emptyContents = new NSArray();
+    private static final NSArray<File> emptyContents = new NSArray<File>();
 
 
     // ----------------------------------------------------------
@@ -111,41 +120,84 @@ public class FileBrowserRow
      * @param response The response being built
      * @param context  The context of the request
      */
-    public void appendToResponse( WOResponse response, WOContext context )
+    public void appendToResponse(WOResponse response, WOContext context)
     {
         contents = emptyContents;
         myRowNumber = index;
-        if ( isExpanded == null )
+
+        // Check to make sure we expand if we contain the current selection
+        if (isExpanded == null && currentSelection != null)
         {
-            if ( initialExpansionDepth != null )
+            String prunedPath = pruneBaseFrom(file, true);
+
+            if (log.isDebugEnabled())
             {
-                log.debug( "initialExpansionDepth = " + initialExpansionDepth );
-                log.debug( "my depth = " + depth );
-                isExpanded = ( initialExpansionDepth.intValue() >= depth )
-                    ? Boolean.TRUE
-                    : Boolean.FALSE;
-                log.debug( "isExpanded = " + isExpanded );
+                log.debug("checking row: " + prunedPath
+                    + " against current selection: " + currentSelection);
+            }
+
+            if (currentSelection.startsWith(prunedPath))
+            {
+                isExpanded = true;
+            }
+        }
+
+        // Otherwise, expand if we contain any of the other focused files
+        if ((isExpanded == null || !isExpanded)
+            && focusedFiles != null
+            && focusedFiles.size() > 0)
+        {
+            String prunedPath = pruneBaseFrom(file, false);
+
+            for (String oneFocusedFile : focusedFiles)
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("checking row: " + prunedPath
+                        + " against focused file: " + oneFocusedFile);
+                }
+                if (oneFocusedFile.startsWith(prunedPath))
+                {
+                    isExpanded = true;
+                    if (oneFocusedFile.equals(prunedPath))
+                    {
+                        focusedFiles.remove(oneFocusedFile);
+                    }
+                    break;
+                }
+            }
+        }
+
+        // Otherwise, check the expansion depth setting
+        if (isExpanded == null)
+        {
+            if (initialExpansionDepth != null)
+            {
+                log.debug("initialExpansionDepth = " + initialExpansionDepth);
+                log.debug("my depth = " + depth );
+                isExpanded = (initialExpansionDepth.intValue() >= depth);
+                log.debug("isExpanded = " + isExpanded);
             }
             else
             {
-                isExpanded = isArchive() ? Boolean.FALSE : Boolean.TRUE;
+//                isExpanded = !isArchive();
+                isExpanded = false;
             }
         }
-        if ( isLastEntry == null )
+        if (isLastEntry == null)
         {
-            isLastEntry = new NSMutableArray();
+            isLastEntry = new NSMutableArray<IsLastEntryAtThisLevel>();
         }
-        while ( isLastEntry.count() <= depth )
+        while (isLastEntry.count() <= depth)
         {
-            isLastEntry.addObject( new IsLastEntryAtThisLevel() );
+            isLastEntry.addObject(new IsLastEntryAtThisLevel());
         }
-        ( (IsLastEntryAtThisLevel)isLastEntry.objectAtIndex( depth ) )
-            .last = isLast;
-        if ( isExpanded.booleanValue() )
+        isLastEntry.get(depth).last = isLast;
+        if (isExpanded)
         {
-            if ( file.isDirectory() )
+            if (file.isDirectory())
             {
-                contents = new NSArray( file.listFiles( notDotOrDotDot ) );
+                contents = new NSArray<File>(file.listFiles(notDotOrDotDot));
             }
             else
             {
@@ -156,8 +208,8 @@ public class FileBrowserRow
         {
             contents = emptyContents;
         }
-        super.appendToResponse( response, context );
-        while ( isLastEntry.count() > depth )
+        super.appendToResponse(response, context);
+        while (isLastEntry.count() > depth)
         {
             isLastEntry.removeLastObject();
         }
@@ -165,183 +217,6 @@ public class FileBrowserRow
 
 
     // ----------------------------------------------------------
-//    /**
-//     * <!-- DOCUMENT ME! -->
-//     *
-//     * @return <!-- DOCUMENT ME! -->
-//     */
-//    public WOComponent deleteDir()
-//    {
-//        if ( !getIsRootDir() )
-//        {
-//            EOEditingContext ec = session().defaultEditingContext();
-//            ec.deleteObject( dirPath );
-//            dirPath.removeFromSubdirectories( dirPath );
-//            ec.saveChanges();
-//            System.out.println( "Deleted directory " + dirPath.name() );
-//        }
-//        else
-//        {
-//            System.out.println( "don't delete me! I'm a root directory!" );
-//        }
-//        return null;
-//    }
-
-
-    // ----------------------------------------------------------
-//    /**
-//     * <!-- DOCUMENT ME! -->
-//     *
-//     * @return <!-- DOCUMENT ME! -->
-//     */
-//    public WOComponent deleteFile()
-//    {
-//        session().defaultEditingContext().deleteObject( curFile );
-//        dirPath.removeFromFiles( curFile );
-//        return null;
-//    }
-
-
-    // ----------------------------------------------------------
-//    /**
-//     * <!-- DOCUMENT ME! -->
-//     *
-//     * @return <!-- DOCUMENT ME! -->
-//     */
-//    public WOComponent newDir()
-//    {
-//        WCDirectory      newD = new WCDirectory();
-//        EOEditingContext ec = session().defaultEditingContext();
-//        ec.insertObject( newD );
-//        dirPath.addToSubdirectories( newD );
-//
-//        // find a new directory name
-//        String fname = "untitled";
-//        if ( dirPath.dirWithName( fname ) != null )
-//        {
-//            fname += "-";
-//            int i = 1;
-//            while ( dirPath.dirWithName( fname + i ) != null )
-//            {
-//                i++;
-//            }
-//            fname += i;
-//        }
-//        newD.setName( fname );
-//        newD.setParent( dirPath );
-//        newD.setUser( ( (Session)session() ).getUser() );
-//        newD.setCreate_time( new NSTimestamp() );
-//        ec.saveChanges();
-//        return null;
-//    }
-
-
-    // ----------------------------------------------------------
-//    /**
-//     * <!-- DOCUMENT ME! -->
-//     *
-//     * @return <!-- DOCUMENT ME! -->
-//     */
-//    public WOComponent newFile()
-//    {
-//        WCFile           newF = new WCFile();
-//        EOEditingContext ec = session().defaultEditingContext();
-//        ec.insertObject( newF );
-//        dirPath.addToFiles( newF );
-//
-//        // find a new filename.
-//        String fname = "untitled";
-//        if ( dirPath.fileWithName( fname ) != null )
-//        {
-//            fname += "-";
-//            int i = 1;
-//            while ( dirPath.fileWithName( fname + i ) != null )
-//            {
-//                i++;
-//            }
-//            fname += i;
-//        }
-//        newF.setFilename( fname );
-//        newF.setText( new NSData() );
-//        newF.setCreate_time( new NSTimestamp() );
-//        newF.setLast_mod_time( new NSTimestamp() );
-//        newF.setDirectory( dirPath );
-//        newF.setUser( ( (Session)session() ).getUser() );
-//        ec.saveChanges();
-//        return null;
-//    }
-
-
-    // ----------------------------------------------------------
-//    /**
-//     * <!-- DOCUMENT ME! -->
-//     *
-//     * @return <!-- DOCUMENT ME! -->
-//     */
-//    public WOComponent uploadNewFile()
-//    {
-//        return null;
-//    }
-
-
-    // ----------------------------------------------------------
-//    /**
-//     * <!-- DOCUMENT ME! -->
-//     *
-//     * @return <!-- DOCUMENT ME! -->
-//     */
-//    public WOComponent viewFile()
-//    {
-//        return EditFile.edit( curFile, this );
-//    }
-
-
-    // ----------------------------------------------------------
-//    /**
-//     * <!-- DOCUMENT ME! -->
-//     *
-//     * @return <!-- DOCUMENT ME! -->
-//     */
-//    public WOComponent zipDir()
-//    {
-//        try
-//        {
-//            WOResponse            response = context().response();
-//            ByteArrayOutputStream boas = new ByteArrayOutputStream();
-//            ZipOutputStream       zos  = new ZipOutputStream( boas );
-//            dirPath.appendToZip( zos );
-//            zos.close();
-//            response.setContent( new NSData( boas.toByteArray() ) );
-//            response.setHeader( "Content-Type", "application/x-zip" );
-//        }
-//        catch ( IOException ex )
-//        {
-//            NSLog.err.appendln(
-//                    "Exception while trying to build a zip of the directory: "
-//                    + ex.toString() );
-//        }
-//        return null;
-//    }
-
-
-    // ----------------------------------------------------------
-//    /**
-//     * <!-- DOCUMENT ME! -->
-//     *
-//     * @return <!-- DOCUMENT ME! -->
-//     */
-//    public WOComponent zipRoot()
-//    {
-//        return null;
-//    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * <!-- DOCUMENT ME! -->
-     *
-     * @return <!-- DOCUMENT ME! -->
-     */
     public int innerDepth()
     {
         return depth + 1;
@@ -349,14 +224,9 @@ public class FileBrowserRow
 
 
     // ----------------------------------------------------------
-    /**
-     * <!-- DOCUMENT ME! -->
-     *
-     * @return <!-- DOCUMENT ME! -->
-     */
     public boolean currentEntryIsLastAtItsLevel()
     {
-        return ( subFileIndex == contents.count() - 1 );
+        return (subFileIndex == contents.count() - 1);
     }
 
 
@@ -402,7 +272,7 @@ public class FileBrowserRow
     {
         String name = file.getName().toLowerCase();
         return file.isFile() &&
-            ( name.endsWith( ".zip" ) || name.endsWith( ".jar" ) );
+            (name.endsWith(".zip") || name.endsWith(".jar"));
     }
 
 
@@ -413,7 +283,7 @@ public class FileBrowserRow
      */
     public boolean isDirectory()
     {
-        return file.isDirectory() || isArchive();
+        return file.isDirectory(); // || isArchive();
     }
 
 
@@ -424,7 +294,7 @@ public class FileBrowserRow
      */
     public boolean isViewable()
     {
-        return FileUtilities.showInline( file );
+        return FileUtilities.showInline(file);
     }
 
 
@@ -435,7 +305,7 @@ public class FileBrowserRow
      */
     public boolean canEdit()
     {
-        return isEditable && FileUtilities.isEditable( file );
+        return isEditable && FileUtilities.isEditable(file);
     }
 
 
@@ -458,10 +328,10 @@ public class FileBrowserRow
     public WOComponent viewFile()
     {
         DeliverFile nextPage = (DeliverFile)pageWithName(
-            DeliverFile.class.getName() );
-        nextPage.setFileName( file );
-        nextPage.setContentType( FileUtilities.mimeType( file ) );
-        nextPage.setStartDownload( !FileUtilities.showInline( file ) );
+            DeliverFile.class.getName());
+        nextPage.setFileName(file);
+        nextPage.setContentType(FileUtilities.mimeType(file));
+        nextPage.setStartDownload(!FileUtilities.showInline(file));
         return nextPage;
     }
 
@@ -473,13 +343,13 @@ public class FileBrowserRow
      */
     public WOComponent editFile()
     {
-        if ( applyChangesOnMod )
+        if (applyChangesOnMod)
         {
             // TODO: how should the call to commitLocalChanges() be fixed?
-            ( (Session)session() ).commitSessionChanges();
+            ((Session)session()).commitSessionChanges();
         }
         EditFilePage nextPage = (EditFilePage)pageWithName(
-            EditFilePage.class.getName() );
+            EditFilePage.class.getName());
         nextPage.file = file;
         nextPage.baseFile = baseFile;
         nextPage.nextPage = (WCComponent)context().page();
@@ -493,34 +363,90 @@ public class FileBrowserRow
      * Delete the selected file.
      * @return the current page, which will be reloaded
      */
-    public WOComponent deleteFile()
+    public WOActionResults deleteFile()
     {
-        if ( applyChangesOnMod )
+        return new ConfirmingAction(this)
         {
-            // TODO: how should the call to commitLocalChanges() be fixed?
-            ( (Session)session() ).commitSessionChanges();
-        }
-        log.debug( "delete: " + file.getPath() );
-        if ( file.isDirectory() )
-        {
-            ERXFileUtilities.deleteDirectory( file );
-        }
-        else
-        {
-            file.delete();
-        }
-        return null;
+            @Override
+            protected String confirmationTitle()
+            {
+                return "Delete " + file.getName() + "?";
+            }
+
+            @Override
+            protected String confirmationMessage()
+            {
+                String message = "Are you sure you want to delete ";
+                if (isArchive())
+                {
+                    message += "the archive file " + file.getName()
+                    + " and all its contents?";
+                }
+                else if (file.isDirectory())
+                {
+                    message += "the folder " + file.getName()
+                    + " and all its contents?";
+                }
+                else
+                {
+                    message += "the file " + file.getName() + "?";
+                }
+                message += "  This action cannot be undone.";
+                return message;
+            }
+
+            @Override
+            protected WOActionResults performStandardAction()
+            {
+                if (applyChangesOnMod)
+                {
+                    // TODO: how should commitLocalChanges() call be fixed?
+                    ((Session)session()).commitSessionChanges();
+                }
+                log.debug("delete: " + file.getPath());
+                if (file.isDirectory())
+                {
+                    ERXFileUtilities.deleteDirectory(file);
+                }
+                else
+                {
+                    file.delete();
+                }
+                return context().page();
+            }
+
+            // Can't get ajax-based action to work!
+//            @Override
+//            protected void actionWasConfirmed(JavascriptGenerator page)
+//            {
+//                if (applyChangesOnMod)
+//                {
+//                    // TODO: how should commitLocalChanges() call be fixed?
+//                    ((Session)session()).commitSessionChanges();
+//                }
+//                log.debug("delete: " + file.getPath());
+//                if (file.isDirectory())
+//                {
+//                    ERXFileUtilities.deleteDirectory(file);
+//                }
+//                else
+//                {
+//                    file.delete();
+//                }
+//                page.refresh(paneId);
+//            }
+        };
     }
 
 
     // ----------------------------------------------------------
     public String deleteFileTitle()
     {
-        if ( isArchive() )
+        if (isArchive())
         {
             return "Delete this archive and its contents";
         }
-        else if ( file.isDirectory() )
+        else if (file.isDirectory())
         {
             return "Delete this directory and its contents";
         }
@@ -532,24 +458,13 @@ public class FileBrowserRow
 
 
     // ----------------------------------------------------------
-    public String deleteFileOnClick()
+    public NSTimestamp lastModified()
     {
-        String message = "Are you sure you want to delete ";
-        if ( isArchive() )
+        if (lastModified == null)
         {
-            message += "the archive file " + file.getName()
-                + " and all its contents?";
+            lastModified = new NSTimestamp(file.lastModified());
         }
-        else if ( file.isDirectory() )
-        {
-            message += "the directory " + file.getName()
-                + " and all its contents?";
-        }
-        else
-        {
-            message += "the file " + file.getName() + "?";
-        }
-        return "return confirm('" + message + "')";
+        return lastModified;
     }
 
 
@@ -563,28 +478,28 @@ public class FileBrowserRow
         throws java.io.IOException
     {
         DeliverFile nextPage = (DeliverFile)pageWithName(
-            DeliverFile.class.getName() );
-        if ( file.isDirectory() )
+            DeliverFile.class.getName());
+        if (file.isDirectory())
         {
-            File zipFile = new File( file.getName() + ".zip" );
-            nextPage.setFileName( zipFile );
-            nextPage.setContentType( FileUtilities.mimeType( zipFile ) );
+            File zipFile = new File(file.getName() + ".zip");
+            nextPage.setFileName(zipFile);
+            nextPage.setContentType(FileUtilities.mimeType(zipFile));
             ByteArrayOutputStream boas = new ByteArrayOutputStream();
-            ZipOutputStream       zos  = new ZipOutputStream( boas );
+            ZipOutputStream       zos  = new ZipOutputStream(boas);
             FileUtilities.appendToZip(
                 file,
                 zos,
-                file.getCanonicalPath().length() );
+                file.getCanonicalPath().length());
             zos.close();
-            nextPage.setFileData( new NSData( boas.toByteArray() ) );
+            nextPage.setFileData(new NSData(boas.toByteArray()));
             boas.close();
         }
         else
         {
-            nextPage.setFileName( file );
-            nextPage.setContentType( FileUtilities.mimeType( file ) );
+            nextPage.setFileName(file);
+            nextPage.setContentType(FileUtilities.mimeType(file));
         }
-        nextPage.setStartDownload( true );
+        nextPage.setStartDownload(true);
         return nextPage;
     }
 
@@ -597,7 +512,7 @@ public class FileBrowserRow
      */
     public String downloadIcon()
     {
-        if ( file.isDirectory() )
+        if (file.isDirectory())
         {
             return "icons/archive.gif";
         }
@@ -608,29 +523,22 @@ public class FileBrowserRow
     }
 
 
-//    // ----------------------------------------------------------
-//    public WOActionResults invokeAction( WORequest arg0, WOContext arg1 )
-//    {
-//        log.debug( "invokeAction(): request.formValues = " + arg0.formValues() );
-////        log.debug( "invokeAction(): context = " + arg1 );
-//        log.debug( "invokeAction(): senderID = " + arg1.senderID() );
-//        log.debug( "invokeAction(): elementID = " + arg1.elementID() );
-//        return super.invokeAction( arg0, arg1 );
-//    }
-
-
     // ----------------------------------------------------------
     /**
      * Toggle this entry between open and closed, if it is a directory.
      * @return this page, so that it reloads
      */
-    public WOComponent toggleExpansion()
+    public WOActionResults toggleExpansion()
     {
-        isExpanded = ( isExpanded.booleanValue() || isArchive() )
-                        ? Boolean.FALSE
-                        : Boolean.TRUE;
-        log.debug( "toggleExpansion(): now isExpanded = " + isExpanded );
-        return context().page();
+        isExpanded = (!isExpanded.booleanValue() && !isArchive());
+        log.debug("toggleExpansion(): now isExpanded = " + isExpanded);
+        JavascriptGenerator page = new JavascriptGenerator();
+        page.refresh(paneId);
+        if (alsoRefresh != null)
+        {
+            page.refresh(alsoRefresh);
+        }
+        return page;
     }
 
 
@@ -641,8 +549,8 @@ public class FileBrowserRow
      */
     public String iconURL()
     {
-        String result = FileUtilities.iconURL( file );
-        log.debug( "iconURL(" + file + ") = " + result );
+        String result = FileUtilities.iconURL(file);
+        log.debug("iconURL(" + file + ") = " + result);
         return result;
     }
 
@@ -651,21 +559,12 @@ public class FileBrowserRow
     public WOComponent select()
     {
         WOComponent result = null;
-        log.debug( "select = " + file.getPath() );
-        if ( fileSelectionListener != null )
+        log.debug("select = " + file.getPath());
+        if (fileSelectionListener != null)
         {
             log.debug("notifying fileSelectionListener");
-            String selection = file.getPath();
-            if ( baseFile != null )
-            {
-                String parent = baseFile.getParent();
-                if ( parent != null && parent.length() > 0 )
-                {
-                    selection = selection.substring( parent.length() + 1 );
-                }
-            }
-            selection = selection.replaceAll( "\\\\", "/" );
-            result = fileSelectionListener.selectFile( selection );
+            result = fileSelectionListener.selectFile(
+                pruneBaseFrom(file, false));
         }
         else
         {
@@ -679,16 +578,16 @@ public class FileBrowserRow
     public boolean isSelected()
     {
         boolean result = false;
-        if ( currentSelection != null )
+        if (currentSelection != null)
         {
-            String myPath = file.getPath().replaceAll( "\\\\", "/" );
-            result = myPath.endsWith( currentSelection );
-            log.debug( "comparing " + myPath + " with " + currentSelection
-                + " = " + result );
+            String myPath = file.getPath().replaceAll("\\\\", "/");
+            result = myPath.endsWith(currentSelection);
+            log.debug("comparing " + myPath + " with " + currentSelection
+                + " = " + result);
         }
         else
         {
-            log.debug( "isSelected(): current selection is null" );
+            log.debug("isSelected(): current selection is null");
         }
         return result;
     }
@@ -698,35 +597,47 @@ public class FileBrowserRow
     public boolean canSelectThis()
     {
         boolean result = false;
-        if ( allowSelection && !isSelected() )
+        if (allowSelection) // && !isSelected())
         {
-            if ( file.isDirectory() )
+            if (file.isDirectory())
             {
                 result = allowSelectDir;
             }
-            else if ( allowSelectExtensions == null )
+            else if (allowSelectExtensions == null)
             {
                 result = true;
             }
             else
             {
-                String myExt = FileUtilities.extensionOf( file ).toLowerCase();
-                for ( int i = 0; i < allowSelectExtensions.count(); i++ )
-                {
-                    if ( myExt.equals(
-                            allowSelectExtensions.objectAtIndex( i ) ) )
-                    {
-                        result = true;
-                        break;
-                    }
-                }
+                result = allowSelectExtensions.contains(
+                    FileUtilities.extensionOf(file).toLowerCase());
             }
         }
         return result;
     }
 
 
+    // ----------------------------------------------------------
+    public String pruneBaseFrom(File aFile, boolean trimParent)
+    {
+        String path = aFile.getPath();
+        if (baseFile != null)
+        {
+            String parent = trimParent
+                ? baseFile.getParentFile().getParent()
+                : baseFile.getParent();
+            if (parent != null && parent.length() > 0)
+            {
+                path = path.substring(parent.length() + 1);
+            }
+        }
+        path = path.replaceAll("\\\\", "/");
+        return path;
+    }
+
+
     //~ Instance/static variables .............................................
 
-    static Logger log = Logger.getLogger( FileBrowserRow.class );
+    private NSTimestamp lastModified;
+    static Logger log = Logger.getLogger(FileBrowserRow.class);
 }

@@ -1,7 +1,3 @@
-AllowSelection: WOConditional {
-    condition = allowSelection;
-}
-
 Row : org.webcat.core.FileBrowserRow {
 	file                  = file;
 	baseFile              = file;
@@ -16,9 +12,9 @@ Row : org.webcat.core.FileBrowserRow {
 	fileEditListener      = fileEditListener;
     applyChangesOnMod     = applyChangesOnMod;
     currentSelection      = currentSelection;
-}
-
-
-Title : WOString {
-	value = title;
+    paneId                = idFor.browser;
+    formId                = formId;
+    buttonGroup           = buttonGroup;
+    alsoRefresh           = alsoRefresh;
+    focusedFiles          = focusedFiles;
 }

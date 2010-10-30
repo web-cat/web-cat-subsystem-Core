@@ -1,4 +1,8 @@
+<wo:WCContentPane id="$idFor.browser"><wo:str value="$restartRowNumbering"/>
 <table>
-<thead><tr><webobject name="AllowSelection"><th>Select</th></webobject><th colspan="2"><webobject name="Title"/></th></tr></thead>
+<thead><tr><wo:if condition="$allowSelection"><th>Select</th></wo:if>
+  <th>File Name</th><th>Size</th><th>Last Modified</th><th>Actions</th>
+  </tr></thead>
 <tbody><webobject Name="Row"/></tbody>
 </table>
+</wo:WCContentPane>
