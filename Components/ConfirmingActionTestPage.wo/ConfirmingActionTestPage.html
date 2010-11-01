@@ -1,8 +1,12 @@
 <wo name="Page"><wo:WCPageModule title="Confirming Action Test Page">
 <wo:WCForm>
+    <wo:WCContentPane id="contentPane">
     <p>Text box: <wo name="Textbox"/></p>
     <p>Check box: <wo name="Checkbox"/></p>
+    <p>Auto-incrementing integer: <wo:str value="$autoIncrementingInteger"/></p>
+    </wo:WCContentPane>
     <p><wo name="Submit"/> (should synchronize bindings)</p>
+    <p><wo name="SubmitRemote"/> (should synchronize bindings)</p>
     <p><wo name="SubmitLink">Ask for Confirmation</wo> (should synchronize bindings)</p>
     <p><wo:WCDiv dojoType="dijit.form.DropDownButton" label="Drop-down">
         <wo:WCDiv dojoType="dijit.Menu">

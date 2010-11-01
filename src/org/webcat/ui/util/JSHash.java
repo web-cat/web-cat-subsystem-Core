@@ -264,8 +264,8 @@ public class JSHash
 
         if (str.length() > 0)
         {
-            if (javascriptKeywords.contains(str) ||
-                    !Character.isJavaIdentifierStart(str.charAt(0)))
+            if (javascriptKeywords.contains(str)
+                    || !Character.isJavaIdentifierStart(str.charAt(0)))
             {
                 isIdentifier = false;
             }
@@ -273,7 +273,7 @@ public class JSHash
             {
                 for (int i = 1; i < str.length(); i++)
                 {
-                    if (!Character.isJavaIdentifierPart(str.charAt(1)))
+                    if (!Character.isJavaIdentifierPart(str.charAt(i)))
                     {
                         isIdentifier = false;
                         break;

@@ -250,7 +250,7 @@ webcat.serializeChildren = function(/*DOMNode|String*/ node)
  *
  *     submit: a DOM node (or id) of a node that is the parent of the fields
  *         that you wish to submit; if omitted, the entire form (options.form)
- *         will be submitted
+ *         will be submitted; if explicitly null, nothing will be submitted
  *
  * If options.url is supplied, the request will be sent to that URL. If
  * options.form is supplied but options.url is not, then the request will be
@@ -273,14 +273,14 @@ webcat.remoteSubmit = function(/*_Widget*/ widget, /*Object*/ options)
         options.url = actionUrl;
     }
 
-    // If this is a partial submit, serialize the subset of fields manually
-    // and then clear out options.form so that Dojo's XHR does not
-    // serialize the form again.
-
     if (!options.suppressBusyCursor)
     {
         webcat.pushBusyCursor();
     }
+
+    // If this is a partial submit, serialize the subset of fields manually
+    // and then clear out options.form so that Dojo's XHR does not
+    // serialize the form again.
 
     if (options.submit)
     {
@@ -289,6 +289,13 @@ webcat.remoteSubmit = function(/*_Widget*/ widget, /*Object*/ options)
             dojo.mixin(options.content, serialized);
         });
 
+        options.content['webcat.wasPartialSubmit'] = true;
+
+        delete options.submit;
+        delete options.form;
+    }
+    else if (options.submit === null)
+    {
         options.content['webcat.wasPartialSubmit'] = true;
 
         delete options.submit;

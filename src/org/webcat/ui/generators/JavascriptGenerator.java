@@ -797,6 +797,20 @@ public class JavascriptGenerator implements WOActionResults
 
     // ----------------------------------------------------------
     /**
+     * Performs a remote (Ajax) submit.
+     *
+     * @param options the dojo.xhr options, see the Javascript
+     *     {@code webcat.remoteSubmit} method for more details
+     * @return this generator, for chaining
+     */
+    public JavascriptGenerator remoteSubmit(JSHash options)
+    {
+        return call("webcat.remoteSubmit", JSHash.code("null"), options);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * <p>
      * Removes an attribute from a DOM element.
      * </p><p>

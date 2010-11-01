@@ -21,6 +21,8 @@
 
 package org.webcat.core;
 
+import org.apache.log4j.Logger;
+import org.webcat.ui.generators.JavascriptGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
 
@@ -54,9 +56,16 @@ public class ConfirmingActionTestPage
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
+    public int autoIncrementingInteger()
+    {
+        return autoIncrementingInteger++;
+    }
+
+
+    // ----------------------------------------------------------
     public WOActionResults dummyAction()
     {
-        System.out.println("Executing dummy action");
+        log.info("Executing dummy action");
         return null;
     }
 
@@ -64,7 +73,7 @@ public class ConfirmingActionTestPage
     // ----------------------------------------------------------
     public WOActionResults processThings()
     {
-        return new ConfirmingAction(this)
+        return new ConfirmingAction(this, false)
         {
             // ----------------------------------------------------------
             @Override
@@ -76,10 +85,45 @@ public class ConfirmingActionTestPage
 
             // ----------------------------------------------------------
             @Override
-            protected WOActionResults performStandardAction()
+            protected WOActionResults actionWasConfirmed()
             {
+                log.info("Yes button was clicked; executing action as a "
+                        + "page-load");
                 return null;
             }
         };
     }
+
+
+    // ----------------------------------------------------------
+    public WOActionResults processThingsRemotely()
+    {
+        return new ConfirmingAction(this, true)
+        {
+            // ----------------------------------------------------------
+            @Override
+            protected String confirmationMessage()
+            {
+                return "Confirming the values <b>" + checkBoxChecked
+                    + "</b> and <b>" + textBoxValue + "</b>?";
+            }
+
+            // ----------------------------------------------------------
+            @Override
+            protected WOActionResults actionWasConfirmed()
+            {
+                log.info("Yes button was clicked; executing action as a "
+                        + "remote action");
+                return new JavascriptGenerator().refresh("contentPane");
+            }
+        };
+    }
+
+
+    //~ Static/instance variables .............................................
+
+    private int autoIncrementingInteger;
+
+    private static Logger log = Logger.getLogger(
+            ConfirmingActionTestPage.class);
 }
