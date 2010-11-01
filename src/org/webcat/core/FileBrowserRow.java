@@ -365,7 +365,7 @@ public class FileBrowserRow
      */
     public WOActionResults deleteFile()
     {
-        return new ConfirmingAction(this)
+        return new ConfirmingAction(this, true)
         {
             @Override
             protected String confirmationTitle()
@@ -396,7 +396,7 @@ public class FileBrowserRow
             }
 
             @Override
-            protected WOActionResults performStandardAction()
+            protected WOActionResults actionWasConfirmed()
             {
                 if (applyChangesOnMod)
                 {
@@ -412,7 +412,7 @@ public class FileBrowserRow
                 {
                     file.delete();
                 }
-                return context().page();
+                return new JavascriptGenerator().refresh(paneId);
             }
 
             // Can't get ajax-based action to work!
