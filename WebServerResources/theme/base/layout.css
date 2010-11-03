@@ -326,11 +326,11 @@ span.error {
     background-position: 2px 0;
 }
 span.caution {
-	padding: 0 2px 0 20px;
-	background-image: url("../../icons/caution.png");
-	background-repeat: no-repeat;
-	background-attachment: scroll;
-	background-position: 2px 0;
+    padding: 0 2px 0 20px;
+    background-image: url("../../icons/caution.png");
+    background-repeat: no-repeat;
+    background-attachment: scroll;
+    background-position: 2px 0;
 }
 
 img { border: 0; }
@@ -375,7 +375,7 @@ tr.R > td.center, tr.R > td.c { text-align: center; }
 .nowrap { white-space: nowrap; }
 .top { vertical-align: top; }
 .top, .top th, .top td {
-	vertical-align: text-top; padding-top: 0; padding-bottom: 0.2em; }
+    vertical-align: text-top; padding-top: 0; padding-bottom: 0.2em; }
 .nlbefore { margin-top: 1em; }
 .nlafter  { margin-bottom: 1em; }
 .kn, tr.kn > td { margin-bottom: 0; padding-bottom: 0; }
@@ -395,6 +395,38 @@ pre, .code, code, var, samp, kbd {
 
 img.help, img.icon, input.icon { vertical-align: text-top; }
 img.icon.so, input.icon.so { padding-bottom: -2px; padding-top: 2px; }
+
+.InlineStatusIndicator {
+    display: inline-block;
+    margin-left: 0.5em;
+    padding: 4px;
+    color: black;
+}
+
+.InlineStatusIndicator .message {
+    display: inline-block;
+    padding: 4px 8px 4px 24px;
+    color: black;
+    border: 1px solid transparent;
+    background-repeat: no-repeat;
+    background-position: 3px 3px;
+}
+
+.InlineStatusIndicator .message.error {
+    background-color: #f7f1ef;
+    border-color: #f8a88c;
+    background-image: url(../../icons/exclaim.png);
+}
+.InlineStatusIndicator .message.warning {
+    background-color: #ffffe6;
+    border-color: #f6f086;
+    background-image: url(../../icons/caution.png);
+}
+.InlineStatusIndicator .message.success {
+    background-color: #e6ffe6;
+    border-color: #50B54D;
+    background-image: url(../../icons/check.png);
+}
 
 .NoticePanel {
     display: block;

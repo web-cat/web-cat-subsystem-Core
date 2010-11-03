@@ -1,0 +1,10 @@
+Spinner: WCSpinner {
+    id = spinnerId;
+    size = "small";
+}
+
+MessageBox: WOGenericContainer {
+    elementName = "div";
+    id = messageBoxId;
+    class = "message";
+}
