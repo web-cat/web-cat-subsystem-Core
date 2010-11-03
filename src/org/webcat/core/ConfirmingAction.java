@@ -207,6 +207,27 @@ public abstract class ConfirmingAction extends DualAction
     // ----------------------------------------------------------
     /**
      * <p>
+     * Generates the Javascript code that should be called immediately after
+     * the user clicks "Yes", but before the associated server-side action is
+     * executed.
+     * </p><p>
+     * The default implementation does nothing; subclasses can override this to
+     * prepare for a potentially long-running operation, by starting a progress
+     * spinner for example.
+     * </p>
+     *
+     * @param page the JavascriptGenerator that will contain code to be
+     *     executed immediately when the "Yes" button is clicked
+     */
+    protected void beforeActionWasConfirmed(JavascriptGenerator page)
+    {
+        // Default implementation does nothing.
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * <p>
      * Generates the Javascript code that should be executed on the client
      * if the "Yes" button on the confirmation dialog was selected. The
      * default behavior is to execute a Javascript statement that will cause
@@ -220,6 +241,8 @@ public abstract class ConfirmingAction extends DualAction
      */
     private void generateYesHandler(JavascriptGenerator page)
     {
+        beforeActionWasConfirmed(page);
+
         if (isRemote)
         {
             JSHash options = new JSHash();

@@ -465,6 +465,20 @@ public class JavascriptGenerator implements WOActionResults
 
     // ----------------------------------------------------------
     /**
+     * Appends the content of the specified JavascriptGenerator to this one.
+     *
+     * @param otherJS the other JavascriptGenerator
+     * @return this generator, for chaining
+     */
+    public JavascriptGenerator append(JavascriptGenerator otherJS)
+    {
+        lines.addAll(otherJS.lines);
+        return this;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Assigns a value to a variable.
      *
      * @param variable the variable
