@@ -355,6 +355,22 @@ public class WCTable extends WCComponent
 
 
     // ----------------------------------------------------------
+    public static void refresh(JavascriptGenerator js, String id)
+    {
+        refresh(js, id, null);
+    }
+
+
+    // ----------------------------------------------------------
+    public static void refresh(JavascriptGenerator js, String id,
+            JavascriptFunction onAfterRefresh)
+    {
+        js.append(renderTableBusyScript(id));
+        js.refresh(onAfterRefresh, id);
+    }
+
+
+    // ----------------------------------------------------------
     public JavascriptGenerator refreshTable()
     {
         return refreshTable(null);
