@@ -1358,7 +1358,7 @@ public class Application
      * @param subject     the subject line
      * @param body        the body of the message
      */
-    public static void sendAdminEmail(String subject, String body)
+    public static NSArray<String> adminEmailAddresses()
     {
         String adminList =
             configurationProperties().getProperty("adminNotifyAddrs");
@@ -1381,15 +1381,47 @@ public class Application
 
         if (adminList == null)
         {
+            return null;
+        }
+
+        String[] admins = adminList.split("\\s*,\\s*");
+        return new NSArray<String>(admins);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sends a text e-mail message to the system administrators.
+     *
+     * @param subject     the subject line
+     * @param body        the body of the message
+     */
+    public static void sendAdminEmail(String subject, String body)
+    {
+        sendAdminEmail(subject, body, null);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sends a text e-mail message to the system administrators.
+     *
+     * @param subject     the subject line
+     * @param body        the body of the message
+     */
+    public static void sendAdminEmail(
+        String subject, String body, NSDictionary<String, String> attachments)
+    {
+        NSArray<String> adminList = adminEmailAddresses();
+        if (adminList == null || adminList.count() == 0)
+        {
             log.error("No bound admin e-mail addresses.  "
                       + "Cannot send message:\n"
                       + "Subject: " + subject + "\n"
                       + "Message:\n" + body);
             return;
         }
-
-        String[] admins = adminList.split("\\s*,\\s*");
-        sendSimpleEmail(new NSArray<String>(admins), subject, body);
+        sendSimpleEmail(adminList, subject, body, attachments);
     }
 
 
