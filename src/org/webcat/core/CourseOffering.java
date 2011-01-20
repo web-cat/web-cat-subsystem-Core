@@ -23,6 +23,7 @@ package org.webcat.core;
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import er.extensions.eof.ERXKey;
 import er.extensions.foundation.ERXArrayUtilities;
 import java.io.File;
 import org.apache.log4j.Logger;
@@ -76,8 +77,10 @@ public class CourseOffering
     //~ Constants (for key names) .............................................
 
     // Derived Attributes ---
-    public static final String COURSE_NUMBER_KEY  =
+    public static final String COURSE_NUMBER_KEY =
         COURSE_KEY + "." + Course.NUMBER_KEY;
+    public static final ERXKey<Integer> courseNumber =
+        new ERXKey<Integer>(COURSE_NUMBER_KEY);
 
 
     //~ Methods ...............................................................
