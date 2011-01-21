@@ -5,7 +5,7 @@ subsystem.Core
 
 Core.version.major=2
 Core.version.minor=1
-Core.version.revision=1
+Core.version.revision=2
 
 Core.copyright=(c) 2006-2010 Virginia Tech Department of Computer Science
 Core.provider=Virginia Tech Computer Science
