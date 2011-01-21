@@ -1222,6 +1222,7 @@ public class Application
 
             message.setFrom(new InternetAddress(
                 configurationProperties().getProperty("coreAdminEmail")));
+            message.setSentDate(new NSTimestamp());
 
             // Add each recipient to the message.
             for (String toAddress : to)
@@ -1240,23 +1241,27 @@ public class Application
 
             message.setSubject(appIdentifier() + subject);
 
-            // Create the message part
-            javax.mail.BodyPart messageBodyPart = new MimeBodyPart();
-
-            // Fill the message
-            messageBodyPart.setText(body);
-
-            // Create a Multipart
-            javax.mail.Multipart multipart = new MimeMultipart();
-
-            // Add part one
-            multipart.addBodyPart(messageBodyPart);
-
-            //
-            // The next parts are attachments
-            //
-            if (attachments != null)
+            if (attachments == null || attachments.size() == 0)
             {
+                message.setText(body);
+            }
+            else
+            {
+                // Create the message part
+                javax.mail.BodyPart messageBodyPart = new MimeBodyPart();
+
+                // Fill the message
+                messageBodyPart.setText(body);
+
+                // Create a Multipart
+                javax.mail.Multipart multipart = new MimeMultipart();
+
+                // Add part one
+                multipart.addBodyPart(messageBodyPart);
+
+                //
+                // The next parts are attachments
+                //
                 for (String filename : attachments.allKeys())
                 {
                     String attachmentPath = attachments.objectForKey(filename);
@@ -1293,10 +1298,10 @@ public class Application
                     // Add attachment
                     multipart.addBodyPart(messageBodyPart);
                 }
-            }
 
-            // Put parts in message
-            message.setContent(multipart);
+                // Put parts in message
+                message.setContent(multipart);
+            }
 
             // Send the message
             if ("donotsendmail".equals(
