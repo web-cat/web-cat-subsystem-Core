@@ -81,8 +81,8 @@ public class Session
     {
         log.debug( "creating " + sessionID() );
 
-//        setStoresIDsInCookies(true);
-//        setStoresIDsInURLs(false);
+        setStoresIDsInCookies(true);
+        setStoresIDsInURLs(false);
         defaultEditingContext().setUndoManager( null );
 //        defaultEditingContext().setSharedEditingContext( null );
 

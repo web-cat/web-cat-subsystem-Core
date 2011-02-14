@@ -106,8 +106,8 @@ public class Application
         // Set UTF-8 encoding, to support localization
         WOMessage.setDefaultEncoding("UTF-8");
         WOMessage.setDefaultURLEncoding("UTF-8");
-        ERXMessageEncoding.setDefaultEncoding("UTF8");
-        ERXMessageEncoding.setDefaultEncodingForAllLanguages("UTF8");
+        ERXMessageEncoding.setDefaultEncoding("UTF-8");
+        ERXMessageEncoding.setDefaultEncodingForAllLanguages("UTF-8");
 
         // We'll use plain WO sessions, even in a servlet context, since
         // restoring sessions through the WCServletSessionStore doesn't
