@@ -1,5 +1,6 @@
 .srcView { line-height: 130%; }
 .srcView table { margin: 0; }
+.srcView pre { padding-left: 10px; }
 
 /* To remove line-height spacing around vertical spacing images surrounding
    message boxes in code listings.  */
@@ -157,13 +158,12 @@ span.Hilight {
     background: #C8C8F0;
 }
 
-.srcView td.srcCell
+.srcView td.srcCell, .srcView td.srcLine
 {
     padding-right: 10px;
     margin-top: 0px;
     margin-bottom: 0px;
-    font-family: Monospace;
-    white-space: pre;
+    font-family: 'Inconsolata', fixed, monospace;
 }
 
 span.srcLine

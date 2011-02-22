@@ -384,7 +384,14 @@ tr.R > td.center, tr.R > td.c { text-align: center; }
 pre, .code {
     border: none;
     padding: 0.5em 0.5em 0.5em 1em;
-    line-height: 120%;
+    line-height: 130%;
+}
+
+.srcView pre {
+	padding: 0;
+	background-image: none;
+    background-color: transparent;
+	border: none;
 }
 
 pre, .code, code, var, samp, kbd {
