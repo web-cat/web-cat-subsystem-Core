@@ -27,7 +27,7 @@ import java.io.IOException;
 import java.util.Scanner;
 import org.webcat.core.Application;
 import org.webcat.core.EntityResourceRequestHandler;
-import org.webcat.core.IEntityResourceHandler;
+import org.webcat.core.EntityResourceHandler;
 import org.webcat.core.Session;
 import org.apache.log4j.Logger;
 import com.webobjects.appserver.WOContext;
@@ -55,7 +55,7 @@ import er.extensions.eof.ERXQ;
  * URLs should be of the form:
  * <pre>http://server/Web-CAT.wo/er/[session id]/[EO type]/[EO id]/[path/to/the/file]</pre>
  * where "er" is this request handler's key, "session id" is the session
- * identifier (which must be present), "EO type" is the name of the entity
+ * identifier (which is optional), "EO type" is the name of the entity
  * whose resources are being requested, "EO id" is the numeric ID of the
  * entity, and "path/to/the/file" is the path to the resource, relative to
  * whatever file-system location the particular entity deems fit for its
@@ -85,16 +85,25 @@ public class EntityResourceRequestHandler extends WORequestHandler
         Number id = (Number) eo.valueForKey("id");
 
         StringBuffer buffer = new StringBuffer();
-        buffer.append(context.session().sessionID());
-        buffer.append("/");
+        String sessionString = null;
+
+        if (context.session().storesIDsInURLs())
+        {
+            sessionString = "?wosid=" + context.session().sessionID();
+        }
+
         buffer.append(entityName);
         buffer.append("/");
         buffer.append(id);
-        buffer.append("/");
-        buffer.append(relativePath);
+
+        if (relativePath != null && relativePath.length() > 0)
+        {
+            buffer.append("/");
+            buffer.append(relativePath);
+        }
 
         return context.urlWithRequestHandlerKey(REQUEST_HANDLER_KEY,
-                buffer.toString(), null);
+                buffer.toString(), sessionString);
     }
 
 
@@ -106,7 +115,7 @@ public class EntityResourceRequestHandler extends WORequestHandler
      * @param handler a resource handler
      */
     public static void registerHandler(Class<?> entityClass,
-                                       IEntityResourceHandler handler)
+                                       EntityResourceHandler handler)
     {
         resourceHandlers.setObjectForKey(handler, entityClass);
     }
@@ -134,12 +143,10 @@ public class EntityResourceRequestHandler extends WORequestHandler
         scanner.useDelimiter("/");
 
         Session session = null;
-        String sessionId = null;
+        String sessionId = request.sessionID();
 
-        if (scanner.hasNext())
+        if (sessionId != null)
         {
-            sessionId = scanner.next();
-
             try
             {
                 session = (Session)
@@ -152,12 +159,6 @@ public class EntityResourceRequestHandler extends WORequestHandler
             }
         }
 
-        if (session == null)
-        {
-            log.warn("No session found with id " + sessionId);
-            response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
-        }
-        else
         {
             String entity = null;
             long id = 0;
@@ -196,7 +197,16 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
             if (entity != null && id != 0 && path != null)
             {
-                EOEditingContext ec = session.sessionContext();
+                EOEditingContext ec;
+
+                if (session != null)
+                {
+                    ec = session.sessionContext();
+                }
+                else
+                {
+                    ec = Application.newPeerEditingContext();
+                }
 
                 EOEntity ent = EOUtilities.entityNamed(ec, entity);
                 Class<?> entityClass = null;
@@ -210,11 +220,17 @@ public class EntityResourceRequestHandler extends WORequestHandler
                     // Do nothing; error will be handled below.
                 }
 
-                IEntityResourceHandler handler =
+                EntityResourceHandler handler =
                     resourceHandlers.objectForKey(entityClass);
 
                 if (handler != null)
                 {
+                    if (handler.requiresLogin() && session == null)
+                    {
+                        log.warn("No session found with id " + sessionId);
+                        response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
+                    }
+
                     EOFetchSpecification fspec = new EOFetchSpecification(
                             entity, ERXQ.is("id", id), null);
                     NSArray<? extends EOEnterpriseObject> objects =
@@ -222,10 +238,27 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
                     if (objects != null && objects.count() > 0)
                     {
-                        // TODO verify access rights with session's user
+                        EOEnterpriseObject object = objects.objectAtIndex(0);
 
-                        generateResponse(response, handler,
-                                objects.objectAtIndex(0), path);
+                        boolean canAccess = !handler.requiresLogin()
+                            || (session != null &&
+                                    (session.user().hasAdminPrivileges()
+                                            || handler.userCanAccess(object,
+                                                    session.user())));
+
+                        if (canAccess)
+                        {
+                            generateResponse(response, handler, object, path);
+                        }
+                        else
+                        {
+                            String userName = (session != null
+                                    ? session.user().userName() : "<null>");
+
+                            log.warn("User " + userName + " tried to access "
+                                    + "entity resource without permission");
+                            response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
+                        }
                     }
                     else
                     {
@@ -242,6 +275,11 @@ public class EntityResourceRequestHandler extends WORequestHandler
                             + entity);
 
                     response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
+                }
+
+                if (session == null)
+                {
+                    Application.releasePeerEditingContext(ec);
                 }
             }
             else
@@ -307,7 +345,7 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
     // ----------------------------------------------------------
     private void generateResponse(WOResponse response,
-                                  IEntityResourceHandler handler,
+                                  EntityResourceHandler handler,
                                   EOEnterpriseObject object,
                                   String path)
     {
@@ -337,8 +375,8 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
     public static final String REQUEST_HANDLER_KEY = "er";
 
-    private static final NSMutableDictionary<Class<?>, IEntityResourceHandler>
-        resourceHandlers = new NSMutableDictionary<Class<?>, IEntityResourceHandler>();
+    private static final NSMutableDictionary<Class<?>, EntityResourceHandler>
+        resourceHandlers = new NSMutableDictionary<Class<?>, EntityResourceHandler>();
 
     private static final Logger log = Logger.getLogger(
             EntityResourceRequestHandler.class);

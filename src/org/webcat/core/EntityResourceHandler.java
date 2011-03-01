@@ -36,7 +36,7 @@ import com.webobjects.eocontrol.EOEnterpriseObject;
  * @author  Tony Allevato
  * @version $Id$
  */
-public interface IEntityResourceHandler<T extends EOEnterpriseObject>
+public abstract class EntityResourceHandler<T extends EOEnterpriseObject>
 {
     //~ Methods ...............................................................
 
@@ -50,5 +50,38 @@ public interface IEntityResourceHandler<T extends EOEnterpriseObject>
      * @return a File object representing the absolute path of the file on the
      *     file system where the resource is located
      */
-    File pathForResource(T object, String relativePath);
+    public abstract File pathForResource(T object, String relativePath);
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets a value indicating whether the resource requires a logged in user.
+     * By default, resources do not need a log-in.
+     *
+     * @return true if the resource handler requires a user to be logged in,
+     *     or false if the resource can be loaded anonymously
+     */
+    public boolean requiresLogin()
+    {
+        return false;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets a value indicating whether a user has access to view resources for
+     * the specified object. By default, any user can access resources for the
+     * object; override this to provide object-specific checks.
+     *
+     * Users with admin privileges can always access any resource, regardless
+     * of the return value of this method.
+     *
+     * @param object the object
+     * @param user the user
+     * @return true if the user can access the resource, otherwise false
+     */
+    public boolean userCanAccess(T object, User user)
+    {
+        return true;
+    }
 }
