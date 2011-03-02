@@ -137,6 +137,24 @@ public class EntityResourceRequestHandler extends WORequestHandler
         WOResponse response =
             Application.application().createResponseInContext(context);
 
+        try
+        {
+            _handleRequest(request, context, response);
+        }
+        catch (Exception e)
+        {
+            response.setContent("");
+            response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
+        }
+
+        return response;
+    }
+
+
+    // ----------------------------------------------------------
+    private void _handleRequest(WORequest request, WOContext context,
+            WOResponse response)
+    {
         String handlerPath = request.requestHandlerPath();
 
         Scanner scanner = new Scanner(handlerPath);
@@ -159,146 +177,142 @@ public class EntityResourceRequestHandler extends WORequestHandler
             }
         }
 
+        String entity = null;
+        long id = 0;
+        String path = null;
+
+        if (scanner.hasNext())
         {
-            String entity = null;
-            long id = 0;
-            String path = null;
+            entity = scanner.next();
+        }
 
-            if (scanner.hasNext())
+        if (scanner.hasNext())
+        {
+            String idString = scanner.next();
+
+            try
             {
-                entity = scanner.next();
+                id = Long.valueOf(idString);
+            }
+            catch (NumberFormatException e)
+            {
+                id = 0;
+            }
+        }
+
+        if (scanner.hasNext())
+        {
+            scanner.skip("/");
+        }
+
+        scanner.useDelimiter("\0");
+
+        if (scanner.hasNext())
+        {
+            path = scanner.next();
+
+            if (!validatePath(path))
+            {
+                path = null;
+            }
+        }
+
+        if (entity != null && id != 0 && path != null)
+        {
+            EOEditingContext ec;
+
+            if (session != null)
+            {
+                ec = session.sessionContext();
+            }
+            else
+            {
+                ec = Application.newPeerEditingContext();
             }
 
-            if (scanner.hasNext())
-            {
-                String idString = scanner.next();
+            EOEntity ent = EOUtilities.entityNamed(ec, entity);
+            Class<?> entityClass = null;
 
-                try
-                {
-                    id = Long.valueOf(idString);
-                }
-                catch (NumberFormatException e)
-                {
-                    id = 0;
-                }
+            try
+            {
+                entityClass = Class.forName(ent.className());
+            }
+            catch (ClassNotFoundException e)
+            {
+                // Do nothing; error will be handled below.
             }
 
-            if (scanner.hasNext())
+            EntityResourceHandler handler =
+                resourceHandlers.objectForKey(entityClass);
+
+            if (handler != null)
             {
-                scanner.skip("/");
-            }
-
-            scanner.useDelimiter("\0");
-
-            if (scanner.hasNext())
-            {
-                path = scanner.next();
-
-                if (!validatePath(path))
+                if (handler.requiresLogin() && session == null)
                 {
-                    path = null;
-                }
-            }
-
-            if (entity != null && id != 0 && path != null)
-            {
-                EOEditingContext ec;
-
-                if (session != null)
-                {
-                    ec = session.sessionContext();
-                }
-                else
-                {
-                    ec = Application.newPeerEditingContext();
+                    log.warn("No session found with id " + sessionId);
+                    response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
                 }
 
-                EOEntity ent = EOUtilities.entityNamed(ec, entity);
-                Class<?> entityClass = null;
+                EOFetchSpecification fspec = new EOFetchSpecification(
+                        entity, ERXQ.is("id", id), null);
+                NSArray<? extends EOEnterpriseObject> objects =
+                    ec.objectsWithFetchSpecification(fspec);
 
-                try
+                if (objects != null && objects.count() > 0)
                 {
-                    entityClass = Class.forName(ent.className());
-                }
-                catch (ClassNotFoundException e)
-                {
-                    // Do nothing; error will be handled below.
-                }
+                    EOEnterpriseObject object = objects.objectAtIndex(0);
 
-                EntityResourceHandler handler =
-                    resourceHandlers.objectForKey(entityClass);
+                    boolean canAccess = !handler.requiresLogin()
+                        || (session != null &&
+                                (session.user().hasAdminPrivileges()
+                                        || handler.userCanAccess(object,
+                                                session.user())));
 
-                if (handler != null)
-                {
-                    if (handler.requiresLogin() && session == null)
+                    if (canAccess)
                     {
-                        log.warn("No session found with id " + sessionId);
-                        response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
-                    }
-
-                    EOFetchSpecification fspec = new EOFetchSpecification(
-                            entity, ERXQ.is("id", id), null);
-                    NSArray<? extends EOEnterpriseObject> objects =
-                        ec.objectsWithFetchSpecification(fspec);
-
-                    if (objects != null && objects.count() > 0)
-                    {
-                        EOEnterpriseObject object = objects.objectAtIndex(0);
-
-                        boolean canAccess = !handler.requiresLogin()
-                            || (session != null &&
-                                    (session.user().hasAdminPrivileges()
-                                            || handler.userCanAccess(object,
-                                                    session.user())));
-
-                        if (canAccess)
-                        {
-                            generateResponse(response, handler, object, path);
-                        }
-                        else
-                        {
-                            String userName = (session != null
-                                    ? session.user().userName() : "<null>");
-
-                            log.warn("User " + userName + " tried to access "
-                                    + "entity resource without permission");
-                            response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
-                        }
+                        generateResponse(response, handler, object, path);
                     }
                     else
                     {
-                        log.warn("Attempted to access entity resource for "
-                                + "an object that does not exist: " + entity
-                                + ":" + id);
+                        String userName = (session != null
+                                ? session.user().userName() : "<null>");
 
-                        response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
+                        log.warn("User " + userName + " tried to access "
+                                + "entity resource without permission");
+                        response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
                     }
                 }
                 else
                 {
-                    log.warn("No entity request handler was found for "
-                            + entity);
+                    log.warn("Attempted to access entity resource for "
+                            + "an object that does not exist: " + entity
+                            + ":" + id);
 
                     response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
-                }
-
-                if (session == null)
-                {
-                    Application.releasePeerEditingContext(ec);
                 }
             }
             else
             {
+                log.warn("No entity request handler was found for "
+                        + entity);
+
                 response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
             }
+
+            if (session == null)
+            {
+                Application.releasePeerEditingContext(ec);
+            }
+        }
+        else
+        {
+            response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
         }
 
         if (session != null)
         {
             Application.application().saveSessionForContext(context);
         }
-
-        return response;
     }
 
 
@@ -358,15 +372,22 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
         if (absolutePath.exists())
         {
-            try
+            if (!absolutePath.isFile())
             {
-                FileInputStream stream = new FileInputStream(absolutePath);
-                response.setContentStream(stream, 0, absolutePath.length());
-                response.setStatus(WOResponse.HTTP_STATUS_OK);
+                response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
             }
-            catch (IOException e)
+            else
             {
-                response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
+                try
+                {
+                    FileInputStream stream = new FileInputStream(absolutePath);
+                    response.setContentStream(stream, 0, absolutePath.length());
+                    response.setStatus(WOResponse.HTTP_STATUS_OK);
+                }
+                catch (IOException e)
+                {
+                    response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
+                }
             }
         }
         else
