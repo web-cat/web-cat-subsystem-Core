@@ -183,8 +183,13 @@ public class EntityResourceRequestHandler extends WORequestHandler
                 }
             }
 
-            scanner.skip("/");
+            if (scanner.hasNext())
+            {
+                scanner.skip("/");
+            }
+
             scanner.useDelimiter("\0");
+
             if (scanner.hasNext())
             {
                 path = scanner.next();
