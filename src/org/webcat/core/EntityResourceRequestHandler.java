@@ -41,6 +41,7 @@ import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.eocontrol.EOFetchSpecification;
 import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSMutableDictionary;
 import er.extensions.eof.ERXEOAccessUtilities;
 import er.extensions.eof.ERXQ;
@@ -157,8 +158,9 @@ public class EntityResourceRequestHandler extends WORequestHandler
     {
         String handlerPath = request.requestHandlerPath();
 
-        Scanner scanner = new Scanner(handlerPath);
-        scanner.useDelimiter("/");
+        // Get the user's session, if possible. We'll use it later for
+        // resources that require logins (for user validation) in order to be
+        // accessed.
 
         Session session = null;
         String sessionId = request.sessionID();
@@ -177,130 +179,84 @@ public class EntityResourceRequestHandler extends WORequestHandler
             }
         }
 
-        String entity = null;
-        long id = 0;
-        String path = null;
+        // Parse the request path into its entity, object ID, and resource
+        // path.
 
-        if (scanner.hasNext())
-        {
-            entity = scanner.next();
-        }
+        EntityRequest entityRequest = EntityRequest.fromRequestHandlerPath(
+                handlerPath);
 
-        if (scanner.hasNext())
+        if (entityRequest != null)
         {
-            String idString = scanner.next();
+            EOEditingContext ec = Application.newPeerEditingContext();
 
             try
             {
-                id = Long.valueOf(idString);
-            }
-            catch (NumberFormatException e)
-            {
-                id = 0;
-            }
-        }
+                ec.lock();
 
-        if (scanner.hasNext())
-        {
-            scanner.skip("/");
-        }
+                EntityResourceHandler handler = handlerForEntityNamed(
+                        entityRequest.entityName(), ec);
 
-        scanner.useDelimiter("\0");
-
-        if (scanner.hasNext())
-        {
-            path = scanner.next();
-
-            if (!validatePath(path))
-            {
-                path = null;
-            }
-        }
-
-        if (entity != null && id != 0 && path != null)
-        {
-            EOEditingContext ec;
-
-            if (session != null)
-            {
-                ec = session.sessionContext();
-            }
-            else
-            {
-                ec = Application.newPeerEditingContext();
-            }
-
-            EOEntity ent = EOUtilities.entityNamed(ec, entity);
-            Class<?> entityClass = null;
-
-            try
-            {
-                entityClass = Class.forName(ent.className());
-            }
-            catch (ClassNotFoundException e)
-            {
-                // Do nothing; error will be handled below.
-            }
-
-            EntityResourceHandler handler =
-                resourceHandlers.objectForKey(entityClass);
-
-            if (handler != null)
-            {
-                if (handler.requiresLogin() && session == null)
+                if (handler != null)
                 {
-                    log.warn("No session found with id " + sessionId);
-                    response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
-                }
-
-                EOFetchSpecification fspec = new EOFetchSpecification(
-                        entity, ERXQ.is("id", id), null);
-                NSArray<? extends EOEnterpriseObject> objects =
-                    ec.objectsWithFetchSpecification(fspec);
-
-                if (objects != null && objects.count() > 0)
-                {
-                    EOEnterpriseObject object = objects.objectAtIndex(0);
-
-                    boolean canAccess = !handler.requiresLogin()
-                        || (session != null &&
-                                (session.user().hasAdminPrivileges()
-                                        || handler.userCanAccess(object,
-                                                session.user())));
-
-                    if (canAccess)
+                    if (handler.requiresLogin() && session == null)
                     {
-                        generateResponse(response, handler, object, path);
+                        log.warn("No session found with id " + sessionId);
+                        response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
+                    }
+
+                    EOFetchSpecification fspec = new EOFetchSpecification(
+                            entityRequest.entityName(),
+                            ERXQ.is("id", entityRequest.id()), null);
+
+                    NSArray<? extends EOEnterpriseObject> objects =
+                        ec.objectsWithFetchSpecification(fspec);
+
+                    if (objects != null && objects.count() > 0)
+                    {
+                        EOEnterpriseObject object = objects.objectAtIndex(0);
+
+                        boolean canAccess = !handler.requiresLogin()
+                            || (session != null &&
+                                    (session.user().hasAdminPrivileges()
+                                            || handler.userCanAccess(object,
+                                                    session.user())));
+
+                        if (canAccess)
+                        {
+                            generateResponse(response, handler, object,
+                                    entityRequest.resourcePath());
+                        }
+                        else
+                        {
+                            String userName = (session != null
+                                    ? session.user().userName() : "<null>");
+
+                            log.warn("User " + userName + " tried to access "
+                                    + "entity resource without permission");
+                            response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
+                        }
                     }
                     else
                     {
-                        String userName = (session != null
-                                ? session.user().userName() : "<null>");
+                        log.warn("Attempted to access entity resource for "
+                                + "an object that does not exist: "
+                                + entityRequest.entityName()
+                                + ":" + entityRequest.id());
 
-                        log.warn("User " + userName + " tried to access "
-                                + "entity resource without permission");
-                        response.setStatus(WOResponse.HTTP_STATUS_FORBIDDEN);
+                        response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
                     }
                 }
                 else
                 {
-                    log.warn("Attempted to access entity resource for "
-                            + "an object that does not exist: " + entity
-                            + ":" + id);
+                    log.warn("No entity request handler was found for "
+                            + entityRequest.entityName());
 
                     response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
                 }
             }
-            else
+            finally
             {
-                log.warn("No entity request handler was found for "
-                        + entity);
-
-                response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
-            }
-
-            if (session == null)
-            {
+                ec.unlock();
                 Application.releasePeerEditingContext(ec);
             }
         }
@@ -318,12 +274,53 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
     // ----------------------------------------------------------
     /**
+     * Gets the {@link EntityResourceHandler} for the entity with the specified
+     * name. This method returns null if the handler could not be found (either
+     * because there is no entity with that name or because no handler was
+     * registered for that entity).
+     *
+     * @param entityName the entity name
+     * @param ec an editing context
+     *
+     * @return an entity resource handler, or null
+     */
+    private EntityResourceHandler handlerForEntityNamed(String entityName,
+            EOEditingContext ec)
+    {
+        EOEntity ent = EOUtilities.entityNamed(ec, entityName);
+        Class<?> entityClass = null;
+
+        if (ent != null)
+        {
+            try
+            {
+                entityClass = Class.forName(ent.className());
+            }
+            catch (ClassNotFoundException e)
+            {
+                // Do nothing; error will be handled below.
+            }
+        }
+
+        if (entityClass != null)
+        {
+            return resourceHandlers.objectForKey(entityClass);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * A somewhat brainless check to make sure that the path provided does not
      * go higher up into the file-system than it should. We verify that it is
      * a relative path and that it does not contain any parent directory
      * references that would move it above its origin.
      */
-    private boolean validatePath(String path)
+    private static boolean validatePath(String path)
     {
         File file = new File(path);
 
@@ -370,6 +367,8 @@ public class EntityResourceRequestHandler extends WORequestHandler
     {
         File absolutePath = handler.pathForResource(object, path);
 
+        log.debug("Path to resource on file system: " + absolutePath);
+
         if (absolutePath.exists())
         {
             if (!absolutePath.isFile())
@@ -378,15 +377,31 @@ public class EntityResourceRequestHandler extends WORequestHandler
             }
             else
             {
+                FileInputStream stream = null;
+
                 try
                 {
-                    FileInputStream stream = new FileInputStream(absolutePath);
-                    response.setContentStream(stream, 0, absolutePath.length());
+                    stream = new FileInputStream(absolutePath);
+                    response.setContent(new NSData(stream, 0));
                     response.setStatus(WOResponse.HTTP_STATUS_OK);
                 }
                 catch (IOException e)
                 {
                     response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
+                }
+                finally
+                {
+                    if (stream != null)
+                    {
+                        try
+                        {
+                            stream.close();
+                        }
+                        catch (IOException e)
+                        {
+                            // Do nothing.
+                        }
+                    }
                 }
             }
         }
@@ -394,6 +409,138 @@ public class EntityResourceRequestHandler extends WORequestHandler
         {
             response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
         }
+    }
+
+
+    //~ Inner classes .........................................................
+
+    // ----------------------------------------------------------
+    /**
+     * A small class that bundles up the information about an entity resource
+     * request (the entity name, the object ID, and the resource path).
+     */
+    private static class EntityRequest
+    {
+        //~ Constructors ......................................................
+
+        // ----------------------------------------------------------
+        private EntityRequest()
+        {
+            // Do nothing.
+        }
+
+
+        //~ Methods ...........................................................
+
+        // ----------------------------------------------------------
+        /**
+         * Parses the specified handler path and returns an
+         * {@code EntityRequest} containing the request information. This
+         * method returns null if the request path was malformed or invalid.
+         *
+         * @param handlerPath the full handler path
+         *
+         * @return an instance of {@code EntityRequest} with the desired
+         *     information, or null
+         */
+        public static EntityRequest fromRequestHandlerPath(String handlerPath)
+        {
+            EntityRequest request = new EntityRequest();
+
+            Scanner scanner = new Scanner(handlerPath);
+            scanner.useDelimiter("/");
+
+            if (scanner.hasNext())
+            {
+                request.entityName = scanner.next();
+            }
+
+            if (scanner.hasNext())
+            {
+                String idString = scanner.next();
+
+                try
+                {
+                    request.id = Long.valueOf(idString);
+                }
+                catch (NumberFormatException e)
+                {
+                    request.id = 0;
+                }
+            }
+
+            if (scanner.hasNext())
+            {
+                scanner.skip("/");
+            }
+
+            scanner.useDelimiter("\0");
+
+            if (scanner.hasNext())
+            {
+                String path = scanner.next();
+
+                if (!validatePath(path))
+                {
+                    path = null;
+                }
+
+                request.resourcePath = path;
+            }
+
+            if (request.entityName == null || request.id == 0
+                    || request.resourcePath == null)
+            {
+                return null;
+            }
+            else
+            {
+                return request;
+            }
+        }
+
+
+        // ----------------------------------------------------------
+        /**
+         * Gets the entity name of the request.
+         *
+         * @return the entity name of the request
+         */
+        public String entityName()
+        {
+            return entityName;
+        }
+
+
+        // ----------------------------------------------------------
+        /**
+         * Gets the object ID of the request.
+         *
+         * @return the object ID of the request
+         */
+        public long id()
+        {
+            return id;
+        }
+
+
+        // ----------------------------------------------------------
+        /**
+         * Gets the path to the resource in the requested object.
+         *
+         * @return the path to the resource
+         */
+        public String resourcePath()
+        {
+            return resourcePath;
+        }
+
+
+        //~ Static/instance variables .........................................
+
+        private String entityName;
+        private long id;
+        private String resourcePath;
     }
 
 
