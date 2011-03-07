@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,11 +22,9 @@
 package org.webcat.core;
 
 import com.webobjects.appserver.*;
-import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import java.io.*;
 import java.net.*;
-import java.util.*;
 import java.util.jar.*;
 import java.lang.reflect.Constructor;
 import org.webcat.core.DelegatingUrlClassLoader;
@@ -43,7 +41,8 @@ import org.apache.log4j.Logger;
  *  <code>JarSubsystem(JarFile)</code> constructor in this class.
  *
  *  @author lally
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public abstract class JarSubsystem
     extends Subsystem
@@ -56,7 +55,7 @@ public abstract class JarSubsystem
      *
      * @param jarFile The file that contains the subsystem being loaded
      */
-    public JarSubsystem( JarFile jarFile )
+    public JarSubsystem(JarFile jarFile)
     {
         super();
         this.jarFile = jarFile;
@@ -73,30 +72,31 @@ public abstract class JarSubsystem
      * @return the new subsystem object
      * @throws IOException
      */
-    static public JarSubsystem initializeSubsystemFromJar( File jarFile )
+    @SuppressWarnings("deprecation")
+    static public JarSubsystem initializeSubsystemFromJar(File jarFile)
         throws IOException
     {
-        JarFile      file   = new JarFile( jarFile );
+        JarFile      file   = new JarFile(jarFile);
         URL          u      = jarFile.toURL();
         JarSubsystem result = null;
 
-        log.info( "Loading subsystem: " + u.toString() );
-        DelegatingUrlClassLoader.getClassLoader().addURL( u );
-        Class subsysClass = loadMainClass( file );
-        if ( subsysClass != null )
+        log.info("Loading subsystem: " + u.toString());
+        DelegatingUrlClassLoader.getClassLoader().addURL(u);
+        Class<?> subsysClass = loadMainClass(file);
+        if (subsysClass != null)
         {
             try
             {
-                Constructor constructor = subsysClass.getConstructor(
+                Constructor<?> constructor = subsysClass.getConstructor(
                         new Class[] { JarFile.class }
                     );
                 result = (JarSubsystem)constructor.newInstance(
                         new Object[] { file }
                     );
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                log.error( "Exception loading subsystem:", e );
+                log.error("Exception loading subsystem: ", e);
             }
         }
         return result;
@@ -110,19 +110,19 @@ public abstract class JarSubsystem
      * @param jarFile the jar file from which to retrieve the main class
      * @return The class that represents the subsystem
      */
-    static public Class loadMainClass( JarFile jarFile )
+    static public Class<?> loadMainClass(JarFile jarFile)
     {
         try
         {
             String mainClass =
                 jarFile.getManifest().getMainAttributes().getValue(
-                    Attributes.Name.MAIN_CLASS );
+                    Attributes.Name.MAIN_CLASS);
             return DelegatingUrlClassLoader.getClassLoader().loadClass(
-                mainClass );
+                mainClass);
         }
-        catch ( Exception e )
+        catch (Exception e)
         {
-            log.error( "Exception loading subsystem:", e );
+            log.error("Exception loading subsystem: ", e);
         }
         return null;
     }
@@ -148,10 +148,10 @@ public abstract class JarSubsystem
      * @return      An InputStream to the requested entry
      * @throws IOException If an error occurs getting the entry
      */
-    public InputStream jarFileEntry( String entry )
+    public InputStream jarFileEntry(String entry)
         throws IOException
     {
-        return jarFile.getInputStream( jarFile.getEntry( entry ) );
+        return jarFile.getInputStream(jarFile.getEntry(entry));
     }
 
 
@@ -165,17 +165,17 @@ public abstract class JarSubsystem
      * @param path  The path to test
      * @return      The MIME type of the given path
      */
-    public static String mimeTypeForPath( String path )
+    public static String mimeTypeForPath(String path)
     {
-        if ( path.endsWith( ".jpg" ) )
+        if (path.endsWith(".jpg"))
         {
             return "image/jpeg";
         }
-        else if ( path.endsWith( ".gif" ) )
+        else if (path.endsWith(".gif"))
         {
             return "image/gif";
         }
-        else if ( path.endsWith( ".png" ) )
+        else if (path.endsWith(".png"))
         {
             return "image/png";
         }
@@ -195,9 +195,9 @@ public abstract class JarSubsystem
      * @param path The path inside the jar to be verified
      * @return     True if the path describes an allowed file type
      */
-    public static boolean pathIsSafeToReturn( String path )
+    public static boolean pathIsSafeToReturn(String path)
     {
-        return mimeTypeForPath( path ) != null;
+        return mimeTypeForPath(path) != null;
     }
 
 
@@ -211,30 +211,30 @@ public abstract class JarSubsystem
      *            /images/foo.gif
      * @return The WOResponse to display to the user
      */
-    public WOResponse jarResponseFromUrl( String url )
+    public WOResponse jarResponseFromUrl(String url)
     {
         WOResponse response = new WOResponse();
 
-        if ( pathIsSafeToReturn( url ) )
+        if (pathIsSafeToReturn(url))
         {
             try
             {
                 // TODO: check to see if this leaks file handles or other
                 // resources!
-                response.setContent( new NSData( jarFileEntry( url ),
-                                                 CHUNK_SIZE ) );
-                response.setHeader( "Content-Type",
-                                    mimeTypeForPath( url ) );
+                response.setContent(
+                    new NSData(jarFileEntry(url), CHUNK_SIZE));
+                response.setHeader(
+                    "Content-Type", mimeTypeForPath(url));
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
-                response.setStatus( WOMessage.HTTP_STATUS_NOT_FOUND );
+                response.setStatus(WOMessage.HTTP_STATUS_NOT_FOUND);
                 e.printStackTrace();
             }
         }
         else
         {
-            response.setStatus( WOMessage.HTTP_STATUS_FORBIDDEN );
+            response.setStatus(WOMessage.HTTP_STATUS_FORBIDDEN);
         }
         return response;
     }
@@ -246,5 +246,5 @@ public abstract class JarSubsystem
     /** The jar file containing this subsystem. */
     private JarFile     jarFile     = null;
 
-    static Logger log = Logger.getLogger( JarSubsystem.class );
+    static Logger log = Logger.getLogger(JarSubsystem.class);
 }

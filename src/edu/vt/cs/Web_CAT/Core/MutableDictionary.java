@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -69,8 +69,10 @@ import er.extensions.foundation.ERXFileUtilities;
  *  Spring 2006 semester.
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
+@Deprecated
 public class MutableDictionary
     extends er.extensions.foundation.ERXMutableDictionary
     implements MutableContainer
@@ -94,7 +96,7 @@ public class MutableDictionary
      * @param otherDictionary the input dictionary from which the duplicate
      *                        dictionary is to be created
      */
-    public MutableDictionary( NSDictionary otherDictionary )
+    public MutableDictionary( NSDictionary<?, ?> otherDictionary )
     {
         super( otherDictionary );
         resetChildParents( false );
@@ -215,11 +217,12 @@ public class MutableDictionary
      * compatible with the method in the base class, but the actual object
      * belongs to this subclass)
      */
-    public static er.extensions.foundation.ERXMutableDictionary fromPropertyList(
-        String plist )
+    public static er.extensions.foundation.ERXMutableDictionary
+        fromPropertyList(String plist )
     {
-        NSDictionary dict = (NSDictionary)NSPropertyListSerialization.
-            propertyListFromString( plist );
+        NSDictionary<?, ?> dict =
+            (NSDictionary<?, ?>)NSPropertyListSerialization
+            .propertyListFromString( plist );
         return new MutableDictionary( dict );
     }
 
@@ -236,8 +239,9 @@ public class MutableDictionary
         throws IOException
     {
         String stringFromFile = ERXFileUtilities.stringFromFile( file );
-        NSDictionary dict = (NSDictionary)NSPropertyListSerialization.
-            propertyListFromString( stringFromFile );
+        NSDictionary<?, ?> dict =
+            (NSDictionary<?, ?>)NSPropertyListSerialization
+            .propertyListFromString( stringFromFile );
         return new MutableDictionary( dict );
     }
 
@@ -311,7 +315,7 @@ public class MutableDictionary
     public void setParentRecursively( MutableContainer parent )
     {
         this.parent = parent;
-        for ( Enumeration e = objectEnumerator(); e.hasMoreElements(); )
+        for ( Enumeration<?> e = objectEnumerator(); e.hasMoreElements(); )
         {
             Object o = e.nextElement();
 
@@ -349,12 +353,13 @@ public class MutableDictionary
             }
             else if ( o instanceof NSDictionary )
             {
-                MutableDictionary md = new MutableDictionary( (NSDictionary)o );
+                MutableDictionary md =
+                    new MutableDictionary( (NSDictionary<?, ?>)o );
                 setObjectForKey( md, keys[i] );
             }
             else if ( o instanceof NSArray )
             {
-                MutableArray ma = new MutableArray( (NSArray)o );
+                MutableArray ma = new MutableArray( (NSArray<?>)o );
                 setObjectForKey( ma, keys[i] );
             }
         }
@@ -368,7 +373,7 @@ public class MutableDictionary
      */
     public void clearChildParents()
     {
-        for ( Enumeration e = objectEnumerator(); e.hasMoreElements(); )
+        for ( Enumeration<?> e = objectEnumerator(); e.hasMoreElements(); )
         {
             setParentIfPossible( e.nextElement(), null );
         }
@@ -406,13 +411,14 @@ public class MutableDictionary
         }
         else if ( o instanceof NSDictionary )
         {
-            MutableDictionary md = new MutableDictionary( (NSDictionary)o );
+            MutableDictionary md =
+                new MutableDictionary( (NSDictionary<?, ?>)o );
             md.setParent( this );
             o = md;
         }
         else if ( o instanceof NSArray )
         {
-            MutableArray ma = new MutableArray( (NSArray)o );
+            MutableArray ma = new MutableArray( (NSArray<?>)o );
             ma.setParent( this );
             o = ma;
         }
@@ -421,20 +427,21 @@ public class MutableDictionary
 
 
     //----------------------------------------------------------
-    public void addEntriesFromDictionary( NSDictionary arg0 )
+    @SuppressWarnings("unchecked")
+    public void addEntriesFromDictionary( NSDictionary dictionary )
     {
         setHasChanged( true );
         clearChildParents();
-        super.addEntriesFromDictionary( arg0 );
+        super.addEntriesFromDictionary( dictionary );
         resetChildParents( false );
     }
 
 
     // ----------------------------------------------------------
-    public Object remove( Object arg0 )
+    public Object remove( Object object )
     {
         setHasChanged( true );
-        return setParentIfPossible( super.remove( arg0 ), null );
+        return setParentIfPossible( super.remove( object ), null );
     }
 
 
@@ -448,32 +455,34 @@ public class MutableDictionary
 
 
     // ----------------------------------------------------------
-    public Object removeObjectForKey( Object arg0 )
+    public Object removeObjectForKey( Object key )
     {
         setHasChanged( true );
-        return setParentIfPossible( super.removeObjectForKey( arg0 ), null );
+        return setParentIfPossible( super.removeObjectForKey( key ), null );
     }
 
 
     // ----------------------------------------------------------
-    public void removeObjectsForKeys( NSArray arg0 )
+    @SuppressWarnings("unchecked")
+    public void removeObjectsForKeys( NSArray array )
     {
         setHasChanged( true );
-        for ( int i = 0; i < arg0.count(); i++ )
+        for ( int i = 0; i < array.count(); i++ )
         {
-            setParentIfPossible( objectForKey( arg0.objectAtIndex( i ) ),
+            setParentIfPossible( objectForKey( array.objectAtIndex( i ) ),
                                  null );
         }
-        super.removeObjectsForKeys( arg0 );
+        super.removeObjectsForKeys( array );
     }
 
 
     // ----------------------------------------------------------
-    public void setDictionary( NSDictionary arg0 )
+    @SuppressWarnings("unchecked")
+    public void setDictionary( NSDictionary dictionary )
     {
         setHasChanged( true );
         clearChildParents();
-        super.setDictionary( arg0 );
+        super.setDictionary( dictionary );
         resetChildParents( false );
     }
 
@@ -487,46 +496,47 @@ public class MutableDictionary
      */
     public void copyFrom( MutableContainer other )
     {
-        setDictionary( (NSDictionary)other );
+        setDictionary( (NSDictionary<?, ?>)other );
     }
 
 
     // ----------------------------------------------------------
-    public void setObjectForKey( Object arg0, Object arg1 )
+    public void setObjectForKey( Object object, Object key )
     {
         setHasChanged( true );
-        Object old = objectForKey( arg1 );
+        Object old = objectForKey( key );
         if ( old != null )
         {
             setParentIfPossible( old, null );
         }
-        super.setObjectForKey( convertToMutableIfPossible( arg0 ), arg1 );
+        super.setObjectForKey( convertToMutableIfPossible( object ), key );
     }
 
 
     // ----------------------------------------------------------
-    public void takeValueForKey( Object arg0, String arg1 )
+    public void takeValueForKey( Object value, String key )
     {
         setHasChanged( true );
-        Object old = valueForKey( arg1 );
+        Object old = valueForKey( key );
         if ( old != null )
         {
             setParentIfPossible( old, null );
         }
-        super.takeValueForKey( convertToMutableIfPossible( arg0 ), arg1 );
+        super.takeValueForKey( convertToMutableIfPossible( value ), key );
     }
 
 
     // ----------------------------------------------------------
-    public void takeValueForKeyPath( Object arg0, String arg1 )
+    public void takeValueForKeyPath( Object value, String keyPath )
     {
         setHasChanged( true );
-        Object old = valueForKeyPath( arg1 );
+        Object old = valueForKeyPath( keyPath );
         if ( old != null )
         {
             setParentIfPossible( old, null );
         }
-        super.takeValueForKeyPath( convertToMutableIfPossible( arg0 ), arg1 );
+        super.takeValueForKeyPath(
+            convertToMutableIfPossible( value ), keyPath );
     }
 
 

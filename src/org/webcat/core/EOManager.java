@@ -92,30 +92,38 @@ public interface EOManager
                 }
                 else
                 {
-                    return (T)EOUtilities.localInstanceOfObject(
+                    @SuppressWarnings("unchecked")
+                    T resultAsT = (T)EOUtilities.localInstanceOfObject(
                         context, (EOEnterpriseObject)object);
+                    return resultAsT;
                 }
             }
             else if (object instanceof NSDictionary)
             {
-                NSMutableDictionary result =
-                    ((NSDictionary)object).mutableClone();
+                NSMutableDictionary<?, ?> result =
+                    ((NSDictionary<?, ?>)object).mutableClone();
                 for (Object key : result.allKeys())
                 {
                     result.takeValueForKey(
                         localize(context, result.valueForKey((String)key)),
                         (String)key);
                 }
-                return (T)result;
+                @SuppressWarnings("unchecked")
+                T resultAsT = (T)result;
+                return resultAsT;
             }
             else if (object instanceof NSArray)
             {
-                NSMutableArray result = ((NSArray)object).mutableClone();
+                @SuppressWarnings("unchecked")
+                NSMutableArray<Object> result =
+                    ((NSArray<Object>)object).mutableClone();
                 for (int i = 0; i < result.count(); i++)
                 {
                     result.set(i, localize(context, result.objectAtIndex(i)));
                 }
-                return (T)result;
+                @SuppressWarnings("unchecked")
+                T resultAsT = (T)result;
+                return resultAsT;
             }
             else
             {

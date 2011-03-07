@@ -557,7 +557,7 @@ public class AuthenticationDomain
             try
             {
                 @SuppressWarnings("unchecked")
-                NSArray<String> propValues = Application
+                NSArray<String> propValues = (NSArray<String>)Application
                     .configurationProperties().arrayForKey("timeFormats");
                 timeFormats = propValues;
             }
@@ -605,7 +605,7 @@ public class AuthenticationDomain
             try
             {
                 @SuppressWarnings("unchecked")
-                NSArray<String> propValues = Application
+                NSArray<String> propValues = (NSArray<String>)Application
                 .configurationProperties().arrayForKey( "dateFormats" );
                 dateFormats = propValues;
             }

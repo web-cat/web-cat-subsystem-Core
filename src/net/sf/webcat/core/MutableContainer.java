@@ -37,6 +37,7 @@ package net.sf.webcat.core;
  *  @author  Last changed by $Author$
  *  @version $Revision$, $Date$
  */
+@Deprecated
 public interface MutableContainer
 {
     //----------------------------------------------------------

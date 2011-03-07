@@ -124,9 +124,9 @@ public class DatabaseAuthenticator
         {
             User u = (User)EOUtilities.objectMatchingValues(
                 ec, User.ENTITY_NAME,
-                new NSDictionary(
+                new NSDictionary<String, Object>(
                     new Object[]{ userName , domain              },
-                    new Object[]{ User.USER_NAME_KEY,
+                    new String[]{ User.USER_NAME_KEY,
                                   User.AUTHENTICATION_DOMAIN_KEY }
                 ) );
             if ( skipPasswordChecks || password.equals( u.password() ) )

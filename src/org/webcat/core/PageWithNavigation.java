@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,10 +22,7 @@
 package org.webcat.core;
 
 import com.webobjects.appserver.*;
-import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
-import java.util.StringTokenizer;
 import org.webcat.core.Application;
 import org.webcat.core.BarePage;
 import org.webcat.core.FeedbackPage;
@@ -35,7 +32,6 @@ import org.webcat.core.TabDescriptor;
 import org.webcat.core.User;
 import org.webcat.core.WCComponent;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Level;
 
 // -------------------------------------------------------------------------
 /**
@@ -457,12 +453,10 @@ public class PageWithNavigation
         Session session = (Session)session();
         if ( session.user() == null || session.user().restrictToStudentView() )
         {
-            NSArray secondaries = selectedRole.selectedChild()
+            NSArray<TabDescriptor> secondaries = selectedRole.selectedChild()
                 .children();
-            for ( int i = 0; i < secondaries.count(); i++ )
+            for (TabDescriptor secondary : secondaries)
             {
-                TabDescriptor secondary =
-                    (TabDescriptor)secondaries.objectAtIndex( i );
                 if ( secondary.accessLevel() == 0 )
                 {
                     result = true;

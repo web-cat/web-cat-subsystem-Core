@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -24,11 +24,8 @@ package org.webcat.core;
 import com.webobjects.foundation.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
-
-import java.io.*;
 import java.security.*;
 import java.util.*;
-
 import org.webcat.core.Application;
 import org.webcat.core.PasswordChangeRequest;
 import org.webcat.core.User;
@@ -38,10 +35,12 @@ import org.apache.log4j.*;
 
 // -------------------------------------------------------------------------
 /**
- * TODO: place a real description here.
+ * Represents a user's request to change their password, because they forgot
+ * the old one.
  *
- * @author
- * @version $Id$
+ * @author Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class PasswordChangeRequest
     extends _PasswordChangeRequest
@@ -71,8 +70,8 @@ public class PasswordChangeRequest
      */
     public boolean hasExpired()
     {
-        NSTimestamp expireTime = expireTime();
-        return expireTime != null && expireTime.before( new NSTimestamp() );
+        NSTimestamp myExpireTime = expireTime();
+        return myExpireTime != null && myExpireTime.before(new NSTimestamp());
     }
 
 
@@ -81,18 +80,19 @@ public class PasswordChangeRequest
      * Look up the password change request identified by the given code,
      * checking it for expiration first.
      * @param ec   The editing context to use
-     * @param code The code to look up
+     * @param requestCode The code to look up
      * @return The password change request object, if found (and not expired),
      * or null otherwise
      */
     public static PasswordChangeRequest requestForCode(
-        EOEditingContext ec, String code )
+        EOEditingContext ec, String requestCode )
     {
         PasswordChangeRequest request = null;
-        NSArray results = requestsForCode( ec, code );
+        NSArray<PasswordChangeRequest> results =
+            requestsForCode(ec, requestCode);
         if ( results.count() > 0 )
         {
-            request = (PasswordChangeRequest)results.objectAtIndex( 0 );
+            request = results.objectAtIndex( 0 );
             if ( request.hasExpired() )
             {
                 // Expired timestamp, so delete it!
@@ -109,19 +109,18 @@ public class PasswordChangeRequest
     /**
      * Delete any pending password change requests for the given user.
      * @param ec   The editing context to use
-     * @param user The user requesting the password reset instructions
+     * @param forUser The user requesting the password reset instructions
      * @return True if any pending requests were found and deleted, or
      * false if none were found
      */
     public static boolean clearPendingUserRequests(
-        EOEditingContext ec, User user )
+        EOEditingContext ec, User forUser )
     {
-        NSArray results = requestsForUser( ec, user );
+        NSArray<PasswordChangeRequest> results = requestsForUser(ec, forUser);
         boolean result = results.count() > 0;
         for ( int i = 0; i < results.count(); i++ )
         {
-            PasswordChangeRequest pcr =
-                (PasswordChangeRequest)results.objectAtIndex( i );
+            PasswordChangeRequest pcr = results.objectAtIndex( i );
             pcr.delete();
         }
         if ( result )
@@ -138,25 +137,26 @@ public class PasswordChangeRequest
      * it in the database, and then e-mail the user instructions on how to
      * change their password.
      * @param ec   The editing context to use
-     * @param user The user requesting the password reset instructions
+     * @param forUser The user requesting the password reset instructions
      */
-    public static void sendPasswordResetEmail( EOEditingContext ec, User user )
+    public static void sendPasswordResetEmail(
+        EOEditingContext ec, User forUser )
     {
         log.info( "Creating password change ticket for: "
-            + user.nameAndUid() );
+            + forUser.nameAndUid() );
         PasswordChangeRequest pcr = (PasswordChangeRequest)
         EOUtilities.createAndInsertInstance( ec, ENTITY_NAME );
-        pcr.setUserRelationship( user );
+        pcr.setUserRelationship( forUser );
         NSTimestamp now = new NSTimestamp();
         pcr.setExpireTime( now.timestampByAddingGregorianUnits(
             0, 0, 1, 0, 0, 0 ) );
-        pcr.setCode( digestString( user.userName() + formatter.format( now )
-            + user.email() + Integer.toString( random.nextInt() ) ) );
+        pcr.setCode(digestString(forUser.userName() + formatter.format(now)
+            + forUser.email() + Integer.toString(random.nextInt())));
         ec.saveChanges();
 
         WCProperties properties =
             new WCProperties( Application.configurationProperties() );
-        user.addPropertiesTo( properties );
+        forUser.addPropertiesTo( properties );
         if ( properties.getProperty( "login.url" ) == null )
         {
             String dest = Application.application().servletConnectURL();
@@ -167,7 +167,7 @@ public class PasswordChangeRequest
             + "/wa/passwordChangeRequest?code="
             + pcr.code() );
         Application.sendSimpleEmail(
-            user.email() ,
+            forUser.email() ,
             properties.stringForKeyWithDefault(
                 "PasswordChangeRequest.email.title",
                 "How to change your Web-CAT password" ),
@@ -244,6 +244,7 @@ public class PasswordChangeRequest
     private static MessageDigest digester;
     private static sun.misc.BASE64Encoder encoder =
         new sun.misc.BASE64Encoder();
+    @SuppressWarnings("deprecation")
     private static NSTimestampFormatter formatter =
         new NSTimestampFormatter( "%Y%m%d%H%M%S%F" );
     private static Random random = new Random();

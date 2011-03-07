@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -52,7 +52,8 @@ import org.apache.log4j.Logger;
  * support is based on code written by Chris Mair.
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class WCProperties
     extends java.util.Properties
@@ -68,11 +69,11 @@ public class WCProperties
      * @param filename The file to load from
      * @param defaults The defaults
      */
-    public WCProperties( String filename, Properties defaults )
+    public WCProperties(String filename, Properties defaults)
     {
         super();
         this.defaults = defaults;
-        load( filename );
+        load(filename);
     }
 
 
@@ -82,7 +83,7 @@ public class WCProperties
      *
      * @param defaults The defaults
      */
-    public WCProperties( Properties defaults )
+    public WCProperties(Properties defaults)
     {
         super();
         this.defaults = defaults;
@@ -109,19 +110,19 @@ public class WCProperties
      *
      * @param fileName The property file to load
      */
-    public void attemptToLoad( String fileName )
+    public void attemptToLoad(String fileName)
     {
-        File file = new File( fileName );
+        File file = new File(fileName);
         if ( file.exists() )
         {
-            String propertyfiles_loaded = getProperty( PROPERTYFILES_LOADED );
+            String propertyfiles_loaded = getProperty(PROPERTYFILES_LOADED);
             try
             {
-                InputStream is = new FileInputStream( file );
-                log.info( "Loading properties from "
-                          + file.getAbsolutePath() );
-                load( is );
-                if ( propertyfiles_loaded == null )
+                InputStream is = new FileInputStream(file);
+                log.info(
+                    "Loading properties from " + file.getAbsolutePath());
+                load(is);
+                if (propertyfiles_loaded == null)
                 {
                     propertyfiles_loaded = file.getAbsolutePath();
                 }
@@ -129,15 +130,13 @@ public class WCProperties
                 {
                     propertyfiles_loaded += ";" + file.getAbsolutePath();
                 }
-                setProperty( PROPERTYFILES_LOADED, propertyfiles_loaded );
+                setProperty(PROPERTYFILES_LOADED, propertyfiles_loaded);
                 is.close();
             }
-            catch ( IOException e )
+            catch (IOException e)
             {
-                log.error( "Error loading properties from "
-                           + file.getAbsolutePath()
-                           + ":",
-                           e );
+                log.error("Error loading properties from "
+                    + file.getAbsolutePath() + ":", e);
             }
         }
     }
@@ -158,24 +157,24 @@ public class WCProperties
      *
      * @param fileName The property file to load
      */
-    public void load( String fileName )
+    public void load(String fileName)
     {
         // First, load from WO subdirectory
-        attemptToLoad(  "Contents/Resources/" + fileName );
+        attemptToLoad("Contents/Resources/" + fileName);
 
         // Now, load from user's home directory
-        String dataDir = System.getProperty( "user.home" );
-        if( dataDir != null )
+        String dataDir = System.getProperty("user.home");
+        if(dataDir != null)
         {
-            if( ! dataDir.endsWith( File.separator ) )
+            if(!dataDir.endsWith(File.separator))
             {
                 dataDir += File.separator;
             }
-            attemptToLoad( dataDir + fileName );
+            attemptToLoad(dataDir + fileName);
         }
 
         // Finally, load from current dir or absolute path
-        attemptToLoad( fileName );
+        attemptToLoad(fileName);
     }
 
 
@@ -187,15 +186,18 @@ public class WCProperties
      *
      * @param dictionary The map containing properties to add
      */
-    public void addPropertiesFromDictionary( NSDictionary dictionary )
+    public void addPropertiesFromDictionary(NSDictionary<String, ?> dictionary)
     {
-        if ( dictionary == null ) return;
-        Enumeration e = dictionary.keyEnumerator();
-        while ( e.hasMoreElements() )
+        if (dictionary == null)
         {
-            Object key   = e.nextElement();
-            Object value = dictionary.objectForKey( key );
-            setProperty( key.toString(), value.toString() );
+            return;
+        }
+        Enumeration<String> e = dictionary.keyEnumerator();
+        while (e.hasMoreElements())
+        {
+            String key   = e.nextElement();
+            Object value = dictionary.objectForKey(key);
+            setProperty(key, value.toString());
         }
     }
 
@@ -209,18 +211,20 @@ public class WCProperties
      * @param dictionary The map containing properties to add
      */
     public void addPropertiesFromDictionaryIfNotDefined(
-                    NSDictionary dictionary )
+                    NSDictionary<String, ?> dictionary)
     {
-        if ( dictionary == null ) return;
-        Enumeration e = dictionary.keyEnumerator();
-        while ( e.hasMoreElements() )
+        if (dictionary == null)
         {
-            Object key       = e.nextElement();
-            String keyString = key.toString();
-            if ( getProperty( keyString ) == null )
+            return;
+        }
+        Enumeration<String> e = dictionary.keyEnumerator();
+        while (e.hasMoreElements())
+        {
+            String key = e.nextElement();
+            if (getProperty(key) == null)
             {
-                Object value = dictionary.objectForKey( key );
-                setProperty( key.toString(), value.toString() );
+                Object value = dictionary.objectForKey(key);
+                setProperty(key, value.toString());
             }
         }
     }
@@ -234,20 +238,20 @@ public class WCProperties
      * @param key  The name of the property to be fetched
      * @return     Its float value
      */
-    public double floatForKey( String key )
+    public double floatForKey(String key)
     {
-        String v = getProperty( key );
+        String v = getProperty(key);
         float result = 0.0F;
-        if ( v != null )
+        if (v != null)
         {
             try
             {
-                result = Float.parseFloat( v );
+                result = Float.parseFloat(v);
             }
-            catch ( NumberFormatException e )
+            catch (NumberFormatException e)
             {
-                log.error( "property " + key + ": '" + v
-                           + "' : float format exception" );
+                log.error("property " + key + ": '" + v
+                    + "' : float format exception");
             }
         }
         return result;
@@ -262,20 +266,20 @@ public class WCProperties
      * @param key The name of the property to be fetched
      * @return     Its double value
      */
-    public double doubleForKey( String key )
+    public double doubleForKey(String key)
     {
-        String v = getProperty( key );
+        String v = getProperty(key);
         double result = 0.0;
-        if ( v != null )
+        if (v != null)
         {
             try
             {
-                result = Double.parseDouble( v );
+                result = Double.parseDouble(v);
             }
-            catch ( NumberFormatException e )
+            catch (NumberFormatException e)
             {
-                log.error( "property " + key + ": '" + v
-                           + "' : double format exception" );
+                log.error("property " + key + ": '" + v
+                    + "' : double format exception");
             }
         }
         return result;
@@ -290,13 +294,13 @@ public class WCProperties
      * @param name The name of the property to be fetched
      * @return     A File instance
      */
-    public File getFile( String name )
+    public File getFile(String name)
     {
-        String v = getProperty( name );
+        String v = getProperty(name);
         File result = null;
-        if ( v != null )
+        if (v != null)
         {
-            result = new File( v );
+            result = new File(v);
         }
         return result;
     }
@@ -310,9 +314,9 @@ public class WCProperties
      * @return array de-serialized from the string in
      *      this properties mapping
      */
-    public NSArray arrayForKey( String s )
+    public NSArray<?> arrayForKey(String s)
     {
-        return arrayForKeyWithDefault( s, null );
+        return arrayForKeyWithDefault(s, null);
     }
 
     // ----------------------------------------------------------
@@ -324,10 +328,10 @@ public class WCProperties
      * @return array de-serialized from the string in
      *      the properties or default value
      */
-    public NSArray arrayForKeyWithDefault( String s, NSArray defaultValue )
+    public NSArray<?> arrayForKeyWithDefault(String s, NSArray<?> defaultValue)
     {
-        return ERXValueUtilities.arrayValueWithDefault( getProperty( s ),
-                                                        defaultValue );
+        return ERXValueUtilities.arrayValueWithDefault(
+            getProperty(s), defaultValue);
     }
 
     // ----------------------------------------------------------
@@ -340,9 +344,9 @@ public class WCProperties
      * @return boolean value of the string in the
      *      properties
      */
-    public boolean booleanForKey( String s )
+    public boolean booleanForKey(String s)
     {
-        return booleanForKeyWithDefault( s, false );
+        return booleanForKeyWithDefault(s, false);
     }
 
 
@@ -357,10 +361,10 @@ public class WCProperties
      * @return boolean value of the string in the
      *      properties
      */
-    public boolean booleanForKeyWithDefault( String s, boolean defaultValue )
+    public boolean booleanForKeyWithDefault(String s, boolean defaultValue)
     {
-        return ERXValueUtilities.booleanValueWithDefault( getProperty( s ),
-                                                          defaultValue );
+        return ERXValueUtilities.booleanValueWithDefault(
+            getProperty(s), defaultValue);
     }
 
 
@@ -372,9 +376,9 @@ public class WCProperties
      * @return dictionary de-serialized from the string in
      *      the properties
      */
-    public NSDictionary dictionaryForKey( String s )
+    public NSDictionary<?, ?> dictionaryForKey(String s)
     {
-        return dictionaryForKeyWithDefault( s, null );
+        return dictionaryForKeyWithDefault(s, null);
     }
 
 
@@ -387,11 +391,11 @@ public class WCProperties
      * @return dictionary de-serialized from the string in
      *      the properties
      */
-    public NSDictionary dictionaryForKeyWithDefault(
-        String s, NSDictionary defaultValue )
+    public NSDictionary<?, ?> dictionaryForKeyWithDefault(
+        String s, NSDictionary<?, ?> defaultValue)
     {
         return ERXValueUtilities.dictionaryValueWithDefault(
-                        getProperty( s ), defaultValue );
+            getProperty(s), defaultValue);
     }
 
 
@@ -402,9 +406,9 @@ public class WCProperties
      * @param s property key
      * @return int value of the property or 0
      */
-    public int intForKey( String s )
+    public int intForKey(String s)
     {
-        return intForKeyWithDefault( s, 0 );
+        return intForKeyWithDefault(s, 0);
     }
 
 
@@ -415,9 +419,9 @@ public class WCProperties
      * @param s property key
      * @return long value of the property or 0
      */
-    public long longForKey( String s )
+    public long longForKey(String s)
     {
-        return longForKeyWithDefault( s, 0 );
+        return longForKeyWithDefault(s, 0);
     }
 
 
@@ -431,9 +435,9 @@ public class WCProperties
      * @return bigDecimal value of the string in the properties.  Scale is
      *         controlled by the string, ie "4.400" will have a scale of 3.
      */
-    public BigDecimal bigDecimalForKey( String s )
+    public BigDecimal bigDecimalForKey(String s)
     {
-        return bigDecimalForKeyWithDefault( s, null );
+        return bigDecimalForKeyWithDefault(s, null);
     }
 
 
@@ -449,10 +453,10 @@ public class WCProperties
      *         controlled by the string, ie "4.400" will have a scale of 3.
      */
     public BigDecimal bigDecimalForKeyWithDefault(
-        String s, BigDecimal defaultValue )
+        String s, BigDecimal defaultValue)
     {
         return ERXValueUtilities.bigDecimalValueWithDefault(
-                        getProperty( s ), defaultValue );
+            getProperty(s), defaultValue);
     }
 
 
@@ -464,10 +468,10 @@ public class WCProperties
      * @param defaultValue default value
      * @return int value of the property or the default value
      */
-    public int intForKeyWithDefault( String s, int defaultValue )
+    public int intForKeyWithDefault(String s, int defaultValue)
     {
         return ERXValueUtilities.intValueWithDefault(
-                        getProperty( s ), defaultValue );
+            getProperty(s), defaultValue);
     }
 
 
@@ -479,10 +483,10 @@ public class WCProperties
      * @param defaultValue default value
      * @return long value of the property or the default value
      */
-    public long longForKeyWithDefault( String s, long defaultValue )
+    public long longForKeyWithDefault(String s, long defaultValue)
     {
         return ERXValueUtilities.longValueWithDefault(
-                        getProperty( s ), defaultValue );
+            getProperty(s), defaultValue);
     }
 
 
@@ -494,9 +498,9 @@ public class WCProperties
      * @param s property
      * @return string value of the property or null
      */
-    public String stringForKey( String s )
+    public String stringForKey(String s)
     {
-        return stringForKeyWithDefault( s, null );
+        return stringForKeyWithDefault(s, null);
     }
 
 
@@ -509,12 +513,12 @@ public class WCProperties
      * @param defaultValue default value
      * @return string value of the property or default value
      */
-    public String stringForKeyWithDefault( String s, String defaultValue )
+    public String stringForKeyWithDefault(String s, String defaultValue)
     {
-        String s1 = getProperty( s );
+        String s1 = getProperty(s);
         return s1 != null
             ? s1
-            : maybeSubstitutePropertyReferences( defaultValue );
+            : maybeSubstitutePropertyReferences(defaultValue);
     }
 
 
@@ -524,10 +528,11 @@ public class WCProperties
      * @param array to be set in the properties
      * @param key to be used to get the value
      */
-    public void setArrayForKey( NSArray array, String key )
+    public void setArrayForKey(NSArray<?> array, String key)
     {
         setStringForKey(
-            NSPropertyListSerialization.stringFromPropertyList( array, false ), key );
+            NSPropertyListSerialization.stringFromPropertyList(array, false),
+            key);
     }
 
 
@@ -537,11 +542,12 @@ public class WCProperties
      * @param dictionary to be set in the properties
      * @param key to be used to get the value
      */
-    public void setDictionaryForKey( NSDictionary dictionary, String key )
+    public void setDictionaryForKey(NSDictionary<?, ?> dictionary, String key)
     {
         setStringForKey(
-            NSPropertyListSerialization.stringFromPropertyList( dictionary, false ),
-            key );
+            NSPropertyListSerialization.stringFromPropertyList(
+                dictionary, false),
+            key);
     }
 
 
@@ -551,9 +557,9 @@ public class WCProperties
      * @param string to be set in the properties
      * @param key to be used to get the value
      */
-    public void setStringForKey( String string, String key )
+    public void setStringForKey(String string, String key)
     {
-        setProperty( key, string );
+        setProperty(key, string);
     }
 
 
@@ -564,19 +570,19 @@ public class WCProperties
      * @param obj to be set in the properties
      * @param key to be used to get the value
      */
-    public void setObjectForKey( Object obj, String key )
+    public void setObjectForKey(Object obj, String key)
     {
         if (obj instanceof NSArray)
         {
-            setArrayForKey( (NSArray) obj, key );
+            setArrayForKey((NSArray<?>) obj, key);
         }
         else if (obj instanceof NSDictionary)
         {
-            setDictionaryForKey( (NSDictionary) obj, key );
+            setDictionaryForKey((NSDictionary<?, ?>) obj, key);
         }
         else
         {
-            setStringForKey( obj.toString(), key );
+            setStringForKey(obj.toString(), key);
         }
     }
 
@@ -590,15 +596,16 @@ public class WCProperties
      */
     protected String applicationNameForAppending()
     {
-        if ( applicationNameForAppending == null )
+        if (applicationNameForAppending == null)
         {
             applicationNameForAppending =
                 com.webobjects.appserver.WOApplication.application() != null
                 ? com.webobjects.appserver.WOApplication.application().name()
                 : null;
-            if ( applicationNameForAppending != null )
+            if (applicationNameForAppending != null)
             {
-                applicationNameForAppending = "." + applicationNameForAppending;
+                applicationNameForAppending =
+                    "." + applicationNameForAppending;
             }
         }
         return applicationNameForAppending;
@@ -611,20 +618,20 @@ public class WCProperties
      * of the form ${key} is processed by looking up "key" and replacing
      * the entire reference with the key's value.
      * <p>
-     * If "key" is not defined in this property map (or any of its ancestors),
-     * then the reference is left unchanged.
+     * If "key" is not defined in this property map (or any of its
+     * ancestors), then the reference is left unchanged.
      * <p>
-     * If the value for "key" contains other property references, they are also
-     * expanded (up to a maximum recursive depth of 256, which is just to
-     * prevent stack overflow).  If this recursive depth is exceeded while
+     * If the value for "key" contains other property references, they are
+     * also expanded (up to a maximum recursive depth of 256, which is just
+     * to prevent stack overflow).  If this recursive depth is exceeded while
      * expanding property references, the property reference is replaced
      * by the string "${key:RECURSION-TO-DEEP}".
      * @param value the string to perform substitution on
      * @return The value, with all property references substituted
      */
-    public String substitutePropertyReferences( String value )
+    public String substitutePropertyReferences(String value)
     {
-        return substitutePropertyReferences( value, MAX_RECURSIVE_DEPTH );
+        return substitutePropertyReferences(value, MAX_RECURSIVE_DEPTH);
     }
 
 
@@ -636,11 +643,11 @@ public class WCProperties
      * @param value the string to perform substitution on
      * @return The value, with all property references substituted
      */
-    public String maybeSubstitutePropertyReferences( String value )
+    public String maybeSubstitutePropertyReferences(String value)
     {
-        if ( willPerformPropertySubstitution )
+        if (willPerformPropertySubstitution)
         {
-            return substitutePropertyReferences( value, MAX_RECURSIVE_DEPTH );
+            return substitutePropertyReferences(value, MAX_RECURSIVE_DEPTH);
         }
         else
         {
@@ -659,60 +666,60 @@ public class WCProperties
      * can be used in substituting properties
      * @return The value, with all property references substituted
      */
-    private String substitutePropertyReferences( String value, int maxDepth )
+    private String substitutePropertyReferences(String value, int maxDepth)
     {
-        if ( value == null || value.length() == 0 )
+        if (value == null || value.length() == 0)
         {
             return value;
         }
 
         // Get the index of the first constant, if any
-        StringBuffer buffer = new StringBuffer( value.length() );
+        StringBuffer buffer = new StringBuffer(value.length());
         int beginIndex = 0;
-        int startName = value.indexOf( REFERENCE_START, beginIndex );
+        int startName = value.indexOf(REFERENCE_START, beginIndex);
 
-        while ( startName >= 0 )
+        while (startName >= 0)
         {
-            int endName = value.indexOf( REFERENCE_END, startName );
-            if ( endName == -1 )
+            int endName = value.indexOf(REFERENCE_END, startName);
+            if (endName == -1)
             {
                 // Terminating symbol not found
                 // Return the value as is
                 break;
             }
 
-            if ( startName > beginIndex )
+            if (startName > beginIndex)
             {
-                buffer.append( value.substring( beginIndex, startName ) );
+                buffer.append(value.substring(beginIndex, startName));
                 beginIndex = startName;
             }
 
             String constName  =
-                value.substring( startName + REFERENCE_START.length(), endName);
-            String constValue = ( maxDepth > 0 )
+                value.substring(startName + REFERENCE_START.length(), endName);
+            String constValue = (maxDepth > 0)
                 ? getProperty(constName, true, maxDepth - 1)
                 : REFERENCE_START + constName + ":RECURSION-TOO-DEEP"
                   + REFERENCE_END;
 
-            if ( constValue == null )
+            if (constValue == null)
             {
                 // Property name not found
-                buffer.append( value.substring( beginIndex,
-                                endName + REFERENCE_END.length() ) );
+                buffer.append(value.substring(beginIndex,
+                                endName + REFERENCE_END.length()));
             }
             else
             {
                 // Insert the constant value into the
                 // original property value
-                buffer.append( constValue );
+                buffer.append(constValue);
             }
 
             beginIndex = endName + REFERENCE_END.length();
             // Look for the next constant
-            startName = value.indexOf( REFERENCE_START, beginIndex );
+            startName = value.indexOf(REFERENCE_START, beginIndex);
         }
 
-        buffer.append( value.substring(beginIndex, value.length() ) );
+        buffer.append(value.substring(beginIndex, value.length()));
         return buffer.toString();
     }
 
@@ -724,13 +731,13 @@ public class WCProperties
      * @param key to check
      * @return property value
      */
-    public synchronized Object setProperty( String key, String value )
+    public synchronized Object setProperty(String key, String value)
     {
-        if ( key != null && key.startsWith( NO_SUBSTITUTION_PREFIX ) )
+        if (key != null  &&  key.startsWith(NO_SUBSTITUTION_PREFIX))
         {
-            key = key.substring( NO_SUBSTITUTION_PREFIX.length() );
+            key = key.substring(NO_SUBSTITUTION_PREFIX.length());
         }
-        return super.setProperty( key, value );
+        return super.setProperty(key, value);
     }
 
 
@@ -742,10 +749,10 @@ public class WCProperties
      * @param key to check
      * @return property value
      */
-    public String getProperty( String key )
+    public String getProperty(String key)
     {
         return getProperty(
-            key, willPerformPropertySubstitution, MAX_RECURSIVE_DEPTH );
+            key, willPerformPropertySubstitution, MAX_RECURSIVE_DEPTH);
     }
 
 
@@ -762,39 +769,39 @@ public class WCProperties
      * @return property value
      */
     public String getProperty(
-                    String key, boolean performSubstitution, int maxDepth )
+        String key, boolean performSubstitution, int maxDepth)
     {
         String property = null;
         String application = applicationNameForAppending();
-        if ( key != null && key.startsWith( NO_SUBSTITUTION_PREFIX ) )
+        if (key != null  &&  key.startsWith(NO_SUBSTITUTION_PREFIX))
         {
-            key = key.substring( NO_SUBSTITUTION_PREFIX.length() );
+            key = key.substring(NO_SUBSTITUTION_PREFIX.length());
             performSubstitution = false;
         }
-        if ( application != null )
+        if (application != null)
         {
-            property = super.getProperty( key + application );
+            property = super.getProperty(key + application);
         }
-        if ( property == null )
+        if (property == null)
         {
-            property = super.getProperty( key );
-            if ( property == null )
+            property = super.getProperty(key);
+            if (property == null)
             {
                 property =
-                    super.getProperty( key + ERXProperties.DefaultString );
+                    super.getProperty(key + ERXProperties.DefaultString);
             }
             // This behavior from ERXProperties makes it hard to dynamically
             // reset properties easily, so turn it off here.
             // // We go ahead and set the value to increase the lookup the
             // // next time the property is accessed.
-            // if ( property != null && application != null )
+            // if (property != null  &&  application != null)
             // {
-            //     setProperty( key + application, property );
+            //     setProperty(key + application, property);
             // }
         }
-        if ( performSubstitution )
+        if (performSubstitution)
         {
-            property = substitutePropertyReferences( property, maxDepth );
+            property = substitutePropertyReferences(property, maxDepth);
         }
         return property;
     }
@@ -802,11 +809,11 @@ public class WCProperties
 
     // ----------------------------------------------------------
     /**
-     * Attempts to coerce the string value of a property into its "actual" type,
-     * based on what it looks like. If it starts with a parenthesis, we try it
-     * as an array. If it starts with a brace, we try it as a dictionary.
-     * Otherwise, we try it as a number, and then fall back to the string itself
-     * if these fail.
+     * Attempts to coerce the string value of a property into its "actual"
+     * type, based on what it looks like. If it starts with a parenthesis,
+     * we try it as an array. If it starts with a brace, we try it as a
+     * dictionary.  Otherwise, we try it as a number, and then fall back to
+     * the string itself if these fail.
      *
      * @param property the string value of the property to coerce
      * @param numericsOnly if true, attempt only the numeric and boolean
@@ -814,70 +821,69 @@ public class WCProperties
      *     when recursively coercing the values in a dictionary or array
      * @return the coerced value of the property
      */
-    private Object tryToCoercePropertyValue( String property,
-            boolean numericsOnly )
+    private Object tryToCoercePropertyValue(
+        String property, boolean numericsOnly)
     {
         Object coercedValue = null;
 
-        if ( !numericsOnly && property.startsWith( "(" ) )
+        if (!numericsOnly  &&  property.startsWith("("))
         {
             // Try to parse the value as an array
             try
             {
-                coercedValue = ERXValueUtilities.arrayValue( property );
+                coercedValue = ERXValueUtilities.arrayValue(property);
             }
             catch (IllegalArgumentException e)
             {
                 coercedValue = null;
             }
 
-            if ( coercedValue != null )
+            if (coercedValue != null)
             {
                 // If we got an array, recursively perform conversions of
                 // values that look like numbers or booleans.
 
                 coercedValue = recursivelyCoerceArrayValues(
-                        (NSArray) coercedValue );
+                        (NSArray<?>) coercedValue);
             }
         }
 
-        if ( !numericsOnly && coercedValue == null
-                && property.startsWith( "{" ) )
+        if (!numericsOnly && coercedValue == null && property.startsWith("{"))
         {
             // Try to parse the value as a dictionary
             try
             {
-                coercedValue = ERXValueUtilities.dictionaryValue( property );
+                coercedValue = ERXValueUtilities.dictionaryValue(property);
             }
             catch (IllegalArgumentException e)
             {
                 coercedValue = null;
             }
 
-            if ( coercedValue != null )
+            if (coercedValue != null)
             {
                 // If we got a dictionary, recursively perform conversions of
                 // values that look like numbers or booleans.
 
                 coercedValue = recursivelyCoerceDictionaryValues(
-                        (NSDictionary) coercedValue );
+                    (NSDictionary<?, ?>) coercedValue);
             }
         }
 
-        if ( "true".equalsIgnoreCase( property ) ||
-                "false".equalsIgnoreCase( property ) )
+        if ("true".equalsIgnoreCase(property)
+            || "false".equalsIgnoreCase(property))
         {
             // Parse the value as a boolean.
-            coercedValue = Boolean.valueOf( property );
+            coercedValue = Boolean.valueOf(property);
         }
 
-        if ( coercedValue == null )
+        if (coercedValue == null)
         {
             // Try to parse it as a number (integer, long, then floating point)
-            coercedValue = tryToParseAsNumber( property );
+            coercedValue = tryToParseAsNumber(property);
         }
 
-        if ( coercedValue == null )
+        if (coercedValue == null)
         {
             // All coercions failed, just keep the string
             coercedValue = property;
@@ -890,13 +896,13 @@ public class WCProperties
     // ------------------------------------------------
     /**
      * Walks through an array (and recursively through any nested arrays or
-     * dictionaries) and converts any string values that look like numbers into
-     * their actual numeric type.
+     * dictionaries) and converts any string values that look like numbers
+     * into their actual numeric type.
      *
      * @param array the array of objects to convert
      * @return a new array containing the converted items
      */
-    private NSArray recursivelyCoerceArrayValues( NSArray array )
+    private NSArray<?> recursivelyCoerceArrayValues(NSArray<?> array)
     {
         if (array == null)
         {
@@ -904,7 +910,7 @@ public class WCProperties
         }
         else
         {
-            NSMutableArray newArray = new NSMutableArray();
+            NSMutableArray<?> newArray = new NSMutableArray<Object>();
 
             for (Object value : array)
             {
@@ -912,7 +918,7 @@ public class WCProperties
 
                 if (value instanceof String)
                 {
-                    newValue = tryToCoercePropertyValue( (String) value, true );
+                    newValue = tryToCoercePropertyValue((String) value, true);
 
                     if (newValue == null)
                     {
@@ -921,12 +927,12 @@ public class WCProperties
                 }
                 else if (value instanceof NSArray)
                 {
-                    newValue = recursivelyCoerceArrayValues( (NSArray) value );
+                    newValue = recursivelyCoerceArrayValues((NSArray<?>)value);
                 }
                 else if (value instanceof NSDictionary)
                 {
                     newValue = recursivelyCoerceDictionaryValues(
-                            (NSDictionary) value );
+                        (NSDictionary<?, ?>)value);
                 }
                 else
                 {
@@ -946,15 +952,15 @@ public class WCProperties
 
     // ------------------------------------------------
     /**
-     * Walks through a dictionary (and recursively through any nested arrays or
-     * dictionaries) and converts any string values that look like numbers into
-     * their actual numeric type.
+     * Walks through a dictionary (and recursively through any nested arrays
+     * or dictionaries) and converts any string values that look like
+     * numbers into their actual numeric type.
      *
      * @param dictionary the dictionary of objects to convert
      * @return a new dictionary containing the converted items
      */
-    private NSDictionary recursivelyCoerceDictionaryValues(
-            NSDictionary dictionary )
+    private NSDictionary<?, ?> recursivelyCoerceDictionaryValues(
+        NSDictionary<?, ?> dictionary)
     {
         if (dictionary == null)
         {
@@ -962,7 +968,8 @@ public class WCProperties
         }
         else
         {
-            NSMutableDictionary newDictionary = new NSMutableDictionary();
+            NSMutableDictionary<?, ?> newDictionary =
+                new NSMutableDictionary<Object, Object>();
 
             for (Object key : dictionary.allKeys())
             {
@@ -971,7 +978,7 @@ public class WCProperties
 
                 if (value instanceof String)
                 {
-                    newValue = tryToCoercePropertyValue( (String) value, true );
+                    newValue = tryToCoercePropertyValue((String)value, true);
 
                     if (newValue == null)
                     {
@@ -980,12 +987,12 @@ public class WCProperties
                 }
                 else if (value instanceof NSArray)
                 {
-                    newValue = recursivelyCoerceArrayValues( (NSArray) value );
+                    newValue = recursivelyCoerceArrayValues((NSArray<?>)value);
                 }
                 else if (value instanceof NSDictionary)
                 {
                     newValue = recursivelyCoerceDictionaryValues(
-                            (NSDictionary) value );
+                        (NSDictionary<?, ?>)value);
                 }
                 else
                 {
@@ -1005,21 +1012,21 @@ public class WCProperties
 
     // ----------------------------------------------------------
     /**
-     * Tries to parse the specified string as a number; try this in order of
-     * "ascending precision", more or less: Integer, Long, Double, and finally
-     * BigDecimal.
+     * Tries to parse the specified string as a number; try this in order
+     * of "ascending precision", more or less: Integer, Long, Double, and
+     * finally BigDecimal.
      *
      * @param stringValue the string to try to parse as a number
-     * @return if successful, a Number object representing the numerical value
-     * of the string; otherwise, null
+     * @return if successful, a Number object representing the numerical
+     * value of the string; otherwise, null
      */
-    private Number tryToParseAsNumber( String stringValue )
+    private Number tryToParseAsNumber(String stringValue)
     {
         Number number = null;
 
         try
         {
-            number = Integer.valueOf( stringValue );
+            number = Integer.valueOf(stringValue);
         }
         catch (NumberFormatException e)
         {
@@ -1028,18 +1035,18 @@ public class WCProperties
 
         try
         {
-            number = Integer.valueOf( stringValue );
+            number = Integer.valueOf(stringValue);
         }
         catch (NumberFormatException e)
         {
             // Do nothing, number is still null.
         }
 
-        if ( number == null )
+        if (number == null)
         {
             try
             {
-                number = Long.valueOf( stringValue );
+                number = Long.valueOf(stringValue);
             }
             catch (NumberFormatException e)
             {
@@ -1047,11 +1054,11 @@ public class WCProperties
             }
         }
 
-        if ( number == null )
+        if (number == null)
         {
             try
             {
-                number = Double.valueOf( stringValue );
+                number = Double.valueOf(stringValue);
             }
             catch (NumberFormatException e)
             {
@@ -1059,11 +1066,11 @@ public class WCProperties
             }
         }
 
-        if ( number == null )
+        if (number == null)
         {
             try
             {
-                number = new BigDecimal( stringValue );
+                number = new BigDecimal(stringValue);
             }
             catch (NumberFormatException e)
             {
@@ -1085,15 +1092,15 @@ public class WCProperties
      * @param value The value to set
      * @param key   The name of the property to set
      */
-    public void takeValueForKey( Object value, String key )
+    public void takeValueForKey(Object value, String key)
     {
-        if ( value == null || value == NSKeyValueCoding.NullValue )
+        if (value == null  ||  value == NSKeyValueCoding.NullValue)
         {
-            remove( key );
+            remove(key);
         }
         else
         {
-            setProperty( key, value.toString() );
+            setProperty(key, value.toString());
         }
     }
 
@@ -1110,47 +1117,35 @@ public class WCProperties
      * @param value   The value to set
      * @param keyPath The path to the property to set
      */
-    public void takeValueForKeyPath( Object value, String keyPath )
+    public void takeValueForKeyPath(Object value, String keyPath)
     {
-        log.debug( "takeValueForKeyPath(" + keyPath + ")" );
+        log.debug("takeValueForKeyPath(" + keyPath + ")");
 
-        if ( getProperty( keyPath ) != null )
+        if (getProperty( keyPath ) != null)
         {
-            takeValueForKey( value, keyPath );
+            takeValueForKey(value, keyPath);
         }
         else
         {
-            int pos = keyPath.indexOf( KeyPathSeparator );
-            if ( pos < 0 )
+            int pos = keyPath.indexOf(KeyPathSeparator);
+            if (pos < 0)
             {
-                takeValueForKey( value, keyPath );
+                takeValueForKey(value, keyPath);
             }
             else
             {
-                String prefix = keyPath.substring( 0, pos );
-                if ( getProperty( prefix ) != null )
+                String prefix = keyPath.substring(0, pos);
+                if (getProperty(prefix) != null)
                 {
                     NSKeyValueCodingAdditions.DefaultImplementation
-                    .takeValueForKeyPath( this, value, keyPath );
+                        .takeValueForKeyPath(this, value, keyPath);
                 }
                 else
                 {
-                    takeValueForKey( value, keyPath );
+                    takeValueForKey(value, keyPath);
                 }
             }
         }
-//
-//
-//
-//
-//        if ( value == null || value == NSKeyValueCoding.NullValue )
-//        {
-//            remove( key );
-//        }
-//        else
-//        {
-//            setProperty( key, value.toString() );
-//        }
     }
 
 
@@ -1161,13 +1156,13 @@ public class WCProperties
      * @param key   The name of the property to fetch
      * @return      Its value, or null if there is no binding
      */
-    public Object valueForKey( String key )
+    public Object valueForKey(String key)
     {
-        String result = getProperty( key );
+        String result = getProperty(key);
 
-        if ( result != null )
+        if (result != null)
         {
-            return tryToCoercePropertyValue( result, false );
+            return tryToCoercePropertyValue(result, false);
         }
         else
         {
@@ -1178,8 +1173,8 @@ public class WCProperties
             {
                 key = key.substring(4);
 
-                result = getProperty( key );
-                if ( result != null )
+                result = getProperty(key);
+                if (result != null)
                 {
                     return result;
                 }
@@ -1201,14 +1196,14 @@ public class WCProperties
      * @param keyPath The path to the property to fetch
      * @return        Its value, or null if there is no binding
      */
-    public Object valueForKeyPath( String keyPath )
+    public Object valueForKeyPath(String keyPath)
     {
-        log.debug( "valueForKeyPath(" + keyPath + ")" );
+        log.debug("valueForKeyPath(" + keyPath + ")");
 
-        String result = getProperty( keyPath );
-        if ( result != null )
+        String result = getProperty(keyPath);
+        if (result != null)
         {
-            return tryToCoercePropertyValue( result, false );
+            return tryToCoercePropertyValue(result, false);
         }
         else
         {
@@ -1219,15 +1214,15 @@ public class WCProperties
             {
                 keyPath = keyPath.substring(4);
 
-                result = getProperty( keyPath );
-                if ( result != null )
+                result = getProperty(keyPath);
+                if (result != null)
                 {
                     return result;
                 }
             }
 
             return NSKeyValueCodingAdditions.DefaultImplementation
-                .valueForKeyPath( this, keyPath );
+                .valueForKeyPath(this, keyPath);
         }
     }
 
@@ -1238,7 +1233,7 @@ public class WCProperties
      * @return the set of locally defined properties
      * @see java.util.Map.Entry
      */
-    public Set localEntrySet()
+    public Set<Map.Entry<Object, Object>> localEntrySet()
     {
         return entrySet();
     }
@@ -1250,7 +1245,7 @@ public class WCProperties
      * @return the set of default-defined properties
      * @see java.util.Map.Entry
      */
-    public Set inheritedEntrySet()
+    public Set<Map.Entry<Object, Object>> inheritedEntrySet()
     {
         return defaults.entrySet();
     }
@@ -1275,7 +1270,7 @@ public class WCProperties
      * @param value true if substitution is desired, false if it should be
      * turned off
      */
-    public void setWillPerformPropertySubstitution( boolean value )
+    public void setWillPerformPropertySubstitution(boolean value)
     {
         willPerformPropertySubstitution = value;
     }
@@ -1291,7 +1286,7 @@ public class WCProperties
     private final String REFERENCE_END = "}";
     private final int    MAX_RECURSIVE_DEPTH = 256;
 
-    static Logger log = Logger.getLogger( WCProperties.class );
-    static public String PROPERTYFILES_LOADED = "propertyfiles.loaded";
-    static public String NO_SUBSTITUTION_PREFIX = "NOSUB.";
+    static Logger log = Logger.getLogger(WCProperties.class);
+    public static final String PROPERTYFILES_LOADED = "propertyfiles.loaded";
+    public static final String NO_SUBSTITUTION_PREFIX = "NOSUB.";
 }

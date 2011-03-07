@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -33,14 +33,14 @@ import org.webcat.core.Department;
 import org.webcat.core.Semester;
 import org.webcat.core.WCConfigurationFile;
 import org.apache.log4j.Logger;
-import org.webcat.core.*;
 
 // -------------------------------------------------------------------------
 /**
  * Implements the login UI functionality of the system.
  *
  *  @author Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class InstallPage7
     extends InstallPage
@@ -61,7 +61,7 @@ public class InstallPage7
 
     //~ KVC Attributes (must be public) .......................................
 
-    public NSArray periods = new NSArray( Semester.integers );
+    public NSArray<Integer> periods = new NSArray<Integer>(Semester.integers);
     public Integer period;
     public Integer selectedPeriod;
     public String  empty;
@@ -116,7 +116,7 @@ public class InstallPage7
 
 
     // ----------------------------------------------------------
-    public void takeFormValues( NSDictionary formValues )
+    public void takeFormValues( NSDictionary<?, ?> formValues )
     {
         EOEditingContext ec = Application.newPeerEditingContext();
         try
@@ -217,9 +217,10 @@ public class InstallPage7
 
             // CourseNo = ("", "", "", "", "");
             // CourseName = ("", "", "", "", "");
-            NSArray courseNos = (NSArray)formValues.objectForKey( "CourseNo" );
-            NSArray courseNames =
-                (NSArray)formValues.objectForKey( "CourseName" );
+            NSArray<?> courseNos =
+                (NSArray<?>)formValues.objectForKey( "CourseNo" );
+            NSArray<?> courseNames =
+                (NSArray<?>)formValues.objectForKey( "CourseName" );
             if ( dept != null )
             {
                 for ( int i = 0; i < courseNos.count(); i++ )
@@ -294,11 +295,11 @@ public class InstallPage7
     // ----------------------------------------------------------
     public String periodName()
     {
-        return (String)Semester.names.objectAtIndex( period.intValue() );
+        return Semester.names.objectAtIndex(period.intValue());
     }
 
 
     //~ Instance/static variables .............................................
 
-    static Logger log = Logger.getLogger( InstallPage7.class );
+    static Logger log = Logger.getLogger(InstallPage7.class);
 }

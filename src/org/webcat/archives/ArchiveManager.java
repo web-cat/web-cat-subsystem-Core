@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -35,7 +35,7 @@ import org.webcat.core.FileUtilities;
  * This class allows clients to register handlers for various archive formats,
  * in order to list their contents or unpack them in a type-independent manner.
  * <p>
- * The archive manager can also handle directories and files similiarly:
+ * The archive manager can also handle directories and files similarly:
  * <ul>
  * <li>
  *   For directories, the getContents() method recursively lists its
@@ -50,7 +50,9 @@ import org.webcat.core.FileUtilities;
  * </li>
  * </ul>
  *
- * @author Tony Allowatt
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class ArchiveManager
 {
@@ -62,7 +64,7 @@ public class ArchiveManager
 	 */
 	private ArchiveManager()
 	{
-		archiveHandlers = new ArrayList();
+		archiveHandlers = new ArrayList<IArchiveHandler>();
 	}
 
 
@@ -74,7 +76,7 @@ public class ArchiveManager
 	 */
 	public static ArchiveManager getInstance()
 	{
-		if ( instance == null )
+		if (instance == null)
         {
 			instance = new ArchiveManager();
         }
@@ -92,9 +94,9 @@ public class ArchiveManager
 	 * @param handler An archive handler object that implements the
 	 * IArchiveHandler interface.
 	 */
-	public void addHandler( IArchiveHandler handler )
+	public void addHandler(IArchiveHandler handler)
 	{
-		archiveHandlers.add( handler );
+		archiveHandlers.add(handler);
 	}
 
 
@@ -112,32 +114,33 @@ public class ArchiveManager
 	 *
 	 * @throws IOException
 	 */
-	public IArchiveEntry[] getContents( File file )
+	public IArchiveEntry[] getContents(File file)
         throws IOException
 	{
-		IArchiveHandler handler = findHandler( file.getName() );
+		IArchiveHandler handler = findHandler(file.getName());
 
-		if ( handler != null )
+		if (handler != null)
 		{
-			return handler.getContents( file );
+			return handler.getContents(file);
 		}
 		else
 		{
-			if ( file.isDirectory() )
+			if (file.isDirectory())
 			{
-				ArrayList entryList = new ArrayList();
-				getDirectoryContents( file, file, entryList );
+				ArrayList<IArchiveEntry> entryList =
+				    new ArrayList<IArchiveEntry>();
+				getDirectoryContents(file, file, entryList);
 
 				IArchiveEntry[] entryArray =
 					new IArchiveEntry[entryList.size()];
-				entryList.toArray( entryArray );
+				entryList.toArray(entryArray);
 				return entryArray;
 			}
 			else
 			{
 				return new IArchiveEntry[] {
-					new ArchiveEntry( file.getName(), file.isDirectory(),
-							new Date( file.lastModified() ), file.length() )
+					new ArchiveEntry(file.getName(), file.isDirectory(),
+							new Date(file.lastModified()), file.length())
 				};
 			}
 		}
@@ -161,10 +164,10 @@ public class ArchiveManager
 	 *
 	 * @throws IOException
 	 */
-	public IArchiveEntry[] getContents( String name, InputStream stream )
+	public IArchiveEntry[] getContents(String name, InputStream stream)
         throws IOException
 	{
-        return getContents( name, stream, -1 );
+        return getContents(name, stream, -1);
     }
 
 
@@ -186,21 +189,21 @@ public class ArchiveManager
      *
      * @throws IOException
      */
-    public IArchiveEntry[] getContents( String      name,
-                                        InputStream stream,
-                                        long        size )
+    public IArchiveEntry[] getContents(String      name,
+                                       InputStream stream,
+                                       long        size)
         throws IOException
     {
-		IArchiveHandler handler = findHandler( name );
+		IArchiveHandler handler = findHandler(name);
 
-		if ( handler != null )
+		if (handler != null)
 		{
-			return handler.getContents( stream );
+			return handler.getContents(stream);
 		}
 		else
 		{
 			return new IArchiveEntry[] {
-				new ArchiveEntry( name, false, new Date(), size )
+				new ArchiveEntry(name, false, new Date(), size)
 			};
 		}
 	}
@@ -219,25 +222,25 @@ public class ArchiveManager
 	 *
 	 * @throws IOException
 	 */
-	public void unpack( File destPath, File archiveFile )
+	public void unpack(File destPath, File archiveFile)
         throws IOException
 	{
-		IArchiveHandler handler = findHandler( archiveFile.getName() );
+		IArchiveHandler handler = findHandler(archiveFile.getName());
 
-		if ( handler != null )
+		if (handler != null)
 		{
-			handler.unpack( destPath, archiveFile );
+			handler.unpack(destPath, archiveFile);
 		}
 		else
 		{
-			if ( archiveFile.isDirectory() )
+			if (archiveFile.isDirectory())
 			{
-				FileUtilities.copyDirectoryContents( archiveFile, destPath );
+				FileUtilities.copyDirectoryContents(archiveFile, destPath);
 			}
 			else
 			{
-				File destFile = new File( destPath, archiveFile.getName() );
-				FileUtilities.copyFileToFile( archiveFile, destFile );
+				File destFile = new File(destPath, archiveFile.getName());
+				FileUtilities.copyFileToFile(archiveFile, destFile);
 			}
 		}
 	}
@@ -256,19 +259,19 @@ public class ArchiveManager
 	 *
 	 * @throws IOException
 	 */
-	public void unpack( File destPath, String name, InputStream stream )
+	public void unpack(File destPath, String name, InputStream stream)
         throws IOException
 	{
-		IArchiveHandler handler = findHandler( name );
+		IArchiveHandler handler = findHandler(name);
 
-		if ( handler != null )
+		if (handler != null)
 		{
-			handler.unpack( destPath, stream );
+			handler.unpack(destPath, stream);
 		}
 		else
 		{
-			File destFile = new File( destPath, name );
-			FileUtilities.copyStreamToFile( stream, destFile );
+			File destFile = new File(destPath, name);
+			FileUtilities.copyStreamToFile(stream, destFile);
 		}
 	}
 
@@ -279,12 +282,12 @@ public class ArchiveManager
 	 * specified name. If no handler currently registered will accept it,
 	 * this function returns null.
 	 */
-	private IArchiveHandler findHandler( String name )
+	private IArchiveHandler findHandler(String name)
 	{
-		for ( int i = 0; i < archiveHandlers.size(); i++ )
+		for (int i = 0; i < archiveHandlers.size(); i++)
 		{
-			IArchiveHandler handler = (IArchiveHandler)archiveHandlers.get( i );
-			if ( handler.acceptsFile( name ) )
+			IArchiveHandler handler = archiveHandlers.get(i);
+			if (handler.acceptsFile(name))
             {
 				return handler;
             }
@@ -298,26 +301,27 @@ public class ArchiveManager
 	 * Recursively drills down into a directory and populates a List with
 	 * its IArchiveEntry objects representing its contents.
 	 */
-	private void getDirectoryContents( File root, File dir, List entryList )
+	private void getDirectoryContents(
+	    File root, File dir, List<IArchiveEntry> entryList)
 	{
 		File[] children = dir.listFiles();
-		for ( int i = 0; i < children.length; i++ )
+		for (int i = 0; i < children.length; i++)
 		{
 			File file = children[i];
 
 			String rootPath = root.getPath();
-			String remPath = file.getPath().substring( rootPath.length() );
-			if ( remPath.startsWith( File.separator ) )
+			String remPath = file.getPath().substring(rootPath.length());
+			if (remPath.startsWith(File.separator))
             {
-				remPath = remPath.substring( 1 );
+				remPath = remPath.substring(1);
             }
 
-			entryList.add( new ArchiveEntry( remPath, file.isDirectory(),
-					new Date( file.lastModified() ), file.length() ) );
+			entryList.add(new ArchiveEntry(remPath, file.isDirectory(),
+					new Date(file.lastModified()), file.length()));
 
-			if ( file.isDirectory() )
+			if (file.isDirectory())
             {
-				getDirectoryContents( root, file, entryList );
+				getDirectoryContents(root, file, entryList);
             }
 		}
 	}
@@ -329,5 +333,5 @@ public class ArchiveManager
     private static ArchiveManager instance;
 
     /** A list of archive handlers currently registered in the manager. */
-    private List archiveHandlers;
+    private List<IArchiveHandler> archiveHandlers;
 }

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -27,7 +27,9 @@ import java.util.Date;
 /**
  * Provides a concrete implementation of the IArchiveEntry interface.
  *
- * @author Tony Allowatt
+ * @author Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class ArchiveEntry
     implements IArchiveEntry
@@ -44,10 +46,10 @@ public class ArchiveEntry
 	 * archive entry.
 	 * @param entryLength The uncompressed file size of the entry.
 	 */
-	public ArchiveEntry( String  name,
-                         boolean directory,
-                         Date    lastMod,
-                         long    entryLength )
+	public ArchiveEntry(String  name,
+                        boolean directory,
+                        Date    lastMod,
+                        long    entryLength)
 	{
 		this.name = name;
 		this.directory = directory;

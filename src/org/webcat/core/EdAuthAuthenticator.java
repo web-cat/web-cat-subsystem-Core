@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -37,8 +37,9 @@ import org.apache.log4j.Logger;
  *  tests user ids/passwords against the Virginia Tech ED-Auth service
  *  using LDAP.
  *
- *  @author edwards
- *  @version $Id$
+ *  @author Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class EdAuthAuthenticator
     implements UserAuthenticator
@@ -126,9 +127,9 @@ public class EdAuthAuthenticator
             {
                 user = (User)EOUtilities.objectMatchingValues(
                     ec, User.ENTITY_NAME,
-                    new NSDictionary(
+                    new NSDictionary<String, Object>(
                         new Object[]{ username , domain              },
-                        new Object[]{ User.USER_NAME_KEY,
+                        new String[]{ User.USER_NAME_KEY,
                                       User.AUTHENTICATION_DOMAIN_KEY }
                     ) );
                 if ( user.authenticationDomain() != domain )

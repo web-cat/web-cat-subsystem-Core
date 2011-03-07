@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -34,7 +34,6 @@ import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSTimeZone;
 import com.webobjects.foundation.NSTimestamp;
-import com.webobjects.foundation.NSTimestampFormatter;
 
 // -------------------------------------------------------------------------
 /**
@@ -466,7 +465,8 @@ public class Session
                     {
                         ec.lock();
                         User u = primeUser.localInstance( ec );
-                        NSArray items = EOUtilities.objectsMatchingKeyAndValue(
+                        NSArray<?> items =
+                            EOUtilities.objectsMatchingKeyAndValue(
                                 ec,
                                 LoginSession.ENTITY_NAME,
                                 LoginSession.USER_KEY,
@@ -504,7 +504,7 @@ public class Session
         localUser = null;
         if (transientState != null)
         {
-            NSArray values = transientState.allValues();
+            NSArray<Object> values = transientState.allValues();
             for (int i = 0; i < values.count(); i++)
             {
                 Object value = values.objectAtIndex(i);
@@ -646,13 +646,16 @@ public class Session
      * preferences change, use {@link #clearCachedTimeFormatter()}.
      * @return a formatter
      */
-    public NSTimestampFormatter timeFormatter()
+    @SuppressWarnings("deprecation")
+    public com.webobjects.foundation.NSTimestampFormatter timeFormatter()
     {
         if ( timeFormatter == null )
         {
             String formatString =
                 user().dateFormat() + " " + user().timeFormat();
-            timeFormatter = new NSTimestampFormatter( formatString );
+            timeFormatter =
+                new com.webobjects.foundation.NSTimestampFormatter(
+                    formatString);
             NSTimeZone zone =
                 NSTimeZone.timeZoneWithName( user().timeZoneName(), true );
             timeFormatter.setDefaultFormatTimeZone( zone );
@@ -709,11 +712,11 @@ public class Session
      * this session (data that is not database-backed).
      * @return A map of transient settings
      */
-    public NSMutableDictionary transientState()
+    public NSMutableDictionary<String, Object> transientState()
     {
         if (transientState == null)
         {
-            transientState = new NSMutableDictionary();
+            transientState = new NSMutableDictionary<String, Object>();
         }
         return transientState;
     }
@@ -724,16 +727,18 @@ public class Session
     private User                  primeUser            = null;
     private User                  localUser            = null;
     private LoginSession          loginSession         = null;
-    private NSTimestampFormatter  timeFormatter        = null;
-    private NSMutableDictionary   transientState;
+    private NSMutableDictionary<String, Object> transientState;
     private WOEC.PeerManagerPool  childManagerPool;
     private boolean               doNotUseLoginSession = false;
     private Theme                 temporaryTheme;
 
+    @SuppressWarnings("deprecation")
+    private com.webobjects.foundation.NSTimestampFormatter timeFormatter = null;
+
     private static final Integer zero = new Integer( 0 );
     private static final Integer one  = new Integer( 1 );
 
-    private static NSArray subsystemTabTemplate;
+    private static NSArray<TabDescriptor> subsystemTabTemplate;
     {
         NSBundle myBundle = NSBundle.bundleForClass( Session.class );
         subsystemTabTemplate = TabDescriptor.tabsFromPropertyList(

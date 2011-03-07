@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,7 +21,6 @@
 
 package org.webcat.core.install;
 
-import org.webcat.core.*;
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
 import org.webcat.core.Application;
@@ -33,7 +32,8 @@ import org.webcat.core.WCConfigurationFile;
  * A basic interface implemented by all InstallPages.
  *
  *  @author Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public abstract class InstallPage
     extends WCComponentWithErrorMessages
@@ -97,7 +97,7 @@ public abstract class InstallPage
 
 
     // ----------------------------------------------------------
-    public void takeFormValues( NSDictionary formValues )
+    public void takeFormValues( NSDictionary<?, ?> formValues )
     {
         // Default does nothing, but subclasses can override this
     }
@@ -123,9 +123,9 @@ public abstract class InstallPage
      *     are allowed without generating any error message.
      * @return The value transferred, or null otherwise.
      */
-    public String storeFormValueToConfig( NSDictionary formValues,
-                                          String       formKey,
-                                          String       errMsgIfEmpty )
+    public String storeFormValueToConfig( NSDictionary<?, ?> formValues,
+                                          String             formKey,
+                                          String             errMsgIfEmpty )
     {
         return storeFormValueToConfig(
             formValues, formKey, formKey, errMsgIfEmpty );
@@ -146,10 +146,10 @@ public abstract class InstallPage
      *     are allowed without generating any error message.
      * @return The value transferred, or null otherwise.
      */
-    public String storeFormValueToConfig( NSDictionary formValues,
-                                          String       formKey,
-                                          String       configKey,
-                                          String       errMsgIfEmpty )
+    public String storeFormValueToConfig( NSDictionary<?, ?> formValues,
+                                          String             formKey,
+                                          String             configKey,
+                                          String             errMsgIfEmpty )
     {
         String value = extractFormValue( formValues, formKey );
         try
@@ -206,9 +206,9 @@ public abstract class InstallPage
      * @param key        The key to look up
      * @return The first value associated with the key, or null
      */
-    public String extractFormValue( NSDictionary formValues, String key )
+    public String extractFormValue( NSDictionary<?, ?> formValues, String key )
     {
-        NSArray values = (NSArray)formValues.objectForKey( key );
+        NSArray<?> values = (NSArray<?>)formValues.objectForKey( key );
         if ( values != null && values.count() > 0 )
         {
             return values.objectAtIndex( 0 ).toString();

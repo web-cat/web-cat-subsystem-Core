@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,20 +22,16 @@
 package org.webcat.core.install;
 
 import com.webobjects.appserver.*;
-import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
-
-
 import org.apache.log4j.Logger;
-import org.webcat.core.*;
 
 // -------------------------------------------------------------------------
 /**
  * Implements the login UI functionality of the system.
  *
- *  @author Stephen Edwards
- *  @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class InstallPageWrapper
     extends WOComponent
@@ -56,14 +52,14 @@ public class InstallPageWrapper
 
     //~ KVC Attributes (must be public) .......................................
 
-    public String       title;
-    public int          stepNo = -1;
-    public int          index;
-    public String       step;
-    public String[]     stepList = install.steps;
-    public NSDictionary errors;
-    public String       stylesheet;
-    public String       externalJavascript;
+    public String             title;
+    public int                stepNo = -1;
+    public int                index;
+    public String             step;
+    public String[]           stepList = install.steps;
+    public NSDictionary<?, ?> errors;
+    public String             stylesheet;
+    public String             externalJavascript;
 
 
     //~ Methods ...............................................................

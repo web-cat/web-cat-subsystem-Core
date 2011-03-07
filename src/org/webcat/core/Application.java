@@ -2580,8 +2580,8 @@ public class Application
     private static void loadArchiveManagers()
     {
         @SuppressWarnings("unchecked")
-        NSArray<String> handlers = configurationProperties().arrayForKey(
-            "Core.archive.handler.list");
+        NSArray<String> handlers = (NSArray<String>)configurationProperties()
+            .arrayForKey("Core.archive.handler.list");
         if (handlers != null)
         {
             ArchiveManager manager = ArchiveManager.getInstance();

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -34,7 +34,8 @@ import com.webobjects.foundation.NSMutableDictionary;
  *  down an obscure WO bug.
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class WOEC
     extends er.extensions.eof.ERXEC
@@ -152,10 +153,8 @@ public class WOEC
             }
             if (transientState != null)
             {
-                NSArray values = transientState.allValues();
-                for (int i = 0; i < values.count(); i++)
+                for (Object value : transientState.allValues())
                 {
-                    Object value = values.objectAtIndex(i);
                     if (value instanceof EOManager.ECManager)
                     {
                         ((EOManager.ECManager)value).dispose();
@@ -224,21 +223,21 @@ public class WOEC
          * this editing context (data that is not database-backed).
          * @return A map of transient settings
          */
-        public NSMutableDictionary transientState()
+        public NSMutableDictionary<String, Object> transientState()
         {
             if (transientState == null)
             {
-                transientState = new NSMutableDictionary();
+                transientState = new NSMutableDictionary<String, Object>();
             }
             return transientState;
         }
 
 
         //~ Instance/static variables .........................................
-        private EOEditingContext    ec;
-        private PeerManagerPool    owner;
-        private boolean             cachePermanently;
-        private NSMutableDictionary transientState;
+        private EOEditingContext                    ec;
+        private PeerManagerPool                     owner;
+        private boolean                             cachePermanently;
+        private NSMutableDictionary<String, Object> transientState;
         static Logger log = Logger.getLogger(
             PeerManager.class.getName().replace('$', '.'));
     }
@@ -251,8 +250,8 @@ public class WOEC
         public PeerManagerPool()
         {
 
-            managerCache = new NSMutableArray();
-            permanentManagerCache = new NSMutableArray();
+            managerCache = new NSMutableArray<PeerManager>();
+            permanentManagerCache = new NSMutableArray<PeerManager>();
             if (log.isDebugEnabled())
             {
                 log.debug("creating manager pool: " + this);
@@ -293,7 +292,8 @@ public class WOEC
 
 
         // ----------------------------------------------------------
-        private void cache(PeerManager manager, NSMutableArray cache)
+        private void cache(
+            PeerManager manager, NSMutableArray<PeerManager> cache)
         {
             int pos = cache.indexOfObject(manager);
             if (pos == NSArray.NotFound)
@@ -306,7 +306,7 @@ public class WOEC
                     > Application.application().pageCacheSize())
                 {
                     log.debug("caching: pool full, flushing oldest");
-                    ((PeerManager)cache.objectAtIndex(0)).dispose();
+                    cache.objectAtIndex(0).dispose();
                     cache.removeObjectAtIndex(0);
                 }
             }
@@ -329,19 +329,19 @@ public class WOEC
 
 
         // ----------------------------------------------------------
-        private void dispose(NSMutableArray cache)
+        private void dispose(NSMutableArray<PeerManager> cache)
         {
-            for (int i = 0; i < cache.count(); i++)
+            for (PeerManager manager : cache)
             {
-                ((PeerManager)cache.objectAtIndex(0)).dispose();
+                manager.dispose();
             }
             cache.clear();
         }
 
 
         //~ Instance/static variables .........................................
-        private NSMutableArray managerCache;
-        private NSMutableArray permanentManagerCache;
+        private NSMutableArray<PeerManager> managerCache;
+        private NSMutableArray<PeerManager> permanentManagerCache;
         static Logger log = Logger.getLogger(
             PeerManagerPool.class.getName().replace('$', '.'));
     }

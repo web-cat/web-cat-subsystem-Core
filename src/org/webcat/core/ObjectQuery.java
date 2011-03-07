@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -28,21 +28,19 @@ import org.webcat.core.MutableDictionary;
 import org.webcat.core.QualifierSerialization;
 import org.webcat.core.QualifierUtils;
 import org.webcat.core._ObjectQuery;
-import com.webobjects.eoaccess.EOAttribute;
 import com.webobjects.eoaccess.EOEntity;
 import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOFetchSpecification;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.foundation.NSArray;
-import er.extensions.eof.ERXEOAccessUtilities;
 import er.extensions.eof.ERXEOControlUtilities;
 
 // -------------------------------------------------------------------------
 /**
  * TODO: place a real description here.
  *
- * @author
+ * @author  Tony Allevato
  * @author  latest changes by: $Author$
  * @version $Revision$, $Date$
  */
@@ -228,7 +226,7 @@ public class ObjectQuery
 
 
     // ----------------------------------------------------------
-    public NSArray fetchPrimaryKeys()
+    public NSArray<?> fetchPrimaryKeys()
     {
         EOQualifier[] quals = QualifierUtils.partitionQualifier(qualifier(),
                 objectType());
@@ -240,12 +238,12 @@ public class ObjectQuery
             ERXEOControlUtilities.primaryKeyFetchSpecificationForEntity(
                 editingContext(), objectType(), quals[0], null, null);
 
-        NSArray primaryKeyDictionaries =
+        NSArray<?> primaryKeyDictionaries =
             editingContext().objectsWithFetchSpecification(pkFetchSpec);
 
         String pkAttributeName =
             entity.primaryKeyAttributes().lastObject().name();
-        return (NSArray) primaryKeyDictionaries.valueForKey(pkAttributeName);
+        return (NSArray<?>)primaryKeyDictionaries.valueForKey(pkAttributeName);
     }
 
 

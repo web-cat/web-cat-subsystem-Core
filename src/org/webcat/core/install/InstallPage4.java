@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -24,19 +24,17 @@ package org.webcat.core.install;
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
 import java.io.File;
-
 import org.webcat.core.Application;
 import org.webcat.core.WCConfigurationFile;
-
 import org.apache.log4j.Logger;
-import org.webcat.core.*;
 
 // -------------------------------------------------------------------------
 /**
  * Implements the login UI functionality of the system.
  *
- *  @author Stephen Edwards
- *  @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class InstallPage4
     extends InstallPage
@@ -112,7 +110,7 @@ public class InstallPage4
 
 
     // ----------------------------------------------------------
-    public void takeFormValues( NSDictionary formValues )
+    public void takeFormValues( NSDictionary<?, ?> formValues )
     {
         storeFormValueToConfig( formValues, "coreApplicationIdentifier",
             "Please specify a name for your Web-CAT instance." );

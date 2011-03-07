@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,10 +22,8 @@
 package org.webcat.core;
 
 import com.webobjects.foundation.*;
-import com.webobjects.foundation.NSArray.*;
 import java.io.*;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.Vector;
 import org.webcat.core.MutableArray;
@@ -45,6 +43,7 @@ import org.apache.log4j.Logger;
  *  @author  Stephen Edwards
  *  @version $Id$
  */
+@SuppressWarnings("unchecked")
 public class MutableArray
     extends er.extensions.foundation.ERXMutableArray
     implements MutableContainer

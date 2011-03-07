@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,12 +21,9 @@
 
 package org.webcat.core.install;
 
-import com.sun.org.apache.xerces.internal.util.URI.MalformedURIException;
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
-
 import er.extensions.foundation.ERXValueUtilities;
-
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
@@ -37,14 +34,14 @@ import org.webcat.core.LdapAuthenticator;
 import org.webcat.core.UserAuthenticator;
 import org.webcat.core.WCConfigurationFile;
 import org.apache.log4j.Logger;
-import org.webcat.core.*;
 
 // -------------------------------------------------------------------------
 /**
  * Implements the login UI functionality of the system.
  *
  *  @author Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class InstallPage5
     extends InstallPage
@@ -75,9 +72,10 @@ public class InstallPage5
         STRATEGY_MAP.put(DATABASE_STRATEGY, DatabaseAuthenticator.class);
         STRATEGY_MAP.put(LDAP_STRATEGY, LdapAuthenticator.class);
     }
-    public final NSArray<String> authStrategies = new NSArray(new String[] {
-        DATABASE_STRATEGY, LDAP_STRATEGY, CUSTOM_STRATEGY
-    });
+    public final NSArray<String> authStrategies =
+        new NSArray<String>(new String[] {
+            DATABASE_STRATEGY, LDAP_STRATEGY, CUSTOM_STRATEGY
+        });
 
     public String authStrategy;
     public String chosenAuthStrategy;
@@ -170,7 +168,7 @@ public class InstallPage5
 
 
     // ----------------------------------------------------------
-    public void takeFormValues( NSDictionary formValues )
+    public void takeFormValues( NSDictionary<?, ?> formValues )
     {
         log.debug("hello");
         chosenAuthStrategy =

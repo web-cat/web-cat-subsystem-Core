@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -54,8 +54,11 @@ import com.webobjects.foundation.NSRange;
  *  Summer 2006-Spring 2010 semesters.
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
+@Deprecated
+@SuppressWarnings("unchecked")
 public class MutableArray
     extends er.extensions.foundation.ERXMutableArray
     implements MutableContainer

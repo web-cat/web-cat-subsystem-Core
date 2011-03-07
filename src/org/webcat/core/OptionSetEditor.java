@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -37,8 +37,9 @@ import org.webcat.ui.util.ComponentIDGenerator;
  *  that defines {@link WizardPage#defaultAction()} to return null so that the
  *  current page will be reloaded on basic form submissions.
  *
- *  @author  stedwar2
- *  @version $Id$
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class OptionSetEditor
     extends WCComponent
@@ -60,20 +61,20 @@ public class OptionSetEditor
     //~ KVC Attributes (must be public) .......................................
 
     // For clients to configure this component
-    public NSArray                   options;
-    public NSKeyValueCodingAdditions optionValues;
-    public NSArray                   categories;
-    public String                    verboseOptionsKey = "verboseOptions";
-    public String                    browsePageName;
-    public java.io.File              base;
+    public NSArray<NSDictionary<String, Object>> options;
+    public NSKeyValueCodingAdditions    optionValues;
+    public NSArray<String>              categories;
+    public String                       verboseOptionsKey = "verboseOptions";
+    public String                       browsePageName;
+    public java.io.File                 base;
 
     // For communicating with subcomponents ...
-    public NSDictionary              option;
-    public String                    category;
-    public String                    chosenCategory;
-    public String                    displayedCategory;
+    public NSDictionary<String, Object> option;
+    public String                       category;
+    public String                       chosenCategory;
+    public String                       displayedCategory;
 
-    public ComponentIDGenerator      idFor;
+    public ComponentIDGenerator         idFor;
 
 
     //~ Methods ...............................................................
@@ -87,7 +88,7 @@ public class OptionSetEditor
              && categories != null
              && categories.count() > 0 )
         {
-            chosenCategory = (String)categories.objectAtIndex( 0 );
+            chosenCategory = categories.objectAtIndex( 0 );
         }
         isFirstView = false;
         terse = null;
@@ -118,7 +119,8 @@ public class OptionSetEditor
 
         if (categories != null && categories.count() != 0)
         {
-            int index = categories.indexOfObject(option.valueForKey("category"));
+            int index =
+                categories.indexOfObject(option.valueForKey("category"));
 
             if (index != -1)
             {

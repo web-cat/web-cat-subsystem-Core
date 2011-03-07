@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -33,7 +33,8 @@ import org.apache.log4j.*;
  * Represents a supported programming language in this Web-CAT installation.
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class Language
     extends _Language
@@ -59,7 +60,7 @@ public class Language
      * already been loaded into the shared editing context.
      * @return an array of all AuthenticationDomain objects
      */
-    public static NSArray languages()
+    public static NSArray<Language> languages()
     {
         if ( languages == null )
         {
@@ -82,7 +83,7 @@ public class Language
 
 
     //~ Instance/static variables .............................................
-    private static NSArray languages;
+    private static NSArray<Language> languages;
 
     static Logger log = Logger.getLogger( Language.class );
 }

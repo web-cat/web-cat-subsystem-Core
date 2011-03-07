@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,20 +23,17 @@ package org.webcat.core.install;
 
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
-
 import er.extensions.foundation.ERXValueUtilities;
-
 import org.webcat.core.Application;
-
 import org.apache.log4j.Logger;
-import org.webcat.core.*;
 
 // -------------------------------------------------------------------------
 /**
  * Implements the login UI functionality of the system.
  *
- *  @author Stephen Edwards
- *  @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class InstallPage2
     extends InstallPage
@@ -91,7 +88,7 @@ public class InstallPage2
 
 
     // ----------------------------------------------------------
-    public void takeFormValues( NSDictionary formValues )
+    public void takeFormValues( NSDictionary<?, ?> formValues )
     {
         if ( !ERXValueUtilities.booleanValue(
             extractFormValue( formValues, "AgreedToLicense" ) ) )

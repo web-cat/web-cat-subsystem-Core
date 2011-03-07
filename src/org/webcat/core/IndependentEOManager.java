@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -37,8 +37,9 @@ import com.webobjects.foundation.NSDictionary;
  * locking conflicts, this class uses a "last write wins" strategy to
  * resolve them automatically.
  *
- * @author stedwar2
- * @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class IndependentEOManager
     implements EOManager
@@ -226,9 +227,12 @@ public class IndependentEOManager
             ecm.lock();
 
             // grab the changes, in case there is trouble saving them
-            NSDictionary snapshot =
+            @SuppressWarnings("unchecked")
+            NSDictionary<String, Object> snapshot =
                 mirror.editingContext().committedSnapshotForObject(mirror);
-            NSDictionary changes = mirror.changesFromSnapshot(snapshot);
+            @SuppressWarnings("unchecked")
+            NSDictionary<String, Object> changes =
+                mirror.changesFromSnapshot(snapshot);
 
             boolean changesSaved = false;
             // Try ten times

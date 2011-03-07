@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -37,7 +37,9 @@ import java.io.InputStream;
  * implementations of their unpacking code depending on whether a File or
  * InputStream is the source.
  *
- * @author Tony Allowatt
+ * @author Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public abstract class AbstractArchiveHandler
     implements IArchiveHandler
@@ -50,7 +52,7 @@ public abstract class AbstractArchiveHandler
 	 *
 	 * @return true if this handler can unpack the file; otherwise, false.
 	 */
-	public abstract boolean acceptsFile( String name );
+	public abstract boolean acceptsFile(String name);
 
 
     // ----------------------------------------------------------
@@ -67,12 +69,12 @@ public abstract class AbstractArchiveHandler
 	 *
 	 * @throws IOException
 	 */
-	public IArchiveEntry[] getContents( File archiveFile )
+	public IArchiveEntry[] getContents(File archiveFile)
         throws IOException
 	{
 		InputStream stream =
-		    new BufferedInputStream( new FileInputStream( archiveFile ) );
-		IArchiveEntry[] entryArray = getContents( stream );
+		    new BufferedInputStream( new FileInputStream(archiveFile));
+		IArchiveEntry[] entryArray = getContents(stream);
 		stream.close();
 
 		return entryArray;
@@ -93,7 +95,7 @@ public abstract class AbstractArchiveHandler
 	 *
 	 * @throws IOException
 	 */
-	public abstract IArchiveEntry[] getContents( InputStream stream )
+	public abstract IArchiveEntry[] getContents(InputStream stream)
         throws IOException;
 
 
@@ -110,12 +112,12 @@ public abstract class AbstractArchiveHandler
 	 *
 	 * @throws IOException
 	 */
-	public void unpack( File destPath, File archiveFile )
+	public void unpack(File destPath, File archiveFile)
         throws IOException
 	{
 		InputStream stream =
-            new BufferedInputStream( new FileInputStream( archiveFile ) );
-		unpack( destPath, stream );
+            new BufferedInputStream(new FileInputStream(archiveFile));
+		unpack(destPath, stream);
 		stream.close();
 	}
 
@@ -132,6 +134,6 @@ public abstract class AbstractArchiveHandler
 	 *
 	 * @throws IOException
 	 */
-	public abstract void unpack( File destPath, InputStream stream )
+	public abstract void unpack(File destPath, InputStream stream)
         throws IOException;
 }

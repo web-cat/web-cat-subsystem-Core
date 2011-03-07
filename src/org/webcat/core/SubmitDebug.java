@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,15 +23,14 @@ package org.webcat.core;
 
 import com.webobjects.foundation.*;
 import com.webobjects.appserver.*;
-import com.webobjects.eocontrol.*;
-import com.webobjects.eoaccess.*;
 
 // -------------------------------------------------------------------------
 /**
  *  A simple test component used to debug some direct action issues.
  *
- *  @author Stephen Edwards
- *  @version $Id$
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class SubmitDebug
     extends WOComponent
@@ -54,5 +53,5 @@ public class SubmitDebug
 
     //~ Instance/static variables .............................................
 
-    public NSDictionary errors;
+    public NSDictionary<?, ?> errors;
 }

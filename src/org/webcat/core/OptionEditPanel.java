@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -25,7 +25,6 @@ import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
 import java.io.*;
 import java.util.Map;
-import java.util.Set;
 import java.util.zip.*;
 import er.extensions.eof.ERXConstant;
 import org.webcat.core.DeliverFile;
@@ -44,7 +43,8 @@ import org.webcat.ui.util.ComponentIDGenerator;
  *  @see OptionSetEditor
  *
  *  @author Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class OptionEditPanel
     extends WCComponent
@@ -66,12 +66,12 @@ public class OptionEditPanel
 
     //~ KVC Attributes (must be public) .......................................
 
-    public NSDictionary              option;
+    public NSDictionary<?, ?>        option;
     public NSKeyValueCodingAdditions optionValues;
     public Boolean                   terse;
     public int                       type = 0;
     public String                    property;
-    public NSDictionary              choice;
+    public NSDictionary<?, ?>        choice;
     public String                    browsePageName;
     public java.io.File              base;
 
@@ -269,12 +269,12 @@ public class OptionEditPanel
             log.debug( "removing value" );
             if ( optionValues instanceof NSMutableDictionary )
             {
-                ( (NSMutableDictionary)optionValues )
+                ( (NSMutableDictionary<?, ?>)optionValues )
                     .removeObjectForKey( property );
             }
             else if ( optionValues instanceof Map )
             {
-                ( (Map)optionValues ).remove( property );
+                ( (Map<?, ?>)optionValues ).remove( property );
             }
             else
             {
@@ -328,11 +328,11 @@ public class OptionEditPanel
         if ( theSelectedChoice == null && currentValue != null )
         {
             String valueString = currentValue.toString();
-            NSArray choices = (NSArray)option.objectForKey( "choices" );
+            NSArray<?> choices = (NSArray<?>)option.objectForKey( "choices" );
             for ( int i = 0; i < choices.count(); i++ )
             {
-                NSDictionary thisChoice =
-                    (NSDictionary)choices.objectAtIndex( i );
+                NSDictionary<?, ?> thisChoice =
+                    (NSDictionary<?, ?>)choices.objectAtIndex( i );
                 if ( valueString.equals(
                         thisChoice.objectForKey( "value" ).toString() ) )
                 {
@@ -346,7 +346,7 @@ public class OptionEditPanel
 
 
     // ----------------------------------------------------------
-    public void setSelectedChoice( NSDictionary theChoice )
+    public void setSelectedChoice( NSDictionary<?, ?> theChoice )
     {
         setValue( theChoice.objectForKey( "value" ) );
     }
@@ -475,7 +475,7 @@ public class OptionEditPanel
 
     //~ Instance/static variables .............................................
 
-    private NSDictionary theSelectedChoice = null;
+    private NSDictionary<?, ?> theSelectedChoice = null;
     private WOComponent myPage;
 
     // private static int UNKNOWN_TYPE      = 0;

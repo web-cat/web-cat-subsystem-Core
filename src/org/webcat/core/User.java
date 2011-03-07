@@ -700,7 +700,7 @@ public class User
      * @deprecated Use the {@link #graderFor(Semester)} method instead.
      */
     @Deprecated
-    public NSArray TAFor( Semester semester )
+    public NSArray<CourseOffering> TAFor( Semester semester )
     {
         return graderFor(semester);
     }
@@ -718,7 +718,9 @@ public class User
         NSArray<CourseOffering> result = graderFor();
         if ( semester != null )
         {
-            result = ERXArrayUtilities
+            @SuppressWarnings("unchecked")
+            NSArray<CourseOffering> newResult =
+                ERXArrayUtilities
                 .filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
@@ -727,6 +729,7 @@ public class User
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
                     ) );
+            result = newResult;
         }
         return result;
     }
@@ -751,7 +754,9 @@ public class User
         NSArray<CourseOffering> result = teaching();
         if ( semester != null )
         {
-            result = ERXArrayUtilities
+            @SuppressWarnings("unchecked")
+            NSArray<CourseOffering> newResult =
+                ERXArrayUtilities
                 .filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
@@ -760,6 +765,7 @@ public class User
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
                     ) );
+            result = newResult;
         }
         return result;
     }
@@ -872,13 +878,15 @@ public class User
             }
             if ( graderForButNotStudent_cache == null )
             {
-                graderForButNotStudent_cache =
+                @SuppressWarnings("unchecked")
+                NSArray<CourseOffering> cache =
                     ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
                         graderFor_cache,
                         CourseOffering.ENTITY_NAME,
                         CourseOffering.OFFERINGS_WITHOUT_STUDENT_FSPEC,
                         userFilteringDictionary()
                         );
+                graderForButNotStudent_cache = cache;
             }
         }
         return graderForButNotStudent_cache;
@@ -916,7 +924,9 @@ public class User
         NSArray<CourseOffering> result = graderForButNotStudent();
         if ( semester != null )
         {
-            result = ERXArrayUtilities
+            @SuppressWarnings("unchecked")
+            NSArray<CourseOffering> newResult =
+                ERXArrayUtilities
                 .filteredArrayWithEntityFetchSpecification(
                     result,
                     CourseOffering.ENTITY_NAME,
@@ -925,6 +935,7 @@ public class User
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
                     ) );
+            result = newResult;
         }
         return result;
     }
@@ -979,7 +990,8 @@ public class User
             }
             if ( instructorForButNotGraderOrStudent_cache == null )
             {
-                instructorForButNotGraderOrStudent_cache =
+                @SuppressWarnings("unchecked")
+                NSArray<CourseOffering> cache =
                     ERXArrayUtilities
                         .filteredArrayWithEntityFetchSpecification(
                             teaching_cache,
@@ -988,6 +1000,7 @@ public class User
                                 .OFFERINGS_WITHOUT_STUDENT_OR_GRADER_FSPEC,
                             userFilteringDictionary()
                     );
+                instructorForButNotGraderOrStudent_cache = cache;
             }
         }
         return instructorForButNotGraderOrStudent_cache;
@@ -1029,6 +1042,8 @@ public class User
         NSArray<CourseOffering> result = instructorForButNotGraderOrStudent();
         if ( semester != null )
         {
+            @SuppressWarnings("unchecked")
+            NSArray<CourseOffering> newResult =
             result = ERXArrayUtilities
                 .filteredArrayWithEntityFetchSpecification(
                     result,
@@ -1038,6 +1053,7 @@ public class User
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
                     ) );
+            result = newResult;
         }
         return result;
     }
@@ -1084,6 +1100,8 @@ public class User
         NSArray<CourseOffering> result = staffFor();
         if ( semester != null )
         {
+            @SuppressWarnings("unchecked")
+            NSArray<CourseOffering> newResult =
             result = ERXArrayUtilities
                 .filteredArrayWithEntityFetchSpecification(
                     result,
@@ -1093,6 +1111,7 @@ public class User
                         new Object[]{ semester                    },
                         new Object[]{ CourseOffering.SEMESTER_KEY }
                     ) );
+            result = newResult;
         }
         return result;
     }
@@ -1125,7 +1144,8 @@ public class User
 //            adminForButNoOtherRelationships_cache =
 //                CourseOffering.objectsForWithoutAnyRelationshipToUser(
 //                    editingContext(), this );
-            adminForButNotStaff_cache =
+            @SuppressWarnings("unchecked")
+            NSArray<CourseOffering> cache =
                 ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
                     EOUtilities.objectsForEntityNamed( editingContext(),
                         CourseOffering.ENTITY_NAME ),
@@ -1133,6 +1153,7 @@ public class User
                     CourseOffering.OFFERINGS_WITHOUT_USER_AS_STAFF_FSPEC,
                     userFilteringDictionary()
                     );
+            adminForButNotStaff_cache = cache;
         }
         return adminForButNotStaff_cache;
     }

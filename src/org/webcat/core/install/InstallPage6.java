@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -25,22 +25,20 @@ import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
-
 import org.webcat.core.Application;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.DatabaseAuthenticator;
 import org.webcat.core.User;
 import org.webcat.core.WCConfigurationFile;
-
 import org.apache.log4j.Logger;
-import org.webcat.core.*;
 
 // -------------------------------------------------------------------------
 /**
  * Implements the login UI functionality of the system.
  *
  *  @author Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class InstallPage6
     extends InstallPage
@@ -93,15 +91,15 @@ public class InstallPage6
             canSetPassword = domain.authenticator().canChangePassword();
             if ( username != null && !username.equals( "" ) )
             {
-                NSArray users = EOUtilities.objectsMatchingValues(
+                NSArray<?> users = EOUtilities.objectsMatchingValues(
                     ec,
                     User.ENTITY_NAME,
-                    new NSDictionary(
+                    new NSDictionary<String, Object>(
                         new Object[] {
                             username,
                             domain
                         },
-                        new Object[] {
+                        new String[] {
                             User.USER_NAME_KEY,
                             User.AUTHENTICATION_DOMAIN_KEY
                         }
@@ -144,7 +142,7 @@ public class InstallPage6
 
 
     // ----------------------------------------------------------
-    public void takeFormValues( NSDictionary formValues )
+    public void takeFormValues( NSDictionary<?, ?> formValues )
     {
         WCConfigurationFile configuration =
             Application.configurationProperties();
@@ -176,15 +174,15 @@ public class InstallPage6
             EOEditingContext ec = Application.newPeerEditingContext();
             AuthenticationDomain domain =
                 AuthenticationDomain.authDomainByName( authDomainName );
-            NSArray users = EOUtilities.objectsMatchingValues(
+            NSArray<?> users = EOUtilities.objectsMatchingValues(
                 ec,
                 User.ENTITY_NAME,
-                new NSDictionary(
+                new NSDictionary<String, Object>(
                     new Object[] {
                         username,
                         domain
                     },
-                    new Object[] {
+                    new String[] {
                         User.USER_NAME_KEY,
                         User.AUTHENTICATION_DOMAIN_KEY
                     }

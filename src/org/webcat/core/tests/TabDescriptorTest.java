@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,9 +21,7 @@
 
 package org.webcat.core.tests;
 
-import org.webcat.core.*;
 import com.webobjects.foundation.*;
-
 import org.webcat.core.TabDescriptor;
 
 
@@ -32,7 +30,8 @@ import org.webcat.core.TabDescriptor;
  *  Test class for TabDescriptor.
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class TabDescriptorTest
     extends com.codefab.wounittest.WOUTTestCase
@@ -48,11 +47,11 @@ public class TabDescriptorTest
     {
         super.setUp();
         tabs = new TabDescriptor( "TBDPage", "root" );
-        tabs.addChildren( new NSArray(
+        tabs.addChildren( new NSArray<TabDescriptor>(
             new TabDescriptor( "TBDPage", "Home", 0, 10, true,
-                new NSArray(
+                new NSArray<TabDescriptor>(
                     new TabDescriptor( "TBDPage", "My Profile", 0, 1001, true,
-                        new NSArray( new Object[] {
+                        new NSArray<TabDescriptor>( new TabDescriptor[] {
                             new TabDescriptor( "TBDPage",
                                                "Pick the assignment",
                                                0, 1 ),

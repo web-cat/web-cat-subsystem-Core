@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,12 +21,9 @@
 
 package org.webcat.core;
 
-import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
-import org.webcat.core.DelegatingUrlClassLoader;
-import org.webcat.core.SubsystemEOMRedirector;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -42,7 +39,8 @@ import org.apache.log4j.Logger;
  * </p>
  *
  * @author Lally Singh
- * @version $Id$
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class SubsystemEOMRedirector
     implements EOModelGroup.Delegate
@@ -59,32 +57,32 @@ public class SubsystemEOMRedirector
      * @param className The class to find
      * @return          The resulting <code>Class</code> object
      */
-    public Class failedToLookupClassNamed( EOEntity entity, String className )
+    public Class<?> failedToLookupClassNamed(EOEntity entity, String className)
     {
         try
         {
             return DelegatingUrlClassLoader.getClassLoader().loadClass(
-                           className );
+                           className);
         }
-        catch ( Exception e )
+        catch (Exception e)
         {
-            log.error( "Couldn't load class with name: " + className );
+            log.error("Couldn't load class with name: " + className);
         }
         return null;
     }
 
 
     // ----------------------------------------------------------
-    public Class classForObjectWithGlobalID( EOEntity entity,
-                                             EOGlobalID gid )
+    public Class<?> classForObjectWithGlobalID(EOEntity entity,
+                                               EOGlobalID gid)
     {
         return null;
     }
 
 
     // ----------------------------------------------------------
-    public EOModel modelGroupEntityNamed( EOModelGroup modelGroup,
-                                          String name )
+    public EOModel modelGroupEntityNamed(EOModelGroup modelGroup,
+                                         String name)
     {
         return null;
     }
@@ -93,24 +91,25 @@ public class SubsystemEOMRedirector
     // ----------------------------------------------------------
     public EOEntity relationshipFailedToLookupDestinationWithName(
              EORelationship relationship,
-             String         name
-         )
+             String         name)
     {
         return null;
     }
 
 
     // ----------------------------------------------------------
-    public EORelationship relationshipForRow( EOEntity entity,
-                                              NSDictionary dictionary,
-                                              EORelationship relationship )
+    @SuppressWarnings("unchecked")
+    public EORelationship relationshipForRow(EOEntity entity,
+                                             NSDictionary dictionary,
+                                             EORelationship relationship)
     {
         return relationship;
     }
 
 
     // ----------------------------------------------------------
-    public EOEntity subEntityForEntity( EOEntity entity, NSDictionary dic )
+    @SuppressWarnings("unchecked")
+    public EOEntity subEntityForEntity(EOEntity entity, NSDictionary dic)
     {
         return null;
     }
@@ -118,5 +117,5 @@ public class SubsystemEOMRedirector
 
     //~ Instance/static variables .............................................
 
-    static Logger log = Logger.getLogger( SubsystemEOMRedirector.class );
+    static Logger log = Logger.getLogger(SubsystemEOMRedirector.class);
 }

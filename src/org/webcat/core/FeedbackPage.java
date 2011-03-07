@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,11 +22,7 @@
 package org.webcat.core;
 
 import com.webobjects.appserver.*;
-import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
-
-import java.util.Properties;
 import org.webcat.core.Application;
 import org.webcat.core.FeedbackPage;
 import org.webcat.core.WCComponent;
@@ -64,7 +60,7 @@ public class FeedbackPage
     public String comments;
 
     /** A list of subject categories for the user's feedback. */
-    public NSMutableArray categories;
+    public NSMutableArray<String> categories;
 
     /** The selected subject category. */
     public String selectedCategory;
@@ -140,15 +136,16 @@ public class FeedbackPage
 
     //~ Instance/static variables .............................................
 
-    private static final NSArray baseCategories = new NSArray( new String[]{
-        "A general comment about Web-CAT",
-        "A comment regarding a specific class assignment",
-        "A bug to report",
-        "A feature request",
-        "A suggestion for improvement",
-        "Page layout or web design",
-        "Quality of help pages"
+    private static final NSArray<String> baseCategories =
+        new NSArray<String>( new String[] {
+            "A general comment about Web-CAT",
+            "A comment regarding a specific class assignment",
+            "A bug to report",
+            "A feature request",
+            "A suggestion for improvement",
+            "Page layout or web design",
+            "Quality of help pages"
         } );
 
-    static Logger log = Logger.getLogger( FeedbackPage.class );
+    static Logger log = Logger.getLogger(FeedbackPage.class);
 }

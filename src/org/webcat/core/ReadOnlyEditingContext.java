@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -31,7 +31,6 @@ import com.webobjects.eocontrol.EOFetchSpecification;
 import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSMutableArray;
 import er.extensions.eof.ERXEC;
 
 //-------------------------------------------------------------------------
@@ -46,9 +45,10 @@ import er.extensions.eof.ERXEC;
  * {@link Application#releaseReadOnlyEditingContext()} methods to manage the
  * lifetimes of these objects.
  * </p>
- * 
+ *
  * @author Tony Allevato
- * @version $Id$
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class ReadOnlyEditingContext extends ERXEC
 {
@@ -56,19 +56,21 @@ public class ReadOnlyEditingContext extends ERXEC
 
     // ----------------------------------------------------------
     @Override
-    public NSArray objectsWithFetchSpecification(EOFetchSpecification fspec,
-            EOEditingContext ec)
+    public NSArray<EOEnterpriseObject> objectsWithFetchSpecification(
+        EOFetchSpecification fspec, EOEditingContext ec)
     {
         // Augment the qualifier and use that for the original database fetch.
         EOFetchSpecification augFspec = (EOFetchSpecification) fspec.clone();
 
         EOQualifier q = fspec.qualifier();
-        
+
         QualifierAugmenter augmenter = new QualifierAugmenter(
                 fspec.entityName(), q);
         augFspec.setQualifier(augmenter.augmentedQualifier());
 
-        NSArray objects = super.objectsWithFetchSpecification(augFspec, ec);
+        @SuppressWarnings("unchecked")
+        NSArray<EOEnterpriseObject> objects =
+            super.objectsWithFetchSpecification(augFspec, ec);
 
         if (augmenter.isSignificantDifference())
         {
@@ -94,8 +96,8 @@ public class ReadOnlyEditingContext extends ERXEC
                 "deleteObject method called on read-only editing context; " +
                 "the operation was ignored.");
     }
-    
-    
+
+
     // ----------------------------------------------------------
     @Override
     public void insertObject(EOEnterpriseObject object)
@@ -105,14 +107,14 @@ public class ReadOnlyEditingContext extends ERXEC
                 "the operation was ignored.");
     }
 
-    
+
     // ----------------------------------------------------------
     @Override
     public void insertObjectWithGlobalID(EOEnterpriseObject object,
             EOGlobalID gid)
     {
         logModificationAttempt(
-                "insertObjectWithGlobalID method called on read-only " + 
+                "insertObjectWithGlobalID method called on read-only " +
                 "editing context; the operation was ignored.");
     }
 
@@ -133,7 +135,7 @@ public class ReadOnlyEditingContext extends ERXEC
      * editing context. Once this flag has been set by one of the modifying
      * methods, it remains set through the lifetime of the editing context and
      * can never be cleared.
-     * 
+     *
      * @return true if an attempt was made to modify the editing context,
      *     otherwise false.
      */
@@ -141,75 +143,75 @@ public class ReadOnlyEditingContext extends ERXEC
     {
         return modificationWasAttempted;
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Logs a modification attempt.
-     * 
+     *
      * @param message a message describing the modification attempt
      */
     private void logModificationAttempt(String message)
     {
         modificationWasAttempted = true;
-        
+
         if (!loggingSuppressed)
         {
             log.error(message, new Throwable("called here"));
-            
+
             if (suppressesLogAfterFirstAttempt)
             {
                 setLoggingSuppressed(true);
             }
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Gets a value indicating whether logging is suppressed.
-     * 
+     *
      * @return true if suppressed, false if activated
      */
     public boolean isLoggingSuppressed()
     {
         return loggingSuppressed;
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Suppresses logging of modification attempts if true, or reactivates
      * logging if false.
-     * 
+     *
      * @param suppress true to suppress, false to activate
      */
     public void setLoggingSuppressed(boolean suppress)
     {
         loggingSuppressed = suppress;
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Gets a value indicating whether logging should be suppressed after the
      * first modification attempt.
-     * 
+     *
      * @return true if suppressed, false if activated
      */
     public boolean suppressesLogAfterFirstAttempt()
     {
         return suppressesLogAfterFirstAttempt;
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Suppresses logging of modification attempts after the first one if true,
      * or logs every modification attempt if false. This acts as a form of
      * flood control when the editing context is being used repeatedly, such as
      * during report generation.
-     * 
+     *
      * @param suppress true to suppress after the first attempt, false to
      *     log all modification attempts
      */
@@ -218,9 +220,9 @@ public class ReadOnlyEditingContext extends ERXEC
         suppressesLogAfterFirstAttempt = suppress;
     }
 
-    
+
     //~ Static/instance variables .............................................
-    
+
     private boolean modificationWasAttempted = false;
     private boolean loggingSuppressed = false;
     private boolean suppressesLogAfterFirstAttempt = false;

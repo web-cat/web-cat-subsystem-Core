@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -56,8 +56,11 @@ import com.webobjects.foundation.NSRange;
  *  Spring 2006 semester.
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
+@Deprecated
+@SuppressWarnings("unchecked")
 public class MutableArray
     extends er.extensions.foundation.ERXMutableArray
     implements MutableContainer
@@ -192,7 +195,7 @@ public class MutableArray
      */
     public Object clone()
     {
-        return new MutableArray( (NSArray)this );
+        return new MutableArray(this);
     }
 
 

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,7 +23,6 @@ package org.webcat.core;
 
 import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.LoginPage;
@@ -34,7 +33,8 @@ import org.apache.log4j.Logger;
  * Implements the login UI functionality of the system.
  *
  *  @author Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class LoginPage
     extends WOComponent
@@ -55,14 +55,14 @@ public class LoginPage
 
     //~ KVC Attributes (must be public) .......................................
 
-    public String               userName;
-    public String               password;
-    public NSMutableDictionary  errors;
-    public WODisplayGroup       domainDisplayGroup;
-    public AuthenticationDomain domain;
-    public AuthenticationDomain domainItem;
-    public NSDictionary         extraKeys;
-    public String               aKey;
+    public String                    userName;
+    public String                    password;
+    public NSMutableDictionary<?, ?> errors;
+    public WODisplayGroup            domainDisplayGroup;
+    public AuthenticationDomain      domain;
+    public AuthenticationDomain      domainItem;
+    public NSDictionary<?, ?>        extraKeys;
+    public String                    aKey;
 
 
     //~ Methods ...............................................................
@@ -177,7 +177,7 @@ public class LoginPage
         Object value = extraKeys.valueForKey( aKey );
         if ( value instanceof NSArray )
         {
-            NSArray array = (NSArray)value;
+            NSArray<?> array = (NSArray<?>)value;
             if ( array.count() == 1 )
             {
                 value = array.objectAtIndex( 0 );
