@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2010 Virginia Tech
+ |  Copyright (C) 2010-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -35,7 +35,8 @@ import com.webobjects.eocontrol.EOFetchSpecification;
  * @param <T> the actual type of the EO used by this resource handler
  *
  * @author  Tony Allevato
- * @version $Id$
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public abstract class EntityResourceHandler<T extends EOEnterpriseObject>
 {
