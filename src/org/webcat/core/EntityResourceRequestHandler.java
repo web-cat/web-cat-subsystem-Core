@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2010 Virginia Tech
+ |  Copyright (C) 2010-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -34,7 +34,6 @@ import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WORequestHandler;
 import com.webobjects.appserver.WOResponse;
-import com.webobjects.appserver.WOSession;
 import com.webobjects.eoaccess.EOEntity;
 import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOEditingContext;
@@ -43,7 +42,6 @@ import com.webobjects.eocontrol.EOFetchSpecification;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSMutableDictionary;
-import er.extensions.eof.ERXEOAccessUtilities;
 import er.extensions.eof.ERXQ;
 
 //-------------------------------------------------------------------------
@@ -64,7 +62,8 @@ import er.extensions.eof.ERXQ;
  * </p>
  *
  * @author  Tony Allevato
- * @version $Id$
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class EntityResourceRequestHandler extends WORequestHandler
 {
@@ -116,7 +115,7 @@ public class EntityResourceRequestHandler extends WORequestHandler
      * @param handler a resource handler
      */
     public static void registerHandler(Class<?> entityClass,
-                                       EntityResourceHandler handler)
+                                       EntityResourceHandler<?> handler)
     {
         log.debug("Registering entity resource handler for class "
                 + entityClass.getCanonicalName());
@@ -218,8 +217,8 @@ public class EntityResourceRequestHandler extends WORequestHandler
         {
             ec.lock();
 
-            EntityResourceHandler handler = handlerForEntityNamed(
-                    entityRequest.entityName(), ec);
+            EntityResourceHandler<EOEnterpriseObject> handler =
+                handlerForEntityNamed(entityRequest.entityName(), ec);
 
             if (handler != null)
             {
@@ -295,8 +294,8 @@ public class EntityResourceRequestHandler extends WORequestHandler
      *
      * @return an entity resource handler, or null
      */
-    private EntityResourceHandler handlerForEntityNamed(String entityName,
-            EOEditingContext ec)
+    private EntityResourceHandler<EOEnterpriseObject> handlerForEntityNamed(
+        String entityName, EOEditingContext ec)
     {
         EOEntity ent = EOUtilities.entityNamed(ec, entityName);
         Class<?> entityClass = null;
@@ -424,10 +423,11 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
 
     // ----------------------------------------------------------
-    private void generateResponse(WOResponse response,
-                                  EntityResourceHandler handler,
-                                  EOEnterpriseObject object,
-                                  String path)
+    private void generateResponse(
+        WOResponse response,
+        EntityResourceHandler<EOEnterpriseObject> handler,
+        EOEnterpriseObject object,
+        String path)
     {
         File absolutePath = handler.pathForResource(object, path);
 
@@ -634,8 +634,10 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
     public static final String REQUEST_HANDLER_KEY = "er";
 
-    private static final NSMutableDictionary<Class<?>, EntityResourceHandler>
-        resourceHandlers = new NSMutableDictionary<Class<?>, EntityResourceHandler>();
+    private static final NSMutableDictionary<
+        Class<?>, EntityResourceHandler<EOEnterpriseObject>>
+        resourceHandlers = new NSMutableDictionary<
+            Class<?>, EntityResourceHandler<EOEnterpriseObject>>();
 
     private static String[] indexFilenames = { "index.html", "index.htm" };
 
