@@ -24,6 +24,7 @@ package org.webcat.core;
 import java.io.File;
 import org.webcat.core.EntityResourceRequestHandler;
 import com.webobjects.eocontrol.EOEnterpriseObject;
+import com.webobjects.eocontrol.EOFetchSpecification;
 
 //-------------------------------------------------------------------------
 /**
@@ -46,7 +47,8 @@ public abstract class EntityResourceHandler<T extends EOEnterpriseObject>
      *
      * @param object the object whose associated resources are being accessed
      * @param relativePath the path to the resource, relative to whatever
-     *     root is appropriate for the object
+     *     root is appropriate for the object. This may be null, in which case
+     *     the root itself should be returned
      * @return a File object representing the absolute path of the file on the
      *     file system where the resource is located
      */
@@ -83,5 +85,22 @@ public abstract class EntityResourceHandler<T extends EOEnterpriseObject>
     public boolean userCanAccess(T object, User user)
     {
         return true;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets a fetch specification that fetches the appropriate object when a
+     * request URL contains a "friendly name" instead of a numerical ID (for
+     * example, {@code /er/GradingPlugin/JavaTDDPlugin/...} instead of
+     * {@code /er/GradingPlugin/1/...}.
+     *
+     * @param name the friendly name of the object
+     * @return a fetch specification that will fetch the object with the
+     *     specified name, or null if friendly names are not supported
+     */
+    public EOFetchSpecification fetchSpecificationForFriendlyName(String name)
+    {
+        return null;
     }
 }
