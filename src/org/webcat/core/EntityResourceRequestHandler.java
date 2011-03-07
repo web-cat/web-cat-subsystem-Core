@@ -341,7 +341,7 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
         int level = 0;
 
-        String[] components = file.getPath().split(File.separator);
+        String[] components = file.getPath().split("/");
         for (String component : components)
         {
             if (component.equals(".."))
