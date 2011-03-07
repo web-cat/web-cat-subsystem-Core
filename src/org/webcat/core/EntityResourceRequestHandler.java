@@ -367,7 +367,7 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
     // ----------------------------------------------------------
     private EOEnterpriseObject fetchObject(EntityRequest entityRequest,
-                                           EntityResourceHandler handler,
+                                           EntityResourceHandler<?> handler,
                                            EOEditingContext ec)
     {
         EOFetchSpecification fspec = null;
@@ -387,6 +387,7 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
         if (fspec != null)
         {
+            @SuppressWarnings("unchecked")
             NSArray<? extends EOEnterpriseObject> objects =
                 ec.objectsWithFetchSpecification(fspec);
 
@@ -401,9 +402,10 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
 
     // ----------------------------------------------------------
-    private boolean canAccessObject(EOEnterpriseObject object,
-                                    EntityResourceHandler handler,
-                                    Session session)
+    private boolean canAccessObject(
+        EOEnterpriseObject object,
+        EntityResourceHandler<EOEnterpriseObject> handler,
+        Session session)
     {
         if (!handler.requiresLogin())
         {
