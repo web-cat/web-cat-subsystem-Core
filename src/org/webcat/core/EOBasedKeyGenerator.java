@@ -21,6 +21,7 @@
 
 package org.webcat.core;
 
+import java.io.Serializable;
 import com.webobjects.foundation.NSKeyValueCodingAdditions;
 import er.extensions.eof.ERXGenericRecord;
 
@@ -54,7 +55,8 @@ import er.extensions.eof.ERXGenericRecord;
  * @author Tony Allevato
  * @version $Id$
  */
-public class EOBasedKeyGenerator implements NSKeyValueCodingAdditions
+public class EOBasedKeyGenerator
+    implements NSKeyValueCodingAdditions, Serializable
 {
     //~ Constructors ..........................................................
 
@@ -118,5 +120,5 @@ public class EOBasedKeyGenerator implements NSKeyValueCodingAdditions
     //~ Static/instance variables .............................................
 
     /* The enterprise object for which keypaths are being constructed. */
-    private ERXGenericRecord object;
+    private transient ERXGenericRecord object;
 }
