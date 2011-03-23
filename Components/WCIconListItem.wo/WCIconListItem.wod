@@ -1,0 +1,13 @@
+Image: WOImage {
+    framework = framework;
+    filename  = filename;
+    style     = "vertical-align: top; padding-right: 4px";
+}
+
+ImageButton: WCImageButton {
+    framework = framework;
+    filename  = filename;
+    style     = "vertical-align: top; padding-right: 4px";
+    action    = action;
+    remote    = remote;
+}
