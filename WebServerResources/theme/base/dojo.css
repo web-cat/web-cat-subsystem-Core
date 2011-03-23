@@ -18,7 +18,7 @@
 /* For best alignment with plain text or labels on the same line */
 .dijitCheckBox.dijitInline,
 .dijitRadio.dijitInline {
-	    vertical-align: text-top;
+        vertical-align: text-top;
 }
 
 .dijitDateTextBox.dijitTextBox { width: 8em; }
@@ -42,8 +42,8 @@
 .dojoDndHandle {
     display: inline-block;
     vertical-align: middle;
-    width: 19px;
-    height: 17px;
+    width: 16px;
+    height: 16px;
     cursor: move;
     background-image: url(images/draghandle.png);
 }
