@@ -240,7 +240,8 @@ import org.webcat.core.EOBasedKeyGenerator;
     public static final String ENTITY_NAME = "${entity.name}";
 #end
 
-    public final EOBasedKeyGenerator generateKey = new EOBasedKeyGenerator(this);
+    public transient final EOBasedKeyGenerator generateKey =
+        new EOBasedKeyGenerator(this);
 
 
     //~ Methods ...............................................................
