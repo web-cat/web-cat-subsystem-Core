@@ -230,10 +230,11 @@ public class WCImageButton extends DojoActionFormElement
             if(context.isMultipleSubmitForm())
             {
                 String name = nameInContext(context);
+                String value = (String) request.formValueForKey(name);
                 String ptX = (String) request.formValueForKey(name + ".x");
                 String ptY = (String) request.formValueForKey(name + ".y");
 
-                if (ptX != null && ptY != null)
+                if (value != null || (ptX != null && ptY != null))
                 {
                     context.setActionInvoked(true);
 
