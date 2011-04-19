@@ -361,6 +361,34 @@ public class FileUtilities
 
     // ----------------------------------------------------------
     /**
+     * If the specified object is an InputStream or OutputStream, then it is
+     * closed and any exceptions are ignored. Otherwise, this method does
+     * nothing.
+     *
+     * @param object the object to close
+     */
+    public static void closeQuietly(Object object)
+    {
+        try
+        {
+            if (object instanceof InputStream)
+            {
+                ((InputStream) object).close();
+            }
+            else if (object instanceof OutputStream)
+            {
+                ((OutputStream) object).close();
+            }
+        }
+        catch (Exception e)
+        {
+            // Do nothing.
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Appends the contents of this file or directory to the given
      * ZipOutputStream.
      *
@@ -512,7 +540,36 @@ public class FileUtilities
 
     // ----------------------------------------------------------
     /**
-     * Return the URL for the icon to use for to represent this file's type.
+     * Gets the URL for the icon to use to represent a folder. This method
+     * always returns a closed folder image; to choose between open and closed
+     * images (for example, in an interactive tree), use the
+     * {@link #folderIconURL(boolean)} method instead.
+     *
+     * @return the folder icon URL
+     */
+    public static String folderIconURL()
+    {
+        return folderIconURL(false);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the URL for the icon to use to represent an open or closed folder.
+     *
+     * @param isOpen true to return an open folder, false to return a closed
+     *     folder
+     * @return the folder icon URL
+     */
+    public static String folderIconURL(boolean isOpen)
+    {
+        return isOpen ? FOLDER_OPEN_ICON : FOLDER_CLOSED_ICON;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Return the URL for the icon to use to represent this file's type.
      * The check is performed based on the file's extension,
      * using settings loaded from an external properties file containing
      * file type definitions.
@@ -523,7 +580,7 @@ public class FileUtilities
     public static String iconURL( String fileName )
     {
         return FileUtilities.fileProperties.getFileProperty(
-            extensionOf( fileName ), "icon", "/icons/filetypes/unknown.gif" );
+            extensionOf(fileName), "icon", DEFAULT_FILE_ICON);
     }
 
 
@@ -539,7 +596,7 @@ public class FileUtilities
      */
     public static String iconURL( File file )
     {
-        return iconURL( file.getName() );
+        return iconURL(file.getName());
     }
 
 
@@ -765,6 +822,15 @@ public class FileUtilities
                 Application.application().resourceManager()
                 .pathForResourceNamed( "filetype.properties", "Core", null ) ),
             Application.configurationProperties() );
+
+    private static final String FOLDER_OPEN_ICON =
+        "icons/filetypes/folder-open.png";
+
+    private static final String FOLDER_CLOSED_ICON =
+        "icons/filetypes/folder.png";
+
+    private static final String DEFAULT_FILE_ICON =
+        "icons/filetypes/document.png";
 
     static Logger log = Logger.getLogger(FileUtilities.class);
 }
