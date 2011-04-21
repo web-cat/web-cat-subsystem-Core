@@ -122,11 +122,11 @@ public class CourseOffering
                     "course offering with no associated course: " + crn()
                     + ((label() == null) ? "" : ("(" + label() + ")")));
                 // don't cache!
-                return "null(" + myLabel + ")";
+                return "null (" + myLabel + ")";
             }
             else
             {
-                cachedCompactName = course().deptNumber() + "(" + myLabel + ")";
+                cachedCompactName = course().deptNumber() + " (" + myLabel + ")";
             }
         }
         return cachedCompactName;
