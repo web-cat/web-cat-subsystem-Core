@@ -2,6 +2,18 @@
 .srcView table { margin: 0; }
 .srcView pre { padding-left: 10px; }
 
+.srcView a[id],
+.srcView a[id]:link,
+.srcView a[id]:visited,
+.srcView a[id]:hover,
+.srcView a[id]:active {
+    text-decoration: none;
+    color: inherit;
+    background-color: inherit;
+    border: none;
+}
+
+
 /* To remove line-height spacing around vertical spacing images surrounding
    message boxes in code listings.  */
 .srcView > tbody > tr > td > img { display: block; margin: 1px; }
