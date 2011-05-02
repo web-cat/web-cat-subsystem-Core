@@ -225,7 +225,7 @@ public class Semester
      */
     public String name()
     {
-        return seasonName() + ", " + year();
+        return seasonName() + " " + year();
     }
 
 
