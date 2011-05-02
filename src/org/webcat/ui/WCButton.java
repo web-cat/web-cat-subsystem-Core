@@ -25,6 +25,7 @@ import org.webcat.ui._base.DojoActionFormElement;
 import com.webobjects.appserver.WOAssociation;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOElement;
+import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSDictionary;
 
 //------------------------------------------------------------------------
@@ -61,6 +62,8 @@ public class WCButton extends DojoActionFormElement
             WOElement template)
     {
         super("button", someAssociations, template);
+
+        _label = _associations.removeObjectForKey("label");
     }
 
 
@@ -88,4 +91,36 @@ public class WCButton extends DojoActionFormElement
             return "submit";
         }
     }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void appendAttributesToResponse(WOResponse response,
+            WOContext context)
+    {
+        int start = response.contentString().length();
+
+        super.appendAttributesToResponse(response, context);
+
+        if (_label != null)
+        {
+            String label = _label.valueInComponent(
+                    context.component()).toString();
+
+            if (label != null)
+            {
+                response._appendTagAttributeAndValue("label", label, true);
+
+                if (response.contentString().indexOf("value=\"", start) == -1)
+                {
+                    response._appendTagAttributeAndValue("value", label, true);
+                }
+            }
+        }
+    }
+
+
+    //~ Static/instance variables .............................................
+
+    private WOAssociation _label;
 }
