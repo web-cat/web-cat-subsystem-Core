@@ -347,9 +347,16 @@ public class WCBasePage
     // ----------------------------------------------------------
     public boolean hasCustomExternalCssLinks()
     {
-        return hasSession()
-            && ((Session)session()).user().preferences()
-                .valueForKey("customCss") != null;
+        try
+        {
+            return hasSession()
+                && ((Session)session()).user().preferences()
+                    .valueForKey("customCss") != null;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
     }
 
 
