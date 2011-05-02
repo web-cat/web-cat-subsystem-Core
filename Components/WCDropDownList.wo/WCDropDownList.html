@@ -1,0 +1,34 @@
+<wo name="Control"><wo name="SelectionSpan">
+    <wo:if condition="$title">
+        <wo:str value="$title"/>
+    </wo:if><wo:else>
+        <wo:if condition="$selection">
+            <wo:str value="$triggerSetItemToSelection"/>
+                <wo:if condition="$hasContent"><wo:content/></wo:if>
+                <wo:else><wo:str value="$displayStringForItem"/></wo:else>
+            <wo:str value="$triggerClearItem"/>
+        </wo:if><wo:else>
+            <wo:str value="$noSelectionString"/>
+        </wo:else>
+    </wo:else>
+</wo><span class="WCDropDownListArrow"></span></wo>
+<wo name="DropDown"><wo name="DropDownList">
+    <wo:loop list="$list" item="$item" index="$index">
+        <wo:if condition="$hasContent">
+            <wo:content/>
+        </wo:if><wo:else>
+            <wo name="Item"><wo:str value="$displayStringForItem"/></wo>
+        </wo:else>
+    </wo:loop>
+</wo>
+<script type="dojo/method" event="onLoad">
+console.log('onLoad'); <wo:str value="$showMenuScript"/>
+</script>
+</wo>
+<script type="text/javascript">
+dojo.connect(dojo.byId('<wo:str value="$id"/>'), 'onmouseenter', null, function(event) { <wo:str value="$showMenuScript"/> });
+dojo.connect(dojo.byId('<wo:str value="$menuId"/>'), 'onmouseenter', null, function(event) { <wo:str value="$showMenuScript"/> });
+dojo.connect(dojo.byId('<wo:str value="$id"/>'), 'onmouseleave', null, function(event) { <wo:str value="$hideMenuScript"/> });
+dojo.connect(dojo.byId('<wo:str value="$menuId"/>'), 'onmouseleave', null, function(event) { <wo:str value="$hideMenuScript"/> });
+dojo.connect(dojo.byId('<wo:str value="$menuId"/>'), 'onLoad', null, function() { <wo:str value="$showMenuScript"/> });
+</script>

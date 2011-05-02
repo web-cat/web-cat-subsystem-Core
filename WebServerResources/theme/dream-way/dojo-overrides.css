@@ -375,7 +375,7 @@
 .dj_ie6 .aristo .dijitErrorFocused INPUT {
     background-color: #F9F7BA !important;
 }
-.RichTextEditable {
+.dijitEditor {
     border-color: #8299D8;
 }
 .aristo .dijitComboBoxHighlightMatch {
@@ -451,12 +451,12 @@
     border-top-color: #4F66A5;
     text-shadow: 0 1px 0 #EBEBEB;
 }
-.aristo .dijitAccordionTitle-hover  {
+.aristo .dijitAccordionTitleHover  {
     background-color: #C0CFF7;
     background-image: url("images/titlebar-hover.png");
     text-shadow: 0 1px 0 #EBEBEB;
 }
-.aristo .dijitAccordionTitle-selected  {
+.aristo .dijitAccordionTitleSelected  {
     background-color: #91A7E2;
     background-image: url("images/titlebar-active.png");
     text-shadow: 0 1px 0 #EBEBEB;
@@ -559,19 +559,19 @@
     background-color: #DBE8F0;
     background-image: url("images/tabChecked.png");
 }
-.aristo .dijitTab .dijitClosable .closeImage {
+.aristo .dijitTabCloseButton {
     background-image: url("images/tabClose.png");
 }
-.aristo .dijitTab .closeImage {
+.aristo .dijitTabCloseButton {
     background-image : url("images/tabClose.png");
 }
-.dj_ie6 .aristo .dijitTab .closeImage {
+.dj_ie6 .aristo .dijitTabCloseButton {
     background-image : url("images/tabClose.gif");
 }
-.aristo .dijitTab .closeButton-hover .closeImage {
+.aristo .dijitTabCloseButtonHover {
     background-image : url("images/tabCloseHover.png");
 }
-.dj_ie6 .aristo .dijitTab .closeButton-hover .closeImage {
+.dj_ie6 .aristo .dijitTabCloseButtonHover {
     background-image : url("images/tabCloseHover.gif");
 }
 .aristo .dijitTabContainerTop-tabs {
@@ -631,7 +631,7 @@
     border-right-color: #ccc;
     border-left-color: #ccc;
 }
-.aristo .dijitTabContainer .tabStripButton img {
+.aristo .dijitTabContainer .dijitTabStripIcon {
     background-image: url("images/rounded-icons-sprite.png");
 }*/
 
@@ -751,7 +751,7 @@
     background-image: url("images/titlebar.png");
     border-color: #4F66A5;
 }
-.aristo .dijitTitlePaneTitle-hover {
+.aristo .dijitTitlePaneTitleHover {
     background-color: #C0CFF7;
     background-image: url("images/titlebar-hover.png");
 }
@@ -816,8 +816,8 @@
 .aristo .dijitToolbar .dijitButtonHover .dijitButtonNode,
 .aristo .dijitToolbar .dijitToggleButtonHover .dijitButtonNode,
 .aristo .dijitToolbar .dijitDropDownButtonHover .dijitButtonNode,
-.aristo .dijitToolbar .dijitComboButtonHover .dijitButtonContents .dijitButtonNode,
-.aristo .dijitToolbar .dijitComboButtonDownArrowHover .dijitDownArrowButton .dijitButtonNode {
+.aristo .dijitToolbar .dijitComboButton .dijitButtonContentsHover .dijitButtonNode,
+.aristo .dijitToolbar .dijitComboButton .dijitDownArrowButtonHover .dijitButtonNode {
     background-color: #B3C4F3;
     background-image: url("images/button-enabled.png");
     background-repeat: repeat-x;
@@ -838,17 +838,17 @@
  * Overrides for Tree.css
  */
 
-.aristo .dijitTreeNodeSelected,
-.aristo .dijitTreeNodeSelected:hover {
+.aristo .dijitTreeRowSelected,
+.aristo .dijitTreeRowSelected:hover {
     background-color: #1A6CAB;
     border-top-color: #1A6CAB;
     border-bottom-color: #1A6CAB;
 }
-.aristo .dijitTreeNodeSelected .dijitTreeLabel,
-.aristo .dijitTreeNodeSelected:hover .dijitTreeLabel {
+.aristo .dijitTreeRowSelected .dijitTreeLabel,
+.aristo .dijitTreeRowSelected:hover .dijitTreeLabel {
     color: #FFFFFF;
 }
-.aristo .dijitTreeNodeHover {
+.aristo .dijitTreeRowHover {
     background-color: #B3C4F3;
     background-image: url("images/button-enabled.png");
     border-top-color: #B3C4F3;

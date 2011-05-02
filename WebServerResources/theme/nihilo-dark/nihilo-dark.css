@@ -11,6 +11,13 @@
 
 .nihilo .dijitTimePickerTick { color: #555; }
 
+.nihilo .WCTreeControlCollapsed {
+    background-position: -32px 0px;
+}
+
+.nihilo .WCTreeControlExpanded {
+    background-position: -48px 0px;
+}
 
 /* @end
 ====================================================================== */
@@ -137,6 +144,38 @@
 
 .dijitRuleMark {
     border-color: #ccc;
+}
+
+
+/* @end
+====================================================================== */
+/* @group WCDropDownList
+====================================================================== */
+
+.WCDropDownList {
+    background-image: url(../base/images/white-30.png);
+    color: #fff;
+    border-color: #555;
+}
+
+.WCDropDownListMenu ul li {
+    border-bottom-color: #333;
+}
+
+.WCDropDownListMenu ul {
+    background-image: url(../base/images/black-80.png);
+}
+
+.WCDropDownListMenu li.WCDropDownSelectable a {
+    background-color: transparent;
+}
+
+.WCDropDownListMenu li.WCDropDownSelectable:hover {
+    background-image: url(../base/images/highlight-25.png);
+}
+
+.WCDropDownListArrow {
+    background-position: 0px 0px;
 }
 
 

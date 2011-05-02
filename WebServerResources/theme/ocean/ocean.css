@@ -3,9 +3,9 @@
 ====================================================================== */
 
 body {
-	background-color: #030d3e;
-	background-image: url(ocean.jpg);
-	background-position: top left;
+    background-color: #030d3e;
+    background-image: url(ocean.jpg);
+    background-position: top left;
 }
 
 
@@ -16,45 +16,45 @@ body {
 
 #header .title h1,
 #header .title h2 {
-	color: white;
+    color: white;
 }
 
 #roles, #utils {
-	color: white;
+    color: white;
 }
 
 #roles a, #utils a, #roles span {
-	color: white;
-	background-image: url(../base/images/white-15.png);
-	text-decoration: none;
-	padding: 0.1em 0.5em;
+    color: white;
+    background-image: url(../base/images/white-15.png);
+    text-decoration: none;
+    padding: 0.1em 0.5em;
 }
 
 #roles a:hover, #utils a:hover, #roles a.here {
-	background-image: url(../base/images/black-50.png);
-	text-decoration: underline;
+    background-image: url(../base/images/black-50.png);
+    text-decoration: underline;
 }
 
 #header a:hover,
 #footer a:hover {
-	border-bottom: none;
+    border-bottom: none;
 }
 
 #footer {
-	color: white;
+    color: white;
 }
 
 #footer a {
-	color: white;
-	background-image: url(../base/images/white-15.png);
-	text-decoration: none;
-	padding: 0.1em 0.5em;
+    color: white;
+    background-image: url(../base/images/white-15.png);
+    text-decoration: none;
+    padding: 0.1em 0.5em;
 }
 
 #footer a:hover {
-	color: white;
-	background-image: url(../base/images/black-50.png);
-	text-decoration: underline;
+    color: white;
+    background-image: url(../base/images/black-50.png);
+    text-decoration: underline;
 }
 
 
@@ -67,41 +67,41 @@ body {
 }
 
 #mainMenu a {
-	color: #fff;
-	background-image: url(../base/images/white-15.png);
+    color: #fff;
+    background-image: url(../base/images/white-15.png);
 }
 
 
 #mainMenu a:hover,
 #mainMenu .here a,
 #roles span.here {
-	background-image: url(../base/images/black-50.png);
+    background-image: url(../base/images/black-50.png);
 }
 
 #mainMenu li:hover a {
-	background-image: none;
+    background-image: none;
 }
 
 #mainMenu > li:hover > a {
-	background-image: url(../base/images/black-50.png);
+    background-image: url(../base/images/black-50.png);
 }
 
 #mainMenu :hover  ul {
-	background-image: url(../base/images/black-50.png);
+    background-image: url(../base/images/black-50.png);
 }
 
 #mainMenu li:hover li:hover > a,
 #mainMenu li.here:hover li.here:hover > a {
-	color: black;
-	background-image: url(../base/images/white-40.png);
+    color: black;
+    background-image: url(../base/images/white-40.png);
 }
 #mainMenu li.here:hover li.here > a {
-	color: black;
-	background-image: url(../base/images/white-25.png);
+    color: black;
+    background-image: url(../base/images/white-25.png);
 }
 
 #mainMenu li a:hover ul li a:hover {
-	background-image: url(../base/images/white-40.png);
+    background-image: url(../base/images/white-40.png);
 }
 
 
@@ -111,8 +111,8 @@ body {
 ====================================================================== */
 
 a, a:active, a:link {
-	text-decoration: none;
-	color: #58f;
+    text-decoration: none;
+    color: #58f;
 }
 a:visited { text-decoration: none; }
 a:hover { border-bottom: 1px dotted #58f; }
@@ -123,18 +123,18 @@ b, strong { color: #feb; }
 .check { color: #9f4; }.warn  { color: #e20; }
 .date { color: #555; }
 
-span.hl {	font-weight: bold;	/* color: #aad518;	   padding: 0 2px; */
-	/* background-image: url(../base/images/white-40.png);
-	color: black; */
-	color: #fe7;
-	background-color: black;
-	padding: 0.1em 0.3em;}
+span.hl {    font-weight: bold;    /* color: #aad518;       padding: 0 2px; */
+    /* background-image: url(../base/images/white-40.png);
+    color: black; */
+    color: #fe7;
+    background-color: black;
+    padding: 0.1em 0.3em;}
 
-.module {	background: transparent url(../base/images/black-40.png) repeat top left;	color:  #ccc;}
+.module {    background: transparent url(../base/images/black-40.png) repeat top left;    color:  #ccc;}
 
 pre, .code {
-	background-image: url(../base/images/white-15.png);
-	border-left: 4px solid #ccc;
+    background-image: url(../base/images/white-15.png);
+    border-left: 4px solid #ccc;
 }
 
 label em { color: #e20; }
@@ -144,7 +144,7 @@ label em { color: #e20; }
 /* @group =Tables
 ====================================================================== */
 
-table {	border: 1px solid #ccc;}table th {	background-image: url(../base/images/white-15.png);	color: #feb;}
+table {    border: 1px solid #ccc;}table th {    background-image: url(../base/images/white-15.png);    color: #feb;}
 
 table th a, table th a:active, table th a:link {
     color: #8cf;
@@ -156,7 +156,7 @@ table th a:hover {
 }
 
 table thead {
-	border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
 }
 
 .batchnav { background-image: url(../base/images/white-15.png); }
@@ -207,39 +207,39 @@ tr.e.caution.error.selected {
 }
 
 
-	/*
-	================================================================== */
-	/* @group Mini-Histogram
-	================================================================== */
+    /*
+    ================================================================== */
+    /* @group Mini-Histogram
+    ================================================================== */
 
-	table.distchart {		background-color: white;
-		border-bottom: 1px solid black;	}
-
-
-	/* @end
-	================================================================== */
+    table.distchart {        background-color: white;
+        border-bottom: 1px solid black;    }
 
 
-	/*
-	================================================================== */
-	/* @group Meter
-	================================================================== */
-
-	table.percentbar td.plus  { background-color: #00df00; }	table.percentbar td.minus { background-color: #df0000; }	table tr#divider td { border-top: 1px solid #ccc; }
+    /* @end
+    ================================================================== */
 
 
-	/* @end
-	================================================================== */
+    /*
+    ================================================================== */
+    /* @group Meter
+    ================================================================== */
+
+    table.percentbar td.plus  { background-color: #00df00; }    table.percentbar td.minus { background-color: #df0000; }    table tr#divider td { border-top: 1px solid #ccc; }
 
 
-	/*
-	================================================================== */
-	/* @group Printout
-	================================================================== */
+    /* @end
+    ================================================================== */
 
 
-	/* @end
-	================================================================== */
+    /*
+    ================================================================== */
+    /* @group Printout
+    ================================================================== */
+
+
+    /* @end
+    ================================================================== */
 
 
 /* @end
@@ -248,5 +248,49 @@ tr.e.caution.error.selected {
 ====================================================================== */
 
 
-/* @end
+
+/* @end
+====================================================================== */
+/* @group Primitive classes
+====================================================================== */
+
+.theme-text-color {
+    color: #ccc;
+}
+
+.theme-table-border {
+    border: 1px solid #ccc;
+}
+
+.theme-table-border-left {
+    border-left: 1px solid #ccc;
+}
+
+.theme-table-border-right {
+    border-right: 1px solid #ccc;
+}
+
+.theme-table-border-top {
+    border-top: 1px solid #ccc;
+}
+
+.theme-table-border-bottom {
+    border-bottom: 1px solid #ccc;
+}
+
+.theme-module-background {
+    background: transparent url(../base/images/black-40.png) repeat top left;
+}
+
+.theme-callout-background {
+    background: transparent url(../base/images/black-40.png) repeat top left;
+}
+
+.theme-code-background {
+    background-image: url(../base/images/white-15.png);
+}
+.theme-code-background2 {
+    background-image: url(../base/images/white-20.png);
+}
+/* @end
 ====================================================================== */

@@ -1,0 +1,5 @@
+<wo:if condition="$isRenderingTitleArea"><wo:content/></wo:if><wo:else>
+<wo:not condition="$isSelectable"><wo name="BasicElement"><wo:content/></wo></wo:not>
+<wo:else><wo:if condition="$hasAction"><wo name="ElementWithAction"><wo:content/></wo></wo:if>
+<wo:else><wo name="SelectableElement"><wo:content/></wo></wo:else>
+</wo:else></wo:else>

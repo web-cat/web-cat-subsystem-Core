@@ -3,8 +3,8 @@
 ====================================================================== */
 
 body {
-	background-color: #b3a483;
-	background-image: url(beach.jpg);
+    background-color: #b3a483;
+    background-image: url(beach.jpg);
     background-position: top left;
 }
 
@@ -110,6 +110,16 @@ body {
 
 /* @end
 ====================================================================== */
+/* @group WCDropDownList
+====================================================================== */
+
+.WCDropDownList {
+    border-color: #B5975A;
+}
+
+
+/* @end
+====================================================================== */
 /* @group Basic Look
 ====================================================================== */
 
@@ -166,6 +176,10 @@ label em { color: #e20; }
 ====================================================================== */
 
 table {
+    border: 1px solid #aaa;
+}
+
+.tableborder {
     border: 1px solid #aaa;
 }
 
@@ -299,6 +313,70 @@ form fieldset {
     border-color: #111;
 }
 
+
+/* @end
+====================================================================== */
+/* @group Primitive classes
+====================================================================== */
+
+.theme-text-color {
+    color: #444;
+}
+
+.theme-table-border {
+    border: 1px solid #aaa;
+}
+
+.theme-table-border-left {
+    border-left: 1px solid #aaa;
+}
+
+.theme-table-border-right {
+    border-right: 1px solid #aaa;
+}
+
+.theme-table-border-top {
+    border-top: 1px solid #aaa;
+}
+
+.theme-table-border-bottom {
+    border-bottom: 1px solid #aaa;
+}
+
+/* The background of a div.module */
+.theme-module-background {
+    background: transparent url(../base/images/white-70.png) repeat top left;
+}
+
+/* A background suitable for calling out something inside of a div.module */
+.theme-callout-background {
+    background: transparent url(../base/images/white-60.png) repeat top left;
+}
+
+.theme-code-color {
+    color: black;
+}
+
+.theme-code-background {
+    background-image: url(../base/images/black-10.png);
+}
+
+.theme-code-background2 {
+    background-image: url(../base/images/black-20.png);
+}
+
+.diff-added {
+    background-color: #dfd;
+}
+
+.diff-removed {
+    background-color: #fdd;
+}
+
+.diff-header {
+    background-color: #ddd;
+    color: #555;
+}
 
 /* @end
 ====================================================================== */

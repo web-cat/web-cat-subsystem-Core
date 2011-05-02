@@ -32,8 +32,8 @@ dojo.declare("webcat.Table", null,
 {
     //~ Properties ............................................................
 
-    // The content pane that wraps the table.
-    contentPane: "",
+    // The prefix used for all of the widget IDs in the table.
+    contentPane: null,
 
     // The prefix used for all of the widget IDs in the table.
     idPrefix: "",
@@ -45,13 +45,6 @@ dojo.declare("webcat.Table", null,
     constructor: function(/* Object */ args)
     {
         dojo.mixin(this, args);
-    },
-
-
-    // ----------------------------------------------------------
-    startup: function()
-    {
-        this.contentPane = dijit.byId(this.contentPane);
     },
 
 

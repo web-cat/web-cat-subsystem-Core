@@ -1,0 +1,19 @@
+BasicElement: WOGenericContainer {
+    elementName = "li";
+}
+
+ElementWithAction: WCActionElement {
+    elementName = "li";
+    class = "WCDropDownSelectable";
+    action = clickItem;
+    remote = remote;
+    onClick = hideMenuAndUpdateSelectionScript;
+}
+
+SelectableElement: WCActionElement {
+    elementName = "li";
+    class = "WCDropDownSelectable";
+    action = selectItem;
+    remote = true;
+    onClick = hideMenuAndUpdateSelectionScript;
+}

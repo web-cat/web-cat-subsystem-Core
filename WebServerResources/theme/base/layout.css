@@ -20,7 +20,15 @@ body.showprogress * {
     cursor: progress !important;
 }
 
-.RichTextEditable iframe body { padding: 5px; }
+.dijitEditor iframe body { padding: 5px; }
+
+a.bare, a:hover.bare, a:visited.bare {
+    border: 0;
+    background: none;
+    text-decoration: none;
+    margin: 0;
+    padding: 0;
+}
 
 #content {
     height: 100%;
@@ -210,7 +218,68 @@ way to fit your requirements.
 
 /* @end
 ====================================================================== */
-/* @group Side Menu
+/* @group Drop Down Menus
+====================================================================== */
+
+.WCDropDownList {
+    display: inline-block;
+    padding: 0.3em 0.5em;
+    cursor: default;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    border-width: 1px;
+    border-style: solid;
+}
+
+.WCDropDownListMenu {
+    position: fixed;
+    z-index: 9999;
+    display: none;
+}
+
+.WCDropDownListMenu ul {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    z-index: 0;
+    overflow: auto;
+    -webkit-box-shadow: 0px 3px 8px -2px black;
+    -moz-box-shadow: 0px 3px 8px -2px black;
+    box-shadow: 0px 3px 8px -2px black;
+}
+
+.WCDropDownListMenu ul li {
+    display: block;
+    cursor: default;
+    padding: 0.1em 0.75em;
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+    white-space: nowrap;
+}
+
+.WCDropDownListMenu ul li.WCDropDownSelectable {
+    cursor: pointer;
+}
+
+.WCDropDownListMenu ul li:last-child {
+    border-bottom: none;
+}
+
+.WCDropDownListArrow {
+    display: inline-block;
+    vertical-align: baseline;
+    margin-left: 0.4em;
+    width: 8px;
+    height: 8px;
+    background-image: url(images/dropdown-arrows.png);
+    background-repeat: no-repeat;
+}
+
+
+/* @end
+====================================================================== */
+/* @group Drop Down Menus
 ====================================================================== */
 
 
@@ -228,6 +297,8 @@ way to fit your requirements.
 
 .floatLeft  { float: left;  }
 .floatRight { float: right; }
+
+.inlined { display: inline-block; }
 
 
 /* @end
@@ -338,6 +409,11 @@ a img { border: 0; }
 
 li, dd { margin-left: 1em; }
 
+ul.nolayout {
+    list-style: none;
+    padding-left: 0;
+}
+
 a.permalink {
     font-size: x-small;
     padding: 0 0 0 20px;
@@ -387,11 +463,45 @@ pre, .code {
     line-height: 130%;
 }
 
+table.prettytext {
+    width: 100%;
+}
+
+table.prettytext td {
+    padding: 0;
+    vertical-align: top;
+}
+
+table.prettytext td pre {
+    border: none;
+    line-height: 130%;
+    padding-top: 0.5em;
+    padding-bottom: 0.5em;
+}
+
+table.prettytext td.linenumbers pre {
+    padding-left: 1em;
+    padding-right: 1em;
+    border: none;
+    line-height: 130%;
+    text-align: right;
+}
+
+table.prettytext td.content {
+    width: 100%;
+}
+
+table.prettytext td.content pre {
+    background: none;
+    padding-left: 1em;
+    overflow-x: auto;
+}
+
 .srcView pre {
-	padding: 0;
-	background-image: none;
+    padding: 0;
+    background-image: none;
     background-color: transparent;
-	border: none;
+    border: none;
 }
 
 pre, .code, code, var, samp, kbd {
@@ -514,7 +624,21 @@ table.layout.minimal td {
 }
 
 table.layout.nomargin {
-    margin: 0 -0.6em;
+    margin: 0;
+}
+
+table.actionlist {
+    margin: 0;
+    border: none;
+}
+
+table.actionlist td {
+    padding: 0 4px;
+}
+
+table.actionlist td:first-child {
+    padding-left: 0;
+    padding-right: 4px;
 }
 
 table th {
@@ -788,6 +912,19 @@ form fieldset.course fieldset table.layout label {
 
 form fieldset.reoffer label {
     width: 11em;
+}
+
+/* @end
+====================================================================== */
+/* @group Forms
+====================================================================== */
+
+div.WCTreeControl {
+    display: inline-block;
+    background-image: url(images/tree-controls.png);
+    background-repeat: no-repeat;
+    width: 16px;
+    height: 16px;
 }
 
 /* @end

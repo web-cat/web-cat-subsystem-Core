@@ -3,8 +3,8 @@
 ====================================================================== */
 
 body {
-	background-color: #92afeb;
-	background-image: url(dream-way.jpg);
+    background-color: #92afeb;
+    background-image: url(dream-way.jpg);
 }
 
 
@@ -29,7 +29,7 @@ body {
 }
 
 #roles a:hover, #utils a:hover, #roles a.here {
-	color: white;
+    color: white;
     background-image: url(../base/images/black-70.png);
     text-decoration: underline;
 }
@@ -75,7 +75,7 @@ body {
 #mainMenu a:hover,
 #mainMenu .here a,
 #roles span.here {
-	color: white;
+    color: white;
     background-image: url(../base/images/black-50.png);
 }
 
@@ -85,7 +85,7 @@ body {
 }
 
 #mainMenu > li:hover > a {
-	color: white;
+    color: white;
     background-image: url(../base/images/black-80.png);
 }
 
@@ -164,6 +164,16 @@ label em { color: #e20; }
 
 /* @end
 ====================================================================== */
+/* @group WCDropDownList
+====================================================================== */
+
+.WCDropDownList {
+    border-color: #8299D8;
+}
+
+
+/* @end
+====================================================================== */
 /* @group =Tables
 ====================================================================== */
 
@@ -212,11 +222,11 @@ tr.e.selected {
 tr.e span.selected { background-color: #a5bfe3; }
 
 .caution, tr.o.caution, tr.o.caution.selected, tr.o span.caution {
-	background-color: #ef4; }
+    background-color: #ef4; }
 tr.e.caution,
 tr.e.caution.selected {
-	background-image: none;
-	background-color: #de3;
+    background-image: none;
+    background-color: #de3;
 }
 tr.e span.caution { background-color: #de3; }
 
@@ -230,8 +240,8 @@ tr.e.error,
 tr.e.caution.error,
 tr.e.error.selected,
 tr.e.caution.error.selected {
-	background-image: none;
-	background-color: #f99;
+    background-image: none;
+    background-color: #f99;
 }
 tr.e span.error { background-color: #f99; }
 

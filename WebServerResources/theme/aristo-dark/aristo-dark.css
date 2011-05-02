@@ -5,7 +5,7 @@
 .dijitReset,
 .dijitTextArea { color: black; }
 
-.RichTextEditable html, .RichTextEditable iframe html { color: inherit; }
+.dijitEditor html, .RichTextEditable iframe html { color: inherit; }
 
 .aristo .dijitProgressBarEmpty { border-color: white; }
 

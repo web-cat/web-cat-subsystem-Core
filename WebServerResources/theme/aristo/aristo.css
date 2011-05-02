@@ -10,6 +10,13 @@
 
 .aristo ul.dijitMenu .dijitMenuItem { padding: 3px 5px; }
 
+.aristo .WCTreeControlCollapsed {
+    background-position: 0px 0px;
+}
+
+.aristo .WCTreeControlExpanded {
+    background-position: -16px 0px;
+}
 
 /* @end
 ====================================================================== */
@@ -140,8 +147,39 @@
 }
 
 .aristo .dijitTextBox.fakeControl:focus {
-	-webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+    -webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
     -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.949996185244526);
+}
+
+
+/* @end
+====================================================================== */
+/* @group WCDropDownList
+====================================================================== */
+
+.WCDropDownList {
+    background-image: url(../base/images/white-90.png);
+}
+
+.WCDropDownListMenu ul li {
+    border-bottom-color: #ddd;
+}
+
+.WCDropDownListMenu ul {
+    background-image: url(../base/images/white-90.png);
+}
+
+.WCDropDownListMenu li.WCDropDownSelectable a {
+    color: #333;
+    background-color: transparent;
+}
+
+.WCDropDownListMenu li.WCDropDownSelectable:hover {
+    background-image: url(../base/images/highlight-25.png);
+}
+
+.WCDropDownListArrow {
+    background-position: 0px 0px;
 }
 
 
