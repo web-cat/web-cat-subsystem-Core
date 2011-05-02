@@ -21,6 +21,9 @@
 
 package org.webcat.core;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import com.webobjects.appserver.*;
 
 //-------------------------------------------------------------------------
@@ -56,5 +59,20 @@ public class Footer
     public boolean isStateless()
     {
         return true;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the current year, for the final copyright date in the footer.
+     *
+     * @return the current year
+     */
+    public int currentYear()
+    {
+        Date date = new Date();
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setTime(date);
+        return calendar.get(Calendar.YEAR);
     }
 }
