@@ -22,20 +22,8 @@
 package org.webcat.core;
 
 import org.apache.log4j.Logger;
-import org.webcat.core.CoreNavigatorObjects;
-import org.webcat.core.Course;
-import org.webcat.core.CourseOffering;
-import org.webcat.core.EntityUtils;
-import org.webcat.core.INavigatorObject;
-import org.webcat.core.Semester;
-import org.webcat.core.WCComponent;
 import org.webcat.ui.generators.JavascriptGenerator;
 import org.webcat.ui.util.ComponentIDGenerator;
-import org.webcat.core.CoreNavigator;
-import org.webcat.core.Session;
-import org.webcat.core.TabDescriptor;
-import org.webcat.core.User;
-import org.webcat.core.WCCourseComponent;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
@@ -235,21 +223,29 @@ public class CoreNavigator
             log.debug("semesters = " + semesters);
             log.debug("selected semester = " + selectedSemester);
         }
+
         return updateCourseOfferings();
     }
 
 
     // ----------------------------------------------------------
-    /**
-     * Updates the list of course offerings, followed by assignments.
-     *
-     * @return the result is ignored
-     */
-    @SuppressWarnings("unchecked")
-    public JavascriptGenerator updateCourseOfferings()
+    public boolean isCourseOfferingFilterPlaceholder()
+    {
+        return courseOfferingInRepetition ==
+            CoreNavigatorObjects.FILTER_PLACEHOLDER;
+    }
+
+
+    // ----------------------------------------------------------
+    protected void gatherCourseOfferings()
     {
         log.debug("updateCourseOfferings()");
         courseOfferings = new NSMutableArray<INavigatorObject>();
+
+        if (user().hasAdminPrivileges())
+        {
+            courseOfferings.addObject(CoreNavigatorObjects.FILTER_PLACEHOLDER);
+        }
 
         NSArray<Semester> sems = (NSArray<Semester>)
             selectedSemester.representedObjects();
@@ -369,18 +365,47 @@ public class CoreNavigator
             }
         }
 
-        if (selectedCourseOffering == null && courseOfferings.count() > 0)
+        /*if (selectedCourseOffering == null && courseOfferings.count() > 0)
         {
             selectedCourseOffering = courseOfferings.objectAtIndex(0);
-        }
+        }*/
 
         if (log.isDebugEnabled())
         {
             log.debug("courseOfferings = " + courseOfferings);
             log.debug("selected course offering = " + selectedCourseOffering);
         }
+    }
 
+
+    // ----------------------------------------------------------
+    /**
+     * Updates the list of course offerings.
+     *
+     * @return the result is ignored
+     */
+    @SuppressWarnings("unchecked")
+    public JavascriptGenerator updateCourseOfferings()
+    {
+        gatherCourseOfferings();
         return new JavascriptGenerator().refresh(idFor.get("coursePane"));
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator updateCourseOfferingsAndClearSelection()
+    {
+        JavascriptGenerator result = updateCourseOfferings();
+        selectedCourseOffering = null;
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator updateCourseOfferingsMenu()
+    {
+        gatherCourseOfferings();
+        return new JavascriptGenerator().refresh(idFor.get("courseMenu"));
     }
 
 
@@ -460,6 +485,14 @@ public class CoreNavigator
 
 
     // ----------------------------------------------------------
+    public JavascriptGenerator toggleIncludeWhatImTeaching()
+    {
+        setIncludeWhatImTeaching(!includeWhatImTeaching());
+        return updateCourseOfferingsMenu();
+    }
+
+
+    // ----------------------------------------------------------
     public void setIncludeAdminAccess(boolean includeAdminAccess)
     {
         selectionsParent.coreSelections().setIncludeAdminAccess(
@@ -471,6 +504,14 @@ public class CoreNavigator
     public boolean includeAdminAccess()
     {
         return selectionsParent.coreSelections().includeAdminAccess();
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator toggleIncludeAdminAccess()
+    {
+        setIncludeAdminAccess(!includeAdminAccess());
+        return updateCourseOfferingsMenu();
     }
 
 

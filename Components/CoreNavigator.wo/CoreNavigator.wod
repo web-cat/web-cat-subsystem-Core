@@ -1,38 +1,38 @@
-CourseFilter: WCFilteringSelect {
+CourseMenu: WCDropDownList {
     list = courseOfferings;
     item = courseOfferingInRepetition;
     selection = selectedCourseOffering;
     id = idFor.courseSelector;
-    autoComplete = true;
-    invalidMessage = "Invalid course selection";
+    menuId = idFor.courseMenu;
+    noSelectionString = "Select a course...";
 }
 
-SemesterFilter: WCFilteringSelect {
+CourseMenuItem: WCDropDownItem {
+    action = okPressed;
+}
+
+CourseOfferingControls: WCDropDownItem {
+    isSelectable = false;
+}
+
+CoursePane: WCContentPane {
+    id = idFor.coursePane;
+    class = "inlined";
+}
+
+SemesterMenu: WCDropDownList {
     list = semesters;
     item = semesterInRepetition;
     selection = selectedSemester;
-    id = idFor.semesterSelector;
-    autoComplete = true;
-    invalidMessage = "Invalid semester selection";
+    id = idFor.semesterMenu;
 }
 
-IncludeWhatImTeaching: WCCheckBox {
-    id = idFor.includeWhatImTeachingCheckbox;
-    checked = includeWhatImTeaching;
+SemesterMenuItem: WCDropDownItem {
+    action = updateCourseOfferingsAndClearSelection;
+    remote = true;
 }
 
-IncludeAdminAccess: WCCheckBox {
-    id = idFor.includeAdminAccessCheckbox;
-    checked = includeAdminAccess;
-}
-
-OK: WCButton {
-    action = okPressed;
-    class = "pos";
-    label = "OK";
-}
-
-Cancel: WCButton {
-    class = "neg";
-    label = "Cancel";
+ToggleIncludeAdminAccess: WCLink {
+    action = toggleIncludeAdminAccess;
+    remote = true;
 }

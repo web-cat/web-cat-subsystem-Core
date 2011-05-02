@@ -206,4 +206,17 @@ public class CoreNavigatorObjects
 
         private CourseOffering offering;
     }
+
+
+    //~ Static/instance variables .............................................
+
+    public static final INavigatorObject FILTER_PLACEHOLDER =
+        new INavigatorObject()
+    {
+        // --------------------------------------------------
+        public NSArray<?> representedObjects()
+        {
+            return null;
+        }
+    };
 }
