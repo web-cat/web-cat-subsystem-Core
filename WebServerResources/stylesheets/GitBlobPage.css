@@ -1,0 +1,7 @@
+div.imageholder {
+    border-width: 1px;
+    border-style: solid;
+    width: 100%;
+    padding: 1em 0;
+    text-align: center;
+}

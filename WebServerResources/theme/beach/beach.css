@@ -365,18 +365,5 @@ form fieldset {
     background-image: url(../base/images/black-20.png);
 }
 
-.diff-added {
-    background-color: #dfd;
-}
-
-.diff-removed {
-    background-color: #fdd;
-}
-
-.diff-header {
-    background-color: #ddd;
-    color: #555;
-}
-
 /* @end
 ====================================================================== */
