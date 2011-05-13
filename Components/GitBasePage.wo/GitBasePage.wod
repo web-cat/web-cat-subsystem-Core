@@ -1,0 +1,65 @@
+BarePage: org.webcat.ui.WCBasePage {
+    title = gitContext.description;
+}
+
+BranchesMenuItem: WOGenericContainer {
+    elementName = "li";
+    class = "~shouldSelectBranchesMenuItem ? \"here\" : \"\"";
+}
+
+BranchesMenuLink: WOGenericContainer {
+    elementName = "a";
+    href = branchesMenuURL;
+}
+
+CommitsMenuItem: WOGenericContainer {
+    elementName = "li";
+    class = "~shouldSelectCommitsMenuItem ? \"here\" : \"\"";
+}
+
+CommitsMenuLink: WOGenericContainer {
+    elementName = "a";
+    href = commitsMenuURL;
+}
+
+BranchMenu: WCDropDownList {
+    list = allBranchesAndTags;
+    item = aBranchOrTag;
+    selection = gitContext.headRef;
+}
+
+BranchMenuItem: WCDropDownItem {
+    href = aBranchOrTagURL;
+}
+
+BranchOrTagImage: WCBooleanImage {
+    value = aBranchOrTag.isTag;
+    framework = "Core";
+    trueFilename = "icons/tag.png";
+    falseFilename = "icons/node.png";
+    class = "icon";
+}
+
+Errors: org.webcat.core.WCErrorDictionaryPanel {
+    errorMessages          = thisPage.messages;
+    extraErrorMessage      = application.deathMessage;
+    shouldShowNewlineBelow = true;
+}
+
+HomeMenuItem: WOGenericContainer {
+    elementName = "li";
+}
+
+HomeMenuLink: WOHyperlink {
+    action = goToHomePage;
+}
+
+SourceMenuItem: WOGenericContainer {
+    elementName = "li";
+    class = "~shouldSelectSourceMenuItem ? \"here\" : \"\"";
+}
+
+SourceMenuLink: WOGenericContainer {
+    elementName = "a";
+    href = sourceMenuURL;
+}

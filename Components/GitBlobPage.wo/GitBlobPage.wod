@@ -1,0 +1,32 @@
+BlobContentImage : WOImage {
+    data = blobContent;
+    mimeType = mimeType;
+}
+
+BlobContentText : PrettyTextComponent {
+    content = blobContentString;
+}
+
+Breadcrumbs : GitBreadcrumbsComponent {
+    gitContext = gitContext;
+}
+
+CommitList : GitCommitListComponent {
+    commits = commits;
+    showsOnlyLatestCommit = true;
+    gitContext = gitContext;
+}
+
+GitPage : GitBasePage {
+    gitContext = gitContext;
+}
+
+HistoryLink : WOGenericContainer {
+    elementName = "a";
+    href = historyURL;
+}
+
+RawLink : WOGenericContainer {
+    elementName = "a";
+    href = rawURL;
+}

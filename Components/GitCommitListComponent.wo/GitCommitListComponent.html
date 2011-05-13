@@ -1,0 +1,30 @@
+<wo name="CommitRepetition">
+<wo:if condition="$shouldDisplayDate">
+    <wo:if condition="$testAndSetIsInTable">
+        </tbody></table>
+    </wo:if>
+    <h2><wo:str value="$commit.commitTime" formatter="$commitHeaderFormat"/></h2>
+    <table style="width: 100%" class="theme-callout-background"><tbody>
+</wo:if><wo:if condition="$showsOnlyLatestCommit">
+    <table style="width: 100%" class="theme-callout-background"><tbody>
+</wo:if>
+<wo:tr index="$commitIndex">
+<td style="width: 100%">
+    <wo:str value="$commit.shortMessage"/>
+</td><td style="white-space: nowrap">
+    <b><wo:str value="$commit.author.name"/></b><br/>
+    <wo:str value="$commit.commitTime" formatter="$application.approximateRelativeTimestampFormatter"/>
+</td><td>
+    <table class="layout nomargin"><tbody>
+        <tr><td>commit</td><td><wo name="CommitLink"><code><wo:str value="$commitId"/></code></wo></td></tr>
+        <tr><td>tree  </td><td><wo name="CommitTreeLink"><code><wo:str value="$commitTreeId"/></code></wo></td></tr>
+        <wo name="ParentCommitRepetition">
+        <tr><td>parent</td><td><wo name="ParentCommitLink"><code><wo:str value="$parentCommitId"/></code></wo></td></tr>
+        </wo>
+    </tbody></table>
+</td>
+</wo:tr>
+</wo>
+<wo:if condition="~isInTable or showsOnlyLatestCommit">
+    </tbody></table>
+</wo:if>

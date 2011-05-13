@@ -21,8 +21,15 @@
 
 package org.webcat.core;
 
-import org.webcat.core.Department;
-import org.webcat.core._Course;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import com.webobjects.eoaccess.EOUtilities;
+import com.webobjects.eocontrol.EOEditingContext;
+import com.webobjects.eocontrol.EOQualifier;
+import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSMutableSet;
+import er.extensions.eof.ERXQ;
 
 // -------------------------------------------------------------------------
 /**
@@ -35,6 +42,7 @@ import org.webcat.core._Course;
  */
 public class Course
     extends _Course
+    implements RepositoryProvider
 {
     //~ Constructors ..........................................................
 
@@ -79,8 +87,9 @@ public class Course
     // ----------------------------------------------------------
     /**
      * Returns the course's department abbreviation combined with
-     * the course's number (e.g., "CS 1705").
-     * @return the department abbreviation and the course number
+     * the course's number, followed by its name (e.g., "CS 1705: Intro to
+     * Data Structures").
+     * @return the full course number and name
      */
     public String deptNumberAndName()
     {
@@ -138,4 +147,106 @@ public class Course
     }
 
 
+    // ----------------------------------------------------------
+    public static Course objectWithRepositoryIdentifier(
+            String repoId, EOEditingContext ec)
+        throws EOUtilities.MoreThanOneException
+    {
+        String[] parts = repoId.split("\\.");
+
+        EOQualifier qualifier;
+
+        if (parts.length == 3)
+        {
+            String institution = parts[0];
+            String deptAbbrev = parts[1];
+            int courseNumber;
+
+            try
+            {
+                courseNumber = Integer.parseInt(parts[2]);
+            }
+            catch (NumberFormatException e)
+            {
+                return null;
+            }
+
+            qualifier = department.dot(Department.institution).dot(
+                    AuthenticationDomain.propertyName).is(
+                            "authenticator." + institution).and(
+                department.dot(Department.abbreviation).is(
+                    deptAbbrev).and(number.is(courseNumber)));
+
+            return uniqueObjectMatchingQualifier(ec, qualifier);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public String repositoryIdentifier()
+    {
+        return department().institution().name() + "."
+            + department().abbreviation() + "." + number();
+    }
+
+
+    // ----------------------------------------------------------
+    public void initializeRepositoryContents(File location) throws IOException
+    {
+        File readme = new File(location, "README.txt");
+        PrintWriter writer = new PrintWriter(readme);
+
+        writer.print(
+          "This Git repository has been created to manage shared files\n"
+        + "for the course \"" + department().abbreviation() + " "
+        + number() + "\" (" + name() + ").\n\n");
+        writer.print(
+          "This repository can be used to store files that are relevant to a\n"
+        + "particular course, such as reference tests, assignment write-ups,\n"
+        + "and any other artifacts that should be shared among the staff of\n"
+        + "the course.\n\n"
+        + "You can delete this readme file if you like; it was provided merely\n"
+        + "for informational purposes.");
+
+        writer.close();
+    }
+
+
+    // ----------------------------------------------------------
+    public static NSArray<Course> repositoriesPresentedToUser(User user,
+            EOEditingContext ec)
+    {
+        NSMutableSet<Course> courses = new NSMutableSet<Course>();
+
+        for (CourseOffering co : user.teaching())
+        {
+            courses.addObject(co.course());
+        }
+
+        for (CourseOffering co : user.graderFor())
+        {
+            courses.addObject(co.course());
+        }
+
+        return courses.allObjects();
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean userCanAccessRepository(User user)
+    {
+        for (CourseOffering offering : offerings())
+        {
+            if (offering.isStaff(user))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

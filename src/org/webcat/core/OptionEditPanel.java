@@ -21,21 +21,24 @@
 
 package org.webcat.core;
 
-import com.webobjects.appserver.*;
-import com.webobjects.foundation.*;
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.util.Map;
-import java.util.zip.*;
-import er.extensions.eof.ERXConstant;
-import org.webcat.core.DeliverFile;
-import org.webcat.core.FileBrowser;
-import org.webcat.core.FileUtilities;
-import org.webcat.core.OptionEditPanel;
-import org.webcat.core.OptionSetEditor;
-import org.webcat.core.WCComponent;
-import org.apache.log4j.*;
+import java.util.zip.ZipOutputStream;
+import org.apache.log4j.Logger;
+import org.webcat.archives.ArchiveManager;
+import org.webcat.archives.IWritableContainer;
 import org.webcat.ui.generators.JavascriptGenerator;
 import org.webcat.ui.util.ComponentIDGenerator;
+import com.webobjects.appserver.WOComponent;
+import com.webobjects.appserver.WOContext;
+import com.webobjects.appserver.WOResponse;
+import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSData;
+import com.webobjects.foundation.NSDictionary;
+import com.webobjects.foundation.NSKeyValueCodingAdditions;
+import com.webobjects.foundation.NSMutableDictionary;
+import er.extensions.eof.ERXConstant;
 
 //-------------------------------------------------------------------------
 /**
@@ -48,7 +51,7 @@ import org.webcat.ui.util.ComponentIDGenerator;
  */
 public class OptionEditPanel
     extends WCComponent
-    implements FileBrowser.FileSelectionListener
+    implements FileBrowser.FileSelectionListener, FilePickerDelegate
 {
     //~ Constructors ..........................................................
 
@@ -74,17 +77,23 @@ public class OptionEditPanel
     public NSDictionary<?, ?>        choice;
     public String                    browsePageName;
     public java.io.File              base;
+    public RepositoryEntryRef            initialSelectionForFilePicker;
 
-    public ComponentIDGenerator      idFor;
+    public ComponentIDGenerator      idFor = new ComponentIDGenerator(this);
 
 
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
+    public OptionEditPanel self()
+    {
+        return this;
+    }
+
+
+    // ----------------------------------------------------------
     public void appendToResponse( WOResponse response, WOContext context )
     {
-        idFor = new ComponentIDGenerator(this);
-
         // if ( type == 0 )
         {
             String typeName = (String)option.objectForKey( "type" );
@@ -353,14 +362,6 @@ public class OptionEditPanel
 
 
     // ----------------------------------------------------------
-    public String fileValue()
-    {
-        Object value = value();
-        return ( value == null ) ? "<script default>" : value.toString();
-    }
-
-
-    // ----------------------------------------------------------
     public boolean canBrowse()
     {
         return browsePageName != null && base != null;
@@ -397,6 +398,76 @@ public class OptionEditPanel
 
 
     // ----------------------------------------------------------
+    private RepositoryEntryRef repositoryEntryRefValue()
+    {
+        RepositoryEntryRef entryRef;
+
+        if (value() instanceof String)
+        {
+            entryRef = RepositoryEntryRef.fromOldStylePath((String) value());
+        }
+        else if (value() instanceof NSDictionary<?, ?>)
+        {
+            entryRef = RepositoryEntryRef.fromDictionary(
+                    (NSDictionary<String, Object>) value());
+        }
+        else
+        {
+            entryRef = null;
+        }
+
+        return entryRef;
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator showFileDialog()
+    {
+        initialSelectionForFilePicker = repositoryEntryRefValue();
+
+        JavascriptGenerator js = new JavascriptGenerator();
+        js.dijit(idFor.get("filePickerDialog")).call("show");
+        return js;
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean fileCanBeSelected(RepositoryEntryRef file, boolean isDirectory)
+    {
+        if (isDirectory && type == FILE_TYPE)
+        {
+            return false;
+        }
+        else
+        {
+            NSArray<?> extensions =
+                (NSArray<?>) option.objectForKey("fileTypes");
+
+            if (extensions == null)
+            {
+                return true;
+            }
+            else
+            {
+                return extensions.contains(FileUtilities.extensionOf(
+                        file.name()).toLowerCase());
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator fileWasSelected(RepositoryEntryRef file)
+    {
+        setValue(file.dictionaryRepresentation());
+
+        JavascriptGenerator js = new JavascriptGenerator();
+        js.refresh(idFor.get("valueContainer"));
+        return js;
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * View or download the selected file.
      * @return a download page for the selected file
@@ -406,34 +477,45 @@ public class OptionEditPanel
         throws java.io.IOException
     {
         DeliverFile downloadPage = pageWithName(DeliverFile.class);
-        // Remember that the attribute value has "Institution/user/..."
-        // as a prefix, and base has the same thing as a suffix
-        File file = new File( base,  "../../" + value().toString() );
-        if ( log.isDebugEnabled() )
+
+        RepositoryEntryRef fileRef = repositoryEntryRefValue();
+        fileRef.resolve(localContext());
+
+        if (fileRef.isDirectory())
         {
-            log.debug( "downloadFile(): downloading " + file );
-        }
-        if ( file.isDirectory() )
-        {
-            File zipFile = new File( file.getName() + ".zip" );
-            downloadPage.setFileName( zipFile );
-            downloadPage.setContentType( FileUtilities.mimeType( zipFile ) );
+            File zipFile = new File(fileRef.name() + ".zip");
+            downloadPage.setFileName(zipFile);
+            downloadPage.setContentType(FileUtilities.mimeType(zipFile));
+
             ByteArrayOutputStream boas = new ByteArrayOutputStream();
-            ZipOutputStream       zos  = new ZipOutputStream( boas );
-            FileUtilities.appendToZip(
-                file,
-                zos,
-                file.getCanonicalPath().length() );
+            ZipOutputStream zos  = new ZipOutputStream(boas);
+            IWritableContainer container =
+                ArchiveManager.getInstance().writableContainerForZip(zos);
+
+            fileRef.repository().copyItemToContainer(
+                    fileRef.objectId(), fileRef.name(), container);
+
+            container.finish();
             zos.close();
-            downloadPage.setFileData( new NSData( boas.toByteArray() ) );
+            downloadPage.setFileData(new NSData(boas.toByteArray()));
             boas.close();
         }
         else
         {
-            downloadPage.setFileName( file );
-            downloadPage.setContentType( FileUtilities.mimeType( file ) );
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            File file = new File(fileRef.name());
+
+            downloadPage.setFileName(file);
+            downloadPage.setContentType(FileUtilities.mimeType(file));
+
+            fileRef.repository().writeBlobToStream(fileRef.objectId(), baos);
+
+            downloadPage.setFileData(new NSData(baos.toByteArray()));
+            baos.close();
         }
-        downloadPage.setStartDownload( true );
+
+        downloadPage.setStartDownload(true);
+
         return downloadPage;
     }
 

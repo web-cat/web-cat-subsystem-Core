@@ -1,0 +1,13 @@
+FileIcon: WOImage {
+    framework = "Core";
+    filename = iconPath;
+    class = "icon";
+}
+
+BranchIcon: WCBooleanImage {
+    framework = "Core";
+    value = isTag;
+    trueFilename = "icons/tag.png";
+    falseFilename = "icons/node.png";
+    class = "icon";
+}

@@ -21,14 +21,19 @@
 
 package org.webcat.core;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Properties;
 import org.apache.log4j.Logger;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOEditingContext;
+import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
+import com.webobjects.foundation.NSTimestampFormatter;
 import er.extensions.eof.ERXKey;
 import er.extensions.foundation.ERXArrayUtilities;
 
@@ -55,6 +60,7 @@ import er.extensions.foundation.ERXArrayUtilities;
  */
 public class User
     extends _User
+    implements RepositoryProvider
 {
     //~ Constructors ..........................................................
 
@@ -700,7 +706,7 @@ public class User
      * @deprecated Use the {@link #graderFor(Semester)} method instead.
      */
     @Deprecated
-    public NSArray<CourseOffering> TAFor( Semester semester )
+    public NSArray TAFor( Semester semester )
     {
         return graderFor(semester);
     }
@@ -773,12 +779,26 @@ public class User
 
     // ----------------------------------------------------------
     /**
-     * Returns true if the user has TA privileges for Web-CAT.
-     * @return true if user has at least TA access level
+     * Returns true if the user has grader privileges for Web-CAT.
+     * @return true if user has at least grader access level
      */
-    public boolean hasTAPrivileges()
+    public boolean hasGraderPrivileges()
     {
         return !studentView && accessLevel() >= GTA_PRIVILEGES;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns true if the user has grader privileges for Web-CAT.
+     * @return true if user has at least grader access level
+     *
+     * @deprecated use the {@link #hasGraderPrivileges()} method instead.
+     */
+    @Deprecated
+    public boolean hasTAPrivileges()
+    {
+        return hasGraderPrivileges();
     }
 
 
@@ -1361,6 +1381,138 @@ public class User
     }
 
 
+    // ----------------------------------------------------------
+    private static String scriptRoot()
+    {
+        // I don't like having this here, but it's necessary to get the same
+        // existing behavior in the function below, and it's only used for
+        // migrating data from the old location into the new Git repositories.
+
+        if (scriptRoot == null)
+        {
+            scriptRoot = org.webcat.core.Application
+                .configurationProperties().getProperty("grader.scriptsroot");
+
+            if (scriptRoot == null)
+            {
+                scriptRoot = org.webcat.core.Application
+                    .configurationProperties()
+                        .getProperty("grader.submissiondir") + "/UserScripts";
+            }
+        }
+
+        return scriptRoot;
+    }
+
+
+    // ----------------------------------------------------------
+    private static String userDataRoot()
+    {
+        if (userDataRoot == null)
+        {
+            userDataRoot = org.webcat.core.Application.configurationProperties()
+                .getProperty("grader.scriptsdataroot");
+
+            if (userDataRoot == null)
+            {
+                userDataRoot = scriptRoot() + "Data";
+            }
+        }
+
+        return userDataRoot;
+    }
+
+
+    // ----------------------------------------------------------
+    public static User objectWithRepositoryIdentifier(
+            String repoId, EOEditingContext ec)
+        throws EOUtilities.MoreThanOneException
+    {
+        int dotIndex = repoId.indexOf('.');
+        EOQualifier qualifier;
+
+        if (dotIndex != -1)
+        {
+            String authDomain = "authenticator." + repoId.substring(0, dotIndex);
+            String name = repoId.substring(dotIndex + 1);
+
+            qualifier = userName.is(name).and(
+                    authenticationDomain.dot(
+                            AuthenticationDomain.propertyName).is(authDomain));
+        }
+        else
+        {
+            qualifier = userName.is(repoId);
+        }
+
+        return uniqueObjectMatchingQualifier(ec, qualifier);
+    }
+
+
+    // ----------------------------------------------------------
+    public String repositoryIdentifier()
+    {
+        return authenticationDomain().name() + "." + userName();
+    }
+
+
+    // ----------------------------------------------------------
+    public void initializeRepositoryContents(File location) throws IOException
+    {
+        // Migrate the user's existing home directory from the deprecated
+        // grader location.
+
+        File oldLocation = new File(userDataRoot(),
+                authenticationDomain().name() + "/" + userName());
+        FileUtilities.copyDirectoryContents(oldLocation, location);
+
+        // Create a welcome file that describes the repository.
+
+        String welcomeFilename = "README.txt";
+
+        if (new File(location, welcomeFilename).exists())
+        {
+            welcomeFilename = "REPOSITORY-README.txt";
+        }
+
+        File readme = new File(location, welcomeFilename);
+        PrintWriter writer = new PrintWriter(readme);
+
+        writer.print(
+          "This Git repository has been created to manage the personal files\n"
+        + "for Web-CAT user \"" + userName() + "\" ("
+        + authenticationDomain().displayableName() + ").\n\n");
+        writer.print(
+          "You can store any files you wish here. You can also delete this\n"
+        + "readme file if you like; it was provided merely for informational\n"
+        + "purposes.");
+
+        writer.close();
+    }
+
+
+    // ----------------------------------------------------------
+    public static NSArray<User> repositoriesPresentedToUser(User user,
+            EOEditingContext ec)
+    {
+        if (user.hasTAPrivileges())
+        {
+            return new NSArray<User>(user.localInstance(ec));
+        }
+        else
+        {
+            return NSArray.<User>emptyArray();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean userCanAccessRepository(User user)
+    {
+        return user.equals(this);
+    }
+
+
     /*
      * The following two overrides cause changes to preferences to be
      * auto-saved when the modification is made by pushing a value into a KVC
@@ -1419,6 +1571,9 @@ public class User
     private NSArray<CourseOffering> adminForButNotStaff_cache;
     private NSArray<CourseOffering> adminForButNoOtherRelationships_cache;
     private String  name_LF_cache;
+
+    private static String scriptRoot;
+    private static String userDataRoot;
 
     private EOEditingContext ecForPrefs;
     private NSDictionary<String, User> userIsMe;

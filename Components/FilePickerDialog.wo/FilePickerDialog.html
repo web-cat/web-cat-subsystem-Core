@@ -1,0 +1,45 @@
+<wo name="Dialog"><wo:str value="$onLoad"/><wo name="Form">
+<div style="width: 50em">
+<div class="floatLeft">
+    <wo name="RepositoryTree">
+        <wo:WCTreeHeadings>
+            <wo:WCTreeHeading title="Repositories"/>
+        </wo:WCTreeHeadings>
+        <wo:WCTreeItems item="$repositoryItem">
+            <wo:WCTreeItem>
+                <wo:WCTreeCell><wo name="RepositoryItemImage"/>&nbsp;<wo:str value="$displayNameForRepositoryItem"/></wo:WCTreeCell>
+            </wo:WCTreeItem>
+        </wo:WCTreeItems>
+    </wo>
+</div>
+<div class="floatRight">
+    <wo name="EntryTree">
+        <wo:WCTreeHeadings>
+            <wo:WCTreeHeading title="Name"/>
+            <wo:WCTreeHeading title="Size"/>
+            <wo:WCTreeHeading title="Last Modified"/>
+        </wo:WCTreeHeadings>
+        <wo:WCTreeItems item="$entry">
+            <wo:WCTreeItem>
+                <wo:WCTreeCell><wo name="ItemSpan"><wo name="PickerItemImage"/>&nbsp;<wo:str value="$entry.name"/></wo></wo:WCTreeCell>
+                <td style="white-space: nowrap"><wo name="ItemSpan"><wo:str value="$entry.size" formatter="$application.fileSizeFormatter"/></wo></td>
+                <td style="white-space: nowrap"><wo name="ItemSpan"><wo:str value="$lastModifiedTimeForEntry" formatter="$session.timeFormatter"/></wo></td>
+            </wo:WCTreeItem>
+        </wo:WCTreeItems>
+    </wo>
+</div>
+<div style="clear: both"></div>
+</div>
+<div style="text-align: center">
+    <wo name="OK">
+        <script type="dojo/connect" event="onClick">
+        dijit.byId('<wo:str value="$id"/>').hide();
+        </script>
+    </wo>
+    <wo name="Cancel">
+        <script type="dojo/connect" event="onClick">
+        dijit.byId('<wo:str value="$id"/>').hide();
+        </script>
+    </wo>
+</div>
+</wo></wo>

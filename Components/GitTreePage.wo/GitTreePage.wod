@@ -1,0 +1,24 @@
+Breadcrumbs : GitBreadcrumbsComponent {
+    gitContext = gitContext;
+}
+
+DownloadIcon : WOImage {
+    framework = "Core";
+    filename = "icons/filetypes/box.png";
+    alt = "Download this folder";
+    title = "Download this folder";
+    class = "icon";
+}
+
+DownloadLink : WOHyperlink {
+    action = downloadTree;
+}
+
+GitPage : GitBasePage {
+    gitContext = gitContext;
+}
+
+Tree : GitTreeComponent {
+    gitContext = gitContext;
+    entries = entries;
+}

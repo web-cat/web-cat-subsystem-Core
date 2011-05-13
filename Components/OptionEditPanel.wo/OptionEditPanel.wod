@@ -1,7 +1,8 @@
 Browse: WCButton {
     label = "Browse...";
     id = idFor.optionWidget;
-    action = browse;
+    action = showFileDialog;
+    remote = true;
 }
 
 CheckBox: WCCheckBox {
@@ -44,8 +45,16 @@ DownloadIcon: WOImage {
     border   = "0";
 }
 
-File: WOString {
-    value = fileValue;
+File: RepositoryFileLabel {
+    value = value;
+    noFilePlaceholder = "<plug-in default>";
+}
+
+FilePickerDialog: FilePickerDialog {
+    id = idFor.filePickerDialog;
+    title = "Choose a File";
+    delegate = self;
+    initialSelection = initialSelectionForFilePicker;
 }
 
 IntegerBox: WCTextBox {

@@ -1,0 +1,13 @@
+CommitList: GitCommitListComponent {
+    commits = commits;
+    gitContext = gitContext;
+}
+
+CommitRepetition: WORepetition {
+    list = commits;
+    item = commit;
+}
+
+GitPage: GitBasePage {
+    gitContext = gitContext;
+}

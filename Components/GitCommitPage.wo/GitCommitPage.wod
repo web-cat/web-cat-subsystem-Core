@@ -1,0 +1,54 @@
+CommitList : GitCommitListComponent {
+    commits = commits;
+    showsOnlyLatestCommit = true;
+    gitContext = gitContext;
+}
+
+CreateTag: WCButton {
+    label = "OK";
+    class = "pos";
+    action = createNewTag;
+    remote = true;
+}
+
+CreateTagStatus: InlineStatusIndicator {
+    id = "createTagStatus";
+}
+
+DiffAnchor : WOGenericContainer {
+    elementName = "a";
+    name = "~'diff-' + index";
+}
+
+DiffAnchorIcon : WOImage {
+    framework = "Core";
+    filename = iconURLForPath;
+    class = "icon";
+}
+
+DiffAnchorLink : WOHyperlink {
+    href = "~'#diff-' + index";
+}
+
+EntriesRepetition : WORepetition {
+    list = modifiedPaths;
+    item = aPath;
+    index = index;
+}
+
+GitPage : GitBasePage {
+    gitContext = gitContext;
+}
+
+NewTagName: WCTextBox {
+    value = newTagName;
+    style = "width: 15em;";
+}
+
+PrettyDiff : PrettyDiffComponent {
+    diff = diffResults;
+}
+
+ViewFile: WOHyperlink {
+    href = viewFileURL;
+}

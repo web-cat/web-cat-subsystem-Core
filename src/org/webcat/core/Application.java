@@ -21,54 +21,67 @@
 
 package org.webcat.core;
 
-import com.webobjects.appserver.*;
-import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
-import com.webobjects.foundation.*;
-import com.webobjects.woextensions.*;
-import er.extensions.ERXExtensions;
-import er.extensions.appserver.*;
-import er.extensions.foundation.*;
 import java.io.File;
-import java.io.StringWriter;
 import java.io.PrintWriter;
-import java.util.*;
-import java.util.regex.*;
-import javax.activation.*;
-import javax.mail.internet.*;
-import org.webcat.core.AjaxUpdateContainerTagProcessor;
-import org.webcat.core.Application;
-import org.webcat.core.AuthenticationDomain;
-import org.webcat.core.CoreDatabaseUpdates;
-import org.webcat.core.DelegatingUrlClassLoader;
-import org.webcat.core.EntityResourceRequestHandler;
-import org.webcat.core.ErrorPage;
-import org.webcat.core.Language;
-import org.webcat.core.LoggedError;
-import org.webcat.core.LoginSession;
-import org.webcat.core.MigratingEditingContext;
-import org.webcat.core.ReadOnlyEditingContext;
-import org.webcat.core.Session;
-import org.webcat.core.SubsystemEOMRedirector;
-import org.webcat.core.SubsystemManager;
-import org.webcat.core.TabDescriptor;
-import org.webcat.core.Theme;
-import org.webcat.core.WCConfigurationFile;
-import org.webcat.core.WCContext;
-import org.webcat.core.WCPageRestorationErrorPage;
-import org.webcat.core.WCResourceManager;
-import org.webcat.core.WOEC;
-import org.webcat.core.WOGenericContainerTagProcessor;
-import org.webcat.dbupdate.*;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.Enumeration;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.activation.CommandMap;
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.activation.MailcapCommandMap;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMultipart;
 import ognl.helperfunction.WOHelperFunctionHTMLTemplateParser;
 import ognl.helperfunction.WOTagProcessor;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.webcat.archives.*;
+import org.webcat.archives.ArchiveManager;
+import org.webcat.archives.IArchiveHandler;
+import org.webcat.core.git.GitUtilities;
+import org.webcat.core.git.http.GitRequestHandler;
 import org.webcat.core.messaging.ApplicationStartupMessage;
 import org.webcat.core.messaging.FallbackMessageDispatcher;
 import org.webcat.core.messaging.IMessageDispatcher;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
+import org.webcat.core.webdav.WebDAVRequestHandler;
+import org.webcat.dbupdate.UpdateEngine;
+import com.webobjects.appserver.WOComponent;
+import com.webobjects.appserver.WOContext;
+import com.webobjects.appserver.WOMessage;
+import com.webobjects.appserver.WORedirect;
+import com.webobjects.appserver.WORequest;
+import com.webobjects.appserver.WOResourceManager;
+import com.webobjects.appserver.WOResponse;
+import com.webobjects.appserver.WOSession;
+import com.webobjects.appserver.WOSessionStore;
+import com.webobjects.eoaccess.EODatabaseChannel;
+import com.webobjects.eoaccess.EODatabaseContext;
+import com.webobjects.eoaccess.EOModelGroup;
+import com.webobjects.eoaccess.EOUtilities;
+import com.webobjects.eocontrol.EOEditingContext;
+import com.webobjects.eocontrol.EOEnterpriseObject;
+import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSBundle;
+import com.webobjects.foundation.NSDictionary;
+import com.webobjects.foundation.NSForwardException;
+import com.webobjects.foundation.NSLog;
+import com.webobjects.foundation.NSMutableDictionary;
+import com.webobjects.foundation.NSNotification;
+import com.webobjects.foundation.NSNotificationCenter;
+import com.webobjects.foundation.NSSelector;
+import com.webobjects.foundation.NSTimestamp;
+import com.webobjects.foundation.NSTimestampFormatter;
+import com.webobjects.woextensions.WOExceptionParser;
+import com.webobjects.woextensions.WOParsedErrorLine;
+import er.extensions.ERXExtensions;
+import er.extensions.appserver.ERXMessageEncoding;
+import er.extensions.foundation.ERXProperties;
+import er.extensions.foundation.ERXSystem;
+import er.extensions.foundation.ERXValueUtilities;
 
 // -------------------------------------------------------------------------
 /**
@@ -183,6 +196,14 @@ public class Application
         // Register the entity resource request handler.
         registerRequestHandler(new EntityResourceRequestHandler(),
             EntityResourceRequestHandler.REQUEST_HANDLER_KEY);
+
+        // Register the Git request handler.
+        registerRequestHandler(new GitRequestHandler(),
+                GitRequestHandler.REQUEST_HANDLER_KEY);
+
+        // Register the WebDAV request handler.
+        registerRequestHandler(new WebDAVRequestHandler(),
+                WebDAVRequestHandler.REQUEST_HANDLER_KEY);
 
         // Set page cache size from property
         setPageCacheSize(ERXValueUtilities.intValueWithDefault(
@@ -2577,6 +2598,189 @@ public class Application
 
 
     // ----------------------------------------------------------
+    /**
+     * Gets the path to the Web-CAT storage directory (where submissions and
+     * object file stores are located).
+     *
+     * @return the path to the Web-CAT storage directory
+     */
+    public static File storageDirectory()
+    {
+        // TODO can we rename this property easily? Find all references to it
+        // and pass it through this method instead.
+
+        String path = configurationProperties().getProperty(
+                "grader.submissiondir");
+        return new File(path);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the path to the repository root area inside the Web-CAT storage
+     * directory.
+     *
+     * @return the path to the repository root area
+     */
+    private static File repositoryRootDirectory()
+    {
+        return new File(storageDirectory(), "_Repositories");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets a value indicating whether a repository currently exists for the
+     * specified object.
+     *
+     * @param object the object
+     * @return true if the repository currently exists, false if it has not yet
+     *     been created
+     */
+    public boolean repositoryExistsForObject(EOEnterpriseObject object)
+    {
+        if (object instanceof RepositoryProvider)
+        {
+            RepositoryProvider provider = (RepositoryProvider) object;
+
+            File fsDir = new File(repositoryRootDirectory(),
+                    object.entityName() + "/"
+                    + provider.repositoryIdentifier());
+
+            return fsDir.exists();
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the path to the repository for the specified object. This path
+     * points to a bare Git repository; to access the repository directly, use
+     * the {@link GitUtilities#repositoryForObject(EOEnterpriseObject)} method
+     * instead of this one, which also creates the repository on demand if it
+     * does not yet exist.
+     *
+     * @param object the EO to get the repository location for
+     * @return the path to the repository for the EO, or null if the EO is not
+     *     a file store provider
+     */
+    public File repositoryPathForObject(EOEnterpriseObject object)
+    {
+        if (object instanceof RepositoryProvider)
+        {
+            RepositoryProvider provider = (RepositoryProvider) object;
+
+            File fsDir = new File(repositoryRootDirectory(),
+                    object.entityName() + "/"
+                    + provider.repositoryIdentifier());
+
+            if (!fsDir.exists())
+            {
+                fsDir.mkdirs();
+            }
+
+            return fsDir;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the path to the temporary working copy for the specified object.
+     * This path will be used to determine where to checkout files in an EO's
+     * file repository, so that they can be exposed for protocols such as
+     * Web-DAV.
+     *
+     * @param object the EO to get the working copy location for
+     * @return the path to the working copy for the EO, or null if the EO is
+     *     not a file store provider
+     */
+    public File workingCopyPathForObject(EOEnterpriseObject object)
+    {
+        if (object instanceof RepositoryProvider)
+        {
+            RepositoryProvider provider = (RepositoryProvider) object;
+
+            File fsDir = new File(repositoryRootDirectory(),
+                    "_WorkingCopies/" + object.entityName()
+                    + "/" + provider.repositoryIdentifier());
+
+            return fsDir;
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets an instance of {@link RelativeTimestampFormatter} that performs
+     * approximate date formatting relative to the current time.
+     *
+     * @return an instance of {@link RelativeTimestampFormatter} that performs
+     *     approximate date formatting relative to the current time
+     */
+    public RelativeTimestampFormatter approximateRelativeTimestampFormatter()
+    {
+        if (approximateRelativeTimestampFormatter == null)
+        {
+            approximateRelativeTimestampFormatter =
+                new RelativeTimestampFormatter(true);
+        }
+
+        return approximateRelativeTimestampFormatter;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets an instance of {@link RelativeTimestampFormatter} that performs
+     * exact date formatting relative to the current time.
+     *
+     * @return an instance of {@link RelativeTimestampFormatter} that performs
+     *     exact date formatting relative to the current time
+     */
+    public RelativeTimestampFormatter exactRelativeTimestampFormatter()
+    {
+        if (exactRelativeTimestampFormatter == null)
+        {
+            exactRelativeTimestampFormatter =
+                new RelativeTimestampFormatter(true);
+        }
+
+        return exactRelativeTimestampFormatter;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets an instance of {@link FileSizeFormatter} that can be used to format
+     * file sizes in components.
+     *
+     * @return an instance of {@link FileSizeFormatter}
+     */
+    public FileSizeFormatter fileSizeFormatter()
+    {
+        if (fileSizeFormatter == null)
+        {
+            fileSizeFormatter = new FileSizeFormatter();
+        }
+
+        return fileSizeFormatter;
+    }
+
+
+    // ----------------------------------------------------------
     private static void loadArchiveManagers()
     {
         @SuppressWarnings("unchecked")
@@ -2642,6 +2846,10 @@ public class Application
 
     private IMessageDispatcher messageDispatcher;
     private EOEditingContext errorLoggingContext;
+
+    private RelativeTimestampFormatter approximateRelativeTimestampFormatter;
+    private RelativeTimestampFormatter exactRelativeTimestampFormatter;
+    private FileSizeFormatter fileSizeFormatter;
 
     static Logger log = Logger.getLogger(Application.class);
     static Logger requestLog = Logger.getLogger(Application.class.getName()

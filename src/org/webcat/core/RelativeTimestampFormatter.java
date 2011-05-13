@@ -119,7 +119,8 @@ public class RelativeTimestampFormatter extends Format
     @Override
     public Object parseObject(String source, ParsePosition pos)
     {
-        return null;
+        throw new UnsupportedOperationException("RelativeTimestampFormatter "
+                + "does not support parsing.");
     }
 
 

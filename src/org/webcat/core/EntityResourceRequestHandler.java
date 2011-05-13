@@ -24,7 +24,6 @@ package org.webcat.core;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.Scanner;
 import org.webcat.core.Application;
 import org.webcat.core.EntityResourceRequestHandler;
 import org.webcat.core.EntityResourceHandler;
@@ -198,8 +197,8 @@ public class EntityResourceRequestHandler extends WORequestHandler
         // Parse the request path into its entity, object ID, and resource
         // path.
 
-        EntityRequest entityRequest = EntityRequest.fromRequestHandlerPath(
-                handlerPath);
+        EntityRequestInfo entityRequest =
+            EntityRequestInfo.fromRequestHandlerPath(handlerPath);
 
         if (entityRequest == null
                 || !validatePath(entityRequest.resourcePath()))
@@ -366,7 +365,7 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
 
     // ----------------------------------------------------------
-    private EOEnterpriseObject fetchObject(EntityRequest entityRequest,
+    private EOEnterpriseObject fetchObject(EntityRequestInfo entityRequest,
                                            EntityResourceHandler<?> handler,
                                            EOEditingContext ec)
     {
@@ -509,126 +508,6 @@ public class EntityResourceRequestHandler extends WORequestHandler
 
             response.setStatus(WOResponse.HTTP_STATUS_NOT_FOUND);
         }
-    }
-
-
-    //~ Inner classes .........................................................
-
-    // ----------------------------------------------------------
-    /**
-     * A small class that bundles up the information about an entity resource
-     * request (the entity name, the object ID, and the resource path).
-     */
-    private static class EntityRequest
-    {
-        //~ Constructors ......................................................
-
-        // ----------------------------------------------------------
-        private EntityRequest()
-        {
-            // Do nothing.
-        }
-
-
-        //~ Methods ...........................................................
-
-        // ----------------------------------------------------------
-        /**
-         * Parses the specified handler path and returns an
-         * {@code EntityRequest} containing the request information. This
-         * method returns null if the request path was malformed or invalid.
-         *
-         * @param handlerPath the full handler path
-         *
-         * @return an instance of {@code EntityRequest} with the desired
-         *     information, or null
-         */
-        public static EntityRequest fromRequestHandlerPath(String handlerPath)
-        {
-            EntityRequest request = new EntityRequest();
-
-            Scanner scanner = new Scanner(handlerPath);
-            scanner.useDelimiter("/");
-
-            if (scanner.hasNext())
-            {
-                request.entityName = scanner.next();
-            }
-
-            if (scanner.hasNext())
-            {
-                request.objectID = scanner.next();
-            }
-
-            if (scanner.hasNext())
-            {
-                scanner.skip("/");
-            }
-
-            scanner.useDelimiter("\0");
-
-            if (scanner.hasNext())
-            {
-                request.resourcePath = scanner.next();
-
-                if (request.resourcePath.startsWith("/"))
-                {
-                    request.resourcePath = request.resourcePath.substring(1);
-                }
-            }
-
-            if (request.entityName == null || request.objectID == null)
-            {
-                return null;
-            }
-            else
-            {
-                return request;
-            }
-        }
-
-
-        // ----------------------------------------------------------
-        /**
-         * Gets the entity name of the request.
-         *
-         * @return the entity name of the request
-         */
-        public String entityName()
-        {
-            return entityName;
-        }
-
-
-        // ----------------------------------------------------------
-        /**
-         * Gets the object ID of the request.
-         *
-         * @return the object ID of the request
-         */
-        public String objectID()
-        {
-            return objectID;
-        }
-
-
-        // ----------------------------------------------------------
-        /**
-         * Gets the path to the resource in the requested object.
-         *
-         * @return the path to the resource
-         */
-        public String resourcePath()
-        {
-            return resourcePath;
-        }
-
-
-        //~ Static/instance variables .........................................
-
-        private String entityName;
-        private String objectID;
-        private String resourcePath;
     }
 
 

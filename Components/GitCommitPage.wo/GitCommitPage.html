@@ -1,0 +1,47 @@
+<wo name="GitPage">
+<div class="module">
+    <wo name="CommitList"/>
+
+    <div class="floatRight">
+    <wo name="CreateTagStatus"/>
+    <wo:WCDiv id="createTagButton" dojoType="dijit.form.DropDownButton" label="Tag This Commit">
+        <wo:WCDiv id="createTagDialog" dojoType="dijit.TooltipDialog"><wo:WCForm id="createTagForm">
+            <div>Tag name: <wo name="NewTagName"/></div>
+            <div class="float: right"><wo name="CreateTag"/></div>
+        </wo:WCForm></wo:WCDiv>
+    </wo:WCDiv></div>
+    <div style="clear: both"></div>
+
+    <h2>
+    Showing <wo:PluralString value="$modifiedPaths.count" object="changed file"/> with
+    <wo:PluralString value="$totalAdditionCount" object="addition"/> and
+    <wo:PluralString value="$totalDeletionCount" object="deletion"/>.
+    </h2>
+
+    <table style="width: 100%"><tbody>
+    <wo name="EntriesRepetition">
+        <wo:tr index="$index">
+            <td style="width: 100%"><wo name="DiffAnchorLink"><wo name="DiffAnchorIcon"/> <wo:str value="$aPath"/></wo></td>
+            <td style="white-space: nowrap">
+                <wo:PluralString value="$diffResults.additionCount" object="addition"/>,
+                <wo:PluralString value="$diffResults.deletionCount" object="deletion"/>
+            </td>
+        </wo:tr>
+    </wo>
+    </tbody></table>
+
+    <wo name="EntriesRepetition">
+        <wo name="DiffAnchor"></wo>
+        <div>
+            <div class="floatLeft">
+                <h3><wo:str value="$aPath"/></h3>
+            </div>
+            <div class="floatRight">
+                <wo name="ViewFile">View file @ <wo:str value="$abbreviatedCommitId"/></wo>
+            </div>
+            <div style="clear: both"></div>
+        </div>
+        <wo name="PrettyDiff"/>
+    </wo>
+</div>
+</wo>

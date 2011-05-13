@@ -1,0 +1,25 @@
+ChildLink: WOGenericContainer {
+    elementName = "a";
+    href = anEntryURL;
+}
+
+CommitLink: WOGenericContainer {
+    elementName = "a";
+    href = anEntryCommitLink;
+}
+
+Icon: WOImage {
+    framework = "Core";
+    filename  = anEntryIconURL;
+    class     = "icon";
+}
+
+ListingRepetition: WORepetition {
+    list = entries;
+    item = anEntry;
+}
+
+ParentLink: WOGenericContainer {
+    elementName = "a";
+    href = parentURL;
+}

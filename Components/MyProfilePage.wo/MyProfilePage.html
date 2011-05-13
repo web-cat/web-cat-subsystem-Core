@@ -20,7 +20,28 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 </table></webobject>
 </wo:org.webcat.core.WCPageModule>
 
-<wo:org.webcat.core.WCPageModule title="Your Courses" open="false">
+<wo:org.webcat.core.WCPageModule title="My Repositories"
+    open="$user.generateKey.user.preferences.MyProfilePage_repositories_open">
+<p>The repositories listed below can be accessed using any <b>Git</b> client that
+supports the <b>smart HTTP protocol</b> by using the URLs below. You can also
+visit the URLs in your web browser to view the contents and commit history of
+the repositories through a web interface, and to make basic file changes. If you are asked to log in to access the repository, you should use the user
+name <span class="hl"><wo:str value="$session.user.authenticationDomain.name"/>.<wo:str value="$session.user.userName"/></span>
+and your normal Web-CAT password.</p>
+<table>
+<thead><tr>
+<th colspan="2">Repository</th><th>URL (click to browse, or copy and paste)</th>
+</tr></thead>
+<tbody>
+<wo name="RepositoryRepetition"><wo:tr index="$indexOfARepositoryProvider">
+    <td><wo:str value="$aRepositoryProvider.entityName"/>:</td>
+    <td><wo:str value="$aRepositoryProvider.repositoryIdentifier"/></td>
+    <td><wo name="RepositoryLink"/></td>
+</wo:tr></wo>
+</tbody></table>
+</wo>
+
+<wo:org.webcat.core.WCPageModule title="My Courses" open="false">
 <webobject name="EnrolledInCourses">
 <p>You are currently <b>enrolled in</b> these courses:</p>
 <table><thead><tr><th>Course</th><th>Name</th><th>Instructor</th></tr></thead><tbody>
@@ -78,7 +99,7 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
     </wo:else><wo:if condition="~(@org.webcat.core.Theme@defaultTheme().id() == aTheme.id)"> (default)</wo:if></td></tr>
   </wo>
 </wo:loop>
-<h2 style="clear:both">Customize Your Selected Theme</h2>
+<h2 style="clear:both">Customize My Selected Theme</h2>
 <wo:WCForm><table class="layout">
 <tr><td class="R">Use a custom background URL:</td>
     <td><wo:WOTextField value="$backgroundUrl" size="60"/> <wo name="CustomBackgroundInfo"/></td></tr>

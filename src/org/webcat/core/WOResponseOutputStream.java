@@ -55,6 +55,22 @@ public class WOResponseOutputStream extends OutputStream
 
     // ----------------------------------------------------------
     @Override
+    public void close()
+    {
+        // Do nothing; overridden to eliminate spurious checked exceptions.
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void flush()
+    {
+        // Do nothing; overridden to eliminate spurious checked exceptions.
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
     public void write(int b) throws IOException
     {
         response.appendContentData(new NSData(new byte[] { (byte) b }));

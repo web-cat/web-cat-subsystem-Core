@@ -1,0 +1,10 @@
+BreadcrumbLink: WOGenericContainer {
+    elementName = "a";
+    href = aBreadcrumbURL;
+}
+
+BreadcrumbRepetition: WORepetition {
+    list = breadcrumbs;
+    item = aBreadcrumb;
+    index = index;
+}

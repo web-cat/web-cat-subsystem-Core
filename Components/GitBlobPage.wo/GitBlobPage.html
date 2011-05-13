@@ -1,0 +1,22 @@
+<wo name="GitPage">
+<div class="module">
+    <wo name="CommitList"/>
+    <div class="floatLeft">
+        <wo name="Breadcrumbs"/>
+    </div>
+    <div class="floatRight">
+        <wo name="RawLink">Raw</wo> |
+        <wo name="HistoryLink">History</wo>
+    </div>
+    <div style="clear: both"></div>
+    <div>
+        <wo:if condition="$isImage">
+            <div class="theme-table-border-color imageholder">
+                <wo name="BlobContentImage"/>
+            </div>
+        </wo:if><wo:else>
+            <wo name="BlobContentText"/>
+        </wo:else>
+    </div>
+</div>
+</wo>

@@ -1,0 +1,25 @@
+CommitLink: WOGenericContainer {
+    elementName = "a";
+    href = commitURL;
+}
+
+CommitRepetition: WORepetition {
+    list = commits;
+    item = commit;
+    index = commitIndex;
+}
+
+CommitTreeLink: WOGenericContainer {
+    elementName = "a";
+    href = commitTreeURL;
+}
+
+ParentCommitLink: WOGenericContainer {
+    elementName = "a";
+    href = parentCommitURL;
+}
+
+ParentCommitRepetition: WORepetition {
+    list = commit.parents;
+    item = parentCommit;
+}

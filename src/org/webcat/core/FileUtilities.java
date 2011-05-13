@@ -701,41 +701,6 @@ public class FileUtilities
 
     // ----------------------------------------------------------
     /**
-     * Returns a string version of the given file size.
-     *
-     * @param  size the file size to convert
-     * @return the file size as a string
-     */
-    public static String fileSizeAsString( long size )
-    {
-        StringBuffer result = new StringBuffer( 10 );
-        if ( size < 1024L )
-        {
-            result.append( size );
-            result.append( " bytes" );
-        }
-        else if ( size < 1048576L )
-        {
-            double sz = size / 1024.0;
-            DecimalFormat fmt = new DecimalFormat( "0.0" );
-            fmt.format( sz, result,
-                        new FieldPosition( DecimalFormat.FRACTION_FIELD ) );
-            result.append( "kb" );
-        }
-        else
-        {
-            double sz = size / 1048576.0;
-            DecimalFormat fmt = new DecimalFormat( "0.0" );
-            fmt.format( sz, result,
-                        new FieldPosition( DecimalFormat.FRACTION_FIELD ) );
-            result.append( "mb" );
-        }
-        return result.toString();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
      * Reads the contents of the specified file into a string and returns it.
      * The file is assumed to be encoded in UTF-8.
      *

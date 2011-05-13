@@ -1,0 +1,39 @@
+<wo name="BarePage">
+<div id="content"><div id="header">
+    <div class="title width25 floatLeft">
+        <h1>Web-CAT</h1>
+        <h2>Automatic grading<br/>using student-written tests</h2>
+    </div>
+
+    <div id="utils">
+        <wo:link action="$goToProfile"><wo:str value="$session.user.name"/></wo:link> |
+        <wo:link action="$logout">logout</wo:link>
+    </div>
+
+    <div id="mainMenudiv">
+        <ul id="mainMenu" class="floatRight">
+            <wo name="HomeMenuItem"><wo name="HomeMenuLink">Home</wo></wo>
+            <wo name="SourceMenuItem"><wo name="SourceMenuLink">Source</wo></wo>
+            <wo name="CommitsMenuItem"><wo name="CommitsMenuLink">Commits</wo></wo>
+            <wo name="BranchesMenuItem"><wo name="BranchesMenuLink">Branches</wo></wo>
+        </ul>
+    </div>
+</div>
+<div id="page"><div class="width100 floatRight">
+<div class="module">
+    <div class="floatLeft">
+        <h1 style="margin-bottom: 0"><wo:str value="$gitContext.repositoryName"/></h1>
+    </div>
+    <div class="floatRight">
+        Viewing: <wo name="BranchMenu">
+            <wo name="BranchMenuItem">
+                <wo name="BranchOrTagImage"/> <wo:str value="$aBranchOrTag.shortName"/>
+            </wo>
+        </wo>
+    </div>
+    <div style="clear: both"></div>
+</div>
+<wo name="Errors"/><wo:content/>
+</div></div></div>
+<wo:org.webcat.core.Footer/>
+</wo>

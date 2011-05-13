@@ -1,0 +1,57 @@
+Cancel : WCButton {
+    label = "Cancel";
+    class = "neg";
+}
+
+Dialog : WCContentPane {
+    dojoType = "webcat.Dialog";
+    id = id;
+    title = title;
+    style = "display: none";
+    refreshOnShow = true;
+    alwaysDynamic = true;
+}
+
+EntryTree: WCTree {
+    id = idFor.entryTree;
+    treeModel = entryModel;
+    fixedSize = "34em,25em";
+    canSelectItems = true;
+    itemDoubleClickedAction = "entryWasDoubleClicked";
+    multipleSelection = false;
+}
+
+Form : WCForm {
+}
+
+ItemSpan: WOGenericContainer {
+    elementName = "span";
+    style = cssStyleForItem;
+}
+
+OK: WCButton {
+    action = okPressed;
+    remote = true;
+    label = "OK";
+    class = "pos";
+}
+
+PickerItemImage: WOImage {
+    framework = "Core";
+    filename = iconPathForEntry;
+    class = "icon";
+}
+
+RepositoryItemImage: WOImage {
+    framework = "Core";
+    filename = iconPathForRepositoryItem;
+    class = "icon";
+}
+
+RepositoryTree: WCTree {
+    treeModel = refModel;
+    fixedSize = "15em,25em";
+    canSelectItems = true;
+    selectionAction = "refWasSelected";
+    multipleSelection = false;
+}

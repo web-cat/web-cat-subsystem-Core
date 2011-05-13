@@ -1,0 +1,40 @@
+CreateTag: WCButton {
+    label = "Create Tag";
+    action = createTag;
+    remote = true;
+}
+
+CreateTagStatus: InlineStatusIndicator {
+    id = "createTagStatus";
+}
+
+GitPage: GitBasePage {
+    gitContext = gitContext;
+}
+
+HeadRefRepetition: WORepetition {
+    list = headRefs;
+    item = headRef;
+    index = headRefIndex;
+}
+
+HeadTreeLink: WOGenericContainer {
+    elementName = "a";
+    href = branchTreeURL;
+}
+
+NewTagName: WCTextBox {
+    value = newTagName;
+    style = "width: 10em";
+}
+
+TagRefRepetition: WORepetition {
+    list = tagRefs;
+    item = tagRef;
+    index = tagRefIndex;
+}
+
+TagTreeLink: WOGenericContainer {
+    elementName = "a";
+    href = tagTreeURL;
+}

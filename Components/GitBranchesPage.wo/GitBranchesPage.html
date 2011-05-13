@@ -1,0 +1,51 @@
+<wo name="GitPage">
+<wo:WCPageModule title="Branches">
+    <p>
+    Showing <b><wo:PluralString value="$headRefs.count" object="branch"/>.</b>
+    </p>
+    <table>
+        <thead><tr>
+            <th>Name</th>
+            <th>Last Updated</th>
+            <th>Latest Committer</th>
+        </tr></thead>
+        <tbody>
+            <wo name="HeadRefRepetition">
+                <wo:tr index="$headRefIndex">
+                    <td><wo name="HeadTreeLink"><wo:str value="$headRef.shortName"/></wo></td>
+                    <td><wo:str value="$latestCommitForHeadRef.commitTime" formatter="$application.approximateRelativeTimestampFormatter"/></td>
+                    <td><wo:str value="$latestCommitForHeadRef.committer.name"/></td>
+                </wo:tr>
+            </wo>
+        </tbody>
+    </table>
+</wo:WCPageModule>
+<wo:WCPageModule title="Tags" id="tagModule">
+    <p>
+    Showing <b><wo:PluralString value="$tagRefs.count" object="tag"/>.</b>
+    </p>
+    <table>
+        <thead><tr>
+            <th>Name</th>
+            <th>Last Updated</th>
+            <th>Latest Committer</th>
+        </tr></thead>
+        <tbody>
+            <wo name="TagRefRepetition">
+                <wo:tr index="$tagRefIndex">
+                    <td><wo name="TagTreeLink"><wo:str value="$tagRef.shortName"/></wo></td>
+                    <td><wo:str value="$latestCommitForTagRef.commitTime" formatter="$application.approximateRelativeTimestampFormatter"/></td>
+                    <td><wo:str value="$latestCommitForTagRef.committer.name"/></td>
+                </wo:tr>
+            </wo>
+        </tbody>
+    </table>
+    <wo:WCForm><h2>Create a new tag</h2>
+    <p>
+    You can create a new tag to refer to the current state of the repository.
+    </p><div>
+    Tag name: <wo name="NewTagName"/> <wo name="CreateTag"/> <wo name="CreateTagStatus"/>
+    </div>
+    </wo:WCForm>
+</wo:WCPageModule>
+</wo>

@@ -1,0 +1,11 @@
+<wo name="GitPage">
+<div class="module">
+    <div class="floatLeft"><wo name="Breadcrumbs"/></div>
+    <div class="floatLeft" style="margin-left: 1em"><wo name="DownloadLink"><wo name="DownloadIcon"/> Download this folder</wo></div>
+    <div style="clear: both"></div>
+    <wo name="Tree"/>
+</div>
+<wo:if condition="$readmeName"><wo:WCPageModule title="$readmeName">
+    <pre><wo:str value="$readmeContent" escapeHTML="true"/></pre>
+</wo:WCPageModule></wo:if>
+</wo>
