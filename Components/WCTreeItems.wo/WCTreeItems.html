@@ -1,0 +1,9 @@
+<wo name="TableBody">
+<wo:if condition="$hasItems">
+<wo name="RowRepetition"><wo:content/></wo>
+</wo:if><wo:else>
+<tr><wo name="EmptyPlaceholderCell">
+<wo:str value="$noItemsMessage"/>
+</wo></tr>
+</wo:else>
+</wo>

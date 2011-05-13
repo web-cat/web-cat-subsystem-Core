@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2009 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,158 +21,107 @@
 
 package org.webcat.ui;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import org.json.JSONArray;
-import org.json.JSONException;
-import com.webobjects.appserver.WOComponent;
+import java.util.HashMap;
+import java.util.Map;
+import org.webcat.core.WCComponent;
+import org.webcat.ui.generators.JavascriptFunction;
+import org.webcat.ui.generators.JavascriptGenerator;
+import org.webcat.ui.util.ComponentIDGenerator;
+import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
+import com.webobjects.appserver.WODisplayGroup;
+import com.webobjects.appserver.WOMessage;
+import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
+import com.webobjects.eocontrol.EOOrQualifier;
+import com.webobjects.eocontrol.EOQualifier;
+import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
-import er.extensions.foundation.ERXStringUtilities;
+import com.webobjects.foundation.NSMutableArray;
+import com.webobjects.foundation.NSMutableDictionary;
+import com.webobjects.foundation.NSMutableSet;
+import com.webobjects.foundation.NSSelector;
+import com.webobjects.foundation.NSSet;
+import er.extensions.appserver.ERXDisplayGroup;
+import er.extensions.appserver.ERXWOContext;
+import er.extensions.eof.ERXQ;
+import er.extensions.eof.ERXS;
+import er.extensions.eof.ERXSortOrdering.ERXSortOrderings;
 
-// ------------------------------------------------------------------------
+//-------------------------------------------------------------------------
 /**
- * A tree widget that gets its data from an instance of
- * {@link AbstractTreeModel}.
  * <p>
- * Component content inside the instance of the {@code Tree} component will be
- * passed along into the element content of the underlying Dojo {@code Tree}
- * element. This makes it possible to override {@code dijit.Tree} methods by
- * including {@code dojo/method} script blocks inside the component content.
- * <p>
- * {@code Tree} automatically overrides the Dojo tree widget's {@code onClick}
- * event in order to pass these events along to the parent component. Because of
- * this, the {@code Tree} component exposes two new JavaScript events of its
- * own: {@code onPreClick} and {@code onPostClick}. When an item in the tree is
- * clicked, the following actions occur:
- * <ol>
- * <li>The {@code onPreClick} method is called, if it exists. This event takes
- * the tree item as an argument and returns a boolean value indicating whether
- * processing should continue. If {@code false}, processing stops here. If
- * {@code true}:
- * <li>If the parent component (the one that contains the instance of
- * {@code Tree}) implements the method whose name is given in the
- * {@code onClickMethodName} binding (which defaults to "treeItemClicked"),
- * then it is called. It takes two arguments: the JavaScript id of the tree
- * component (a String), and the data model item that was clicked (an Object).
- * This method can also optionally return a value, which is used below.
- * <li>The {@code onPostClick} method is called, if it exists. This event takes
- * the tree item as its first argument and the value returned by the method
- * named in {@code onClickMethodName} in the previous step, if any, as the
- * second argument. (If this method was of type {@code void}, then this second
- * argument is null.)
- * </ol>
- * 
- * <h2>Bindings</h2>
- * <table>
- * <tr>
- * <td>{@code cookieName}</td>
- * <td>If {@code persist} is true, the name of the cookie to store the
- * expanded/collapsed state of the nodes in the tree.</td>
- * </tr>
- * <tr>
- * <td>{@code cssClass}</td>
- * <td>The CSS class to apply to the tree widget</td>
- * </tr>
- * <tr>
- * <td>{@code decorators}</td>
- * <td>An array of objects that implement {@link IItemDecorator}, which are used
- * to associate custom properties which the JavaScript representation of each
- * item in the tree.</td>
- * </tr>
- * <tr>
- * <td>{@code id}</td>
- * <td>The DOM id to assign to the tree widget</td>
- * </tr>
- * <td>{@code model}</td>
- * <td>An instance of {@code AbstractTreeModel} from which the tree will obtain
- * its contents.</td>
- * </tr>
- * <tr>
- * <td>{@code onClickMethodName}</td>
- * <td>The name of a method implemented by the parent component that will be
- * called when an item in the tree is clicked. If not provided, no method on
- * the server-side component will be called.</td>
- * </tr>
- * <tr>
- * <td>{@code openOnClick}</td>
- * <td>A boolean value indicating whether elements should expand or collapse
- * when their title is clicked, rather than just when the +/- button is clicked.
- * If true, {@code onClick} will not be called. The default value is false.</td>
- * </tr>
- * <tr>
- * <td>{@code persist}</td>
- * <td>A boolean value indicating whether a cookie should be used to keep track
- * of the expanded/collapsed state of the nodes in the tree. The default value
- * is true.</td>
- * </tr>
- * <tr>
- * <td>{@code rootLabel}</td>
- * <td>If {@code showRoot} is true, the label to be assigned to the top-level
- * root node.</td>
- * </tr>
- * <tr>
- * <td>{@code showRoot}</td>
- * <td>A boolean value indicating whether the root item in the tree is
- * displayed. The default value is true.</td>
- * </tr>
- * <tr>
- * <td>{@code style}</td>
- * <td>The CSS styles to apply to the tree widget</td>
- * </tr>
- * </table>
- * 
- * <h2>Events</h2>
- * <table>
- * <tr>
- * <td>{@code boolean preOnClick(item)}</td>
- * <td>Called when an item in the tree is clicked, but before the server is
- * notified. Returning {@code false} from this method will prevent the server
- * from being notified.</td>
- * </tr>
- * <tr>
- * <td>{@code void postOnClick(item, serverResult)}</td>
- * <td>Called when an item in the tree is clicked, after the server is
- * notified. The second argument to this method is the value that was returned
- * by the component on the server, if any.</td>
- * </tr>
- * </table>
- * 
- * @author Tony Allevato
- * @version $Id$
+ * A reusable table component that is bound to a display group, and provides
+ * options to select rows, sort on table headings, and paging.
+ * </p>
+ * <dl>
+ * <dt>id (<code>String</code>)</dt>
+ * <dd>The widget id for the content pane that will surround the table. This
+ * can be used to refresh the table contents in response to events that occur
+ * outside the table.</dd>
+ * <dt>treeModel (<code>WCTreeModel&lt;?&gt;</code>)</dt>
+ * <dd>The tree model that contains the objects that this tree will display.
+ * </dd>
+ * <dt>settingsKey (<code>String</code>)</dt>
+ * <dd>A key prefix that will be used to persist the table's settings in the
+ * current user's preferences.</dd>
+ * <dt>canSelectItems (<code>boolean</code>)</dt>
+ * <dd>Indicates whether checkbox or radio button controls will be inserted in
+ * front of each tree item's expansion controls to allow the user to select
+ * the item.</dd>
+ * <dt>multipleSelection (<code>boolean</code>)</dt>
+ * <dd>Indicates whether multiple items can be selected at once (using
+ * checkboxes) or if only one item can be selected at a time (using radio
+ * buttons).</dd>
+ * <dt>initialExpandDepth (<code>int</code>)</dt>
+ * <dd>Specifies the number of levels that should be initially expanded in the
+ * tree. 0 means expand nothing (just show the root nodes collapsed), 1 means
+ * show the root nodes expanded, and so forth. -1 means expand everything.
+ * </dd>
+ * <dt>onSelectionChanged (<code>String</code>)</dt>
+ * <dd>Javascript code that will be executed when the selection state in the
+ * tree changes.</dd>
+ * <dt>fixedSize ({@code String})</dt>
+ * <dd>If specified, the tree will be displayed with the specified size, and
+ * scrollbars will be added if the items require more space. This string should
+ * be in the format {@code "width,height"}, where the width and height are
+ * specified using CSS units. If this binding is omitted (or null), the tree
+ * will auto-size to fit its contents.</dd>
+ * </dl>
+ *
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
-public class WCTree extends WOComponent
+public class WCTree extends WCComponent
 {
-    //~ Constructor ...........................................................
+    //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    /**
-     * Creates a new TreeComponent.
-     * 
-     * @param context
-     *            the context
-     */
     public WCTree(WOContext context)
     {
         super(context);
+
+        idFor = new ComponentIDGenerator(this);
     }
 
 
     //~ KVC attributes (must be public) .......................................
 
     public String id;
-    public String cssClass;
-    public String style;
-    public String cookieName;
-    public AbstractTreeModel model;
-    public NSArray<IItemDecorator> decorators;
-    public String onClickMethodName;
-    public Boolean openOnClick;
-    public String otherTagString;
-    public Boolean persist;
-    public String rootLabel;
-    public Boolean showRoot;
+
+    public WCTreeModel treeModel;
+    public String settingsKey;
+    public boolean canSelectItems = false;
+    public boolean multipleSelection = false;
+    public int initialExpandDepth = 0;
+    public String onSelectionChanged;
+    public String selectionAction;
+    public String itemDoubleClickedAction;
+    public String fixedSize;
+    public String shadowSelection;
+
+    public ComponentIDGenerator idFor;
 
 
     //~ Methods ...............................................................
@@ -181,143 +130,446 @@ public class WCTree extends WOComponent
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
-        if (id == null)
-        {
-            id = ERXStringUtilities.safeIdentifierName(context.elementID());
-        }
+        WCTree oldTree = setCurrentTree(this);
 
         super.appendToResponse(response, context);
+
+        setCurrentTree(oldTree);
     }
 
 
     // ----------------------------------------------------------
-    /**
-     * The DOM identifier of the tree widget.
-     * 
-     * @return the DOM identifier of the tree widget
-     */
+    @Override
+    public void takeValuesFromRequest(WORequest request, WOContext context)
+    {
+        WCTree oldTree = setCurrentTree(this);
+
+        super.takeValuesFromRequest(request, context);
+
+        setCurrentTree(oldTree);
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public WOActionResults invokeAction(WORequest request, WOContext context)
+    {
+        WCTree oldTree = setCurrentTree(this);
+
+        WOActionResults result = super.invokeAction(request, context);
+
+        setCurrentTree(oldTree);
+
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
     public String id()
     {
+        if (id == null)
+        {
+            id = idFor.get();
+        }
+
         return id;
     }
 
 
     // ----------------------------------------------------------
-    /**
-     * The internal JavaScript identifier of the JSON bridge that will be used
-     * to communicate with the server to handle user interaction events and
-     * model data requests.
-     * 
-     * @return the internal JavaScript identifier of the JSON bridge
-     */
-    public String JSONBridgeName()
+    public String cssStyleForContentPane()
     {
-        return "__JSONBridge_" + id();
-    }
+        StringBuffer buffer = new StringBuffer();
 
+        if (fixedSize != null)
+        {
+            String[] parts = fixedSize.split(",");
 
-    // ----------------------------------------------------------
-    /**
-     * The internal JavaScript identifier that will refer to the actual
-     * component inside an AjaxProxy.
-     * 
-     * @return the internal JavaScript identifier of the component inside the
-     *     AjaxProxy
-     */
-    public String componentProxyName()
-    {
-        return "tree";
-    }
+            buffer.append("overflow: auto; ");
+            buffer.append("width: ");
+            buffer.append(parts[0]);
+            buffer.append("; height: ");
+            buffer.append(parts[1]);
+            buffer.append("; white-space: nowrap;");
+        }
 
-
-    // ----------------------------------------------------------
-    /**
-     * The full JavaScript reference to the proxy object.
-     * 
-     * @return the full JavaScript reference to the component proxy object
-     */
-    public String fullProxyReference()
-    {
-        return JSONBridgeName() + "." + componentProxyName();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * The JavaScript identifier of the tree model embedded inside this
-     * component.
-     * 
-     * @return the JavaScript identifier of the tree model
-     */
-    public String modelJSId()
-    {
-        return "__treeModel_" + id();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Shadow method for the method of the same name in
-     * {@link AbstractTreeModel}. Subclasses can override this to attach any
-     * decorators that they need to assign extra attributes to the item
-     * representations.
-     * 
-     * @param itemId
-     * @return a JSONArray containing the children of the item with the
-     *     specified identifier
-     * @throws JSONException
-     */
-    public JSONArray _childrenOfItemWithId(String itemId)
-    throws JSONException
-    {
-        return model._jsDataForChildrenOfItemWithId(
-                itemId, decorators);
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Called from the JavaScript side when the tree widget's {@code onClick}
-     * event fires. This method passes control along to the parent component if
-     * it implements the {@code treeComponentItemClicked(String, Object)}
-     * method.
-     * 
-     * @param itemId
-     *            the unique identifier of the item that was clicked
-     * @return an arbitrary value to pass back to JavaScript from the server
-     * 
-     * @throws IllegalArgumentException 
-     * @throws IllegalAccessException 
-     * @throws InvocationTargetException 
-     */
-    public Object handleOnClick(String itemId) throws IllegalArgumentException,
-            IllegalAccessException, InvocationTargetException
-    {
-        if (onClickMethodName == null)
+        if (buffer.length() > 0)
+        {
+            return buffer.toString();
+        }
+        else
         {
             return null;
         }
-        
-        Object item = model.itemForId(itemId);
+    }
 
-        try
+
+    // ----------------------------------------------------------
+    public String cssClassForContentPane()
+    {
+        if (fixedSize != null)
         {
-            Method method = parent().getClass().getMethod(
-                    onClickMethodName, String.class, Object.class);
-
-            return method.invoke(parent(), id(), item);
+            return "tableborder";
         }
-        catch (NoSuchMethodException e)
+        else
         {
-            // Parent component does not implement the delegate method;
-            // do nothing.
-
             return null;
         }
     }
 
-    
+
+    // ----------------------------------------------------------
+    public String cssStyleForTable()
+    {
+        StringBuffer buffer = new StringBuffer();
+
+        if (fixedSize != null)
+        {
+            buffer.append("width: 100%;");
+        }
+
+        if (buffer.length() > 0)
+        {
+            return buffer.toString();
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public String cssClassForTable()
+    {
+        if (fixedSize != null)
+        {
+            return "layout nomargin";
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public Map<Object, Boolean> expandedItems()
+    {
+        if (expandedItems == null)
+        {
+            retrieveExpansionState();
+        }
+
+        return expandedItems;
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean isItemExpanded(Object item)
+    {
+        if (!expandedItems().containsKey(item))
+        {
+            expandedItems().put(item, false);
+        }
+
+        return expandedItems().get(item);
+    }
+
+
+    // ----------------------------------------------------------
+    public void toggleItemExpanded(Object item)
+    {
+        if (expandedItems().containsKey(item))
+        {
+            expandedItems().put(item, !expandedItems().get(item));
+        }
+        else
+        {
+            expandedItems().put(item, true);
+        }
+
+        storeExpansionState();
+    }
+
+
+    // ----------------------------------------------------------
+    private void retrieveExpansionState()
+    {
+        expandedItems = new HashMap<Object, Boolean>();
+
+        if (settingsKey != null)
+        {
+            String ids = (String) user().preferences().valueForKey(
+                    settingsKey + "_expandedItemIds");
+
+            if (ids != null)
+            {
+                String[] splitIds = ids.split("\0");
+
+                Map<String, Boolean> expandedItemIds =
+                    new HashMap<String, Boolean>();
+
+                for (int i = 0; i < splitIds.length; i += 2)
+                {
+                    String id = splitIds[i];
+                    boolean expanded = Boolean.parseBoolean(splitIds[i + 1]);
+
+                    if (id.length() > 0)
+                    {
+                        expandedItemIds.put(id, expanded);
+                    }
+                }
+
+                recursivelyExpandChildren(null, 0, expandedItemIds);
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    private void recursivelyExpandChildren(Object item, int depth,
+                                           Map<String, Boolean> expandedItemIds)
+    {
+        NSArray<?> children = treeModel.arrangedChildrenOfObject(item);
+        if (children != null)
+        {
+            for (Object child : children)
+            {
+                String childId = treeModel.persistentIdOfObject(child);
+
+                if ((childId != null && expandedItemIds.containsKey(childId))
+                        || (!expandedItemIds.containsKey(childId)
+                                && (initialExpandDepth == -1
+                                        || depth < initialExpandDepth)))
+                {
+                    expandedItems.put(child,
+                            expandedItemIds.get(childId));
+                    recursivelyExpandChildren(child, depth + 1, expandedItemIds);
+                }
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    private void storeExpansionState()
+    {
+        if (settingsKey != null)
+        {
+            StringBuffer buffer = new StringBuffer();
+            for (Object item : expandedItems.keySet())
+            {
+                boolean expanded = expandedItems.get(item);
+                String id = treeModel.persistentIdOfObject(item);
+
+                if (id != null)
+                {
+                    buffer.append(id);
+                    buffer.append('\0');
+                    buffer.append(Boolean.toString(expanded));
+                    buffer.append('\0');
+                }
+            }
+            String expandedItemIdsString = buffer.toString();
+
+            user().preferences().takeValueForKey(
+                    expandedItemIdsString, settingsKey + "_expandedItemIds");
+            user().savePreferences();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public void updateSelectionFromShadowField()
+    {
+        String[] parts = shadowSelection.split(",");
+
+        treeModel.clearSelection();
+
+        for (String item : parts)
+        {
+            item = item.substring(
+                    idFor.get("path_").length()).replace('_', '.');
+            WCIndexPath path = new WCIndexPath(item);
+            treeModel.selectObject(treeModel.objectAtIndexPath(path));
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public WOActionResults singleSelectionChanged()
+    {
+        updateSelectionFromShadowField();
+
+        if (selectionAction != null)
+        {
+            return performParentAction(selectionAction);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public WOActionResults itemDoubleClicked()
+    {
+        updateSelectionFromShadowField();
+
+        if (itemDoubleClickedAction != null)
+        {
+            return performParentAction(itemDoubleClickedAction);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public static void refresh(JavascriptGenerator js, String id)
+    {
+        refresh(js, id, null);
+    }
+
+
+    // ----------------------------------------------------------
+    public static void refresh(JavascriptGenerator js, String id,
+            JavascriptFunction onAfterRefresh)
+    {
+        js.append(renderTableBusyScript(id));
+        js.refresh(onAfterRefresh, id);
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator refreshTable()
+    {
+        return refreshTable(null);
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator refreshTable(JavascriptFunction onAfterRefresh)
+    {
+        if (onAfterRefresh == null)
+        {
+            return new JavascriptGenerator().refresh(id());
+        }
+        else
+        {
+            return new JavascriptGenerator().refresh(onAfterRefresh, id());
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public String tableBodyId()
+    {
+        return id() + "__tbody";
+    }
+
+
+    // ----------------------------------------------------------
+    public static String renderTableBusyScript(String gridId)
+    {
+        NSMutableDictionary<String, Object> props =
+            new NSMutableDictionary<String, Object>();
+        props.setObjectForKey(0.25, "opacity");
+
+        JavascriptGenerator js = new JavascriptGenerator();
+        // TODO change this id to be more general
+        js.animateProperty(gridId + "__tbody", props, 250, null).play();
+        return js.toString(true);
+    }
+
+
+    // ----------------------------------------------------------
+    // TODO rewrite this function to use the one above
+    public String renderTableBusyScript()
+    {
+        NSMutableDictionary<String, Object> props =
+            new NSMutableDictionary<String, Object>();
+        props.setObjectForKey(0.25, "opacity");
+
+        JavascriptGenerator js = new JavascriptGenerator();
+        js.animateProperty(tableBodyId(), props, 250, null).play();
+        return js.toString(true);
+    }
+
+
+    // ----------------------------------------------------------
+    public static WCTree currentTree()
+    {
+        return (WCTree) ERXWOContext.contextDictionary().objectForKey(
+                CURRENT_TREE_KEY);
+    }
+
+
+    // ----------------------------------------------------------
+    public static WCTree setCurrentTree(WCTree tree)
+    {
+        WCTree oldTree =
+            (WCTree) ERXWOContext.contextDictionary().objectForKey(
+                CURRENT_TREE_KEY);
+
+        if (tree == null)
+        {
+            ERXWOContext.contextDictionary().removeObjectForKey(
+                    CURRENT_TREE_KEY);
+        }
+        else
+        {
+            ERXWOContext.contextDictionary().setObjectForKey(tree,
+                    CURRENT_TREE_KEY);
+        }
+
+        return oldTree;
+    }
+
+
+    // ----------------------------------------------------------
+    public int numberOfColumns()
+    {
+        return numberOfColumns;
+    }
+
+
+    // ----------------------------------------------------------
+    public String passthroughAttributes()
+    {
+        return passthroughAttributes;
+    }
+
+
+    // ----------------------------------------------------------
+    public void handleTakeValueForUnboundKey(Object value, String key)
+    {
+        if (passthroughAttributes == null)
+        {
+            passthroughAttributes = "";
+        }
+
+        if (value != null)
+        {
+            passthroughAttributes += " " + key + "=\""
+                + WOMessage.stringByEscapingHTMLAttributeValue(
+                        value.toString()) + "\"";
+        }
+    }
+
+
     //~ Static/instance variables .............................................
 
-    private static final long serialVersionUID = 1L;
+    private static final String CURRENT_TREE_KEY =
+        "org.webcat.ui.WCTree.currentTree";
+
+    private String passthroughAttributes;
+
+    private Map<Object, Boolean> expandedItems;
+
+    protected int numberOfColumns = 0;
 }

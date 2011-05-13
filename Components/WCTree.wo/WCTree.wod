@@ -1,29 +1,42 @@
-Proxy : WCJSONRPC {
-	name = JSONBridgeName;
-	proxyName = componentProxyName;
+ContentPane: WCContentPane {
+    id = id;
+    style = cssStyleForContentPane;
+    class = cssClassForContentPane;
 }
 
-TreeModel : org.webcat.ui.WCDiv {
-	dojoType = "webcat.JSONBridgeTreeModel";
-	jsId = modelJSId;
-	rootLabel = rootLabel;
-	proxy = fullProxyReference;
+ShadowSelection: WOHiddenField {
+    value = shadowSelection;
+    id = idFor.shadowSelection;
 }
 
-Tree : org.webcat.ui.WCDiv {
-	dojoType = "webcat.DecoratedTree";
-	id = id;
-	jsId = id;
-	class = cssClass;
-	style = style;
-	cookieName = cookieName;
-	model = modelJSId;
-	openOnClick = openOnClick;
-	persist = persist;
-	rootLabel = rootLabel;
-	showRoot = showRoot;
-	otherTagString = otherTagString;
+ShadowSelectionContainer: WOGenericContainer {
+    elementName = "div";
+    id = idFor.shadowSelectionContainer;
 }
 
-ComponentContent : WOComponentContent {
+SingleSelectionChangedAction: WCActionFunction {
+    jsId = idFor.singleSelectionChanged;
+    action = singleSelectionChanged;
+    remote = true;
+    remote.submit = idFor.shadowSelectionContainer;
+}
+
+ItemDoubleClickedAction: WCActionFunction {
+    jsId = idFor.itemDoubleClicked;
+    action = itemDoubleClicked;
+    remote = true;
+    remote.submit = idFor.shadowSelectionContainer;
+}
+
+TableElement: WOGenericContainer {
+    elementName = "table";
+    id = idFor.table;
+    onSelectionChanged = "~multipleSelection ? null : idFor.singleSelectionChanged + '();'";
+    onItemDoubleClicked = "~multipleSelection ? null : idFor.itemDoubleClicked + '();'";
+    dojoType = "~multipleSelection ? null : 'webcat.Selector'";
+    singular = "~!multipleSelection";
+    shadowSelectionField = "~multipleSelection ? null : idFor.shadowSelection";
+    style = cssStyleForTable;
+    class = cssClassForTable;
+    otherTagString = passthroughAttributes;
 }

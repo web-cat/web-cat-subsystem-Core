@@ -1,0 +1,13 @@
+<wo name="TableRow">
+<wo:if condition="~tree.canSelectItems and tree.multipleSelection"><td style="width: 1px">
+<wo:if condition="$canSelectItem"><wo name="SelectionControl">
+    <script type="dojo/connect" event="onChange" args="newValue">
+        // adjust parent/children selections
+        <wo:if condition="$tree.onSelectionChanged">
+        <wo:str value="$tree.onSelectionChanged"/>;
+        </wo:if>
+    </script>
+</wo></wo:if>
+</td></wo:if>
+<wo:content/>
+</wo>

@@ -10,6 +10,15 @@ ElementWithAction: WCActionElement {
     onClick = hideMenuAndUpdateSelectionScript;
 }
 
+Link: WOHyperlink {
+    href = href;
+}
+
+LinkContainer: WOGenericContainer {
+    elementName = "li";
+    class = "WCDropDownSelectable";
+}
+
 SelectableElement: WCActionElement {
     elementName = "li";
     class = "WCDropDownSelectable";

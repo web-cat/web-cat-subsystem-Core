@@ -1,0 +1,30 @@
+DoSomething: WCButton {
+    label = "Do Something with Selected Items";
+    action = doSomethingWithSelectedItems;
+    remote = true;
+    onClick = renderGridBusyScript;
+}
+
+Form: WCForm {
+}
+
+Page: SaveCancelPage {
+    title = "WCTree Test Page";
+}
+
+Tree: WCTree {
+    id = "testTree";
+    treeModel = testModel;
+    settingsKey = "WCTreeTestPage_testTree";
+    canSelectItems = true;
+    initialExpandDepth = 1;
+}
+
+TreeItemImage: WCBooleanImage {
+    framework = "Core";
+    value = isExpanded;
+    trueFilename = "icons/diropen.gif";
+    falseFilename = "icons/dir.gif";
+    width = 20;
+    height = 17;
+}

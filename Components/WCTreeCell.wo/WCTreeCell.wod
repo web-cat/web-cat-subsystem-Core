@@ -1,0 +1,36 @@
+NotExpandableImage: WOImage {
+    framework = "Core";
+    filename = "icons/blank.gif";
+    width = 16;
+    height = 16;
+    class = "icon";
+}
+
+TD: WOGenericContainer {
+    elementName = "td";
+    style = cellStyle;
+}
+
+Toggle: WCLink {
+    class = "bare";
+    style = "display: inline-block";
+    action = toggleExpanded;
+    remote = true;
+    title = toggleControlTitle;
+    onClick = startSpinnerScript;
+    onmousedown = "dojo.stopEvent(window.event);";
+}
+
+ToggleControl: WOGenericContainer {
+    elementName = "div";
+    id = idFor.toggleControl;
+    class = toggleControlClass;
+}
+
+ToggleSpinner: WOGenericContainer {
+    elementName = "div";
+    dojoType = "webcat.Spinner";
+    id = idFor.toggleSpinner;
+    size = "small";
+    style = "display: none; width: 16px; height: 15px; vertical-align: text-top";
+}

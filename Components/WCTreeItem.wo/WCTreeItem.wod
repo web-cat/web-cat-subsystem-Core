@@ -1,0 +1,14 @@
+TableRow: org.webcat.core.TableRow {
+    index = indexFromParent;
+    id = rowId;
+    isSelectable = canSelectItem;
+    isSelected = isItemSelected;
+    showCaution = showCaution;
+    showError = showError;
+}
+
+SelectionControl: WOSwitchComponent {
+    WOComponentName = componentNameForSelectionControl;
+    name = selectionControlGroupName;
+    checked = isItemSelected;
+}

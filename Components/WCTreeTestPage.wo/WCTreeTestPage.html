@@ -1,0 +1,29 @@
+<wo name="Page">
+
+<wo:WCPageModule title="Tree Test">
+
+<wo:WCContentPane id="notice">
+Last clicked object: <b><wo:str value="$lastClickedObject"/></b>
+</wo:WCContentPane>
+
+<wo name="Tree">
+    <wo:WCTreeHeadings>
+        <wo:WCTreeHeading title="!"/>
+        <wo:WCTreeHeading title="Value"/>
+        <wo:WCTreeHeading title="Another Header" class="sm"/>
+    </wo:WCTreeHeadings>
+    <wo:WCTreeItems item="$anObject" isExpanded="$isExpanded">
+        <wo:WCTreeItem>
+            <td><wo:img filename="icons/caution.png"/></td>
+            <wo:WCTreeCell><wo name="TreeItemImage"/><wo:str value="$anObject"/></wo:WCTreeCell>
+            <td><wo:WCLink remote="true" action="$doSomethingWithAnItem">Click me</wo:WCLink></td>
+        </wo:WCTreeItem>
+    </wo:WCTreeItem>
+</wo>
+
+<p>
+<wo name="DoSomething"/>
+</p>
+
+</wo:WCPageModule>
+</wo>

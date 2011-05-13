@@ -1,6 +1,11 @@
-<wo name="Proxy" />
-<wo name="TreeModel" />
-<wo name="Tree">
-    <script type="dojo/method" event="onClick" args="item,node">webcat.tree.onNodeClick(this, item, node, <wo:str value="$fullProxyReference" />);</script>
-    <wo name="ComponentContent" />
+<wo name="ContentPane"><wo name="TableElement">
+<wo:content/>
 </wo>
+<wo:if condition="~canSelectItems and !multipleSelection">
+    <wo name="ShadowSelectionContainer"><wo name="ShadowSelection"/></wo>
+</wo:if>
+</wo>
+<wo:if condition="~canSelectItems and !multipleSelection">
+    <wo name="SingleSelectionChangedAction"/>
+    <wo name="ItemDoubleClickedAction"/>
+</wo:if>

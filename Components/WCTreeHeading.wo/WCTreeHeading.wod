@@ -1,0 +1,4 @@
+TH: WOGenericContainer {
+    elementName = "th";
+    otherTagString = passthroughAttributes;
+}

@@ -1,0 +1,26 @@
+DropDownList1: WCDropDownList {
+    list = list1;
+    item = item1;
+    selection = selection1;
+    displayString = displayStringForItem1;
+}
+
+DropDownList2: WCDropDownList {
+    list = list1;
+    item = item1;
+    selection = selection1;
+    displayString = displayStringForItem1;
+    title = "Choose an item";
+}
+
+DropDownList3: WCDropDownList {
+    list = list1;
+    item = item1;
+    index = index1;
+    selection = selection1;
+    noSelectionString = "Make a selection...";
+}
+
+Page: WCPageWithNavigation {
+    title = "WCDropDownList Tests";
+}

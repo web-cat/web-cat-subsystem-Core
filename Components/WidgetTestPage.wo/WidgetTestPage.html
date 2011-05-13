@@ -444,24 +444,4 @@ We should make sure these controls line up vertically to the best of our ability
                 </p>
 </wo:WCPageModule>
 
-<wo:WCPageModule title="Tree">
-<div class="floatLeft width50">
-<wo name="Tree">
-    <script type="dojo/connect" event="onCheckChanged" args="item,checked,node">
-        webcat.refresh('treeInfoPane');
-    </script>
-</wo>
-</div>
-<div class="floatright width50">
-<wo:WCContentPane id="treeInfoPane">
-<p><b>According to the server, the following items in the tree are checked:</b></p>
-<p>
-<wo:str value="$checkedTreeItems"/>
-</p>
-</wo:WCContentPane>
-</div>
-<div class="clear">&nbsp;</div>
-
-</wo:WCPageModule>
-
 </wo>

@@ -1,0 +1,26 @@
+<wo name="Page">
+<wo:WCPageModule title="Drop Down List Tests">
+
+<h2>Simple drop-down using a basic list, title reflects selection</h2>
+<div>
+Lorem ipsum dolor sit amet, <wo name="DropDownList1"/> consectetur adipiscing elit. Vestibulum in molestie elit. Sed ac ante velit.
+</div>
+
+<h2>Simple drop-down using a basic list, fixed title</h2>
+<div>
+Sed volutpat convallis ipsum, et ultricies quam <wo name="DropDownList2"/> ultrices a. Maecenas nec risus orci. Proin eu sem turpis, id sagittis massa.
+</div>
+
+<h2>Drop-down with custom content; even numbers not selectable</h2>
+<div>
+Donec sagittis laoreet augue sit amet venenatis. Fusce
+<wo name="DropDownList3">
+<wo:WCDropDownItem isSelectable="~(index1 % 2) == 0">
+    <span style="color: red">* <wo:str value="$item1"/> *</span>
+</wo:WCDropDownItem>
+</wo>
+vulputate, sem eget vulputate vehicula, diam tellus tempor mauris, non consequat neque nisi in purus.
+</div>
+
+</wo:WCPageModule>
+</wo>

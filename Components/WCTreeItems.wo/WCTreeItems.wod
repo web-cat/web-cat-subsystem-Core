@@ -1,0 +1,17 @@
+EmptyPlaceholderCell: WOGenericContainer {
+    elementName = "td";
+    colspan = tree.numberOfColumns;
+    style = "padding: 1em;";
+}
+
+RowRepetition: WCTreeModelRepetition {
+    treeModel = wrappedTreeModel;
+    item = item;
+    index = rowIndex;
+    indexPath = indexPath;
+}
+
+TableBody: WOGenericContainer {
+    elementName = "tbody";
+    id = tree.tableBodyId;
+}
