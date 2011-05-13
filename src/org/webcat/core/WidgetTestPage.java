@@ -1,6 +1,26 @@
+/*==========================================================================*\
+ |  $Id$
+ |*-------------------------------------------------------------------------*|
+ |  Copyright (C) 2006-2008 Virginia Tech
+ |
+ |  This file is part of Web-CAT.
+ |
+ |  Web-CAT is free software; you can redistribute it and/or modify
+ |  it under the terms of the GNU Affero General Public License as published
+ |  by the Free Software Foundation; either version 3 of the License, or
+ |  (at your option) any later version.
+ |
+ |  Web-CAT is distributed in the hope that it will be useful,
+ |  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ |  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ |  GNU General Public License for more details.
+ |
+ |  You should have received a copy of the GNU Affero General Public License
+ |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
+\*==========================================================================*/
+
 package org.webcat.core;
 
-import org.webcat.ui.AbstractTreeModel;
 import org.webcat.ui.generators.JavascriptFunction;
 import org.webcat.ui.generators.JavascriptGenerator;
 import com.webobjects.appserver.WOActionResults;
@@ -10,6 +30,14 @@ import com.webobjects.foundation.NSKeyValueCoding;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
 
+//-------------------------------------------------------------------------
+/**
+ * TODO real description
+ *
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
+ */
 public class WidgetTestPage extends WCComponent
 {
     public WidgetTestPage(WOContext context)
@@ -25,67 +53,6 @@ public class WidgetTestPage extends WCComponent
 
     public NSMutableDictionary<String, Object> formValues =
         new NSMutableDictionary<String, Object>();
-
-    public TreeModel treeModel = new TreeModel();
-    public NSMutableArray<String> checkedTreeItems;
-
-
-    //~ Public Nested Classes .................................................
-
-    public class TreeModel extends AbstractTreeModel
-    {
-        //~ Public Methods ....................................................
-
-        // ----------------------------------------------------------
-        @Override
-        protected NSArray<?> childrenOfItem(Object parentItem)
-        {
-            if (parentItem == null)
-            {
-                NSMutableArray<String> items = new NSMutableArray<String>();
-                items.addObject("1");
-                items.addObject("2");
-                items.addObject("3");
-                return items;
-            }
-            else if (parentItem instanceof String)
-            {
-                String parent = (String) parentItem;
-                if (parent.split("\\.").length < 4)
-                {
-                    NSMutableArray<String> items = new NSMutableArray<String>();
-                    items.addObject(parent + ".1");
-                    items.addObject(parent + ".2");
-                    items.addObject(parent + ".3");
-                    return items;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-
-        // ----------------------------------------------------------
-        @Override
-        protected boolean itemHasChildren(Object parentItem)
-        {
-            if (parentItem instanceof String)
-            {
-                String parent = (String) parentItem;
-                return (parent.split("\\.").length < 4);
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
 
 
     public String validateTextBox()

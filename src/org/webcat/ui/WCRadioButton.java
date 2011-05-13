@@ -98,26 +98,29 @@ public class WCRadioButton extends DojoFormElement
                 NSArray<Object> formValues = request.formValuesForKey(
                         nameInContext(context));
 
-                Object value;
-                if (_value == null)
+                if (formValues != null)
                 {
-                    value = context.elementID();
-                }
-                else
-                {
-                    value = _value.valueInComponent(component);
-                }
+                    Object value;
+                    if (_value == null)
+                    {
+                        value = context.elementID();
+                    }
+                    else
+                    {
+                        value = _value.valueInComponent(component);
+                    }
 
-                boolean selected = isValueInInputValues(value, formValues);
+                    boolean selected = isValueInInputValues(value, formValues);
 
-                if (_value != null && _selection != null && selected)
-                {
-                    _selection.setValue(value, component);
-                }
+                    if (_value != null && _selection != null && selected)
+                    {
+                        _selection.setValue(value, component);
+                    }
 
-                if (_checked != null)
-                {
-                    _checked.setValue(selected, component);
+                    if (_checked != null)
+                    {
+                        _checked.setValue(selected, component);
+                    }
                 }
             }
         }

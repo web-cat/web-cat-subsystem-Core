@@ -149,7 +149,7 @@ public class InlineStatusIndicator extends WOComponent
         js.assign("dojo.byId('" + messageBoxId(id) + "').innerHTML", message);
         js.fadeOut(JavascriptGenerator.newHash(
                 "node", messageBoxId(id),
-                "delay", 5000
+                "delay", 10000
                 )).play();
     }
 

@@ -30,13 +30,47 @@ dojo.require("dojo.dnd.Selector");
  */
 dojo.declare("webcat.Selector", dojo.dnd.Selector,
 {
+    shadowSelectionField: null,
+    onSelectionChanged: '',
+
+    constructor: function(node, params)
+    {
+        this.onSelectionChanged = params.onSelectionChanged;
+        this.onItemDoubleClicked = params.onItemDoubleClicked;
+        this.shadowSelectionField = dojo.byId(params.shadowSelectionField);
+        this._firstTime = true;
+
+        this.events.push(
+            dojo.connect(this.node, "ondblclick",   this, "onDoubleClick"));
+    },
+
+    markupFactory: function(params, node)
+    {
+        params._skipStartup = true;
+        return new webcat.Selector(node, params);
+    },
+
     onMouseDown: function(/*Event*/ e)
     {
+        if (this._firstTime)
+        {
+            this.forInItems(function(data, id){
+                if (dojo.hasClass(id, 'dojoDndItemSelected'))
+                {
+                    this.selection[id] = 1;
+                }
+            }, this);
+
+            delete this._firstTime;
+        }
+
         var oldSelection = dojo.clone(this.selection);
         this.inherited(arguments);
 
         var changed = false;
         var empty = dojo.dnd._empty;
+        var shadowSelection = null;
+
         for (var i in this.selection)
         {
             if (i in empty)
@@ -44,20 +78,38 @@ dojo.declare("webcat.Selector", dojo.dnd.Selector,
                 continue;
             }
 
-            if (!this.selection[i] == oldSelection[i])
+            if (shadowSelection)
+            {
+                shadowSelection += ',' + i;
+            }
+            else
+            {
+                shadowSelection = i;
+            }
+
+            if (this.selection[i] != oldSelection[i])
             {
                 changed = true;
                 break;
             }
         }
 
+        if (this.shadowSelectionField)
+        {
+            this.shadowSelectionField.value = shadowSelection;
+        }
+
         if (changed)
         {
-            this.onSelectionChanged();
+            eval(this.onSelectionChanged);
         }
     },
 
-    onSelectionChanged: function()
+    onDoubleClick: function(/*Event*/ e)
     {
+        if (this.current && dojo.hasClass(this.current, "dojoDndItem"))
+        {
+            eval(this.onItemDoubleClicked);
+        }
     }
 });

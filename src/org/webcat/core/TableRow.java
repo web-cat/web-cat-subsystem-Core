@@ -162,7 +162,14 @@ public class TableRow
         }
         if (isSelected())
         {
-            cssClass += " selected";
+            if (isSelectable())
+            {
+                cssClass += " dojoDndItemSelected";
+            }
+            else
+            {
+                cssClass += " selected";
+            }
         }
         if (dragHandle() != null || isSelectable())
         {

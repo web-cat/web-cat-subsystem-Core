@@ -458,7 +458,11 @@ public class JavascriptGenerator implements WOActionResults
      */
     public JavascriptGenerator append(String javascript)
     {
-        lines.add(javascript);
+        if (javascript != null)
+        {
+            lines.add(javascript);
+        }
+
         return this;
     }
 
@@ -472,7 +476,11 @@ public class JavascriptGenerator implements WOActionResults
      */
     public JavascriptGenerator append(JavascriptGenerator otherJS)
     {
-        lines.addAll(otherJS.lines);
+        if (otherJS != null)
+        {
+            lines.addAll(otherJS.lines);
+        }
+
         return this;
     }
 
