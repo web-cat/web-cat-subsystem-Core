@@ -115,8 +115,14 @@ public class WCSearchField extends WOComponent
     // ----------------------------------------------------------
     public String onClearClickScript()
     {
-        return "dijit.byId('" + id() + "').attr('value', ''); "
-            + "webcat.searchField.forceChange(this, "
-            + idFor.get("searchAction") + ");";
+        String widget = "dijit.byId('" + id() + "')";
+        String spinner = "dijit.byId('" + idFor.get("spinner") + "')";
+
+        return widget + ".attr('value', ''); "
+            + "webcat.searchField.forceChange({ "
+            + "widget: " + widget
+            + ", spinner: " + spinner
+            + ", callback: " + idFor.get("searchAction")
+            + " }); return false;";
     }
 }

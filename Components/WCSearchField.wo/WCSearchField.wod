@@ -6,22 +6,22 @@ Container: WOGenericContainer {
 ClearField: WCLink {
     href = "javascript:void(0);";
     remote = true;
-    onClick = onClearClickScript;
 }
 
-ClearImage: WOImage {
+ClearImage: WCImageButton {
     framework = "Core";
     filename = "icons/cross-white.png";
     alt = "Clear search field";
-    width = 16;
-    height = 16;
-    valign = "middle";
+    title = "Clear search field";
+    class = "icon";
+    onClick = onClearClickScript;
 }
 
 Field: WCTextBox {
     id = id;
     value = searchText;
     style = style;
+    placeholder = "Search";
 }
 
 Label: WOGenericContainer {
