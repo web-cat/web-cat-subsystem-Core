@@ -4,7 +4,7 @@
 	padding: 6px 4px 6px 8px;
 	cursor: pointer;
 }
-.aristo .dijitTitlePaneTitle-hover  {
+.aristo .dijitTitlePaneTitleHover  {
 	background: #D0D0D0 url("images/accordionItemHover.png") top repeat-x;
 }
 .aristo .dijitTitlePaneTitle * {

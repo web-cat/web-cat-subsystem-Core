@@ -36,7 +36,7 @@
 .aristo .dijitTabCheckedHover {
 	background: #E6E6E6 url("../images/tabChecked.png") repeat-x top left;
 }
-.aristo .dijitTab .dijitClosable .closeImage {
+.aristo .dijitTabCloseButton {
 	background: url("../images/tabClose.png") no-repeat right top;
 	width: 12px;
 	height: 12px;
@@ -71,16 +71,16 @@
 .aristo .dijitTabContainer .dijitTabPaneWrapperNested {
 	border: none;	
 }
-.aristo .dijitTab .closeImage {
+.aristo .dijitTabCloseButton {
 	background-image : url("../images/tabClose.png");
 }
-.dj_ie6 .aristo .dijitTab .closeImage {
+.dj_ie6 .aristo .dijitTabCloseButton {
 	background-image : url("../images/tabClose.gif");
 }
-.aristo .dijitTab .closeButton-hover .closeImage {
+.aristo .dijitTabCloseButtonHover {
 	background-image : url("../images/tabCloseHover.png");
 }
-.dj_ie6 .aristo .dijitTab .closeButton-hover .closeImage {
+.dj_ie6 .aristo .dijitTabCloseButtonHover {
 	background-image : url("../images/tabCloseHover.gif");
 }
 .aristo .dijitTabContainerTop-tabs {
@@ -224,19 +224,19 @@
 .aristo .dijitTabContainer .tabStripButton {
 	width: 21px;
 }
-.aristo .dijitTabContainer .tabStripButton img {
+.aristo .dijitTabContainer .dijitTabStripIcon {
 	height: 14px;
 	background: url("../images/spriteRoundedIconsSmall.png") no-repeat;
 }
-.dj_ie6 .aristo .dijitTabContainer .tabStripButton img {
+.dj_ie6 .aristo .dijitTabContainer .dijitTabStripIcon {
 	background-image: url("../images/spriteRoundedIconsSmall.gif");
 }
-.aristo .dijitTabContainer .tabStripMenuButton img {
+.aristo .dijitTabContainer .dijitTabStripMenuIcon {
 	background-position: -15px top;
 }
-.aristo .dijitTabContainer .tabStripSlideButtonLeft img {
+.aristo .dijitTabContainer .dijitTabStripSlideLeftIcon {
 	background-position: 0px top;
 }
-.aristo .dijitTabContainer .tabStripSlideButtonRight img {
+.aristo .dijitTabContainer .dijitTabStripSlideRightIcon {
 	background-position: -30px top;
 }

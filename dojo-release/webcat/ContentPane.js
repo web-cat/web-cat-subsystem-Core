@@ -200,7 +200,9 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
         var setterParams = dojo.mixin({
             cleanContent: this.cleanContent,
             extractContent: this.extractContent,
-            parseContent: this.parseOnLoad
+            parseContent: this.parseOnLoad,
+            dir: this.dir,
+            lang: this.lang
         }, this._contentSetterParams || {});
 
         dojo.mixin(setter, setterParams);
@@ -228,6 +230,104 @@ dojo.declare("webcat.ContentPane", dijit.layout.ContentPane,
             this._onLoadHandler(cont);
         }
     }
+
+    /*_setContent: function(cont, isFakeContent){
+        // summary:
+        //		Insert the content into the container node
+
+// BEGIN WEBCAT CHANGES
+        if (isFakeContent && !this.showsLoadingMessageOnRefresh)
+            return;
+// END WEBCAT CHANGES
+
+        // first get rid of child widgets
+        this.destroyDescendants();
+
+        // dojo.html.set will take care of the rest of the details
+        // we provide an override for the error handling to ensure the widget gets the errors
+        // configure the setter instance with only the relevant widget instance properties
+        // NOTE: unless we hook into attr, or provide property setters for each property,
+        // we need to re-configure the ContentSetter with each use
+        var setter = this._contentSetter;
+        if(! (setter && setter instanceof dojo.html._ContentSetter)){
+            setter = this._contentSetter = new dojo.html._ContentSetter({
+                node: this.containerNode,
+                _onError: dojo.hitch(this, this._onError),
+// BEGIN WEBCAT CHANGES
+                onEnd: function() {
+                    // Run scripts that aren't of type "dojo/..." before the
+                    // widgets are parsed. Also, use a synchronous xhrGet
+                    // request to pull in any script tags that have src
+                    // attributes and execute those scripts.
+
+                    dojo.query("script", this.node).forEach(function(n) {
+                        if (n.src)
+                        {
+                            dojo.xhrGet({
+                                url: n.src,
+                                sync: true,
+                                handleAs: 'javascript'
+                            });
+                        }
+                        else if (!/dojo\//.test(n.type))
+                        {
+                            dojo.eval(dojox.data.dom.textContent(n));
+                        }
+                    });
+
+                    if(this.parseContent){
+                        // populates this.parseResults if you need those..
+                        this._parse();
+                    }
+
+                    return this.node; /* DomNode */
+                /*},
+// END WEBCAT CHANGES
+                onContentError: dojo.hitch(this, function(e){
+                    // fires if a domfault occurs when we are appending this.errorMessage
+                    // like for instance if domNode is a UL and we try append a DIV
+                    var errMess = this.onContentError(e);
+                    try{
+                        this.containerNode.innerHTML = errMess;
+                    }catch(e){
+                        console.error('Fatal '+this.id+' could not change content due to '+e.message, e);
+                    }
+                })/*,
+                _onError */
+            /*});
+        };
+
+        var setterParams = dojo.mixin({
+            cleanContent: this.cleanContent,
+            extractContent: this.extractContent,
+            parseContent: this.parseOnLoad
+        }, this._contentSetterParams || {});
+
+        dojo.mixin(setter, setterParams);
+
+        setter.set( (dojo.isObject(cont) && cont.domNode) ? cont.domNode : cont );
+
+        // setter params must be pulled afresh from the ContentPane each time
+        delete this._contentSetterParams;
+
+        if(!isFakeContent){
+            // Startup each top level child widget (and they will start their children, recursively)
+            dojo.forEach(this.getChildren(), function(child){
+                // The parser has already called startup on all widgets *without* a getParent() method
+                if(!this.parseOnLoad || child.getParent){
+                    child.startup();
+                }
+            }, this);
+
+            // Call resize() on each of my child layout widgets,
+            // or resize() on my single child layout widget...
+            // either now (if I'm currently visible)
+            // or when I become visible
+            this._scheduleLayout();
+
+            this._onLoadHandler(cont);
+        }
+    }*/
 });
 
 

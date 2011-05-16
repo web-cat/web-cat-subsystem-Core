@@ -235,12 +235,12 @@
 }
 .aristo .dijitFileInputText:active,
 .aristo .dijitFileInputButton:active,
-.aristo .dijitSpinnerUpArrowActive .dijitSpinnerButtonContainer,
-.aristo .dijitSpinnerDownArrowActive .dijitSpinnerButtonContainer,
+.aristo .dijitSpinner .dijitButtonNode .dijitUpArrowButtonActive,
+.aristo .dijitSpinner .dijitButtonNode .dijitDownArrowButtonActive,
 .aristo .dijitButtonActive .dijitButtonNode,
 .aristo .dijitToggleButtonActive .dijitButtonNode,
 .aristo .dijitDropDownButtonActive .dijitButtonNode,
-.aristo .dijitComboButtonActive .dijitButtonNode,
+.aristo .dijitComboBox .dijitDownArrowButtonActive,
 .aristo .dijitStackController .dijitToggleButtonChecked .dijitButtonNode {
     background-color: #C0A369;
     background-image: url("images/button-active.png");
@@ -855,18 +855,6 @@
     border-bottom-color: #D9C395;
     text-shadow: 0 1px 0 #EBEBEB;
 }
-/*.aristo .dijitTreeExpandoLoading {
-    background-image: url("images/treeExpand_loading.gif");
-}
-.aristo .dijitFolderOpened {
-    background-image: url("images/folderOpened.gif");
-}
-.aristo .dijitFolderClosed {
-    background-image: url("images/folderClosed.gif");
-}
-.aristo .dijitLeaf {
-    background-image: url("images/leaf.gif");
-}*/
 .aristo .dijitTreeNode .dojoDndItemBefore .dijitTreeContent {
     border-top-color: #333333;
 }
@@ -879,7 +867,7 @@
  * Other overrides
  */
 
-.aristo tr.dojoDndItemAnchor, .aristo tr.dojoDndItemSelected {
-    background-color: #4A9CDB;
+.aristo tr.dojoDndItemAnchor {
+    background-color: #1A6CAB;
     color: #FFFFFF !important;
 }

@@ -13,11 +13,11 @@
 	cursor:pointer;
 	text-shadow: 0 1px 0 #EEEEEE;
 }
-.aristo .dijitAccordionTitle-hover  {
+.aristo .dijitAccordionTitleHover  {
 	background: #D0D0D0 url("../images/accordionItemHover.png") repeat-x top left;
 	text-shadow: 0 1px 0 #EEEEEE;	
 }
-.aristo .dijitAccordionTitle-selected  {
+.aristo .dijitAccordionTitleSelected  {
 	background: #A8A8A8 url("../images/accordionItemActive.png") repeat-x top left;
 	font-weight: bold;
 	cursor: default;

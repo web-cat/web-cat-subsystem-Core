@@ -87,6 +87,14 @@
 
 .dijitButton.pos .dijitButtonText { color: #080; }
 
+.aristo .dijitButtonNode .dijitButtonContents {
+    padding: 0.1em 0.6em 0.1em;
+}
+
+.aristo .dijitComboBox .dijitArrowButton .dijitArrowButtonInner {
+    margin: 4px;
+}
+
 .aristo .dijitButtonHover.pos .dijitButtonNode {
     -webkit-box-shadow: 0 0 5px rgba(26, 200, 80, 0.90);
     -moz-box-shadow: 0 0 5px rgba(26, 200, 80, 0.90);

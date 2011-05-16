@@ -49,7 +49,6 @@
 .aristo .dijitComboBox {
     position: relative;
     padding-right: 20px; /* for validation icon */
-    border-right: none;
 }
 .aristo .dijitInputLayoutContainer {
     padding-right: 20px; /* for validation icon */
@@ -63,9 +62,6 @@
     border-right-color: #8195A1;
     border-bottom-color: #E6E6E6;
     border-left-color: #798D9A;
-}
-.aristo .dijitComboBoxHover {
-    border-right: none;
 }
 .aristo .dijitTextBoxDisabled,
 .aristo .dijitComboBoxDisabled,
@@ -97,7 +93,7 @@
     height: 100%;
     position: absolute;
     right: 0;
-    top: -1px;
+    top: 0;
     border: 1px solid gray;
 }
 .dj_webkit .aristo .dijitComboBox .dijitButtonNode {
@@ -116,23 +112,12 @@
     -webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
     -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
 }
-.aristo .dijitComboBoxActive,
-.aristo .dijitComboBoxFocused {
-    border-right: 0;
-}
 .aristo .dijitComboBoxFocused {
     border-bottom-color: #949494;
 }
-.aristo .dijitComboBoxFocusedHover .dijitButtonNode,
-.aristo .dijitSpinnerFocused .dijitButtonNode,
-.aristo .dijitSpinnerUpArrowActive .dijitButtonNode,
-.aristo .dijitSpinnerDownArrowActive .dijitButtonNode {
-    border-left-color:#5679C1;
-    background: #81AFC8 url("../images/buttonActive.png") repeat-x bottom left;
-}
 .aristo .dijitSpinnerFocused .dijitDownArrowButton,
 .aristo .dijitSpinnerUpArrowActive .dijitDownArrowButton,
-.aristo .dijitSpinnerDownArrowActive .dijitDownArrowButton {
+.aristo .dijitSpinner .dijitDownArrowButtonActive {
     border-top-color:#366dba;
 }
 .aristo .dijitError {
@@ -151,8 +136,10 @@
 
     background-color:#f9f999 !important;
 }
+.aristo .dijitValidationContainer {
+    padding: 3px 0px;
+}
 .aristo .dijitValidationIcon {
-    padding-top: 5px;
     width: 16px;
     background: transparent url('../images/warning.png') no-repeat center center;
 }
@@ -172,7 +159,7 @@
 .dijitInlineEditor .cancelButton {
     margin:3px 3px 3px 0px;
 }
-.RichTextEditable {
+.dijitEditor {
     border:1px solid #bfbfbf;
     border-top:0;
 }

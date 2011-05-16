@@ -43,39 +43,40 @@ dojo.require("webcat.ContentPane");
  * @author Tony Allevato
  * @version $Id$
  */
+
 dojo.declare(
     "webcat.TitlePane",
-    [webcat.ContentPane, dijit._Templated],
+    [webcat.ContentPane, dijit._Templated, dijit._CssStateMixin],
 {
     // summary:
-    //      A pane with a title on top, that can be expanded or collapsed.
+    //		A pane with a title on top, that can be expanded or collapsed.
     //
     // description:
-    //      An accessible container with a Title Heading, and a content
-    //      section that slides open and closed. TitlePane is an extension to
-    //      `dijit.layout.ContentPane`, providing all the useful content-control aspects from it.
+    //		An accessible container with a title Heading, and a content
+    //		section that slides open and closed. TitlePane is an extension to
+    //		`dijit.layout.ContentPane`, providing all the useful content-control aspects from it.
     //
     // example:
-    // |    // load a TitlePane from remote file:
-    // |    var foo = new dijit.TitlePane({ href: "foobar.html", title:"Title" });
-    // |    foo.startup();
+    // | 	// load a TitlePane from remote file:
+    // |	var foo = new dijit.TitlePane({ href: "foobar.html", title:"Title" });
+    // |	foo.startup();
     //
     // example:
-    // |    <!-- markup href example: -->
-    // |    <div dojoType="dijit.TitlePane" href="foobar.html" title="Title"></div>
+    // |	<!-- markup href example: -->
+    // |	<div dojoType="dijit.TitlePane" href="foobar.html" title="Title"></div>
     //
     // example:
-    // |    <!-- markup with inline data -->
-    // |    <div dojoType="dijit.TitlePane" title="Title">
-    // |        <p>I am content</p>
-    // |    </div>
+    // |	<!-- markup with inline data -->
+    // | 	<div dojoType="dijit.TitlePane" title="Title">
+    // |		<p>I am content</p>
+    // |	</div>
 
     // title: String
-    //      Title of the pane
+    //		Title of the pane
     title: "",
 
     // open: Boolean
-    //      Whether pane is opened or closed.
+    //		Whether pane is opened or closed.
     open: true,
 
     // toggleable: Boolean
@@ -92,7 +93,7 @@ dojo.declare(
 // WEBCAT CHANGES END
 
     // duration: Integer
-    //      Time in milliseconds to fade in/fade out
+    //		Time in milliseconds to fade in/fade out
     duration: dijit.defaultDuration,
 
     // baseClass: [protected] String
@@ -111,10 +112,15 @@ dojo.declare(
         if(!this.open){
             this.hideNode.style.display = this.wipeNode.style.display = "none";
         }
+
+        // Hover and focus effect on title bar, except for non-toggleable TitlePanes
+        // This should really be controlled from _setToggleableAttr() but _CssStateMixin
+        // doesn't provide a way to disconnect a previous _trackMouseState() call
+        if(this.toggleable){
+            this._trackMouseState(this.titleBarNode, "dijitTitlePaneTitle");
+        }
         this._setCss();
         dojo.setSelectable(this.titleNode, false);
-        dijit.setWaiState(this.containerNode,"hidden", this.open ? "false" : "true");
-        dijit.setWaiState(this.focusNode, "pressed", this.open ? "true" : "false");
 
         // setup open/close animations
         var hideNode = this.hideNode, wipeNode = this.wipeNode;
@@ -144,7 +150,7 @@ dojo.declare(
         this.inherited(arguments);
     },
 
- // WEBCAT CHANGES BEGIN
+// WEBCAT CHANGES BEGIN
     _load: function()
     {
         // This is kind of a hack but it seems to work.
@@ -163,6 +169,8 @@ dojo.declare(
         // open: Boolean
         //		True if you want to open the pane, false if you want to close it.
         if(this.open !== open){ this.toggle(); }
+        dijit.setWaiState(this.containerNode,"hidden", this.open ? "false" : "true");
+        dijit.setWaiState(this.focusNode, "pressed", this.open ? "true" : "false");
     },
 
     _setToggleableAttr: function(/* Boolean */ canToggle){
@@ -172,10 +180,13 @@ dojo.declare(
         //		True to allow user to open/close pane by clicking title bar.
         this.toggleable = canToggle;
         dijit.setWaiRole(this.focusNode, canToggle ? "button" : "heading");
-        dojo.attr(this.focusNode, "tabIndex", canToggle ? this.tabIndex : "-1");
         if(canToggle){
             // TODO: if canToggle is switched from true false shouldn't we remove this setting?
             dijit.setWaiState(this.focusNode, "controls", this.id+"_pane");
+            dojo.attr(this.focusNode, "tabIndex", this.tabIndex);
+        }
+        else{
+            dojo.removeAttr(this.focusNode, "tabIndex");
         }
         this._setCss();
     },
@@ -227,8 +238,6 @@ dojo.declare(
             this.hideNode.style.display = this.open ? "" : "none";
         }
         this.open =! this.open;
-        dijit.setWaiState(this.containerNode, "hidden", this.open ? "false" : "true");
-        dijit.setWaiState(this.focusNode, "pressed", this.open ? "true" : "false");
 
         // load content (if this is the first time we are opening the TitlePane
         // and content is specified as an href, or href was set when hidden)
@@ -274,26 +283,6 @@ dojo.declare(
          }
     },
 
-    _onTitleEnter: function(){
-        // summary:
-        //		Handler for when someone hovers over my title
-        // tags:
-        //		private
-        if(this.toggleable){
-            dojo.addClass(this.focusNode, "dijitTitlePaneTitle-hover");
-        }
-    },
-
-    _onTitleLeave: function(){
-        // summary:
-        //		Handler when someone stops hovering over my title
-        // tags:
-        //		private
-        if(this.toggleable){
-            dojo.removeClass(this.focusNode, "dijitTitlePaneTitle-hover");
-        }
-    },
-
     _onTitleClick: function(){
         // summary:
         //		Handler when user clicks the title bar
@@ -304,21 +293,12 @@ dojo.declare(
         }
     },
 
-    _handleFocus: function(/*Event*/ e){
-        // summary:
-        //		Handle blur and focus events on title bar
-        // tags:
-        //		private
-
-        dojo.toggleClass(this.focusNode, this.baseClass + "Focused", e.type == "focus");
-    },
-
     setTitle: function(/*String*/ title){
         // summary:
-        //		Deprecated.  Use attr('title', ...) instead.
+        //		Deprecated.  Use set('title', ...) instead.
         // tags:
         //		deprecated
-        dojo.deprecated("dijit.TitlePane.setTitle() is deprecated.  Use attr('title', ...) instead.", "", "2.0");
-        this.attr("title", title);
+        dojo.deprecated("dijit.TitlePane.setTitle() is deprecated.  Use set('title', ...) instead.", "", "2.0");
+        this.set("title", title);
     }
 });

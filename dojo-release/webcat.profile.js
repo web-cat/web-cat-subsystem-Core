@@ -50,7 +50,6 @@ dependencies = {
                 "webcat.Table",
                 "webcat.TableSource",
                 "webcat.TitlePane",
-                "webcat.Tree",
                 "webcat.ValidationResults"
             ]
         }

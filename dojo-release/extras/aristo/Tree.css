@@ -41,17 +41,17 @@
 	top: 1px;
 	margin-left: 9px;
 }
-.aristo .dijitTreeNodeSelected,
-.aristo .dijitTreeNodeSelected:hover {
+.aristo .dijitTreeRowSelected,
+.aristo .dijitTreeRowSelected:hover {
 	border-top: 1px solid #2020D0;
 	border-bottom: 1px solid #2020D0;	
 	background: #2020D0;
 	color: #FFF;
 	text-shadow: none;
 }
-.aristo .dijitTreeNodeSelected .dijitTreeLabel {
+.aristo .dijitTreeRowSelected .dijitTreeLabel {
 }
-.aristo .dijitTreeNodeHover {
+.aristo .dijitTreeRowHover {
 	border-top: 1px solid #DCDCDC;
 	border-bottom: 1px solid #DADADA;
 	background: #D0D0D0 url("images/accordionItemHover.png") repeat-x top left;

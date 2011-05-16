@@ -103,8 +103,8 @@
 .aristo .dijitToolbar .dijitButtonHover,
 .aristo .dijitToolbar .dijitToggleButtonHover,
 .aristo .dijitToolbar .dijitDropDownButtonHover,
-.aristo .dijitToolbar .dijitComboButtonHover .dijitButtonContents,
-.aristo .dijitToolbar .dijitComboButtonDownArrowHover .dijitDownArrowButton {
+.aristo .dijitToolbar .dijitComboButton .dijitButtonContentsHover,
+.aristo .dijitToolbar .dijitComboButton .dijitDownArrowButtonHover {
 	background: #A4A4A4 url("images/accordionItemActive.png") repeat-x top left;
 }
 .aristo .dijitToolbar label {	

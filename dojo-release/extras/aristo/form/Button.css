@@ -1,55 +1,50 @@
 
 .aristo .dijitButtonNode {
-	background: #B7B7B7 url("../images/buttonEnabled.png") repeat-x top left;
-	-moz-border-radius: 12px;
-	-webkit-border-radius: 12px;
-	-moz-transition: -moz-box-shadow 0.2s linear;	
-	-webkit-transition: -webkit-box-shadow 0.2s linear;	
+    background: #B7B7B7 url("../images/buttonEnabled.png") repeat-x top left;
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-transition: -moz-box-shadow 0.2s linear;
+    -webkit-transition: -webkit-box-shadow 0.2s linear;
 }
 
-.aristo .dijitButtonNode button {
-	padding: 0.3em 0.9em 0.2em; 
+.aristo .dijitButtonNode .dijitButtonContents {
+    padding: 0.1em 0.6em 0.1em;
 }
 
 .aristo .dijitComboButton {
-	-moz-border-radius: 12px;
-	-webkit-border-radius: 12px;
-	-moz-transition: -moz-box-shadow 0.2s linear;	
-	-webkit-transition: -webkit-box-shadow 0.2s linear;	
+    -moz-border-radius: 12px;
+    -webkit-border-radius: 12px;
+    -moz-transition: -moz-box-shadow 0.2s linear;
+    -webkit-transition: -webkit-box-shadow 0.2s linear;
 }
 
-.aristo .dijitButtonNode button { 
-	border: 0px; 
-	background-color: transparent; 
-} 
- 
 .aristo .dijitButtonText {
-	font-size: 13px;
-	font-weight: bold;
-	text-shadow: 0 1px 0 #EBEBEB;
-	color: #122B39;
-	text-align: center; 
-	padding: 0 0.3em;
+    font-size: 13px;
+    font-weight: bold;
+    text-shadow: 0 1px 0 #EBEBEB;
+    color: #122B39;
+    text-align: center;
+    padding: 0 0.3em;
 }
 .aristo .dijitDisabled .dijitButtonText {
-	color: #7F7F7F;
-	text-shadow: 0 1px 0 #F5F5F5;
+    color: #7F7F7F;
+    text-shadow: 0 1px 0 #F5F5F5;
 }
 .aristo .dijitArrowButton {
-	color: #111;
+    color: #111;
 }
 .aristo table.dijitComboButton {
-	border-collapse: separate;
+    border-collapse: separate;
 }
 .aristo .dijitComboButton .dijitButtonNode {
-	-moz-border-radius-bottomright: 0px;
-	-moz-border-radius-topright: 0px;
-	-webkit-border-top-right-radius: 0px;
-	-webkit-border-bottom-right-radius: 0px;
+    -moz-border-radius-bottomright: 0px;
+    -moz-border-radius-topright: 0px;
+    -webkit-border-top-right-radius: 0px;
+    -webkit-border-bottom-right-radius: 0px;
 }
 .dj_ff2 .aristo .dijitComboButton .dijitButtonContentsFocused,
 .dj_ff2 .aristo .dijitComboButton .dijitDownArrowButtonFocused {
-	border: 1px solid transparent; 
+    border: 1px solid transparent;
 }
 .aristo .dijitButtonDisabled .dijitButtonNode,
 .aristo .dijitToggleButtonDisabled .dijitButtonNode,
@@ -59,159 +54,160 @@
 .aristo .dijitComboBoxDisabled .dijiButtonNode,
 .aristo .dijitSpinnerDisabled,
 .aristo .dijitSpinnerDisabled .dijitButtonNode {
-	border-color: #A3A3A3; 
-	background: #C4C4C4 url("../images/buttonDisabled.png") repeat-x top left;
+    border-color: #A3A3A3;
+    background: #C4C4C4 url("../images/buttonDisabled.png") repeat-x top left;
 }
 .aristo .dijitComboButton .dijitArrowButton {
-	padding-left: 0.5em;
-	padding-right: 0.7em;
-	border-left-color: #DBDBDB;
-	-moz-border-radius: 0px;
-	-webkit-border-radius: 0px;
-	-moz-border-radius-bottomright: 12px;
-	-moz-border-radius-topright: 12px;
-	-webkit-border-top-right-radius: 12px;
-	-webkit-border-bottom-right-radius: 12px;	
+    padding-left: 0.5em;
+    padding-right: 0.7em;
+    border-left-color: #DBDBDB;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    -moz-border-radius-bottomright: 12px;
+    -moz-border-radius-topright: 12px;
+    -webkit-border-top-right-radius: 12px;
+    -webkit-border-bottom-right-radius: 12px;
 }
 .aristo .dijitComboButton:hover .dijitButtonNode,
 .aristo .dijitComboButton:hover .dijitButtonContents .dijitButtonNode {
-	border: 1px solid #8AB0C6; 
+    border: 1px solid #8AB0C6;
 }
 .aristo .dijitComboButtonDisabled:hover .dijitButtonNode {
-	border: 1px solid #A3A3A3;
+    border: 1px solid #A3A3A3;
 }
 .aristo .dijitComboButtonDisabled:hover .dijitArrowButton {
-	border-left-color: #DBDBDB;
+    border-left-color: #DBDBDB;
 }
 .aristo .dijitComboButtonDisabled .dijitDownArrowButton,
 .aristo .dijitComboButtonDisabled:hover .dijitDownArrowButton {
-	border-left-color: #DBDBDB;
+    border-left-color: #DBDBDB;
 }
 .aristo .dijitButtonHover .dijitButtonNode,
 .aristo .dijitButtonNodeHover,
 .aristo .dijitToggleButtonHover .dijitButtonNode,
 .aristo .dijitDropDownButtonHover .dijitButtonNode {
-	border: 1px solid #8AB0C6; 
-	border-bottom: 1px solid #818181; 
-	background: #B7B7B7 url("../images/buttonEnabled.png") repeat-x top left;
-	-webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
-	-moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);	
+    border: 1px solid #8AB0C6;
+    border-bottom: 1px solid #818181;
+    background: #B7B7B7 url("../images/buttonEnabled.png") repeat-x top left;
+    -webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
+    -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
 }
 .aristo .dijitComboButtonHover,
 .aristo .dijitComboButtonDownArrowHover {
-	-webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
-	-moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);	
+    -webkit-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
+    -moz-box-shadow: 0 0 5px rgba(26, 108, 171, 0.90);
 }
-.aristo .dijitComboButtonDownArrowHover .dijitArrowButton {
-	border-left-color: #DBDBFF;
+.aristo .dijitComboButton .dijitDownArrowButtonHover {
+    border-left-color: #DBDBFF;
 }
 .aristo .dijitComboBoxHover .dijitDownArrowButton,
-.aristo .dijitSpinnerUpArrowHover .dijitUpArrowButton,
-.aristo .dijitSpinnerDownArrowHover .dijitDownArrowButton {
+.aristo .dijitSpinner .dijitUpArrowButtonHover,
+.aristo .dijitSpinner .dijitDownArrowButtonHover {
 }
-.aristo .dijitComboButtonHover .dijitButtonContents,
-.aristo .dijitComboButtonDownArrowHover .dijitDownArrowButton {
-	-moz-box-shadow: none;
-	-webkit-box-shadow: none;
+.aristo .dijitComboButton .dijitButtonContentsHover,
+.aristo .dijitComboButton .dijitDownArrowButtonHover {
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
 }
 .aristo .dijitComboButtonActive {
-	-moz-box-shadow: none;
-	-webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
 }
-.aristo .dijitSpinnerUpArrowActive .dijitSpinnerButtonContainer,
-.aristo .dijitSpinnerDownArrowActive .dijitSpinnerButtonContainer,
-.aristo .dijitSpinnerUpArrowActive .dijitUpArrowButton,
-.aristo .dijitSpinnerDownArrowActive .dijitDownArrowButton,
+.aristo .dijitSpinner .dijitButtonNode .dijitUpArrowButtonActive,
+.aristo .dijitSpinner .dijitButtonNode .dijitDownArrowButtonActive,
 .aristo .dijitButtonActive .dijitButtonNode,
 .aristo .dijitToggleButtonActive .dijitButtonNode,
 .aristo .dijitDropDownButtonActive .dijitButtonNode,
-.aristo .dijitComboButtonActive .dijitButtonNode,
-.aristo .dijitDownArrowActive .dijitDownArrowButton,
+.aristo .dijitComboBox .dijitDownArrowButtonActive,
 .aristo .dijitStackController .dijitToggleButtonChecked .dijitButtonNode {
-	border-color: #5679C1;
-	background: #949494 url("../images/buttonActive.png") repeat-x bottom left;
+    border-color: #5679C1;
+    background: #949494 url("../images/buttonActive.png") repeat-x bottom left;
 }
 .aristo .dijitComboBoxActive .dijitDownArrowButton {
-	border-left-color: #5679C1;
+    border-left-color: #5679C1;
 }
 .aristo table.dijitComboButtonActive .dijitButtonNode,
-.aristo table.dijitComboButtonActive .dijitButtonContents .dijitButtonNode,
+.aristo table.dijitComboButton .dijitButtonContentsActive .dijitButtonNode,
 .aristo table.dijitComboButtonActive:hover .dijitButtonNode,
 .aristo table.dijitComboButtonActive:hover .dijitButtonContents .dijitButtonNode {
-	border: 1px solid #5679C1; 
+    border: 1px solid #5679C1;
 }
 .aristo .dijitComboButton .dijitHasDropDownOpen {
-	border-color: #5679C1;
-	background: #949494 url("../images/buttonActive.png") repeat-x bottom left;
+    border-color: #5679C1;
+    background: #949494 url("../images/buttonActive.png") repeat-x bottom left;
 }
 .aristo .dijitArrowButtonInner {
-	background-image:url("../images/arrowSprite.png");
-	background-position: -18px 0;
-	width: 9px;
-	height: 7px;
-	font-size: 1px;
-	margin: 0;
+    background-image:url("../images/arrowSprite.png");
+    background-position: -18px 0;
+    width: 9px;
+    height: 7px;
+    font-size: 1px;
+    margin: 0;
 }
 .dj_ie6 .aristo .dijitArrowButtonInner {
-	background-image:url("../images/spriteArrows.gif");
+    background-image:url("../images/spriteArrows.gif");
 }
 .aristo .dijitDisabled .dijitArrowButtonInner {
-	background-position: -54px 0;
+    background-position: -54px 0;
 }
-.aristo .dijitUpArrowButton .dijitArrowButtonInner { 
-	background-position: -27px top; 
+.aristo .dijitUpArrowButton .dijitArrowButtonInner {
+    background-position: -27px top;
 }
-.aristo .dijitDisabled .dijitUpArrowButton .dijitArrowButtonInner { 
-	background-position: -63px top; 
+.aristo .dijitDisabled .dijitUpArrowButton .dijitArrowButtonInner {
+    background-position: -63px top;
 }
 .aristo .dijitComboBox .dijitArrowButton .dijitArrowButtonInner {
-	background-image: url("../images/arrowSprite.png");
-	background-repeat: no-repeat;
-	background-position: -18px center;
-	width: 9px;
-	height: auto;
-	margin: 0 4px 0 4px;
-	font-size: 100%;
+    background-image: url("../images/arrowSprite.png");
+    background-repeat: no-repeat;
+    background-position: -18px center;
+    width: 9px;
+    height: auto;
+    margin: 0 4px 0 4px;
+    font-size: 100%;
 }
 .aristo .dijitComboBoxDisabled .dijitArrowButton,
 .aristo .dijitSpinnerDisabled .dijitSpinnerButtonContainer {
-	border-color: #A3A3A3; 
-	background: #C4C4C4 url("../images/buttonDisabled.png") repeat-x top left !important;	
+    border-color: #A3A3A3;
+    background: #C4C4C4 url("../images/buttonDisabled.png") repeat-x top left !important;
 }
 .aristo .dijitComboBoxDisabled .dijitArrowButton .dijitArrowButtonNode {
-	border-left-color: #DDD;
+    border-left-color: #DDD;
 }
 .aristo .dijitComboBoxDisabled .dijitArrowButton .dijitArrowButtonInner {
-	background-position: -54px center;
+    background-position: -54px center;
 }
-.aristo .dijitComboBoxHover .dijitArrowButtonInner {	
+.aristo .dijitComboBoxHover .dijitArrowButtonInner {
 }
 .aristo .dijitSpinner {
-	position: relative;
-	border-right: none;
-	-moz-border-radius-bottomright: 3px;
-	-moz-border-radius-topright: 3px;
-	-webkit-border-top-right-radius: 3px;
-	-webkit-border-bottom-right-radius: 3px;	
+    position: relative;
 }
 .aristo .dijitSpinner .dijitInputLayoutContainer {
-	overflow: visible;
+    overflow: visible;
 }
 .aristo .dijitSpinnerButtonContainer {
-	background: #83B0CA url("../images/buttonEnabled.png") repeat-x top left;
+    background: #83B0CA url("../images/buttonEnabled.png") repeat-x top left;
+    -moz-border-radius-topleft: 0;
+    -moz-border-radius-bottomleft: 0;
+    -moz-border-radius-topright: 4px;
+    -moz-border-radius-bottomright: 4px;
+    -webkit-border-top-left-radius: 0;
+    -webkit-border-bottom-left-radius: 0;
+    -webkit-border-top-right-radius: 4px;
+    -webkit-border-bottom-right-radius: 4px;
+    padding: 3px 2px 3px 3px;
 }
 .aristo .dijitSpinnerButtonContainer .dijitButtonNode {
-	background: none;
-	border: none;
-	-moz-border-radius: 0px;
-	-webkit-border-radius: 0px;
+    background: none;
+    border: none;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
 }
 .aristo .dijitSpinner .dijitArrowButtonInner {
-	display: block;  
-	position:absolute;
-	top: 50%; 
-	margin-top: -4px; 
-	left: 50%;
-	margin-left: -6px; 
-	line-height: 2px;
+    display: block;
+    position:absolute;
+    top: 50%;
+    margin-top: -4px;
+    left: 50%;
+    margin-left: -5px;
+    line-height: 2px;
 }

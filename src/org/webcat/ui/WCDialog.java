@@ -250,7 +250,7 @@ public class WCDialog extends WOComponent
                 (JavascriptGenerator) result;
 
             js.dijit(id()).call("hide");
-            js.dijit(idFor.get("okButtonId")).attr("disabled", false);
+            js.dijit(idFor.get("okButtonId")).enable();
 
             return js;
         }

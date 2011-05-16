@@ -233,8 +233,16 @@ public class JavascriptGenerator implements WOActionResults
         JSHash options = new JSHash();
         options.put("title", title);
         options.put("message", message);
-        options.put("okLabel", okLabel);
-        options.put("onClose", onClose);
+
+        if (okLabel != null)
+        {
+            options.put("okLabel", okLabel);
+        }
+
+        if (onClose != null)
+        {
+            options.put("onClose", onClose);
+        }
 
         return alert(options);
     }
