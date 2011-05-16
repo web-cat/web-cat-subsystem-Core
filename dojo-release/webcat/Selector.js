@@ -41,7 +41,7 @@ dojo.declare("webcat.Selector", dojo.dnd.Selector,
         this._firstTime = true;
 
         this.events.push(
-            dojo.connect(this.node, "ondblclick",   this, "onDoubleClick"));
+            dojo.connect(this.node, "ondblclick", this, "onDoubleClick"));
     },
 
     markupFactory: function(params, node)

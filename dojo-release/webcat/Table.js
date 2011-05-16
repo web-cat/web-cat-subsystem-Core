@@ -33,7 +33,7 @@ dojo.declare("webcat.Table", null,
     //~ Properties ............................................................
 
     // The prefix used for all of the widget IDs in the table.
-    contentPane: null,
+    contentPane: "",
 
     // The prefix used for all of the widget IDs in the table.
     idPrefix: "",
@@ -51,9 +51,16 @@ dojo.declare("webcat.Table", null,
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
+    _contentPane: function()
+    {
+        return dojo.byId(this.contentPane);
+    },
+
+
+    // ----------------------------------------------------------
     _getCheckboxes: function()
     {
-        var paneNode = this.contentPane.domNode;
+        var paneNode = this._contentPane().domNode;
         var selector =
             "input[name='" + this.idPrefix + "_selectionControlGroup']";
         return dojo.query(selector, paneNode);
