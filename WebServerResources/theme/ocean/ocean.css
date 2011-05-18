@@ -222,6 +222,27 @@ tr.e.caution.error.selected {
 
     /*
     ================================================================== */
+    /* @group Paginated tables
+    ================================================================== */
+
+    table .pagination .active {
+        background-color: transparent;
+        color: #FEB;
+        border-color: gray;
+    }
+
+    table .pagination .current {
+        border-color: gray;
+        color: #333;
+        background-color: #A0C0FF;
+    }
+
+    /* @end
+    ================================================================== */
+
+
+    /*
+    ================================================================== */
     /* @group Meter
     ================================================================== */
 
