@@ -136,15 +136,15 @@ body {
 h1, h2, h3, h4, h5, h6,
 .dijitTitlePane .dijitTitlePaneTitle,
 .title,
-th {
+th, textarea {
   font-family: 'Fontin', "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
 }
 
 th {
-	line-height: 100%;
+    line-height: 100%;
 }
 
-pre, code { font-family: 'Inconsolata'; }
+pre, code, textarea.fixed { font-family: 'Inconsolata'; }
 
 
 /* @end
