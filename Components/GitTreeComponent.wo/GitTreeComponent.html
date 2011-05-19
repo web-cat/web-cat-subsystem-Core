@@ -16,7 +16,7 @@
     <wo:tr index="$index" increment="true">
         <td><wo name="Icon"/></td>
         <td><wo name="ChildLink"><wo:str value="$anEntry.name"/><wo:if condition="$anEntry.isTree">/</wo:if></wo></td>
-        <td><wo:not condition="$anEntry.isTree"><wo:str value="$anEntry.size" formatter="$application.fileSizeFormatter"/></wo:if></td>
+        <td><wo:not condition="$anEntry.isTree"><wo:str value="$anEntry.size" formatter="$application.fileSizeFormatter"/></wo:not></td>
         <td><wo:str value="$anEntryLatestCommit.commitTime" formatter="$application.approximateRelativeTimestampFormatter"/></td>
         <td><wo:if condition="$anEntryLatestCommit"><wo name="CommitLink"><wo:str value="$anEntryLatestCommit.shortMessage"/></wo> [<wo:str value="$anEntryLatestCommit.author.name"/>]</wo:if></td>
     </wo:tr>
