@@ -1,6 +1,6 @@
 
 ***
-CURRENT DOJO VERSION:  Dojo 1.3.1
+CURRENT DOJO VERSION:  Dojo 1.5.1
 ***
 IMPORTANT NOTE:
 If you update the Dojo version, you MUST go through the classes in the webcat
