@@ -24,6 +24,7 @@ package org.webcat.core;
 import java.net.URLEncoder;
 import org.apache.log4j.Logger;
 import org.webcat.core.git.http.GitRequestHandler;
+import org.webcat.core.webdav.WebDAVRequestHandler;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WODisplayGroup;
@@ -401,11 +402,11 @@ public class MyProfilePage
 
 
     // ----------------------------------------------------------
-    /*public String webdavURL()
+    public String webdavURL()
     {
         return Application.completeURLWithRequestHandlerKey(context(),
                 WebDAVRequestHandler.REQUEST_HANDLER_KEY, null, null, true, 0);
-    }*/
+    }
 
 
     //~ Instance/static variables .............................................

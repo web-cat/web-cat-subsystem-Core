@@ -237,3 +237,8 @@ WebcalLinkInfo: org.webcat.core.PopUpInfo {
     title   = "Webcal Subscription";
     message = "If your browser and/or operating system supports the webcal protocol, click this link to subscribe to the calendar events for your courses.";
 }
+
+WebDAVLink: WOHyperlink {
+    href = webdavURL;
+    string = webdavURL;
+}
