@@ -220,7 +220,8 @@ public class WCResourceManager
         // ----------------------------------------------------------
         private String versionFor(String bundleName)
         {
-            if (bundleName == null)
+            if (bundleName == null
+                || Application.wcApplication().needsInstallation())
             {
                 return defaultVersion();
             }
