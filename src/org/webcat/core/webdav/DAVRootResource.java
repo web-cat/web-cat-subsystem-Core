@@ -135,14 +135,7 @@ public class DAVRootResource extends AbstractDAVResource
     // ----------------------------------------------------------
     public String checkRedirect(Request request)
     {
-        if (!request.getAbsolutePath().endsWith("/"))
-        {
-            return request.getAbsoluteUrl() + "/";
-        }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
 
@@ -200,6 +193,9 @@ public class DAVRootResource extends AbstractDAVResource
             Map<String, String> params, String contentType)
             throws IOException, NotAuthorizedException, BadRequestException
     {
+        boolean endsWithSlash =
+            MiltonRequestWrapper.currentRequest().uri().endsWith("/");
+
         XmlWriter w = new XmlWriter(out);
         w.open("html");
         w.open("body");
@@ -207,7 +203,8 @@ public class DAVRootResource extends AbstractDAVResource
         w.open("table");
         for (Resource r : getChildren())
         {
-            String href = r.getName();
+            String href = (!endsWithSlash ? "dav/" : "")
+                + r.getName();
 
             if (r instanceof CollectionResource)
             {

@@ -23,10 +23,12 @@ package org.webcat.core.webdav;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.webcat.core.Application;
 import org.webcat.core.git.http.NoCacheRequestFilter;
 import org.webcat.core.http.MetaRequestHandler;
 import org.webcat.core.http.RequestHandlerBinder;
 import com.bradmcevoy.http.StandardFilter;
+import com.webobjects.appserver.WOContext;
 
 //-------------------------------------------------------------------------
 /**
@@ -63,6 +65,22 @@ public class WebDAVRequestHandler extends MetaRequestHandler
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Gets an absolute URL to the specified WebDAV path.
+     *
+     * @param context the request context
+     * @param path the path, or null to access the root
+     * @return the absolute URL
+     */
+    public static String completeURLForPath(WOContext context, String path)
+    {
+        return Application.completeURLWithRequestHandlerKey(context,
+                WebDAVRequestHandler.REQUEST_HANDLER_KEY,
+                path, null, true, 0);
+    }
+
 
     // ----------------------------------------------------------
     /**

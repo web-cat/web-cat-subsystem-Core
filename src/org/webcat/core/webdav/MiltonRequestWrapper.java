@@ -85,11 +85,8 @@ public class MiltonRequestWrapper extends AbstractRequest
     // ----------------------------------------------------------
     public String getAbsoluteUrl()
     {
-        StringBuffer buffer = new StringBuffer();
-
-        request._completeURLPrefix(buffer, request.isSecure(), 0);
-        buffer.append(request.uri());
-        return buffer.toString();
+        return WebDAVRequestHandler.completeURLForPath(
+                request.context(), request.requestHandlerPath());
     }
 
 

@@ -182,14 +182,7 @@ public class DirectoryResource
      */
     public String checkRedirect(Request request)
     {
-        if (!request.getAbsolutePath().endsWith("/"))
-        {
-            return request.getAbsoluteUrl() + "/";
-        }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
 
@@ -310,6 +303,9 @@ public class DirectoryResource
             Map<String, String> params, String contentType)
         throws IOException, NotAuthorizedException
     {
+        boolean endsWithSlash =
+            MiltonRequestWrapper.currentRequest().uri().endsWith("/");
+
         XmlWriter w = new XmlWriter(out);
         w.open("html");
         w.open("body");
@@ -317,7 +313,8 @@ public class DirectoryResource
         w.open("table");
         for (Resource r : getChildren())
         {
-            String href = r.getName();
+            String href = (!endsWithSlash ? this.getName() + "/" : "")
+                + r.getName();
 
             if (r instanceof CollectionResource)
             {

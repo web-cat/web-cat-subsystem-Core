@@ -404,8 +404,7 @@ public class MyProfilePage
     // ----------------------------------------------------------
     public String webdavURL()
     {
-        return Application.completeURLWithRequestHandlerKey(context(),
-                WebDAVRequestHandler.REQUEST_HANDLER_KEY, null, null, true, 0);
+        return WebDAVRequestHandler.completeURLForPath(context(), null);
     }
 
 
