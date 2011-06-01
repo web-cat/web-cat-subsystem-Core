@@ -438,6 +438,10 @@ public class OptionEditPanel
         {
             return false;
         }
+        else if (isDirectory && type == FILE_OR_DIR_TYPE)
+        {
+            return true;
+        }
         else
         {
             NSArray<?> extensions =

@@ -322,7 +322,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
      */
     public void setSelectedObject(T anObject)
     {
-        if (canSelectObject(anObject))
+        if (anObject != null && canSelectObject(anObject))
         {
             selectedObjects = new NSMutableSet<T>(anObject);
         }
