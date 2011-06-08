@@ -129,7 +129,9 @@ public class DatabaseAuthenticator
                     new String[]{ User.USER_NAME_KEY,
                                   User.AUTHENTICATION_DOMAIN_KEY }
                 ) );
-            if ( skipPasswordChecks || password.equals( u.password() ) )
+            if (skipPasswordChecks
+                || (password == null && u.password() == null)
+                || (password != null && password.equals( u.password())))
             {
                 log.debug( "user " + userName + " validated" );
                 user = u;
