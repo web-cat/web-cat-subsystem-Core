@@ -7,6 +7,11 @@ BackButtonEnabled: WOConditional {
     condition = backEnabled;
 }
 
+//BarePage: org.webcat.ui.WCBasePage {
+//    title = title;
+////  bodyClass = "user";
+//    extraCssFiles = stylesheet;
+////  externalJavascript = externalJavascript;
 BarePage : org.webcat.core.BarePage {
 	title = title;
 	bodyClass = "user";

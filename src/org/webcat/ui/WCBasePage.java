@@ -28,12 +28,19 @@ import com.webobjects.appserver.WOResourceManager;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
+import com.webobjects.foundation.NSDictionary;
+import com.webobjects.foundation.NSKeyValueCodingAdditions;
 import com.webobjects.foundation.NSMutableArray;
+import com.webobjects.foundation.NSMutableDictionary;
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
 import org.webcat.core.Application;
+import org.webcat.core.MutableArray;
+import org.webcat.core.MutableDictionary;
 import org.webcat.core.Session;
 import org.webcat.core.Theme;
 import org.webcat.core.WCResourceManager;
@@ -412,7 +419,7 @@ public class WCBasePage
 
 
     // ----------------------------------------------------------
-    public Theme theme()
+    public NSKeyValueCodingAdditions theme()
     {
         if (hasSession())
         {
@@ -420,7 +427,15 @@ public class WCBasePage
         }
         else
         {
-            Theme lastUsedTheme = Theme.lastUsedThemeInContext(context());
+            NSKeyValueCodingAdditions lastUsedTheme = null;
+            if (Application.wcApplication().needsInstallation())
+            {
+                lastUsedTheme = installTheme();
+            }
+            else
+            {
+                Theme.lastUsedThemeInContext(context());
+            }
 
             return (lastUsedTheme != null) ?
                     lastUsedTheme : Theme.defaultTheme();
@@ -478,6 +493,66 @@ public class WCBasePage
     }
 
 
+    // ----------------------------------------------------------
+    private static NSKeyValueCodingAdditions installTheme()
+    {
+        if (installTheme == null)
+        {
+            // Can't use the subsystem manager, since it isn't initialized
+            NSBundle core = NSBundle.bundleForName("Core");
+            if (core != null)
+            {
+                @SuppressWarnings("deprecation")
+                String themeDir =
+                    core.bundlePath() + "/WebServerResources/theme/";
+                try
+                {
+                    MutableDictionary properties = MutableDictionary
+                        .fromPropertyList(new File(
+                            themeDir, "dream-way/theme.plist"));
+                    Object parentName = properties.get("extends");
+                    properties.remove("extends");
+                    MutableArray cssOrder =
+                        (MutableArray)properties.get("cssOrder");
+                    while (parentName != null)
+                    {
+                        MutableDictionary parentProps = MutableDictionary
+                            .fromPropertyList(new File(
+                                themeDir, parentName + "/theme.plist"));
+                        @SuppressWarnings("unchecked")
+                        NSArray<NSDictionary<String, String>> cssFiles =
+                            (NSArray<NSDictionary<String, String>>)parentProps
+                            .get("cssOrder");
+                        for (NSDictionary<String, String> css : cssFiles)
+                        {
+                            css.put("file", "../" + parentName + "/"
+                                + css.get("file"));
+                            cssOrder.add(css);
+                        }
+                        if (parentProps.containsKey("dojoTheme"))
+                        {
+                            properties.put(
+                                "dojoTheme", parentProps.get("dojoTheme"));
+                        }
+                        parentName = parentProps.get("extends");
+                    }
+
+                    installTheme = new NSMutableDictionary<String, Object>(
+                        properties);
+                    installTheme.takeValueForKey("Dream Way", "name");
+                    installTheme.takeValueForKey("dream-way", "dirName");
+                    installTheme.takeValueForKey(installTheme, "inherit");
+                }
+                catch (IOException e)
+                {
+                    log.error("error creating temporary theme", e);
+                }
+            }
+        }
+        return installTheme;
+    }
+
+
     //~ Static/instance variables .............................................
 
     private static final long serialVersionUID = 1L;
@@ -495,6 +570,8 @@ public class WCBasePage
     private static final String DEPLOYMENT_DOJO_SCRIPT_NAME = "dojo.xd.js";
     private static final String DEVELOPMENT_DOJO_SCRIPT_NAME =
         "dojo.xd.js.uncompressed.js";
+
+    private static NSDictionary<String, Object> installTheme;
 
     static Logger log = Logger.getLogger( WCBasePage.class );
 }
