@@ -21,6 +21,7 @@
 
 package org.webcat.core;
 
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jgit.lib.Constants;
@@ -87,6 +88,14 @@ public class RepositoryEntryRef implements NSKeyValueCodingAdditions
             String authDomain = matcher.group(1);
             String username = matcher.group(2);
             String repoPath = matcher.group(3);
+
+            // Make sure a slash is added to the end of old-style paths that
+            // point to directories.
+            File oldPath = new File(User.userDataRoot(), path);
+            if (oldPath.isDirectory())
+            {
+                repoPath += "/";
+            }
 
             return new RepositoryEntryRef(
                     "User/" + authDomain + "." + username, repoPath,

@@ -1382,7 +1382,7 @@ public class User
 
 
     // ----------------------------------------------------------
-    private static String scriptRoot()
+    public static String scriptRoot()
     {
         // I don't like having this here, but it's necessary to get the same
         // existing behavior in the function below, and it's only used for
@@ -1406,7 +1406,7 @@ public class User
 
 
     // ----------------------------------------------------------
-    private static String userDataRoot()
+    public static String userDataRoot()
     {
         if (userDataRoot == null)
         {
