@@ -86,7 +86,8 @@ public class MiltonRequestWrapper extends AbstractRequest
     public String getAbsoluteUrl()
     {
         return WebDAVRequestHandler.completeURLForPath(
-                request.context(), request.requestHandlerPath());
+                request.context(),
+                request.requestHandlerPath().replace(" ", "%20"));
     }
 
 
