@@ -130,32 +130,42 @@ public class WCDateTextBox extends DojoFormElement
 
         Object object;
 
-        synchronized (ISO_DATE_FORMAT)
+        if (stringValue == null)
         {
-            if (_timeZone != null)
+            object = null;
+        }
+        else
+        {
+            synchronized (ISO_DATE_FORMAT)
             {
-                TimeZone tz =
-                    (TimeZone)_timeZone.valueInComponent(context.component());
-                if (tz != null)
+                if (_timeZone != null)
                 {
-                    ISO_DATE_FORMAT.setTimeZone(tz);
+                    TimeZone tz = (TimeZone)_timeZone.valueInComponent(
+                            context.component());
+
+                    if (tz != null)
+                    {
+                        ISO_DATE_FORMAT.setTimeZone(tz);
+                    }
+                    else
+                    {
+                        ISO_DATE_FORMAT.setTimeZone(TimeZone.getDefault());
+                    }
                 }
                 else
                 {
                     ISO_DATE_FORMAT.setTimeZone(TimeZone.getDefault());
                 }
-            }
-            else
-            {
-                ISO_DATE_FORMAT.setTimeZone(TimeZone.getDefault());
-            }
-            try
-            {
-                object = new NSTimestamp(ISO_DATE_FORMAT.parse(stringValue));
-            }
-            catch (ParseException e)
-            {
-                object = null;
+
+                try
+                {
+                    object = new NSTimestamp(
+                            ISO_DATE_FORMAT.parse(stringValue));
+                }
+                catch (ParseException e)
+                {
+                    object = null;
+                }
             }
         }
 
