@@ -30,14 +30,14 @@ dojo.require("dojo.dnd.Selector");
  */
 dojo.declare("webcat.Selector", dojo.dnd.Selector,
 {
-    shadowSelectionField: null,
+    shadowSelectionField: '',
     onSelectionChanged: '',
 
     constructor: function(node, params)
     {
         this.onSelectionChanged = params.onSelectionChanged;
         this.onItemDoubleClicked = params.onItemDoubleClicked;
-        this.shadowSelectionField = dojo.byId(params.shadowSelectionField);
+        this.shadowSelectionField = params.shadowSelectionField;
         this._firstTime = true;
 
         this.events.push(
@@ -96,7 +96,7 @@ dojo.declare("webcat.Selector", dojo.dnd.Selector,
 
         if (this.shadowSelectionField)
         {
-            this.shadowSelectionField.value = shadowSelection;
+            dojo.byId(this.shadowSelectionField).value = shadowSelection;
         }
 
         if (changed)
