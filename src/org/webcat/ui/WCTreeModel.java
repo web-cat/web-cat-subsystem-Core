@@ -330,6 +330,8 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
         {
             selectedObjects.removeAllObjects();
         }
+
+        selectionDidChange();
     }
 
 
@@ -343,13 +345,20 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     public void setSelectedObjects(NSSet<T> objects)
     {
         selectedObjects = new NSMutableSet<T>();
+        boolean changed = false;
 
         for (T object : objects)
         {
             if (canSelectObject(object))
             {
                 selectedObjects.addObject(object);
+                changed = true;
             }
+        }
+
+        if (changed)
+        {
+            selectionDidChange();
         }
     }
 
@@ -365,6 +374,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
         if (canSelectObject(anObject))
         {
             selectedObjects.addObject(anObject);
+            selectionDidChange();
         }
     }
 
@@ -378,6 +388,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     public void deselectObject(T anObject)
     {
         selectedObjects.removeObject(anObject);
+        selectionDidChange();
     }
 
 
@@ -389,12 +400,20 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
      */
     public void selectObjects(NSSet<T> objects)
     {
+        boolean changed = false;
+
         for (T object : objects)
         {
             if (canSelectObject(object))
             {
                 selectedObjects.addObject(object);
+                changed = true;
             }
+        }
+
+        if (changed)
+        {
+            selectionDidChange();
         }
     }
 
@@ -408,6 +427,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     public void deselectObjects(NSSet<T> objects)
     {
         selectedObjects.subtractSet(objects);
+        selectionDidChange();
     }
 
 
@@ -418,6 +438,19 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     public void clearSelection()
     {
         selectedObjects.removeAllObjects();
+        selectionDidChange();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * A hook that subclasses can use to be notified when the tree selection
+     * changes. This should be used when it is necessary to keep other data
+     * structures synchronized with the selection after a page submit.
+     */
+    protected void selectionDidChange()
+    {
+        // Do nothing; subclasses can override.
     }
 
 
