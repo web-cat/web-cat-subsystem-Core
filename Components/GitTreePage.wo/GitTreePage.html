@@ -5,6 +5,16 @@
     <div style="clear: both"></div>
     <wo name="Tree"/>
 </div>
+<wo:WCPageModule title="Upload Files Here" open="false">
+    <wo:WCForm enctype="multipart/form-data">
+    <div>Choose the file to upload: <wo name="FileToUpload"/></div>
+    <p><wo name="ExpandIfArchive"/> If this file is an archive, expand it into this folder?</p>
+    <p>Enter a short message that describes the files that you are uploading. This
+    message will be used as the <b>commit message</b> in the Git repository.<br/>
+    <wo name="CommitMessageForUpload"/></p>
+    <div><wo name="Upload"/></div>
+    </wo:WCForm>
+</wo:WCPageModule>
 <wo:if condition="$readmeName"><wo:WCPageModule title="$readmeName">
     <pre><wo:str value="$readmeContent" escapeHTML="true"/></pre>
 </wo:WCPageModule></wo:if>

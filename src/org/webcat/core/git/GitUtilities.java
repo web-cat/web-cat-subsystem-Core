@@ -198,6 +198,71 @@ public class GitUtilities
 
 
     // ----------------------------------------------------------
+    public static void pushWorkingCopyImmediately(Repository workingCopy,
+            User user, String commitMessage)
+    {
+        pushWorkingCopyImmediately(workingCopy, user.name_LF(),
+                user.email(), commitMessage);
+    }
+
+
+    // ----------------------------------------------------------
+    @SuppressWarnings("deprecation")
+    public static void pushWorkingCopyImmediately(Repository workingCopy,
+            String authorName, String emailAddress, String commitMessage)
+    {
+        try
+        {
+            boolean amend = false;
+
+            GitRepository gitRepo = new GitRepository(workingCopy);
+            GitRef ref = gitRepo.refWithName(
+                    Constants.R_HEADS + Constants.MASTER);
+            NSArray<GitCommit> commits = ref.commits();
+
+            if (commits != null && !commits.isEmpty())
+            {
+                GitCommit commit = commits.objectAtIndex(0);
+                if (commitMessage.equals(commit.shortMessage()) &&
+                        commit.commitTime().timeIntervalSinceNow()
+                            > -3 * 60 * 60)
+                {
+                    amend = true;
+                }
+            }
+
+            Git git = new Git(workingCopy);
+
+            git.add()
+                .addFilepattern(".")
+                .setUpdate(false)
+                .call();
+
+            git.commit()
+                .setAuthor(authorName, emailAddress)
+                .setCommitter(authorName, emailAddress)
+                .setMessage(commitMessage)
+                .setAmend(amend)
+                .call();
+
+            RefSpec allHeadsSpec = new RefSpec()
+                .setForceUpdate(true)
+                .setSourceDestination(
+                        Constants.R_HEADS + Constants.MASTER,
+                        Constants.R_HEADS + Constants.MASTER);
+
+            git.push()
+                .setRefSpecs(allHeadsSpec)
+                .call();
+        }
+        catch (Exception e)
+        {
+            log.error("Error updating repository: ", e);
+        }
+    }
+
+
+    // ----------------------------------------------------------
     private static class PushWorkingCopyTask extends TimerTask
     {
         //~ Constructors ......................................................
@@ -216,61 +281,15 @@ public class GitUtilities
         //~ Methods ...........................................................
 
         // ----------------------------------------------------------
-        @Override @SuppressWarnings("deprecation")
+        @Override
         public void run()
         {
             synchronized (workingCopyPushTimers)
             {
                 workingCopyPushTimers.remove(workingCopy);
 
-                try
-                {
-                    boolean amend = false;
-
-                    GitRepository gitRepo = new GitRepository(workingCopy);
-                    GitRef ref = gitRepo.refWithName(
-                            Constants.R_HEADS + Constants.MASTER);
-                    NSArray<GitCommit> commits = ref.commits();
-
-                    if (commits != null && !commits.isEmpty())
-                    {
-                        GitCommit commit = commits.objectAtIndex(0);
-                        if (commitMessage.equals(commit.shortMessage()) &&
-                                commit.commitTime().timeIntervalSinceNow()
-                                    > -3 * 60 * 60)
-                        {
-                            amend = true;
-                        }
-                    }
-
-                    Git git = new Git(workingCopy);
-
-                    git.add()
-                        .addFilepattern(".")
-                        .setUpdate(false)
-                        .call();
-
-                    git.commit()
-                        .setAuthor(authorName, emailAddress)
-                        .setCommitter(authorName, emailAddress)
-                        .setMessage(commitMessage)
-                        .setAmend(amend)
-                        .call();
-
-                    RefSpec allHeadsSpec = new RefSpec()
-                        .setForceUpdate(true)
-                        .setSourceDestination(
-                                Constants.R_HEADS + Constants.MASTER,
-                                Constants.R_HEADS + Constants.MASTER);
-
-                    git.push()
-                        .setRefSpecs(allHeadsSpec)
-                        .call();
-                }
-                catch (Exception e)
-                {
-                    log.error("Error updating repository: ", e);
-                }
+                pushWorkingCopyImmediately(workingCopy, authorName,
+                        emailAddress, commitMessage);
             }
         }
 

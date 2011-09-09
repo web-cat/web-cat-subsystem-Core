@@ -22,19 +22,26 @@
 package org.webcat.core.git.http;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.zip.ZipOutputStream;
+import org.apache.log4j.Logger;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
 import org.webcat.archives.ArchiveManager;
 import org.webcat.archives.IWritableContainer;
 import org.webcat.core.DeliverFile;
+import org.webcat.core.FileUtilities;
 import org.webcat.core.NSMutableDataOutputStream;
 import org.webcat.core.git.GitTreeEntry;
 import org.webcat.core.git.GitTreeIterator;
+import org.webcat.core.git.GitUtilities;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
+import com.webobjects.appserver.WORedirect;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSData;
 
 //-------------------------------------------------------------------------
 /**
@@ -58,6 +65,11 @@ public class GitTreePage extends GitWebComponent
     //~ KVC attributes (must be public) .......................................
 
     public NSArray<GitTreeEntry> entries;
+
+    public NSData fileDataToUpload;
+    public String filePathToUpload;
+    public String commitMessageForUpload;
+    public boolean expandIfArchive;
 
 
     //~ Methods ...............................................................
@@ -181,8 +193,58 @@ public class GitTreePage extends GitWebComponent
     }
 
 
+    // ----------------------------------------------------------
+    public WOActionResults uploadFile()
+    {
+        Repository workingCopy = GitUtilities.workingCopyForRepository(
+                gitContext().repository().repository(), true);
+        File file = workingCopy.getWorkTree();
+        File destDir = file;
+
+        if (gitContext().path() != null)
+        {
+            destDir = new File(file, gitContext().path());
+        }
+
+        File destFile = new File(destDir, filePathToUpload);
+
+        try
+        {
+            if (expandIfArchive && FileUtilities.isArchiveFile(filePathToUpload))
+            {
+                ArchiveManager.getInstance().unpack(
+                        destDir, filePathToUpload, fileDataToUpload.stream());
+            }
+            else
+            {
+                FileOutputStream os = new FileOutputStream(destFile);
+                fileDataToUpload.writeToStream(os);
+                os.close();
+            }
+
+            GitUtilities.pushWorkingCopyImmediately(
+                    workingCopy, user(), commitMessageForUpload);
+        }
+        catch (IOException e)
+        {
+            log.error("The following error occurred while uploading the file: ",
+                    e);
+
+            // TODO Display the error to the user
+        }
+
+        // Refresh the page but do a redirect to make sure we get the proper
+        // URL in the address bar.
+        WORedirect redirect = new WORedirect(context());
+        redirect.setUrl(gitContext().toURL(context()));
+        return redirect.generateResponse();
+    }
+
+
     //~ Static/instance variables .............................................
 
     private boolean checkedForReadme;
     private GitTreeEntry readmeEntry;
+
+    private static final Logger log = Logger.getLogger(GitTreePage.class);
 }

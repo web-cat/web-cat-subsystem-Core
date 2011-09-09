@@ -2,6 +2,27 @@ Breadcrumbs : GitBreadcrumbsComponent {
     gitContext = gitContext;
 }
 
+CommitMessageForUpload: WCTextBox {
+    value = commitMessageForUpload;
+    style = "width: 40em";
+}
+
+FileToUpload: WOFileUpload {
+    data = fileDataToUpload;
+    filePath = filePathToUpload;
+    dojoType = "dojox.form.FileInput";
+}
+
+ExpandIfArchive: WCCheckBox {
+    checked = expandIfArchive;
+}
+
+Upload: WCButton {
+    class = "pos";
+    label = "Upload File";
+    action = uploadFile;
+}
+
 DownloadIcon : WOImage {
     framework = "Core";
     filename = "icons/filetypes/box.png";
