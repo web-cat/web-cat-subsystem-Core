@@ -411,10 +411,24 @@ public class WCBasePage
     // ----------------------------------------------------------
     public String customBackground()
     {
-        return hasSession()
-            ? (String)((Session)session()).user().preferences()
-               .valueForKey("customBackgroundUrl")
-            : null;
+        if (hasSession())
+        {
+            Session session = (Session)session();
+            if (session.user() != null)
+            {
+                org.webcat.core.User user = session.user();
+                if (user != null)
+                {
+                    Object result = user.preferences()
+                        .valueForKey("customBackgroundUrl");
+                    if (result != null)
+                    {
+                        return result.toString();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
 

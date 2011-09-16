@@ -285,7 +285,9 @@ public class WCPageWithNavigation
     public boolean primaryTabIsVisible()
     {
         return primaryTabItem.accessLevel() == 0
-            || !( (Session)session() ).user().restrictToStudentView();
+            || (hasSession()
+                && ((Session)session()).user() != null
+                && !((Session)session()).user().restrictToStudentView());
     }
 
 
@@ -298,7 +300,9 @@ public class WCPageWithNavigation
     public boolean secondaryTabIsVisible()
     {
         return secondaryTabItem.accessLevel() == 0
-            || !( (Session)session() ).user().restrictToStudentView();
+        || (hasSession()
+            && ((Session)session()).user() != null
+            && !((Session)session()).user().restrictToStudentView());
     }
 
 
