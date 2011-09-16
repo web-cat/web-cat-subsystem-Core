@@ -52,6 +52,7 @@ import org.webcat.dbupdate.UpdateEngine;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOMessage;
+import com.webobjects.appserver.WOPageNotFoundException;
 import com.webobjects.appserver.WORedirect;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResourceManager;
@@ -156,7 +157,10 @@ public class Application
                 + "http://www.gnu.org/licenses/agpl.html\n"
                 + "For full source code, see:\n"
                 + "http://www.sourceforge.net/projects/web-cat\n");
-            log.info("Properties loaded from:");
+        }
+        if (log.isDebugEnabled())
+        {
+            log.debug("Properties loaded from:");
             NSArray<?> dirs = ERXProperties.pathsForUserAndBundleProperties();
             for (Object dir : dirs)
             {
@@ -165,19 +169,17 @@ public class Application
             dirs = ERXProperties.optionalConfigurationFiles();
             if (dirs == null)
             {
-                log.info("no optional configuration files specified.");
+                log.debug("no optional configuration files specified.");
             }
             else
             {
-                log.info("Also loading properties from optional files:");
+                log.debug("Also loading properties from optional files:");
                 for (Object dir : dirs)
                 {
                     log.info("\t" + dir);
                 }
             }
-        }
-        if (log.isDebugEnabled())
-        {
+
             try
             {
                 File here = new File(".");
@@ -224,6 +226,7 @@ public class Application
             setNeedsInstallation(false);
             notifyAdminsOfStartup();
         }
+        log.error("classpath = " + System.getProperty("java.class.path"));
     }
 
 
@@ -816,7 +819,33 @@ public class Application
                 + context
                 + " )");
         }
-        return super.pageWithName(name, context);
+        if (name == null || name.length() == 0 || "Main".equals(name))
+        {
+            log.info("pageWithName(" + name + ") called for URI "
+                + context.request().uri());
+            if (context.hasSession()
+                && context.session() instanceof Session
+                && ((Session)context.session()).isLoggedIn())
+            {
+                name = ((Session)context.session()).tabs.selectDefault()
+                    .pageName();
+            }
+            else
+            {
+                name = LoginPage.class.getName();
+            }
+        }
+        try
+        {
+            return super.pageWithName(name, context);
+        }
+        catch (WOPageNotFoundException pnf)
+        {
+            log.info("pageWithName(" + name + ")\n\tfor URI "
+                + context.request().uri()
+                + "\n\tproduced " + pnf);
+            return super.pageWithName(LoginPage.class.getName(), context);
+        }
     }
 
 
