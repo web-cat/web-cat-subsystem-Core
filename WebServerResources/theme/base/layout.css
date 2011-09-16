@@ -337,11 +337,9 @@ h1 {
     margin: -0.3em 0.2em 0 0.2em;
 }
 
-p {
-    margin: 0 0 1.2em;
-}
-
+p { margin: 0 0 1.2em; }
 .batchnav p { margin: 0; }
+p.course { margin: 0  0 -0.6em; }
 
 blockquote {
     margin: 1.2em 0;
@@ -611,25 +609,29 @@ table {
 }
 
 table.d2w table,
-table.layout {
+table.layout,
+table.actionlist,
+table.course-list {
     border: none;
 }
 
-table.layout.minimal {
+.assignments {
+    border-width: 0 0 0 6px;
+    border-style: solid;
+    border-color: #ccc;
+    padding-left: 6px;
+    padding-bottom: 4px;
+}
+
+table.layout.minimal,
+table.layout.nomargin,
+table.actionlist,
+table.course-list {
     margin: 0;
 }
 
 table.layout.minimal td {
     padding: 0;
-}
-
-table.layout.nomargin {
-    margin: 0;
-}
-
-table.actionlist {
-    margin: 0;
-    border: none;
 }
 
 table.actionlist td {
@@ -641,12 +643,28 @@ table.actionlist td:first-child {
     padding-right: 4px;
 }
 
-table th {
+table th,
+table td {
     padding: 0.1em .6em;
 }
 
-table td {
-    padding: 0.1em .6em;
+table.course-list tr.assignment td {
+	padding-top: 1.2em;
+	padding-bottom: 0.6em;
+}
+
+table.course-list tr.assignment td:first-child {
+	padding-left: 0;
+	padding-right: 1.2em;
+}
+
+table.course-list th {
+	border-width: 0 0 1px 0;
+	border-style: solid;
+	border-color: black;
+    color: inherit;
+    background-color: inherit;
+    font-weight: bold;
 }
 
 .theme-thumb {
