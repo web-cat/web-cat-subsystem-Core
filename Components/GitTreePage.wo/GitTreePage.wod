@@ -7,20 +7,9 @@ CommitMessageForUpload: WCTextBox {
     style = "width: 40em";
 }
 
-FileToUpload: WOFileUpload {
-    data = fileDataToUpload;
-    filePath = filePathToUpload;
-    dojoType = "dojox.form.FileInput";
-}
-
-ExpandIfArchive: WCCheckBox {
-    checked = expandIfArchive;
-}
-
-Upload: WCButton {
-    class = "pos";
-    label = "Upload File";
-    action = uploadFile;
+CreateFolder: WCButton {
+    label  = "Create Folder";
+    action = createFolder;
 }
 
 DownloadIcon : WOImage {
@@ -35,6 +24,22 @@ DownloadLink : WOHyperlink {
     action = downloadTree;
 }
 
+ExpandIfArchive: WCCheckBox {
+    checked = expandIfArchive;
+}
+
+FileToUpload: WOFileUpload {
+    data = fileDataToUpload;
+    filePath = filePathToUpload;
+    dojoType = "dojox.form.FileInput";
+}
+
+FolderName: WCTextBox {
+    value = folderName;
+    id    = "folderName";
+    width = 25;
+}
+
 GitPage : GitBasePage {
     gitContext = gitContext;
 }
@@ -42,4 +47,10 @@ GitPage : GitBasePage {
 Tree : GitTreeComponent {
     gitContext = gitContext;
     entries = entries;
+}
+
+Upload: WCButton {
+    class = "pos";
+    label = "Upload File";
+    action = uploadFile;
 }
