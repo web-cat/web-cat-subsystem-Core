@@ -86,6 +86,11 @@ public abstract class MetaRequestHandler extends WORequestHandler
                     request);
         }
 
+        if (log.isDebugEnabled())
+        {
+            log.debug("> REQUEST:  " + request.toString());
+        }
+
         WOResponse response =
             WOApplication.application().createResponseInContext(context);
         context._setResponse(response);
@@ -119,6 +124,14 @@ public abstract class MetaRequestHandler extends WORequestHandler
         }
 
         response._finalizeInContext(context);
+
+        if (log.isDebugEnabled())
+        {
+            String content = response.contentString();
+            log.debug("< RESPONSE: " + response.toString());
+            log.debug("<           \n" + content.substring(0, Math.min(content.length(), 256)).toString());
+        }
+
         return response;
     }
 
