@@ -127,9 +127,7 @@ public abstract class MetaRequestHandler extends WORequestHandler
 
         if (log.isDebugEnabled())
         {
-            String content = response.contentString();
             log.debug("< RESPONSE: " + response.toString());
-            log.debug("<           \n" + content.substring(0, Math.min(content.length(), 256)).toString());
         }
 
         return response;
