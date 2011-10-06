@@ -339,7 +339,7 @@ h1 {
 
 p { margin: 0 0 1.2em; }
 .batchnav p { margin: 0; }
-p.course { margin: 0  0 -0.6em; }
+p.course { margin: 0  0 -1em; }
 
 blockquote {
     margin: 1.2em 0;
@@ -620,7 +620,7 @@ table.course-list {
     border-style: solid;
     border-color: #ccc;
     padding-left: 6px;
-    padding-bottom: 4px;
+    margin-bottom: 4px;
 }
 
 table.layout.minimal,
@@ -649,7 +649,7 @@ table td {
 }
 
 table.course-list tr.assignment td {
-	padding-top: 1.2em;
+	padding-top: 1.6em;
 	padding-bottom: 0.6em;
 }
 
