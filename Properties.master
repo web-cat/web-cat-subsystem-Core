@@ -79,6 +79,7 @@ WOPageCacheSize      = 50
 log4j.logger.org.webcat.core.Application          = INFO
 log4j.logger.org.webcat.core.install              = INFO
 log4j.logger.org.webcat.core.Theme                = INFO
+log4j.logger.er.extensions.appserver.ERXApplication$JarChecker = ERROR
 
 # This entry ensures that one must specifically request that this be
 # turned on separately from turning on generic Application class logging,
