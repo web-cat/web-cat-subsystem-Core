@@ -180,6 +180,13 @@ public class TableRow
 
 
     // ----------------------------------------------------------
+    public String style()
+    {
+        return (String)valueForBinding("style");
+    }
+
+
+    // ----------------------------------------------------------
     public boolean isStateless()
     {
         return true;

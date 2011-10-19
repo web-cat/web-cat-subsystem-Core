@@ -5,4 +5,5 @@ TR: WOGenericContainer {
     handle      = dragHandle;
     dndType     = dndType;
     dndData     = dndData;
+    style       = style;
 }
