@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2010 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -149,7 +149,7 @@ public class Application
         if (log.isInfoEnabled())
         {
             log.info("Web-CAT v" + version()
-                + "\nCopyright (C) 2006-2010 Virginia Tech\n\n"
+                + "\nCopyright (C) 2006-2011 Virginia Tech\n\n"
                 + "Web-CAT comes with ABSOLUTELY NO WARRANTY; this is "
                 + "free software\n"
                 + "under the terms of the GNU Affero General Public License "
