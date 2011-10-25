@@ -27,7 +27,6 @@ import org.webcat.ui.generators.JavascriptGenerator;
 import org.webcat.ui.util.ComponentIDGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.appserver.WODisplayGroup;
 import com.webobjects.appserver.WOMessage;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
@@ -288,7 +287,7 @@ public class WCTable extends WCComponent
 
         if (orderings != null && orderings.count() > 0)
         {
-            NSSelector selector = orderings.objectAtIndex(0).selector();
+            NSSelector<?> selector = orderings.objectAtIndex(0).selector();
 
             return ERXS.INS_ASC.equals(selector) || ERXS.ASC.equals(selector);
         }
