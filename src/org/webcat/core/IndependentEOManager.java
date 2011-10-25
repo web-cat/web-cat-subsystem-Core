@@ -220,6 +220,60 @@ public class IndependentEOManager
 
 
     // ----------------------------------------------------------
+    public void refresh()
+    {
+        try
+        {
+            ecm.lock();
+            ecm.revert();
+            ecm.refreshAllObjects();
+        }
+        finally
+        {
+            ecm.unlock();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public void revert()
+    {
+        try
+        {
+            ecm.lock();
+            ecm.revert();
+        }
+        finally
+        {
+            ecm.unlock();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Tries to save any pending changes in the managed EO, returning
+     * null on success or an appropriate Exception object on failure.
+     * This method allows the caller to decide what to do when saving
+     * fails.
+     * @return The exception that occurred, if saving fails, or null
+     * on success.
+     */
+    public Exception tryToSaveChanges()
+    {
+        try
+        {
+            ecm.lock();
+            return ecm.tryToSaveChanges();
+        }
+        finally
+        {
+            ecm.unlock();
+        }
+    }
+
+
+    // ----------------------------------------------------------
     public void saveChanges()
     {
         try
