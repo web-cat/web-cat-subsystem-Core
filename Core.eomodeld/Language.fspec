@@ -1,8 +1,7 @@
-
 {
-    FetchAll = 
+    FetchAll =
     {
-        class = EOFetchSpecification;
+        class = WCFetchSpecification;
         entityName = Language;
         fetchLimit = 0;
     };

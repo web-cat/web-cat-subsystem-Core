@@ -31,6 +31,7 @@ import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
 import org.webcat.core.EOBasedKeyGenerator;
+import org.webcat.woextensions.WCFetchSpecification;
 
 // -------------------------------------------------------------------------
 /**
@@ -103,7 +104,7 @@ public abstract class _LoginSession
      * @return The object, or null if no such id exists
      */
     public static LoginSession forId(
-        EOEditingContext ec, int id )
+        EOEditingContext ec, int id)
     {
         LoginSession obj = null;
         if (id > 0)
@@ -128,9 +129,9 @@ public abstract class _LoginSession
      * @return The object, or null if no such id exists
      */
     public static LoginSession forId(
-        EOEditingContext ec, String id )
+        EOEditingContext ec, String id)
     {
-        return forId( ec, er.extensions.foundation.ERXValueUtilities.intValue( id ) );
+        return forId(ec, er.extensions.foundation.ERXValueUtilities.intValue(id));
     }
 
 
@@ -152,7 +153,8 @@ public abstract class _LoginSession
     public static final String SESSIONS_WITH_USER_PID_FSPEC = "sessionsWithUserPid";
     public static final String ENTITY_NAME = "LoginSession";
 
-    public final EOBasedKeyGenerator generateKey = new EOBasedKeyGenerator(this);
+    public transient final EOBasedKeyGenerator generateKey =
+        new EOBasedKeyGenerator(this);
 
 
     //~ Methods ...............................................................
@@ -180,7 +182,7 @@ public abstract class _LoginSession
     public NSDictionary<String, Object> changedProperties()
     {
         return changesFromSnapshot(
-            editingContext().committedSnapshotForObject(this) );
+            editingContext().committedSnapshotForObject(this));
     }
 
 
@@ -194,7 +196,7 @@ public abstract class _LoginSession
         try
         {
             return (Number)EOUtilities.primaryKeyForObject(
-                editingContext() , this ).objectForKey( "id" );
+                editingContext() , this).objectForKey("id");
         }
         catch (Exception e)
         {
@@ -386,8 +388,9 @@ public abstract class _LoginSession
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        EOFetchSpecification fspec = new EOFetchSpecification(
-            ENTITY_NAME, qualifier, sortOrderings);
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification fspec = new WCFetchSpecification(
+                ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
     }
@@ -478,7 +481,7 @@ public abstract class _LoginSession
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -540,7 +543,7 @@ public abstract class _LoginSession
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return firstObjectMatchingValues(
@@ -564,10 +567,11 @@ public abstract class _LoginSession
         NSArray<EOSortOrdering> sortOrderings,
         NSDictionary<String, Object> keysAndValues)
     {
-        EOFetchSpecification fspec = new EOFetchSpecification(
-            ENTITY_NAME,
-            EOQualifier.qualifierToMatchAllValues(keysAndValues),
-            sortOrderings);
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification fspec = new WCFetchSpecification(
+                ENTITY_NAME,
+                EOQualifier.qualifierToMatchAllValues(keysAndValues),
+                sortOrderings);
         fspec.setFetchLimit(1);
 
         NSArray<LoginSession> objects =
@@ -620,7 +624,7 @@ public abstract class _LoginSession
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -720,7 +724,7 @@ public abstract class _LoginSession
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);
@@ -757,29 +761,29 @@ public abstract class _LoginSession
      */
     public static NSArray<LoginSession> sessionsWithUserPid(
             EOEditingContext context,
-            String userNameBinding
-        )
+            String userNameBinding)
     {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "sessionsWithUserPid", "LoginSession" );
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification spec = WCFetchSpecification
+            .fetchSpecificationNamed("sessionsWithUserPid", "LoginSession");
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
-        if ( userNameBinding != null )
+        if (userNameBinding != null)
         {
-            bindings.setObjectForKey( userNameBinding,
-                                      "userName" );
+            bindings.setObjectForKey(userNameBinding,
+                                     "userName");
         }
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+        spec = spec.fetchSpecificationWithQualifierBindings(bindings);
 
         NSArray<LoginSession> objects =
-            objectsWithFetchSpecification( context, spec );
+            objectsWithFetchSpecification(context, spec);
         if (log.isDebugEnabled())
         {
-            log.debug( "sessionsWithUserPid(ec"
+            log.debug("sessionsWithUserPid(ec"
                 + ", " + userNameBinding
-                + "): " + objects );
+                + "): " + objects);
         }
         return objects;
     }
@@ -803,5 +807,5 @@ public abstract class _LoginSession
 
     //~ Instance/static variables .............................................
 
-    static Logger log = Logger.getLogger( LoginSession.class );
+    static Logger log = Logger.getLogger(LoginSession.class);
 }

@@ -1,14 +1,14 @@
 {
     broadcastMessages = {
-        class = EOFetchSpecification; 
-        entityName = SentMessage; 
-        prefetchingRelationshipKeyPaths = (); 
+        class = WCFetchSpecification;
+        entityName = SentMessage;
+        prefetchingRelationshipKeyPaths = ();
         qualifier = {
-            class = EOKeyComparisonQualifier; 
-            leftKey = isBroadcast; 
-            rightKey = true; 
-            selectorName = "isEqualTo:"; 
-        }; 
-        sortOrderings = ({class = EOSortOrdering; key = sentTime; selectorName = ascending; }); 
-    }; 
+            class = EOKeyComparisonQualifier;
+            leftKey = isBroadcast;
+            rightKey = true;
+            selectorName = "isEqualTo:";
+        };
+        sortOrderings = ({class = EOSortOrdering; key = sentTime; selectorName = ascending; });
+    };
 }

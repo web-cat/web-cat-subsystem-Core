@@ -31,6 +31,7 @@ import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
 import org.webcat.core.EOBasedKeyGenerator;
+import org.webcat.woextensions.WCFetchSpecification;
 
 // -------------------------------------------------------------------------
 /**
@@ -106,7 +107,7 @@ public abstract class _PasswordChangeRequest
      * @return The object, or null if no such id exists
      */
     public static PasswordChangeRequest forId(
-        EOEditingContext ec, int id )
+        EOEditingContext ec, int id)
     {
         PasswordChangeRequest obj = null;
         if (id > 0)
@@ -131,9 +132,9 @@ public abstract class _PasswordChangeRequest
      * @return The object, or null if no such id exists
      */
     public static PasswordChangeRequest forId(
-        EOEditingContext ec, String id )
+        EOEditingContext ec, String id)
     {
-        return forId( ec, er.extensions.foundation.ERXValueUtilities.intValue( id ) );
+        return forId(ec, er.extensions.foundation.ERXValueUtilities.intValue(id));
     }
 
 
@@ -157,7 +158,8 @@ public abstract class _PasswordChangeRequest
     public static final String REQUESTS_FOR_USER_FSPEC = "requestsForUser";
     public static final String ENTITY_NAME = "PasswordChangeRequest";
 
-    public final EOBasedKeyGenerator generateKey = new EOBasedKeyGenerator(this);
+    public transient final EOBasedKeyGenerator generateKey =
+        new EOBasedKeyGenerator(this);
 
 
     //~ Methods ...............................................................
@@ -185,7 +187,7 @@ public abstract class _PasswordChangeRequest
     public NSDictionary<String, Object> changedProperties()
     {
         return changesFromSnapshot(
-            editingContext().committedSnapshotForObject(this) );
+            editingContext().committedSnapshotForObject(this));
     }
 
 
@@ -199,7 +201,7 @@ public abstract class _PasswordChangeRequest
         try
         {
             return (Number)EOUtilities.primaryKeyForObject(
-                editingContext() , this ).objectForKey( "id" );
+                editingContext() , this).objectForKey("id");
         }
         catch (Exception e)
         {
@@ -391,8 +393,9 @@ public abstract class _PasswordChangeRequest
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        EOFetchSpecification fspec = new EOFetchSpecification(
-            ENTITY_NAME, qualifier, sortOrderings);
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification fspec = new WCFetchSpecification(
+                ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
     }
@@ -483,7 +486,7 @@ public abstract class _PasswordChangeRequest
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -545,7 +548,7 @@ public abstract class _PasswordChangeRequest
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return firstObjectMatchingValues(
@@ -569,10 +572,11 @@ public abstract class _PasswordChangeRequest
         NSArray<EOSortOrdering> sortOrderings,
         NSDictionary<String, Object> keysAndValues)
     {
-        EOFetchSpecification fspec = new EOFetchSpecification(
-            ENTITY_NAME,
-            EOQualifier.qualifierToMatchAllValues(keysAndValues),
-            sortOrderings);
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification fspec = new WCFetchSpecification(
+                ENTITY_NAME,
+                EOQualifier.qualifierToMatchAllValues(keysAndValues),
+                sortOrderings);
         fspec.setFetchLimit(1);
 
         NSArray<PasswordChangeRequest> objects =
@@ -625,7 +629,7 @@ public abstract class _PasswordChangeRequest
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -725,7 +729,7 @@ public abstract class _PasswordChangeRequest
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);
@@ -762,29 +766,29 @@ public abstract class _PasswordChangeRequest
      */
     public static NSArray<PasswordChangeRequest> requestsExpiredBefore(
             EOEditingContext context,
-            NSTimestamp timeBinding
-        )
+            NSTimestamp timeBinding)
     {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "requestsExpiredBefore", "PasswordChangeRequest" );
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification spec = WCFetchSpecification
+            .fetchSpecificationNamed("requestsExpiredBefore", "PasswordChangeRequest");
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
-        if ( timeBinding != null )
+        if (timeBinding != null)
         {
-            bindings.setObjectForKey( timeBinding,
-                                      "time" );
+            bindings.setObjectForKey(timeBinding,
+                                     "time");
         }
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+        spec = spec.fetchSpecificationWithQualifierBindings(bindings);
 
         NSArray<PasswordChangeRequest> objects =
-            objectsWithFetchSpecification( context, spec );
+            objectsWithFetchSpecification(context, spec);
         if (log.isDebugEnabled())
         {
-            log.debug( "requestsExpiredBefore(ec"
+            log.debug("requestsExpiredBefore(ec"
                 + ", " + timeBinding
-                + "): " + objects );
+                + "): " + objects);
         }
         return objects;
     }
@@ -801,29 +805,29 @@ public abstract class _PasswordChangeRequest
      */
     public static NSArray<PasswordChangeRequest> requestsForCode(
             EOEditingContext context,
-            String codeBinding
-        )
+            String codeBinding)
     {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "requestsForCode", "PasswordChangeRequest" );
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification spec = WCFetchSpecification
+            .fetchSpecificationNamed("requestsForCode", "PasswordChangeRequest");
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
-        if ( codeBinding != null )
+        if (codeBinding != null)
         {
-            bindings.setObjectForKey( codeBinding,
-                                      "code" );
+            bindings.setObjectForKey(codeBinding,
+                                     "code");
         }
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+        spec = spec.fetchSpecificationWithQualifierBindings(bindings);
 
         NSArray<PasswordChangeRequest> objects =
-            objectsWithFetchSpecification( context, spec );
+            objectsWithFetchSpecification(context, spec);
         if (log.isDebugEnabled())
         {
-            log.debug( "requestsForCode(ec"
+            log.debug("requestsForCode(ec"
                 + ", " + codeBinding
-                + "): " + objects );
+                + "): " + objects);
         }
         return objects;
     }
@@ -840,29 +844,29 @@ public abstract class _PasswordChangeRequest
      */
     public static NSArray<PasswordChangeRequest> requestsForUser(
             EOEditingContext context,
-            org.webcat.core.User userBinding
-        )
+            org.webcat.core.User userBinding)
     {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "requestsForUser", "PasswordChangeRequest" );
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification spec = WCFetchSpecification
+            .fetchSpecificationNamed("requestsForUser", "PasswordChangeRequest");
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
-        if ( userBinding != null )
+        if (userBinding != null)
         {
-            bindings.setObjectForKey( userBinding,
-                                      "user" );
+            bindings.setObjectForKey(userBinding,
+                                     "user");
         }
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+        spec = spec.fetchSpecificationWithQualifierBindings(bindings);
 
         NSArray<PasswordChangeRequest> objects =
-            objectsWithFetchSpecification( context, spec );
+            objectsWithFetchSpecification(context, spec);
         if (log.isDebugEnabled())
         {
-            log.debug( "requestsForUser(ec"
+            log.debug("requestsForUser(ec"
                 + ", " + userBinding
-                + "): " + objects );
+                + "): " + objects);
         }
         return objects;
     }
@@ -886,5 +890,5 @@ public abstract class _PasswordChangeRequest
 
     //~ Instance/static variables .............................................
 
-    static Logger log = Logger.getLogger( PasswordChangeRequest.class );
+    static Logger log = Logger.getLogger(PasswordChangeRequest.class);
 }

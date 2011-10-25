@@ -1,26 +1,26 @@
 {
     allObjectsOrderedByName = {
-        class = EOFetchSpecification; 
-        entityName = Theme; 
-        prefetchingRelationshipKeyPaths = (); 
+        class = WCFetchSpecification;
+        entityName = Theme;
+        prefetchingRelationshipKeyPaths = ();
         sortOrderings = (
             {
-                class = EOSortOrdering; 
-                key = name; 
-                selectorName = compareCaseInsensitiveAscending; 
+                class = EOSortOrdering;
+                key = name;
+                selectorName = compareCaseInsensitiveAscending;
             }
-        ); 
-    }; 
+        );
+    };
     themeForDirName = {
-        class = EOFetchSpecification; 
-        entityName = Theme; 
-        fetchLimit = 1; 
-        isDeep = YES; 
+        class = WCFetchSpecification;
+        entityName = Theme;
+        fetchLimit = 1;
+        isDeep = YES;
         qualifier = {
-            class = EOKeyValueQualifier; 
-            key = dirName; 
-            selectorName = "isEqualTo:"; 
-            value = {"_key" = dirName; class = EOQualifierVariable; }; 
-        }; 
-    }; 
+            class = EOKeyValueQualifier;
+            key = dirName;
+            selectorName = "isEqualTo:";
+            value = {"_key" = dirName; class = EOQualifierVariable; };
+        };
+    };
 }

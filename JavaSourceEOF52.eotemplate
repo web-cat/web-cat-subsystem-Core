@@ -36,6 +36,7 @@ import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
 import org.webcat.core.EOBasedKeyGenerator;
+import org.webcat.woextensions.WCFetchSpecification;
 
 // -------------------------------------------------------------------------
 /**
@@ -152,7 +153,7 @@ import org.webcat.core.EOBasedKeyGenerator;
      * @return The object, or null if no such id exists
      */
     public static ${entity.classNameWithoutPackage} forId(
-        EOEditingContext ec, int id )
+        EOEditingContext ec, int id)
     {
         ${entity.classNameWithoutPackage} obj = null;
         if (id > 0)
@@ -177,9 +178,9 @@ import org.webcat.core.EOBasedKeyGenerator;
      * @return The object, or null if no such id exists
      */
     public static ${entity.classNameWithoutPackage} forId(
-        EOEditingContext ec, String id )
+        EOEditingContext ec, String id)
     {
-        return forId( ec, er.extensions.foundation.ERXValueUtilities.intValue( id ) );
+        return forId(ec, er.extensions.foundation.ERXValueUtilities.intValue(id));
     }
 
 
@@ -270,7 +271,7 @@ import org.webcat.core.EOBasedKeyGenerator;
     public NSDictionary<String, Object> changedProperties()
     {
         return changesFromSnapshot(
-            editingContext().committedSnapshotForObject(this) );
+            editingContext().committedSnapshotForObject(this));
     }
 
 
@@ -284,7 +285,7 @@ import org.webcat.core.EOBasedKeyGenerator;
         try
         {
             return (Number)EOUtilities.primaryKeyForObject(
-                editingContext() , this ).objectForKey( "id" );
+                editingContext() , this).objectForKey("id");
         }
         catch (Exception e)
         {
@@ -308,10 +309,10 @@ import org.webcat.core.EOBasedKeyGenerator;
     public ${attribute.userInfo.valueClassName} ${attribute.name}()
     {
         ${attribute.javaClassName} dbValue =
-            (${attribute.javaClassName})storedValueForKey( "${attribute.name}" );
-        if ( ${attribute.name}RawCache != dbValue )
+            (${attribute.javaClassName})storedValueForKey("${attribute.name}");
+        if (${attribute.name}RawCache != dbValue)
         {
-            if ( dbValue != null && dbValue.equals( ${attribute.name}RawCache ) )
+            if (dbValue != null && dbValue.equals( ${attribute.name}RawCache))
             {
                 // They are still equal, so just update the raw cache
                 ${attribute.name}RawCache = dbValue;
@@ -1035,8 +1036,9 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        EOFetchSpecification fspec = new EOFetchSpecification(
-            ENTITY_NAME, qualifier, sortOrderings);
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification fspec = new WCFetchSpecification(
+                ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
     }
@@ -1127,7 +1129,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -1189,7 +1191,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return firstObjectMatchingValues(
@@ -1213,10 +1215,11 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
         NSArray<EOSortOrdering> sortOrderings,
         NSDictionary<String, Object> keysAndValues)
     {
-        EOFetchSpecification fspec = new EOFetchSpecification(
-            ENTITY_NAME,
-            EOQualifier.qualifierToMatchAllValues(keysAndValues),
-            sortOrderings);
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification fspec = new WCFetchSpecification(
+                ENTITY_NAME,
+                EOQualifier.qualifierToMatchAllValues(keysAndValues),
+                sortOrderings);
         fspec.setFetchLimit(1);
 
         NSArray<${entity.classNameWithoutPackage}> objects =
@@ -1269,7 +1272,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -1369,7 +1372,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);
@@ -1416,8 +1419,9 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
 
         ) throws EOUtilities.MoreThanOneException
     {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "${fetchSpec.name}", "${entity.name}" );
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification spec = WCFetchSpecification
+            .fetchSpecificationNamed("${fetchSpec.name}", "${entity.name}");
 #if ($fetchSpec.distinctBindings.size() > 0)
 
         NSMutableDictionary<String, Object> bindings =
@@ -1479,8 +1483,9 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
 
         )
     {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "${fetchSpec.name}", "${entity.name}" );
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification spec = WCFetchSpecification
+            .fetchSpecificationNamed("${fetchSpec.name}", "${entity.name}");
 #if ($fetchSpec.distinctBindings.size() > 0)
 
         NSMutableDictionary<String, Object> bindings =
@@ -1532,36 +1537,35 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
      */
     public static NSArray<${entity.classNameWithoutPackage}> ${fetchSpec.name}(
             EOEditingContext context#foreach ($binding in $fetchSpec.distinctBindings),
-            ${binding.attributePath.childClassName} ${binding.name}Binding#end
-
-        )
+            ${binding.attributePath.childClassName} ${binding.name}Binding#end)
     {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "${fetchSpec.name}", "${entity.name}" );
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification spec = WCFetchSpecification
+            .fetchSpecificationNamed("${fetchSpec.name}", "${entity.name}");
 #if ($fetchSpec.distinctBindings.size() > 0)
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
 #foreach ($binding in $fetchSpec.distinctBindings)
-        if ( ${binding.name}Binding != null )
+        if (${binding.name}Binding != null)
         {
-            bindings.setObjectForKey( ${binding.name}Binding,
-                                      "${binding.name}" );
+            bindings.setObjectForKey(${binding.name}Binding,
+                                     "${binding.name}");
         }
 #end
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+        spec = spec.fetchSpecificationWithQualifierBindings(bindings);
 #end
 
         NSArray<${entity.classNameWithoutPackage}> objects =
-            objectsWithFetchSpecification( context, spec );
+            objectsWithFetchSpecification(context, spec);
         if (log.isDebugEnabled())
         {
-            log.debug( "${fetchSpec.name}(ec"
+            log.debug("${fetchSpec.name}(ec"
 #foreach ($binding in $fetchSpec.distinctBindings)
                 + ", " + ${binding.name}Binding
 #end
-                + "): " + objects );
+                + "): " + objects);
         }
         return objects;
     }
@@ -1633,5 +1637,5 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
 
     //~ Instance/static variables .............................................
 
-    static Logger log = Logger.getLogger( ${entity.classNameWithoutPackage}.class );
+    static Logger log = Logger.getLogger(${entity.classNameWithoutPackage}.class);
 }

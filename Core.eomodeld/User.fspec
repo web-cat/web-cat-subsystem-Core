@@ -1,154 +1,154 @@
 {
     participantsForCourse = {
-        class = EOFetchSpecification; 
-        entityName = User; 
-        fetchLimit = 0; 
-        isDeep = YES; 
+        class = WCFetchSpecification;
+        entityName = User;
+        fetchLimit = 0;
+        isDeep = YES;
         qualifier = {
-            class = EOAndQualifier; 
+            class = EOAndQualifier;
             qualifiers = (
                 {
-                    class = EOKeyValueQualifier; 
-                    key = accessLevel; 
-                    selectorName = "isEqualTo:"; 
-                    value = {"_key" = accessLevel; class = EOQualifierVariable; }; 
-                }, 
+                    class = EOKeyValueQualifier;
+                    key = accessLevel;
+                    selectorName = "isEqualTo:";
+                    value = {"_key" = accessLevel; class = EOQualifierVariable; };
+                },
                 {
-                    class = EOKeyValueQualifier; 
-                    key = enrolledIn; 
-                    selectorName = "doesContain:"; 
-                    value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
+                    class = EOKeyValueQualifier;
+                    key = enrolledIn;
+                    selectorName = "doesContain:";
+                    value = {"_key" = courseOffering; class = EOQualifierVariable; };
                 }
-            ); 
-        }; 
-    }; 
+            );
+        };
+    };
     staffForCourse = {
-        class = EOFetchSpecification; 
-        entityName = User; 
-        fetchLimit = 0; 
-        isDeep = YES; 
+        class = WCFetchSpecification;
+        entityName = User;
+        fetchLimit = 0;
+        isDeep = YES;
         qualifier = {
-            class = EOOrQualifier; 
+            class = EOOrQualifier;
             qualifiers = (
                 {
-                    class = EOKeyValueQualifier; 
-                    key = graderFor; 
-                    selectorName = "doesContain:"; 
-                    value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
-                }, 
+                    class = EOKeyValueQualifier;
+                    key = graderFor;
+                    selectorName = "doesContain:";
+                    value = {"_key" = courseOffering; class = EOQualifierVariable; };
+                },
                 {
-                    class = EOKeyValueQualifier; 
-                    key = teaching; 
-                    selectorName = "doesContain:"; 
-                    value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
+                    class = EOKeyValueQualifier;
+                    key = teaching;
+                    selectorName = "doesContain:";
+                    value = {"_key" = courseOffering; class = EOQualifierVariable; };
                 }
-            ); 
-        }; 
-    }; 
+            );
+        };
+    };
     studentsForCourse = {
-        class = EOFetchSpecification; 
-        entityName = User; 
-        fetchLimit = 0; 
-        isDeep = YES; 
+        class = WCFetchSpecification;
+        entityName = User;
+        fetchLimit = 0;
+        isDeep = YES;
         qualifier = {
-            class = EOAndQualifier; 
+            class = EOAndQualifier;
             qualifiers = (
                 {
-                    class = EOKeyValueQualifier; 
-                    key = enrolledIn; 
-                    selectorName = "doesContain:"; 
-                    value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
-                }, 
+                    class = EOKeyValueQualifier;
+                    key = enrolledIn;
+                    selectorName = "doesContain:";
+                    value = {"_key" = courseOffering; class = EOQualifierVariable; };
+                },
                 {
-                    class = EONotQualifier; 
+                    class = EONotQualifier;
                     qualifier = {
-                        class = EOOrQualifier; 
+                        class = EOOrQualifier;
                         qualifiers = (
                             {
-                                class = EOKeyValueQualifier; 
-                                key = teaching; 
-                                selectorName = "doesContain:"; 
-                                value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
-                            }, 
+                                class = EOKeyValueQualifier;
+                                key = teaching;
+                                selectorName = "doesContain:";
+                                value = {"_key" = courseOffering; class = EOQualifierVariable; };
+                            },
                             {
-                                class = EOKeyValueQualifier; 
-                                key = graderFor; 
-                                selectorName = "doesContain:"; 
-                                value = {"_key" = courseOffering; class = EOQualifierVariable; }; 
+                                class = EOKeyValueQualifier;
+                                key = graderFor;
+                                selectorName = "doesContain:";
+                                value = {"_key" = courseOffering; class = EOQualifierVariable; };
                             }
-                        ); 
-                    }; 
+                        );
+                    };
                 }
-            ); 
-        }; 
-    }; 
+            );
+        };
+    };
     systemAdmins = {
-        class = EOFetchSpecification; 
-        entityName = User; 
-        prefetchingRelationshipKeyPaths = (); 
+        class = WCFetchSpecification;
+        entityName = User;
+        prefetchingRelationshipKeyPaths = ();
         qualifier = {
-            class = EOKeyValueQualifier; 
-            key = accessLevel; 
-            selectorName = "isGreaterThanOrEqualTo:"; 
-            value = {class = NSNumber; value = 90; }; 
-        }; 
-    }; 
+            class = EOKeyValueQualifier;
+            key = accessLevel;
+            selectorName = "isGreaterThanOrEqualTo:";
+            value = {class = NSNumber; value = 90; };
+        };
+    };
     userWithDomainAndEmail = {
-        class = EOFetchSpecification; 
-        entityName = User; 
-        isDeep = YES; 
+        class = WCFetchSpecification;
+        entityName = User;
+        isDeep = YES;
         qualifier = {
-            class = EOAndQualifier; 
+            class = EOAndQualifier;
             qualifiers = (
                 {
-                    class = EOKeyValueQualifier; 
-                    key = authenticationDomain; 
-                    selectorName = "isEqualTo:"; 
-                    value = {"_key" = domain; class = EOQualifierVariable; }; 
-                }, 
+                    class = EOKeyValueQualifier;
+                    key = authenticationDomain;
+                    selectorName = "isEqualTo:";
+                    value = {"_key" = domain; class = EOQualifierVariable; };
+                },
                 {
-                    class = EOKeyValueQualifier; 
-                    key = email; 
-                    selectorName = "isEqualTo:"; 
-                    value = {"_key" = email; class = EOQualifierVariable; }; 
+                    class = EOKeyValueQualifier;
+                    key = email;
+                    selectorName = "isEqualTo:";
+                    value = {"_key" = email; class = EOQualifierVariable; };
                 }
-            ); 
-        }; 
-        userInfo = {ensureUnique = true; }; 
-    }; 
+            );
+        };
+        userInfo = {ensureUnique = true; };
+    };
     userWithDomainAndName = {
-        class = EOFetchSpecification; 
-        entityName = User; 
-        isDeep = YES; 
+        class = WCFetchSpecification;
+        entityName = User;
+        isDeep = YES;
         qualifier = {
-            class = EOAndQualifier; 
+            class = EOAndQualifier;
             qualifiers = (
                 {
-                    class = EOKeyValueQualifier; 
-                    key = authenticationDomain; 
-                    selectorName = "isEqualTo:"; 
-                    value = {"_key" = domain; class = EOQualifierVariable; }; 
-                }, 
+                    class = EOKeyValueQualifier;
+                    key = authenticationDomain;
+                    selectorName = "isEqualTo:";
+                    value = {"_key" = domain; class = EOQualifierVariable; };
+                },
                 {
-                    class = EOKeyValueQualifier; 
-                    key = userName; 
-                    selectorName = "isEqualTo:"; 
-                    value = {"_key" = userName; class = EOQualifierVariable; }; 
+                    class = EOKeyValueQualifier;
+                    key = userName;
+                    selectorName = "isEqualTo:";
+                    value = {"_key" = userName; class = EOQualifierVariable; };
                 }
-            ); 
-        }; 
-        userInfo = {ensureUnique = true; }; 
-    }; 
+            );
+        };
+        userInfo = {ensureUnique = true; };
+    };
     userWithName = {
-        class = EOFetchSpecification; 
-        entityName = User; 
-        isDeep = YES; 
+        class = WCFetchSpecification;
+        entityName = User;
+        isDeep = YES;
         qualifier = {
-            class = EOKeyValueQualifier; 
-            key = userName; 
-            selectorName = "isEqualTo:"; 
-            value = {"_key" = name; class = EOQualifierVariable; }; 
-        }; 
-        userInfo = {ensureUnique = true; }; 
-    }; 
+            class = EOKeyValueQualifier;
+            key = userName;
+            selectorName = "isEqualTo:";
+            value = {"_key" = name; class = EOQualifierVariable; };
+        };
+        userInfo = {ensureUnique = true; };
+    };
 }

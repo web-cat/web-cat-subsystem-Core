@@ -31,6 +31,7 @@ import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
 import org.webcat.core.EOBasedKeyGenerator;
+import org.webcat.woextensions.WCFetchSpecification;
 
 // -------------------------------------------------------------------------
 /**
@@ -107,7 +108,7 @@ public abstract class _ObjectQuery
      * @return The object, or null if no such id exists
      */
     public static ObjectQuery forId(
-        EOEditingContext ec, int id )
+        EOEditingContext ec, int id)
     {
         ObjectQuery obj = null;
         if (id > 0)
@@ -132,9 +133,9 @@ public abstract class _ObjectQuery
      * @return The object, or null if no such id exists
      */
     public static ObjectQuery forId(
-        EOEditingContext ec, String id )
+        EOEditingContext ec, String id)
     {
-        return forId( ec, er.extensions.foundation.ERXValueUtilities.intValue( id ) );
+        return forId(ec, er.extensions.foundation.ERXValueUtilities.intValue(id));
     }
 
 
@@ -162,7 +163,8 @@ public abstract class _ObjectQuery
     public static final String SAVED_QUERIES_FOR_OBJECT_TYPE_AND_USER_FSPEC = "savedQueriesForObjectTypeAndUser";
     public static final String ENTITY_NAME = "ObjectQuery";
 
-    public final EOBasedKeyGenerator generateKey = new EOBasedKeyGenerator(this);
+    public transient final EOBasedKeyGenerator generateKey =
+        new EOBasedKeyGenerator(this);
 
 
     //~ Methods ...............................................................
@@ -190,7 +192,7 @@ public abstract class _ObjectQuery
     public NSDictionary<String, Object> changedProperties()
     {
         return changesFromSnapshot(
-            editingContext().committedSnapshotForObject(this) );
+            editingContext().committedSnapshotForObject(this));
     }
 
 
@@ -204,7 +206,7 @@ public abstract class _ObjectQuery
         try
         {
             return (Number)EOUtilities.primaryKeyForObject(
-                editingContext() , this ).objectForKey( "id" );
+                editingContext() , this).objectForKey("id");
         }
         catch (Exception e)
         {
@@ -282,10 +284,10 @@ public abstract class _ObjectQuery
     public org.webcat.core.MutableDictionary queryInfo()
     {
         NSData dbValue =
-            (NSData)storedValueForKey( "queryInfo" );
-        if ( queryInfoRawCache != dbValue )
+            (NSData)storedValueForKey("queryInfo");
+        if (queryInfoRawCache != dbValue)
         {
-            if ( dbValue != null && dbValue.equals( queryInfoRawCache ) )
+            if (dbValue != null && dbValue.equals( queryInfoRawCache))
             {
                 // They are still equal, so just update the raw cache
                 queryInfoRawCache = dbValue;
@@ -629,8 +631,9 @@ public abstract class _ObjectQuery
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        EOFetchSpecification fspec = new EOFetchSpecification(
-            ENTITY_NAME, qualifier, sortOrderings);
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification fspec = new WCFetchSpecification(
+                ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
     }
@@ -721,7 +724,7 @@ public abstract class _ObjectQuery
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -783,7 +786,7 @@ public abstract class _ObjectQuery
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return firstObjectMatchingValues(
@@ -807,10 +810,11 @@ public abstract class _ObjectQuery
         NSArray<EOSortOrdering> sortOrderings,
         NSDictionary<String, Object> keysAndValues)
     {
-        EOFetchSpecification fspec = new EOFetchSpecification(
-            ENTITY_NAME,
-            EOQualifier.qualifierToMatchAllValues(keysAndValues),
-            sortOrderings);
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification fspec = new WCFetchSpecification(
+                ENTITY_NAME,
+                EOQualifier.qualifierToMatchAllValues(keysAndValues),
+                sortOrderings);
         fspec.setFetchLimit(1);
 
         NSArray<ObjectQuery> objects =
@@ -863,7 +867,7 @@ public abstract class _ObjectQuery
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -963,7 +967,7 @@ public abstract class _ObjectQuery
                 throw new IllegalArgumentException("Keys should be strings.");
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);
@@ -1002,35 +1006,35 @@ public abstract class _ObjectQuery
     public static NSArray<ObjectQuery> savedQueriesForObjectTypeAndUser(
             EOEditingContext context,
             String objectTypeBinding,
-            org.webcat.core.User userBinding
-        )
+            org.webcat.core.User userBinding)
     {
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed( "savedQueriesForObjectTypeAndUser", "ObjectQuery" );
+        @SuppressWarnings("unchecked")
+        EOFetchSpecification spec = WCFetchSpecification
+            .fetchSpecificationNamed("savedQueriesForObjectTypeAndUser", "ObjectQuery");
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
-        if ( objectTypeBinding != null )
+        if (objectTypeBinding != null)
         {
-            bindings.setObjectForKey( objectTypeBinding,
-                                      "objectType" );
+            bindings.setObjectForKey(objectTypeBinding,
+                                     "objectType");
         }
-        if ( userBinding != null )
+        if (userBinding != null)
         {
-            bindings.setObjectForKey( userBinding,
-                                      "user" );
+            bindings.setObjectForKey(userBinding,
+                                     "user");
         }
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+        spec = spec.fetchSpecificationWithQualifierBindings(bindings);
 
         NSArray<ObjectQuery> objects =
-            objectsWithFetchSpecification( context, spec );
+            objectsWithFetchSpecification(context, spec);
         if (log.isDebugEnabled())
         {
-            log.debug( "savedQueriesForObjectTypeAndUser(ec"
+            log.debug("savedQueriesForObjectTypeAndUser(ec"
                 + ", " + objectTypeBinding
                 + ", " + userBinding
-                + "): " + objects );
+                + "): " + objects);
         }
         return objects;
     }
@@ -1054,5 +1058,5 @@ public abstract class _ObjectQuery
 
     //~ Instance/static variables .............................................
 
-    static Logger log = Logger.getLogger( ObjectQuery.class );
+    static Logger log = Logger.getLogger(ObjectQuery.class);
 }
