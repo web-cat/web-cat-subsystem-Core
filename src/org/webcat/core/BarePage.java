@@ -25,7 +25,7 @@ import com.webobjects.appserver.*;
 import java.util.StringTokenizer;
 import org.webcat.core.Application;
 import org.webcat.core.BarePage;
-import org.webcat.core.WCResourceManager;
+import org.webcat.woextensions.WCResourceManager;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------

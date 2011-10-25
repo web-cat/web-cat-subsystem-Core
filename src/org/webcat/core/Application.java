@@ -49,6 +49,10 @@ import org.webcat.core.messaging.IMessageDispatcher;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
 import org.webcat.core.webdav.WebDAVRequestHandler;
 import org.webcat.dbupdate.UpdateEngine;
+import org.webcat.woextensions.AjaxUpdateContainerTagProcessor;
+import org.webcat.woextensions.WCContext;
+import org.webcat.woextensions.WCResourceManager;
+import org.webcat.woextensions.WCEC;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOMessage;
@@ -212,7 +216,7 @@ public class Application
             configurationProperties().valueForKey("WOPageCacheSize"), 30));
 
         updateStaticHtmlResources();
-        WOEC.installWOECFactory();
+        WCEC.installWOECFactory();
 
         if (!isDevelopmentModeSafe() && isDirectConnectEnabled())
         {
