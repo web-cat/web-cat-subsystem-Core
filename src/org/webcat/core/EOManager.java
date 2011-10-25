@@ -151,6 +151,30 @@ public interface EOManager
 
         // ----------------------------------------------------------
         /**
+         * Calls saveChanges() on the internal editing context, returning
+         * null on success or an appropriate Exception object on failure.
+         * This method allows the caller to decide what to do when saving
+         * fails.
+         * @return The exception that occurred, if saving fails, or null
+         * on success.
+         */
+        public Exception tryToSaveChanges()
+        {
+            Exception result = null;
+            try
+            {
+                ec.saveChanges();
+            }
+            catch (Exception e)
+            {
+                result = e;
+            }
+            return result;
+        }
+
+
+        // ----------------------------------------------------------
+        /**
          * Calls saveChanges() on the internal editing context.  If any
          * error occurs, it throws away the old editing context and
          * creates a new one.  Assumes that the editing context is currently
@@ -165,21 +189,20 @@ public interface EOManager
          */
         public EOEnterpriseObject saveChanges(EOEnterpriseObject eo)
         {
-            try
-            {
-                ec.saveChanges();
-            }
-            catch (Exception e)
+            Exception err = tryToSaveChanges();
+            if (err != null)
             {
                 log.info("Exception in saveChanges(); throwing away old EC",
-                    e);
+                    err);
 
                 // Something happened, so try replacing the old context
                 // with a new one.
                 EOEditingContext newContext =
                     Application.newPeerEditingContext();
                 newContext.lock();
+
                 eo = EOUtilities.localInstanceOfObject(newContext, eo);
+                newContext.refreshObject(eo);
 
                 // Now try to clean up the old one
                 try
@@ -198,8 +221,8 @@ public interface EOManager
                 }
                 catch (Exception ee)
                 {
-                    // if there is an error, ignore it since we're not going to
-                    // use this ec any more anyway
+                    // if there is an error, ignore it since we're not going
+                    // to use this ec any more anyway
                 }
 
                 // Finally do the replacement
@@ -216,6 +239,27 @@ public interface EOManager
         public void lock()
         {
             ec.lock();
+        }
+
+
+        // ----------------------------------------------------------
+        /**
+         * Revert the internal editing context, throwing away any
+         * pending changes.
+         */
+        public void revert()
+        {
+            ec.revert();
+        }
+
+
+        // ----------------------------------------------------------
+        /**
+         * Refresh all objects in the internal editing context.
+         */
+        public void refreshAllObjects()
+        {
+            ec.refreshAllObjects();
         }
 
 
@@ -242,6 +286,6 @@ public interface EOManager
         //~ Instance/static variables .........................................
         private EOEditingContext ec;
 
-        static Logger log = Logger.getLogger( ECManager.class );
+        static Logger log = Logger.getLogger(ECManager.class);
     }
 }
