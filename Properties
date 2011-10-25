@@ -1,7 +1,7 @@
 #This file is automatically rewritten by ANT, so all formatting will be trashed.
-#Wed Oct 19 08:54:07 EDT 2011
+#Fri Oct 21 11:13:57 EDT 2011
 Core.license.url=http\://www.gnu.org/licenses/agpl.html
-Core.version.date=20111019
+Core.version.date=20111021
 Core.version.minor=2
 Core.copyright=(c) 2006-2011 Virginia Tech Department of Computer Science
 log4j.logger.org.webcat.core.Theme=INFO
@@ -22,7 +22,7 @@ subsystem.Core=
 dbConnectDriverGLOBAL=com.mysql.jdbc.Driver
 ognl.helperFunctions=true
 log4j.logger.org.webcat.core.Application.requests=WARN
-er.extensions.ERXResourceManager.versionManager=org.webcat.core.WCResourceManager$WCVersionManager
+er.extensions.ERXResourceManager.versionManager=org.webcat.woextensions.WCResourceManager$WCVersionManager
 er.extensions.ERXEC.defaultCoalesceAutoLocks=true
 Core.provider=Virginia Tech Computer Science
 er.extensions.eof.ERXEC.defaultAutomaticLockUnlock=true

@@ -23,6 +23,7 @@ package org.webcat.core;
 
 import java.io.File;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
+import org.webcat.woextensions.WCResourceManager;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOCookie;
 import com.webobjects.eocontrol.EOEditingContext;

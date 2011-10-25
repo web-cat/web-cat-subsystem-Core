@@ -43,7 +43,7 @@ import org.webcat.core.MutableArray;
 import org.webcat.core.MutableDictionary;
 import org.webcat.core.Session;
 import org.webcat.core.Theme;
-import org.webcat.core.WCResourceManager;
+import org.webcat.woextensions.WCResourceManager;
 
 // ------------------------------------------------------------------------
 /**

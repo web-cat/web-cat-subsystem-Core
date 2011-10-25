@@ -31,10 +31,10 @@ import org.webcat.core.TabDescriptor;
 import org.webcat.core.User;
 import org.webcat.core.WCComponent;
 import org.webcat.core.WCComponentWithErrorMessages;
-import org.webcat.core.WOEC;
 import org.webcat.core.WizardPage;
 import org.apache.log4j.Logger;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
+import org.webcat.woextensions.WCEC;
 
 // -------------------------------------------------------------------------
 /**
@@ -882,7 +882,7 @@ public class WCComponent
                 String managerKey  = Thread.currentThread().toString();
 
                 // set up nested ec for this task, if there is one
-                peerContextManager = (WOEC.PeerManager)wcSession()
+                peerContextManager = (WCEC.PeerManager)wcSession()
                     .transientState().valueForKey(managerKey);
                 if (log.isDebugEnabled())
                 {
@@ -898,7 +898,7 @@ public class WCComponent
 
 
     // ----------------------------------------------------------
-    private WOEC.PeerManager peerContextManager()
+    private WCEC.PeerManager peerContextManager()
     {
         if (peerContextManager == null)
         {
@@ -969,7 +969,7 @@ public class WCComponent
     //~ Instance/static variables .............................................
 
     private TabDescriptor     currentTab;
-    private WOEC.PeerManager  peerContextManager;
+    private WCEC.PeerManager  peerContextManager;
     private User              user;
     private boolean           alreadyGrabbed;
     private boolean           breakWorkflow;

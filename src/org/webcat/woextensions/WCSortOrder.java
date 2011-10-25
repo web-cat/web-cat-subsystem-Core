@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -19,21 +19,19 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package org.webcat.core;
-
+package org.webcat.woextensions;
 
 import com.webobjects.appserver.WOContext;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSSelector;
 
-
 // -------------------------------------------------------------------------
 /**
- * Places a titlebar and a grey window-looking rectangle around and behind its
- * contents.
+ * Customizes the images used to indicate current sort order..
  *
  * @author Lally Singh
- * @version $Id$
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class WCSortOrder
     extends com.webobjects.woextensions.WOSortOrder
@@ -46,9 +44,9 @@ public class WCSortOrder
      *
      * @param context The page's context
      */
-    public WCSortOrder( WOContext context )
+    public WCSortOrder(WOContext context)
     {
-        super( context );
+        super(context);
     }
 
 
@@ -67,18 +65,18 @@ public class WCSortOrder
     public String imageName()
     {
         String anImageName = "Unsorted.gif";
-        if ( _isCurrentKeyPrimary() )
+        if (_isCurrentKeyPrimary())
         {
-            NSSelector aCurrentState = _primaryKeySortOrderingSelector();
-            if ( aCurrentState == EOSortOrdering.CompareAscending
-                 || aCurrentState ==
-                     EOSortOrdering.CompareCaseInsensitiveAscending )
+            NSSelector<?> aCurrentState = _primaryKeySortOrderingSelector();
+            if (aCurrentState == EOSortOrdering.CompareAscending
+                || aCurrentState ==
+                    EOSortOrdering.CompareCaseInsensitiveAscending)
             {
                 anImageName = "Ascending.gif";
             }
-            else if ( aCurrentState == EOSortOrdering.CompareDescending
-                      || aCurrentState ==
-                          EOSortOrdering.CompareCaseInsensitiveDescending )
+            else if (aCurrentState == EOSortOrdering.CompareDescending
+                     || aCurrentState ==
+                         EOSortOrdering.CompareCaseInsensitiveDescending)
             {
                 anImageName = "Descending.gif";
             }

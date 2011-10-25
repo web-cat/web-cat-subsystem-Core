@@ -19,9 +19,11 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package org.webcat.core;
+package org.webcat.woextensions;
 
 import org.apache.log4j.Logger;
+import org.webcat.core.Application;
+import org.webcat.core.EOManager;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOObjectStore;
 import com.webobjects.foundation.NSArray;
@@ -37,7 +39,7 @@ import com.webobjects.foundation.NSMutableDictionary;
  *  @author  Last changed by $Author$
  *  @version $Revision$, $Date$
  */
-public class WOEC
+public class WCEC
     extends er.extensions.eof.ERXEC
 {
     //~ Constructors ..........................................................
@@ -46,7 +48,7 @@ public class WOEC
     /**
      * Creates a new WOEC object.
      */
-    public WOEC()
+    public WCEC()
     {
         super();
         if (log.isDebugEnabled())
@@ -61,9 +63,9 @@ public class WOEC
      * Creates a new WOEC object.
      * @param os the parent object store
      */
-    public WOEC( EOObjectStore os )
+    public WCEC(EOObjectStore os)
     {
-        super( os );
+        super(os);
         if (log.isDebugEnabled())
         {
             log.debug("creating new ec: " + hashCode());
@@ -88,11 +90,11 @@ public class WOEC
     public static class WOECFactory
         extends er.extensions.eof.ERXEC.DefaultFactory
     {
-        protected EOEditingContext _createEditingContext( EOObjectStore parent )
+        protected EOEditingContext _createEditingContext(EOObjectStore parent)
         {
-            return new WOEC( parent == null
-                             ? EOEditingContext.defaultParentObjectStore()
-                             : parent );
+            return new WCEC(parent == null
+                            ? EOEditingContext.defaultParentObjectStore()
+                            : parent);
         }
     }
 
@@ -100,7 +102,7 @@ public class WOEC
     // ----------------------------------------------------------
     public static void installWOECFactory()
     {
-        er.extensions.eof.ERXEC.setFactory( new WOECFactory() );
+        er.extensions.eof.ERXEC.setFactory(new WOECFactory());
     }
 
 
@@ -188,11 +190,11 @@ public class WOEC
                 }
                 if (cachePermanently)
                 {
-                    owner.cachePermanently( this );
+                    owner.cachePermanently(this);
                 }
                 else
                 {
-                    owner.cache( this );
+                    owner.cache(this);
                 }
             }
         }
@@ -349,5 +351,5 @@ public class WOEC
 
     //~ Instance/static variables .............................................
 
-    static Logger log = Logger.getLogger( WOEC.class );
+    static Logger log = Logger.getLogger(WCEC.class);
 }

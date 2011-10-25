@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -19,7 +19,7 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package org.webcat.core;
+package org.webcat.woextensions;
 
 import java.net.MalformedURLException;
 import java.util.HashMap;
@@ -29,7 +29,8 @@ import com.webobjects.foundation.*;
 import er.extensions.appserver.ERXResourceManager;
 import er.extensions.foundation.ERXMutableURL;
 import org.webcat.core.Application;
-import org.webcat.core.WCResourceManager;
+import org.webcat.core.Subsystem;
+import org.webcat.core.SubsystemManager;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -78,7 +79,7 @@ public class WCResourceManager
         String    aResourceName,
         String    aFrameworkName,
         NSArray   aLanguageList,
-        WORequest aRequest )
+        WORequest aRequest)
     {
         if (wantExemplar && exemplarRequest == null && aRequest != null)
         {
@@ -89,16 +90,16 @@ public class WCResourceManager
         }
         if (aFrameworkName == null)
         {
-            int pos = aResourceName.indexOf( FRAMEWORK_SUFFIX );
-            if ( pos >= 0 )
+            int pos = aResourceName.indexOf(FRAMEWORK_SUFFIX);
+            if (pos >= 0)
             {
-                aFrameworkName = aResourceName.substring( 0, pos );
+                aFrameworkName = aResourceName.substring(0, pos);
                 aResourceName = aResourceName.substring(
-                    pos + FRAMEWORK_SUFFIX.length() );
+                    pos + FRAMEWORK_SUFFIX.length());
             }
         }
         return super.urlForResourceNamed(
-            aResourceName, aFrameworkName, aLanguageList, aRequest );
+            aResourceName, aFrameworkName, aLanguageList, aRequest);
     }
 
 
@@ -107,12 +108,15 @@ public class WCResourceManager
         String     aResourceName,
         String     aFrameworkName,
         NSArray<?> aLanguageList,
-        WORequest  aRequest )
+        WORequest  aRequest)
     {
-        if (aRequest == null) aRequest = exemplarRequest;
-        return ( (WCResourceManager) Application.application()
-            .resourceManager() ).urlForResourceNamed(
-                aResourceName, aFrameworkName, aLanguageList, aRequest );
+        if (aRequest == null)
+        {
+            aRequest = exemplarRequest;
+        }
+        return ((WCResourceManager)Application.application()
+            .resourceManager()).urlForResourceNamed(
+                aResourceName, aFrameworkName, aLanguageList, aRequest);
     }
 
 
@@ -121,7 +125,7 @@ public class WCResourceManager
         String     aResourceName,
         String     aFrameworkName,
         NSArray<?> aLanguageList,
-        WORequest  aRequest )
+        WORequest  aRequest)
     {
         String result = resourceURLFor(
             aResourceName, aFrameworkName, aLanguageList, aRequest);
@@ -139,12 +143,15 @@ public class WCResourceManager
 
     // ----------------------------------------------------------
     public static String resourceURLFor(
-        String aResourceName, WORequest aRequest )
+        String aResourceName, WORequest aRequest)
     {
-        if (aRequest == null) aRequest = exemplarRequest;
-        return ( (WCResourceManager) Application.application()
-            .resourceManager() ).urlForResourceNamed(
-                aResourceName, null, null, aRequest );
+        if (aRequest == null)
+        {
+            aRequest = exemplarRequest;
+        }
+        return ((WCResourceManager)Application.application()
+            .resourceManager()).urlForResourceNamed(
+                aResourceName, null, null, aRequest);
     }
 
 
@@ -295,18 +302,17 @@ public class WCResourceManager
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
-    private static String standardizeURL( String url )
+    private static String standardizeURL(String url)
     {
         String result = url;
-        int pos = result.indexOf( ':' );
-        if ( pos > 0
-             && pos < result.length() - 2
-             && result.charAt( pos + 1 ) == '/'
-             && result.charAt( pos + 2 ) != '/'
-           )
+        int pos = result.indexOf(':');
+        if (pos > 0
+            && pos < result.length() - 2
+            && result.charAt( pos + 1 ) == '/'
+            && result.charAt( pos + 2 ) != '/')
         {
-            result = result.substring( 0, pos + 1 ) + "/"
-                + result.substring( pos + 1 );
+            result = result.substring(0, pos + 1) + "/"
+                + result.substring(pos + 1);
         }
         return result.replaceAll("[/]([A-Za-z])%3A","$1:")
             .replaceAll("[+][%]26[+]", " & ");
@@ -321,5 +327,5 @@ public class WCResourceManager
     private static WORequest exemplarRequest;
     private static boolean wantExemplar = false;
 
-    static Logger log = Logger.getLogger( WCResourceManager.class );
+    static Logger log = Logger.getLogger(WCResourceManager.class);
 }

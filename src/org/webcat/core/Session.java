@@ -22,9 +22,10 @@
 package org.webcat.core;
 
 import org.apache.log4j.Logger;
-import org.webcat.core.WOEC.PeerManager;
-import org.webcat.core.WOEC.PeerManagerPool;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
+import org.webcat.woextensions.WCEC;
+import org.webcat.woextensions.WCEC.PeerManager;
+import org.webcat.woextensions.WCEC.PeerManagerPool;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOEditingContext;
@@ -87,7 +88,7 @@ public class Session
 
         tabs.mergeClonedChildren( subsystemTabTemplate );
         tabs.selectDefault();
-        childManagerPool = new WOEC.PeerManagerPool();
+        childManagerPool = new WCEC.PeerManagerPool();
     }
 
 
@@ -516,11 +517,11 @@ public class Session
                 {
                     ((EOEditingContext)value).dispose();
                 }
-                else if (value instanceof WOEC.PeerManager)
+                else if (value instanceof WCEC.PeerManager)
                 {
                     ((PeerManager)value).dispose();
                 }
-                else if (value instanceof WOEC.PeerManagerPool)
+                else if (value instanceof WCEC.PeerManagerPool)
                 {
                     ((PeerManagerPool)value).dispose();
                 }
@@ -549,9 +550,9 @@ public class Session
      * context.
      * @return The child editing context, encapsulated in a manager wrapper
      */
-    public WOEC.PeerManager createManagedPeerEditingContext()
+    public WCEC.PeerManager createManagedPeerEditingContext()
     {
-        return new WOEC.PeerManager(childManagerPool);
+        return new WCEC.PeerManager(childManagerPool);
     }
 
 
@@ -728,7 +729,7 @@ public class Session
     private User                  localUser            = null;
     private LoginSession          loginSession         = null;
     private NSMutableDictionary<String, Object> transientState;
-    private WOEC.PeerManagerPool  childManagerPool;
+    private WCEC.PeerManagerPool  childManagerPool;
     private boolean               doNotUseLoginSession = false;
     private Theme                 temporaryTheme;
 

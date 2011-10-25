@@ -64,7 +64,7 @@ er.extensions.appserver.ERXApplication.useEditingContextUnlocker = true
 er.extensions.eof.ERXEC.defaultAutomaticLockUnlock = true
 er.extensions.eof.ERXEC.defaultCoalesceAutoLocks = true
 er.extensions.ERXResourceManager.versionManager = \
-    org.webcat.core.WCResourceManager$WCVersionManager
+    org.webcat.woextensions.WCResourceManager$WCVersionManager
 ognl.active          = true
 ognl.helperFunctions = true
 ognl.inlineBindings  = true

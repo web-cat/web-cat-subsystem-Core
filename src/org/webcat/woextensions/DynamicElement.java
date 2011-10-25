@@ -19,7 +19,7 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package org.webcat.core;
+package org.webcat.woextensions;
 
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
@@ -51,9 +51,9 @@ public class DynamicElement
     public DynamicElement(
         String name,
         NSDictionary<String, WOAssociation> associations,
-        WOElement children )
+        WOElement children)
     {
-        super( name, associations, children );
+        super(name, associations, children);
         this.associations = associations;
     }
 
@@ -77,9 +77,9 @@ public class DynamicElement
      * @param key the key to look up
      * @return this key's association, or null if there is none
      */
-    public boolean hasAssociationForKey( Object key )
+    public boolean hasAssociationForKey(Object key)
     {
-        return associationForKey( key ) != null;
+        return associationForKey(key) != null;
     }
 
 
@@ -91,10 +91,10 @@ public class DynamicElement
      * @param key the key to look up
      * @return this key's association, or null if there is none
      */
-    protected WOAssociation associationForKey( Object key )
+    protected WOAssociation associationForKey(Object key)
     {
-        return ( key != null )
-            ? (WOAssociation)associations().objectForKey( key )
+        return (key != null)
+            ? (WOAssociation)associations().objectForKey(key)
             : null;
     }
 
@@ -106,11 +106,11 @@ public class DynamicElement
      * @param aComponent the current component
      * @return this association's value
      */
-    protected Object valueInAssociation( WOAssociation anAssociation,
-                                         WOComponent   aComponent )
+    protected Object valueInAssociation(WOAssociation anAssociation,
+                                        WOComponent   aComponent)
     {
-        return ( anAssociation != null )
-            ? anAssociation.valueInComponent( aComponent )
+        return (anAssociation != null)
+            ? anAssociation.valueInComponent(aComponent)
             : null;
     }
 
@@ -122,11 +122,11 @@ public class DynamicElement
      * @param aComponent the current component
      * @return this key's value, or null if there is none
      */
-    protected Object associationValueForKey( Object key,
-                                             WOComponent aComponent )
+    protected Object associationValueForKey(Object key,
+                                            WOComponent aComponent)
     {
-        return ( key != null )
-            ? valueInAssociation( associationForKey( key ), aComponent )
+        return (key != null)
+            ? valueInAssociation(associationForKey(key), aComponent)
             : null;
     }
 
@@ -138,10 +138,10 @@ public class DynamicElement
      * @param aComponent the current component
      * @return this key's value, or null if there is none
      */
-    protected String associationStringValueForKey( Object key,
-                                                   WOComponent aComponent )
+    protected String associationStringValueForKey(Object key,
+                                                  WOComponent aComponent)
     {
-        return associationStringValueForKey( key, aComponent, null );
+        return associationStringValueForKey(key, aComponent, null);
     }
 
 
@@ -154,12 +154,12 @@ public class DynamicElement
      * @param defaultVal the default value if the association is missing
      * @return this key's value, or null if there is none
      */
-    protected String associationStringValueForKey( Object      key,
-                                                   WOComponent aComponent,
-                                                   String      defaultVal )
+    protected String associationStringValueForKey(Object      key,
+                                                  WOComponent aComponent,
+                                                  String      defaultVal)
     {
-        Object aValue = associationValueForKey( key, aComponent );
-        return ( aValue != null )
+        Object aValue = associationValueForKey(key, aComponent);
+        return (aValue != null)
             ? aValue.toString()
             : defaultVal;
     }
@@ -172,10 +172,10 @@ public class DynamicElement
      * @param aComponent the current component
      * @return this key's value, or null if there is none
      */
-    protected boolean associationBooleanValueForKey( Object key,
-                                                     WOComponent aComponent )
+    protected boolean associationBooleanValueForKey(Object key,
+                                                    WOComponent aComponent)
     {
-        return associationBooleanValueForKey( key, aComponent, false );
+        return associationBooleanValueForKey(key, aComponent, false);
     }
 
 
@@ -187,21 +187,21 @@ public class DynamicElement
      * @param defaultVal the default value if the association is missing
      * @return this key's value, or null if there is none
      */
-    protected boolean associationBooleanValueForKey( Object key,
-                                                     WOComponent aComponent,
-                                                     boolean     defaultVal )
+    protected boolean associationBooleanValueForKey(Object key,
+                                                    WOComponent aComponent,
+                                                    boolean     defaultVal)
     {
         boolean result = defaultVal;
-        Object  aValue = this.associationValueForKey( key, aComponent );
-        if ( aValue != null )
+        Object  aValue = this.associationValueForKey(key, aComponent);
+        if (aValue != null)
         {
-            if ( aValue instanceof Number )
+            if (aValue instanceof Number)
             {
-                result = ( (Number)aValue ).intValue() != 0;
+                result = ((Number)aValue).intValue() != 0;
             }
-            else if ( aValue instanceof Boolean )
+            else if (aValue instanceof Boolean)
             {
-                result = ( (Boolean)aValue ).booleanValue();
+                result = ((Boolean)aValue).booleanValue();
             }
         }
         return result;
@@ -215,10 +215,10 @@ public class DynamicElement
      * @param aComponent the current component
      * @return this key's value, or null if there is none
      */
-    protected int associationIntegerValueForKey( Object key,
-                                                 WOComponent aComponent )
+    protected int associationIntegerValueForKey(Object key,
+                                                WOComponent aComponent)
     {
-        return associationIntegerValueForKey( key, aComponent, 0 );
+        return associationIntegerValueForKey(key, aComponent, 0);
     }
 
 
@@ -230,15 +230,15 @@ public class DynamicElement
      * @param defaultVal the default value if the association is missing
      * @return this key's value, or null if there is none
      */
-    protected int associationIntegerValueForKey( Object key,
-                                                 WOComponent aComponent,
-                                                 int         defaultVal )
+    protected int associationIntegerValueForKey(Object key,
+                                                WOComponent aComponent,
+                                                int         defaultVal)
     {
         int result = defaultVal;
-        Object  aValue = this.associationValueForKey( key, aComponent );
-        if ( aValue instanceof Number )
+        Object  aValue = this.associationValueForKey(key, aComponent);
+        if (aValue instanceof Number)
         {
-            result = ( (Number)aValue ).intValue();
+            result = ((Number)aValue).intValue();
         }
         return result;
     }
@@ -251,10 +251,10 @@ public class DynamicElement
      * @param aComponent the current component
      * @return this key's value, or null if there is none
      */
-    protected float associationFloatValueForKey( Object key,
-                                                 WOComponent aComponent )
+    protected float associationFloatValueForKey(Object key,
+                                                WOComponent aComponent)
     {
-        return associationFloatValueForKey( key, aComponent, 0.0f );
+        return associationFloatValueForKey(key, aComponent, 0.0f);
     }
 
 
@@ -266,15 +266,15 @@ public class DynamicElement
      * @param defaultVal the default value if the association is missing
      * @return this key's value, or null if there is none
      */
-    protected float associationFloatValueForKey( Object key,
-                                                 WOComponent aComponent,
-                                                 float       defaultVal )
+    protected float associationFloatValueForKey(Object key,
+                                                WOComponent aComponent,
+                                                float       defaultVal)
     {
         float result = defaultVal;
-        Object  aValue = this.associationValueForKey( key, aComponent );
-        if ( aValue instanceof Number )
+        Object  aValue = this.associationValueForKey(key, aComponent);
+        if (aValue instanceof Number)
         {
-            result = ( (Number)aValue ).floatValue();
+            result = ((Number)aValue).floatValue();
         }
         return result;
     }
@@ -287,10 +287,10 @@ public class DynamicElement
      * @param aComponent the current component
      * @return this key's value, or null if there is none
      */
-    protected double associationDoubleValueForKey( Object key,
-                                                   WOComponent aComponent )
+    protected double associationDoubleValueForKey(Object key,
+                                                  WOComponent aComponent)
     {
-        return associationDoubleValueForKey( key, aComponent, 0.0 );
+        return associationDoubleValueForKey(key, aComponent, 0.0);
     }
 
 
@@ -302,15 +302,15 @@ public class DynamicElement
      * @param defaultVal the default value if the association is missing
      * @return this key's value, or null if there is none
      */
-    protected double associationDoubleValueForKey( Object key,
-                                                   WOComponent aComponent,
-                                                   double      defaultVal )
+    protected double associationDoubleValueForKey(Object key,
+                                                  WOComponent aComponent,
+                                                  double      defaultVal)
     {
         double result = defaultVal;
-        Object  aValue = this.associationValueForKey( key, aComponent );
-        if ( aValue instanceof Number )
+        Object  aValue = this.associationValueForKey(key, aComponent);
+        if (aValue instanceof Number)
         {
-            result = ( (Number)aValue ).doubleValue();
+            result = ((Number)aValue).doubleValue();
         }
         return result;
     }

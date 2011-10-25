@@ -25,6 +25,7 @@ import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.*;
 import org.webcat.dbupdate.*;
+import org.webcat.woextensions.WCEC;
 import er.extensions.foundation.ERXValueUtilities;
 import java.net.URI;
 import java.net.URL;
@@ -32,7 +33,6 @@ import java.sql.SQLException;
 import org.webcat.core.Application;
 import org.webcat.core.CoreDatabaseUpdates;
 import org.webcat.core.WCConfigurationFile;
-import org.webcat.core.WOEC;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -203,7 +203,7 @@ public class InstallPage3
             // Instead of calling initializeApplication(), let's just repeat
             // the first few steps so that we can get the database updates
             // done.
-            WOEC.installWOECFactory();
+            WCEC.installWOECFactory();
 
             // Apply any pending database updates for the core
             UpdateEngine.instance().database().setConnectionInfoFromProperties(

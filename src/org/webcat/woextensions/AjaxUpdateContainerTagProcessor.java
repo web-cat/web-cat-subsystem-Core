@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -19,7 +19,7 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package org.webcat.core;
+package org.webcat.woextensions;
 
 import com.webobjects.appserver._private.WOConstantValueAssociation;
 import com.webobjects.appserver._private.WODeclaration;
@@ -33,7 +33,8 @@ import ognl.helperfunction.WOTagProcessor;
  * aspan is a shortcut for adding elementName="span" to the tag.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class AjaxUpdateContainerTagProcessor
     extends WOTagProcessor
