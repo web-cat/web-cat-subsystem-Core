@@ -81,7 +81,7 @@ public class GitWebContext
                 path = pathSuffix.substring(firstSlash + 1);
             }
 
-            id = repository.resolve(headName() + ":" + path);
+            id = repository.resolve(headObjectId.getName() + ":" + path);
         }
 
         objectId = id;
