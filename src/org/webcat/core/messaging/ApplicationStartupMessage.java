@@ -84,7 +84,17 @@ public class ApplicationStartupMessage extends SysAdminMessage
     @Override
     public NSArray<User> users()
     {
-        return User.systemAdmins(editingContext());
+        EOEditingContext ec = editingContext();
+
+        try
+        {
+            ec.lock();
+            return User.systemAdmins(editingContext());
+        }
+        finally
+        {
+            ec.unlock();
+        }
     }
 
 

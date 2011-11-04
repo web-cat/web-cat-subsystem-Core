@@ -418,36 +418,46 @@ public abstract class Message
         // Create a representation of the message in the database so that it
         // can be viewed by users later.
 
-        SentMessage message = SentMessage.create(editingContext, false);
-
-        message.setSentTime(new NSTimestamp());
-        message.setMessageType(messageType());
-        message.setTitle(title());
-        message.setShortBody(shortBody());
-        message.setIsBroadcast(descriptor.isBroadcast());
-
-        if (links() != null)
+        try
         {
-            message.setLinks(new MutableDictionary(links()));
-        }
+            editingContext.lock();
 
-        NSArray<User> users = users();
-        if (users != null)
-        {
-            for (User user : users)
+            SentMessage message = SentMessage.create(editingContext, false);
+
+            message.setSentTime(new NSTimestamp());
+            message.setMessageType(messageType());
+            message.setTitle(title());
+            message.setShortBody(shortBody());
+            message.setIsBroadcast(descriptor.isBroadcast());
+
+            if (links() != null)
             {
-                // Sanity check to ensure that messages don't get sent to users
-                // who shouldn't receive them based on their access level.
+                message.setLinks(new MutableDictionary(links()));
+            }
 
-                if (user.accessLevel() >= descriptor.accessLevel())
+            NSArray<User> users = users();
+            if (users != null)
+            {
+                for (User user : users)
                 {
-                    message.addToUsersRelationship(user.localInstance(
-                            editingContext));
+                    // Sanity check to ensure that messages don't get sent to
+                    // users who shouldn't receive them based on their access
+                    // level.
+
+                    if (user.accessLevel() >= descriptor.accessLevel())
+                    {
+                        message.addToUsersRelationship(user.localInstance(
+                                editingContext));
+                    }
                 }
             }
-        }
 
-        editingContext.saveChanges();
+            editingContext.saveChanges();
+        }
+        finally
+        {
+            editingContext.unlock();
+        }
     }
 
 
@@ -473,6 +483,7 @@ public abstract class Message
         if (editingContext == null)
         {
             editingContext = Application.newPeerEditingContext();
+            editingContext.setSharedEditingContext(null);
         }
     }
 
