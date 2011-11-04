@@ -200,7 +200,15 @@ public class RepositoryEntryRef implements NSKeyValueCodingAdditions
                 parts[0], parts[1], ec);
         gitRepository = GitRepository.repositoryForObject(provider);
         ref = gitRepository.refWithName(branch);
-        objectId = gitRepository.resolve(ref.objectId().getName() + ":" + path);
+
+        if (ref != null)
+        {
+            objectId = gitRepository.resolve(ref.objectId().getName() + ":" + path);
+        }
+        else
+        {
+            objectId = null;
+        }
     }
 
 
