@@ -1,9 +1,10 @@
 <span class="dijitFileInput">
     <input id="${id}" name="${name}" class="dijitFileInputReal" type="file" dojoAttachPoint="fileInput" />
+    <span dojoType="webcat.Spinner" dojoAttachPoint="spinner" size="small">&nbsp;</span>
     <span class="dijitFakeInput" dojoAttachPoint="fakeNodeHolder">
-        <input class="dijitFileInputVisible" type="text" dojoAttachPoint="focusNode, inputNode" />
+        <input class="dijitFileInputVisible" dojoType="dijit.form.TextBox" type="text" dojoAttachPoint="focusNode,inputNode" />
         <span class="dijitInline dijitFileInputText" dojoAttachPoint="titleNode">${label}</span>
         <span class="dijitInline dijitFileInputButton" dojoAttachPoint="cancelNode" dojoAttachEvent="onclick:reset">${cancelText}</span>
     </span>
-    <span class="dijitProgressOverlay" dojoAttachPoint="overlay">&nbsp;</span>
+    <span class="dijitInline" dojoAttachPoint="messageNode">&nbsp;</span>
 </span>
