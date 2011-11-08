@@ -867,7 +867,8 @@
  * Other overrides
  */
 
-.aristo tr.dojoDndItemAnchor {
+.aristo tr.dojoDndItemAnchor,
+.aristo tr.dojoDndItemSelected {
     background-color: ${selected-item-background-color};
     color: ${selected-item-text-color} !important;
 }
