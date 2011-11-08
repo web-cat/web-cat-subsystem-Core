@@ -21,13 +21,19 @@
 
 package org.webcat.core;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.Repository;
+import org.webcat.archives.ArchiveManager;
 import org.webcat.core.git.GitCommit;
 import org.webcat.core.git.GitRef;
 import org.webcat.core.git.GitRepository;
 import org.webcat.core.git.GitTreeEntry;
 import org.webcat.core.git.GitTreeIterator;
+import org.webcat.core.git.GitUtilities;
 import org.webcat.ui.WCTreeModel;
 import org.webcat.ui.generators.JavascriptGenerator;
 import org.webcat.ui.util.ComponentIDGenerator;
@@ -35,6 +41,7 @@ import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSKeyValueCoding;
 import com.webobjects.foundation.NSKeyValueCodingAdditions;
@@ -75,6 +82,14 @@ public class FilePickerDialog extends WCComponent
     public GitTreeEntry entry;
 
     public RepositoryEntryRef initialSelection;
+
+    public GitRepository createFolderRepo;
+    public String createFolderLocation;
+    public String newFolderName;
+    public String uploadedFilePath;
+    public NSData uploadedFileData;
+    public String commitMessageForUpload;
+    public boolean expandIfArchive;
 
     public ComponentIDGenerator idFor = new ComponentIDGenerator(this);
 
@@ -195,12 +210,40 @@ public class FilePickerDialog extends WCComponent
 
 
     // ----------------------------------------------------------
+    public boolean canModifySelectedBranch()
+    {
+        boolean canModify = false;
+        Object refModelObject = refModel.selectedObjects().anyObject();
+        if (refModelObject != null)
+        {
+            GitRef ref = refForModelObject(refModelObject);
+            canModify = (ref != null && ref.isMaster());
+        }
+
+        return canModify;
+    }
+
+
+    // ----------------------------------------------------------
     public JavascriptGenerator refWasSelected()
     {
+        initialSelection = null;
         updateEntryModel();
 
         JavascriptGenerator js = new JavascriptGenerator();
         js.refresh(idFor.get("entryTree"));
+
+        if (canModifySelectedBranch())
+        {
+            js.dijit(idFor.get("createFolder")).enable();
+            js.dijit(idFor.get("uploadFile")).enable();
+        }
+        else
+        {
+            js.dijit(idFor.get("createFolder")).disable();
+            js.dijit(idFor.get("uploadFile")).disable();
+        }
+
         return js;
     }
 
@@ -263,7 +306,7 @@ public class FilePickerDialog extends WCComponent
     // ----------------------------------------------------------
     public NSTimestamp lastModifiedTimeForEntry()
     {
-        /*GitRef ref = refForModelObject(refModel.selectedObjects().anyObject());
+        GitRef ref = refForModelObject(refModel.selectedObjects().anyObject());
 
         NSArray<GitCommit> commits =
             entry.repository().commitsWithId(ref.objectId(), entry.path());
@@ -272,7 +315,7 @@ public class FilePickerDialog extends WCComponent
         {
             return commits.objectAtIndex(0).commitTime();
         }
-        else*/
+        else
         {
             return null;
         }
@@ -346,6 +389,193 @@ public class FilePickerDialog extends WCComponent
                 return null;
             }
         }
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator displayCreateFolderDialog()
+    {
+        return showModifierDialog("createFolderDialog");
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator createFolderOkPressed()
+    {
+        JavascriptGenerator js = new JavascriptGenerator();
+        js.dijit(idFor.get("createFolderDialog")).call("hide");
+
+        Repository workingCopy = GitUtilities.workingCopyForRepository(
+                createFolderRepo.repository(), true);
+        File file = workingCopy.getWorkTree();
+        File destDir = file;
+
+        if (createFolderLocation != null)
+        {
+            destDir = new File(file, createFolderLocation);
+        }
+
+        File newFolder = new File(destDir, newFolderName);
+        if (newFolder.exists())
+        {
+            js.alert("Notice", "The folder already exists.");
+            return js;
+        }
+
+        try
+        {
+            newFolder.mkdirs();
+            File gitIgnore = new File(newFolder, ".gitignore");
+            FileOutputStream os = new FileOutputStream(gitIgnore);
+            os.close();
+            GitUtilities.pushWorkingCopyImmediately(workingCopy, user(),
+                "Created folder \"" + newFolderName + "\"");
+        }
+        catch (Exception e)
+        {
+            log.error("error creating the folder " + newFolderName + " as "
+                + newFolder + ": ", e);
+
+            js.alert("Notice", "The following error occurred trying to create "
+                + "the folder \"" + newFolderName + "\": " + e.getMessage());
+            return js;
+        }
+
+        updateRefModel();
+
+        js.refresh(idFor.get("repositoryTree"), idFor.get("entryTree"));
+        return js;
+    }
+
+
+    // ----------------------------------------------------------
+    private JavascriptGenerator showModifierDialog(String id)
+    {
+        NSSet<?> selectedRepos = refModel.selectedObjects();
+
+        if (selectedRepos.isEmpty())
+        {
+            return new JavascriptGenerator().alert(
+                    "Notice", "You must select the master branch of a "
+                    + "repository first.");
+        }
+
+        if (!canModifySelectedBranch())
+        {
+            return new JavascriptGenerator().alert("Notice",
+                    "You may only modify the master branch of a "
+                    + "repository through the web interface.");
+        }
+
+        GitRef ref = refForModelObject(selectedRepos.anyObject());
+
+        createFolderRepo = ref.repository();
+
+        NSSet<GitTreeEntry> selectedEntries = entryModel.selectedObjects();
+
+        if (selectedEntries.isEmpty())
+        {
+            createFolderLocation = null;
+        }
+        else
+        {
+            GitTreeEntry entry = selectedEntries.anyObject();
+
+            if (entry.isTree())
+            {
+                createFolderLocation = entry.path();
+            }
+            else
+            {
+                File file = new File(entry.path());
+                createFolderLocation = file.getParent();
+            }
+        }
+
+        JavascriptGenerator js = new JavascriptGenerator();
+        js.dijit(idFor.get(id)).call("show");
+        return js;
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator displayUploadFileDialog()
+    {
+        if (commitMessageForUpload == null)
+        {
+            commitMessageForUpload = "Uploaded from my web browser";
+        }
+
+        return showModifierDialog("uploadFileDialog");
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator fileWasUploaded()
+    {
+        uploadedFilePath = new File(uploadedFilePath).getName();
+
+        JavascriptGenerator js = new JavascriptGenerator();
+
+        boolean isArchive = FileUtilities.isArchiveFile(uploadedFilePath);
+
+        js.style(idFor.get("expandIfArchiveContainer"), "visibility",
+                isArchive ? "visible" : "hidden");
+
+        js.dijit(idFor.get("uploadFileOk")).enable();
+        return js;
+    }
+
+
+    // ----------------------------------------------------------
+    public JavascriptGenerator uploadFileOkPressed()
+    {
+        JavascriptGenerator js = new JavascriptGenerator();
+        js.dijit(idFor.get("uploadFileDialog")).call("hide");
+
+        Repository workingCopy = GitUtilities.workingCopyForRepository(
+                createFolderRepo.repository(), true);
+        File file = workingCopy.getWorkTree();
+        File destDir = file;
+
+        if (createFolderLocation != null)
+        {
+            destDir = new File(file, createFolderLocation);
+        }
+
+        File destFile = new File(destDir, uploadedFilePath);
+
+        try
+        {
+            if (expandIfArchive
+                && FileUtilities.isArchiveFile(uploadedFilePath))
+            {
+                ArchiveManager.getInstance().unpack(
+                    destDir, uploadedFilePath, uploadedFileData.stream());
+            }
+            else
+            {
+                FileOutputStream os = new FileOutputStream(destFile);
+                uploadedFileData.writeToStream(os);
+                os.close();
+            }
+
+            GitUtilities.pushWorkingCopyImmediately(
+                workingCopy, user(), commitMessageForUpload);
+        }
+        catch (IOException e)
+        {
+            log.error("error uploading file " + uploadedFilePath + " as "
+                + destFile + ": ", e);
+            js.alert("Error", "The following error occurred trying to upload the "
+                + "file \"" + uploadedFilePath + "\": " + e.getMessage());
+            return js;
+        }
+
+        updateRefModel();
+
+        js.refresh(idFor.get("repositoryTree"), idFor.get("entryTree"));
+        return js;
     }
 
 

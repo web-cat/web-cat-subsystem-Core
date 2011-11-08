@@ -23,6 +23,7 @@ package org.webcat.core;
 
 import org.webcat.core.git.GitRef;
 import org.webcat.core.git.GitRepository;
+import org.webcat.core.git.GitTreeEntry;
 import org.webcat.ui.WCTreeModel;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
@@ -74,6 +75,61 @@ public class RepositoryRefModel extends WCTreeModel
         {
             return null;
         }
+    }
+
+
+    // ----------------------------------------------------------
+    public String pathForObject(Object object)
+    {
+        if (object instanceof EOEnterpriseObject)
+        {
+            return ((RepositoryProvider) object).repositoryIdentifier();
+        }
+        else if (object instanceof GitRef)
+        {
+            GitRef ref = (GitRef) object;
+            String provider = ((RepositoryProvider) ref.repository().provider()).repositoryIdentifier();
+
+            return provider + "/" + ref.name().replace('/', '$');
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public Object childWithPathComponent(Object object, String component)
+    {
+        NSArray<?> children = childrenOfObject(object);
+
+        if (object == null)
+        {
+            for (Object child : children)
+            {
+                EOEnterpriseObject obj = (EOEnterpriseObject) child;
+
+                if (((RepositoryProvider) obj).repositoryIdentifier().equals(component))
+                {
+                    return child;
+                }
+            }
+        }
+        else if (object instanceof EOEnterpriseObject)
+        {
+            for (Object child : children)
+            {
+                GitRef ref = (GitRef) child;
+
+                if (ref.name().equals(component.replace('$', '/')))
+                {
+                    return child;
+                }
+            }
+        }
+
+        return null;
     }
 
 

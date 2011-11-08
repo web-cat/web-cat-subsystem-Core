@@ -1,4 +1,67 @@
-<wo name="Dialog"><wo:str value="$onLoad"/><wo name="Form">
+<wo name="Dialog"><wo:str value="$onLoad"/>
+<wo name="CreateFolderDialog"><wo:WCForm>
+    <div>
+    <p>
+    Enter the name of the folder to create in
+    <b><wo:str value="$createFolderRepo.provider.repositoryIdentifier"/><wo:if condition="$createFolderLocation">/<wo:str value="$createFolderLocation"/></wo:if></b>:
+    </p><p><wo name="NewFolderName"/></p>
+    <div>
+        <wo:WCSpinner id="$idFor.createFolderSpinner" size="small"/>
+        <wo:WOGenericContainer elementName="span" id="$idFor.createFolderMessage"/>
+    </div>
+    </div>
+    <div style="text-align: center">
+        <wo name="CreateFolderOK">
+            <script type="dojo/connect" event="onClick">
+            dijit.byId('<wo:str value="$idFor.createFolderSpinner"/>').start();
+            dojo.byId('<wo:str value="$idFor.createFolderMessage"/>').innerHTML = "Committing new folder to repository...";
+            </script>
+        </wo>
+        <wo name="CreateFolderCancel">
+            <script type="dojo/connect" event="onClick">
+            dijit.byId('<wo:str value="$idFor.createFolderDialog"/>').hide();
+            </script>
+        </wo>
+    </div>
+</wo:WCForm></wo>
+<wo name="UploadFileDialog"><wo:WCForm enctype="multipart/form-data" multipleSubmit="true">
+    <div>
+    <p>
+    Choose a file to upload to
+    <b><wo:str value="$createFolderRepo.provider.repositoryIdentifier"/><wo:if condition="$createFolderLocation">/<wo:str value="$createFolderLocation"/></wo:if></b>:
+    </p>
+    <p><wo name="FileToUpload"/></p>
+    <wo:WOGenericContainer elementName="p" id="$idFor.expandIfArchiveContainer" style="visibility: hidden">
+        <wo name="ExpandIfArchive"/> <wo:label for="$idFor.expandIfArchive">Expand the archive into this folder?</wo>
+    </wo:WOGenericContainer>
+    <p>Provide a short <b>commit message</b>
+        describing this change in the Git repository:<br/>
+        <wo name="CommitMessageForUpload"/>
+    </p>
+    <div>
+        <wo:WCSpinner id="$idFor.uploadFileSpinner" size="small"/>
+        <wo:WOGenericContainer elementName="span" id="$idFor.uploadFileMessage"/>
+    </div>
+    </div>
+    <div style="text-align: center">
+        <wo name="UploadFileOK">
+            <script type="dojo/connect" event="onClick">
+            dijit.byId('<wo:str value="$idFor.uploadFileSpinner"/>').start();
+            dojo.byId('<wo:str value="$idFor.uploadFileMessage"/>').innerHTML = "Committing file to repository...";
+            </script>
+        </wo>
+        <wo name="UploadFileCancel">
+            <script type="dojo/connect" event="onClick">
+            dijit.byId('<wo:str value="$idFor.uploadFileDialog"/>').hide();
+            </script>
+        </wo>
+    </div>
+</wo:WCForm></wo>
+<wo name="Form">
+<div style="text-align: right">
+<wo name="CreateFolder"/>
+<wo name="UploadFile"/>
+</div>
 <div style="width: 50em">
 <div class="floatLeft">
     <wo name="RepositoryTree">
@@ -22,8 +85,8 @@
         <wo:WCTreeItems item="$entry">
             <wo:WCTreeItem>
                 <wo:WCTreeCell><wo name="ItemSpan"><wo name="PickerItemImage"/>&nbsp;<wo:str value="$entry.name"/></wo></wo:WCTreeCell>
-                <td style="white-space: nowrap"><wo name="ItemSpan"><wo:str value="$entry.size" formatter="$application.fileSizeFormatter"/></wo></td>
-                <td style="white-space: nowrap"><wo name="ItemSpan"><wo:str value="$lastModifiedTimeForEntry" formatter="$session.timeFormatter"/></wo></td>
+                <td style="white-space: nowrap"><wo name="ItemSpan"><wo:not condition="$entry.isTree"><wo:str value="$entry.size" formatter="$application.fileSizeFormatter"/></wo></wo></td>
+                <td style="white-space: nowrap"><wo name="ItemSpan"><wo:str value="$lastModifiedTimeForEntry" formatter="$application.approximateRelativeTimestampFormatter"/></wo></td>
             </wo:WCTreeItem>
         </wo:WCTreeItems>
     </wo>

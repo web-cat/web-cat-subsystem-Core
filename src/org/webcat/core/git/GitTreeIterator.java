@@ -51,7 +51,7 @@ public class GitTreeIterator
      * tree or commit object.
      *
      * @param repository the repository
-     * @param treeOrCommitId the id of the tree or commit object
+     * @param treeOrCommitId the id of the tree or commit   object
      */
     public GitTreeIterator(GitRepository repository, ObjectId treeOrCommitId)
     {

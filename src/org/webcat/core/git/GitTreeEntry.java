@@ -21,6 +21,7 @@
 
 package org.webcat.core.git;
 
+import java.io.File;
 import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.lib.FileMode;
@@ -153,12 +154,23 @@ public class GitTreeEntry implements NSKeyValueCodingAdditions
         if (other instanceof GitTreeEntry)
         {
             GitTreeEntry otherEntry = (GitTreeEntry) other;
-            return objectId.equals(otherEntry.objectId);
+            return path.equals(otherEntry.path)
+                && name.equals(otherEntry.name)
+                && objectId.equals(otherEntry.objectId);
         }
         else
         {
             return false;
         }
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public String toString()
+    {
+        return "<" + (isTree ? "tree" : "blob") + ": " + path
+            + " [" + objectId.abbreviate(10).name() + "]>";
     }
 
 

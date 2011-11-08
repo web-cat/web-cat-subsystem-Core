@@ -86,6 +86,13 @@ public class GitRef implements NSKeyValueCodingAdditions
 
 
     // ----------------------------------------------------------
+    public boolean isMaster()
+    {
+        return name().equals(Constants.R_HEADS + Constants.MASTER);
+    }
+
+
+    // ----------------------------------------------------------
     public String shortName()
     {
         if (isHead())
