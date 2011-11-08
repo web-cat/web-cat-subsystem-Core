@@ -93,6 +93,45 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     // ----------------------------------------------------------
     /**
      * <p>
+     * Gets a value indicating whether a node has children, after any qualifier
+     * filtering has been applied. This method is used by the tree component to
+     * determine if an expansion arrow should be displayed for a particular
+     * item.
+     * </p><p>
+     * By default, this method simply calls {@link #arrangedChildrenOfObject(Object)}
+     * and returns true if the number of children is greater than 0. In
+     * situations where determining the existence of children can be much
+     * faster than computing the children themselves, subclasses should
+     * override this method to provide a faster implementation.
+     * </p>
+     *
+     * @param object the object to check for children
+     * @return true if the object has children, otherwise false
+     */
+    public boolean objectHasArrangedChildren(T object)
+    {
+        NSArray<T> children = arrangedChildrenOfObject(object);
+        return (children != null && children.count() > 0);
+    }
+
+
+    // ----------------------------------------------------------
+    public T childWithPathComponent(T object, String component)
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public String pathForObject(T object)
+    {
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * <p>
      * Gets the children of the specified object, filtered according to the
      * model's qualifier and sorted according to the model's sort orderings.
      * </p><p>

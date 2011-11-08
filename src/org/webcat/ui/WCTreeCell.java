@@ -84,8 +84,9 @@ public class WCTreeCell extends WCTreeSubcomponent
     // ----------------------------------------------------------
     public boolean isExpandable()
     {
-        NSArray roots = treeModel().arrangedChildrenOfObject(itemFromParent());
-        return (roots != null && roots.count() > 0);
+        //NSArray roots = treeModel().arrangedChildrenOfObject(itemFromParent());
+        //return (roots != null && roots.count() > 0);
+        return treeModel().objectHasArrangedChildren(itemFromParent());
     }
 
 

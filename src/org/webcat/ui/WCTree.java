@@ -261,6 +261,35 @@ public class WCTree extends WCComponent
             retrieveExpansionState();
         }
 
+            // If there's a selection, expand to make that visible too.
+
+            for (Object object : treeModel.selectedObjects())
+            {
+                String pathToSelectedObject = treeModel.pathForObject(object);
+
+                if (pathToSelectedObject != null)
+                {
+                    String[] components = pathToSelectedObject.split("/");
+
+                    Object current = null;
+
+                    for (String component : components)
+                    {
+                        current = treeModel.childWithPathComponent(current, component);
+
+                        if (current == null)
+                        {
+                            break;
+                        }
+
+                        if (!expandedItems.containsKey(current))
+                        {
+                            expandedItems.put(current, true);
+                        }
+                    }
+                }
+            }
+
         return expandedItems;
     }
 
@@ -270,7 +299,8 @@ public class WCTree extends WCComponent
     {
         if (!expandedItems().containsKey(item))
         {
-            expandedItems().put(item, false);
+            return false;
+            //expandedItems().put(item, false);
         }
 
         return expandedItems().get(item);
@@ -321,7 +351,7 @@ public class WCTree extends WCComponent
                     }
                 }
 
-                recursivelyExpandChildren(null, 0, expandedItemIds);
+                //recursivelyExpandChildren(null, 0, expandedItemIds);
             }
         }
     }
@@ -331,21 +361,24 @@ public class WCTree extends WCComponent
     private void recursivelyExpandChildren(Object item, int depth,
                                            Map<String, Boolean> expandedItemIds)
     {
-        NSArray<?> children = treeModel.arrangedChildrenOfObject(item);
-        if (children != null)
+        if (treeModel.objectHasArrangedChildren(item))
         {
-            for (Object child : children)
+            NSArray<?> children = treeModel.arrangedChildrenOfObject(item);
+            if (children != null)
             {
-                String childId = treeModel.persistentIdOfObject(child);
-
-                if ((childId != null && expandedItemIds.containsKey(childId))
-                        || (!expandedItemIds.containsKey(childId)
-                                && (initialExpandDepth == -1
-                                        || depth < initialExpandDepth)))
+                for (Object child : children)
                 {
-                    expandedItems.put(child,
-                            expandedItemIds.get(childId));
-                    recursivelyExpandChildren(child, depth + 1, expandedItemIds);
+                    String childId = treeModel.persistentIdOfObject(child);
+
+                    if ((childId != null && expandedItemIds.containsKey(childId))
+                            || (!expandedItemIds.containsKey(childId)
+                                    && (initialExpandDepth == -1
+                                            || depth < initialExpandDepth)))
+                    {
+                        expandedItems.put(child,
+                                expandedItemIds.get(childId));
+                        recursivelyExpandChildren(child, depth + 1, expandedItemIds);
+                    }
                 }
             }
         }
@@ -570,6 +603,7 @@ public class WCTree extends WCComponent
     private String passthroughAttributes;
 
     private Map<Object, Boolean> expandedItems;
+    private boolean expandedItemsCalled;
 
     protected int numberOfColumns = 0;
 }

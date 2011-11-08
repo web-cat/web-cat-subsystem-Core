@@ -247,14 +247,17 @@ public class WCTreeModelRepetition extends WODynamicGroup
     private static void pushChildrenOfItem(WCTreeModel model, Object item,
             WCIndexPath indexPath, Stack<TreePosition> stack)
     {
-        NSArray children = model.arrangedChildrenOfObject(item);
-        if (children != null)
+        if (model.objectHasArrangedChildren(item))
         {
-            for (int i = children.count() - 1; i >= 0; i--)
+            NSArray children = model.arrangedChildrenOfObject(item);
+            if (children != null)
             {
-                stack.push(new TreePosition(
-                        indexPath.indexPathByAddingIndex(i),
-                        children.objectAtIndex(i)));
+                for (int i = children.count() - 1; i >= 0; i--)
+                {
+                    stack.push(new TreePosition(
+                            indexPath.indexPathByAddingIndex(i),
+                            children.objectAtIndex(i)));
+                }
             }
         }
     }
