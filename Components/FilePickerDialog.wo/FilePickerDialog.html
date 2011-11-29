@@ -31,8 +31,8 @@
     <b><wo:str value="$createFolderRepo.provider.repositoryIdentifier"/><wo:if condition="$createFolderLocation">/<wo:str value="$createFolderLocation"/></wo:if></b>:
     </p>
     <p><wo name="FileToUpload"/></p>
-    <wo:WOGenericContainer elementName="p" id="$idFor.expandIfArchiveContainer" style="visibility: hidden">
-        <wo name="ExpandIfArchive"/> <wo:label for="$idFor.expandIfArchive">Expand the archive into this folder?</wo>
+    <wo:WOGenericContainer elementName="p" id="$idFor.expandIfArchiveContainer">
+        <wo name="ExpandIfArchive"/> <wo:label for="$idFor.expandIfArchive">If the file is an archive, expand it into this folder?</wo>
     </wo:WOGenericContainer>
     <p>Provide a short <b>commit message</b>
         describing this change in the Git repository:<br/>

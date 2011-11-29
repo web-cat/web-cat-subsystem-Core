@@ -517,12 +517,15 @@ public class FilePickerDialog extends WCComponent
 
         JavascriptGenerator js = new JavascriptGenerator();
 
-        boolean isArchive = FileUtilities.isArchiveFile(uploadedFilePath);
+        // FIXME Why doesn't this code run on the production server? Problem
+        // because it gets sent back in a textarea due to iframe I/O weirdness?
+
+/*        boolean isArchive = FileUtilities.isArchiveFile(uploadedFilePath);
 
         js.style(idFor.get("expandIfArchiveContainer"), "visibility",
                 isArchive ? "visible" : "hidden");
 
-        js.dijit(idFor.get("uploadFileOk")).enable();
+        js.dijit(idFor.get("uploadFileOk")).enable();*/
         return js;
     }
 
@@ -532,6 +535,11 @@ public class FilePickerDialog extends WCComponent
     {
         JavascriptGenerator js = new JavascriptGenerator();
         js.dijit(idFor.get("uploadFileDialog")).call("hide");
+
+        if (uploadedFilePath == null)
+        {
+            return js;
+        }
 
         Repository workingCopy = GitUtilities.workingCopyForRepository(
                 createFolderRepo.repository(), true);

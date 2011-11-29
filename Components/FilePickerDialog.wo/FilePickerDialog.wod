@@ -133,7 +133,6 @@ UploadFileOK: WCButton {
     id = idFor.uploadFileOk;
     action = uploadFileOkPressed;
     remote = true;
-    disabled = true;
     label = "OK";
     class = "pos";
 }
