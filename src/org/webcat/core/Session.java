@@ -27,7 +27,6 @@ import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCEC.PeerManager;
 import org.webcat.woextensions.WCEC.PeerManagerPool;
 import com.webobjects.appserver.WOComponent;
-import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
@@ -65,10 +64,10 @@ public class Session
      * Creates a new Session object.
      * @param sessionID The ID to use for this session
      */
-    public Session( String sessionID )
+    public Session(String sessionID)
     {
         super();
-        _setSessionID( sessionID );
+        _setSessionID(sessionID);
         initSession();
     }
 
@@ -79,14 +78,14 @@ public class Session
      */
     private final void initSession()
     {
-        log.debug( "creating " + sessionID() );
+        log.debug("creating " + sessionID());
 
         setStoresIDsInCookies(true);
         setStoresIDsInURLs(false);
-        defaultEditingContext().setUndoManager( null );
-//        defaultEditingContext().setSharedEditingContext( null );
+        defaultEditingContext().setUndoManager(null);
+//        defaultEditingContext().setSharedEditingContext(null);
 
-        tabs.mergeClonedChildren( subsystemTabTemplate );
+        tabs.mergeClonedChildren(subsystemTabTemplate);
         tabs.selectDefault();
         childManagerPool = new WCEC.PeerManagerPool();
     }
@@ -94,7 +93,7 @@ public class Session
 
     //~ KVC Attributes (must be public) .......................................
 
-    public TabDescriptor tabs = new TabDescriptor( "TBDPage", "root" );
+    public TabDescriptor tabs = new TabDescriptor("TBDPage", "root");
 
 
     //~ Methods ...............................................................
@@ -123,34 +122,36 @@ public class Session
      * @param u The user loggin in
      * @return  The Session ID to use for this user
      */
-    public String setUser( User u )
+    public synchronized String setUser(User u)
     {
-        log.debug( "setUser( " + u.userName() + " )" );
+        log.debug("setUser(" + u.userName() + ")");
         primeUser = u;
         localUser = u;
-        log.debug( "setUser: userPreferences = "
-            + (primeUser == null
-                ? null : primeUser.preferences() ) );
+        log.debug("setUser: userPreferences = "
+            + (primeUser == null ? null : primeUser.preferences()));
         Application.wcApplication().subsystemManager()
-            .initializeSessionData( this );
-        if ( ! properties().booleanForKey( "core.suppressAccessControl" ) )
+            .initializeSessionData(this);
+        if (!properties().booleanForKey("core.suppressAccessControl"))
         {
-            tabs.filterByAccessLevel( u.accessLevel() );
+            tabs.filterByAccessLevel(u.accessLevel());
         }
         tabs.selectDefault();
         if (!doNotUseLoginSession)
         {
             EOEditingContext ec = Application.newPeerEditingContext();
+            loginSession = null;
+            loginSessionId = null;
             try
             {
                 ec.lock();
                 loginSession = LoginSession.getLoginSessionForUser(ec, user());
-                if ( loginSession != null )
+                if (loginSession != null)
                 {
                     NSTimestamp now = new NSTimestamp();
-                    if ( loginSession.expirationTime().after( now ) )
+                    if (loginSession.expirationTime().after(now))
                     {
-                        return loginSession.sessionId();
+                        loginSessionId = loginSession.sessionId();
+                        return loginSessionId;
                     }
                     // otherwise ... fall through to default case
                 }
@@ -159,11 +160,15 @@ public class Session
             {
                 ec.unlock();
             }
-            if ( loginSession == null )
+            if (loginSession == null)
             {
-                Application.releasePeerEditingContext( ec );
+                Application.releasePeerEditingContext(ec);
             }
             updateLoginSession();
+        }
+        if (loginSession != null)
+        {
+            loginSessionId = this.sessionID();
         }
         return this.sessionID();
     }
@@ -248,33 +253,40 @@ public class Session
      *
      * This updates the stored timeout for this session.
      */
-    private void updateLoginSession()
+    private synchronized void updateLoginSession()
     {
-        if (doNotUseLoginSession) return;
-        log.debug( "updateLoginSession()" );
-        if ( primeUser == null ) return;
-        if ( loginSession == null )
+        if (doNotUseLoginSession)
+        {
+            return;
+        }
+        log.debug("updateLoginSession()");
+        if (primeUser == null)
+        {
+            return;
+        }
+        if (loginSession == null)
         {
             EOEditingContext ec = Application.newPeerEditingContext();
             try
             {
                 ec.lock();
-                User loginUser = primeUser.localInstance( ec );
+                User loginUser = primeUser.localInstance(ec);
                 loginSession =
-                    LoginSession.getLoginSessionForUser( ec, loginUser );
-                if ( loginSession == null )
+                    LoginSession.getLoginSessionForUser(ec, loginUser);
+                if (loginSession == null)
                 {
                     loginSession = new LoginSession();
-                    ec.insertObject( loginSession );
-                    loginSession.setSessionId( sessionID() );
-                    loginSession.setUserRelationship( loginUser );
+                    ec.insertObject(loginSession);
+                    loginSession.setSessionId(sessionID());
+                    loginSessionId = sessionID();
+                    loginSession.setUserRelationship(loginUser);
                 }
             }
             finally
             {
                 ec.unlock();
             }
-            if ( loginSession == null )
+            if (loginSession == null)
             {
                 Application.releasePeerEditingContext( ec );
                 log.error("updateLoginSession() cannot find login session for "
@@ -282,32 +294,39 @@ public class Session
                 return;
             }
         }
-        try
+        if (loginSession != null)
         {
-            loginSession.editingContext().lock();
-            loginSession.setExpirationTime(
-                ( new NSTimestamp() ).timestampByAddingGregorianUnits(
-                    0, 0, 0, 0, 0, (int)timeOut() ) );
             try
             {
-                log.debug( "attempting to save" );
-                loginSession.editingContext().saveChanges();
-                log.debug( "saving complete" );
+                loginSession.editingContext().lock();
+                loginSession.setExpirationTime(
+                    ( new NSTimestamp() ).timestampByAddingGregorianUnits(
+                        0, 0, 0, 0, 0, (int)timeOut() ) );
+                try
+                {
+                    log.debug( "attempting to save" );
+                    loginSession.editingContext().saveChanges();
+                    log.debug( "saving complete" );
+                }
+                catch ( Exception e )
+                {
+                    new UnexpectedExceptionMessage(e, context(), null, null)
+                        .send();
+                    EOEditingContext ec = loginSession.editingContext();
+                    loginSession = null;
+                    ec.revert();
+                    ec.invalidateAllObjects();
+                    ec.unlock();
+                }
             }
-            catch ( Exception e )
+            finally
             {
-                new UnexpectedExceptionMessage(e, context(), null, null).send();
-                EOEditingContext ec = loginSession.editingContext();
-                loginSession = null;
-                ec.revert();
-                ec.invalidateAllObjects();
-                ec.unlock();
+                if (loginSession != null
+                    && loginSession.editingContext() != null)
+                {
+                    loginSession.editingContext().unlock();
+                }
             }
-        }
-        finally
-        {
-            if ( loginSession != null && loginSession.editingContext() != null )
-                loginSession.editingContext().unlock();
         }
     }
 
@@ -319,16 +338,15 @@ public class Session
      */
     public void sleep()
     {
-        log.debug( "sleep()" );
+        log.debug("sleep()");
         super.sleep();
         updateLoginSession();
-        if (  loginSession != null
-           && !loginSession.sessionId().equals( sessionID() ) )
+        if (loginSession != null
+            && loginSessionId != null
+            && !loginSessionId.equals(sessionID()))
         {
-            log.error(
-                "Error: sleep()'ing with multiple sessions active for user: "
-                + ( user() == null ? "<null>" : user().name() )
-                );
+            log.error("Error: sleep()'ing with multiple sessions active for "
+                + "user: " + (user() == null ? "<null>" : user().name()));
         }
     }
 
@@ -348,9 +366,9 @@ public class Session
      */
     public Number suppressAccessControl()
     {
-        return properties().booleanForKey( "core.suppressAccessControl" )
-                ? one
-                : zero;
+        return properties().booleanForKey("core.suppressAccessControl")
+            ? one
+            : zero;
     }
 
 
@@ -385,15 +403,15 @@ public class Session
      */
     public void terminate()
     {
-        if ( log.isDebugEnabled() )
+        if (log.isDebugEnabled())
         {
-            log.debug( "terminating session " + sessionID() );
-            log.debug( "from here:", new Exception( "here" ) );
+            log.debug("terminating session " + sessionID());
+            log.debug("from here:", new Exception("terminate() called"));
         }
-        if ( primeUser != null )
+        if (primeUser != null)
         {
-            log.info( "session timeout: "
-                      + ( primeUser == null ? "null" : primeUser.userName() ) );
+            log.info("session timeout: "
+                + (primeUser == null ? "null" : primeUser.userName()));
             userLogout();
         }
         else
@@ -402,7 +420,7 @@ public class Session
             {
                 super.terminate();
             }
-            catch ( Exception e )
+            catch (Exception e)
             {
                 new UnexpectedExceptionMessage(e, context(), null, null).send();
             }
@@ -412,13 +430,13 @@ public class Session
 
     // ----------------------------------------------------------
     @Override
-    public void savePageInPermanentCache( WOComponent page )
+    public void savePageInPermanentCache(WOComponent page)
     {
         if (page instanceof WCComponent)
         {
-            ( (WCComponent)page ).willCachePermanently();
+            ((WCComponent)page).willCachePermanently();
         }
-        super.savePageInPermanentCache( page );
+        super.savePageInPermanentCache(page);
     }
 
 
@@ -427,77 +445,68 @@ public class Session
      * Set the user to null and erase the login session info from
      * the database.
      */
-    public void userLogout()
+    public synchronized void userLogout()
     {
         Application.userCount--;
-        log.info( "user logout: "
-                  + ( primeUser == null ? "null" : primeUser.userName() )
-                  + " (now "
-                  + Application.userCount
-                  + " users)" );
+        log.info("user logout: "
+            + (primeUser == null ? "null" : primeUser.userName())
+            + " (now "
+            + Application.userCount
+            + " users)");
         try
         {
-            String loginSessionId = "";
-            try
+            if (loginSession != null
+                && loginSessionId != null
+                && sessionID().equals(loginSessionId))
             {
-                loginSessionId = loginSession.sessionId();
-            }
-            catch (Exception e)
-            {
-                // The code above could throw an exception if the EC is
-                // already disposed, so ignore it
-            }
-
-            if (  loginSession != null
-               && sessionID().equals( loginSessionId ) )
-            {
+                EOEditingContext lockContext = loginSession.editingContext();
                 try
                 {
-                    log.debug( "deleting login session "
-                             + loginSession.sessionId() );
-                    loginSession.editingContext().deleteObject( loginSession );
+                    lockContext.lock();
+                    log.debug("deleting login session " + loginSessionId);
+                    loginSession.editingContext().deleteObject(loginSession);
                     loginSession.editingContext().saveChanges();
                 }
-                catch ( Exception e )
+                catch (Exception e)
                 {
-                    new UnexpectedExceptionMessage(e, context(), null, null).send();
+                    new UnexpectedExceptionMessage(e, context(), null, null)
+                        .send();
                     EOEditingContext ec = Application.newPeerEditingContext();
                     try
                     {
                         ec.lock();
-                        User u = primeUser.localInstance( ec );
-                        NSArray<?> items =
-                            EOUtilities.objectsMatchingKeyAndValue(
-                                ec,
-                                LoginSession.ENTITY_NAME,
-                                LoginSession.USER_KEY,
-                                u
-                            );
-                        if ( items != null && items.count() >= 1 )
+                        User u = primeUser.localInstance(ec);
+                        NSArray<LoginSession> items =
+                            LoginSession.objectsMatchingQualifier(ec,
+                                LoginSession.user.is(u));
+                        if (items != null && items.count() >= 1)
                         {
-                            LoginSession ls =
-                                (LoginSession)items.objectAtIndex( 0 );
-                            ec.deleteObject( ls );
+                            LoginSession ls = items.objectAtIndex(0);
+                            ec.deleteObject(ls);
                         }
                         try
                         {
                             ec.saveChanges();
                         }
-                        catch ( Exception e2 )
+                        catch (Exception e2)
                         {
-                            new UnexpectedExceptionMessage(e2, context(),
-                                    null, null).send();
+                            new UnexpectedExceptionMessage(
+                                e2, context(), null, null).send();
                         }
                     }
                     finally
                     {
                         ec.unlock();
-                        Application.releasePeerEditingContext( ec );
+                        Application.releasePeerEditingContext(ec);
                     }
+                }
+                finally
+                {
+                    lockContext.unlock();
                 }
             }
         }
-        catch ( Exception e )
+        catch (Exception e)
         {
             new UnexpectedExceptionMessage(e, context(), null, null).send();
         }
@@ -563,7 +572,7 @@ public class Session
      */
     public void commitSessionChanges()
     {
-        log.debug( "commitLocalChanges()" );
+        log.debug("commitLocalChanges()");
         temporaryTheme = null;
         defaultEditingContext().saveChanges();
         defaultEditingContext().revert();
@@ -590,7 +599,7 @@ public class Session
      * administrators and instructors.
      * @param u the new user to impersonate
      */
-    public void setLocalUser( User u )
+    public void setLocalUser(User u)
     {
         localUser = u;
 //            (User)EOUtilities.localInstanceOfObject( childContext, u );
@@ -623,12 +632,12 @@ public class Session
     public void toggleStudentView()
     {
         user().toggleStudentView();
-        if ( user().restrictToStudentView() )
+        if (user().restrictToStudentView())
         {
             TabDescriptor td = tabs;
-            while ( td != null && td.selectedChild() != null )
+            while (td != null && td.selectedChild() != null)
             {
-                if ( td.selectedChild().accessLevel() > 0 )
+                if (td.selectedChild().accessLevel() > 0)
                 {
                     td.selectDefault();
                     break;
@@ -650,21 +659,20 @@ public class Session
     @SuppressWarnings("deprecation")
     public com.webobjects.foundation.NSTimestampFormatter timeFormatter()
     {
-        if ( timeFormatter == null )
+        if (timeFormatter == null)
         {
             String formatString =
                 user().dateFormat() + " " + user().timeFormat();
-            timeFormatter =
-                new com.webobjects.foundation.NSTimestampFormatter(
-                    formatString);
-            NSTimeZone zone =
-                NSTimeZone.timeZoneWithName( user().timeZoneName(), true );
-            timeFormatter.setDefaultFormatTimeZone( zone );
-            timeFormatter.setDefaultParseTimeZone( zone );
-            if ( log.isDebugEnabled() )
+            timeFormatter = new com.webobjects.foundation.NSTimestampFormatter(
+                formatString);
+            NSTimeZone zone = NSTimeZone.timeZoneWithName(
+                user().timeZoneName(), true);
+            timeFormatter.setDefaultFormatTimeZone(zone);
+            timeFormatter.setDefaultParseTimeZone(zone);
+            if (log.isDebugEnabled())
             {
-                log.debug( "timeFormatter( ): format = " + formatString );
-                log.debug( "timeFormatter( ): zone = " + zone );
+                log.debug("timeFormatter(): format = " + formatString);
+                log.debug("timeFormatter(): zone = " + zone);
             }
         }
         return timeFormatter;
@@ -702,7 +710,7 @@ public class Session
      */
     public void clearCachedTimeFormatter()
     {
-        log.debug( "clearCachedTimeFormatter()" );
+        log.debug("clearCachedTimeFormatter()");
         timeFormatter = null;
     }
 
@@ -728,6 +736,7 @@ public class Session
     private User                  primeUser            = null;
     private User                  localUser            = null;
     private LoginSession          loginSession         = null;
+    private String                loginSessionId       = null;
     private NSMutableDictionary<String, Object> transientState;
     private WCEC.PeerManagerPool  childManagerPool;
     private boolean               doNotUseLoginSession = false;
@@ -741,11 +750,11 @@ public class Session
 
     private static NSArray<TabDescriptor> subsystemTabTemplate;
     {
-        NSBundle myBundle = NSBundle.bundleForClass( Session.class );
+        NSBundle myBundle = NSBundle.bundleForClass(Session.class);
         subsystemTabTemplate = TabDescriptor.tabsFromPropertyList(
-            new NSData ( myBundle.bytesForResourcePath(
-                             TabDescriptor.TAB_DEFINITIONS ) ) );
+            new NSData (myBundle.bytesForResourcePath(
+                TabDescriptor.TAB_DEFINITIONS)));
      }
 
-    static Logger log = Logger.getLogger( Session.class );
+    static Logger log = Logger.getLogger(Session.class);
 }

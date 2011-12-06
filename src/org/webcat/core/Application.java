@@ -230,7 +230,10 @@ public class Application
             setNeedsInstallation(false);
             notifyAdminsOfStartup();
         }
-        log.error("classpath = " + System.getProperty("java.class.path"));
+        if (log.isDebugEnabled())
+        {
+            log.debug("classpath = " + System.getProperty("java.class.path"));
+        }
     }
 
 
@@ -1666,7 +1669,8 @@ public class Application
                 errorBuffer.append(anException.getClass().getName());
                 errorBuffer.append(":\n");
                 errorBuffer.append(anException.getMessage());
-                if (anException.getMessage() != null && loggedError != null)
+                if (anException.getMessage() != null
+                    && loggedError != null)
                 {
                     loggedError.setMessage(anException.getMessage());
                 }
@@ -1679,11 +1683,12 @@ public class Application
                          e.hasMoreElements();)
                     {
                         Object key = e.nextElement();
-                        if (!"Session".equals(key))
+                        if (!"Session".equals(key)
+                            && !"Bundles".equals(key))
                         {
                             Object value = extraInfo.objectForKey(key);
                             errorBuffer.append(key);
-                            errorBuffer.append("\t= ");
+                            errorBuffer.append(" = ");
                             errorBuffer.append(value);
                             errorBuffer.append('\n');
                         }
@@ -1698,13 +1703,14 @@ public class Application
                     PrintWriter pwriter = new PrintWriter(writer);
                     anException.printStackTrace(pwriter);
                     pwriter.close();
-                    loggedError.setStackTrace(writer.getBuffer().toString());
+                    loggedError.setStackTrace(
+                        writer.getBuffer().toString());
                 }
                 if (!isRunningAsServlet())
                 {
-                    // If we're not running as a servlet, then assume we're in
-                    // a developer environment and generate fully compliant
-                    // stack trace info for IDE parsing:
+                    // If we're not running as a servlet, then assume we're
+                    // in a developer environment and generate fully
+                    // compliant stack trace info for IDE parsing:
                     StringWriter writer = new StringWriter();
                     PrintWriter pwriter = new PrintWriter(writer);
                     anException.printStackTrace(pwriter);
@@ -1714,8 +1720,8 @@ public class Application
                 else
                 {
                     // For deployment, use a simplified stack trace
-                    // presentation to make e-mail messages lighter (and also
-                    // somewhat more readable).
+                    // presentation to make e-mail messages lighter (and
+                    // also somewhat more readable).
                     WOExceptionParser exParser =
                         new WOExceptionParser(anException);
                     Enumeration<?> traceEnum =
@@ -1758,13 +1764,23 @@ public class Application
             errorLoggingContext = null;
             try
             {
+                try
+                {
+                    // Try to unlock it, if possible
+                    old.unlock();
+                }
+                catch (Exception ee)
+                {
+                    // ignore, since we're throwing it away
+                }
                 releasePeerEditingContext(old);
             }
             catch (Exception e2)
             {
-                log.fatal("error releasing error logging editing context", e2);
-                log.fatal("original exception causing error logging context "
-                          + "to be released", e);
+                log.fatal("error releasing error logging editing context",
+                    e2);
+                log.fatal("original exception causing error logging "
+                    + "context to be released", e);
             }
         }
         finally
@@ -2517,7 +2533,7 @@ public class Application
      *
      * @return the message dispatcher used by the application
      */
-    public IMessageDispatcher messageDispatcher()
+    public synchronized IMessageDispatcher messageDispatcher()
     {
         if (messageDispatcher == null)
         {
@@ -2534,7 +2550,7 @@ public class Application
      *
      * @param dispatcher the message dispatcher
      */
-    public void setMessageDispatcher(IMessageDispatcher dispatcher)
+    public synchronized void setMessageDispatcher(IMessageDispatcher dispatcher)
     {
         messageDispatcher = dispatcher;
     }

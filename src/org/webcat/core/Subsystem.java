@@ -121,7 +121,7 @@ public class Subsystem
             // Otherwise, try to create one directly from properties
             if (descriptor == null)
             {
-                log.warn("Unable to find feature descriptor for " + name()
+                log.debug("Unable to find feature descriptor for " + name()
                     + " via adaptor.  Creating one from properties.");
                 descriptor = new FeatureDescriptor(
                     name(), Application.configurationProperties(), false);

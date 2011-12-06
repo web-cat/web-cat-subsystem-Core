@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2010 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -33,7 +33,6 @@ import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
-import com.webobjects.foundation.NSTimestampFormatter;
 import er.extensions.eof.ERXKey;
 import er.extensions.foundation.ERXArrayUtilities;
 
@@ -241,8 +240,8 @@ public class User
     {
         String last  = lastName();
         String first = firstName();
-        boolean lastIsEmpty = ( last == null || last.equals( "" ) );
-        boolean firstIsEmpty = ( first == null || first.equals( "" ) );
+        boolean lastIsEmpty = (last == null || last.equals(""));
+        boolean firstIsEmpty = (first == null || first.equals(""));
 
         if (lastIsEmpty && firstIsEmpty)
         {
@@ -275,8 +274,8 @@ public class User
         {
             String last  = lastName();
             String first = firstName();
-            boolean lastIsEmpty = ( last == null || last.equals( "" ) );
-            boolean firstIsEmpty = ( first == null || first.equals( "" ) );
+            boolean lastIsEmpty = (last == null || last.equals(""));
+            boolean firstIsEmpty = (first == null || first.equals(""));
 
             if (lastIsEmpty && firstIsEmpty)
             {
@@ -415,8 +414,8 @@ public class User
     public String timeFormat()
     {
         String result =
-            (String)preferences().objectForKey( TIME_FORMAT_KEY );
-        if ( result == null || result.equals( "" ) )
+            (String)preferences().objectForKey(TIME_FORMAT_KEY);
+        if (result == null || result.equals(""))
         {
             result = authenticationDomain().timeFormat();
         }
@@ -430,9 +429,9 @@ public class User
      *
      * @param value The new value for this property
      */
-    public void setTimeFormat( String value )
+    public void setTimeFormat(String value)
     {
-        preferences().setObjectForKey( value, TIME_FORMAT_KEY );
+        preferences().setObjectForKey(value, TIME_FORMAT_KEY);
     }
 
 
@@ -447,8 +446,8 @@ public class User
     public String timeZoneName()
     {
         String result =
-            (String)preferences().objectForKey( TIME_ZONE_NAME_KEY );
-        if ( result == null || result.equals( "" ) )
+            (String)preferences().objectForKey(TIME_ZONE_NAME_KEY);
+        if (result == null || result.equals(""))
         {
             result = authenticationDomain().timeZoneName();
         }
@@ -462,9 +461,9 @@ public class User
      *
      * @param value The new value for this property
      */
-    public void setTimeZoneName( String value )
+    public void setTimeZoneName(String value)
     {
-        preferences().setObjectForKey( value, TIME_ZONE_NAME_KEY );
+        preferences().setObjectForKey(value, TIME_ZONE_NAME_KEY);
     }
 
 
@@ -480,8 +479,8 @@ public class User
     public String dateFormat()
     {
         String result =
-            (String)preferences().objectForKey( DATE_FORMAT_KEY );
-        if ( result == null || result.equals( "" ) )
+            (String)preferences().objectForKey(DATE_FORMAT_KEY);
+        if (result == null || result.equals(""))
         {
             result = authenticationDomain().dateFormat();
         }
@@ -495,9 +494,9 @@ public class User
      *
      * @param value The new value for this property
      */
-    public void setDateFormat( String value )
+    public void setDateFormat(String value)
     {
-        preferences().setObjectForKey( value, DATE_FORMAT_KEY );
+        preferences().setObjectForKey(value, DATE_FORMAT_KEY);
     }
 
 
@@ -521,15 +520,15 @@ public class User
         )
     {
         UserAuthenticator authenticator = domain.authenticator();
-        if ( authenticator != null )
+        if (authenticator != null)
         {
             return authenticator.authenticate(
-                    aUserName, aPassword, domain, ec );
+                aUserName, aPassword, domain, ec);
         }
         else
         {
-            log.error( "no registered authenticator called "
-                       + domain.propertyName() );
+            log.error("no registered authenticator called "
+                + domain.propertyName());
             return null;
         }
     }
@@ -561,16 +560,18 @@ public class User
      * @param newPassword The password to change to
      * @return True if the password change was successful
      */
-    public boolean changePassword( String newPassword )
+    public boolean changePassword(String newPassword)
     {
         AuthenticationDomain ad = authenticationDomain();
-        if ( ad == null )
+        if (ad == null)
+        {
             return false;
+        }
         else
         {
             UserAuthenticator authenticator = ad.authenticator();
             return authenticator != null
-                && authenticator.changePassword( this, newPassword );
+                && authenticator.changePassword(this, newPassword);
         }
     }
 
@@ -584,13 +585,15 @@ public class User
     public boolean newRandomPassword()
     {
         AuthenticationDomain ad = authenticationDomain();
-        if ( ad == null )
+        if (ad == null)
+        {
             return false;
+        }
         else
         {
             UserAuthenticator authenticator = ad.authenticator();
             return authenticator != null
-                && authenticator.newRandomPassword( this );
+                && authenticator.newRandomPassword(this);
         }
     }
 
@@ -618,7 +621,7 @@ public class User
      */
     public WOComponent toggleStudentView()
     {
-        if ( canChangeViews() )
+        if (canChangeViews())
         {
             studentView = !studentView;
             graderFor_cache = null;
@@ -642,13 +645,13 @@ public class User
     public String toggleViewLabel()
     {
         String result = "Student View";
-        if ( studentView )
+        if (studentView)
         {
-            if ( accessLevel() > INSTRUCTOR_PRIVILEGES )
+            if (accessLevel() > INSTRUCTOR_PRIVILEGES)
             {
                 result = "Admin View";
             }
-            else if ( accessLevel() > GTA_PRIVILEGES )
+            else if (accessLevel() > GTA_PRIVILEGES)
             {
                 result = "Instructor View";
             }
@@ -706,7 +709,7 @@ public class User
      * @deprecated Use the {@link #graderFor(Semester)} method instead.
      */
     @Deprecated
-    public NSArray TAFor( Semester semester )
+    public NSArray<CourseOffering> TAFor(Semester semester)
     {
         return graderFor(semester);
     }
@@ -719,23 +722,12 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray<CourseOffering> graderFor( Semester semester )
+    public NSArray<CourseOffering> graderFor(Semester semester)
     {
         NSArray<CourseOffering> result = graderFor();
-        if ( semester != null )
+        if (semester != null)
         {
-            @SuppressWarnings("unchecked")
-            NSArray<CourseOffering> newResult =
-                ERXArrayUtilities
-                .filteredArrayWithEntityFetchSpecification(
-                    result,
-                    CourseOffering.ENTITY_NAME,
-                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
-                    new NSDictionary(
-                        new Object[]{ semester                    },
-                        new Object[]{ CourseOffering.SEMESTER_KEY }
-                    ) );
-            result = newResult;
+            result = CourseOffering.semester.is(semester).filtered(result);
         }
         return result;
     }
@@ -755,23 +747,12 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray<CourseOffering> teaching( Semester semester )
+    public NSArray<CourseOffering> teaching(Semester semester)
     {
         NSArray<CourseOffering> result = teaching();
-        if ( semester != null )
+        if (semester != null)
         {
-            @SuppressWarnings("unchecked")
-            NSArray<CourseOffering> newResult =
-                ERXArrayUtilities
-                .filteredArrayWithEntityFetchSpecification(
-                    result,
-                    CourseOffering.ENTITY_NAME,
-                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
-                    new NSDictionary(
-                        new Object[]{ semester                    },
-                        new Object[]{ CourseOffering.SEMESTER_KEY }
-                    ) );
-            result = newResult;
+            result = CourseOffering.semester.is(semester).filtered(result);
         }
         return result;
     }
@@ -831,29 +812,43 @@ public class User
      * "user.".
      * @param properties The object to which the definitions will be added
      */
-    public void addPropertiesTo( Properties properties )
+    public void addPropertiesTo(Properties properties)
     {
         String value = email();
-        if ( value != null )
-            properties.setProperty( PREFIX + EMAIL_KEY, value );
+        if (value != null)
+        {
+            properties.setProperty(PREFIX + EMAIL_KEY, value);
+        }
         value = firstName();
-        if ( value != null )
-            properties.setProperty( PREFIX + FIRST_NAME_KEY, value );
+        if (value != null)
+        {
+            properties.setProperty(PREFIX + FIRST_NAME_KEY, value);
+        }
         value = lastName();
-        if ( value != null )
-            properties.setProperty( PREFIX + LAST_NAME_KEY, value );
+        if (value != null)
+        {
+            properties.setProperty(PREFIX + LAST_NAME_KEY, value);
+        }
         value = password();
-        if ( value != null )
-            properties.setProperty( PREFIX + PASSWORD_KEY, value );
+        if (value != null)
+        {
+            properties.setProperty(PREFIX + PASSWORD_KEY, value);
+        }
         value = universityIDNo();
-        if ( value != null )
-            properties.setProperty( PREFIX + UNIVERSITY_ID_NO_KEY, value );
+        if (value != null)
+        {
+            properties.setProperty(PREFIX + UNIVERSITY_ID_NO_KEY, value);
+        }
         value = url();
-        if ( value != null )
-            properties.setProperty( PREFIX + URL_KEY, value );
+        if (value != null)
+        {
+            properties.setProperty(PREFIX + URL_KEY, value);
+        }
         value = userName();
-        if ( value != null )
-            properties.setProperty( PREFIX + USER_NAME_KEY, value );
+        if (value != null)
+        {
+            properties.setProperty(PREFIX + USER_NAME_KEY, value);
+        }
     }
 
 
@@ -880,23 +875,23 @@ public class User
      */
     public NSArray<CourseOffering> graderForButNotStudent()
     {
-        if ( graderFor_cache != graderFor() )
+        if (graderFor_cache != graderFor())
         {
             graderFor_cache = graderFor();
             graderForButNotStudent_cache = null;
         }
-        if ( graderFor_cache == null || graderFor_cache.count() == 0 )
+        if (graderFor_cache == null || graderFor_cache.count() == 0)
         {
             graderForButNotStudent_cache = NO_COURSES;
         }
         else
         {
-            if ( enrolledIn_cache != enrolledIn() )
+            if (enrolledIn_cache != enrolledIn())
             {
                 enrolledIn_cache = enrolledIn();
                 graderForButNotStudent_cache = null;
             }
-            if ( graderForButNotStudent_cache == null )
+            if (graderForButNotStudent_cache == null)
             {
                 @SuppressWarnings("unchecked")
                 NSArray<CourseOffering> cache =
@@ -942,20 +937,9 @@ public class User
     public NSArray<CourseOffering> graderForButNotStudent(Semester semester)
     {
         NSArray<CourseOffering> result = graderForButNotStudent();
-        if ( semester != null )
+        if (semester != null)
         {
-            @SuppressWarnings("unchecked")
-            NSArray<CourseOffering> newResult =
-                ERXArrayUtilities
-                .filteredArrayWithEntityFetchSpecification(
-                    result,
-                    CourseOffering.ENTITY_NAME,
-                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
-                    new NSDictionary(
-                        new Object[]{ semester                    },
-                        new Object[]{ CourseOffering.SEMESTER_KEY }
-                    ) );
-            result = newResult;
+            result = CourseOffering.semester.is(semester).filtered(result);
         }
         return result;
     }
@@ -987,28 +971,28 @@ public class User
      */
     public NSArray<CourseOffering> instructorForButNotGraderOrStudent()
     {
-        if ( teaching_cache != teaching() )
+        if (teaching_cache != teaching())
         {
             teaching_cache = teaching();
             instructorForButNotGraderOrStudent_cache = null;
         }
-        if ( teaching_cache == null || teaching_cache.count() == 0 )
+        if (teaching_cache == null || teaching_cache.count() == 0)
         {
             instructorForButNotGraderOrStudent_cache = NO_COURSES;
         }
         else
         {
-            if ( enrolledIn_cache != enrolledIn() )
+            if (enrolledIn_cache != enrolledIn())
             {
                 enrolledIn_cache = enrolledIn();
                 instructorForButNotGraderOrStudent_cache = null;
             }
-            if ( graderFor_cache != graderFor() )
+            if (graderFor_cache != graderFor())
             {
                 graderFor_cache = graderFor();
                 instructorForButNotGraderOrStudent_cache = null;
             }
-            if ( instructorForButNotGraderOrStudent_cache == null )
+            if (instructorForButNotGraderOrStudent_cache == null)
             {
                 @SuppressWarnings("unchecked")
                 NSArray<CourseOffering> cache =
@@ -1060,22 +1044,23 @@ public class User
         Semester semester)
     {
         NSArray<CourseOffering> result = instructorForButNotGraderOrStudent();
-        if ( semester != null )
+        if (semester != null)
         {
-            @SuppressWarnings("unchecked")
-            NSArray<CourseOffering> newResult =
-            result = ERXArrayUtilities
-                .filteredArrayWithEntityFetchSpecification(
-                    result,
-                    CourseOffering.ENTITY_NAME,
-                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
-                    new NSDictionary(
-                        new Object[]{ semester                    },
-                        new Object[]{ CourseOffering.SEMESTER_KEY }
-                    ) );
-            result = newResult;
+            result = CourseOffering.semester.is(semester).filtered(result);
         }
         return result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns a list of administrator users.
+     * @return an array of administrators.
+     */
+    public static NSArray<User> administrators(EOEditingContext context)
+    {
+        return objectsMatchingQualifier(context,
+            accessLevel.greaterThanOrEqualTo((int)WEBCAT_RW_PRIVILEGES));
     }
 
 
@@ -1087,21 +1072,21 @@ public class User
      */
     public NSArray<CourseOffering> staffFor()
     {
-        if ( graderFor_cache != graderFor() )
+        if (graderFor_cache != graderFor())
         {
             graderFor_cache = graderFor();
             staffFor_cache = null;
         }
-        if ( teaching_cache != teaching() )
+        if (teaching_cache != teaching())
         {
             teaching_cache = teaching();
             staffFor_cache = null;
         }
-        if ( staffFor_cache == null )
+        if (staffFor_cache == null)
         {
             staffFor_cache = EOSortOrdering.sortedArrayUsingKeyOrderArray(
-                teaching_cache.arrayByAddingObjectsFromArray( graderFor_cache ),
-                courseSortOrderings );
+                teaching_cache.arrayByAddingObjectsFromArray(graderFor_cache),
+                courseSortOrderings);
         }
         return staffFor_cache;
     }
@@ -1115,23 +1100,12 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray<CourseOffering> staffFor( Semester semester )
+    public NSArray<CourseOffering> staffFor(Semester semester)
     {
         NSArray<CourseOffering> result = staffFor();
-        if ( semester != null )
+        if (semester != null)
         {
-            @SuppressWarnings("unchecked")
-            NSArray<CourseOffering> newResult =
-            result = ERXArrayUtilities
-                .filteredArrayWithEntityFetchSpecification(
-                    result,
-                    CourseOffering.ENTITY_NAME,
-                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
-                    new NSDictionary(
-                        new Object[]{ semester                    },
-                        new Object[]{ CourseOffering.SEMESTER_KEY }
-                    ) );
-            result = newResult;
+            result = CourseOffering.semester.is(semester).filtered(result);
         }
         return result;
     }
@@ -1146,18 +1120,21 @@ public class User
      */
     public NSArray<CourseOffering> adminForButNotStaff()
     {
-        if ( !hasAdminPrivileges() ) return NO_COURSES;
-        if ( graderFor_cache != graderFor() )
+        if (!hasAdminPrivileges())
+        {
+            return NO_COURSES;
+        }
+        if (graderFor_cache != graderFor())
         {
             graderFor_cache = graderFor();
             adminForButNotStaff_cache = null;
         }
-        if ( teaching_cache != teaching() )
+        if (teaching_cache != teaching())
         {
             teaching_cache = teaching();
             adminForButNotStaff_cache = null;
         }
-        if ( adminForButNotStaff_cache == null )
+        if (adminForButNotStaff_cache == null)
         {
             // For some reason, using the fetch directly does not seem
             // to work, at least not when the result is empty.
@@ -1167,8 +1144,8 @@ public class User
             @SuppressWarnings("unchecked")
             NSArray<CourseOffering> cache =
                 ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
-                    EOUtilities.objectsForEntityNamed( editingContext(),
-                        CourseOffering.ENTITY_NAME ),
+                    EOUtilities.objectsForEntityNamed(editingContext(),
+                        CourseOffering.ENTITY_NAME),
                     CourseOffering.ENTITY_NAME,
                     CourseOffering.OFFERINGS_WITHOUT_USER_AS_STAFF_FSPEC,
                     userFilteringDictionary()
@@ -1188,22 +1165,12 @@ public class User
      * means all courses (same as staffFor()).
      * @return a sorted array of the matching course offerings.
      */
-    public NSArray<CourseOffering> adminForButNotStaff( Semester semester )
+    public NSArray<CourseOffering> adminForButNotStaff(Semester semester)
     {
         NSArray<CourseOffering> result = adminForButNotStaff();
-        if ( semester != null )
+        if (semester != null)
         {
-            @SuppressWarnings("unchecked")
-            NSArray<CourseOffering> thisSemester = ERXArrayUtilities
-                .filteredArrayWithEntityFetchSpecification(
-                    result,
-                    CourseOffering.ENTITY_NAME,
-                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
-                    new NSDictionary(
-                        new Object[]{ semester                    },
-                        new Object[]{ CourseOffering.SEMESTER_KEY }
-                    ) );
-            result = thisSemester;
+            result = CourseOffering.semester.is(semester).filtered(result);
         }
         return result;
     }
@@ -1218,23 +1185,26 @@ public class User
      */
     public NSArray<CourseOffering> adminForButNoOtherRelationships()
     {
-        if ( !hasAdminPrivileges() ) return NO_COURSES;
-        if ( enrolledIn_cache != enrolledIn() )
+        if (!hasAdminPrivileges())
+        {
+            return NO_COURSES;
+        }
+        if (enrolledIn_cache != enrolledIn())
         {
             enrolledIn_cache = enrolledIn();
             adminForButNoOtherRelationships_cache = null;
         }
-        if ( graderFor_cache != graderFor() )
+        if (graderFor_cache != graderFor())
         {
             graderFor_cache = graderFor();
             adminForButNoOtherRelationships_cache = null;
         }
-        if ( teaching_cache != teaching() )
+        if (teaching_cache != teaching())
         {
             teaching_cache = teaching();
             adminForButNoOtherRelationships_cache = null;
         }
-        if ( adminForButNoOtherRelationships_cache == null )
+        if (adminForButNoOtherRelationships_cache == null)
         {
             // For some reason, using the fetch directly does not seem
             // to work, at least not when the result is empty.
@@ -1268,19 +1238,9 @@ public class User
         Semester semester)
     {
         NSArray<CourseOffering> result = adminForButNoOtherRelationships();
-        if ( semester != null )
+        if (semester != null)
         {
-            @SuppressWarnings("unchecked")
-            NSArray<CourseOffering> thisSemester =
-                ERXArrayUtilities.filteredArrayWithEntityFetchSpecification(
-                    result,
-                    CourseOffering.ENTITY_NAME,
-                    CourseOffering.OFFERINGS_FOR_SEMESTER_FSPEC,
-                    new NSDictionary<String, Object>(
-                        new Object[]{ semester                    },
-                        new String[]{ CourseOffering.SEMESTER_KEY }
-                    ) );
-            result = thisSemester;
+            result = CourseOffering.semester.is(semester).filtered(result);
         }
         return result;
     }
@@ -1302,16 +1262,16 @@ public class User
             {
                 ec.lock();
                 CoreSelections newCoreSelections = new CoreSelections();
-                ec.insertObject( newCoreSelections );
-                newCoreSelections.setUserRelationship( localInstance( ec ) );
+                ec.insertObject(newCoreSelections);
+                newCoreSelections.setUserRelationship(localInstance(ec));
                 ec.saveChanges();
-                editingContext().refreshObject( this );
+                editingContext().refreshObject(this);
                 cs = coreSelections();
             }
             finally
             {
                 ec.unlock();
-                Application.releasePeerEditingContext( ec );
+                Application.releasePeerEditingContext(ec);
             }
         }
         return cs.objectAtIndex(0);
@@ -1340,7 +1300,7 @@ public class User
             ec.saveChanges();
             // Now refresh the session's user object so that it loads
             // this saved preferences value
-            editingContext().refreshObject( this );
+            editingContext().refreshObject(this);
         }
         catch (Exception e)
         {
@@ -1552,9 +1512,9 @@ public class User
     // ----------------------------------------------------------
     private NSDictionary<String, User> userFilteringDictionary()
     {
-        if ( userIsMe == null )
+        if (userIsMe == null)
         {
-            userIsMe = new NSDictionary<String, User>( this, "user" );
+            userIsMe = new NSDictionary<String, User>(this, "user");
         }
         return userIsMe;
     }
@@ -1584,15 +1544,8 @@ public class User
     private static final NSArray<CourseOffering> NO_COURSES =
         new NSArray<CourseOffering>();
     private static final NSArray<EOSortOrdering> courseSortOrderings =
-        new NSArray<EOSortOrdering>(
-        new EOSortOrdering[] {
-            EOSortOrdering.sortOrderingWithKey(
-                CourseOffering.COURSE_NUMBER_KEY,
-                EOSortOrdering.CompareAscending ),
-            EOSortOrdering.sortOrderingWithKey(
-                CourseOffering.CRN_KEY,
-                EOSortOrdering.CompareAscending )
-            });
+        CourseOffering.course.dot(Course.number).asc().then(
+            CourseOffering.crn.asc());
 
-    static Logger log = Logger.getLogger( User.class );
+    static Logger log = Logger.getLogger(User.class);
 }
