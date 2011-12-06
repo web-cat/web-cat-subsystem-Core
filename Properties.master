@@ -61,8 +61,11 @@ WOAllowsConcurrentRequestHandling = true
 # -------------------------------------------------------------------
 dbConnectDriverGLOBAL = com.mysql.jdbc.Driver
 er.extensions.appserver.ERXApplication.useEditingContextUnlocker = true
-er.extensions.eof.ERXEC.defaultAutomaticLockUnlock = true
-er.extensions.eof.ERXEC.defaultCoalesceAutoLocks = true
+er.extensions.eof.ERXEC.safeLocking = true
+
+er.extensions.ERXEC.traceOpenLocks = true
+er.extensions.ERXEC.LockLogger = true
+
 er.extensions.ERXResourceManager.versionManager = \
     org.webcat.woextensions.WCResourceManager$WCVersionManager
 ognl.active          = true
