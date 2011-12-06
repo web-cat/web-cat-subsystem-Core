@@ -21,7 +21,6 @@
 
 package org.webcat.core.messaging;
 
-import org.apache.log4j.Logger;
 import org.webcat.core.Application;
 import org.webcat.core.User;
 import com.webobjects.foundation.NSArray;

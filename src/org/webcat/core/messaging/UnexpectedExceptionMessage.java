@@ -25,6 +25,7 @@ import org.jfree.util.Log;
 import org.webcat.core.Application;
 import org.webcat.core.User;
 import com.webobjects.appserver.WOContext;
+import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
 
@@ -103,9 +104,19 @@ public class UnexpectedExceptionMessage extends SysAdminMessage
 
     // ----------------------------------------------------------
     @Override
-    public NSArray<User> users()
+    public synchronized NSArray<User> users()
     {
-        return User.systemAdmins(editingContext());
+        EOEditingContext ec = editingContext();
+
+        try
+        {
+            ec.lock();
+            return User.systemAdmins(ec);
+        }
+        finally
+        {
+            ec.unlock();
+        }
     }
 
 
