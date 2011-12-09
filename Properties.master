@@ -64,7 +64,7 @@ er.extensions.appserver.ERXApplication.useEditingContextUnlocker = true
 er.extensions.eof.ERXEC.safeLocking = true
 
 er.extensions.ERXEC.traceOpenLocks = true
-er.extensions.ERXEC.LockLogger = true
+log4j.logger.er.extensions.ERXEC.LockTrace = DEBUG
 
 er.extensions.ERXResourceManager.versionManager = \
     org.webcat.woextensions.WCResourceManager$WCVersionManager

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -31,6 +31,7 @@ import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSKeyValueCoding;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
+import er.extensions.eof.ERXEC;
 
 //-------------------------------------------------------------------------
 /**
@@ -41,8 +42,9 @@ import com.webobjects.foundation.NSMutableDictionary;
  * container) to be independently saved to the database, separate from all
  * the other objects related to it.
  *
- * @author stedwar2
- * @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public interface EOManager
     extends NSKeyValueCoding,
@@ -62,7 +64,7 @@ public interface EOManager
          */
         public ECManager()
         {
-            ec = Application.newPeerEditingContext();
+            ec = (ERXEC)Application.newPeerEditingContext();
         }
 
 
@@ -197,9 +199,11 @@ public interface EOManager
 
                 // Something happened, so try replacing the old context
                 // with a new one.
-                EOEditingContext newContext =
-                    Application.newPeerEditingContext();
-                newContext.lock();
+                ERXEC newContext = (ERXEC)Application.newPeerEditingContext();
+                for (int i = 0; i < ec.lockCount(); i++)
+                {
+                    newContext.lock();
+                }
 
                 eo = EOUtilities.localInstanceOfObject(newContext, eo);
                 newContext.refreshObject(eo);
@@ -210,7 +214,10 @@ public interface EOManager
                     // Try to unlock first, if possible
                     try
                     {
-                        ec.unlock();
+                        while (ec.lockCount() > 0)
+                        {
+                            ec.unlock();
+                        }
                     }
                     catch (Exception eee)
                     {
@@ -279,12 +286,16 @@ public interface EOManager
          */
         public void dispose()
         {
+            while (ec.lockCount() > 0)
+            {
+                ec.unlock();
+            }
             Application.releasePeerEditingContext(ec);
         }
 
 
         //~ Instance/static variables .........................................
-        private EOEditingContext ec;
+        private ERXEC ec;
 
         static Logger log = Logger.getLogger(ECManager.class);
     }

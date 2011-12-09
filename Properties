@@ -1,7 +1,7 @@
 #This file is automatically rewritten by ANT, so all formatting will be trashed.
-#Wed Nov 30 10:48:21 EST 2011
+#Thu Dec 08 20:54:49 EST 2011
 Core.license.url=http\://www.gnu.org/licenses/agpl.html
-Core.version.date=20111130
+Core.version.date=20111208
 Core.version.minor=2
 Core.copyright=(c) 2006-2011 Virginia Tech Department of Computer Science
 log4j.logger.org.webcat.core.Theme=INFO
@@ -25,7 +25,6 @@ dbConnectDriverGLOBAL=com.mysql.jdbc.Driver
 ognl.helperFunctions=true
 log4j.logger.org.webcat.core.Application.requests=WARN
 er.extensions.ERXResourceManager.versionManager=org.webcat.woextensions.WCResourceManager$WCVersionManager
-er.extensions.ERXEC.LockLogger=true
 er.extensions.ERXEC.defaultCoalesceAutoLocks=true
 Core.provider=Virginia Tech Computer Science
 WOPageCacheSize=50
@@ -34,12 +33,13 @@ log4j.logger.NSLog=WARN
 WOSessionTimeOut=1800
 er.extensions.logging.ERXNSLogLog4jBridge.ignoreNSLogSettings=true
 WODefaultUndoStackLimit=0
-help.baseURL=http\://web-cat.org/Web-CAT.help/
 ognl.inlineBindings=true
+help.baseURL=http\://web-cat.org/Web-CAT.help/
 Core.archive.handler.list=(org.webcat.archives.internal.ZipArchiveHandler,   org.webcat.archives.internal.TarGzArchiveHandler, org.webcat.archives.internal.TarArchiveHandler)
 er.extensions.appserver.ERXApplication.useEditingContextUnlocker=true
 er.extensions.ERXEC.defaultAutomaticLockUnlock=true
 Core.info.url=http\://web-cat.org/WCWiki/CoreSubsystem
+log4j.logger.er.extensions.ERXEC.LockTrace=DEBUG
 er.extensions.ERXApplication.useEditingContextUnlocker=true
 er.extensions.ERXNSLogLog4jBridge.ignoreNSLogSettings=true
 Core.provider.url=http\://web-cat.org/updates
