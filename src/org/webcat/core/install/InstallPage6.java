@@ -30,6 +30,9 @@ import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.DatabaseAuthenticator;
 import org.webcat.core.User;
 import org.webcat.core.WCConfigurationFile;
+import org.webcat.woextensions.ECAction;
+import static org.webcat.woextensions.ECAction.run;
+import org.webcat.woextensions.WCEC;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -73,71 +76,72 @@ public class InstallPage6
 
 
     // ----------------------------------------------------------
-    public void setDefaultConfigValues( WCConfigurationFile configuration )
+    public void setDefaultConfigValues(
+        final WCConfigurationFile configuration)
     {
-        String username = configuration.getProperty( "AdminUsername" );
-        String authDomainName =
-            configuration.getProperty( "authenticator.default" );
+        final String username = configuration.getProperty("AdminUsername");
+        final String authDomainName =
+            configuration.getProperty("authenticator.default");
         String className = configuration.getProperty(
-            "authenticator." + authDomainName );
+            "authenticator." + authDomainName);
         usingDatabaseAuthentication = className == null
-            || className.equals( DatabaseAuthenticator.class.getName() );
+            || className.equals(DatabaseAuthenticator.class.getName());
         canSetPassword = usingDatabaseAuthentication;
-        if ( authDomainName != null && !authDomainName.equals( "" ) )
+        if (authDomainName != null && !authDomainName.equals(""))
         {
-            EOEditingContext ec = Application.newPeerEditingContext();
-            AuthenticationDomain domain =
-                AuthenticationDomain.authDomainByName( authDomainName );
-            canSetPassword = domain.authenticator().canChangePassword();
-            if ( username != null && !username.equals( "" ) )
-            {
-                NSArray<?> users = EOUtilities.objectsMatchingValues(
-                    ec,
-                    User.ENTITY_NAME,
-                    new NSDictionary<String, Object>(
-                        new Object[] {
-                            username,
-                            domain
-                        },
-                        new String[] {
-                            User.USER_NAME_KEY,
-                            User.AUTHENTICATION_DOMAIN_KEY
-                        }
-                    )
-                );
-                if ( users.count() > 0 )
+            run(new ECAction() { public void action() {
+                AuthenticationDomain domain =
+                    AuthenticationDomain.authDomainByName(authDomainName);
+                canSetPassword = domain.authenticator().canChangePassword();
+                if (username != null && !username.equals(""))
                 {
-                    if ( users.count() > 1 )
+                    NSArray<?> users = EOUtilities.objectsMatchingValues(
+                        ec,
+                        User.ENTITY_NAME,
+                        new NSDictionary<String, Object>(
+                            new Object[] {
+                                username,
+                                domain
+                            },
+                            new String[] {
+                                User.USER_NAME_KEY,
+                                User.AUTHENTICATION_DOMAIN_KEY
+                            }
+                        )
+                    );
+                    if (users.count() > 0)
                     {
-                        error( "Multiple accounts with the user name '"
-                            + username + "' detected!" );
-                    }
-                    User admin = (User)users.objectAtIndex( 0 );
-                    if ( admin.firstName() != null )
-                    {
-                        setConfigDefault( configuration, "AdminFirstName",
-                            admin.firstName() );
-                    }
-                    if ( admin.lastName() != null )
-                    {
-                        setConfigDefault( configuration, "AdminLastName",
-                            admin.lastName() );
-                    }
-                    if ( admin.email() != null )
-                    {
-                        setConfigDefault( configuration, "coreAdminEmail",
-                            admin.email() );
-                    }
-                    if ( canSetPassword && admin.password() != null )
-                    {
-                        setConfigDefault( configuration, "AdminPassword",
-                            admin.password() );
+                        if (users.count() > 1)
+                        {
+                            error("Multiple accounts with the user name '"
+                                + username + "' detected!");
+                        }
+                        User admin = (User)users.objectAtIndex(0);
+                        if (admin.firstName() != null)
+                        {
+                            setConfigDefault(configuration, "AdminFirstName",
+                                admin.firstName());
+                        }
+                        if (admin.lastName() != null)
+                        {
+                            setConfigDefault(configuration, "AdminLastName",
+                                admin.lastName());
+                        }
+                        if (admin.email() != null)
+                        {
+                            setConfigDefault(configuration, "coreAdminEmail",
+                                admin.email());
+                        }
+                        if (canSetPassword && admin.password() != null)
+                        {
+                            setConfigDefault(configuration, "AdminPassword",
+                                admin.password());
+                        }
                     }
                 }
-            }
-            Application.releasePeerEditingContext( ec );
+            }});
         }
-        setConfigDefault( configuration, "adminNotifyAddrs", "webcat@vt.edu" );
+        setConfigDefault(configuration, "adminNotifyAddrs", "webcat@vt.edu");
     }
 
 
@@ -171,73 +175,86 @@ public class InstallPage6
         }
         else if ( username != null && !hasMessages() )
         {
-            EOEditingContext ec = Application.newPeerEditingContext();
-            AuthenticationDomain domain =
-                AuthenticationDomain.authDomainByName( authDomainName );
-            NSArray<?> users = EOUtilities.objectsMatchingValues(
-                ec,
-                User.ENTITY_NAME,
-                new NSDictionary<String, Object>(
-                    new Object[] {
-                        username,
-                        domain
-                    },
-                    new String[] {
-                        User.USER_NAME_KEY,
-                        User.AUTHENTICATION_DOMAIN_KEY
-                    }
-                )
-            );
-            User admin;
-            if ( users.count() > 0 )
+            EOEditingContext ec = WCEC.newEditingContext();
+            try
             {
-                admin = (User)users.objectAtIndex( 0 );
-                admin.setEmail( email );
-                String first = extractFormValue( formValues, "AdminFirstName" );
-                if ( first != null && !first.equals( "" ) )
+                ec.lock();
+                AuthenticationDomain domain =
+                    AuthenticationDomain.authDomainByName( authDomainName );
+                NSArray<?> users = EOUtilities.objectsMatchingValues(
+                    ec,
+                    User.ENTITY_NAME,
+                    new NSDictionary<String, Object>(
+                        new Object[] {
+                            username,
+                            domain
+                        },
+                        new String[] {
+                            User.USER_NAME_KEY,
+                            User.AUTHENTICATION_DOMAIN_KEY
+                        }
+                    )
+                );
+                User admin;
+                if ( users.count() > 0 )
                 {
-                    admin.setFirstName( first );
-                }
-                String last = extractFormValue( formValues, "AdminLastName" );
-                if ( last != null && !last.equals( "" ) )
-                {
-                    admin.setLastName( last );
-                }
-                ec.saveChanges();
-            }
-            else
-            {
-                String password =
-                    storeFormValueToConfig( formValues, "AdminPassword",
-                    "An administrator password is required." );
-                if ( authDomainName.equals(
-                    DatabaseAuthenticator.class.getName() )
-                    && ( password == null || password.equals( "" ) ) )
-                {
-                    // Don't need this anymore, since the error message is
-                    // posted by storeFormValuesToConfig() above.
-
-                    // errorMessage( "An administrator password is required." );
-                }
-                else
-                {
-                    admin = User.createUser(
-                        username, password, domain, (byte)100, ec);
+                    admin = (User)users.objectAtIndex( 0 );
                     admin.setEmail( email );
-                    String first = extractFormValue( formValues, "AdminFirstName" );
+                    String first = extractFormValue(
+                        formValues, "AdminFirstName" );
                     if ( first != null && !first.equals( "" ) )
                     {
                         admin.setFirstName( first );
                     }
-                    String last = extractFormValue( formValues, "AdminLastName" );
+                    String last = extractFormValue(
+                        formValues, "AdminLastName" );
                     if ( last != null && !last.equals( "" ) )
                     {
                         admin.setLastName( last );
                     }
                     ec.saveChanges();
                 }
+                else
+                {
+                    String password =
+                        storeFormValueToConfig( formValues, "AdminPassword",
+                        "An administrator password is required." );
+                    if ( authDomainName.equals(
+                        DatabaseAuthenticator.class.getName() )
+                        && ( password == null || password.equals( "" ) ) )
+                    {
+                        // Don't need this anymore, since the error message is
+                        // posted by storeFormValuesToConfig() above.
+
+                        // errorMessage(
+                        //     "An administrator password is required." );
+                    }
+                    else
+                    {
+                        admin = User.createUser(
+                            username, password, domain, (byte)100, ec);
+                        admin.setEmail( email );
+                        String first = extractFormValue(
+                            formValues, "AdminFirstName" );
+                        if ( first != null && !first.equals( "" ) )
+                        {
+                            admin.setFirstName( first );
+                        }
+                        String last = extractFormValue(
+                            formValues, "AdminLastName" );
+                        if ( last != null && !last.equals( "" ) )
+                        {
+                            admin.setLastName( last );
+                        }
+                        ec.saveChanges();
+                    }
+                }
             }
-            Application.releasePeerEditingContext( ec );
+            finally
+            {
+                ec.unlock();
+                ec.dispose();
+            }
         }
         if ( log.isDebugEnabled() )
         {

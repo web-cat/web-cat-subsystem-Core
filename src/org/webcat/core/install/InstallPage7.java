@@ -22,7 +22,6 @@
 package org.webcat.core.install;
 
 import com.webobjects.appserver.*;
-import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.foundation.ERXValueUtilities;
 import java.util.Calendar;
@@ -32,6 +31,8 @@ import org.webcat.core.Course;
 import org.webcat.core.Department;
 import org.webcat.core.Semester;
 import org.webcat.core.WCConfigurationFile;
+import org.webcat.woextensions.ECAction;
+import static org.webcat.woextensions.ECAction.run;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -116,11 +117,9 @@ public class InstallPage7
 
 
     // ----------------------------------------------------------
-    public void takeFormValues( NSDictionary<?, ?> formValues )
+    public void takeFormValues( final NSDictionary<?, ?> formValues )
     {
-        EOEditingContext ec = Application.newPeerEditingContext();
-        try
-        {
+        run(new ECAction() { public void action() {
             // SemesterCreate = ("1");
             if ( ERXValueUtilities.booleanValue(
                  extractFormValue( formValues, "SemesterCreate" ) ) )
@@ -282,11 +281,7 @@ public class InstallPage7
 
             // commit changes to the database
             ec.saveChanges();
-        }
-        finally
-        {
-            Application.releasePeerEditingContext( ec );
-        }
+        }});
         Application.configurationProperties().remove( "StartDate" );
         Application.configurationProperties().remove( "EndDate" );
     }

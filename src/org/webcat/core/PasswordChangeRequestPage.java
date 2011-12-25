@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -25,14 +25,13 @@ import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
-
-import org.webcat.core.Application;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.ErrorDictionaryPanel;
 import org.webcat.core.PasswordChangeRequest;
 import org.webcat.core.PasswordChangeRequestPage;
 import org.webcat.core.Status;
 import org.webcat.core.User;
+import org.webcat.woextensions.WCEC;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -40,7 +39,8 @@ import org.apache.log4j.Logger;
  * Implements the login UI functionality of the system.
  *
  *  @author Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class PasswordChangeRequestPage
     extends WOComponent
@@ -63,10 +63,12 @@ public class PasswordChangeRequestPage
 
     public String               email;
     public boolean              emailSent;
-    public NSMutableDictionary  errors = new NSMutableDictionary();
     public WODisplayGroup       domainDisplayGroup;
     public AuthenticationDomain domain;
     public AuthenticationDomain domainItem;
+
+    public NSMutableDictionary<String, Object> errors =
+        new NSMutableDictionary<String, Object>();
 
 
     //~ Methods ...............................................................
@@ -131,7 +133,7 @@ public class PasswordChangeRequestPage
             if ( errors.count() == 0 )
             {
                 // Try to look up the user
-                EOEditingContext ec = Application.newPeerEditingContext();
+                EOEditingContext ec = WCEC.newEditingContext();
                 try
                 {
                     ec.lock();
@@ -191,7 +193,7 @@ public class PasswordChangeRequestPage
                 finally
                 {
                     ec.unlock();
-                    Application.releasePeerEditingContext( ec );
+                    ec.dispose();
                 }
                 if ( !emailSent && errors.count() == 0 )
                 {

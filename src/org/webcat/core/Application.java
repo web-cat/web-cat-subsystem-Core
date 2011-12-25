@@ -26,6 +26,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.activation.CommandMap;
@@ -50,6 +51,7 @@ import org.webcat.core.messaging.UnexpectedExceptionMessage;
 import org.webcat.core.webdav.WebDAVRequestHandler;
 import org.webcat.dbupdate.UpdateEngine;
 import org.webcat.woextensions.AjaxUpdateContainerTagProcessor;
+import org.webcat.woextensions.ECAction;
 import org.webcat.woextensions.WCContext;
 import org.webcat.woextensions.WCResourceManager;
 import org.webcat.woextensions.WCEC;
@@ -411,12 +413,9 @@ public class Application
         CommandMap.setDefaultCommandMap(mc);
 
         // Remove all state login session data
-        EOEditingContext ec = newPeerEditingContext();
         boolean nsLogDebugEnabled = NSLog.debug.isEnabled();
         NSLog.debug.setIsEnabled(false);
-        try
-        {
-            ec.lock();
+        new ECAction() { public void action() {
             // First, attempt to force the initial JNDI exception because
             // the name jdbc is not bound
             try
@@ -433,12 +432,7 @@ public class Application
                 ec.deleteObject(session);
             }
             ec.saveChanges();
-        }
-        finally
-        {
-            ec.unlock();
-            releasePeerEditingContext(ec);
-        }
+        }}.run();
         NSLog.debug.setIsEnabled(nsLogDebugEnabled);
 
         // Force common objects to be loaded into the shared editing context
@@ -1107,7 +1101,8 @@ public class Application
         }
         else
         {
-            new UnexpectedExceptionMessage(t, context, extraInfo, null).send();
+            new UnexpectedExceptionMessage(t, context, extraInfo, null)
+                .send();
         }
 
         if (context != null)
@@ -1232,7 +1227,7 @@ public class Application
         String to,
         String subject,
         String body,
-        NSDictionary<String, String> attachments)
+        List<File> attachments)
     {
         sendSimpleEmail(new NSArray<String>(to), subject, body, attachments);
     }
@@ -1267,7 +1262,7 @@ public class Application
     static public void sendSimpleEmail(NSArray<String> to,
                                        String subject,
                                        String body,
-                                       NSDictionary<String, String> attachments)
+                                       List<File> attachments)
     {
         try
         {
@@ -1319,11 +1314,8 @@ public class Application
                 //
                 // The next parts are attachments
                 //
-                for (String filename : attachments.allKeys())
+                for (File file : attachments)
                 {
-                    String attachmentPath = attachments.objectForKey(filename);
-                    File file = new File(attachmentPath);
-
                     // Create another body part
                     messageBodyPart = new MimeBodyPart();
 
@@ -1470,9 +1462,10 @@ public class Application
      *
      * @param subject     the subject line
      * @param body        the body of the message
+     * @param attachments the attachments
      */
     public static void sendAdminEmail(
-        String subject, String body, NSDictionary<String, String> attachments)
+        String subject, String body, List<File> attachments)
     {
         NSArray<String> adminList = adminEmailAddresses();
         if (adminList == null || adminList.count() == 0)
@@ -1614,7 +1607,7 @@ public class Application
 
         if (errorLoggingContext == null)
         {
-            errorLoggingContext = newPeerEditingContext();
+            errorLoggingContext = WCEC.newEditingContext();
         }
         try
         {
@@ -1773,7 +1766,7 @@ public class Application
                 {
                     // ignore, since we're throwing it away
                 }
-                releasePeerEditingContext(old);
+                old.dispose();
             }
             catch (Exception e2)
             {
@@ -1793,87 +1786,6 @@ public class Application
 
         // Return the information
         return errorBuffer.toString();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Creates a new peer editing context, typically used to make
-     * changes outside of a session's editing context.
-     * @return the new editing context
-     */
-    public static EOEditingContext newPeerEditingContext()
-    {
-        EOEditingContext result = er.extensions.eof.ERXEC.newEditingContext();
-        result.setUndoManager(null);
-        return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Used to get rid of a peer editing context that will no longer be used.
-     * @param ec the editing context to release
-     */
-    public static void releasePeerEditingContext(EOEditingContext ec)
-    {
-        ec.dispose();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Creates a new read-only editing context, typically used to prevent
-     * outside code (such as report template expressions) from modifying the
-     * contents of the object store.
-     *
-     * @return the new editing context
-     */
-    public static ReadOnlyEditingContext newReadOnlyEditingContext()
-    {
-        ReadOnlyEditingContext result = new ReadOnlyEditingContext();
-        result.setUndoManager(null);
-        return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Used to get rid of a read-only editing context that will no longer be
-     * used.
-     * @param ec the editing context to release
-     */
-    public static void releaseReadOnlyEditingContext(ReadOnlyEditingContext ec)
-    {
-        ec.dispose();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Creates a new migrating editing context, used to handle the updating of
-     * objects when migrating their attribute values.
-     *
-     * @return the new editing context
-     */
-    public static MigratingEditingContext newMigratingEditingContext()
-    {
-        MigratingEditingContext result = new MigratingEditingContext();
-        result.setUndoManager(null);
-        return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Used to get rid of a migrating editing context that will no longer be
-     * used.
-     * @param ec the editing context to release
-     */
-    public static void releaseMigratingEditingContext(
-        MigratingEditingContext ec)
-    {
-        ec.dispose();
     }
 
 

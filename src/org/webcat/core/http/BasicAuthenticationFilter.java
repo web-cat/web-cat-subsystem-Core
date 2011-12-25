@@ -27,6 +27,8 @@ import org.webcat.core.Application;
 import org.webcat.core.LoginSession;
 import org.webcat.core.Session;
 import org.webcat.core.User;
+import org.webcat.woextensions.ECAction;
+import static org.webcat.woextensions.ECAction.run;
 import com.Ostermiller.util.Base64;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOMessage;
@@ -47,7 +49,8 @@ import com.webobjects.eocontrol.EOEditingContext;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public abstract class BasicAuthenticationFilter implements RequestFilter
+public abstract class BasicAuthenticationFilter
+     implements RequestFilter
 {
     //~ Methods ...............................................................
 
@@ -156,21 +159,17 @@ public abstract class BasicAuthenticationFilter implements RequestFilter
      *
      * @param info the entity request info
      */
-    private Session sessionFromContext(WOContext context)
+    private Session sessionFromContext(final WOContext context)
     {
-        WORequest request = context.request();
-        WOResponse response = context.response();
+        final WORequest request = context.request();
+        final WOResponse response = context.response();
 
-        Session session = null;
-
-        if (context._requestSessionID() != null)
-        {
-            // Use an existing session if we have one.
-
-            session = (Session) Application.wcApplication()
+        final Session session = (context._requestSessionID() != null)
+            ? // Use an existing session if we have one.
+            (Session)Application.wcApplication()
                 .restoreSessionWithID(context._requestSessionID(),
-                        request.context());
-        }
+                    request.context())
+            : null;
 
         if (session == null)
         {
@@ -190,14 +189,10 @@ public abstract class BasicAuthenticationFilter implements RequestFilter
                 authorization = Base64.decode(authorization.substring(6));
                 String[] parts = authorization.split(":");
 
-                String username = parts[0];
-                String password = (parts.length > 1) ? parts[1] : null;
+                final String username = parts[0];
+                final String password = (parts.length > 1) ? parts[1] : null;
 
-                EOEditingContext ec = Application.newPeerEditingContext();
-                try
-                {
-                    ec.lock();
-
+                run(new ECAction() { public void action() {
                     User user = validateUser(username, password, ec);
 
                     if (user == null)
@@ -208,17 +203,12 @@ public abstract class BasicAuthenticationFilter implements RequestFilter
                     else
                     {
                         context._setRequestSessionID(existingSessionId);
-                        session = (Session) context.session();
-                        session.setUser(user.localInstance(
-                                session.defaultEditingContext()));
-                        session._appendCookieToResponse(response);
+                        Session existingSession = (Session)context.session();
+                        existingSession.setUser(user.localInstance(
+                                existingSession.defaultEditingContext()));
+                        existingSession._appendCookieToResponse(response);
                     }
-                }
-                finally
-                {
-                    ec.unlock();
-                    Application.releasePeerEditingContext(ec);
-                }
+                }});
             }
         }
 

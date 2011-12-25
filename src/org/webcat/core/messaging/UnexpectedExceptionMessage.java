@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2010-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,11 +21,9 @@
 
 package org.webcat.core.messaging;
 
-import org.jfree.util.Log;
 import org.webcat.core.Application;
 import org.webcat.core.User;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
 
@@ -34,17 +32,21 @@ import com.webobjects.foundation.NSDictionary;
  * A message that is sent to system administrators when an unexpected exception
  * occurs.
  *
- * @author Tony Allevato
+ * @author  Tony Allevato
  * @author  latest changes by: $Author$
  * @version $Revision$ $Date$
  */
-public class UnexpectedExceptionMessage extends SysAdminMessage
+public class UnexpectedExceptionMessage
+    extends SysAdminMessage
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    public UnexpectedExceptionMessage(Throwable t, WOContext context,
-            NSDictionary extraInfo, String message)
+    public UnexpectedExceptionMessage(
+        Throwable t,
+        WOContext context,
+        NSDictionary<String, Object> extraInfo,
+        String message)
     {
         this.exception = t;
         this.extraInfo = extraInfo;
@@ -62,19 +64,11 @@ public class UnexpectedExceptionMessage extends SysAdminMessage
     public static void register()
     {
         Message.registerMessage(
-                UnexpectedExceptionMessage.class,
-                "Application",
-                "Unexpected Exception",
-                false,
-                User.WEBCAT_RW_PRIVILEGES);
-    }
-
-
-    // ----------------------------------------------------------
-    @Override
-    public String fullBody()
-    {
-        return shortBody();
+            UnexpectedExceptionMessage.class,
+            "Application",
+            "Unexpected Exception",
+            false,
+            User.WEBCAT_RW_PRIVILEGES);
     }
 
 
@@ -98,7 +92,14 @@ public class UnexpectedExceptionMessage extends SysAdminMessage
     @Override
     public String title()
     {
-        return "Unexpected Exception";
+        if (exception != null)
+        {
+            return "Unexpected " + exception.getClass().getSimpleName();
+        }
+        else
+        {
+            return "Unexpected exception";
+        }
     }
 
 
@@ -106,24 +107,14 @@ public class UnexpectedExceptionMessage extends SysAdminMessage
     @Override
     public synchronized NSArray<User> users()
     {
-        EOEditingContext ec = editingContext();
-
-        try
-        {
-            ec.lock();
-            return User.systemAdmins(ec);
-        }
-        finally
-        {
-            ec.unlock();
-        }
+        return User.systemAdmins(editingContext());
     }
 
 
     //~ Static/instance variables .............................................
 
     private Throwable exception;
-    private NSDictionary extraInfo;
+    private NSDictionary<String, Object> extraInfo;
     private WOContext context;
     private String message;
 }

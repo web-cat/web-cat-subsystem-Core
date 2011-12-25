@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2009 Virginia Tech
+ |  Copyright (C) 2010-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -32,17 +32,22 @@ import com.webobjects.foundation.NSKeyValueCodingAdditions;
  * and can be queried with the {@link Message#registeredMessages(boolean)}
  * method.
  *
- * @author Tony Allevato
- * @version $Id$
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
-public class MessageDescriptor implements NSKeyValueCodingAdditions
+public class MessageDescriptor
+    implements NSKeyValueCodingAdditions
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    /* package */ MessageDescriptor(String className,
-            String category, String description,
-            boolean isBroadcast, int accessLevel)
+    /* package */ MessageDescriptor(
+        String className,
+        String category,
+        String description,
+        boolean isBroadcast,
+        int accessLevel)
     {
         this.className = className;
         this.category = category;
@@ -93,7 +98,7 @@ public class MessageDescriptor implements NSKeyValueCodingAdditions
     public void takeValueForKey(Object value, String key)
     {
         NSKeyValueCoding.DefaultImplementation.takeValueForKey(
-                this, value, key);
+            this, value, key);
     }
 
 
@@ -108,7 +113,7 @@ public class MessageDescriptor implements NSKeyValueCodingAdditions
     public void takeValueForKeyPath(Object value, String keyPath)
     {
         NSKeyValueCodingAdditions.DefaultImplementation.takeValueForKeyPath(
-                this, value, keyPath);
+            this, value, keyPath);
     }
 
 
@@ -116,7 +121,7 @@ public class MessageDescriptor implements NSKeyValueCodingAdditions
     public Object valueForKeyPath(String keyPath)
     {
         return NSKeyValueCodingAdditions.DefaultImplementation.valueForKeyPath(
-                this, keyPath);
+            this, keyPath);
     }
 
 

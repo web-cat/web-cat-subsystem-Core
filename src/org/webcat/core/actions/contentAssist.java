@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -28,8 +28,8 @@ import org.webcat.core.Application;
 import org.webcat.core.EntityUtils;
 import org.webcat.core.KVCAttributeFinder;
 import org.webcat.core.KVCAttributeInfo;
-import org.webcat.core.ReadOnlyEditingContext;
 import org.webcat.core.Subsystem;
+import org.webcat.woextensions.ReadOnlyEditingContext;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
@@ -37,7 +37,6 @@ import com.webobjects.eoaccess.EOEntity;
 import com.webobjects.eoaccess.EOModel;
 import com.webobjects.eoaccess.EOModelGroup;
 import com.webobjects.eoaccess.EOUtilities;
-import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.eocontrol.EOFetchSpecification;
 import com.webobjects.eocontrol.EOSortOrdering;
@@ -54,7 +53,8 @@ import er.extensions.appserver.ERXDirectAction;
  * entities and key paths, used for content assistance and previewing purposes.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class contentAssist
     extends ERXDirectAction
@@ -327,33 +327,40 @@ public class contentAssist
     // ----------------------------------------------------------
     public void appendObjectDescriptions1_0_0(WOResponse response)
     {
-        ReadOnlyEditingContext ec = Application.newReadOnlyEditingContext();
-
-        for (String entityName : OBJECTS_TO_DESCRIBE)
+        ReadOnlyEditingContext ec = ReadOnlyEditingContext.newEditingContext();
+        try
         {
-            NSArray<EOSortOrdering> orderings =
-                EntityUtils.sortOrderingsForEntityNamed(entityName);
-
-            EOFetchSpecification fetchSpec = new EOFetchSpecification(
-                entityName, null, orderings);
-            fetchSpec.setFetchLimit(250);
-
-            NSArray<EOEnterpriseObject> objects =
-                ec.objectsWithFetchSpecification(fetchSpec);
-
-            response.appendContentString("entity:" + entityName + "\n");
-
-            for (EOEnterpriseObject object : objects)
+            ec.lock();
+            for (String entityName : OBJECTS_TO_DESCRIBE)
             {
-                Number id = (Number)EOUtilities.primaryKeyForObject(
-                    ec, object).objectForKey( "id" );
+                NSArray<EOSortOrdering> orderings =
+                    EntityUtils.sortOrderingsForEntityNamed(entityName);
 
-                response.appendContentString("object:" + id.toString() + "," +
-                    object.toString() + "\n");
+                EOFetchSpecification fetchSpec = new EOFetchSpecification(
+                    entityName, null, orderings);
+                fetchSpec.setFetchLimit(250);
+
+                @SuppressWarnings("unchecked")
+                NSArray<EOEnterpriseObject> objects =
+                    ec.objectsWithFetchSpecification(fetchSpec);
+
+                response.appendContentString("entity:" + entityName + "\n");
+
+                for (EOEnterpriseObject object : objects)
+                {
+                    Number id = (Number)EOUtilities.primaryKeyForObject(
+                        ec, object).objectForKey( "id" );
+
+                    response.appendContentString("object:" + id.toString() + "," +
+                        object.toString() + "\n");
+                }
             }
         }
-
-        Application.releaseReadOnlyEditingContext(ec);
+        finally
+        {
+            ec.unlock();
+            ec.dispose();
+        }
     }
 
 
@@ -361,51 +368,59 @@ public class contentAssist
     public void appendObjectDescriptions1_1_0(WOResponse response)
     throws JSONException
     {
-        ReadOnlyEditingContext ec = Application.newReadOnlyEditingContext();
-
-        JSONObject root = new JSONObject();
-
-        JSONArray entityArray = new JSONArray();
-
-        for (String entityName : OBJECTS_TO_DESCRIBE)
+        ReadOnlyEditingContext ec = ReadOnlyEditingContext.newEditingContext();
+        try
         {
-            NSArray<EOSortOrdering> orderings =
-                EntityUtils.sortOrderingsForEntityNamed(entityName);
+            ec.lock();
 
-            EOFetchSpecification fetchSpec = new EOFetchSpecification(
-                entityName, null, orderings);
-            fetchSpec.setFetchLimit(250);
+            JSONObject root = new JSONObject();
 
-            NSArray<EOEnterpriseObject> objects =
-                ec.objectsWithFetchSpecification(fetchSpec);
+            JSONArray entityArray = new JSONArray();
 
-            JSONObject entityObj = new JSONObject();
-            entityObj.put("name", entityName);
-
-            JSONArray objectArray = new JSONArray();
-
-            for (EOEnterpriseObject object : objects)
+            for (String entityName : OBJECTS_TO_DESCRIBE)
             {
-                Number id = (Number)EOUtilities.primaryKeyForObject(
-                    ec, object).objectForKey( "id" );
+                NSArray<EOSortOrdering> orderings =
+                    EntityUtils.sortOrderingsForEntityNamed(entityName);
 
-                JSONObject objectObj = new JSONObject();
-                objectObj.put("id", id.intValue());
-                objectObj.put("representation", object.toString());
+                EOFetchSpecification fetchSpec = new EOFetchSpecification(
+                    entityName, null, orderings);
+                fetchSpec.setFetchLimit(250);
 
-                objectArray.put(objectObj);
+                @SuppressWarnings("unchecked")
+                NSArray<EOEnterpriseObject> objects =
+                    ec.objectsWithFetchSpecification(fetchSpec);
+
+                JSONObject entityObj = new JSONObject();
+                entityObj.put("name", entityName);
+
+                JSONArray objectArray = new JSONArray();
+
+                for (EOEnterpriseObject object : objects)
+                {
+                    Number id = (Number)EOUtilities.primaryKeyForObject(
+                        ec, object).objectForKey( "id" );
+
+                    JSONObject objectObj = new JSONObject();
+                    objectObj.put("id", id.intValue());
+                    objectObj.put("representation", object.toString());
+
+                    objectArray.put(objectObj);
+                }
+
+                entityObj.put("objects", objectArray);
+
+                entityArray.put(entityObj);
             }
 
-            entityObj.put("objects", objectArray);
+            root.put("entities", entityArray);
 
-            entityArray.put(entityObj);
+            response.appendContentString(root.toString());
         }
-
-        root.put("entities", entityArray);
-
-        response.appendContentString(root.toString());
-
-        Application.releaseReadOnlyEditingContext(ec);
+        finally
+        {
+            ec.unlock();
+            ec.dispose();
+        }
     }
 
 
@@ -470,6 +485,7 @@ public class contentAssist
     //~ Instance/static variables .............................................
 
     private static final int VERSION_1_0_0 = 256 * 256;
+    @SuppressWarnings("unused")
     private static final int VERSION_1_1_0 = 256 * 256 + 256;
 
     private static final String[] ENTITIES_TO_EXCLUDE = {

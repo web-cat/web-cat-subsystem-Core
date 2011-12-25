@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2009 Virginia Tech
+ |  Copyright (C) 2010-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.jfree.util.Log;
 import org.webcat.core.Application;
@@ -32,6 +33,9 @@ import org.webcat.core.MutableDictionary;
 import org.webcat.core.SentMessage;
 import org.webcat.core.Subsystem;
 import org.webcat.core.User;
+import org.webcat.woextensions.ECAction;
+import static org.webcat.woextensions.ECAction.run;
+import org.webcat.woextensions.WCEC;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSData;
@@ -78,13 +82,16 @@ public abstract class Message
      *     this message type (used to control whether the user can view it in
      *     the message/protocol enablement matrix)
      */
-    public static void registerMessage(Class<? extends Message> messageClass,
-            String category, String description, boolean isBroadcast,
-            int accessLevel)
+    public static void registerMessage(
+        Class<? extends Message> messageClass,
+        String category,
+        String description,
+        boolean isBroadcast,
+        int accessLevel)
     {
         MessageDescriptor descriptor = new MessageDescriptor(
-                messageClass.getCanonicalName(),
-                category, description, isBroadcast, accessLevel);
+            messageClass.getCanonicalName(),
+            category, description, isBroadcast, accessLevel);
 
         synchronized (descriptors)
         {
@@ -186,7 +193,7 @@ public abstract class Message
      * @return the message descriptor
      */
     public static MessageDescriptor messageDescriptorForMessageType(
-            String messageType)
+        String messageType)
     {
         try
         {
@@ -307,7 +314,10 @@ public abstract class Message
      *
      * @return the full form of the message body
      */
-    public abstract String fullBody();
+    public String fullBody()
+    {
+        return shortBody();
+    }
 
 
     // ----------------------------------------------------------
@@ -324,7 +334,7 @@ public abstract class Message
      *
      * @return a dictionary of attachments, keyed by the name of the attachment
      */
-    public NSDictionary<String, String> attachments()
+    public List<File> attachments()
     {
         return null;
     }
@@ -341,24 +351,22 @@ public abstract class Message
      */
     final public NSDictionary<String, NSData> attachmentData()
     {
-        NSDictionary<String, String> attachmentPaths = attachments();
+        List<File> attachmentFiles = attachments();
 
         NSMutableDictionary<String, NSData> attachmentData =
             new NSMutableDictionary<String, NSData>();
 
-        for (String name : attachmentPaths.allKeys())
+        for (File file : attachmentFiles)
         {
-            String path = attachmentPaths.objectForKey(name);
-
             try
             {
-                NSData data = dataFromContentsOfFile(path);
-                attachmentData.setObjectForKey(data, name);
+                NSData data = dataFromContentsOfFile(file);
+                attachmentData.setObjectForKey(data, file.getName());
             }
             catch (IOException e)
             {
                 Log.error("Exception occurred while loading the attachment "
-                        + path, e);
+                        + file, e);
             }
         }
 
@@ -370,19 +378,15 @@ public abstract class Message
     /**
      * Returns an NSData object with the contents of the specified file.
      *
-     * @param path the path to the file
+     * @param file the file
      * @return an NSData object containing the contents of the file
      * @throws IOException if an I/O error occurred
      */
-    private NSData dataFromContentsOfFile(String path) throws IOException
+    private NSData dataFromContentsOfFile(File file) throws IOException
     {
-        File file = new File(path);
         FileInputStream stream = new FileInputStream(file);
-
         NSData data = new NSData(stream, 0);
-
         stream.close();
-
         return data;
     }
 
@@ -407,17 +411,29 @@ public abstract class Message
 
     // ----------------------------------------------------------
     /**
-     * Sends the message.
+     * Sends the message, then disposes of it.
      */
     public final synchronized void send()
     {
-        // Store the message in the database.
-        storeMessage();
+        if (disposed)
+        {
+            throw new IllegalStateException(getClass().getSimpleName()
+                + ": send() called on disposed message.  Each message can "
+                + "only be sent once.");
+        }
 
-        // Use the application's registered message dispatcher to send the
-        // message.
+        run(new ECAction(editingContext()) { public void action() {
+            // Use the application's registered message dispatcher to send
+            // the message.
+            Application.wcApplication().messageDispatcher()
+                .sendMessage(Message.this);
 
-        Application.wcApplication().messageDispatcher().sendMessage(this);
+            // Store the message in the database.
+            storeMessage();
+        }});
+
+        // Dispose of message and its EC
+        dispose();
     }
 
 
@@ -429,52 +445,44 @@ public abstract class Message
      */
     private synchronized void storeMessage()
     {
-        MessageDescriptor descriptor = messageDescriptor();
+        final MessageDescriptor descriptor = messageDescriptor();
+
+        // The editing context is already locked by the caller
+        // (or it will auto-lock).
+        EOEditingContext ec = editingContext();
 
         // Create a representation of the message in the database so that it
         // can be viewed by users later.
+        SentMessage message = SentMessage.create(ec, false);
 
-        EOEditingContext ec = editingContext();
+        message.setSentTime(new NSTimestamp());
+        message.setMessageType(messageType());
+        message.setTitle(title());
+        message.setShortBody(shortBody());
+        message.setIsBroadcast(descriptor.isBroadcast());
 
-        try
+        if (links() != null)
         {
-            ec.lock();
+            message.setLinks(new MutableDictionary(links()));
+        }
 
-            SentMessage message = SentMessage.create(ec, false);
-
-            message.setSentTime(new NSTimestamp());
-            message.setMessageType(messageType());
-            message.setTitle(title());
-            message.setShortBody(shortBody());
-            message.setIsBroadcast(descriptor.isBroadcast());
-
-            if (links() != null)
+        NSArray<User> users = users();
+        if (users != null)
+        {
+            for (User user : users)
             {
-                message.setLinks(new MutableDictionary(links()));
-            }
+                // Sanity check to ensure that messages don't get sent to
+                // users who shouldn't receive them based on their access
+                // level.
 
-            NSArray<User> users = users();
-            if (users != null)
-            {
-                for (User user : users)
+                if (user.accessLevel() >= descriptor.accessLevel())
                 {
-                    // Sanity check to ensure that messages don't get sent to
-                    // users who shouldn't receive them based on their access
-                    // level.
-
-                    if (user.accessLevel() >= descriptor.accessLevel())
-                    {
-                        message.addToUsersRelationship(user.localInstance(ec));
-                    }
+                    message.addToUsersRelationship(user.localInstance(ec));
                 }
             }
+        }
 
-            ec.saveChanges();
-        }
-        finally
-        {
-            ec.unlock();
-        }
+        ec.saveChanges();
     }
 
 
@@ -490,16 +498,38 @@ public abstract class Message
     {
         if (editingContext == null)
         {
-            editingContext = Application.newPeerEditingContext();
+            editingContext = WCEC.newAutoLockingEditingContext();
             editingContext.setSharedEditingContext(null);
         }
         return editingContext;
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Release the resources associated with this message (e.g., its internal
+     * editing context) because this message will not be used again.
+     */
+    protected synchronized void dispose()
+    {
+        if (disposed)
+        {
+            throw new IllegalStateException(getClass().getSimpleName()
+                + ": dispose() called on disposed message.");
+        }
+        if (editingContext != null)
+        {
+            editingContext.dispose();
+            editingContext = null;
+        }
+        disposed = true;
+    }
+
+
     //~ Static/instance variables .............................................
 
     private EOEditingContext editingContext;
+    private boolean disposed = false;
 
     private static Map<Class<? extends Message>, MessageDescriptor> descriptors
         = new HashMap<Class<? extends Message>, MessageDescriptor>();

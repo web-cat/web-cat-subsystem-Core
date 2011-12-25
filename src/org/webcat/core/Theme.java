@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2008-2010 Virginia Tech
+ |  Copyright (C) 2008-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,6 +23,7 @@ package org.webcat.core;
 
 import java.io.File;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
+import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCResourceManager;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOCookie;
@@ -321,7 +322,8 @@ public class Theme
             {
                 new UnexpectedExceptionMessage(e, null, null,
                         "Unexpected exception trying to decode theme properties "
-                        + "for theme: " + dirName() + "(" + id() + ").").send();
+                        + "for theme: " + dirName() + "(" + id() + ").")
+                    .send();
             }
         }
         return linkTags;
@@ -350,7 +352,7 @@ public class Theme
         log.debug("refreshThemes()");
         if (!themeBaseDir().exists()) return;
 
-        EOEditingContext ec = Application.newPeerEditingContext();
+        EOEditingContext ec = WCEC.newEditingContext();
         try
         {
             ec.lock();
@@ -401,7 +403,7 @@ public class Theme
         finally
         {
             ec.unlock();
-            Application.releasePeerEditingContext( ec );
+            ec.dispose();
         }
 
         log.debug( "refreshing shared theme objects" );

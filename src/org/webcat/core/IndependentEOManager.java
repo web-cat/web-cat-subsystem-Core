@@ -76,17 +76,7 @@ public class IndependentEOManager
     {
         ecm = manager;
         setClientContext(context);
-
-        // Now create a mirror in a new EC
-        try
-        {
-            ecm.lock();
-            mirror = ecm.localize(eo);
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        mirror = ecm.localize(eo);
     }
 
 
@@ -101,17 +91,12 @@ public class IndependentEOManager
     {
         try
         {
-            ecm.lock();
             return (Number)EOUtilities.primaryKeyForObject(
                 mirror.editingContext(), mirror).objectForKey( "id" );
         }
         catch (Exception e)
         {
             return er.extensions.eof.ERXConstant.ZeroInteger;
-        }
-        finally
-        {
-            ecm.unlock();
         }
     }
 
@@ -126,45 +111,21 @@ public class IndependentEOManager
      */
     public EOEnterpriseObject localInstanceIn(EOEditingContext ec)
     {
-        try
-        {
-            ecm.lock();
-            return EOUtilities.localInstanceOfObject(ec, mirror);
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        return EOUtilities.localInstanceOfObject(ec, mirror);
     }
 
 
     // ----------------------------------------------------------
     public Object valueForKey(String key)
     {
-        try
-        {
-            ecm.lock();
-            return ECManager.localize(clientContext, mirror.valueForKey(key));
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        return ECManager.localize(clientContext, mirror.valueForKey(key));
     }
 
 
     // ----------------------------------------------------------
-    public void takeValueForKey( Object value, String key )
+    public void takeValueForKey(Object value, String key)
     {
-        try
-        {
-            ecm.lock();
-            mirror.takeValueForKey(ecm.localize(value), key);
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        mirror.takeValueForKey(ecm.localize(value), key);
     }
 
 
@@ -172,31 +133,15 @@ public class IndependentEOManager
     public void addObjectToBothSidesOfRelationshipWithKey(
         EORelationshipManipulation eo, String key)
     {
-        try
-        {
-            ecm.lock();
-            mirror.addObjectToBothSidesOfRelationshipWithKey(
-                ecm.localize(eo), key);
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        mirror.addObjectToBothSidesOfRelationshipWithKey(
+            ecm.localize(eo), key);
     }
 
 
     // ----------------------------------------------------------
     public void addObjectToPropertyWithKey(Object eo, String key)
     {
-        try
-        {
-            ecm.lock();
-            mirror.addObjectToPropertyWithKey(ecm.localize(eo), key);
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        mirror.addObjectToPropertyWithKey(ecm.localize(eo), key);
     }
 
 
@@ -204,62 +149,30 @@ public class IndependentEOManager
     public void removeObjectFromBothSidesOfRelationshipWithKey(
         EORelationshipManipulation eo, String key)
     {
-        try
-        {
-            ecm.lock();
-            mirror.removeObjectFromBothSidesOfRelationshipWithKey(
-                ecm.localize(eo), key);
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        mirror.removeObjectFromBothSidesOfRelationshipWithKey(
+            ecm.localize(eo), key);
     }
 
 
     // ----------------------------------------------------------
     public void removeObjectFromPropertyWithKey(Object eo, String key)
     {
-        try
-        {
-            ecm.lock();
-            mirror.removeObjectFromPropertyWithKey(ecm.localize(eo), key);
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        mirror.removeObjectFromPropertyWithKey(ecm.localize(eo), key);
     }
 
 
     // ----------------------------------------------------------
     public void refresh()
     {
-        try
-        {
-            ecm.lock();
-            ecm.revert();
-            ecm.refreshAllObjects();
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        ecm.revert();
+        ecm.refreshAllObjects();
     }
 
 
     // ----------------------------------------------------------
     public void revert()
     {
-        try
-        {
-            ecm.lock();
-            ecm.revert();
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        ecm.revert();
     }
 
 
@@ -274,57 +187,40 @@ public class IndependentEOManager
      */
     public Exception tryToSaveChanges()
     {
-        try
-        {
-            ecm.lock();
-            return ecm.tryToSaveChanges();
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        return ecm.tryToSaveChanges();
     }
 
 
     // ----------------------------------------------------------
     public void saveChanges()
     {
-        try
+        // grab the changes, in case there is trouble saving them
+        @SuppressWarnings("unchecked")
+        NSDictionary<String, Object> snapshot =
+            mirror.editingContext().committedSnapshotForObject(mirror);
+        @SuppressWarnings("unchecked")
+        NSDictionary<String, Object> changes =
+            mirror.changesFromSnapshot(snapshot);
+
+        boolean changesSaved = false;
+        // Try ten times
+        for (int i = 0; !changesSaved && i< 10; i++)
         {
-            ecm.lock();
-
-            // grab the changes, in case there is trouble saving them
-            @SuppressWarnings("unchecked")
-            NSDictionary<String, Object> snapshot =
-                mirror.editingContext().committedSnapshotForObject(mirror);
-            @SuppressWarnings("unchecked")
-            NSDictionary<String, Object> changes =
-                mirror.changesFromSnapshot(snapshot);
-
-            boolean changesSaved = false;
-            // Try ten times
-            for (int i = 0; !changesSaved && i< 10; i++)
-            {
-                EOEnterpriseObject newMirror = ecm.saveChanges(mirror);
-                changesSaved = (newMirror == mirror);
-                if (!changesSaved)
-                {
-                    // then the changes may have failed
-                    mirror = newMirror;
-                    changes = ecm.localize(changes);
-                    mirror.reapplyChangesFromDictionary(changes);
-                }
-            }
+            EOEnterpriseObject newMirror = ecm.saveChanges(mirror);
+            changesSaved = (newMirror == mirror);
             if (!changesSaved)
             {
-                log.error("Unable to save changes to eo " + mirror);
-                log.error("Unsaved changes = " + changes,
-                    new Exception("here"));
+                // then the changes may have failed
+                mirror = newMirror;
+                changes = ecm.localize(changes);
+                mirror.reapplyChangesFromDictionary(changes);
             }
         }
-        finally
+        if (!changesSaved)
         {
-            ecm.unlock();
+            log.error("Unable to save changes to eo " + mirror);
+            log.error("Unsaved changes = " + changes,
+                new Exception("here"));
         }
     }
 

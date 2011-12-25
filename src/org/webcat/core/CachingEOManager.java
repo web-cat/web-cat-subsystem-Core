@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -55,7 +55,6 @@ public class CachingEOManager
      * @param manager the (probably shared) editing context manager to use
      * for independent saving of the given eo
      */
-    @SuppressWarnings("unchecked")
     public CachingEOManager(EOEnterpriseObject eo, ECManager manager)
     {
         ecm = manager;
@@ -74,15 +73,7 @@ public class CachingEOManager
             attributeKeyArray, attributeKeyArray);
 
         // Now create a mirror in a new EC
-        ecm.lock();
-        try
-        {
-            mirror = ecm.localize(eo);
-        }
-        finally
-        {
-            ecm.unlock();
-        }
+        mirror = ecm.localize(eo);
     }
 
 
@@ -146,25 +137,17 @@ public class CachingEOManager
         {
             snapshot.takeValueForKey(eo, key);
         }
-        ecm.lock();
-        try
+        mirror.addObjectToBothSidesOfRelationshipWithKey(
+            ecm.localize(eo), key);
+        EOEnterpriseObject oldMirror = mirror;
+        mirror = ecm.saveChanges(mirror);
+        if (mirror != oldMirror)
         {
+            // retry it once if the save forced an abort and a new
+            // EC was created instead
             mirror.addObjectToBothSidesOfRelationshipWithKey(
                 ecm.localize(eo), key);
-            EOEnterpriseObject oldMirror = mirror;
             mirror = ecm.saveChanges(mirror);
-            if (mirror != oldMirror)
-            {
-                // retry it once if the save forced an abort and a new
-                // EC was created instead
-                mirror.addObjectToBothSidesOfRelationshipWithKey(
-                    ecm.localize(eo), key);
-                mirror = ecm.saveChanges(mirror);
-            }
-        }
-        finally
-        {
-            ecm.unlock();
         }
     }
 
@@ -190,23 +173,15 @@ public class CachingEOManager
         {
             snapshot.takeValueForKey(eo, key);
         }
-        ecm.lock();
-        try
+        mirror.addObjectToPropertyWithKey(ecm.localize(eo), key);
+        EOEnterpriseObject oldMirror = mirror;
+        mirror = ecm.saveChanges(mirror);
+        if (mirror != oldMirror)
         {
+            // retry it once if the save forced an abort and a new
+            // EC was created instead
             mirror.addObjectToPropertyWithKey(ecm.localize(eo), key);
-            EOEnterpriseObject oldMirror = mirror;
             mirror = ecm.saveChanges(mirror);
-            if (mirror != oldMirror)
-            {
-                // retry it once if the save forced an abort and a new
-                // EC was created instead
-                mirror.addObjectToPropertyWithKey(ecm.localize(eo), key);
-                mirror = ecm.saveChanges(mirror);
-            }
-        }
-        finally
-        {
-            ecm.unlock();
         }
     }
 
@@ -228,25 +203,17 @@ public class CachingEOManager
         {
             snapshot.takeValueForKey(NullValue, key);
         }
-        ecm.lock();
-        try
+        mirror.removeObjectFromBothSidesOfRelationshipWithKey(
+            ecm.localize(eo), key);
+        EOEnterpriseObject oldMirror = mirror;
+        mirror = ecm.saveChanges(mirror);
+        if (mirror != oldMirror)
         {
+            // retry it once if the save forced an abort and a new
+            // EC was created instead
             mirror.removeObjectFromBothSidesOfRelationshipWithKey(
                 ecm.localize(eo), key);
-            EOEnterpriseObject oldMirror = mirror;
             mirror = ecm.saveChanges(mirror);
-            if (mirror != oldMirror)
-            {
-                // retry it once if the save forced an abort and a new
-                // EC was created instead
-                mirror.removeObjectFromBothSidesOfRelationshipWithKey(
-                    ecm.localize(eo), key);
-                mirror = ecm.saveChanges(mirror);
-            }
-        }
-        finally
-        {
-            ecm.unlock();
         }
     }
 
@@ -266,23 +233,15 @@ public class CachingEOManager
         {
             snapshot.takeValueForKey(NullValue, key);
         }
-        ecm.lock();
-        try
+        mirror.removeObjectFromPropertyWithKey(ecm.localize(eo), key);
+        EOEnterpriseObject oldMirror = mirror;
+        mirror = ecm.saveChanges(mirror);
+        if (mirror != oldMirror)
         {
+            // retry it once if the save forced an abort and a new
+            // EC was created instead
             mirror.removeObjectFromPropertyWithKey(ecm.localize(eo), key);
-            EOEnterpriseObject oldMirror = mirror;
             mirror = ecm.saveChanges(mirror);
-            if (mirror != oldMirror)
-            {
-                // retry it once if the save forced an abort and a new
-                // EC was created instead
-                mirror.removeObjectFromPropertyWithKey(ecm.localize(eo), key);
-                mirror = ecm.saveChanges(mirror);
-            }
-        }
-        finally
-        {
-            ecm.unlock();
         }
     }
 
@@ -370,39 +329,31 @@ public class CachingEOManager
             return;
         }
 
-        ecm.lock();
-        try
+        Object newValue = value;
+        if (value == null)
         {
-            Object newValue = value;
-            if (value == null)
-            {
-                snapshot.takeValueForKey(NullValue, key);
-            }
-            else if (value instanceof NSArray)
-            {
-                snapshot.takeValueForKey(
-                    ((NSArray<?>)value).mutableClone(), key);
-                newValue = ecm.localize(value);
-            }
-            else
-            {
-                snapshot.takeValueForKey(value, key);
-                newValue = ecm.localize(value);
-            }
-            mirror.takeValueForKey(newValue, key);
-            EOEnterpriseObject oldMirror = mirror;
-            mirror = ecm.saveChanges(mirror);
-            if (mirror != oldMirror)
-            {
-                // retry it once if the save forced an abort and a new
-                // EC was created instead
-                mirror.takeValueForKey(ecm.localize(newValue), key);
-                mirror = ecm.saveChanges(mirror);
-            }
+            snapshot.takeValueForKey(NullValue, key);
         }
-        finally
+        else if (value instanceof NSArray)
         {
-            ecm.unlock();
+            snapshot.takeValueForKey(
+                ((NSArray<?>)value).mutableClone(), key);
+            newValue = ecm.localize(value);
+        }
+        else
+        {
+            snapshot.takeValueForKey(value, key);
+            newValue = ecm.localize(value);
+        }
+        mirror.takeValueForKey(newValue, key);
+        EOEnterpriseObject oldMirror = mirror;
+        mirror = ecm.saveChanges(mirror);
+        if (mirror != oldMirror)
+        {
+            // retry it once if the save forced an abort and a new
+            // EC was created instead
+            mirror.takeValueForKey(ecm.localize(newValue), key);
+            mirror = ecm.saveChanges(mirror);
         }
     }
 

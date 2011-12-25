@@ -138,7 +138,7 @@ public class Session
         tabs.selectDefault();
         if (!doNotUseLoginSession)
         {
-            EOEditingContext ec = Application.newPeerEditingContext();
+            EOEditingContext ec = WCEC.newEditingContext();
             loginSession = null;
             loginSessionId = null;
             try
@@ -162,7 +162,7 @@ public class Session
             }
             if (loginSession == null)
             {
-                Application.releasePeerEditingContext(ec);
+                ec.dispose();
             }
             updateLoginSession();
         }
@@ -266,7 +266,7 @@ public class Session
         }
         if (loginSession == null)
         {
-            EOEditingContext ec = Application.newPeerEditingContext();
+            EOEditingContext ec = WCEC.newEditingContext();
             try
             {
                 ec.lock();
@@ -288,7 +288,7 @@ public class Session
             }
             if (loginSession == null)
             {
-                Application.releasePeerEditingContext( ec );
+                ec.dispose();
                 log.error("updateLoginSession() cannot find login session for "
                     + "user " + primeUser + " and sessionId = " + sessionID());
                 return;
@@ -422,7 +422,8 @@ public class Session
             }
             catch (Exception e)
             {
-                new UnexpectedExceptionMessage(e, context(), null, null).send();
+                new UnexpectedExceptionMessage(e, context(), null, null)
+                    .send();
             }
         }
     }
@@ -471,7 +472,7 @@ public class Session
                 {
                     new UnexpectedExceptionMessage(e, context(), null, null)
                         .send();
-                    EOEditingContext ec = Application.newPeerEditingContext();
+                    EOEditingContext ec = WCEC.newEditingContext();
                     try
                     {
                         ec.lock();
@@ -497,7 +498,7 @@ public class Session
                     finally
                     {
                         ec.unlock();
-                        Application.releasePeerEditingContext(ec);
+                        ec.dispose();
                     }
                 }
                 finally
@@ -508,7 +509,8 @@ public class Session
         }
         catch (Exception e)
         {
-            new UnexpectedExceptionMessage(e, context(), null, null).send();
+            new UnexpectedExceptionMessage(e, context(), null, null)
+                .send();
         }
         primeUser = null;
         localUser = null;

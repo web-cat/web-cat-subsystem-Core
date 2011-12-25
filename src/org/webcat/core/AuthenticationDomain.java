@@ -32,6 +32,8 @@ import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.UserAuthenticator;
 import org.webcat.core.WCProperties;
 import org.webcat.core._AuthenticationDomain;
+import org.webcat.woextensions.ECAction;
+import static org.webcat.woextensions.ECAction.run;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -400,16 +402,13 @@ public class AuthenticationDomain
         theAuthenticatorMap = new TreeMap<String, UserAuthenticator>();
         defaultDomain = null;
 
-        WCProperties     properties = Application.configurationProperties();
+        final WCProperties properties = Application.configurationProperties();
         @SuppressWarnings("unchecked")
-        Enumeration<String> propertyNames =
+        final Enumeration<String> propertyNames =
             (Enumeration<String>)properties.propertyNames();
-        final String     prefix = "authenticator.";
-        EOEditingContext ec = Application.newPeerEditingContext();
+        final String prefix = "authenticator.";
 
-        try
-        {
-            ec.lock();
+        run(new ECAction() { public void action() {
             log.debug("searching property list");
             // Disconnect from the shared editing context, since we're actually
             // making changes to objects in the shared context here.
@@ -513,12 +512,7 @@ public class AuthenticationDomain
                 }
             }
             ec.saveChanges();
-        }
-        finally
-        {
-            ec.unlock();
-            Application.releasePeerEditingContext(ec);
-        }
+        }});
 
         log.debug("refreshing shared authentication domain objects");
         authDomains = allObjectsOrderedByDisplayableName(

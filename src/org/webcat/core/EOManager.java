@@ -22,6 +22,7 @@
 package org.webcat.core;
 
 import org.apache.log4j.Logger;
+import org.webcat.woextensions.WCEC;
 import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
@@ -64,7 +65,8 @@ public interface EOManager
          */
         public ECManager()
         {
-            ec = (ERXEC)Application.newPeerEditingContext();
+            ec = WCEC.newAutoLockingEditingContext();
+            ec.setSharedEditingContext(null);
         }
 
 
@@ -199,32 +201,16 @@ public interface EOManager
 
                 // Something happened, so try replacing the old context
                 // with a new one.
-                ERXEC newContext = (ERXEC)Application.newPeerEditingContext();
-                for (int i = 0; i < ec.lockCount(); i++)
-                {
-                    newContext.lock();
-                }
-
+                ERXEC newContext = WCEC.newAutoLockingEditingContext();
+                newContext.setSharedEditingContext(null);
                 eo = EOUtilities.localInstanceOfObject(newContext, eo);
                 newContext.refreshObject(eo);
 
                 // Now try to clean up the old one
                 try
                 {
-                    // Try to unlock first, if possible
-                    try
-                    {
-                        while (ec.lockCount() > 0)
-                        {
-                            ec.unlock();
-                        }
-                    }
-                    catch (Exception eee)
-                    {
-                        // nothing
-                    }
                     // Try to clean up the broken editing context, if possible
-                    Application.releasePeerEditingContext(ec);
+                    ec.dispose();
                 }
                 catch (Exception ee)
                 {
@@ -236,16 +222,6 @@ public interface EOManager
                 ec = newContext;
             }
             return eo;
-        }
-
-
-        // ----------------------------------------------------------
-        /**
-         * Lock the internal editing context.
-         */
-        public void lock()
-        {
-            ec.lock();
         }
 
 
@@ -272,25 +248,11 @@ public interface EOManager
 
         // ----------------------------------------------------------
         /**
-         * Unlock the internal editing context.
-         */
-        public void unlock()
-        {
-            ec.unlock();
-        }
-
-
-        // ----------------------------------------------------------
-        /**
          * Releases the inner EOEditContext.
          */
         public void dispose()
         {
-            while (ec.lockCount() > 0)
-            {
-                ec.unlock();
-            }
-            Application.releasePeerEditingContext(ec);
+            ec.dispose();
         }
 
 

@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Properties;
 import org.apache.log4j.Logger;
+import org.webcat.woextensions.WCEC;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOEditingContext;
@@ -1257,7 +1258,7 @@ public class User
         NSArray<CoreSelections> cs = coreSelections();
         if (cs.count() == 0)
         {
-            EOEditingContext ec = Application.newPeerEditingContext();
+            EOEditingContext ec = WCEC.newEditingContext();
             try
             {
                 ec.lock();
@@ -1271,7 +1272,7 @@ public class User
             finally
             {
                 ec.unlock();
-                Application.releasePeerEditingContext(ec);
+                ec.dispose();
             }
         }
         return cs.objectAtIndex(0);
@@ -1288,7 +1289,7 @@ public class User
         boolean usingFreshEC = (ecForPrefs == null);
         if (usingFreshEC)
         {
-            ecForPrefs = Application.newPeerEditingContext();
+            ecForPrefs = WCEC.newEditingContext();
         }
         EOEditingContext ec = ecForPrefs;
         ec.lock();
@@ -1318,7 +1319,7 @@ public class User
                     // nothing
                 }
                 // Try to clean up the broken editing context, if possible
-                Application.releasePeerEditingContext(ec);
+                ec.dispose();
             }
             catch (Exception ee)
             {

@@ -613,7 +613,7 @@ import org.webcat.woextensions.WCFetchSpecification;
         // we're already trying to migrate and this "awake" is coming from the
         // child migration context.
 
-        if (!(ec instanceof org.webcat.core.MigratingEditingContext))
+        if (!(ec instanceof org.webcat.woextensions.MigratingEditingContext))
         {
             migrateAttributeValuesIfNeeded();
         }
@@ -639,14 +639,23 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
 #end
 #end )
         {
-            org.webcat.core.MigratingEditingContext mec =
-                org.webcat.core.Application.newMigratingEditingContext();
-            ${entity.classNameWithoutPackage} migratingObject = localInstance(mec);
+            org.webcat.woextensions.MigratingEditingContext mec =
+                org.webcat.woextensions.MigratingEditingContext
+                    .newEditingContext();
+            try
+            {
+                mec.lock();
+                ${entity.classNameWithoutPackage} migratingObject = localInstance(mec);
 
-            migrateAttributeValues(mec, migratingObject);
+                migrateAttributeValues(mec, migratingObject);
 
-            mec.saveChanges();
-            org.webcat.core.Application.releaseMigratingEditingContext(mec);
+                mec.saveChanges();
+            }
+            finally
+            {
+                mec.unlock();
+                mec.dispose();
+            }
         }
     }
 
@@ -657,7 +666,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
      * object is retrieved.
      */
     protected void migrateAttributeValues(
-        org.webcat.core.MigratingEditingContext mec,
+        org.webcat.woextensions.MigratingEditingContext mec,
         ${entity.classNameWithoutPackage} migratingObject
     )
     {
@@ -690,7 +699,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
      * ${attribute.name} attribute.
      */
     protected abstract void migrate${attribute.capitalizedName}(
-        org.webcat.core.MigratingEditingContext mec);
+        org.webcat.woextensions.MigratingEditingContext mec);
 
 
 #end

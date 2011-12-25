@@ -447,7 +447,8 @@ public class WCComponent
         catch ( Exception e )
         {
             new UnexpectedExceptionMessage(e, context(), null,
-                "Exception trying to save component's local changes" ).send();
+                "Exception trying to save component's local changes" )
+                .send();
             // forces revert and refaultAllObjects
             cancelLocalChanges();
             String msg =

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -42,6 +42,7 @@ import org.webcat.core.WCComponent;
 import org.apache.log4j.Logger;
 import org.webcat.core.actions.WCDirectActionWithSession;
 import org.webcat.core.install.*;
+import org.webcat.woextensions.WCEC;
 
 //-------------------------------------------------------------------------
 /**
@@ -285,7 +286,7 @@ public class DirectAction
         if (errors.count() == 0 && userName != null)
         {
             userName = userName.toLowerCase();
-            EOEditingContext ec = Application.newPeerEditingContext();
+            EOEditingContext ec = WCEC.newEditingContext();
             try
             {
                 ec.lock();
@@ -318,7 +319,7 @@ public class DirectAction
             finally
             {
                 ec.unlock();
-                Application.releasePeerEditingContext(ec);
+                ec.dispose();
             }
         }
         return result;
@@ -392,7 +393,7 @@ public class DirectAction
         WORequest request, NSMutableDictionary<?, ?> errors)
     {
         boolean result = false;
-        EOEditingContext ec = Application.newPeerEditingContext();
+        EOEditingContext ec = WCEC.newEditingContext();
         String code = request().stringFormValueForKey("code");
         if (code == null)
         {
@@ -440,7 +441,7 @@ public class DirectAction
         finally
         {
             ec.unlock();
-            Application.releasePeerEditingContext(ec);
+            ec.dispose();
         }
         return result;
     }

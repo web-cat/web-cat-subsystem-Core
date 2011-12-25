@@ -19,19 +19,19 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package org.webcat.core;
+package org.webcat.woextensions;
 
 import org.webcat.core.Application;
 import org.webcat.core.QualifierAugmenter;
-import org.webcat.core.ReadOnlyEditingContext;
+import org.webcat.woextensions.ReadOnlyEditingContext;
 import org.apache.log4j.Logger;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.eocontrol.EOFetchSpecification;
 import com.webobjects.eocontrol.EOGlobalID;
+import com.webobjects.eocontrol.EOObjectStore;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.foundation.NSArray;
-import er.extensions.eof.ERXEC;
 
 //-------------------------------------------------------------------------
 /**
@@ -46,12 +46,38 @@ import er.extensions.eof.ERXEC;
  * lifetimes of these objects.
  * </p>
  *
- * @author Tony Allevato
+ * @author  Tony Allevato
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class ReadOnlyEditingContext extends ERXEC
+public class ReadOnlyEditingContext
+    extends WCEC
 {
+    //~ Constructor ...........................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Creates a new object.
+     * @param os the parent object store
+     */
+    public ReadOnlyEditingContext(EOObjectStore os)
+    {
+        super(os);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates a new peer editing context, typically used to make
+     * changes outside of a session's editing context.
+     * @return the new editing context
+     */
+    public static ReadOnlyEditingContext newEditingContext()
+    {
+        return (ReadOnlyEditingContext)factory()._newEditingContext();
+    }
+
+
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
@@ -221,11 +247,34 @@ public class ReadOnlyEditingContext extends ERXEC
     }
 
 
+    // ----------------------------------------------------------
+    public static class ReadOnlyFactory
+        extends WCECFactory
+    {
+        protected EOEditingContext _createEditingContext(EOObjectStore parent)
+        {
+            return new ReadOnlyEditingContext(parent == null
+                ? EOEditingContext.defaultParentObjectStore()
+                : parent);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public static Factory factory() {
+        if (factory == null) {
+            factory = new ReadOnlyFactory();
+        }
+        return factory;
+    }
+
+
     //~ Static/instance variables .............................................
 
     private boolean modificationWasAttempted = false;
     private boolean loggingSuppressed = false;
     private boolean suppressesLogAfterFirstAttempt = false;
 
+    private static Factory factory;
     static final Logger log = Logger.getLogger(ReadOnlyEditingContext.class);
 }

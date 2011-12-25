@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2010 Virginia Tech
+ |  Copyright (C) 2010-2011 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -36,7 +36,8 @@ import com.webobjects.foundation.NSDictionary;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class FallbackMessageDispatcher implements IMessageDispatcher
+public class FallbackMessageDispatcher
+    implements IMessageDispatcher
 {
     //~ Methods ...............................................................
 

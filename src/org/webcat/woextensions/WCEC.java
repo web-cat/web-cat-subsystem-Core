@@ -26,41 +26,39 @@ import org.webcat.core.Application;
 import org.webcat.core.EOManager;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOObjectStore;
+import com.webobjects.eocontrol.EOSharedEditingContext;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
+import er.extensions.eof.ERXEC;
 
 // -------------------------------------------------------------------------
 /**
- *  This is a specialized editing context subclass that is used to track
- *  down an obscure WO bug.
+ *  This is a specialized editing context subclass with infrastructure
+ *  support for peer manager pools.
  *
  *  @author  Stephen Edwards
  *  @author  Last changed by $Author$
  *  @version $Revision$, $Date$
  */
 public class WCEC
-    extends er.extensions.eof.ERXEC
+    extends ERXEC
 {
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
     /**
-     * Creates a new WOEC object.
+     * Creates a new object.
      */
     public WCEC()
     {
-        super();
-        if (log.isDebugEnabled())
-        {
-            log.debug("creating new ec: " + hashCode());
-        }
+        this(defaultParentObjectStore());
     }
 
 
     // ----------------------------------------------------------
     /**
-     * Creates a new WOEC object.
+     * Creates a new object.
      * @param os the parent object store
      */
     public WCEC(EOObjectStore os)
@@ -68,41 +66,123 @@ public class WCEC
         super(os);
         if (log.isDebugEnabled())
         {
-            log.debug("creating new ec: " + hashCode());
+            String message = "creating " + getClass().getSimpleName()
+                + " with parent object store " + os
+                + "; " + this
+                + "; by " + Thread.currentThread()
+                + "; at " + System.currentTimeMillis();
+            log.debug(message, new Exception("from here"));
         }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates a new peer editing context, typically used to make
+     * changes outside of a session's editing context.
+     * @return the new editing context
+     */
+    public static WCEC newEditingContext()
+    {
+        return (WCEC)factory()._newEditingContext();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates a new peer editing context that performs
+     * auto-locking/auto-unlocking on each method call.
+     * @return the new editing context
+     */
+    public static WCEC newAutoLockingEditingContext()
+    {
+        WCEC result = newEditingContext();
+        result.setCoalesceAutoLocks(false);
+        result.setUseAutoLock(true);
+        return result;
     }
 
 
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
+    @Override
+    public void saveChanges()
+    {
+        EOSharedEditingContext defaultSharedEC =
+            EOSharedEditingContext.defaultSharedEditingContext();
+        if (defaultSharedEC != null)
+        {
+            defaultSharedEC.lock();
+        }
+        try
+        {
+            super.saveChanges();
+        }
+        finally
+        {
+            if (defaultSharedEC != null)
+            {
+                defaultSharedEC.unlock();
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    protected void _checkOpenLockTraces()
+    {
+        synchronized (this)
+        {
+            int lockCount = lockCount();
+            if (lockCount > 0)
+            {
+                log.error("Open lock count = " + lockCount);
+            }
+            super._checkOpenLockTraces();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
     public void dispose()
     {
         if (log.isDebugEnabled())
         {
-            log.debug("dispose(): " + hashCode());
+            log.debug("dispose(): " + this);
         }
         super.dispose();
     }
 
 
     // ----------------------------------------------------------
-    public static class WOECFactory
+    public static class WCECFactory
         extends er.extensions.eof.ERXEC.DefaultFactory
     {
         protected EOEditingContext _createEditingContext(EOObjectStore parent)
         {
             return new WCEC(parent == null
-                            ? EOEditingContext.defaultParentObjectStore()
-                            : parent);
+                ? EOEditingContext.defaultParentObjectStore()
+                : parent);
         }
+    }
+
+
+    // ----------------------------------------------------------
+    public static Factory factory() {
+        if (factory == null) {
+            factory = new WCECFactory();
+        }
+        return factory;
     }
 
 
     // ----------------------------------------------------------
     public static void installWOECFactory()
     {
-        er.extensions.eof.ERXEC.setFactory(new WOECFactory());
+        er.extensions.eof.ERXEC.setFactory(factory());
     }
 
 
@@ -125,7 +205,7 @@ public class WCEC
         {
             if (ec == null)
             {
-                ec = Application.newPeerEditingContext();
+                ec = newEditingContext();
                 if (log.isDebugEnabled())
                 {
                     log.debug("creating ec: " + ec.hashCode()
@@ -143,10 +223,10 @@ public class WCEC
             {
                 if (log.isDebugEnabled())
                 {
-                    log.debug("disposing ec: " + ec.hashCode()
+                    log.debug("disposing ec: " + ec
                         + " for manager: " + this);
                 }
-                Application.releasePeerEditingContext(ec);
+                ec.dispose();
                 ec = null;
             }
             else
@@ -351,5 +431,6 @@ public class WCEC
 
     //~ Instance/static variables .............................................
 
+    private static Factory factory;
     static Logger log = Logger.getLogger(WCEC.class);
 }
