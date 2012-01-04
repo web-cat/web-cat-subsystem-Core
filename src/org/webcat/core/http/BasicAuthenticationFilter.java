@@ -28,6 +28,7 @@ import org.webcat.core.LoginSession;
 import org.webcat.core.Session;
 import org.webcat.core.User;
 import org.webcat.woextensions.ECAction;
+import org.webcat.woextensions.WCEC;
 import static org.webcat.woextensions.ECAction.run;
 import com.Ostermiller.util.Base64;
 import com.webobjects.appserver.WOContext;
@@ -164,7 +165,7 @@ public abstract class BasicAuthenticationFilter
         final WORequest request = context.request();
         final WOResponse response = context.response();
 
-        final Session session = (context._requestSessionID() != null)
+        Session session = (context._requestSessionID() != null)
             ? // Use an existing session if we have one.
             (Session)Application.wcApplication()
                 .restoreSessionWithID(context._requestSessionID(),
@@ -192,7 +193,12 @@ public abstract class BasicAuthenticationFilter
                 final String username = parts[0];
                 final String password = (parts.length > 1) ? parts[1] : null;
 
-                run(new ECAction() { public void action() {
+                EOEditingContext ec = WCEC.newEditingContext();
+
+                try
+                {
+                    ec.lock();
+
                     User user = validateUser(username, password, ec);
 
                     if (user == null)
@@ -203,12 +209,17 @@ public abstract class BasicAuthenticationFilter
                     else
                     {
                         context._setRequestSessionID(existingSessionId);
-                        Session existingSession = (Session)context.session();
-                        existingSession.setUser(user.localInstance(
-                                existingSession.defaultEditingContext()));
-                        existingSession._appendCookieToResponse(response);
+                        session = (Session)context.session();
+                        session.setUser(user.localInstance(
+                                session.defaultEditingContext()));
+                        session._appendCookieToResponse(response);
                     }
-                }});
+                }
+                finally
+                {
+                    ec.unlock();
+                    ec.dispose();
+                }
             }
         }
 
