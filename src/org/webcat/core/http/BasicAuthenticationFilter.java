@@ -27,9 +27,8 @@ import org.webcat.core.Application;
 import org.webcat.core.LoginSession;
 import org.webcat.core.Session;
 import org.webcat.core.User;
-import org.webcat.woextensions.ECAction;
-import org.webcat.woextensions.WCEC;
-import static org.webcat.woextensions.ECAction.run;
+import org.webcat.woextensions.ECActionWithResult;
+import static org.webcat.woextensions.ECActionWithResult.call;
 import com.Ostermiller.util.Base64;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOMessage;
@@ -193,33 +192,28 @@ public abstract class BasicAuthenticationFilter
                 final String username = parts[0];
                 final String password = (parts.length > 1) ? parts[1] : null;
 
-                EOEditingContext ec = WCEC.newEditingContext();
-
-                try
+                final Session oldSession = session;
+                session = call(new ECActionWithResult<Session>()
                 {
-                    ec.lock();
+                    public Session action() {
+                        Session result = oldSession;
+                        User user = validateUser(username, password, ec);
 
-                    User user = validateUser(username, password, ec);
-
-                    if (user == null)
-                    {
-                        Application.wcApplication().saveSessionForContext(
+                        if (user == null)
+                        {
+                            Application.wcApplication().saveSessionForContext(
                                 context);
-                    }
-                    else
-                    {
-                        context._setRequestSessionID(existingSessionId);
-                        session = (Session)context.session();
-                        session.setUser(user.localInstance(
-                                session.defaultEditingContext()));
-                        session._appendCookieToResponse(response);
-                    }
-                }
-                finally
-                {
-                    ec.unlock();
-                    ec.dispose();
-                }
+                        }
+                        else
+                        {
+                            context._setRequestSessionID(existingSessionId);
+                            result = (Session)context.session();
+                            result.setUser(user.localInstance(
+                                result.defaultEditingContext()));
+                            result._appendCookieToResponse(response);
+                        }
+                        return result;
+                }});
             }
         }
 
