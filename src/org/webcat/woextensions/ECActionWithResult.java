@@ -26,22 +26,23 @@ import er.extensions.eof.ERXEC;
 
 //-------------------------------------------------------------------------
 /**
- * <p>Represents an action with an associated editing context, that has
- * built-in support for locking, unlocking, and disposing of the editing
- * context.
+ * <p>Represents a value-returning action with an associated editing context,
+ * that has built-in support for locking, unlocking, and disposing of the
+ * editing context.
  * </p><p>
  * Basic usage is:</p>
  * <pre>
- * import org.webcat.woextensions.ECAction;
- * import static org.webcat.woextensions.ECAction.run;
+ * import org.webcat.woextensions.ECActionWithResult;
+ * import static org.webcat.woextensions.ECActionWithResult.call;
  *
  * ...
  *
- * run(new ECAction() { public void action() {
+ * int x = call(new ECActionWithResult<Integer>() { public Integer action() {
  *
  *     // place your actions here
  *     // use "ec" to refer to the action's editing context
  *
+ *     return ...;
  * }});
  * </pre>
  * <p>
@@ -71,17 +72,15 @@ import er.extensions.eof.ERXEC;
  * }}.run();
  * </pre>
  *
+ * @param <ReturnType> The return type of the action.
+ *
  *  @author  Stephen Edwards
  *  @author  Last changed by $Author$
  *  @version $Revision$, $Date$
  */
-public abstract class ECAction
-    implements Runnable
+public abstract class ECActionWithResult<ReturnType>
+    implements java.util.concurrent.Callable<ReturnType>
 {
-    // This class should extend ECActionWithResult<Void>, but the
-    // differences between Void and void make the action() method
-    // clumsy.  Instead, here we repeat the same code (yuck).
-
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
@@ -89,7 +88,7 @@ public abstract class ECAction
      * Creates a new object with a default EC that will be destroyed when
      * the action completes.
      */
-    public ECAction()
+    public ECActionWithResult()
     {
         this(null);
     }
@@ -108,7 +107,7 @@ public abstract class ECAction
      *              the database in order to resolve optimistic locking
      *              failures.
      */
-    public ECAction(boolean retry, boolean merge)
+    public ECActionWithResult(boolean retry, boolean merge)
     {
         this();
         ((ERXEC)ec).setOptions(true, retry, merge);
@@ -122,7 +121,7 @@ public abstract class ECAction
      * be disposed when the action completes.
      * @param context The existing EC to use in the action.
      */
-    public ECAction(EOEditingContext context)
+    public ECActionWithResult(EOEditingContext context)
     {
         this(context, false);
     }
@@ -137,7 +136,7 @@ public abstract class ECAction
      *                action completes.  If false, the EC will not be
      *                disposed.
      */
-    public ECAction(EOEditingContext context, boolean ownsEC)
+    public ECActionWithResult(EOEditingContext context, boolean ownsEC)
     {
         ec = context;
         this.ownsEC = ownsEC;
@@ -146,7 +145,6 @@ public abstract class ECAction
             ec = WCEC.newEditingContext();
         }
     }
-
 
     //~ Methods ...............................................................
 
@@ -158,8 +156,10 @@ public abstract class ECAction
      * this action's editing context ("ec" is actually an instance field
      * of this object).  The action's EC is automatically locked before this
      * method is invoked, and unlocked after this method exits.
+     *
+     * @return The result produced by this action.
      */
-    public abstract void action();
+    public abstract ReturnType action();
 
 
     // ----------------------------------------------------------
@@ -168,12 +168,12 @@ public abstract class ECAction
      * method, unlocks the EC, and if necessary, disposes the
      * EC.
      */
-    public void run()
+    public ReturnType call()
     {
         try
         {
             ec.lock();
-            action();
+            return action();
         }
         finally
         {
@@ -188,16 +188,18 @@ public abstract class ECAction
 
     // ----------------------------------------------------------
     /**
-     * A static version of {@link #action()} that can be statically
-     * imported and used when you want the run() call to be at the start
-     * of a statement, rather than at the very end.  It simply calls
-     * the run() method on the given object.
+     * A static version of {@link #call()} that can be statically
+     * imported and used when you want the call() invocation to be at the
+     * start of a statement, rather than at the very end.  It simply calls
+     * the call() method on the given object.
      *
      * @param action The action to perform.
+     * @param <ReturnType> The return type of the action.
      */
-    public static void run(ECAction action)
+    public static <ReturnType> ReturnType call(
+        ECActionWithResult<ReturnType> action)
     {
-        action.run();
+        return action.call();
     }
 
 
