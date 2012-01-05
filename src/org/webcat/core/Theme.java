@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2008-2011 Virginia Tech
+ |  Copyright (C) 2008-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,11 +23,11 @@ package org.webcat.core;
 
 import java.io.File;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
-import org.webcat.woextensions.WCEC;
+import org.webcat.woextensions.ECAction;
+import static org.webcat.woextensions.ECAction.run;
 import org.webcat.woextensions.WCResourceManager;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOCookie;
-import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOSharedEditingContext;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
@@ -352,10 +352,7 @@ public class Theme
         log.debug("refreshThemes()");
         if (!themeBaseDir().exists()) return;
 
-        EOEditingContext ec = WCEC.newEditingContext();
-        try
-        {
-            ec.lock();
+        run(new ECAction() { public void action() {
             ec.setSharedEditingContext(null);
 
             for (File subdir : themeBaseDir().listFiles())
@@ -398,13 +395,7 @@ public class Theme
                     }
                 }
             }
-
-        }
-        finally
-        {
-            ec.unlock();
-            ec.dispose();
-        }
+        }});
 
         log.debug( "refreshing shared theme objects" );
         themes = allObjectsOrderedByName(
