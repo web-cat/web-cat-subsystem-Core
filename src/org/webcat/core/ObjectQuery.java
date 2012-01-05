@@ -62,6 +62,27 @@ public class ObjectQuery
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
+    @Override
+    public String userPresentableDescription()
+    {
+        return description();
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public String description()
+    {
+        String result = super.description();
+        if (result == null)
+        {
+            result = qualifierDescription();
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Gets the qualifier that applies to this query, loading any EOs in the
      * qualifier into the same editing context as this object.
