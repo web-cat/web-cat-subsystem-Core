@@ -1394,12 +1394,22 @@ public class User
 
         if (dotIndex != -1)
         {
-            String authDomain = "authenticator." + repoId.substring(0, dotIndex);
-            String name = repoId.substring(dotIndex + 1);
+            String authDomain = repoId.substring(0, dotIndex);
 
-            qualifier = userName.is(name).and(
-                    authenticationDomain.dot(
-                            AuthenticationDomain.propertyName).is(authDomain));
+            AuthenticationDomain domain =
+                AuthenticationDomain.authDomainByName(authDomain);
+
+            if (domain != null)
+            {
+                String name = repoId.substring(dotIndex + 1);
+
+                qualifier = userName.is(name).and(
+                        authenticationDomain.is(domain));
+            }
+            else
+            {
+                qualifier = userName.is(repoId);
+            }
         }
         else
         {
