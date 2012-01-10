@@ -4,7 +4,7 @@
  |  Created by eogenerator
  |  DO NOT EDIT.  Make changes to User.java instead.
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -2075,7 +2075,21 @@ public abstract class _User
             objectsMatchingQualifier(context, qualifier);
         if (objects.size() > 1)
         {
-            throw new EOUtilities.MoreThanOneException(null);
+            String msg = "fetching User";
+            try
+            {
+                if (qualifier != null)
+                {
+                    msg += " where " + qualifier;
+                }
+                msg += ", result = " + objects;
+            }
+            catch (Exception e)
+            {
+                log.error("Exception building MoreThanOneException message, "
+                    + "contents so far: " + msg, e);
+            }
+            throw new EOUtilities.MoreThanOneException(msg);
         }
         return (objects.size() > 0)
             ? objects.get(0)
@@ -2099,8 +2113,9 @@ public abstract class _User
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -2111,12 +2126,21 @@ public abstract class _User
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -2161,8 +2185,9 @@ public abstract class _User
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -2173,12 +2198,21 @@ public abstract class _User
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return firstObjectMatchingValues(
@@ -2242,8 +2276,9 @@ public abstract class _User
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -2254,12 +2289,21 @@ public abstract class _User
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -2342,8 +2386,9 @@ public abstract class _User
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -2354,12 +2399,21 @@ public abstract class _User
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);
@@ -2400,7 +2454,6 @@ public abstract class _User
             Integer accessLevelBinding,
             org.webcat.core.CourseOffering courseOfferingBinding)
     {
-        @SuppressWarnings("unchecked")
         EOFetchSpecification spec = WCFetchSpecification
             .fetchSpecificationNamed("participantsForCourse", "User");
 
@@ -2445,7 +2498,6 @@ public abstract class _User
             EOEditingContext context,
             org.webcat.core.CourseOffering courseOfferingBinding)
     {
-        @SuppressWarnings("unchecked")
         EOFetchSpecification spec = WCFetchSpecification
             .fetchSpecificationNamed("staffForCourse", "User");
 
@@ -2484,7 +2536,6 @@ public abstract class _User
             EOEditingContext context,
             org.webcat.core.CourseOffering courseOfferingBinding)
     {
-        @SuppressWarnings("unchecked")
         EOFetchSpecification spec = WCFetchSpecification
             .fetchSpecificationNamed("studentsForCourse", "User");
 
@@ -2521,7 +2572,6 @@ public abstract class _User
     public static NSArray<User> systemAdmins(
             EOEditingContext context)
     {
-        @SuppressWarnings("unchecked")
         EOFetchSpecification spec = WCFetchSpecification
             .fetchSpecificationNamed("systemAdmins", "User");
 
@@ -2554,27 +2604,26 @@ public abstract class _User
             String emailBinding
         ) throws EOUtilities.MoreThanOneException
     {
-        @SuppressWarnings("unchecked")
         EOFetchSpecification spec = WCFetchSpecification
             .fetchSpecificationNamed("userWithDomainAndEmail", "User");
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
-        if ( domainBinding != null )
+        if (domainBinding != null)
         {
-            bindings.setObjectForKey( domainBinding,
-                                      "domain" );
+            bindings.setObjectForKey(domainBinding,
+                                     "domain");
         }
-        if ( emailBinding != null )
+        if (emailBinding != null)
         {
-            bindings.setObjectForKey( emailBinding,
-                                      "email" );
+            bindings.setObjectForKey(emailBinding,
+                                     "email");
         }
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+        spec = spec.fetchSpecificationWithQualifierBindings(bindings);
 
         NSArray<User> objects =
-            objectsWithFetchSpecification( context, spec );
+            objectsWithFetchSpecification(context, spec);
         if (log.isDebugEnabled())
         {
             log.debug( "userWithDomainAndEmail(ec"
@@ -2589,9 +2638,21 @@ public abstract class _User
         }
         else if ( objects.count() > 1 )
         {
-            throw new EOUtilities.MoreThanOneException(
-                "Multiple objects were found when only one was expected."
-            );
+            String msg = "fetching User using userWithDomainAndEmail";
+            try
+            {
+                if (bindings.size() != 0)
+                {
+                    msg += " where bindings = " + bindings;
+                }
+                msg += ", result = " + objects;
+            }
+            catch (Exception e)
+            {
+                log.error("Exception building MoreThanOneException message, "
+                    + "contents so far: " + msg, e);
+            }
+            throw new EOUtilities.MoreThanOneException(msg);
         }
         else
         {
@@ -2618,27 +2679,26 @@ public abstract class _User
             String userNameBinding
         ) throws EOUtilities.MoreThanOneException
     {
-        @SuppressWarnings("unchecked")
         EOFetchSpecification spec = WCFetchSpecification
             .fetchSpecificationNamed("userWithDomainAndName", "User");
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
-        if ( domainBinding != null )
+        if (domainBinding != null)
         {
-            bindings.setObjectForKey( domainBinding,
-                                      "domain" );
+            bindings.setObjectForKey(domainBinding,
+                                     "domain");
         }
-        if ( userNameBinding != null )
+        if (userNameBinding != null)
         {
-            bindings.setObjectForKey( userNameBinding,
-                                      "userName" );
+            bindings.setObjectForKey(userNameBinding,
+                                     "userName");
         }
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+        spec = spec.fetchSpecificationWithQualifierBindings(bindings);
 
         NSArray<User> objects =
-            objectsWithFetchSpecification( context, spec );
+            objectsWithFetchSpecification(context, spec);
         if (log.isDebugEnabled())
         {
             log.debug( "userWithDomainAndName(ec"
@@ -2653,9 +2713,21 @@ public abstract class _User
         }
         else if ( objects.count() > 1 )
         {
-            throw new EOUtilities.MoreThanOneException(
-                "Multiple objects were found when only one was expected."
-            );
+            String msg = "fetching User using userWithDomainAndName";
+            try
+            {
+                if (bindings.size() != 0)
+                {
+                    msg += " where bindings = " + bindings;
+                }
+                msg += ", result = " + objects;
+            }
+            catch (Exception e)
+            {
+                log.error("Exception building MoreThanOneException message, "
+                    + "contents so far: " + msg, e);
+            }
+            throw new EOUtilities.MoreThanOneException(msg);
         }
         else
         {
@@ -2680,22 +2752,21 @@ public abstract class _User
             String nameBinding
         ) throws EOUtilities.MoreThanOneException
     {
-        @SuppressWarnings("unchecked")
         EOFetchSpecification spec = WCFetchSpecification
             .fetchSpecificationNamed("userWithName", "User");
 
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
-        if ( nameBinding != null )
+        if (nameBinding != null)
         {
-            bindings.setObjectForKey( nameBinding,
-                                      "name" );
+            bindings.setObjectForKey(nameBinding,
+                                     "name");
         }
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+        spec = spec.fetchSpecificationWithQualifierBindings(bindings);
 
         NSArray<User> objects =
-            objectsWithFetchSpecification( context, spec );
+            objectsWithFetchSpecification(context, spec);
         if (log.isDebugEnabled())
         {
             log.debug( "userWithName(ec"
@@ -2709,9 +2780,21 @@ public abstract class _User
         }
         else if ( objects.count() > 1 )
         {
-            throw new EOUtilities.MoreThanOneException(
-                "Multiple objects were found when only one was expected."
-            );
+            String msg = "fetching User using userWithName";
+            try
+            {
+                if (bindings.size() != 0)
+                {
+                    msg += " where bindings = " + bindings;
+                }
+                msg += ", result = " + objects;
+            }
+            catch (Exception e)
+            {
+                log.error("Exception building MoreThanOneException message, "
+                    + "contents so far: " + msg, e);
+            }
+            throw new EOUtilities.MoreThanOneException(msg);
         }
         else
         {

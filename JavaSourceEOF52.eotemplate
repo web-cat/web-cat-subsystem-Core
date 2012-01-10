@@ -1097,7 +1097,21 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
             objectsMatchingQualifier(context, qualifier);
         if (objects.size() > 1)
         {
-            throw new EOUtilities.MoreThanOneException(null);
+            String msg = "fetching ${entity.classNameWithoutPackage}";
+            try
+            {
+                if (qualifier != null)
+                {
+                    msg += " where " + qualifier;
+                }
+                msg += ", result = " + objects;
+            }
+            catch (Exception e)
+            {
+                log.error("Exception building MoreThanOneException message, "
+                    + "contents so far: " + msg, e);
+            }
+            throw new EOUtilities.MoreThanOneException(msg);
         }
         return (objects.size() > 0)
             ? objects.get(0)
@@ -1121,8 +1135,9 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -1133,12 +1148,21 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -1183,8 +1207,9 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -1195,12 +1220,21 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return firstObjectMatchingValues(
@@ -1264,8 +1298,9 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -1276,12 +1311,21 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -1364,8 +1408,9 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -1376,12 +1421,21 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);
@@ -1428,7 +1482,6 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
 
         ) throws EOUtilities.MoreThanOneException
     {
-        @SuppressWarnings("unchecked")
         EOFetchSpecification spec = WCFetchSpecification
             .fetchSpecificationNamed("${fetchSpec.name}", "${entity.name}");
 #if ($fetchSpec.distinctBindings.size() > 0)
@@ -1437,17 +1490,17 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
             new NSMutableDictionary<String, Object>();
 
 #foreach ($binding in $fetchSpec.distinctBindings)
-        if ( ${binding.name}Binding != null )
+        if (${binding.name}Binding != null)
         {
-            bindings.setObjectForKey( ${binding.name}Binding,
-                                      "${binding.name}" );
+            bindings.setObjectForKey(${binding.name}Binding,
+                                     "${binding.name}");
         }
 #end
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+        spec = spec.fetchSpecificationWithQualifierBindings(bindings);
 #end
 
         NSArray<${entity.classNameWithoutPackage}> objects =
-            objectsWithFetchSpecification( context, spec );
+            objectsWithFetchSpecification(context, spec);
         if (log.isDebugEnabled())
         {
             log.debug( "${fetchSpec.name}(ec"
@@ -1463,9 +1516,21 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
         }
         else if ( objects.count() > 1 )
         {
-            throw new EOUtilities.MoreThanOneException(
-                "Multiple objects were found when only one was expected."
-            );
+            String msg = "fetching ${entity.classNameWithoutPackage} using ${fetchSpec.name}";
+            try
+            {
+                if (bindings.size() != 0)
+                {
+                    msg += " where bindings = " + bindings;
+                }
+                msg += ", result = " + objects;
+            }
+            catch (Exception e)
+            {
+                log.error("Exception building MoreThanOneException message, "
+                    + "contents so far: " + msg, e);
+            }
+            throw new EOUtilities.MoreThanOneException(msg);
         }
         else
         {
@@ -1492,7 +1557,6 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
 
         )
     {
-        @SuppressWarnings("unchecked")
         EOFetchSpecification spec = WCFetchSpecification
             .fetchSpecificationNamed("${fetchSpec.name}", "${entity.name}");
 #if ($fetchSpec.distinctBindings.size() > 0)
@@ -1548,7 +1612,6 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
             EOEditingContext context#foreach ($binding in $fetchSpec.distinctBindings),
             ${binding.attributePath.childClassName} ${binding.name}Binding#end)
     {
-        @SuppressWarnings("unchecked")
         EOFetchSpecification spec = WCFetchSpecification
             .fetchSpecificationNamed("${fetchSpec.name}", "${entity.name}");
 #if ($fetchSpec.distinctBindings.size() > 0)

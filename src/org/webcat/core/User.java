@@ -1390,28 +1390,23 @@ public class User
         throws EOUtilities.MoreThanOneException
     {
         int dotIndex = repoId.indexOf('.');
-        EOQualifier qualifier;
+        EOQualifier qualifier = null;
 
         if (dotIndex != -1)
         {
-            String authDomain = repoId.substring(0, dotIndex);
-
+            String authDomain =
+                "authenticator." + repoId.substring(0, dotIndex);
             AuthenticationDomain domain =
                 AuthenticationDomain.authDomainByName(authDomain);
-
             if (domain != null)
             {
                 String name = repoId.substring(dotIndex + 1);
 
                 qualifier = userName.is(name).and(
-                        authenticationDomain.is(domain));
-            }
-            else
-            {
-                qualifier = userName.is(repoId);
+                    authenticationDomain.is(domain));
             }
         }
-        else
+        if (qualifier == null)
         {
             qualifier = userName.is(repoId);
         }

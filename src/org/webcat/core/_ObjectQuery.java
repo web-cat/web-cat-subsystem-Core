@@ -4,7 +4,7 @@
  |  Created by eogenerator
  |  DO NOT EDIT.  Make changes to ObjectQuery.java instead.
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -683,7 +683,21 @@ public abstract class _ObjectQuery
             objectsMatchingQualifier(context, qualifier);
         if (objects.size() > 1)
         {
-            throw new EOUtilities.MoreThanOneException(null);
+            String msg = "fetching ObjectQuery";
+            try
+            {
+                if (qualifier != null)
+                {
+                    msg += " where " + qualifier;
+                }
+                msg += ", result = " + objects;
+            }
+            catch (Exception e)
+            {
+                log.error("Exception building MoreThanOneException message, "
+                    + "contents so far: " + msg, e);
+            }
+            throw new EOUtilities.MoreThanOneException(msg);
         }
         return (objects.size() > 0)
             ? objects.get(0)
@@ -707,8 +721,9 @@ public abstract class _ObjectQuery
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -719,12 +734,21 @@ public abstract class _ObjectQuery
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -769,8 +793,9 @@ public abstract class _ObjectQuery
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -781,12 +806,21 @@ public abstract class _ObjectQuery
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return firstObjectMatchingValues(
@@ -850,8 +884,9 @@ public abstract class _ObjectQuery
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -862,12 +897,21 @@ public abstract class _ObjectQuery
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -950,8 +994,9 @@ public abstract class _ObjectQuery
     {
         if (keysAndValues.length % 2 != 0)
         {
-            throw new IllegalArgumentException("There should a value " +
-                "corresponding to every key that was passed.");
+            throw new IllegalArgumentException("There should a value "
+                + "corresponding to every key that was passed. Args = "
+                + java.util.Arrays.toString(keysAndValues));
         }
 
         NSMutableDictionary<String, Object> valueDictionary =
@@ -962,12 +1007,21 @@ public abstract class _ObjectQuery
             Object key = keysAndValues[i];
             Object value = keysAndValues[i + 1];
 
-            if (!(key instanceof String))
+            if (key == null)
             {
-                throw new IllegalArgumentException("Keys should be strings.");
+                throw new IllegalArgumentException(
+                    "Found null where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
+            }
+            else if (!(key instanceof String))
+            {
+                throw new IllegalArgumentException(
+                    "Found a " + key.getClass().getName() + " [" + key + "]"
+                    + " where a String key was expected, arguments = "
+                    + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, (String)key);
+            valueDictionary.setObjectForKey(value, key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);
@@ -1008,7 +1062,6 @@ public abstract class _ObjectQuery
             String objectTypeBinding,
             org.webcat.core.User userBinding)
     {
-        @SuppressWarnings("unchecked")
         EOFetchSpecification spec = WCFetchSpecification
             .fetchSpecificationNamed("savedQueriesForObjectTypeAndUser", "ObjectQuery");
 
