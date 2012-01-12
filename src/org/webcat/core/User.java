@@ -1394,10 +1394,8 @@ public class User
 
         if (dotIndex != -1)
         {
-            String authDomain =
-                "authenticator." + repoId.substring(0, dotIndex);
-            AuthenticationDomain domain =
-                AuthenticationDomain.authDomainByName(authDomain);
+            AuthenticationDomain domain = AuthenticationDomain
+                .authDomainByName(repoId.substring(0, dotIndex));
             if (domain != null)
             {
                 String name = repoId.substring(dotIndex + 1);
