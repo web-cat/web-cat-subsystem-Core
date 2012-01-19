@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -119,7 +119,7 @@ public class WCBasePage
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    public void appendToResponse( WOResponse response, WOContext context )
+    public void appendToResponse(WOResponse response, WOContext context)
     {
         if (Application.isDevelopmentModeSafe())
         {
@@ -132,13 +132,15 @@ public class WCBasePage
             dojoScriptName = DEPLOYMENT_DOJO_SCRIPT_NAME;
         }
 
-        log.debug( "nowrap = "
-                   + context.request().stringFormValueForKey( "nowrap" ) );
-        includePageWrapping =
-            ( context.request().stringFormValueForKey( "nowrap" ) == null );
+        String nowrap = context.request().stringFormValueForKey("nowrap");
+        if (log.isDebugEnabled())
+        {
+            log.debug("nowrap = " + nowrap);
+        }
+        includePageWrapping = (nowrap == null);
         response.appendHeader("no-cache", "pragma");
         response.appendHeader("no-cache", "cache-control");
-        super.appendToResponse( response, context );
+        super.appendToResponse(response, context);
     }
 
 
@@ -154,9 +156,9 @@ public class WCBasePage
      */
     public String pageTitle()
     {
-        return ( title == null )
-                ? "Web-CAT"
-                : ( "Web-CAT: " + title );
+        return (title == null)
+            ? "Web-CAT"
+            : ("Web-CAT: " + title);
     }
 
 
@@ -193,8 +195,8 @@ public class WCBasePage
      */
     public boolean doesPageSpecificStylesheetExist()
     {
-        return doesPageSpecificResourceExist(STYLESHEETS_RESOURCE_DIR,
-                STYLESHEETS_RESOURCE_EXT);
+        return doesPageSpecificResourceExist(
+            STYLESHEETS_RESOURCE_DIR, STYLESHEETS_RESOURCE_EXT);
     }
 
 
@@ -208,8 +210,8 @@ public class WCBasePage
      */
     public boolean doesPageSpecificJavascriptExist()
     {
-        return doesPageSpecificResourceExist(JAVASCRIPT_RESOURCE_DIR,
-                JAVASCRIPT_RESOURCE_EXT);
+        return doesPageSpecificResourceExist(
+            JAVASCRIPT_RESOURCE_DIR, JAVASCRIPT_RESOURCE_EXT);
     }
 
 
@@ -225,15 +227,15 @@ public class WCBasePage
      * @return true if the page-specific resource exists for the component,
      *     otherwise false
      */
-    protected boolean doesPageSpecificResourceExist(String directory,
-            String extension)
+    protected boolean doesPageSpecificResourceExist(
+        String directory, String extension)
     {
         String resName = pageSpecificResourcePath(directory, extension);
         WOResourceManager manager =
             WOApplication.application().resourceManager();
 
-        URL url = manager.pathURLForResourceNamed(resName, pageFramework(),
-                context()._languages());
+        URL url = manager.pathURLForResourceNamed(
+            resName, pageFramework(), context()._languages());
 
         return (url != null);
     }
@@ -249,7 +251,10 @@ public class WCBasePage
     public String pageFramework()
     {
         WOComponent root = this;
-        while (root.parent() != null) root = root.parent();
+        while (root.parent() != null)
+        {
+            root = root.parent();
+        }
 
         return NSBundle.bundleForClass(root.getClass()).name();
     }
@@ -265,8 +270,8 @@ public class WCBasePage
      */
     public String pageSpecificStylesheetPath()
     {
-        return pageSpecificResourcePath(STYLESHEETS_RESOURCE_DIR,
-                STYLESHEETS_RESOURCE_EXT);
+        return pageSpecificResourcePath(
+            STYLESHEETS_RESOURCE_DIR, STYLESHEETS_RESOURCE_EXT);
     }
 
 
@@ -280,8 +285,8 @@ public class WCBasePage
      */
     public String pageSpecificJavascriptPath()
     {
-        return pageSpecificResourcePath(JAVASCRIPT_RESOURCE_DIR,
-                JAVASCRIPT_RESOURCE_EXT);
+        return pageSpecificResourcePath(
+            JAVASCRIPT_RESOURCE_DIR, JAVASCRIPT_RESOURCE_EXT);
     }
 
 
@@ -326,8 +331,7 @@ public class WCBasePage
                 {
                     String file = link;
                     String extra = "";
-                    Matcher m =
-                        Pattern.compile("^(.*)\\[([^\\]]*)\\]$").matcher(link);
+                    Matcher m = CSS_LINK_PATTERN.matcher(link);
                     if (m.matches())
                     {
                         file = m.group(1);
@@ -383,8 +387,7 @@ public class WCBasePage
                 {
                     String file = link;
                     String extra = "";
-                    Matcher m =
-                        Pattern.compile("^(.*)\\[([^\\]]*)\\]$").matcher(link);
+                    Matcher m = CSS_LINK_PATTERN.matcher(link);
                     if (m.matches())
                     {
                         file = m.group(1);
@@ -521,8 +524,9 @@ public class WCBasePage
                     core.bundlePath() + "/WebServerResources/theme/";
                 try
                 {
-                    MutableDictionary properties = MutableDictionary
-                        .fromPropertyList(new File(
+                    @SuppressWarnings("unchecked")
+                    NSMutableDictionary<String, Object> properties =
+                        MutableDictionary.fromPropertyList(new File(
                             themeDir, "dream-way/theme.plist"));
                     Object parentName = properties.get("extends");
                     properties.remove("extends");
@@ -551,8 +555,7 @@ public class WCBasePage
                         parentName = parentProps.get("extends");
                     }
 
-                    installTheme = new NSMutableDictionary<String, Object>(
-                        properties);
+                    installTheme = properties;
                     installTheme.takeValueForKey("Dream Way", "name");
                     installTheme.takeValueForKey("dream-way", "dirName");
                     installTheme.takeValueForKey(installTheme, "inherit");
@@ -585,7 +588,10 @@ public class WCBasePage
     private static final String DEVELOPMENT_DOJO_SCRIPT_NAME =
         "dojo.xd.js.uncompressed.js";
 
+    private static final Pattern CSS_LINK_PATTERN =
+        Pattern.compile("^(.*)\\[([^\\]]*)\\]$");
+
     private static NSDictionary<String, Object> installTheme;
 
-    static Logger log = Logger.getLogger( WCBasePage.class );
+    static Logger log = Logger.getLogger(WCBasePage.class);
 }
