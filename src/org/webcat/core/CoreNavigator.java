@@ -340,9 +340,11 @@ public class CoreNavigator
                             new CoreNavigatorObjects
                             .CourseOfferingSet(subset);
                         courseOfferings.addObject(courseWrapper);
-                        if (wantOfferingsForCourse != null
-                            && exemplar != null
-                            && wantOfferingsForCourse == exemplar.course())
+                        if ((oldSelection != null
+                              && oldSelection.equals(courseWrapper))
+                            || (wantOfferingsForCourse != null
+                                && exemplar != null
+                                && wantOfferingsForCourse == exemplar.course()))
                         {
                             selectedCourseOffering = courseWrapper;
                         }
@@ -585,7 +587,8 @@ public class CoreNavigator
     {
         WOComponent ancestor = parent();
         while (ancestor != null
-            && !(targetClass.isAssignableFrom(ancestor.getClass())))
+            && (!(targetClass.isInstance(ancestor))
+                || PageWithCourseNavigation.class.isInstance(ancestor)))
         {
             ancestor = ancestor.parent();
         }
