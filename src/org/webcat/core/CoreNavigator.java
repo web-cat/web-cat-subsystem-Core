@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,17 +22,18 @@
 package org.webcat.core;
 
 import org.apache.log4j.Logger;
+import org.webcat.core.CoreNavigatorObjects.CourseOfferingSet;
 import org.webcat.ui.generators.JavascriptGenerator;
 import org.webcat.ui.util.ComponentIDGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResponse;
-import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableArray;
 import er.extensions.eof.ERXQ;
+import er.extensions.foundation.ERXArrayUtilities;
 
 //--------------------------------------------------------------------------
 /**
@@ -180,6 +181,7 @@ public class CoreNavigator
         }
 
         log.debug("selected semester = " + selectedSemester);
+        log.debug("want offerings for = " + wantOfferingsForCourse);
         log.debug("selected course = " + selectedCourseOffering);
         log.debug("parent = " + parent().getClass().getName());
         super.awake();
@@ -239,7 +241,7 @@ public class CoreNavigator
     // ----------------------------------------------------------
     protected void gatherCourseOfferings()
     {
-        log.debug("updateCourseOfferings()");
+        log.debug("gatherCourseOfferings()");
         courseOfferings = new NSMutableArray<INavigatorObject>();
 
         if (user().hasAdminPrivileges())
@@ -247,10 +249,9 @@ public class CoreNavigator
             courseOfferings.addObject(CoreNavigatorObjects.FILTER_PLACEHOLDER);
         }
 
+        @SuppressWarnings("unchecked")
         NSArray<Semester> sems = (NSArray<Semester>)
             selectedSemester.representedObjects();
-
-        NSArray<CourseOffering> offerings;
 
         TabDescriptor selectedRole = ((Session)session()).tabs.selectedChild();
         boolean isStaffRole = false;
@@ -266,28 +267,26 @@ public class CoreNavigator
 
         if (user().hasAdminPrivileges() && includeAdminAccess())
         {
-            offerings = EOUtilities.objectsForEntityNamed(
-                localContext(), CourseOffering.ENTITY_NAME);
+            unfilteredOfferings = CourseOffering.allObjects(localContext());
         }
         else if (!isStaffRole)
         {
-            NSMutableArray<CourseOffering> temp =
-                new NSMutableArray<CourseOffering>();
-
-            temp.addObjectsFromArray(user().staffFor());
-            temp.addObjectsFromArray(user().enrolledIn());
-
-            offerings = temp;
+            @SuppressWarnings("unchecked")
+            NSArray<CourseOffering>temp = ERXArrayUtilities
+                .arrayByAddingObjectsFromArrayWithoutDuplicates(
+                    user().staffFor(), user().enrolledIn());
+            unfilteredOfferings = temp;
         }
         else
         {
-            offerings = user().staffFor();
+            unfilteredOfferings = user().staffFor();
         }
 
         // Next, filter the course offerings to include only those that occur
         // during the semester(s) that the user has selected.
 
-        offerings = ERXQ.filtered(offerings, ERXQ.in("semester", sems));
+        NSArray<CourseOffering> offerings =
+            ERXQ.filtered(unfilteredOfferings, ERXQ.in("semester", sems));
 
         // Now sort the course offerings by course department and number.
 
@@ -384,9 +383,9 @@ public class CoreNavigator
      *
      * @return the result is ignored
      */
-    @SuppressWarnings("unchecked")
     public JavascriptGenerator updateCourseOfferings()
     {
+        log.debug("updateCourseOfferings()");
         gatherCourseOfferings();
         return new JavascriptGenerator().refresh(idFor.get("coursePane"));
     }
@@ -395,8 +394,24 @@ public class CoreNavigator
     // ----------------------------------------------------------
     public JavascriptGenerator updateCourseOfferingsAndClearSelection()
     {
-        JavascriptGenerator result = updateCourseOfferings();
+        log.debug("updateCourseOfferingsAndClearSelection()");
+        saveSemesterSelection();
+        if (selectedCourseOffering != null)
+        {
+            NSArray<?> offerings = selectedCourseOffering.representedObjects();
+            if (offerings != null && offerings.count() > 0)
+            {
+                wantOfferingsForCourse =
+                    ((CourseOffering)offerings.objectAtIndex(0)).course();
+            }
+        }
         selectedCourseOffering = null;
+        JavascriptGenerator result = updateCourseOfferings();
+        if (selectedCourseOffering != null)
+        {
+            saveCourseSelection();
+            result = new JavascriptGenerator().redirectTo("");
+        }
         return result;
     }
 
@@ -404,8 +419,94 @@ public class CoreNavigator
     // ----------------------------------------------------------
     public JavascriptGenerator updateCourseOfferingsMenu()
     {
+        log.debug("updateCourseOfferingsMenu()");
         gatherCourseOfferings();
         return new JavascriptGenerator().refresh(idFor.get("courseMenu"));
+    }
+
+
+    // ----------------------------------------------------------
+    protected void saveSemesterSelection()
+    {
+        // Save semester choice
+        if (selectedSemester != null)
+        {
+            NSArray<?> sems = selectedSemester.representedObjects();
+            if (sems != null && sems.count() == 1)
+            {
+                Semester selected = (Semester)sems.objectAtIndex(0);
+                if (log.isDebugEnabled())
+                {
+                    log.debug("saving semester selection = " + selected);
+                }
+                selectionsParent.coreSelections().setSemester(selected);
+            }
+            else if (allowsAllSemesters)
+            {
+                log.debug("saving semester selection = null (all semesters)");
+                selectionsParent.coreSelections().setSemester(null);
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    protected void saveCourseSelection()
+    {
+        // Save course or course offering choice
+        if (selectedCourseOffering != null)
+        {
+            NSArray<?> offerings = selectedCourseOffering.representedObjects();
+            if (offerings != null && offerings.count() > 0)
+            {
+                CourseOffering co = (CourseOffering)offerings.objectAtIndex(0);
+                boolean allOfferings = allowsAllOfferingsForCourse &&
+                    (offerings.count() > 1
+                     || selectedCourseOffering instanceof CourseOfferingSet);
+                if (allOfferings)
+                {
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("saving course selection = " + co.course()
+                            + " (all)");
+                    }
+                    selectionsParent.coreSelections()
+                        .setCourseRelationship(co.course());
+                    CourseOffering co2 =
+                        selectionsParent.coreSelections().courseOffering();
+                    if (co2 != null && co2.course() != co.course())
+                    {
+                        log.debug("saving course offering selection = null");
+                        selectionsParent.coreSelections()
+                            .setCourseOfferingRelationship(null);
+                    }
+                    else if (log.isDebugEnabled())
+                    {
+                        log.debug("leaving course offering selection = " + co2);
+                    }
+                }
+                else
+                {
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug("saving course selection = null");
+                        log.debug("saving course offering selection = " + co);
+                    }
+                    selectionsParent.coreSelections()
+                        .setCourseRelationship(null);
+                    selectionsParent.coreSelections()
+                        .setCourseOfferingRelationship(co);
+                }
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    protected void saveSelections()
+    {
+        saveSemesterSelection();
+        saveCourseSelection();
     }
 
 
@@ -417,54 +518,9 @@ public class CoreNavigator
      */
     public WOActionResults okPressed()
     {
+        log.debug("okPressed()");
         selectionsParent.flushNavigatorDerivedData();
-
-        // Save semester choice
-        if (selectedSemester != null)
-        {
-            NSArray<?> sems = selectedSemester.representedObjects();
-            if (sems != null && sems.count() == 1)
-            {
-                selectionsParent.coreSelections().setSemester(
-                    (Semester)sems.objectAtIndex(0));
-            }
-            else if (allowsAllSemesters)
-            {
-                selectionsParent.coreSelections().setSemester(null);
-            }
-        }
-
-        // Save course or course offering choice
-        if (selectedCourseOffering != null)
-        {
-            NSArray<?> offerings = selectedCourseOffering.representedObjects();
-            if (offerings != null && offerings.count() > 0)
-            {
-                CourseOffering co = (CourseOffering)offerings.objectAtIndex(0);
-                boolean allOfferings =
-                    offerings.count() > 1 && allowsAllOfferingsForCourse;
-                if (allOfferings)
-                {
-                    selectionsParent.coreSelections()
-                    .setCourseRelationship(co.course());
-                    CourseOffering co2 =
-                        selectionsParent.coreSelections().courseOffering();
-                    if (co2 != null && co2.course() != co.course())
-                    {
-                        selectionsParent.coreSelections()
-                            .setCourseOfferingRelationship(null);
-                    }
-                }
-                else
-                {
-                    selectionsParent.coreSelections()
-                        .setCourseRelationship(null);
-                    selectionsParent.coreSelections()
-                        .setCourseOfferingRelationship(co);
-                }
-            }
-        }
-
+        saveSelections();
         return null;
     }
 
@@ -542,5 +598,6 @@ public class CoreNavigator
     protected WCCourseComponent selectionsParent = null;
     private Course wantOfferingsForCourse;
     private int selectedRoleAccessLevel = 0;
+    private NSArray<CourseOffering> unfilteredOfferings = null;
     static Logger log = Logger.getLogger(CoreNavigator.class);
 }
