@@ -96,6 +96,23 @@ public class GitUtilities
 
         if (fsDir != null)
         {
+            File masterRef = new File(fsDir, "refs/heads/master");
+            if (!masterRef.exists())
+            {
+                // If the directory exists but we don't have a master ref, then
+                // the repository is probably corrupted. Blow away the
+                // directory, clear the repository cache, and then the code
+                // below will re-create it for us.
+
+                log.warn("Found the directory for the repository at "
+                        + fsDir.getAbsolutePath() + ", but it appears to be "
+                        + "corrupt (no master ref). Re-creating it...");
+
+                RepositoryCache.clear();
+                FileUtilities.deleteDirectory(fsDir);
+                fsDir.mkdirs();
+            }
+
             try
             {
                 try
@@ -392,7 +409,19 @@ public class GitUtilities
         if (object instanceof RepositoryProvider)
         {
             RepositoryProvider provider = (RepositoryProvider) object;
-            provider.initializeRepositoryContents(tempRepoDir);
+
+            try
+            {
+                provider.initializeRepositoryContents(tempRepoDir);
+            }
+            catch (Exception e)
+            {
+                log.error("The following exception occurred when trying to "
+                        + "initialize the repository contents at "
+                        + location.getAbsolutePath() + ", but I'm continuing "
+                        + "anyway to ensure that the repository isn't corrupt.",
+                        e);
+            }
         }
 
         // Make sure we created at least one file, since we can't do much with
