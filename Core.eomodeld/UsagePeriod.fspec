@@ -1,0 +1,20 @@
+{
+    mostRecentForUser = {
+        class = WCFetchSpecification;
+        entityName = UsagePeriod;
+        fetchLimit = 1;
+        qualifier = {
+            class = EOKeyValueQualifier;
+            key = user;
+            selectorName = "isEqualTo:";
+            value = {"_key" = user; class = EOQualifierVariable; };
+        };
+        sortOrderings = (
+            {
+                class = EOSortOrdering;
+                key = "startTime";
+                selectorName = "compareDescending:";
+            }
+        );
+    };
+}

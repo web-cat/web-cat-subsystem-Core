@@ -207,6 +207,9 @@ public abstract class _User
     public static final String TEACHING_KEY = "teaching";
     public static final ERXKey<org.webcat.core.CourseOffering> teaching =
         new ERXKey<org.webcat.core.CourseOffering>(TEACHING_KEY);
+    public static final String USAGE_PERIODS_KEY = "usagePeriods";
+    public static final ERXKey<org.webcat.core.UsagePeriod> usagePeriods =
+        new ERXKey<org.webcat.core.UsagePeriod>(USAGE_PERIODS_KEY);
     // Fetch specifications ---
     public static final String PARTICIPANTS_FOR_COURSE_FSPEC = "participantsForCourse";
     public static final String STAFF_FOR_COURSE_FSPEC = "staffForCourse";
@@ -1954,6 +1957,184 @@ public abstract class _User
         for (org.webcat.core.CourseOffering object : teaching())
         {
             deleteTeachingRelationship(object);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the entities pointed to by the <code>usagePeriods</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    @SuppressWarnings("unchecked")
+    public NSArray<org.webcat.core.UsagePeriod> usagePeriods()
+    {
+        return (NSArray)storedValueForKey( "usagePeriods" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>usagePeriods</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setUsagePeriods( NSMutableArray<org.webcat.core.UsagePeriod>  value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setUsagePeriods("
+                + value + "): was " + usagePeriods() );
+        }
+        takeStoredValueForKey( value, "usagePeriods" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>usagePeriods</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToUsagePeriodsRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToUsagePeriods( org.webcat.core.UsagePeriod value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToUsagePeriods("
+                + value + "): was " + usagePeriods() );
+        }
+        NSMutableArray<org.webcat.core.UsagePeriod> array =
+            (NSMutableArray<org.webcat.core.UsagePeriod>)usagePeriods();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>usagePeriods</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromUsagePeriodsRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromUsagePeriods( org.webcat.core.UsagePeriod value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromUsagePeriods("
+                + value + "): was " + usagePeriods() );
+        }
+        NSMutableArray<org.webcat.core.UsagePeriod> array =
+            (NSMutableArray<org.webcat.core.UsagePeriod>)usagePeriods();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>usagePeriods</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToUsagePeriodsRelationship( org.webcat.core.UsagePeriod value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToUsagePeriodsRelationship("
+                + value + "): was " + usagePeriods() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "usagePeriods" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>usagePeriods</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromUsagePeriodsRelationship( org.webcat.core.UsagePeriod value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromUsagePeriodsRelationship("
+                + value + "): was " + usagePeriods() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "usagePeriods" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>usagePeriods</code> relationship.
+     *
+     * @return The new entity
+     */
+    public org.webcat.core.UsagePeriod createUsagePeriodsRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createUsagePeriodsRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "UsagePeriod" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "usagePeriods" );
+        return (org.webcat.core.UsagePeriod)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>usagePeriods</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteUsagePeriodsRelationship( org.webcat.core.UsagePeriod value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteUsagePeriodsRelationship("
+                + value + "): was " + usagePeriods() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "usagePeriods" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>usagePeriods</code> relationship.
+     */
+    public void deleteAllUsagePeriodsRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllUsagePeriodsRelationships(): was "
+                + usagePeriods() );
+        }
+        for (org.webcat.core.UsagePeriod object : usagePeriods())
+        {
+            deleteUsagePeriodsRelationship(object);
         }
     }
 

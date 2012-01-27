@@ -46,7 +46,7 @@ public class CoreDatabaseUpdates
      */
     public CoreDatabaseUpdates()
     {
-        super( "core" );
+        super("core");
     }
 
 
@@ -85,7 +85,7 @@ public class CoreDatabaseUpdates
     public void updateIncrement1() throws SQLException
     {
         database().executeSQL(
-            "UPDATE TUSER SET CUPDATEMUTABLEFIELDS = 0" );
+            "UPDATE TUSER SET CUPDATEMUTABLEFIELDS = 0");
     }
 
 
@@ -97,7 +97,7 @@ public class CoreDatabaseUpdates
     public void updateIncrement2() throws SQLException
     {
         database().executeSQL(
-            "alter table TCOURSEOFFERING change CCRN CCRN TINYTEXT" );
+            "alter table TCOURSEOFFERING change CCRN CCRN TINYTEXT");
     }
 
 
@@ -109,7 +109,7 @@ public class CoreDatabaseUpdates
     public void updateIncrement3() throws SQLException
     {
         database().executeSQL(
-            "alter table TDEPARTMENT add CINSTITUTIONID INTEGER" );
+            "alter table TDEPARTMENT add CINSTITUTIONID INTEGER");
     }
 
 
@@ -121,7 +121,7 @@ public class CoreDatabaseUpdates
     public void updateIncrement4() throws SQLException
     {
         database().executeSQL(
-            "alter table TLOGINSESSION change CSESSIONID CSESSIONID TINYTEXT" );
+            "alter table TLOGINSESSION change CSESSIONID CSESSIONID TINYTEXT");
     }
 
 
@@ -133,9 +133,9 @@ public class CoreDatabaseUpdates
     public void updateIncrement5() throws SQLException
     {
         database().executeSQL(
-            "alter table TAUTHENTICATIONDOMAIN add CTIMEFORMAT TINYTEXT" );
+            "alter table TAUTHENTICATIONDOMAIN add CTIMEFORMAT TINYTEXT");
         database().executeSQL(
-            "alter table TAUTHENTICATIONDOMAIN add CDATEFORMAT TINYTEXT" );
+            "alter table TAUTHENTICATIONDOMAIN add CDATEFORMAT TINYTEXT");
     }
 
 
@@ -148,7 +148,7 @@ public class CoreDatabaseUpdates
     {
         database().executeSQL(
             "alter table TAUTHENTICATIONDOMAIN "
-            + "change CTINYTEXT CDEFAULTURLPATTERN TINYTEXT" );
+            + "change CTINYTEXT CDEFAULTURLPATTERN TINYTEXT");
     }
 
 
@@ -172,7 +172,7 @@ public class CoreDatabaseUpdates
     public void updateIncrement8() throws SQLException
     {
         database().executeSQL(
-            "alter table TCOURSEOFFERING add CLABEL TINYTEXT" );
+            "alter table TCOURSEOFFERING add CLABEL TINYTEXT");
     }
 
 
@@ -185,7 +185,7 @@ public class CoreDatabaseUpdates
     {
         createThemesTable();
         database().executeSQL(
-            "ALTER TABLE TUSER ADD CTHEMEID INTEGER" );
+            "ALTER TABLE TUSER ADD CTHEMEID INTEGER");
     }
 
 
@@ -215,7 +215,7 @@ public class CoreDatabaseUpdates
         // it has now been moved into the Notification subsystem.
 
         database().executeSQL(
-                "ALTER TABLE TUSER ADD protocolSettingsId INTEGER" );
+            "ALTER TABLE TUSER ADD protocolSettingsId INTEGER");
     }
 
 
@@ -240,7 +240,7 @@ public class CoreDatabaseUpdates
     public void updateIncrement13() throws SQLException
     {
         database().executeSQL(
-                "ALTER TABLE SentMessage ADD isBroadcast BIT NOT NULL");
+            "ALTER TABLE SentMessage ADD isBroadcast BIT NOT NULL");
     }
 
 
@@ -311,6 +311,24 @@ public class CoreDatabaseUpdates
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Add UsagePeriod.
+     * @throws SQLException on error
+     */
+    public void updateIncrement17() throws SQLException
+    {
+        createUsagePeriodTable();
+        createIndexFor("UsagePeriod", "userId");
+        createIndexFor("UsagePeriod", "startTime");
+        database().executeSQL(
+            "ALTER TABLE TLOGINSESSION ADD usagePeriodId INTEGER NOT NULL");
+        // Clear all existing login sessions, which happens at startup anyway
+        database().executeSQL("DELETE FROM TLOGINSESSION");
+        createIndexFor("TLOGINSESSION", "usagePeriodId");
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
@@ -320,12 +338,12 @@ public class CoreDatabaseUpdates
      */
     private void createEoPkTable() throws SQLException
     {
-        if ( !database().hasTable( "EO_PK_TABLE", "PK", "1" ) )
+        if (!database().hasTable("EO_PK_TABLE", "PK", "1"))
         {
-            log.info( "creating table EO_PK_TABLE" );
+            log.info("creating table EO_PK_TABLE");
             database().executeSQL(
                 "CREATE TABLE EO_PK_TABLE "
-                + "(NAME CHAR(40) PRIMARY KEY, PK INT)" );
+                + "(NAME CHAR(40) PRIMARY KEY, PK INT)");
         }
     }
 
@@ -337,16 +355,16 @@ public class CoreDatabaseUpdates
      */
     private void createAuthenticationDomainTable() throws SQLException
     {
-        if ( !database().hasTable( "TAUTHENTICATIONDOMAIN" ) )
+        if (!database().hasTable("TAUTHENTICATIONDOMAIN"))
         {
-            log.info( "creating table TAUTHENTICATIONDOMAIN" );
+            log.info("creating table TAUTHENTICATIONDOMAIN");
             database().executeSQL(
                 "CREATE TABLE TAUTHENTICATIONDOMAIN "
                 + "(CDEFAULTEMAILDOMAIN TINYTEXT , CTINYTEXT TINYTEXT , "
                 + "CDISPLAYABLENAME TINYTEXT , OID INTEGER NOT NULL, "
-                + "CPROPERTYNAME TINYTEXT , CTIMEZONENAME TINYTEXT )" );
+                + "CPROPERTYNAME TINYTEXT , CTIMEZONENAME TINYTEXT )");
             database().executeSQL(
-                "ALTER TABLE TAUTHENTICATIONDOMAIN ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE TAUTHENTICATIONDOMAIN ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -358,15 +376,15 @@ public class CoreDatabaseUpdates
      */
     private void createCoreSelectionsTable() throws SQLException
     {
-        if ( !database().hasTable( "TCORESELECTIONS" ) )
+        if (!database().hasTable("TCORESELECTIONS"))
         {
-            log.info( "creating table TCORESELECTIONS" );
+            log.info("creating table TCORESELECTIONS");
             database().executeSQL(
                 "CREATE TABLE TCORESELECTIONS "
                 + "(CCOURSEID INTEGER , CCOURSEOFFERINGID INTEGER , "
-                + "OID INTEGER NOT NULL, CUSERID INTEGER )" );
+                + "OID INTEGER NOT NULL, CUSERID INTEGER )");
             database().executeSQL(
-                "ALTER TABLE TCORESELECTIONS ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE TCORESELECTIONS ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -378,15 +396,15 @@ public class CoreDatabaseUpdates
      */
     private void createCourseTable() throws SQLException
     {
-        if ( !database().hasTable( "TCOURSE" ) )
+        if (!database().hasTable("TCOURSE"))
         {
-            log.info( "creating table TCOURSE" );
+            log.info("creating table TCOURSE");
             database().executeSQL(
                 "CREATE TABLE TCOURSE "
                 + "(CDEPARTMENTID INTEGER , OID INTEGER NOT NULL, "
-                + "CNAME TINYTEXT NOT NULL, CNUMBER SMALLINT NOT NULL)" );
+                + "CNAME TINYTEXT NOT NULL, CNUMBER SMALLINT NOT NULL)");
             database().executeSQL(
-                "ALTER TABLE TCOURSE ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE TCOURSE ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -398,16 +416,16 @@ public class CoreDatabaseUpdates
      */
     private void createCourseOfferingTable() throws SQLException
     {
-        if ( !database().hasTable( "TCOURSEOFFERING" ) )
+        if (!database().hasTable("TCOURSEOFFERING"))
         {
-            log.info( "creating table TCOURSEOFFERING" );
+            log.info("creating table TCOURSEOFFERING");
             database().executeSQL(
                 "CREATE TABLE TCOURSEOFFERING "
                 + "(CCOURSEID INTEGER , CCRN INTEGER , "
                 + "OID INTEGER NOT NULL, CMOODLEGROUPID INTEGER , "
-                + "CMOODLEID INTEGER , CSEMESTER INTEGER , URL TINYTEXT )" );
+                + "CMOODLEID INTEGER , CSEMESTER INTEGER , URL TINYTEXT )");
             database().executeSQL(
-                "ALTER TABLE TCOURSEOFFERING ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE TCOURSEOFFERING ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -419,14 +437,14 @@ public class CoreDatabaseUpdates
      */
     private void createCourseStudentTable() throws SQLException
     {
-        if ( !database().hasTable( "TCOURSESTUDENT", "CID", "1" ) )
+        if (!database().hasTable("TCOURSESTUDENT", "CID", "1"))
         {
-            log.info( "creating table TCOURSESTUDENT" );
+            log.info("creating table TCOURSESTUDENT");
             database().executeSQL(
                 "CREATE TABLE TCOURSESTUDENT "
-                + "(CID INT NOT NULL, CID1 INT NOT NULL)" );
+                + "(CID INT NOT NULL, CID1 INT NOT NULL)");
             database().executeSQL(
-                "ALTER TABLE TCOURSESTUDENT ADD PRIMARY KEY (CID, CID1)" );
+                "ALTER TABLE TCOURSESTUDENT ADD PRIMARY KEY (CID, CID1)");
         }
     }
 
@@ -438,14 +456,14 @@ public class CoreDatabaseUpdates
      */
     private void createCourseTATable() throws SQLException
     {
-        if ( !database().hasTable( "TCOURSETA", "CID", "1" ) )
+        if (!database().hasTable("TCOURSETA", "CID", "1"))
         {
-            log.info( "creating table TCOURSETA" );
+            log.info("creating table TCOURSETA");
             database().executeSQL(
                 "CREATE TABLE TCOURSETA "
-                + "(CID INT NOT NULL, CID1 INT NOT NULL)" );
+                + "(CID INT NOT NULL, CID1 INT NOT NULL)");
             database().executeSQL(
-                "ALTER TABLE TCOURSETA ADD PRIMARY KEY (CID, CID1)" );
+                "ALTER TABLE TCOURSETA ADD PRIMARY KEY (CID, CID1)");
         }
     }
 
@@ -457,15 +475,15 @@ public class CoreDatabaseUpdates
      */
     private void createDepartmentTable() throws SQLException
     {
-        if ( !database().hasTable( "TDEPARTMENT" ) )
+        if (!database().hasTable("TDEPARTMENT"))
         {
-            log.info( "creating table TDEPARTMENT" );
+            log.info("creating table TDEPARTMENT");
             database().executeSQL(
                 "CREATE TABLE TDEPARTMENT "
                 + "(CABBREVIATION TINYTEXT NOT NULL, OID INTEGER NOT NULL, "
-                + "CNAME TINYTEXT )" );
+                + "CNAME TINYTEXT )");
             database().executeSQL(
-                "ALTER TABLE TDEPARTMENT ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE TDEPARTMENT ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -477,14 +495,14 @@ public class CoreDatabaseUpdates
      */
     private void createInstructorCourseTable() throws SQLException
     {
-        if ( !database().hasTable( "TINSTRUCTORCOURSE", "CID", "1" ) )
+        if (!database().hasTable("TINSTRUCTORCOURSE", "CID", "1"))
         {
-            log.info( "creating table TINSTRUCTORCOURSE" );
+            log.info("creating table TINSTRUCTORCOURSE");
             database().executeSQL(
                 "CREATE TABLE TINSTRUCTORCOURSE "
-                + "(CID INT NOT NULL, CID1 INT NOT NULL)" );
+                + "(CID INT NOT NULL, CID1 INT NOT NULL)");
             database().executeSQL(
-                "ALTER TABLE TINSTRUCTORCOURSE ADD PRIMARY KEY (CID, CID1)" );
+                "ALTER TABLE TINSTRUCTORCOURSE ADD PRIMARY KEY (CID, CID1)");
         }
     }
 
@@ -496,15 +514,15 @@ public class CoreDatabaseUpdates
      */
     private void createLanguageTable() throws SQLException
     {
-        if ( !database().hasTable( "TLANGUAGE" ) )
+        if (!database().hasTable("TLANGUAGE"))
         {
-            log.info( "creating table TLANGUAGE" );
+            log.info("creating table TLANGUAGE");
             database().executeSQL(
                 "CREATE TABLE TLANGUAGE "
                 + "(CCOMPILER TINYTEXT , OID INTEGER NOT NULL, "
-                + "CNAME TINYTEXT , CVERSION TINYTEXT )" );
+                + "CNAME TINYTEXT , CVERSION TINYTEXT )");
             database().executeSQL(
-                "ALTER TABLE TLANGUAGE ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE TLANGUAGE ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -516,15 +534,15 @@ public class CoreDatabaseUpdates
      */
     private void createLoginSessionTable() throws SQLException
     {
-        if ( !database().hasTable( "TLOGINSESSION" ) )
+        if (!database().hasTable("TLOGINSESSION"))
         {
-            log.info( "creating table TLOGINSESSION" );
+            log.info("creating table TLOGINSESSION");
             database().executeSQL(
                 "CREATE TABLE TLOGINSESSION "
                 + "(CEXPIRETIME DATETIME , OID INTEGER NOT NULL, "
-                + "CSESSIONID TINYBLOB , CUSERID INTEGER )" );
+                + "CSESSIONID TINYBLOB , CUSERID INTEGER )");
             database().executeSQL(
-                "ALTER TABLE TLOGINSESSION ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE TLOGINSESSION ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -536,16 +554,16 @@ public class CoreDatabaseUpdates
      */
     private void createSemesterTable() throws SQLException
     {
-        if ( !database().hasTable( "TSEMESTER" ) )
+        if (!database().hasTable("TSEMESTER"))
         {
-            log.info( "creating table TSEMESTER" );
+            log.info("creating table TSEMESTER");
             database().executeSQL(
                 "CREATE TABLE TSEMESTER "
                 + "(OID INTEGER NOT NULL, CSEASON TINYINT , "
                 + "CSEMESTERENDDATE DATE , CSEMESTERSTARTDATE DATE , "
-                + "CYEAR SMALLINT NOT NULL)" );
+                + "CYEAR SMALLINT NOT NULL)");
             database().executeSQL(
-                "ALTER TABLE TSEMESTER ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE TSEMESTER ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -557,9 +575,9 @@ public class CoreDatabaseUpdates
      */
     private void createUserTable() throws SQLException
     {
-        if ( !database().hasTable( "TUSER" ) )
+        if (!database().hasTable("TUSER"))
         {
-            log.info( "creating table TUSER" );
+            log.info("creating table TUSER");
             database().executeSQL(
                 "CREATE TABLE TUSER "
                 + "(CACCESSLEVEL TINYINT NOT NULL, "
@@ -569,9 +587,9 @@ public class CoreDatabaseUpdates
                 + "PASSWORD TINYTEXT , CPREFERENCES BLOB , "
                 + "CUNIVERSITYIDNO TINYTEXT , "
                 + "CUPDATEMUTABLEFIELDS BIT NOT NULL, URL TINYTEXT , "
-                + "CUSERNAME TINYTEXT NOT NULL)" );
+                + "CUSERNAME TINYTEXT NOT NULL)");
             database().executeSQL(
-                "ALTER TABLE TUSER ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE TUSER ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -583,9 +601,9 @@ public class CoreDatabaseUpdates
      */
     private void createLoggedErrorTable() throws SQLException
     {
-        if ( !database().hasTable( "LoggedError" ) )
+        if (!database().hasTable("LoggedError"))
         {
-            log.info( "creating table LoggedError" );
+            log.info("creating table LoggedError");
             database().executeSQL(
                 "CREATE TABLE LoggedError "
                 + "(component TINYTEXT , exceptionName TINYTEXT , "
@@ -593,9 +611,9 @@ public class CoreDatabaseUpdates
                 + "inMethod TINYTEXT , line INTEGER NOT NULL, "
                 + "message TINYTEXT , mostRecent DATETIME , "
                 + "occurrences INTEGER NOT NULL, page TINYTEXT , "
-                + "stackTrace MEDIUMTEXT)" );
+                + "stackTrace MEDIUMTEXT)");
             database().executeSQL(
-                "ALTER TABLE LoggedError ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE LoggedError ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -607,15 +625,15 @@ public class CoreDatabaseUpdates
      */
     private void createPasswordChangeRequestTable() throws SQLException
     {
-        if ( !database().hasTable( "PasswordChangeRequest" ) )
+        if (!database().hasTable("PasswordChangeRequest"))
         {
-            log.info( "creating table PasswordChangeRequest" );
+            log.info("creating table PasswordChangeRequest");
             database().executeSQL(
                 "CREATE TABLE PasswordChangeRequest "
                 + "(code TINYTEXT , expireTime DATETIME , "
-                + "OID INTEGER NOT NULL, userId INTEGER NOT NULL)" );
+                + "OID INTEGER NOT NULL, userId INTEGER NOT NULL)");
             database().executeSQL(
-                "ALTER TABLE PasswordChangeRequest ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE PasswordChangeRequest ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -627,17 +645,17 @@ public class CoreDatabaseUpdates
      */
     private void createThemesTable() throws SQLException
     {
-        if ( !database().hasTable( "TTHEMES" ) )
+        if (!database().hasTable("TTHEMES"))
         {
-            log.info( "creating table TTHEMES" );
+            log.info("creating table TTHEMES");
             database().executeSQL(
                 "CREATE TABLE TTHEMES "
                 + "(CDIRNAME TINYTEXT NOT NULL, OID INTEGER NOT NULL, "
                 + "CISFORTHEMEDEVELOPERS BIT , "
                 + "CLASTUPDATE DATETIME , CNAME TINYTEXT , "
-                + "CPROPERTIES BLOB , CUPDATEMUTABLEFIELDS BIT NOT NULL )" );
+                + "CPROPERTIES BLOB , CUPDATEMUTABLEFIELDS BIT NOT NULL )");
             database().executeSQL(
-                "ALTER TABLE TTHEMES ADD PRIMARY KEY (OID)" );
+                "ALTER TABLE TTHEMES ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -649,9 +667,9 @@ public class CoreDatabaseUpdates
      */
     private void createSentMessageTable() throws SQLException
     {
-        if ( !database().hasTable( "SentMessage" ) )
+        if (!database().hasTable("SentMessage"))
         {
-            log.info( "creating table SentMessage" );
+            log.info("creating table SentMessage");
             database().executeSQL(
                 "CREATE TABLE SentMessage "
                 + "(OID INTEGER NOT NULL, "
@@ -660,10 +678,9 @@ public class CoreDatabaseUpdates
                 + "title MEDIUMTEXT, "
                 + "shortBody MEDIUMTEXT, "
                 + "links BLOB, "
-                + "CUPDATEMUTABLEFIELDS BIT NOT NULL )" );
+                + "CUPDATEMUTABLEFIELDS BIT NOT NULL )");
             database().executeSQL(
-                "ALTER TABLE SentMessage ADD PRIMARY KEY (OID)"
-            );
+                "ALTER TABLE SentMessage ADD PRIMARY KEY (OID)");
         }
     }
 
@@ -675,15 +692,15 @@ public class CoreDatabaseUpdates
      */
     private void createUserSentMessageTable() throws SQLException
     {
-        if ( !database().hasTable( "UserSentMessage" ) )
+        if (!database().hasTable("UserSentMessage"))
         {
-            log.info( "creating table UserSentMessage" );
+            log.info("creating table UserSentMessage");
             database().executeSQL(
                 "CREATE TABLE UserSentMessage "
-                + "(userId INT NOT NULL, sentMessageId INT NOT NULL)" );
+                + "(userId INT NOT NULL, sentMessageId INT NOT NULL)");
             database().executeSQL(
                 "ALTER TABLE UserSentMessage ADD PRIMARY KEY "
-                + "(userId, sentMessageId)" );
+                + "(userId, sentMessageId)");
         }
     }
 
@@ -695,9 +712,9 @@ public class CoreDatabaseUpdates
      */
     private void createObjectQueryTable() throws SQLException
     {
-        if ( !database().hasTable( "ObjectQuery" ) )
+        if (!database().hasTable("ObjectQuery"))
         {
-            log.info( "creating table ObjectQuery" );
+            log.info("creating table ObjectQuery");
 
             database().executeSQL("CREATE TABLE ObjectQuery ("
                 + "OID INTEGER NOT NULL , "
@@ -708,6 +725,29 @@ public class CoreDatabaseUpdates
                 + "CUPDATEMUTABLEFIELDS BIT NOT NULL)");
             database().executeSQL(
                 "ALTER TABLE ObjectQuery ADD PRIMARY KEY (OID)");
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates the UsagePeriod table, if needed.
+     * @throws SQLException on error
+     */
+    private void createUsagePeriodTable() throws SQLException
+    {
+        if (!database().hasTable("UsagePeriod"))
+        {
+            log.info("creating table UsagePeriod");
+
+            database().executeSQL("CREATE TABLE UsagePeriod ("
+                + "OID INTEGER NOT NULL , "
+                + "userId INTEGER NOT NULL,"
+                + "startTime DATETIME NOT NULL, "
+                + "endTime DATETIME NOT NULL, "
+                + "isLoggedOut BIT NOT NULL)");
+            database().executeSQL(
+                "ALTER TABLE UsagePeriod ADD PRIMARY KEY (OID)");
         }
     }
 }

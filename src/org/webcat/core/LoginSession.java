@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,19 +22,18 @@
 package org.webcat.core;
 
 import com.webobjects.foundation.*;
-import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
 import org.webcat.core.LoginSession;
 import org.webcat.core.User;
 import org.webcat.core._LoginSession;
-import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
  * Keeps track of which user is logged in where.
  *
- * @author Stephen Edwards
- * @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class LoginSession
     extends _LoginSession
@@ -48,6 +47,28 @@ public class LoginSession
     public LoginSession()
     {
         super();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * A static factory method for creating a new LoginSession object for
+     * the given user and session ID.
+     * @param editingContext The context in which the new object will be
+     * inserted
+     * @param aUser The user for this login session.
+     * @param sessionID The session ID.
+     * @return The newly created object
+     */
+    public static LoginSession create(
+        EOEditingContext editingContext, User aUser, String sessionID)
+    {
+        LoginSession loginSession = create(
+            editingContext,
+            UsagePeriod.currentUsagePeriodForUser(editingContext, aUser));
+        loginSession.setSessionId(sessionID);
+        loginSession.setUserRelationship(aUser);
+        return loginSession;
     }
 
 
@@ -65,55 +86,47 @@ public class LoginSession
      * editing context is already locked or uses auto-locking.
      *
      * @param ec   The current editing context
-     * @param user The user to look for
+     * @param aUser The user to look for
      * @return The current login session, or null if there is not one
      */
-    public static LoginSession getLoginSessionForUser( EOEditingContext ec,
-                                                       User             user )
+    public static LoginSession getLoginSessionForUser(
+        EOEditingContext ec, User aUser)
     {
-        log.debug( "getLoginSession()" );
+        log.debug("getLoginSession()");
         LoginSession result = null;
-        if ( user != null )
+        if (aUser != null)
         {
-            log.debug( "searching for login session for " + user.userName() );
-            // ec.lock();
-            NSArray<LoginSession> items = objectsMatchingValues(
-                    ec, USER_KEY, user);
-            // ec.unlock();
+            log.debug("searching for login session for " + aUser.userName());
+            NSArray<LoginSession> items =
+                objectsMatchingValues(ec, USER_KEY, aUser);
 
-            if ( items != null )
+            if (items != null)
             {
-                if ( items.count() > 1 )
+                if (items.count() > 1)
                 {
                     // More than one active session with this user.
                     log.error(
-                            "Error: multiple stored login sessions for user: "
-                            + user.name()
-                        );
+                        "Error: multiple stored login sessions for user: "
+                        + aUser.name());
                 }
-                if ( items.count() > 0 )
+                if (items.count() > 0)
                 {
-                    result = items.objectAtIndex( 0 );
+                    result = items.objectAtIndex(0);
                 }
             }
         }
         else
         {
-            log.debug( "null login session: user not logged in" );
+            log.debug("null login session: user not logged in");
         }
-        if ( result != null )
+        if (result != null)
         {
-            log.debug( "getLoginSession(): " + result.sessionId() );
+            log.debug("getLoginSession(): " + result.sessionId());
         }
         else
         {
-            log.debug( "getLoginSession(): null login session" );
+            log.debug("getLoginSession(): null login session");
         }
         return result;
     }
-
-
-    //~ Instance/static variables .............................................
-
-    static Logger log = Logger.getLogger( LoginSession.class );
 }

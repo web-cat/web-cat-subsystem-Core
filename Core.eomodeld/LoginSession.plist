@@ -9,15 +9,29 @@
             name = sessionId; 
             valueClassName = NSString; 
         }, 
+        {
+            allowsNull = N; 
+            columnName = usagePeriodId; 
+            name = usagePeriodId; 
+            prototypeName = foreignId; 
+        }, 
         {columnName = CUSERID; name = userId; prototypeName = foreignId; }
     ); 
-    attributesUsedForLocking = (sessionId, userId); 
+    attributesUsedForLocking = (sessionId, usagePeriodId, userId); 
     className = "org.webcat.core.LoginSession"; 
-    classProperties = (expirationTime, sessionId, user); 
+    classProperties = (expirationTime, sessionId, usagePeriod, user); 
     externalName = TLOGINSESSION; 
     name = LoginSession; 
     primaryKeyAttributes = (id); 
     relationships = (
+        {
+            destination = UsagePeriod; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = usagePeriodId; }); 
+            name = usagePeriod; 
+        }, 
         {
             destination = User; 
             isToMany = N; 

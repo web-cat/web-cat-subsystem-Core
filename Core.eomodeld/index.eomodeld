@@ -1,37 +1,38 @@
 {
-    EOModelVersion = "2.1";
-    adaptorName = JDBC;
+    EOModelVersion = "2.1"; 
+    adaptorName = JDBC; 
     connectionDictionary = {
-        URL = "";
-        driver = "com.mysql.jdbc.Driver";
-        password = "";
-        plugin = MySQL;
-        username = "";
-    };
+        URL = ""; 
+        driver = "com.mysql.jdbc.Driver"; 
+        password = ""; 
+        plugin = MySQL; 
+        username = ""; 
+    }; 
     entities = (
         {
-            className = "org.webcat.core.AuthenticationDomain";
-            name = AuthenticationDomain;
-        },
-        {className = "org.webcat.core.CoreSelections"; name = CoreSelections; },
-        {className = "org.webcat.core.Course"; name = Course; },
-        {className = "org.webcat.core.CourseOffering"; name = CourseOffering; },
-        {className = EOGenericRecord; name = CourseStudent; },
-        {className = EOGenericRecord; name = CourseTA; },
-        {className = "org.webcat.core.Department"; name = Department; },
-        {className = EOGenericRecord; name = InstructorCourse; },
-        {className = "org.webcat.core.Language"; name = Language; },
-        {className = "org.webcat.core.LoggedError"; name = LoggedError; },
-        {className = "org.webcat.core.LoginSession"; name = LoginSession; },
-        {className = "org.webcat.core.ObjectQuery"; name = ObjectQuery; },
+            className = "org.webcat.core.AuthenticationDomain"; 
+            name = AuthenticationDomain; 
+        }, 
+        {className = "org.webcat.core.CoreSelections"; name = CoreSelections; }, 
+        {className = "org.webcat.core.Course"; name = Course; }, 
+        {className = "org.webcat.core.CourseOffering"; name = CourseOffering; }, 
+        {className = EOGenericRecord; name = CourseStudent; }, 
+        {className = EOGenericRecord; name = CourseTA; }, 
+        {className = "org.webcat.core.Department"; name = Department; }, 
+        {className = EOGenericRecord; name = InstructorCourse; }, 
+        {className = "org.webcat.core.Language"; name = Language; }, 
+        {className = "org.webcat.core.LoggedError"; name = LoggedError; }, 
+        {className = "org.webcat.core.LoginSession"; name = LoginSession; }, 
+        {className = "org.webcat.core.ObjectQuery"; name = ObjectQuery; }, 
         {
-            className = "org.webcat.core.PasswordChangeRequest";
-            name = PasswordChangeRequest;
-        },
-        {className = "org.webcat.core.Semester"; name = Semester; },
-        {className = "org.webcat.core.SentMessage"; name = SentMessage; },
-        {className = "org.webcat.core.Theme"; name = Theme; },
-        {className = "org.webcat.core.User"; name = User; },
+            className = "org.webcat.core.PasswordChangeRequest"; 
+            name = PasswordChangeRequest; 
+        }, 
+        {className = "org.webcat.core.Semester"; name = Semester; }, 
+        {className = "org.webcat.core.SentMessage"; name = SentMessage; }, 
+        {className = "org.webcat.core.Theme"; name = Theme; }, 
+        {className = "org.webcat.core.UsagePeriod"; name = UsagePeriod; }, 
+        {className = "org.webcat.core.User"; name = User; }, 
         {className = EOGenericRecord; name = UserSentMessage; }
-    );
+    ); 
 }

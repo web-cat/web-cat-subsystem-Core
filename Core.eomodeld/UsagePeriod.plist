@@ -1,0 +1,46 @@
+{
+    attributes = (
+        {
+            allowsNull = N;
+            columnName = endTime;
+            name = endTime;
+            prototypeName = dateTime;
+        },
+        {allowsNull = N; name = id; prototypeName = id; },
+        {
+            allowsNull = N;
+            columnName = isLoggedOut;
+            name = isLoggedOut;
+            prototypeName = boolean;
+            userInfo = {isScalar = true; scalarDefault = false; type = boolean; };
+        },
+        {
+            allowsNull = N;
+            columnName = startTime;
+            name = startTime;
+            prototypeName = dateTime;
+        },
+        {
+            allowsNull = N;
+            columnName = userId;
+            name = userId;
+            prototypeName = foreignId;
+        }
+    );
+    attributesUsedForLocking = (loggedOut, userId);
+    className = "org.webcat.core.UsagePeriod";
+    classProperties = (endTime, isLoggedOut, startTime, user);
+    externalName = UsagePeriod;
+    name = UsagePeriod;
+    primaryKeyAttributes = (id);
+    relationships = (
+        {
+            destination = User;
+            isMandatory = Y;
+            isToMany = N;
+            joinSemantic = EOInnerJoin;
+            joins = ({destinationAttribute = id; sourceAttribute = userId; });
+            name = user;
+        }
+    );
+}

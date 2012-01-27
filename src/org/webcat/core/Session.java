@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -275,11 +275,9 @@ public class Session
                     LoginSession.getLoginSessionForUser(ec, loginUser);
                 if (loginSession == null)
                 {
-                    loginSession = new LoginSession();
-                    ec.insertObject(loginSession);
-                    loginSession.setSessionId(sessionID());
+                    loginSession =
+                        LoginSession.create(ec, loginUser, sessionID());
                     loginSessionId = sessionID();
-                    loginSession.setUserRelationship(loginUser);
                 }
             }
             finally
@@ -300,15 +298,33 @@ public class Session
             {
                 loginSession.editingContext().lock();
                 loginSession.setExpirationTime(
-                    ( new NSTimestamp() ).timestampByAddingGregorianUnits(
-                        0, 0, 0, 0, 0, (int)timeOut() ) );
+                    (new NSTimestamp()).timestampByAddingGregorianUnits(
+                        0, 0, 0, 0, 0, (int)timeOut()));
                 try
                 {
-                    log.debug( "attempting to save" );
-                    loginSession.editingContext().saveChanges();
-                    log.debug( "saving complete" );
+                    loginSession.usagePeriod().updateEndTime();
                 }
-                catch ( Exception e )
+                catch (Exception e)
+                {
+                    log.warn("Exception updating usage period for "
+                        + primeUser + " (normally this is due to an external "
+                        + "change to\nusage periods, in which case the "
+                        + "problem will be auto-corrected now)", e);
+                    // Assume exception was due to a deleted/missing period
+                    // Attempt to create/retrieve new one
+                    loginSession.setUsagePeriod(UsagePeriod
+                        .currentUsagePeriodForUser(
+                            loginSession.editingContext(),
+                            loginSession.user()));
+                }
+
+                try
+                {
+                    log.debug("attempting to save");
+                    loginSession.editingContext().saveChanges();
+                    log.debug("saving complete");
+                }
+                catch (Exception e)
                 {
                     new UnexpectedExceptionMessage(e, context(), null, null)
                         .send();
@@ -465,6 +481,8 @@ public class Session
                 {
                     lockContext.lock();
                     log.debug("deleting login session " + loginSessionId);
+                    loginSession.usagePeriod().updateEndTime();
+                    loginSession.usagePeriod().setIsLoggedOut(true);
                     loginSession.editingContext().deleteObject(loginSession);
                     loginSession.editingContext().saveChanges();
                 }
@@ -483,6 +501,8 @@ public class Session
                         if (items != null && items.count() >= 1)
                         {
                             LoginSession ls = items.objectAtIndex(0);
+                            ls.usagePeriod().updateEndTime();
+                            ls.usagePeriod().setIsLoggedOut(true);
                             ec.deleteObject(ls);
                         }
                         try
