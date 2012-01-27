@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -30,8 +30,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.text.DecimalFormat;
-import java.text.FieldPosition;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 import org.apache.log4j.Logger;
@@ -41,7 +39,9 @@ import org.apache.log4j.Logger;
  * Contains some common file copying operations used by the various archive
  * handlers.
  *
- * @author Tony Allowatt
+ * @author  Tony Allowatt
+ * @author  Last changed by: $Author$
+ * @version $Revision$, $Date$
  */
 public class FileUtilities
 {
@@ -121,26 +121,29 @@ public class FileUtilities
      * @param destination the destination directory
      * @throws IOException if there are IO errors
      */
-    public static void copyDirectoryContents( File source, File destination )
+    public static void copyDirectoryContents(File source, File destination)
         throws IOException
     {
         File[] fileList = source.listFiles();
-        for ( int i = 0; i < fileList.length; i++ )
+        if (fileList != null)
         {
-            if ( fileList[i].isDirectory() )
+            for (int i = 0; i < fileList.length; i++)
             {
-                // Copy the whole directory
-                File newDir = new File( destination, fileList[i].getName() );
-                newDir.mkdir();
-                copyDirectoryContents( fileList[i], newDir );
-            }
-            else if (fileList[i].getName().equals(".DS_Store"))
-            {
-                // ignore these for Mac OSX
-            }
-            else
-            {
-                copyFileToDir( fileList[i], destination );
+                if (fileList[i].isDirectory())
+                {
+                    // Copy the whole directory
+                    File newDir = new File(destination, fileList[i].getName());
+                    newDir.mkdir();
+                    copyDirectoryContents(fileList[i], newDir);
+                }
+                else if (fileList[i].getName().equals(".DS_Store"))
+                {
+                    // ignore these for Mac OSX
+                }
+                else
+                {
+                    copyFileToDir(fileList[i], destination);
+                }
             }
         }
     }
