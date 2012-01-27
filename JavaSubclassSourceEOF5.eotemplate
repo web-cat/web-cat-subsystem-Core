@@ -4,7 +4,7 @@
 *#/*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2010 Virginia Tech
+ |  Copyright (C) 2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -31,7 +31,7 @@ package $entity.packageName;
  * TODO: place a real description here.
  *
  * @author
- * @author  Latest changes by: $Author$
+ * @author  Last changed by: $Author$
  * @version $Revision$, $Date$
  */
 public#if ($entity.isAbstract) abstract#end class ${entity.classNameWithoutPackage}
