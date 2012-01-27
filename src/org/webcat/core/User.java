@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -54,8 +54,8 @@ import er.extensions.foundation.ERXArrayUtilities;
  * <li> WEBCAT_RW_PRIVILEGES
  * </ul>
  *
- * @author Stephen Edwards
- * @author  latest changes by: $Author$
+ * @author  Stephen Edwards
+ * @author  Last changed by: $Author$
  * @version $Revision$, $Date$
  */
 public class User
@@ -1428,7 +1428,10 @@ public class User
 
         File oldLocation = new File(userDataRoot(),
                 authenticationDomain().name() + "/" + userName());
-        FileUtilities.copyDirectoryContents(oldLocation, location);
+        if (oldLocation.exists())
+        {
+            FileUtilities.copyDirectoryContents(oldLocation, location);
+        }
 
         // Create a welcome file that describes the repository.
 
