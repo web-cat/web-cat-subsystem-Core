@@ -9,7 +9,7 @@ FileInput : WCFileUpload {
     remoteValidator = validateFileUpload;
 }
 
-FileBrowser : FileBrowserDialog {
+FileBrowser : FilePickerDialog {
     id = "fileBrowser";
     title = "Choose a File";
 }
