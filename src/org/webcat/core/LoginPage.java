@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -32,7 +32,7 @@ import org.apache.log4j.Logger;
 /**
  * Implements the login UI functionality of the system.
  *
- *  @author Stephen Edwards
+ *  @author  Stephen Edwards
  *  @author  Last changed by $Author$
  *  @version $Revision$, $Date$
  */
@@ -47,9 +47,9 @@ public class LoginPage
      *
      * @param context The context to use
      */
-    public LoginPage( WOContext context )
+    public LoginPage(WOContext context)
     {
-        super( context );
+        super(context);
     }
 
 
@@ -74,22 +74,24 @@ public class LoginPage
     public void awake()
     {
         super.awake();
-        if ( log.isDebugEnabled() )
+        if (log.isDebugEnabled())
         {
-            log.debug( "hasSession = " + hasSession() );
-            if ( hasSession() )
-                log.debug( "session = " + session().sessionID() );
-            log.debug( "errors = " + errors );
-            log.debug( "domain = " + domain );
+            log.debug("hasSession = " + hasSession());
+            if (hasSession())
+            {
+                log.debug("session = " + session().sessionID());
+            }
+            log.debug("errors = " + errors);
+            log.debug("domain = " + domain);
         }
 
         domainDisplayGroup.setObjectArray(
-            AuthenticationDomain.authDomains() );
-        if ( domain == null )
+            AuthenticationDomain.authDomains());
+        if (domain == null && !hasSpecificAuthDomain())
         {
             domain = AuthenticationDomain.defaultDomain();
         }
-        log.debug( "domain = " + domain );
+        log.debug("domain = " + domain);
     }
 
 
@@ -99,9 +101,11 @@ public class LoginPage
      */
     public void sleep()
     {
-        log.debug( "hasSession = " + hasSession() );
-        if ( hasSession() )
-            log.debug( "session = " + session().sessionID() );
+        log.debug("hasSession = " + hasSession());
+        if (hasSession())
+        {
+            log.debug("session = " + session().sessionID());
+        }
         super.sleep();
     }
 
@@ -117,28 +121,33 @@ public class LoginPage
     public boolean hasSpecificAuthDomain()
     {
         WORequest request = context().request();
-        String auth = request.stringFormValueForKey( "institution" );
-        if ( auth == null )
+        String auth = request.cookieValueForKey(
+            AuthenticationDomain.COOKIE_LAST_USED_INSTITUTION);
+        if (auth == null)
         {
-            auth = request.stringFormValueForKey( "d" );
+            auth = request.stringFormValueForKey("institution");
         }
-        if ( auth != null )
+        if (auth == null)
+        {
+            auth = request.stringFormValueForKey("d");
+        }
+        if (auth != null)
         {
             try
             {
-                log.debug( "looking up domain: " + auth );
-                domain = AuthenticationDomain.authDomainByName( auth );
+                log.debug("looking up domain: " + auth);
+                domain = AuthenticationDomain.authDomainByName(auth);
                 specificAuthDomainName = auth;
             }
-            catch ( EOObjectNotAvailableException e )
+            catch (EOObjectNotAvailableException e)
             {
-                log.error( "Unrecognized institution parameter provided: '"
-                    + auth + "'", e );
+                log.error("Unrecognized institution parameter provided: '"
+                    + auth + "'", e);
             }
-            catch ( EOUtilities.MoreThanOneException e )
+            catch (EOUtilities.MoreThanOneException e)
             {
-                log.error( "Ambiguous institution parameter provided: '"
-                    + auth + "'", e );
+                log.error("Ambiguous institution parameter provided: '"
+                    + auth + "'", e);
             }
         }
         return specificAuthDomainName != null;
@@ -156,12 +165,12 @@ public class LoginPage
     public boolean showForgotPasswordLink()
     {
         boolean result = false;
-        for ( int i = 0; i < domainDisplayGroup.allObjects().count(); i++ )
+        for (int i = 0; i < domainDisplayGroup.allObjects().count(); i++)
         {
             AuthenticationDomain aDomain = (AuthenticationDomain)
-                domainDisplayGroup.allObjects().objectAtIndex( i );
-            if ( aDomain.authenticator() != null &&
-            		aDomain.authenticator().canChangePassword() )
+                domainDisplayGroup.allObjects().objectAtIndex(i);
+            if (aDomain.authenticator() != null
+                && aDomain.authenticator().canChangePassword())
             {
                 result = true;
                 break;
@@ -174,13 +183,13 @@ public class LoginPage
     // ----------------------------------------------------------
     public Object aKeyValue()
     {
-        Object value = extraKeys.valueForKey( aKey );
-        if ( value instanceof NSArray )
+        Object value = extraKeys.valueForKey(aKey);
+        if (value instanceof NSArray)
         {
             NSArray<?> array = (NSArray<?>)value;
-            if ( array.count() == 1 )
+            if (array.count() == 1)
             {
-                value = array.objectAtIndex( 0 );
+                value = array.objectAtIndex(0);
             }
         }
         return value;
@@ -190,5 +199,5 @@ public class LoginPage
     //~ Instance/static variables .............................................
 
     private String specificAuthDomainName;
-    static Logger log = Logger.getLogger( LoginPage.class );
+    static Logger log = Logger.getLogger(LoginPage.class);
 }

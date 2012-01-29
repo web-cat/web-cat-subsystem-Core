@@ -140,7 +140,7 @@ public class DirectAction
             {
                 startPage = pageWithName(session.currentPageName());
             }
-            WOActionResults result = startPage.generateResponse();
+            WOResponse result = startPage.generateResponse();
 
             // Update the current theme in the cookie when the user logs in,
             // so that it is always the most recent theme in situations where
@@ -148,6 +148,22 @@ public class DirectAction
             if (session.user().theme() != null)
             {
                 session.user().theme().setAsLastUsedThemeInContext(context());
+            }
+
+            // Store selected authentication domain in cookie
+            if (domain != null)
+            {
+                result.addCookie(
+                    new WOCookie(
+                        AuthenticationDomain.COOKIE_LAST_USED_INSTITUTION,
+                        domain.propertyName()
+                            .substring("authenticator.".length()),
+                        context().urlWithRequestHandlerKey(null, null, null),
+                        null, -1, false));
+            }
+            if (log.isDebugEnabled())
+            {
+                log.debug("response cookies = " + result.cookies());
             }
 
             return result;

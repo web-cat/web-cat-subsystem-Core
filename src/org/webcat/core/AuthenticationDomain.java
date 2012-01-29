@@ -62,6 +62,12 @@ public class AuthenticationDomain
     }
 
 
+    //~ Constants .............................................................
+
+    public static final String COOKIE_LAST_USED_INSTITUTION =
+        "org.webcat.core.AuthenticationDomain.lastUsed";
+
+
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
