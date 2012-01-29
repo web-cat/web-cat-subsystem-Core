@@ -1,7 +1,7 @@
 #This file is automatically rewritten by ANT, so all formatting will be trashed.
-#Thu Jan 05 15:03:04 EST 2012
+#Sun Jan 29 11:27:14 EST 2012
 Core.license.url=http\://www.gnu.org/licenses/agpl.html
-Core.version.date=20120105
+Core.version.date=20120129
 Core.version.minor=2
 Core.copyright=(c) 2006-2012 Virginia Tech Department of Computer Science
 log4j.logger.org.webcat.core.Theme=INFO
@@ -10,11 +10,11 @@ er.extensions.ERXEC.safeLocking=true
 ognl.active=true
 er.extensions.ERXEC.traceOpenLocks=true
 Core.version.major=2
-Core.version.revision=4
+Core.version.revision=5
 log4j.logger.org.webcat.core.install=INFO
 log4j.logger.er.extensions.appserver.ERXApplication$JarChecker=ERROR
 er.extensions.ERXApplication.DefaultEncoding=UTF-8
-Core.history.url=http\://web-cat.org/WCWiki/CoreSubsystem/ChangeHistory
+Core.history.url=http\://wiki.web-cat.org/WCWiki/CoreSubsystem/ChangeHistory
 Core.description=This is the principal subsystem for Web-CAT, and provides all the capabilities necessary for loading and operating all other subsystems.  It also provides authentication services, and common UI elements used system-wide.
 log4j.logger.org.webcat.core.Application=INFO
 Core.requires=ExternalJars, WebObjectsUpdater, WonderUpdater, DBUpdateEngine, EOJDBCPrototypes
@@ -37,7 +37,7 @@ log4j.logger.er.extensions.eof.ERXEC=ERROR
 help.baseURL=http\://web-cat.org/Web-CAT.help/
 ognl.inlineBindings=true
 Core.archive.handler.list=(org.webcat.archives.internal.ZipArchiveHandler,   org.webcat.archives.internal.TarGzArchiveHandler, org.webcat.archives.internal.TarArchiveHandler)
-Core.info.url=http\://web-cat.org/WCWiki/CoreSubsystem
+Core.info.url=http\://wiki.web-cat.org/WCWiki/CoreSubsystem
 er.extensions.ERXApplication.useEditingContextUnlocker=true
 er.extensions.ERXNSLogLog4jBridge.ignoreNSLogSettings=true
 Core.provider.url=http\://web-cat.org/updates
