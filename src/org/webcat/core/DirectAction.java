@@ -107,7 +107,14 @@ public class DirectAction
             log.debug("formValues = " + request().formValues());
         }
 
-        if (tryLogin(request(), errors))
+        // Look for an existing session via cookie
+        Session existingSession = (Session)existingSession();
+        if ((existingSession != null
+            && existingSession.isLoggedIn()
+            && !existingSession.isTerminating())
+
+            // Or, if no existing session, try logging in
+            || tryLogin(request(), errors))
         {
             Session session = (Session)session();
             String pageId = request().stringFormValueForKey("page");
