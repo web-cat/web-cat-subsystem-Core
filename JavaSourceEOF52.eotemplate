@@ -52,7 +52,7 @@ import org.webcat.woextensions.WCFetchSpecification;
    this class as being abstract, since it should never be instantiated.
 *#public abstract class ${entity.prefixClassNameWithoutPackage}
     extends #if ($entity.parentSet)${entity.parent.className}
-#{else}er.extensions.eof.ERXGenericRecord
+#{else}org.webcat.core.EOBase
 #end
 #set ($alreadyFoundMutableAttribute = false)
 #foreach ($attribute in $entity.sortedClassAttributes)
