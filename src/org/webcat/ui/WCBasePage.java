@@ -451,7 +451,7 @@ public class WCBasePage
             }
             else
             {
-                Theme.lastUsedThemeInContext(context());
+                lastUsedTheme = Theme.lastUsedThemeInContext(context());
             }
 
             return (lastUsedTheme != null) ?
