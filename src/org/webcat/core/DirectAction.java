@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -166,7 +166,7 @@ public class DirectAction
                         domain.propertyName()
                             .substring("authenticator.".length()),
                         context().urlWithRequestHandlerKey(null, null, null),
-                        null, -1, false));
+                        null, ONE_YEAR, false));
             }
             if (log.isDebugEnabled())
             {
@@ -653,7 +653,7 @@ public class DirectAction
     private User                 user    = null;
     private AuthenticationDomain domain  = null;
 
-    private static String[] keysToScreen = new String[] {
+    private static final String[] keysToScreen = new String[] {
         "u",
         "UserName",
         "p",
@@ -662,6 +662,8 @@ public class DirectAction
         "institution",
         "AuthenticationDomain"
     };
+    // One year, in seconds
+    private static final int ONE_YEAR = 60 * 60 * 24 * 365;
 
     static Logger log = Logger.getLogger(DirectAction.class);
 }

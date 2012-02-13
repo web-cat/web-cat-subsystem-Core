@@ -111,7 +111,7 @@ public class Theme
     {
         String path = context.urlWithRequestHandlerKey(null, null, null);
         WOCookie cookie = new WOCookie(COOKIE_LAST_USED_THEME, dirName(), path,
-                null, -1, false);
+                null, ONE_YEAR, false);
         context.response().addCookie(cookie);
     }
 
@@ -528,6 +528,8 @@ public class Theme
     private static final String INHERIT_KEY    = "inherit";
     private static final String INHERIT_PREFIX = INHERIT_KEY + ".";
     private static final int INHERIT_PREFIX_LEN = INHERIT_PREFIX.length();
+    // One year, in seconds
+    private static final int ONE_YEAR = 60 * 60 * 24 * 365;
 
     private static final String COOKIE_LAST_USED_THEME =
         "org.webcat.core.Theme.lastUsed";
