@@ -107,6 +107,13 @@ public class GitBlobPage extends GitWebComponent
 
 
     // ----------------------------------------------------------
+    public String blobMimeType()
+    {
+        return FileUtilities.mimeType(gitContext().lastPathComponent());
+    }
+
+
+    // ----------------------------------------------------------
     public String historyURL()
     {
         GitWebContext newContext = gitContext().clone();

@@ -200,6 +200,25 @@ public class RepositoryManager
             providers.addObjectsFromArray(providersForEntity);
         }
 
+        try
+        {
+            providers.sortUsingComparator(new NSComparator() {
+                @Override
+                public int compare(Object _lhs, Object _rhs)
+                {
+                    EOEnterpriseObject lhs = (EOEnterpriseObject) _lhs;
+                    EOEnterpriseObject rhs = (EOEnterpriseObject) _rhs;
+
+                    return repositoryNameForObject(lhs).compareTo(
+                            repositoryNameForObject(rhs));
+                }
+            });
+        }
+        catch (ComparisonException e)
+        {
+            // Do nothing.
+        }
+
         return providers;
     }
 

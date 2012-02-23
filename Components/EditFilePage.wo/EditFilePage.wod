@@ -4,10 +4,11 @@ Cancel: WCButton {
     class  = "neg";
 }
 
-FileContents: WOText {
+FileContents: CodeEditor {
     value = fileContents;
-    rows  = "30";
-    cols  = "80";
+    mimeType = fileMimeType;
+    //rows  = "30";
+    //cols  = "80";
 }
 
 Filename: WOString {

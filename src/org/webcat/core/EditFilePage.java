@@ -118,6 +118,13 @@ public class EditFilePage
 
 
     // ----------------------------------------------------------
+    public String fileMimeType()
+    {
+        return FileUtilities.mimeType(file);
+    }
+
+
+    // ----------------------------------------------------------
     public WOComponent cancelEdit()
     {
         log.debug( "cancelEdit(), nextPage = " + nextPage );

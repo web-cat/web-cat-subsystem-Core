@@ -3,8 +3,11 @@ BlobContentImage : WOImage {
     mimeType = mimeType;
 }
 
-BlobContentText : PrettyTextComponent {
-    content = blobContentString;
+BlobContentText : CodeEditor {
+    value = blobContentString;
+    mimeType = blobMimeType;
+    readOnly = true;
+    sizeToFit = true;
 }
 
 Breadcrumbs : GitBreadcrumbsComponent {

@@ -21,19 +21,22 @@
 
 package org.webcat.core;
 
+import org.webcat.ui.util.ComponentIDGenerator;
+import org.webcat.woextensions.WCResourceManager;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResponse;
 
 //-------------------------------------------------------------------------
 /**
- * A component that displays plain text with line numbers.
+ * A syntax-coloring, high quality code editing text area component, using the
+ * CodeMirror Javascript library (http://codemirror.net/).
  *
  * @author  Tony Allevato
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class PrettyTextComponent extends WOComponent
+public class CodeEditor extends WOComponent
 {
     //~ Constructors ..........................................................
 
@@ -43,7 +46,7 @@ public class PrettyTextComponent extends WOComponent
      *
      * @param context the context
      */
-    public PrettyTextComponent(WOContext context)
+    public CodeEditor(WOContext context)
     {
         super(context);
     }
@@ -51,8 +54,28 @@ public class PrettyTextComponent extends WOComponent
 
     //~ KVC attributes (must be public) .......................................
 
+    public ComponentIDGenerator idFor = new ComponentIDGenerator(this);
+
+    /** The DOM id of the text area that will be a child of this component. */
+    public String id;
+
     /** The text content to display. */
-    public String content;
+    public String value;
+
+    /** The MIME type of the content to display -- determines which syntax
+        highlighting scheme to use. */
+    public String mimeType;
+
+    /** Set to true to hide the line numbers in the code editor. */
+    public boolean suppressLineNumbers;
+
+    /** Set to true to make the editor read-only. */
+    public boolean readOnly;
+
+    /** Set to true to make the code editor size to fit its contents. If the
+        editor is not read-only, this will cause the size to change live as its
+        contents are edited as well. */
+    public boolean sizeToFit;
 
 
     //~ Methods ...............................................................
@@ -61,34 +84,14 @@ public class PrettyTextComponent extends WOComponent
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
-        prettyContent = content;
-
-        if (lineNumbers == null)
+        if (id == null)
         {
-            int currentLine = 1;
-            StringBuffer lineNumberBuffer = new StringBuffer();
-            boolean lastCharWasNewline = true;
+            id = idFor.get("codeArea");
+        }
 
-            for (int i = 0; i < content.length(); i++)
-            {
-                if (content.charAt(i) == '\n')
-                {
-                    lineNumberBuffer.append(currentLine + "\n");
-                    currentLine++;
-                    lastCharWasNewline = true;
-                }
-                else
-                {
-                    lastCharWasNewline = false;
-                }
-            }
-
-            if (!lastCharWasNewline)
-            {
-                lineNumberBuffer.append(currentLine + "\n");
-            }
-
-            lineNumbers = lineNumberBuffer.toString();
+        if (mimeType == null)
+        {
+            mimeType = "text/plain";
         }
 
         super.appendToResponse(response, context);
@@ -96,21 +99,29 @@ public class PrettyTextComponent extends WOComponent
 
 
     // ----------------------------------------------------------
-    public String prettyContent()
+    public String resourceUrl(String partialUrl)
     {
-        return prettyContent;
+        return WCResourceManager.resourceURLFor(
+                partialUrl, context().request());
     }
 
 
     // ----------------------------------------------------------
-    public String lineNumbers()
+    public String containerCssClasses()
     {
-        return lineNumbers;
+        StringBuffer buffer = new StringBuffer();
+
+        buffer.append("WCCodeEditor");
+
+        if (sizeToFit)
+        {
+            buffer.append(" WCCodeEditor-sizeToFit");
+        }
+
+        return buffer.toString();
     }
 
 
     //~ Static/instance variables .............................................
 
-    private String prettyContent;
-    private String lineNumbers;
 }

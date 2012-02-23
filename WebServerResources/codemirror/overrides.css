@@ -1,0 +1,22 @@
+
+.CodeMirror-scroll {
+    border: 1px solid silver;
+    background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* Size the widget to fit. */
+div.WCCodeEditor.WCCodeEditor-sizeToFit .CodeMirror-scroll {
+    height: auto;
+    overflow-y: hidden;
+    overflow-x: auto;
+    width: 100%;
+}
+
+.CodeMirror-gutter {
+    border-right: 1px solid silver;
+    background-color: #F0F0F0;
+}
+
+.CodeMirror-gutter-text pre {
+    color: #888;
+}

@@ -1,0 +1,14 @@
+<wo name="CodeMirrorJs"/>
+<wo name="CodeMirrorCss"/>
+<wo name="CodeMirrorOverridesCss"/>
+<script type="text/javascript">
+dojo.addOnLoad(function() {
+    var codeMirror = CodeMirror.fromTextArea(dojo.byId('<wo:str value="$id"/>'), {
+        lineNumbers: <wo:str value="~!suppressLineNumbers"/>,
+        fixedGutter: true,
+        readOnly: <wo:str value="$readOnly"/>,
+        mode: '<wo:str value="$mimeType"/>'
+    });
+});
+</script>
+<wo name="CodeEditorContainer"><wo name="ContentTextArea"/></wo>

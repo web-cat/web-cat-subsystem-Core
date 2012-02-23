@@ -1,0 +1,27 @@
+CodeMirrorJs: WCScriptFragment {
+    filename    = "codemirror/codemirror-compressed.js";
+}
+
+CodeMirrorCss: WOGenericElement {
+    elementName = "link";
+    rel         = "stylesheet";
+    type        = "text/css";
+    href        = "~resourceUrl(\"Core.framework/WebServerResources/codemirror/lib/codemirror.css\")";
+}
+
+CodeMirrorOverridesCss: WOGenericElement {
+    elementName = "link";
+    rel         = "stylesheet";
+    type        = "text/css";
+    href        = "~resourceUrl(\"Core.framework/WebServerResources/codemirror/overrides.css\")";
+}
+
+CodeEditorContainer: WOGenericContainer {
+    elementName = "div";
+    class       = containerCssClasses;
+}
+
+ContentTextArea: WOText {
+    value = value;
+    id = id;
+}
