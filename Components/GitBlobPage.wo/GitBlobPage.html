@@ -9,14 +9,21 @@
         <wo name="HistoryLink">History</wo>
     </div>
     <div style="clear: both"></div>
-    <div>
+    <div><wo:WCForm enctype="multipart/form-data" multipleSubmit="true">
         <wo:if condition="$isImage">
             <div class="theme-table-border-color imageholder">
                 <wo name="BlobContentImage"/>
             </div>
         </wo:if><wo:else>
             <wo name="BlobContentText"/>
+            <wo:if condition="$gitContext.headRef.isMaster">
+                <h2>Commit Changes to This File</h2>
+                <p><b>Description:</b> provide a short <b>commit message</b>
+                    describing this change in the Git repository:<br/>
+                    <wo name="CommitMessageForChanges"/><wo name="CommitChanges"/>
+                </p>
+            </wo:if>
         </wo:else>
-    </div>
+    </wo:WCForm></div>
 </div>
 </wo>

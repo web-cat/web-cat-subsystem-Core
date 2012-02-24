@@ -41,6 +41,7 @@ import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.lib.RepositoryCache;
 import org.eclipse.jgit.lib.RepositoryCache.FileKey;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.util.FS;
 import org.webcat.core.Application;
@@ -215,17 +216,17 @@ public class GitUtilities
 
 
     // ----------------------------------------------------------
-    public static void pushWorkingCopyImmediately(Repository workingCopy,
+    public static RevCommit pushWorkingCopyImmediately(Repository workingCopy,
             User user, String commitMessage)
     {
-        pushWorkingCopyImmediately(workingCopy, user.name_LF(),
+        return pushWorkingCopyImmediately(workingCopy, user.name_LF(),
                 user.email(), commitMessage);
     }
 
 
     // ----------------------------------------------------------
     @SuppressWarnings("deprecation")
-    public static void pushWorkingCopyImmediately(Repository workingCopy,
+    public static RevCommit pushWorkingCopyImmediately(Repository workingCopy,
             String authorName, String emailAddress, String commitMessage)
     {
         try
@@ -255,7 +256,7 @@ public class GitUtilities
                 .setUpdate(false)
                 .call();
 
-            git.commit()
+            RevCommit commit = git.commit()
                 .setAuthor(authorName, emailAddress)
                 .setCommitter(authorName, emailAddress)
                 .setMessage(commitMessage)
@@ -271,11 +272,15 @@ public class GitUtilities
             git.push()
                 .setRefSpecs(allHeadsSpec)
                 .call();
+
+            return commit;
         }
         catch (Exception e)
         {
             log.error("Error updating repository: ", e);
         }
+
+        return null;
     }
 
 

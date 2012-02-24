@@ -6,7 +6,6 @@ BlobContentImage : WOImage {
 BlobContentText : CodeEditor {
     value = blobContentString;
     mimeType = blobMimeType;
-    readOnly = true;
     sizeToFit = true;
 }
 
@@ -18,6 +17,11 @@ CommitList : GitCommitListComponent {
     commits = commits;
     showsOnlyLatestCommit = true;
     gitContext = gitContext;
+}
+
+CommitMessageForChanges: WCTextBox {
+    value = commitMessageForChanges;
+    style = "width: 40em";
 }
 
 GitPage : GitBasePage {
@@ -32,4 +36,10 @@ HistoryLink : WOGenericContainer {
 RawLink : WOGenericContainer {
     elementName = "a";
     href = rawURL;
+}
+
+CommitChanges: WCButton {
+    class = "pos";
+    label = "Commit";
+    action = commitChanges;
 }

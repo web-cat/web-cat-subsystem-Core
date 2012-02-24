@@ -21,10 +21,19 @@
 
 package org.webcat.core.git.http;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import org.apache.log4j.Logger;
+import org.eclipse.jgit.lib.Repository;
+import org.webcat.archives.ArchiveManager;
 import org.webcat.core.FileUtilities;
 import org.webcat.core.git.GitCommit;
 import org.webcat.core.git.GitUtilities;
+import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
+import com.webobjects.appserver.WORedirect;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSData;
@@ -52,6 +61,10 @@ public class GitBlobPage extends GitWebComponent
 
     public NSArray<GitCommit> commits;
 
+    public String blobContentString;
+
+    public String commitMessageForChanges;
+
 
     //~ Methods ...............................................................
 
@@ -63,6 +76,11 @@ public class GitBlobPage extends GitWebComponent
         {
             commits = gitContext().repository().commitsWithId(
                     gitContext().headObjectId(), gitContext().path());
+        }
+
+        if (commitMessageForChanges == null)
+        {
+            commitMessageForChanges = DEFAULT_COMMIT_MESSAGE;
         }
 
         super.appendToResponse(response, context);
@@ -101,8 +119,20 @@ public class GitBlobPage extends GitWebComponent
     // ----------------------------------------------------------
     public String blobContentString()
     {
-        return gitContext().repository().stringContentForBlob(
-                gitContext().objectId());
+        if (blobContentString == null)
+        {
+            blobContentString = gitContext().repository().stringContentForBlob(
+                    gitContext().objectId());
+        }
+
+        return blobContentString;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setBlobContentString(String newContent)
+    {
+        blobContentString = newContent;
     }
 
 
@@ -129,4 +159,52 @@ public class GitBlobPage extends GitWebComponent
         newContext.setMode(GitWebMode.RAW);
         return newContext.toURL(context());
     }
+
+
+    // ----------------------------------------------------------
+    public WOActionResults commitChanges()
+    {
+        if (commitMessageForChanges == null ||
+            commitMessageForChanges.length() == 0)
+        {
+            error("Please provide a commit message for your file upload");
+        }
+        else
+        {
+            Repository workingCopy = GitUtilities.workingCopyForRepository(
+                gitContext().repository().repository(), true);
+            File file = new File(workingCopy.getWorkTree(), gitContext().path());
+
+            try
+            {
+                FileWriter writer = new FileWriter(file);
+                writer.write(blobContentString);
+                writer.close();
+
+                GitUtilities.pushWorkingCopyImmediately(
+                    workingCopy, user(), commitMessageForChanges);
+            }
+            catch (IOException e)
+            {
+                log.error("error committing changes to " + file + ": ", e);
+                error("The following error occurred trying to commit the "
+                    + "file \"" + gitContext().path() + "\": "
+                    + e.getMessage());
+            }
+        }
+
+        // Refresh the page but do a redirect to make sure we get the proper
+        // URL in the address bar.
+        WORedirect redirect = new WORedirect(context());
+        redirect.setUrl(gitContext().toURL(context()));
+        return redirect.generateResponse();
+    }
+
+
+    //~ Instance/static variables .............................................
+
+    private static final String DEFAULT_COMMIT_MESSAGE =
+        "Updated from my web browser";
+
+    private static Logger log = Logger.getLogger(GitBlobPage.class);
 }
