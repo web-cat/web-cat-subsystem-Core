@@ -264,6 +264,10 @@ public class Session
         {
             return;
         }
+        if (loginSession != null && loginSession.editingContext() == null)
+        {
+            loginSession = null;
+        }
         if (loginSession == null)
         {
             EOEditingContext ec = WCEC.newEditingContext();
