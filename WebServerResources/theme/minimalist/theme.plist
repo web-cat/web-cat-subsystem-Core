@@ -20,8 +20,12 @@ contributed by Ankit Ahuja.";
     preview          = "minimalist-preview.png";
     thumb            = "minimalist-thumb.png";
 
-    extends = dream-way;
+    extends = aristo;
     cssOrder = (
+        {
+            file = "../dream-way/dojo-overrides.css";
+            media = "screen, projection, tv";
+        },
         {
             file = "minimalist.css";
             media = "screen, projection, tv";

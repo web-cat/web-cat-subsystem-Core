@@ -50,6 +50,7 @@ span.dijitTitlePaneTextNode {
 div.floatLeft h1 {
     font-family: "Lucida Grande", Verdana, sans-serif;
     color: #2b577d;
+    margin-top: 2px;
 }
 
 tr td b {
@@ -233,3 +234,104 @@ div.dijitTitlePaneContentInner pre {
     border-color: #888;
 }
 
+table.floatLeft {
+    border-width: 1px;
+}
+
+ul.floatRight li {
+    border: 1px solid #ccc;
+    box-shadow: none;
+    -moz-box-shadow: none;
+}
+
+ul.floatRight li a {
+    color: #333;
+    background-color: #E7EFF5;
+}
+
+ul.floatRight li a:hover {
+    background-color: #eee;
+}
+
+.dijitButtonHover.pos .dijitButtonNodeContents {
+    box-shadow: none;
+}
+
+.aristo .dijitButtonHover .dijitButtonNode {
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    border: none;
+}
+
+div.dijitTitlePaneTitle {
+    border-bottom: 1px solid #ccc;
+}
+
+span.dijitTitlePaneTextNode {
+    text-shadow: none;
+}
+
+div.dijitTitlePaneContentInner table {
+    border: 1px solid #ccc;
+}
+
+span.hl {
+    color: #fff;
+}
+
+ul.floatRight li ul {
+    background-color: #fff;
+}
+
+td.plus {
+    background-color: #88db58;
+}
+
+table.percentbar {
+    border: 1px solid #fff;
+}
+
+li div a:hover {
+    color: #3d4e5c;
+}
+
+#utils a:hover {
+    color: #3d4e5c;
+}
+
+table.course-list {
+    margin-top: 20px;
+}
+
+tbody tr th {
+    padding-left: 10px;
+}
+
+tr.assignment td {
+    padding-top: 5px;
+    padding-left: 10px;
+}
+
+a.permalink.floatRight {
+    margin-top: 3px;
+}
+
+div.floatLeft h1 {
+    margin-top: 2px;
+}
+
+li.WCDropDownSelectable:hover {
+    background-image: none;
+    background-color: #E7EFF5;
+}
+
+span.floatLeft {
+    font-size: 10px;
+    font-family: "Lucida Grande", Verdana, sans-serif;
+}
+
+span.floatRight {
+    font-size: 10px;
+    font-family: "Lucida Grande", Verdana, sans-serif;
+}
