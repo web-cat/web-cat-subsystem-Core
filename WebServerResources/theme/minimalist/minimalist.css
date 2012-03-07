@@ -1,0 +1,235 @@
+#header .title h1,
+#header .title h2 {
+    color:  transparent;
+}
+
+tr.o td {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    padding: 5px;
+    font-size: 13px;
+}
+
+tr.e td {
+    font-size: 13px;
+    padding: 5px;
+}
+
+td.minus {
+    background-color: #db5555;
+}
+
+table {
+    border-style: solid;
+    border-color: #ccc;
+}
+
+th.R {
+    font-size: 13px;
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    background-color: #e7eff5;
+    color: #333;
+    border-style: solid;
+    border-color: #ccc;
+    border-right-width: 1px;
+}
+
+table.layout.clear {
+    font-size: 13px;
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    border-style: solid;
+    border-color: #ccc;
+    border-width: 1px;
+}
+
+span.dijitTitlePaneTextNode {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    font-size: 15px;
+    text-shadow: none;
+}
+
+div.floatLeft h1 {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    color: #2b577d;
+}
+
+tr td b {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+}
+
+table.percentbar {
+    border-style: none;
+    border-color: #fff;
+    border-width: 1px;
+}
+
+td.plus {
+    background-color: #6ccf10;
+    border-style: none;
+    height: 20px;
+}
+
+tr {
+    padding: 10px;
+}
+
+body.aristo {
+    background-image: none;
+    background-color: #fbfbfb;
+}
+
+div.title.width25.floatLeft h2 {
+    color: #888;
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    font-style: normal;
+    font-weight: normal;
+}
+
+div.module {
+    box-shadow: none;
+    border: 1px solid #ccc;
+}
+
+span.dijitReset.dijitInline.dijitButtonText {
+    text-shadow: none;
+    color: #444;
+}
+
+span.dijitReset {
+    box-shadow: none;
+    border: none;
+}
+
+thead tr th {
+    background-color: #e7eff5;
+    color: #333;
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    font-size: 15px;
+    padding: 5px;
+    border-color: #ccc;
+    border-style: solid;
+    border-width: 1px;
+}
+
+span.dijitReset.dijitStretch.dijitButtonContents {
+    background-color: #e7eff5;
+    box-shadow: none;
+    border: 1px solid #ccc;
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    padding-bottom: 4px;
+}
+
+tbody tr td {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    font-size: 13px;
+}
+
+tbody tr th {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    font-size: 13px;
+    padding: 5px;
+    background-color: #e7eff5;
+    color: #333;
+    border: 1px solid #ccc;
+}
+
+div.dijitTitlePaneTitle {
+    border-bottom: 1px solid #ccc;
+}
+
+span.WCDropDownList {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    border-color: #ccc;
+}
+
+div.assignments {
+    border-left-width: 0;
+}
+
+table.course-list {
+    border-width: 0;
+}
+
+p.course {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+}
+
+div.module.title h1 {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    color: #344;
+}
+
+span.hl {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    background-color: #333;
+}
+
+li.WCDropDownSelectable {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+}
+
+ul.floatRight li a {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+}
+
+ul.floatRight li {
+    box-shadow: none;
+}
+
+ul li a:hover {
+    color: #fff;
+}
+
+#utils a {
+    box-shadow: none;
+    font-family: "Lucida Grande", Verdana, sans-serif;
+    font-size: 12px;
+    text-decoration: underline;
+    color: #5185b3;
+}
+
+#utils a:hover {
+    color: #fff;
+}
+
+table.layout {
+    border-width: 1px;
+}
+
+div.dijitInputField {
+    border-style: ;
+    border-width: 1px;
+}
+
+div.dijitTitlePaneContentInner p {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+}
+
+div.dijitTitlePaneContentInner h2 {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+}
+
+li.WCDropDownSelectable a:hover {
+    background-color: #eee;
+}
+
+li div a {
+    font-family: "Lucida Grande", Verdana, sans-serif;
+}
+
+pre.srcLine {
+    font-size: 12px;
+}
+
+span.keyword {
+    font-weight: normal;
+}
+
+span.dijitButton:hover .dijitButtonContents {
+    background-color: #eee;
+}
+
+div.dijitTitlePaneContentInner pre {
+    border-left-width: 2px;
+    border-color: #888;
+}
+
