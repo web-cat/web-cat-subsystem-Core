@@ -1,7 +1,7 @@
 #This file is automatically rewritten by ANT, so all formatting will be trashed.
-#Sun Jan 29 11:27:14 EST 2012
+#Tue Mar 06 22:02:45 EST 2012
 Core.license.url=http\://www.gnu.org/licenses/agpl.html
-Core.version.date=20120129
+Core.version.date=20120306
 Core.version.minor=2
 Core.copyright=(c) 2006-2012 Virginia Tech Department of Computer Science
 log4j.logger.org.webcat.core.Theme=INFO
@@ -10,7 +10,7 @@ er.extensions.ERXEC.safeLocking=true
 ognl.active=true
 er.extensions.ERXEC.traceOpenLocks=true
 Core.version.major=2
-Core.version.revision=5
+Core.version.revision=6
 log4j.logger.org.webcat.core.install=INFO
 log4j.logger.er.extensions.appserver.ERXApplication$JarChecker=ERROR
 er.extensions.ERXApplication.DefaultEncoding=UTF-8
