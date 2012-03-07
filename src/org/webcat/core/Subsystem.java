@@ -625,6 +625,17 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
+     * Called periodically (say, daily) by the subsystem manager to give
+     * subsystems a chance to perform periodic maintenance tasks.
+     */
+    protected void performPeriodicMaintenance()
+    {
+        // Nothing by default
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Add a file resource definition to a dictionary, overridden by an
      * optional user-specified value.  This method is a helper for subsystems
      * that wish to add subsystem-specific file resources to ENV variable

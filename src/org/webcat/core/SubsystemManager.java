@@ -98,6 +98,23 @@ public class SubsystemManager
         envp();
         pluginProperties();
         startAllSubsystems();
+
+        // Start up a thread to run periodic maintenance tasks every day
+        new Thread(new Runnable() {
+            // ----------------------------------------------------------
+            public void run()
+            {
+                performPeriodicMaintenance();
+                try
+                {
+                    Thread.sleep(1000 * 60 * 60 * 24);
+                }
+                catch (InterruptedException e)
+                {
+                    log.info("periodic maintenance task interrupted", e);
+                }
+            }
+        }).start();
     }
 
 
@@ -388,6 +405,36 @@ public class SubsystemManager
             sub.start();
             sub.subsystemHasStarted();
             log.debug("subsystem " + sub.name() + " started");
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Calls {@link Subsystem#performPeriodicMaintenance()} for all
+     * registered subsystems.
+     */
+    private void performPeriodicMaintenance()
+    {
+        for (Subsystem sub : subsystems())
+        {
+            log.debug("periodic maintenance on subsystem " + sub.name());
+            try
+            {
+                sub.performPeriodicMaintenance();
+            }
+            catch (Exception e)
+            {
+                log.error("Exception performing periodic maintenance on "
+                    + sub.name(), e);
+            }
+            catch (Error e)
+            {
+                log.error("Error performing periodic maintenance on "
+                    + sub.name(), e);
+            }
+            log.debug("subsystem " + sub.name()
+                + " periodic maintenance finished");
         }
     }
 
