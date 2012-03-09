@@ -78,6 +78,13 @@ public class WCDropDownItem extends WOComponent
 
 
     // ----------------------------------------------------------
+    public String onClick()
+    {
+        return (String) valueForBinding("onClick");
+    }
+
+
+    // ----------------------------------------------------------
     public String href()
     {
         return (String) valueForBinding("href");
@@ -141,6 +148,13 @@ public class WCDropDownItem extends WOComponent
 
             js.call("webcat.dropDownList.updateSelection", selectionId,
                     JSHash.code("this"));
+        }
+
+        String onClick = onClick();
+
+        if (onClick != null)
+        {
+            js.append(onClick);
         }
 
         return js.toString(true);

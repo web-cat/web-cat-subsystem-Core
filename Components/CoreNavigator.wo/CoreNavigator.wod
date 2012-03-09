@@ -8,6 +8,7 @@ CourseMenu: WCDropDownList {
 }
 
 CourseMenuItem: WCDropDownItem {
+    onClick = "var ul = new dijit.DialogUnderlay({}); ul.show();";
     action = okPressed;
 }
 
