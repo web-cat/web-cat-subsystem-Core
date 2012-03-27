@@ -120,6 +120,12 @@ public class GitUtilities
                 {
                     repository = RepositoryCache.open(
                             FileKey.lenient(fsDir, FS.DETECTED), true);
+
+                    if (repository == null)
+                    {
+                        log.error("RepositoryCache.open returned null for "
+                                + "object " + object);
+                    }
                 }
                 catch (RepositoryNotFoundException e)
                 {
@@ -127,6 +133,11 @@ public class GitUtilities
                             + " for the first time");
 
                     repository = setUpNewRepository(object, fsDir);
+                }
+                catch (Exception e)
+                {
+                    log.error("An exception occurred while trying to get the "
+                            + "repository for object " + object, e);
                 }
             }
             catch (IOException e)

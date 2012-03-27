@@ -1432,6 +1432,11 @@ public class User
         {
             FileUtilities.copyDirectoryContents(oldLocation, location);
         }
+        else
+        {
+            log.warn("Location " + oldLocation.getAbsolutePath() + " does not "
+                    + "exist; not copying any files into repository");
+        }
 
         // Create a welcome file that describes the repository.
 
