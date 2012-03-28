@@ -1,5 +1,5 @@
 #This file is automatically rewritten by ANT, so all formatting will be trashed.
-#Wed Mar 28 09:48:51 EDT 2012
+#Wed Mar 28 16:04:52 EDT 2012
 er.extensions.ERXEnterpriseObject.updateInverseRelationships=true
 Core.license.url=http\://www.gnu.org/licenses/agpl.html
 Core.version.date=20120328
@@ -11,7 +11,7 @@ er.extensions.ERXEC.safeLocking=true
 ognl.active=true
 er.extensions.ERXEC.traceOpenLocks=true
 Core.version.major=2
-Core.version.revision=7
+Core.version.revision=8
 log4j.logger.org.webcat.core.install=INFO
 log4j.logger.er.extensions.appserver.ERXApplication$JarChecker=ERROR
 er.extensions.ERXApplication.DefaultEncoding=UTF-8
