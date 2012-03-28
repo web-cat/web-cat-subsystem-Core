@@ -21,8 +21,10 @@
 
 package org.webcat.core;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.net.URLDecoder;
 import java.util.Scanner;
 import com.webobjects.eoaccess.EOEntity;
 import com.webobjects.eoaccess.EOUtilities;
@@ -74,6 +76,15 @@ public class EntityRequestInfo
      */
     public static EntityRequestInfo fromRequestHandlerPath(String handlerPath)
     {
+        try
+        {
+            handlerPath = URLDecoder.decode(handlerPath, "UTF-8");
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            // Do nothing.
+        }
+
         EntityRequestInfo request = new EntityRequestInfo();
 
         Scanner scanner = new Scanner(handlerPath);
