@@ -5,7 +5,7 @@ subsystem.Core
 
 Core.version.major=2
 Core.version.minor=2
-Core.version.revision=6
+Core.version.revision=7
 
 Core.copyright=(c) 2006-2012 Virginia Tech Department of Computer Science
 Core.provider=Virginia Tech Computer Science
@@ -52,7 +52,7 @@ ERTimeToKill = 180
 # Configure WebObjects settings
 # -------------------------------------------------------------------
 WODefaultUndoStackLimit           = 0
-WOSessionTimeOut                  = 1800
+WOSessionTimeOut                  = 3600
 WOAllowsConcurrentRequestHandling = true
 
 
@@ -64,6 +64,7 @@ er.extensions.ERXApplication.useEditingContextUnlocker = true
 er.extensions.ERXApplication.DefaultEncoding = UTF-8
 er.extensions.ERXEC.safeLocking = true
 er.extensions.ERXEC.traceOpenLocks = true
+er.extensions.ERXEnterpriseObject.updateInverseRelationships = true
 
 er.extensions.ERXResourceManager.versionManager = \
     org.webcat.woextensions.WCResourceManager$WCVersionManager
