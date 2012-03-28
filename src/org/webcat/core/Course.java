@@ -185,13 +185,21 @@ public class Course
                 return null;
             }
 
-            qualifier = department.dot(Department.institution).dot(
-                    AuthenticationDomain.propertyName).is(
-                            "authenticator." + institution).and(
-                department.dot(Department.abbreviation).is(
-                    deptAbbrev).and(number.is(courseNumber)));
+            qualifier = department.dot(Department.abbreviation).is(deptAbbrev)
+                .and(number.is(courseNumber));
 
-            return uniqueObjectMatchingQualifier(ec, qualifier);
+            NSArray<Course> courses = objectsMatchingQualifier(ec, qualifier);
+
+            for (Course course : courses)
+            {
+                if (institution.equals(
+                        course.department().institution().subdirName()))
+                {
+                    return course;
+                }
+            }
+
+            return null;
         }
         else
         {
@@ -203,7 +211,7 @@ public class Course
     // ----------------------------------------------------------
     public String repositoryIdentifier()
     {
-        return department().institution().name() + "."
+        return department().institution().subdirName() + "."
             + department().abbreviation() + "." + number();
     }
 

@@ -1395,7 +1395,7 @@ public class User
         if (dotIndex != -1)
         {
             AuthenticationDomain domain = AuthenticationDomain
-                .authDomainByName(repoId.substring(0, dotIndex));
+                .authDomainBySubdirName(repoId.substring(0, dotIndex));
             if (domain != null)
             {
                 String name = repoId.substring(dotIndex + 1);
@@ -1416,7 +1416,7 @@ public class User
     // ----------------------------------------------------------
     public String repositoryIdentifier()
     {
-        return authenticationDomain().name() + "." + userName();
+        return authenticationDomain().subdirName() + "." + userName();
     }
 
 
@@ -1427,7 +1427,7 @@ public class User
         // grader location.
 
         File oldLocation = new File(userDataRoot(),
-                authenticationDomain().name() + "/" + userName());
+                authenticationDomain().subdirName() + "/" + userName());
         if (oldLocation.exists())
         {
             FileUtilities.copyDirectoryContents(oldLocation, location);

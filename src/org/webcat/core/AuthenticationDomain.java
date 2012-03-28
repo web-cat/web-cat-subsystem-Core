@@ -332,6 +332,36 @@ public class AuthenticationDomain
 
     // ----------------------------------------------------------
     /**
+     * Look up and return an authentication domain object by its
+     * (partial) property name.  If you use a property called
+     * <code>authenticator.<i>MyAuthenticator</i></code> to define
+     * an authentication domain in a property file, then you can retrieve
+     * this authenticator using the name "<i>MyAuthenticator</i>".
+     *
+     * @param name the property name of the authenticator
+     * @return The matching AuthenticationDomain object
+     */
+    public static AuthenticationDomain authDomainBySubdirName(String name)
+    {
+        ensureAuthDomainsLoaded();
+
+        if (authDomainsBySubdirName == null)
+        {
+            authDomainsBySubdirName =
+                new HashMap<String, AuthenticationDomain>();
+
+            for (AuthenticationDomain domain : authDomains)
+            {
+                authDomainsBySubdirName.put(domain.subdirName(), domain);
+            }
+        }
+
+        return authDomainsBySubdirName.get(name);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Get a list of shared authentication domain objects that have
      * already been loaded into the shared editing context.
      * @return an array of all AuthenticationDomain objects
@@ -762,6 +792,7 @@ public class AuthenticationDomain
     private static NSArray<AuthenticationDomain> authDomains;
     private static AuthenticationDomain defaultDomain;
     private static Map<String, UserAuthenticator> theAuthenticatorMap;
+    private static Map<String, AuthenticationDomain> authDomainsBySubdirName;
     private String cachedSubdirName = null;
     private String cachedName = null;
     private static NSArray<String> timeFormats;
