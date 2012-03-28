@@ -45,15 +45,6 @@ SecondaryTab: WOGenericContainer {
     class       = "~secondaryTabItem.isSelected ? \"here\" : \"\"";
 }
 
-CanToggleView: WOConditional {
-    condition = session.user.canChangeViews;
-}
-
 RoleIsVisible: WOConditional {
     condition = "~session.user.accessLevel >= aRole.accessLevel";
-}
-
-StudentView: WOHyperlink {
-    action = toggleStudentView;
-    string = session.user.toggleViewLabel;
 }

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,14 +23,13 @@ package org.webcat.core;
 
 import com.webobjects.appserver.*;
 
-import org.apache.log4j.Logger;
-
 // -------------------------------------------------------------------------
 /**
  * A component that represents a formatted permalink.
  *
- * @author Stephen Edwards
- * @version $Id$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class Permalink
     extends WOComponent

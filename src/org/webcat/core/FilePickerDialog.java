@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -25,16 +25,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.webcat.archives.ArchiveManager;
 import org.webcat.core.git.GitCommit;
 import org.webcat.core.git.GitRef;
 import org.webcat.core.git.GitRepository;
 import org.webcat.core.git.GitTreeEntry;
-import org.webcat.core.git.GitTreeIterator;
 import org.webcat.core.git.GitUtilities;
-import org.webcat.ui.WCTreeModel;
 import org.webcat.ui.generators.JavascriptGenerator;
 import org.webcat.ui.util.ComponentIDGenerator;
 import com.webobjects.appserver.WOContext;
@@ -42,24 +39,20 @@ import com.webobjects.appserver.WOResponse;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSData;
-import com.webobjects.foundation.NSDictionary;
-import com.webobjects.foundation.NSKeyValueCoding;
-import com.webobjects.foundation.NSKeyValueCodingAdditions;
-import com.webobjects.foundation.NSMutableArray;
-import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSSet;
 import com.webobjects.foundation.NSTimestamp;
 
 //-------------------------------------------------------------------------
 /**
- * A modal dialog that lets the user choose a file from any of the repositories
- * that they have access to.
+ * A modal dialog that lets the user choose a file from any of the
+ * repositories that they have access to.
  *
  * @author  Tony Allevato
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class FilePickerDialog extends WCComponent
+public class FilePickerDialog
+    extends WCComponent
 {
     //~ Constructors ..........................................................
 
@@ -172,10 +165,10 @@ public class FilePickerDialog extends WCComponent
                     refForModelObject(selectedRefs.anyObject()))
             {
                 @Override
-                public boolean canSelectObject(GitTreeEntry entry)
+                public boolean canSelectObject(GitTreeEntry anEntry)
                 {
                     return delegate.fileCanBeSelected(
-                            filePickerItemForEntry(entry), entry.isTree());
+                            filePickerItemForEntry(anEntry), anEntry.isTree());
                 }
             };
 
@@ -337,7 +330,7 @@ public class FilePickerDialog extends WCComponent
 
 
     // ----------------------------------------------------------
-    private RepositoryEntryRef filePickerItemForEntry(GitTreeEntry entry)
+    private RepositoryEntryRef filePickerItemForEntry(GitTreeEntry anEntry)
     {
         NSSet<?> selectedRepos = refModel.selectedObjects();
 
@@ -348,9 +341,9 @@ public class FilePickerDialog extends WCComponent
             String providerName = RepositoryManager.getInstance()
                 .repositoryNameForObject(ref.repository().provider());
 
-            String path = entry.path();
+            String path = anEntry.path();
 
-            if (entry.isTree())
+            if (anEntry.isTree())
             {
                 path += "/";
             }
@@ -378,11 +371,12 @@ public class FilePickerDialog extends WCComponent
         }
         else
         {
-            GitTreeEntry entry = selectedEntries.anyObject();
+            GitTreeEntry anEntry = selectedEntries.anyObject();
 
             if (delegate != null)
             {
-                return delegate.fileWasSelected(filePickerItemForEntry(entry));
+                return delegate.fileWasSelected(
+                    filePickerItemForEntry(anEntry));
             }
             else
             {
@@ -449,7 +443,7 @@ public class FilePickerDialog extends WCComponent
 
 
     // ----------------------------------------------------------
-    private JavascriptGenerator showModifierDialog(String id)
+    private JavascriptGenerator showModifierDialog(String dialogId)
     {
         NSSet<?> selectedRepos = refModel.selectedObjects();
 
@@ -479,21 +473,21 @@ public class FilePickerDialog extends WCComponent
         }
         else
         {
-            GitTreeEntry entry = selectedEntries.anyObject();
+            GitTreeEntry anEntry = selectedEntries.anyObject();
 
-            if (entry.isTree())
+            if (anEntry.isTree())
             {
-                createFolderLocation = entry.path();
+                createFolderLocation = anEntry.path();
             }
             else
             {
-                File file = new File(entry.path());
+                File file = new File(anEntry.path());
                 createFolderLocation = file.getParent();
             }
         }
 
         JavascriptGenerator js = new JavascriptGenerator();
-        js.dijit(idFor.get(id)).call("show");
+        js.dijit(idFor.get(dialogId)).call("show");
         return js;
     }
 

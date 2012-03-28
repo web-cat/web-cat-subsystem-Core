@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,17 +22,14 @@
 package org.webcat.core;
 
 import org.webcat.core._Department;
-import com.webobjects.foundation.*;
-import com.webobjects.eocontrol.*;
-
-import sun.security.krb5.internal.*;
 
 // -------------------------------------------------------------------------
 /**
  * Represents one department within an institution.
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class Department
     extends _Department

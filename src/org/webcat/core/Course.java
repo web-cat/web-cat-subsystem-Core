@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2010 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -29,15 +29,14 @@ import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableSet;
-import er.extensions.eof.ERXQ;
 
 // -------------------------------------------------------------------------
 /**
  * Represents one course, which may be taught multiple times in different
  * semesters (represented by separate course offerings).
  *
- * @author Stephen Edwards
- * @author  latest changes by: $Author$
+ * @author  Stephen Edwards
+ * @author  Last changed by: $Author$
  * @version $Revision$, $Date$
  */
 public class Course
@@ -106,6 +105,21 @@ public class Course
     public String userPresentableDescription()
     {
         return deptNumber();
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public boolean accessibleByUser(User user)
+    {
+        for (CourseOffering offering : offerings())
+        {
+            if (offering.accessibleByUser(user))
+            {
+                return true;
+            }
+        }
+        return false;
     }
 
 

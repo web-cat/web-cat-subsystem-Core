@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -26,15 +26,12 @@ import org.webcat.core.FileUtilities;
 import org.webcat.core.InlineStatusIndicator;
 import org.webcat.core.git.GitCommit;
 import org.webcat.core.git.GitRef;
-import org.webcat.core.git.GitTreeEntry;
-import org.webcat.core.git.GitUtilities;
 import org.webcat.core.git.PrettyDiffFormatter;
 import org.webcat.core.git.PrettyDiffResult;
 import org.webcat.ui.generators.JavascriptGenerator;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSMutableArray;
 
 //-------------------------------------------------------------------------
 /**
@@ -44,7 +41,8 @@ import com.webobjects.foundation.NSMutableArray;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class GitCommitPage extends GitWebComponent
+public class GitCommitPage
+    extends GitWebComponent
 {
     //~ Constructors ..........................................................
 

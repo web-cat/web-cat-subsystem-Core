@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,7 +22,6 @@
 package org.webcat.core;
 
 import com.webobjects.eoaccess.*;
-import com.webobjects.foundation.NSDictionary;
 import edu.vt.middleware.ldap.*;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.LdapAuthenticator;
@@ -36,8 +35,9 @@ import org.apache.log4j.Logger;
  *  A concrete implementation of <code>UserAuthenticator</code> that
  *  tests user ids/passwords using LDAP.
  *
- *  @author edwards
- *  @version $Id$
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class LdapAuthenticator
     implements UserAuthenticator

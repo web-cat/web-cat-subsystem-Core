@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,10 +22,17 @@
 package org.webcat.core;
 
 import com.webobjects.appserver.*;
-import com.webobjects.woextensions.*;
 import er.extensions.components.ERXComponentUtilities;
 import er.extensions.foundation.ERXValueUtilities;
 
+//-------------------------------------------------------------------------
+/**
+ *  A layout component rendered as a collapsible page section.
+ *
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
+ */
 public class WCCollapsibleSection
     extends WOComponent
 {

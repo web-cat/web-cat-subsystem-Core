@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -247,8 +247,11 @@ public class RepositoryManager
             Method method = klass.getMethod("repositoriesPresentedToUser",
                     User.class, EOEditingContext.class);
 
-            return (NSArray<? extends EOEnterpriseObject>) method.invoke(
+            @SuppressWarnings("unchecked")
+            NSArray<? extends EOEnterpriseObject> result =
+                (NSArray<? extends EOEnterpriseObject>) method.invoke(
                     null, user, ec);
+            return result;
         }
         catch (Exception e)
         {

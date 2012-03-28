@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,11 +21,10 @@
 
 package org.webcat.core;
 
-import java.lang.*;
-import java.net.*;
-import java.util.*;
+import java.net.URL;
+import java.net.URLClassLoader;
 import org.webcat.core.DelegatingUrlClassLoader;
-import org.apache.log4j.*;
+import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -55,8 +54,9 @@ import org.apache.log4j.*;
  * load all classes used in Web-CAT.
  * </p>
  *
- *  @author Stephen Edwards
- *  @version $Id$
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class DelegatingUrlClassLoader
     extends URLClassLoader

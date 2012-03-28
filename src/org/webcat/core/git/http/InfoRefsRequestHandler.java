@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -27,12 +27,9 @@ import java.util.Map;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.Ref;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.revwalk.RevFlag;
-import org.eclipse.jgit.revwalk.RevWalk;
 import org.eclipse.jgit.transport.RefAdvertiser;
 import org.webcat.core.NSMutableDataOutputStream;
 import org.webcat.core.http.RequestHandlerWithResponse;
-import com.webobjects.appserver.WOMessage;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
 
@@ -44,7 +41,8 @@ import com.webobjects.appserver.WOResponse;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class InfoRefsRequestHandler implements RequestHandlerWithResponse
+public class InfoRefsRequestHandler
+    implements RequestHandlerWithResponse
 {
     //~ Methods ...............................................................
 

@@ -58,8 +58,9 @@ public class WCAccessibleQualifier
     public boolean evaluateWithObject(Object object)
     {
         return object != null
-            && object instanceof EOBase
-            && ((EOBase)object).accessibleByUser((User)value());
+            && (((User)value()).hasAdminPrivileges()
+                || (object instanceof EOBase
+                    && ((EOBase)object).accessibleByUser((User)value())));
     }
 
 

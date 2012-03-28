@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -27,17 +27,14 @@ import java.util.Collection;
 import org.apache.http.HttpStatus;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.PostReceiveHook;
-import org.eclipse.jgit.transport.PreReceiveHook;
 import org.eclipse.jgit.transport.ReceiveCommand;
 import org.eclipse.jgit.transport.ReceivePack;
 import org.eclipse.jgit.transport.RefAdvertiser.PacketLineOutRefAdvertiser;
 import org.eclipse.jgit.util.HttpSupport;
-import org.webcat.core.NSMutableDataOutputStream;
 import org.webcat.core.git.GitUtilities;
 import org.webcat.core.http.RequestHandlerWithResponse;
 import org.webcat.core.http.RequestUtils;
 import org.webcat.core.http.SmartGZIPOutputStream;
-import com.webobjects.appserver.WOMessage;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
 
@@ -49,7 +46,8 @@ import com.webobjects.appserver.WOResponse;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class ReceivePackRequestHandler implements RequestHandlerWithResponse
+public class ReceivePackRequestHandler
+    implements RequestHandlerWithResponse
 {
     //~ Methods ...............................................................
 
@@ -74,7 +72,7 @@ public class ReceivePackRequestHandler implements RequestHandlerWithResponse
             ReceivePack rp = new ReceivePack(repo);
             rp.setBiDirectionalPipe(false);
             rp.setPostReceiveHook(new PostReceiveHook() {
-                public void onPostReceive(ReceivePack rp,
+                public void onPostReceive(ReceivePack pack,
                         Collection<ReceiveCommand> commands)
                 {
                     // Once the pack is received, force a pull of the working

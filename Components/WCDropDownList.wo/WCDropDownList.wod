@@ -18,10 +18,6 @@ Item: WCDropDownItem {
     isSelectable = true;
 }
 
-Selection: WOString {
-    value = displayStringForSelection;
-}
-
 SelectionSpan: WOGenericContainer {
     elementName = "span";
     id = selectionId;

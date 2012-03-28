@@ -37,8 +37,3 @@ Repetition: WORepetition {
     list = options;
     item = option;
 }
-
-ShowVerboseDescriptions: WCCheckBox {
-    id = idFor.showVerbose;
-    checked = verbose;
-}

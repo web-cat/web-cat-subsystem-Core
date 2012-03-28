@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2010 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -24,7 +24,6 @@ package org.webcat.core;
 import org.webcat.core.ErrorDictionaryPanel;
 import org.webcat.core.Status;
 import org.webcat.ui.generators.JavascriptGenerator;
-import org.webcat.ui.util.JSHash;
 import com.webobjects.appserver.*;
 import com.webobjects.foundation.*;
 
@@ -33,8 +32,8 @@ import com.webobjects.foundation.*;
  * This class is a base for WCComponent that extracts out the error
  * message handling features.
  *
- * @author Stephen Edwards
- * @author  latest changes by: $Author$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
 public class WCComponentWithErrorMessages

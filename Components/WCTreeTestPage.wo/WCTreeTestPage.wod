@@ -5,9 +5,6 @@ DoSomething: WCButton {
     onClick = renderGridBusyScript;
 }
 
-Form: WCForm {
-}
-
 Page: SaveCancelPage {
     title = "WCTree Test Page";
 }

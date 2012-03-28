@@ -12,17 +12,6 @@ PaginationBar: WCPaginationBar {
     settingsKey = table.settingsKey;
 }
 
-SearchAction: WCActionFunction {
-    jsId = table.idFor.searchAction;
-    remote = true;
-    remote.submit = table.idFor.searchBar;
-    action = search;
-}
-
-SearchBusyIndicator : WCSpinner {
-    id = table.idFor.searchBusyIndicator;
-}
-
 SearchField: WCSearchField {
     id = table.idFor.searchField;
     searchText = searchString;

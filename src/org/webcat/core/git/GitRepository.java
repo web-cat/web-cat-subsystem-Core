@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,16 +21,12 @@
 
 package org.webcat.core.git;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.TagCommand;
-import org.eclipse.jgit.errors.IncorrectObjectTypeException;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectLoader;
@@ -41,13 +37,10 @@ import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.revwalk.RevSort;
 import org.eclipse.jgit.revwalk.RevWalk;
-import org.eclipse.jgit.treewalk.CanonicalTreeParser;
-import org.eclipse.jgit.treewalk.TreeWalk;
 import org.eclipse.jgit.treewalk.filter.AndTreeFilter;
 import org.eclipse.jgit.treewalk.filter.PathSuffixFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.jfree.util.Log;
-import org.webcat.archives.ArchiveManager;
 import org.webcat.archives.IWritableContainer;
 import org.webcat.core.NSMutableDataOutputStream;
 import org.webcat.core.git.GitUtilities.RefFilter;
@@ -68,7 +61,8 @@ import com.webobjects.foundation.NSMutableDictionary;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class GitRepository implements NSKeyValueCodingAdditions
+public class GitRepository
+    implements NSKeyValueCodingAdditions
 {
     //~ Constructors ..........................................................
 

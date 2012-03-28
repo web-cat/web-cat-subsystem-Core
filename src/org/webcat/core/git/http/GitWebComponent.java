@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,10 +21,7 @@
 
 package org.webcat.core.git.http;
 
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Repository;
 import org.webcat.core.WCComponent;
-import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 
 //-------------------------------------------------------------------------
@@ -36,7 +33,8 @@ import com.webobjects.appserver.WOContext;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public abstract class GitWebComponent extends WCComponent
+public abstract class GitWebComponent
+    extends WCComponent
 {
     //~ Constructors ..........................................................
 

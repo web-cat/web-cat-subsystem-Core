@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,15 +21,12 @@
 
 package org.webcat.core.git;
 
-import java.io.File;
 import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.lib.FileMode;
 import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.ObjectReader;
-import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.treewalk.TreeWalk;
-import org.jfree.util.Log;
 import com.webobjects.foundation.NSKeyValueCoding;
 import com.webobjects.foundation.NSKeyValueCodingAdditions;
 
@@ -41,7 +38,8 @@ import com.webobjects.foundation.NSKeyValueCodingAdditions;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class GitTreeEntry implements NSKeyValueCodingAdditions
+public class GitTreeEntry
+    implements NSKeyValueCodingAdditions
 {
     //~ Constructors ..........................................................
 

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,14 +23,11 @@ package org.webcat.core.git.http;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.zip.GZIPInputStream;
 import org.apache.http.HttpStatus;
 import org.eclipse.jgit.lib.Repository;
-import org.eclipse.jgit.transport.ReceivePack;
 import org.eclipse.jgit.transport.UploadPack;
 import org.eclipse.jgit.transport.RefAdvertiser.PacketLineOutRefAdvertiser;
 import org.eclipse.jgit.util.HttpSupport;
-import org.webcat.core.NSMutableDataOutputStream;
 import org.webcat.core.http.RequestHandlerWithResponse;
 import org.webcat.core.http.RequestUtils;
 import org.webcat.core.http.SmartGZIPOutputStream;
@@ -45,7 +42,8 @@ import com.webobjects.appserver.WOResponse;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class UploadPackRequestHandler implements RequestHandlerWithResponse
+public class UploadPackRequestHandler
+    implements RequestHandlerWithResponse
 {
     //~ Methods ...............................................................
 

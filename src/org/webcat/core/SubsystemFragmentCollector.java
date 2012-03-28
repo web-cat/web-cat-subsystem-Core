@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,12 +21,8 @@
 
 package org.webcat.core;
 
-import java.io.InputStream;
 import com.webobjects.appserver.*;
-import com.webobjects.appserver._private.WOComponentDefinition;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSBundle;
-import com.webobjects.foundation._NSStringUtilities;
 import org.webcat.core.Application;
 import org.webcat.core.SubsystemFragmentCollector;
 import org.apache.log4j.Logger;

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,9 +22,7 @@
 package org.webcat.core;
 
 import com.webobjects.appserver.*;
-import com.webobjects.foundation.*;
 import org.webcat.core.Application;
-import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
 /**
@@ -32,7 +30,8 @@ import org.apache.log4j.Logger;
  *  including plug-in-based contributions from all subsystems.
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class SystemStatusBlock
     extends WOComponent

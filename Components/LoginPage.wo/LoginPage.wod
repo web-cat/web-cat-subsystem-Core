@@ -34,10 +34,6 @@ HasSpecificAuthDomain: WOConditional {
     condition = hasSpecificAuthDomain;
 }
 
-HasLangList: WOConditional {
-    condition = application.properties.graderLangList;
-}
-
 HasMOTD: WOConditional {
     condition = application.properties.coreMotd;
 }
@@ -45,11 +41,6 @@ HasMOTD: WOConditional {
 HiddenAuthDomain: WOHiddenField {
     name  = "d";
     value = specificAuthDomainName;
-}
-
-LangList: WOString {
-    value = application.properties.graderLangList;
-    escapeHTML = false;
 }
 
 LoginForm: WOForm {

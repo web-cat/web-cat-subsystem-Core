@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -30,7 +30,6 @@ import org.eclipse.jgit.diff.DiffFormatter;
 import org.eclipse.jgit.diff.RawText;
 import org.eclipse.jgit.diff.DiffEntry.Side;
 import org.eclipse.jgit.lib.AnyObjectId;
-import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.patch.FileHeader;
 import org.eclipse.jgit.revwalk.RevTree;
@@ -46,11 +45,12 @@ import com.webobjects.foundation.NSComparator.ComparisonException;
 /**
  * TODO real description
  *
- * @author Tony Allevato
- * @author Last changed by $Author$
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class PrettyDiffFormatter extends DiffFormatter
+public class PrettyDiffFormatter
+    extends DiffFormatter
 {
     //~ Constructors ..........................................................
 

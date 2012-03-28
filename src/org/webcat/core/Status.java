@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,15 +21,14 @@
 
 package org.webcat.core;
 
-import com.webobjects.appserver.*;
-
 // -------------------------------------------------------------------------
 /**
  *  Defines the constants and static methods needed to translate byte-sized
  *  status codes into image URLs for the corresponding icons.
  *
- *  @author  stedwar2
- *  @version Jan 28, 2005
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class Status
 {

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -34,7 +34,6 @@ import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSTimeZone;
 import com.webobjects.foundation.NSTimestamp;
-import com.webobjects.foundation.NSTimestampFormatter;
 import er.extensions.eof.ERXQ;
 import er.extensions.foundation.ERXArrayUtilities;
 
@@ -43,9 +42,9 @@ import er.extensions.foundation.ERXArrayUtilities;
  * Represents a standard Web-CAT page that has not yet been implemented
  * (is "to be defined").
  *
- *  @author Stephen Edwards
- * @author Last changed by $Author$
- * @version $Revision$, $Date$
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class MyProfilePage
     extends WCComponent
@@ -140,9 +139,11 @@ public class MyProfilePage
 
 
     // ----------------------------------------------------------
+    @SuppressWarnings("deprecation")
     public String formattedCurrentTime()
     {
-        NSTimestampFormatter formatter = new NSTimestampFormatter( aFormat );
+        com.webobjects.foundation.NSTimestampFormatter formatter =
+            new com.webobjects.foundation.NSTimestampFormatter( aFormat );
         formatter.setDefaultFormatTimeZone(
             wcSession().timeFormatter().defaultFormatTimeZone() );
         return formatter.format( now );
@@ -265,7 +266,8 @@ public class MyProfilePage
         {
             String crnList = null;
             User me = user();
-            NSMutableArray offerings = me.enrolledIn().mutableClone();
+            NSMutableArray<CourseOffering> offerings =
+                me.enrolledIn().mutableClone();
             ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates( offerings,
                 me.graderFor() );
             ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates( offerings,
@@ -280,8 +282,7 @@ public class MyProfilePage
                 {
                     crnList += ',';
                 }
-                crnList +=
-                    ( (CourseOffering)offerings.objectAtIndex( i ) ).crn();
+                crnList += offerings.objectAtIndex(i).crn();
             }
             if ( crnList!= null )
             {

@@ -3,11 +3,6 @@ Container: WOGenericContainer {
     id = idFor.searchContainer;
 }
 
-ClearField: WCLink {
-    href = "javascript:void(0);";
-    remote = true;
-}
-
 ClearImage: WCImageButton {
     framework = "Core";
     filename = "icons/cross-white.png";

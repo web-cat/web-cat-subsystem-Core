@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,21 +21,15 @@
 
 package org.webcat.core.git.http;
 
-import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Ref;
 import org.webcat.core.InlineStatusIndicator;
-import org.webcat.core.TimeUtilities;
 import org.webcat.core.git.GitCommit;
 import org.webcat.core.git.GitRef;
-import org.webcat.core.git.GitUtilities;
 import org.webcat.ui.generators.JavascriptGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
-import com.webobjects.foundation.NSMutableArray;
 
 //-------------------------------------------------------------------------
 /**
@@ -45,7 +39,8 @@ import com.webobjects.foundation.NSMutableArray;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class GitBranchesPage extends GitWebComponent
+public class GitBranchesPage
+    extends GitWebComponent
 {
     //~ Constructors ..........................................................
 
@@ -162,12 +157,12 @@ public class GitBranchesPage extends GitWebComponent
     // ----------------------------------------------------------
     public WOActionResults createTag()
     {
-        GitRef tagRef =
+        GitRef aTagRef =
             gitContext().repository().createTagForObject(newTagName, null);
 
         JavascriptGenerator js;
 
-        if (tagRef != null)
+        if (aTagRef != null)
         {
             gatherTags();
             js = new JavascriptGenerator().refresh("tagModule");

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -25,9 +25,7 @@ import org.webcat.ui.generators.JavascriptFunction;
 import org.webcat.ui.generators.JavascriptGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSKeyValueCoding;
-import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
 
 //-------------------------------------------------------------------------
@@ -38,7 +36,8 @@ import com.webobjects.foundation.NSMutableDictionary;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class WidgetTestPage extends WCComponent
+public class WidgetTestPage
+    extends WCComponent
 {
     public WidgetTestPage(WOContext context)
     {

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,7 +23,6 @@ package org.webcat.core.http;
 
 import java.util.ArrayList;
 import com.webobjects.appserver.WOMessage;
-import com.webobjects.appserver.WORequestHandler;
 
 //-------------------------------------------------------------------------
 /**
@@ -33,7 +32,8 @@ import com.webobjects.appserver.WORequestHandler;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public abstract class RequestHandlerBinderImpl implements RequestHandlerBinder
+public abstract class RequestHandlerBinderImpl
+    implements RequestHandlerBinder
 {
     //~ Constructors ..........................................................
 

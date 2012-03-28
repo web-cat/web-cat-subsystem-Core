@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,7 +21,6 @@
 
 package org.webcat.core.git.http;
 
-import org.eclipse.jgit.util.HttpSupport;
 import org.webcat.core.http.RequestFilter;
 import org.webcat.core.http.RequestFilterChain;
 import com.webobjects.appserver.WORequest;
@@ -36,7 +35,8 @@ import com.webobjects.appserver.WOResponse;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class NoCacheRequestFilter implements RequestFilter
+public class NoCacheRequestFilter
+    implements RequestFilter
 {
     //~ Methods ...............................................................
 

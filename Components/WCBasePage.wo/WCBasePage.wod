@@ -4,12 +4,6 @@ JSONRPCJs: WOGenericContainer {
     src = "~resourceUrl(\"Ajax.framework/WebServerResources/jsonrpc.js\")";
 }
 
-BasePageJs: WOGenericContainer {
-    elementName = "script";
-    type        = "text/javascript";
-    src         = "~resourceUrl(\"Core.framework/WebServerResources/dojo/\" + pageScriptName)";
-}
-
 DojoCss: WOGenericElement {
     elementName = "link";
     rel         = "stylesheet";

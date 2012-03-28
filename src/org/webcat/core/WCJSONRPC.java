@@ -70,16 +70,16 @@ import er.extensions.appserver.ERXWOContext;
  * <li> Complete the JSON-RPC integration to be able to leverage all possibilities of that library (foreign references,
  * etc.).
  * </ul>
- * 
- * @binding proxy Server side object (Java) that will be visible for rpc communication (Javascript).  
+ *
+ * @binding proxy Server side object (Java) that will be visible for rpc communication (Javascript).
  * If no object is bound, the parent() object is assigned by default.
  * @binding proxyName Client side name (Javascript) used to identify the proxy (Java) from the bridge object.
  * @binding name Client side name (Javascript) of the bridge object.
- * @binding JSONRPCBridge Server side object (Java) used to handle the request.  Of no value are bound, a new 
- * object is created for every ajax request.  If a binding is there but null value, a new 
- * object will be created and pushed to the binding so that this new object can be shared 
+ * @binding JSONRPCBridge Server side object (Java) used to handle the request.  Of no value are bound, a new
+ * object is created for every ajax request.  If a binding is there but null value, a new
+ * object will be created and pushed to the binding so that this new object can be shared
  * for multiple proxy.
- * 
+ *
  * @author Jean-Fran�ois Veillette <jfveillette@os.ca>
  * @version $Revision $, $Date $ <br>
  *          &copy; 2005-2006 OS communications informatiques, inc. http://www.os.ca
@@ -91,7 +91,7 @@ public class WCJSONRPC extends WOComponent
     {
         super(context);
     }
-    
+
 
     /**
      * Overridden because the component is stateless
@@ -111,12 +111,14 @@ public class WCJSONRPC extends WOComponent
     /**
      * Adds the jsonrpc.js script to the head in the response if not already present and also adds a javascript proxy
      * for the supplied bridge under the name "JSONRPC_<variableName>".
-     * 
+     *
      * @param response
      */
     public void appendToResponse(WOResponse response, WOContext context)
     {
-        NSMutableDictionary userInfo = ERXWOContext.contextDictionary();
+        @SuppressWarnings("unchecked")
+        NSMutableDictionary<String, Object> userInfo =
+            ERXWOContext.contextDictionary();
         String name = (String) valueForBinding("name");
         String key = "JSONRPC_" + name;
         Object oldValue = userInfo.objectForKey(key);
@@ -169,9 +171,9 @@ public class WCJSONRPC extends WOComponent
         return (WOActionResults) result;
     }
 
-    /** Ask the an JSONRPCBridge object to handle the json request. 
-     * @param request 
-     * @param context 
+    /** Ask the an JSONRPCBridge object to handle the json request.
+     * @param request
+     * @param context
      * @return the result of the request */
     public WOActionResults handleRequest(WORequest request, WOContext context)
     {
@@ -227,6 +229,6 @@ public class WCJSONRPC extends WOComponent
         response.appendContentString(output.toString());
         return response;
     }
-    
+
     private static Logger log = Logger.getLogger(WCJSONRPC.class);
 }

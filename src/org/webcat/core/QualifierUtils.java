@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -24,12 +24,8 @@ package org.webcat.core;
 import org.webcat.core.QualifierInSubquery;
 import com.webobjects.eocontrol.EOAndQualifier;
 import com.webobjects.eocontrol.EOClassDescription;
-import com.webobjects.eocontrol.EOEditingContext;
-import com.webobjects.eocontrol.EOEnterpriseObject;
-import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.eocontrol.EOKeyComparisonQualifier;
 import com.webobjects.eocontrol.EOKeyValueQualifier;
-import com.webobjects.eocontrol.EONotQualifier;
 import com.webobjects.eocontrol.EOOrQualifier;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.foundation.NSArray;
@@ -42,8 +38,9 @@ import er.extensions.eof.qualifiers.ERXInQualifier;
 /**
  * Utility methods to operate on qualifiers.
  *
- * @author Tony Allevato
- * @version $Id$
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class QualifierUtils
 {
@@ -273,8 +270,8 @@ public class QualifierUtils
             return null;
         }
     }
-    
-    
+
+
     // ----------------------------------------------------------
     /**
      * Shortcut method to return a subquery qualifier that determines if the
@@ -282,10 +279,10 @@ public class QualifierUtils
      * EOKeyComparisonQualifier that does this, the qualifier returned here can
      * be properly negated with EONotQualifier to determine if the object is
      * NOT in the relationship.
-     * 
+     *
      * ".id" is automatically appended to the ends of the relationships passed
      * into this function.
-     * 
+     *
      * @param keyPath the key path of the object to test (a to-one relationship)
      * @param relationship the relationship in which to look for keyPath
      *     (a to-many relationship)

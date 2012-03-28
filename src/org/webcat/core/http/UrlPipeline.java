@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,9 +21,7 @@
 
 package org.webcat.core.http;
 
-import java.io.IOException;
 import com.webobjects.appserver.WORequest;
-import com.webobjects.appserver.WORequestHandler;
 import com.webobjects.appserver.WOResponse;
 
 //-------------------------------------------------------------------------

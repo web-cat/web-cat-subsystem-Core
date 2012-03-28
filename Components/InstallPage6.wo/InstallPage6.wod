@@ -42,12 +42,3 @@ Page : org.webcat.core.install.InstallPageWrapper {
     stepNo = stepNo;
     errors = messages;
 }
-
-UsingDatabaseAuthentication: WOConditional {
-    condition = usingDatabaseAuthentication;
-}
-
-UsingOtherAuthentication: WOConditional {
-    condition = usingDatabaseAuthentication;
-    negate    = true;
-}

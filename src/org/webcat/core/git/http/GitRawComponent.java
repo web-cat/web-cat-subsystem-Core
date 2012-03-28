@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,12 +21,7 @@
 
 package org.webcat.core.git.http;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import org.apache.log4j.Logger;
 import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.ObjectLoader;
-import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.util.HttpSupport;
 import org.webcat.core.FileUtilities;
 import org.webcat.core.WOResponseOutputStream;
@@ -41,7 +36,8 @@ import com.webobjects.appserver.WOResponse;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class GitRawComponent extends GitWebComponent
+public class GitRawComponent
+    extends GitWebComponent
 {
     //~ Constructors ..........................................................
 

@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2010 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,7 +22,6 @@
 package org.webcat.core;
 
 import org.webcat.ui.generators.JavascriptGenerator;
-import org.webcat.ui.util.ComponentIDGenerator;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 

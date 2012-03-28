@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2010 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -33,8 +33,8 @@ import org.apache.log4j.Logger;
  * Represents a single offering of a course (i.e., one section in a given
  * semester).
  *
- * @author Stephen Edwards
- * @author Last changed by $Author$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
 public class CourseOffering
@@ -219,6 +219,17 @@ public class CourseOffering
     public boolean isStaff(User user)
     {
         return isInstructor(user) || isGrader(user);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean accessibleByUser(User user)
+    {
+        return isStaff(user);
     }
 
 

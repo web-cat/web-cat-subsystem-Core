@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,8 +21,6 @@
 
 package org.webcat.core;
 
-import er.extensions.concurrency.ERXLongResponseTask;
-
 //-------------------------------------------------------------------------
 /**
  * Enterprise objects that implement this interface will automatically have
@@ -30,7 +28,7 @@ import er.extensions.concurrency.ERXLongResponseTask;
  * have semantically correct values (perhaps derived from values in other
  * columns) will be updated on-demand when the object is first retrieved from
  * the data store.
- * 
+ *
  * To make use of this functionality, create a new attribute in your EOModel
  * and place "needsMigration = true" in its userInfo dictionary. When the
  * EOGenerator runs on the model, this interface will automatically be
@@ -41,13 +39,14 @@ import er.extensions.concurrency.ERXLongResponseTask;
  * this accessor to either compute the property (migrating it) or, if already
  * migrated, just return its value.
  *
- * @author Tony Allevato
- * @version $Id$
+ * @author  Tony Allevato
+ * @author  Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public interface MigratoryAttributeOwner
 {
     //~ Methods ...............................................................
-    
+
     // ----------------------------------------------------------
     /**
      * Called as part of an object's life cycle to compute on-demand any

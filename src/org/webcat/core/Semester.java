@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,15 +22,11 @@
 package org.webcat.core;
 
 import com.webobjects.foundation.*;
-import com.webobjects.foundation.NSValidation.*;
-import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
-
 import java.io.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
-
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.Semester;
 import org.webcat.core._Semester;
@@ -40,8 +36,9 @@ import org.apache.log4j.*;
 /**
  * Represents a single school semester.
  *
- * @author Stephen Edwards
- * @version $Id$
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class Semester
     extends _Semester

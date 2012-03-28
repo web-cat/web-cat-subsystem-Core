@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,17 +21,12 @@
 
 package org.webcat.core.git.http;
 
-import org.eclipse.jgit.lib.ObjectId;
-import org.eclipse.jgit.lib.Repository;
 import org.webcat.core.FileUtilities;
 import org.webcat.core.git.GitCommit;
 import org.webcat.core.git.GitTreeEntry;
-import org.webcat.core.git.GitUtilities;
-import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableDictionary;
 
 //-------------------------------------------------------------------------
@@ -44,7 +39,8 @@ import com.webobjects.foundation.NSMutableDictionary;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class GitTreeComponent extends GitWebComponent
+public class GitTreeComponent
+    extends GitWebComponent
 {
     //~ Constructors ..........................................................
 

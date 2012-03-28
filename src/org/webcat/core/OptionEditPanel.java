@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -45,7 +45,7 @@ import er.extensions.eof.ERXConstant;
  *  A small component that allows editing of one option in an option set.
  *  @see OptionSetEditor
  *
- *  @author Stephen Edwards
+ *  @author  Stephen Edwards
  *  @author  Last changed by $Author$
  *  @version $Revision$, $Date$
  */
@@ -408,8 +408,10 @@ public class OptionEditPanel
         }
         else if (value() instanceof NSDictionary<?, ?>)
         {
-            entryRef = RepositoryEntryRef.fromDictionary(
-                    (NSDictionary<String, Object>) value());
+            @SuppressWarnings("unchecked")
+            NSDictionary<String, Object> value =
+                (NSDictionary<String, Object>) value();
+            entryRef = RepositoryEntryRef.fromDictionary(value);
         }
         else
         {

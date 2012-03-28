@@ -183,11 +183,6 @@ TeachingRepetition: WORepetition {
     index = index;
 }
 
-ThemeDescription: WOString {
-    value = "~(user.theme == null) ? session.theme.inherit.properties.description : user.theme.inherit.properties.description";
-    escapeHTML = false;
-}
-
 PreviewLink: WOHyperlink {
     href     = "~@org.webcat.woextensions.WCResourceManager@resourceURLFor(\"Core.framework/WebServerResources/theme/\" + aTheme.dirName + \"/\" + aTheme.inherit.properties.preview, null)";
     dojoType = "dojox.image.Lightbox";

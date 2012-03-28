@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,12 +22,10 @@
 package org.webcat.core.git.http;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.lib.Repository;
-import org.webcat.archives.ArchiveManager;
 import org.webcat.core.FileUtilities;
 import org.webcat.core.git.GitCommit;
 import org.webcat.core.git.GitUtilities;
@@ -46,7 +44,8 @@ import com.webobjects.foundation.NSData;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class GitBlobPage extends GitWebComponent
+public class GitBlobPage
+    extends GitWebComponent
 {
     //~ Constructors ..........................................................
 

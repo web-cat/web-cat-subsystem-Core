@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -24,9 +24,7 @@ package org.webcat.core;
 import org.webcat.core.SentMessage;
 import org.webcat.core.User;
 import org.webcat.core._SentMessage;
-import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOFetchSpecification;
-import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.foundation.NSArray;
 import er.extensions.eof.ERXQ;
 import er.extensions.eof.ERXS;
@@ -35,8 +33,8 @@ import er.extensions.eof.ERXS;
 /**
  * TODO: place a real description here.
  *
- * @author
- * @author  latest changes by: $Author$
+ * @author  Tony Allevato
+ * @author  Last changed by: $Author$
  * @version $Revision$ $Date$
  */
 public class SentMessage

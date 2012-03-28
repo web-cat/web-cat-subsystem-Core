@@ -289,41 +289,45 @@ public class Theme
             linkTags = (parent() == null)
                 ? ""
                 : parent().linkTags();
-            try
+            if (properties() != null)
             {
-                Object cssFileList = properties().valueForKey("cssOrder");
-                if (cssFileList != null && cssFileList instanceof NSArray)
+                try
                 {
-                    @SuppressWarnings("unchecked")
-                    NSArray<NSDictionary<String, String>> cssFiles =
-                        (NSArray<NSDictionary<String, String>>)cssFileList;
-                    String baseLocation =
-                        "Core.framework/WebServerResources/theme/"
-                        + dirName() + "/";
-                    for (NSDictionary<String, String> css : cssFiles)
+                    Object cssFileList = properties().valueForKey("cssOrder");
+                    if (cssFileList != null && cssFileList instanceof NSArray)
                     {
-                        linkTags += "<link rel=\"stylesheet\" type=\"text/css\""
-                            + "href=\""
-                            + WCResourceManager.resourceURLFor(
-                                baseLocation
-                                + css.get("file"),
-                                null)
-                            + "\"";
-                        String media = css.get("media");
-                        if (media != null)
+                        @SuppressWarnings("unchecked")
+                        NSArray<NSDictionary<String, String>> cssFiles =
+                            (NSArray<NSDictionary<String, String>>)cssFileList;
+                        String baseLocation =
+                            "Core.framework/WebServerResources/theme/"
+                            + dirName() + "/";
+                        for (NSDictionary<String, String> css : cssFiles)
                         {
-                            linkTags += " media=\"" + media + "\"";
+                            linkTags += "<link rel=\"stylesheet\" "
+                                + "type=\"text/css\" href=\""
+                                + WCResourceManager.resourceURLFor(
+                                    baseLocation
+                                    + css.get("file"),
+                                    null)
+                                + "\"";
+                            String media = css.get("media");
+                            if (media != null)
+                            {
+                                linkTags += " media=\"" + media + "\"";
+                            }
+                            linkTags += " />";
                         }
-                        linkTags += " />";
                     }
                 }
-            }
-            catch (Exception e)
-            {
-                new UnexpectedExceptionMessage(e, null, null,
-                        "Unexpected exception trying to decode theme properties "
-                        + "for theme: " + dirName() + "(" + id() + ").")
-                    .send();
+                catch (Exception e)
+                {
+                    new UnexpectedExceptionMessage(e, null, null,
+                        "Unexpected exception trying to decode theme "
+                        + "properties for theme: " + dirName()
+                        + "(" + id() + ").")
+                        .send();
+                }
             }
         }
         return linkTags;

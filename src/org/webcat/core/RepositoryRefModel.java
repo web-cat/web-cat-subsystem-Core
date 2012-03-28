@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,7 +23,6 @@ package org.webcat.core;
 
 import org.webcat.core.git.GitRef;
 import org.webcat.core.git.GitRepository;
-import org.webcat.core.git.GitTreeEntry;
 import org.webcat.ui.WCTreeModel;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
@@ -39,7 +38,8 @@ import com.webobjects.foundation.NSMutableArray;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class RepositoryRefModel extends WCTreeModel
+public class RepositoryRefModel
+    extends WCTreeModel<Object>
 {
     //~ Constructors ..........................................................
 
@@ -54,11 +54,13 @@ public class RepositoryRefModel extends WCTreeModel
 
     // ----------------------------------------------------------
     @Override
-    public NSArray<?> childrenOfObject(Object object)
+    public NSArray<Object> childrenOfObject(Object object)
     {
         if (object == null)
         {
-            return providers;
+            @SuppressWarnings("unchecked")
+            NSArray<Object> result = (NSArray<Object>)providers;
+            return result;
         }
         else if (object instanceof EOEnterpriseObject)
         {
@@ -69,7 +71,10 @@ public class RepositoryRefModel extends WCTreeModel
             NSMutableArray<GitRef> refs = new NSMutableArray<GitRef>();
             refs.addObjectsFromArray(repository.headRefs());
             refs.addObjectsFromArray(repository.tagRefs());
-            return refs;
+
+            @SuppressWarnings("unchecked")
+            NSArray<Object> result = (NSArray)refs;
+            return result;
         }
         else
         {

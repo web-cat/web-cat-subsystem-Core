@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,7 +23,6 @@ package org.webcat.core;
 
 import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.EODatabaseDataSource;
-import com.webobjects.eoaccess.EOEntity;
 import com.webobjects.eocontrol.EODetailDataSource;
 import com.webobjects.eocontrol.EOGenericRecord;
 import org.webcat.core.User;
@@ -53,8 +52,8 @@ import org.apache.log4j.Logger;
  * @binding promoteToAccessLevel The minimum access level that users will
  *          gain when being added to the relationship (default: 0).
  *
- * @author Stephen Edwards
- * @author Last changed by $Author$
+ * @author  Stephen Edwards
+ * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
 public class UserListBrowser

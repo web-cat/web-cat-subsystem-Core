@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,14 +23,11 @@ package org.webcat.core.git.http;
 
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.lib.Constants;
-import org.eclipse.jgit.lib.Ref;
 import org.webcat.core.Application;
-import org.webcat.core.MyProfilePage;
 import org.webcat.core.Session;
 import org.webcat.core.StatusPage;
 import org.webcat.core.WCComponent;
 import org.webcat.core.git.GitRef;
-import org.webcat.core.git.GitUtilities;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
@@ -46,7 +43,8 @@ import com.webobjects.foundation.NSMutableArray;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class GitBasePage extends GitWebComponent
+public class GitBasePage
+    extends GitWebComponent
 {
     //~ Constructors ..........................................................
 

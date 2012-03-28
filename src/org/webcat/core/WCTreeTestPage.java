@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2009 Virginia Tech
+ |  Copyright (C) 2009-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,18 +21,14 @@
 
 package org.webcat.core;
 
-import org.webcat.ui.WCTable;
 import org.webcat.ui.WCTree;
 import org.webcat.ui.WCTreeModel;
 import org.webcat.ui.generators.JavascriptGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
-import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSSet;
-import er.extensions.appserver.ERXDisplayGroup;
 
 //-------------------------------------------------------------------------
 /**
@@ -42,7 +38,8 @@ import er.extensions.appserver.ERXDisplayGroup;
  * @author  Last changed by $Author$
  * @version $Revision$, $Date$
  */
-public class WCTreeTestPage extends WCComponent
+public class WCTreeTestPage
+    extends WCComponent
 {
     //~ Constructors ..........................................................
 

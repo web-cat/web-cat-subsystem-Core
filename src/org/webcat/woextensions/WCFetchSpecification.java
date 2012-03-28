@@ -136,7 +136,7 @@ public class WCFetchSpecification<T extends EOEnterpriseObject>
      */
     private void setDefaults()
     {
-        setRefreshesRefetchedObjects(true);
+        setRefreshesRefetchedObjects(false); // FIXME: TRUE!!!
         // Want to do this:
         // setIncludeEditingContextChanges(true);
         // but ... it doesn't work.  See Javadoc comments above.  Instead:

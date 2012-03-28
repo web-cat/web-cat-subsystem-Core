@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,13 +22,8 @@
 package org.webcat.core;
 
 import com.webobjects.appserver.*;
-import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
-import com.webobjects.foundation.*;
 import com.webobjects.woextensions.*;
-
 import java.io.*;
-
 import org.webcat.core.Application;
 import org.webcat.core.ErrorPage;
 import org.webcat.core.Session;
@@ -40,8 +35,9 @@ import org.apache.log4j.Logger;
  * This is the generic error page shown to users whenever an exception
  * occurs.
  *
- * @author Stephen Edwards
- * @version $Id$
+ *  @author  Stephen Edwards
+ *  @author  Last changed by $Author$
+ *  @version $Revision$, $Date$
  */
 public class ErrorPage
     extends WOExceptionPage

@@ -4,15 +4,6 @@ IsLoggedIn: WOConditional {
 	condition = isLoggedIn;
 }
 
-Logo: WOImage {
-	filename = "images/Web-CAT-big2.gif";
-	width    = "100";
-	height   = "40";
-	alt      = "Web-CAT";
-	border   = "0";
-	align    = "middle";
-}
-
 LogoutButton: WOSubmitButton {
 	action = logout;
 	value = " Logout ";
@@ -24,21 +15,6 @@ MyForm: WCForcedForm {
 
 Page: org.webcat.ui.WCBasePage {
     title = "Unexpected Exception";
-}
-
-PoweredByWOLink: WOHyperlink {
-    href = "http://www.apple.com/webobjects/";
-}
-
-PoweredByWO: WOImage {
-	alt       = "Powered By WebObjects";
-	title     = "Powered By WebObjects";
-	border    = "0";
-	filename  = "PoweredByWebObjects.gif";
-	framework = "JavaWOExtensions";
-	height    = "34";
-	name      = "Powered By WebObjects";
-	width     = "125";
 }
 
 ReasonRepetition: WORepetition {

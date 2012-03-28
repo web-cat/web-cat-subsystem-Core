@@ -516,7 +516,9 @@ public class GitUtilities
 
         // Push the changes to the bare repository.
         PushCommand push = new Git(tempRepository).push();
-        push.setRemote(location.toURL().toString());
+        @SuppressWarnings("deprecation")
+        String url = location.toURL().toString();
+        push.setRemote(url);
         push.setRefSpecs(new RefSpec("master"), new RefSpec("master"));
 
         try
