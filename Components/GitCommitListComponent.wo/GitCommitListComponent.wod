@@ -3,10 +3,11 @@ CommitLink: WOGenericContainer {
     href = commitURL;
 }
 
-CommitRepetition: WORepetition {
+CommitRepetition: WCExpandingRepetition {
     list = commits;
     item = commit;
     index = commitIndex;
+    pageSize = 2;
 }
 
 CommitTreeLink: WOGenericContainer {

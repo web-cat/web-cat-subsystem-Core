@@ -389,7 +389,9 @@ public class CoreNavigator
     {
         log.debug("updateCourseOfferings()");
         gatherCourseOfferings();
-        return new JavascriptGenerator().refresh(idFor.get("coursePane"));
+        return new JavascriptGenerator()
+            .refresh(idFor.get("coursePane"))
+            .append("window.navUnderlay.hide(); window.navUnderlay.destroyRecursive()");
     }
 
 
