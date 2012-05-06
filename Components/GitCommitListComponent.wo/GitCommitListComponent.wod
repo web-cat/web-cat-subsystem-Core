@@ -3,7 +3,7 @@ CommitLink: WOGenericContainer {
     href = commitURL;
 }
 
-CommitRepetition: WCExpandingRepetition {
+CommitRepetition: WORepetition {
     list = commits;
     item = commit;
     index = commitIndex;
