@@ -58,15 +58,23 @@ public class FileSizeFormatter extends Format
                 DecimalFormat fmt = new DecimalFormat("0.0");
                 fmt.format(sz, toAppendTo,
                         new FieldPosition(DecimalFormat.FRACTION_FIELD));
-                toAppendTo.append("kb");
+                toAppendTo.append(" kB");
             }
-            else
+            else if (size < 1073741824L)
             {
                 double sz = size / 1048576.0;
                 DecimalFormat fmt = new DecimalFormat("0.0");
                 fmt.format(sz, toAppendTo,
                         new FieldPosition(DecimalFormat.FRACTION_FIELD));
-                toAppendTo.append("mb");
+                toAppendTo.append(" MB");
+            }
+            else
+            {
+                double sz = size / 1073741824.0;
+                DecimalFormat fmt = new DecimalFormat("0.0");
+                fmt.format(sz, toAppendTo,
+                        new FieldPosition(DecimalFormat.FRACTION_FIELD));
+                toAppendTo.append(" GB");
             }
         }
         else
