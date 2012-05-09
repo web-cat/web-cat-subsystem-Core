@@ -84,7 +84,7 @@ public class InstallPage4
             {
                 String url =
                     Application.application().servletConnectURL();
-                url = url.replaceFirst( "(//[^/]+/)/", "\\1" );
+                url = url.replaceFirst( "(//[^/]+/)/", "$1" );
                 configuration.setProperty( "base.url", url );
             }
         }
