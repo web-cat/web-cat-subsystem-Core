@@ -174,16 +174,25 @@ public class CoreNavigator
             }
         }
 
-        TabDescriptor selectedRole = ((Session)session()).tabs.selectedChild();
-        if (selectedRole != null)
+        if (selectedRoleAccessLevel < 0)
         {
-            selectedRoleAccessLevel = selectedRole.accessLevel();
+            TabDescriptor selectedRole =
+                ((Session)session()).tabs.selectedChild();
+            if (selectedRole != null)
+            {
+                selectedRoleAccessLevel = selectedRole.accessLevel();
+            }
+            else
+            {
+                selectedRoleAccessLevel = 0;
+            }
         }
 
         log.debug("selected semester = " + selectedSemester);
         log.debug("want offerings for = " + wantOfferingsForCourse);
         log.debug("selected course = " + selectedCourseOffering);
-        log.debug("parent = " + parent().getClass().getName());
+        log.debug("selectionsParent = "
+            + selectionsParent.getClass().getName());
         super.awake();
         log.debug("leaving awake()");
     }
@@ -602,7 +611,7 @@ public class CoreNavigator
 
     protected WCCourseComponent selectionsParent = null;
     private Course wantOfferingsForCourse;
-    private int selectedRoleAccessLevel = 0;
+    private int selectedRoleAccessLevel = -1;
     private NSArray<CourseOffering> unfilteredOfferings = null;
     static Logger log = Logger.getLogger(CoreNavigator.class);
 }
