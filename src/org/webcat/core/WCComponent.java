@@ -837,8 +837,19 @@ public class WCComponent
         }
         else
         {
-            return pageWithName(
-                currentTab().nextSibling().select().pageName() );
+            try
+            {
+                return pageWithName(
+                    currentTab().nextSibling().select().pageName() );
+            }
+            catch (NullPointerException e)
+            {
+                log.error("exception selecting next tab from "
+                    + currentTab().printableTabLocationDetails(), e);
+                // Assume something is broken w/ the current tab selection
+                return pageWithName(
+                    wcSession().tabs.selectDefault().pageName());
+            }
         }
     }
 
