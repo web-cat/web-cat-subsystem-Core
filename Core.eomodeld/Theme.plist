@@ -40,19 +40,11 @@
         lastUpdate,
         name,
         properties,
-        updateMutableFields,
-        users
+        updateMutableFields
     );
     externalName = TTHEMES;
     name = Theme;
     primaryKeyAttributes = (id);
     relationships = (
-        {
-            destination = User;
-            isToMany = Y;
-            joinSemantic = EOInnerJoin;
-            joins = ({destinationAttribute = themeId; sourceAttribute = id; });
-            name = users;
-        }
     );
 }
