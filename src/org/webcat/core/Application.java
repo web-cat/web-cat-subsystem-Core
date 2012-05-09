@@ -216,7 +216,6 @@ public class Application
         setPageCacheSize(ERXValueUtilities.intValueWithDefault(
             configurationProperties().valueForKey("WOPageCacheSize"), 30));
 
-        updateStaticHtmlResources();
         WCEC.installWOECFactory();
 
         if (!isDevelopmentModeSafe() && isDirectConnectEnabled())
@@ -230,6 +229,10 @@ public class Application
             initializeApplication();
             setNeedsInstallation(false);
             notifyAdminsOfStartup();
+        }
+        else
+        {
+            updateStaticHtmlResources();
         }
         if (log.isDebugEnabled())
         {
@@ -355,6 +358,7 @@ public class Application
     public void initializeApplication()
     {
         loadArchiveManagers();
+        updateStaticHtmlResources();
 
         // Apply any pending database updates for the core
         UpdateEngine.instance().database().setConnectionInfoFromProperties(
@@ -2299,28 +2303,36 @@ public class Application
             {
                 staticHtmlBase = configurationProperties().getProperty(
                     "base.url");
-                if (staticHtmlBase != null)
+
+                if (staticHtmlBase == null)
                 {
-                    if (staticHtmlBase.endsWith(".woa"))
+                    staticHtmlBase =
+                        Application.application().servletConnectURL();
+                    System.out.println("servlet URL = " + staticHtmlBase);
+                    staticHtmlBase =
+                        staticHtmlBase.replaceFirst("^[^/]*//[^/]+/", "");
+                    System.out.println("servlet URL = " + staticHtmlBase);
+                }
+
+                if (staticHtmlBase.endsWith(".woa"))
+                {
+                    int loc = staticHtmlBase.lastIndexOf('/');
+                    if (loc > 0)
                     {
-                        int loc = staticHtmlBase.lastIndexOf('/');
-                        if (loc > 0)
-                        {
-                            staticHtmlBase = staticHtmlBase.substring(0, loc);
-                        }
+                        staticHtmlBase = staticHtmlBase.substring(0, loc);
                     }
-                    if (staticHtmlBase.endsWith("WebObjects"))
+                }
+                if (staticHtmlBase.endsWith("WebObjects"))
+                {
+                    int loc = staticHtmlBase.lastIndexOf('/');
+                    if (loc > 0)
                     {
-                        int loc = staticHtmlBase.lastIndexOf('/');
-                        if (loc > 0)
-                        {
-                            staticHtmlBase = staticHtmlBase.substring(0, loc);
-                        }
+                        staticHtmlBase = staticHtmlBase.substring(0, loc);
                     }
-                    if (!staticHtmlBase.endsWith("/"))
-                    {
-                        staticHtmlBase = staticHtmlBase + "/";
-                    }
+                }
+                if (!staticHtmlBase.endsWith("/"))
+                {
+                    staticHtmlBase = staticHtmlBase + "/";
                 }
             }
         }
@@ -2334,11 +2346,12 @@ public class Application
             log.debug("attempting to set frameworks Base URL = "
                 + staticHtmlBase);
             setFrameworksBaseURL(staticHtmlBase);
-            staticHtmlResourcesNeedInitializing = false;
-
-            // Dump any cached data using the previous frameworks base url
-            resourceManager().flushDataCache();
         }
+
+        // Dump any cached data using the previous frameworks base url
+        resourceManager().flushDataCache();
+        staticHtmlResourcesNeedInitializing = false;
+
         log.debug("frameworks Base URL = " + frameworksBaseURL());
     }
 
