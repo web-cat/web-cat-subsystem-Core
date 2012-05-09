@@ -96,8 +96,8 @@ public class InstallPage8
                 + "least 15 minutes or more away, please) to ensure that "
                 + "any\nautomatic updates do not get cut off when the "
                 + "primary Web-CAT update site\nreboots daily at that "
-                + "time.\n\nFor support, see the Web-CAT wiki at:\n\n"
-                + "http://web-cat.cs.vt.edu/WCWiki\n\nOr e-mail "
+                + "time.\n\nFor support, see the Web-CAT forums at:\n\n"
+                + "http://web-cat.org\n\nOr e-mail "
                 + "the Web-CAT staff at: webcat@vt.edu.";
 
             Application.sendAdminEmail(subject, body);
