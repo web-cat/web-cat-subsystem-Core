@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2012 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -464,7 +464,8 @@ public class AuthenticationDomain
                     if (uaClassName == null || uaClassName.equals(""))
                     {
                         uaClassName = properties.getProperty(
-                            "authenticator.default.class");
+                            "authenticator.default.class",
+                            DatabaseAuthenticator.class.getName());
                     }
                     try
                     {
