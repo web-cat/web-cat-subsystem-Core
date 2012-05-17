@@ -29,12 +29,10 @@
     border-bottom-color: #feb;
 }
 
-.nihilo .dijitTitlePaneFocused .dijitTitlePaneTextNode {
-    color: #feb;
-}
-
-.nihilo .dijitOpen .dijitTitlePaneTextNode {
-    color: #feb;
+.nihilo .dijitTitlePaneFocused .dijitTitlePaneTextNode,
+.nihilo .dijitOpen .dijitTitlePaneTextNode,
+.nihilo .dijitTitlePaneTextNode {
+	    color: #feb;
 }
 
 

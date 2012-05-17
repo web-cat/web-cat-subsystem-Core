@@ -279,13 +279,6 @@ way to fit your requirements.
 
 /* @end
 ====================================================================== */
-/* @group Drop Down Menus
-====================================================================== */
-
-
-
-/* @end
-====================================================================== */
 /* @group Columns
 ====================================================================== */
 
@@ -315,6 +308,8 @@ h1 {
     -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.33);
     -moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.33);
     box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.33);
+    padding: 1em 1.5em 1em 1.5em;
+    margin-bottom: 1.5em;
 }
 
 .module.title h1 {
@@ -349,11 +344,6 @@ blockquote {
     border: none;
 }
 
-.module {
-    padding: 1em 1.5em 1em 1.5em;
-    margin-bottom: 1.5em;
-}
-
 .module.panel .NoticePanel { margin-bottom: 0; }
 
 .med-logo {
@@ -385,6 +375,7 @@ blockquote {
 .block  { display: block; }
 .hidden { display: none;  }
 .center { text-align: center; }
+.belowInput { margin-top: 0.5em; }
 
 span.selected { padding: 0 2px; }
 span.error {

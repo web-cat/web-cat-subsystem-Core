@@ -325,12 +325,9 @@ tr.e span.error { background-color: #f99; }
     border-bottom: 1px solid #115;
 }
 
-.nihilo .dijitTitlePaneFocused .dijitTitlePaneTextNode {
-    color: #115;
-}
-
-
-.nihilo .dijitOpen .dijitTitlePaneTextNode {
+.nihilo .dijitTitlePaneFocused .dijitTitlePaneTextNode,
+.nihilo .dijitOpen .dijitTitlePaneTextNode,
+.nihilo .dijitTitlePaneTextNode {
     color: #115;
 }
 

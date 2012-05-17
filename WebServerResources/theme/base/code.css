@@ -1,4 +1,10 @@
-.srcView { line-height: 130%; }
+.srcView {
+    font-size: 12px;
+    line-height: 130%;
+    color: black;
+    background-color: white;
+    border: 1px #dcdcdc solid;
+}
 .srcView table { margin: 0; }
 .srcView pre { padding-left: 10px; }
 
@@ -147,11 +153,6 @@ div.timestamp {
 
 span.srcFile {
     font-size: 9px;
-}
-
-table.srcView {
-    font-size: 12px;
-    border:    #000000 1px solid;
 }
 
 .srcView td.lineCount {

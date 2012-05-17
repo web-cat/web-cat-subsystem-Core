@@ -298,12 +298,9 @@ tr.e.caution.error.selected {
     border-bottom: 1px solid #ABABAB;
 }
 
-.nihilo .dijitTitlePaneFocused .dijitTitlePaneTextNode {
-    color: #ABABAB;
-}
-
-
-.nihilo .dijitOpen .dijitTitlePaneTextNode {
+.nihilo .dijitTitlePaneFocused .dijitTitlePaneTextNode,
+.nihilo .dijitOpen .dijitTitlePaneTextNode,
+.nihilo .dijitTitlePaneTextNode {
     color: #ABABAB;
 }
 
