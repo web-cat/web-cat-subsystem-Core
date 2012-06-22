@@ -45,6 +45,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.util.FS;
 import org.webcat.core.Application;
+import org.webcat.core.EOBase;
 import org.webcat.core.FileUtilities;
 import org.webcat.core.RepositoryProvider;
 import org.webcat.core.User;
@@ -86,7 +87,7 @@ public class GitUtilities
      * @param object the EO object whose file store contains the Git repository
      * @return the repository
      */
-    /*package*/ static Repository repositoryForObject(EOEnterpriseObject object)
+    /*package*/ static Repository repositoryForObject(EOBase object)
     {
         File fsDir =
             Application.wcApplication().repositoryPathForObject(object);

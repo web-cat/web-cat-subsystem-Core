@@ -3,7 +3,7 @@
     <div>
     <p>
     Enter the name of the folder to create in
-    <b><wo:str value="$createFolderRepo.provider.repositoryIdentifier"/><wo:if condition="$createFolderLocation">/<wo:str value="$createFolderLocation"/></wo:if></b>:
+    <b><wo:str value="$createFolderRepo.provider.apiId"/><wo:if condition="$createFolderLocation">/<wo:str value="$createFolderLocation"/></wo:if></b>:
     </p><p><wo name="NewFolderName"/></p>
     <div>
         <wo:WCSpinner id="$idFor.createFolderSpinner" size="small"/>
@@ -28,7 +28,7 @@
     <div>
     <p>
     Choose a file to upload to
-    <b><wo:str value="$createFolderRepo.provider.repositoryIdentifier"/><wo:if condition="$createFolderLocation">/<wo:str value="$createFolderLocation"/></wo:if></b>:
+    <b><wo:str value="$createFolderRepo.provider.apiId"/><wo:if condition="$createFolderLocation">/<wo:str value="$createFolderLocation"/></wo:if></b>:
     </p>
     <p><wo name="FileToUpload"/></p>
     <wo:WOGenericContainer elementName="p" id="$idFor.expandIfArchiveContainer">

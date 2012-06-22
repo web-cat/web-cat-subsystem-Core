@@ -72,6 +72,27 @@ public class EntityRequestInfo
      */
     public static EntityRequestInfo fromRequestHandlerPath(String handlerPath)
     {
+        return fromRequestHandlerPath(handlerPath, false);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Parses the specified handler path and returns an
+     * {@code EntityRequestInfo} containing the request information. This
+     * method returns null if the request path was malformed or invalid.
+     *
+     * @param handlerPath the full handler path
+     * @param allowMissingComponents if true, an object will be returned even
+     *     if the entity name or object ID are null; if false, null will be
+     *     returned in this case
+     *
+     * @return an instance of {@code EntityRequestInfo} with the desired
+     *     information, or null
+     */
+    public static EntityRequestInfo fromRequestHandlerPath(String handlerPath,
+            boolean allowMissingComponents)
+    {
         try
         {
             handlerPath = URLDecoder.decode(handlerPath, "UTF-8");
@@ -113,7 +134,8 @@ public class EntityRequestInfo
             }
         }
 
-        if (request.entityName == null || request.objectID == null)
+        if (!allowMissingComponents
+                && (request.entityName == null || request.objectID == null))
         {
             return null;
         }
@@ -168,10 +190,9 @@ public class EntityRequestInfo
      * @param ec the editing context
      * @return the requested object
      */
-    public EOEnterpriseObject requestedObject(EOEditingContext ec)
+    public EOBase requestedObject(EOEditingContext ec)
     {
-        return RepositoryManager.getInstance().objectWithRepositoryId(
-                entityName(), objectID(), ec);
+        return EOBase.objectWithApiId(ec, entityName(), objectID());
     }
 
 

@@ -29,7 +29,6 @@ import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WODisplayGroup;
 import com.webobjects.appserver.WOResponse;
-import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSTimeZone;
@@ -83,7 +82,7 @@ public class MyProfilePage
     public String              aFormat;
     public User                anInstructor;
     public Theme               aTheme;
-    public EOEnterpriseObject  aRepositoryProvider;
+    public EOBase              aRepositoryProvider;
     public int                 indexOfARepositoryProvider;
     public boolean             openThemes;
 
@@ -387,7 +386,7 @@ public class MyProfilePage
 
 
     // ----------------------------------------------------------
-    public NSArray<? extends EOEnterpriseObject> repositoryProviders()
+    public NSArray<? extends EOBase> repositoryProviders()
     {
         return RepositoryManager.getInstance().repositoriesPresentedToUser(user(),
                     localContext());

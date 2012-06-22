@@ -23,6 +23,7 @@ package org.webcat.core.webdav;
 
 import java.io.File;
 import org.eclipse.jgit.lib.Repository;
+import org.webcat.core.EOBase;
 import org.webcat.core.EntityRequestInfo;
 import org.webcat.core.Session;
 import org.webcat.core.git.GitRepository;
@@ -34,7 +35,6 @@ import com.ettrema.http.fs.LockManager;
 import com.ettrema.http.fs.NullSecurityManager;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.eocontrol.EOEditingContext;
-import com.webobjects.eocontrol.EOEnterpriseObject;
 
 //-------------------------------------------------------------------------
 /**
@@ -237,7 +237,7 @@ public class WorkingCopyResourceFactory implements ResourceFactory
 
     private class WorkingCopyRequestInfo
     {
-        public EOEnterpriseObject object;
+        public EOBase object;
         public String path;
         public String shadowName;
     }

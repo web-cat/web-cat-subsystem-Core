@@ -48,13 +48,14 @@ import org.webcat.core.messaging.ApplicationStartupMessage;
 import org.webcat.core.messaging.FallbackMessageDispatcher;
 import org.webcat.core.messaging.IMessageDispatcher;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
+import org.webcat.core.webapi.WebAPIRequestHandler;
 import org.webcat.core.webdav.WebDAVRequestHandler;
 import org.webcat.dbupdate.UpdateEngine;
 import org.webcat.woextensions.AjaxUpdateContainerTagProcessor;
 import org.webcat.woextensions.ECAction;
 import org.webcat.woextensions.WCContext;
-import org.webcat.woextensions.WCResourceManager;
 import org.webcat.woextensions.WCEC;
+import org.webcat.woextensions.WCResourceManager;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOMessage;
@@ -84,10 +85,10 @@ import com.webobjects.woextensions.WOExceptionParser;
 import com.webobjects.woextensions.WOParsedErrorLine;
 import er.extensions.ERXExtensions;
 import er.extensions.appserver.ERXMessageEncoding;
+import er.extensions.formatters.ERXTimestampFormatter;
 import er.extensions.foundation.ERXProperties;
 import er.extensions.foundation.ERXSystem;
 import er.extensions.foundation.ERXValueUtilities;
-import er.extensions.formatters.ERXTimestampFormatter;
 
 // -------------------------------------------------------------------------
 /**
@@ -199,6 +200,11 @@ public class Application
         // Present the first page via the default DirectAction.
         setDefaultRequestHandler(
             requestHandlerForKey(directActionRequestHandlerKey()));
+
+        // Register the Git request handler.
+        apiHandler = new WebAPIRequestHandler();
+        registerRequestHandler(apiHandler,
+                WebAPIRequestHandler.REQUEST_HANDLER_KEY);
 
         // Register the entity resource request handler.
         registerRequestHandler(new EntityResourceRequestHandler(),
@@ -1420,6 +1426,7 @@ public class Application
      *
      * @param subject     the subject line
      * @param body        the body of the message
+     * @return the array of admin e-mail addresses
      */
     public static NSArray<String> adminEmailAddresses()
     {
@@ -2502,6 +2509,19 @@ public class Application
 
     // ----------------------------------------------------------
     /**
+     * Gets the web API request handler so that other subsystems can add hooks
+     * for their own entities to the external API.
+     *
+     * @return the {@link WebAPIRequestHandler}
+     */
+    public synchronized WebAPIRequestHandler webAPI()
+    {
+        return apiHandler;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * If the app is running as a servlet, this method checks the version
      * stamp stored in the {@link net.sf.webcat.WCServletAdaptor} to see if
      * it is the same as the "expected" version number stored in the Core
@@ -2616,15 +2636,12 @@ public class Application
      * @return true if the repository currently exists, false if it has not yet
      *     been created
      */
-    public boolean repositoryExistsForObject(EOEnterpriseObject object)
+    public boolean repositoryExistsForObject(EOBase object)
     {
         if (object instanceof RepositoryProvider)
         {
-            RepositoryProvider provider = (RepositoryProvider) object;
-
             File fsDir = new File(repositoryRootDirectory(),
-                    object.entityName() + "/"
-                    + provider.repositoryIdentifier());
+                    object.entityName() + "/" + object.apiId());
 
             return fsDir.exists();
         }
@@ -2647,15 +2664,12 @@ public class Application
      * @return the path to the repository for the EO, or null if the EO is not
      *     a file store provider
      */
-    public File repositoryPathForObject(EOEnterpriseObject object)
+    public File repositoryPathForObject(EOBase object)
     {
         if (object instanceof RepositoryProvider)
         {
-            RepositoryProvider provider = (RepositoryProvider) object;
-
             File fsDir = new File(repositoryRootDirectory(),
-                    object.entityName() + "/"
-                    + provider.repositoryIdentifier());
+                    object.entityName() + "/" + object.apiId());
 
             if (!fsDir.exists())
             {
@@ -2682,15 +2696,13 @@ public class Application
      * @return the path to the working copy for the EO, or null if the EO is
      *     not a file store provider
      */
-    public File workingCopyPathForObject(EOEnterpriseObject object)
+    public File workingCopyPathForObject(EOBase object)
     {
         if (object instanceof RepositoryProvider)
         {
-            RepositoryProvider provider = (RepositoryProvider) object;
-
             File fsDir = new File(repositoryRootDirectory(),
                     "_WorkingCopies/" + object.entityName()
-                    + "/" + provider.repositoryIdentifier());
+                    + "/" + object.apiId());
 
             return fsDir;
         }
@@ -2824,6 +2836,7 @@ public class Application
     private static boolean needsInstallation = true;
 
     private IMessageDispatcher messageDispatcher;
+    private WebAPIRequestHandler apiHandler;
     private EOEditingContext errorLoggingContext;
 
     private RelativeTimestampFormatter approximateRelativeTimestampFormatter;

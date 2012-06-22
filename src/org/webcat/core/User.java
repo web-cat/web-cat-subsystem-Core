@@ -1385,20 +1385,19 @@ public class User
 
 
     // ----------------------------------------------------------
-    public static User objectWithRepositoryIdentifier(
-            String repoId, EOEditingContext ec)
+    public static User findObjectWithApiId(EOEditingContext ec, String apiId)
         throws EOUtilities.MoreThanOneException
     {
-        int dotIndex = repoId.indexOf('.');
+        int dotIndex = apiId.indexOf('.');
         EOQualifier qualifier = null;
 
         if (dotIndex != -1)
         {
             AuthenticationDomain domain = AuthenticationDomain
-                .authDomainBySubdirName(repoId.substring(0, dotIndex));
+                .authDomainBySubdirName(apiId.substring(0, dotIndex));
             if (domain != null)
             {
-                String name = repoId.substring(dotIndex + 1);
+                String name = apiId.substring(dotIndex + 1);
 
                 qualifier = userName.is(name).and(
                     authenticationDomain.is(domain));
@@ -1406,7 +1405,7 @@ public class User
         }
         if (qualifier == null)
         {
-            qualifier = userName.is(repoId);
+            qualifier = userName.is(apiId);
         }
 
         return uniqueObjectMatchingQualifier(ec, qualifier);
@@ -1414,7 +1413,8 @@ public class User
 
 
     // ----------------------------------------------------------
-    public String repositoryIdentifier()
+    @Override
+    public String apiId()
     {
         return authenticationDomain().subdirName() + "." + userName();
     }

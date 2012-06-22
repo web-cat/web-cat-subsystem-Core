@@ -22,6 +22,7 @@
 package org.webcat.core.git.http;
 
 import org.eclipse.jgit.lib.Repository;
+import org.webcat.core.EOBase;
 import org.webcat.core.EntityRequestInfo;
 import org.webcat.core.Session;
 import org.webcat.core.git.GitRepository;
@@ -74,7 +75,7 @@ public class RepositoryRequestUtils
             Session session = (Session) request.context().session();
             EOEditingContext ec = session.defaultEditingContext();
 
-            EOEnterpriseObject object = info.requestedObject(ec);
+            EOBase object = info.requestedObject(ec);
             repo = GitRepository.repositoryForObject(object).repository();
         }
 

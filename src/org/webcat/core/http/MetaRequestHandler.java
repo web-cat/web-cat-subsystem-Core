@@ -281,6 +281,8 @@ public abstract class MetaRequestHandler
 
     public static final String REGEX_FILTER_PATH_KEY =
         "org.webcat.core.http.RegexFilterPathKey";
+    public static final String REGEX_CAPTURE_GROUPS_KEY =
+        "org.webcat.core.http.RegexCaptureGroupsKey";
 
     private List<RequestHandlerBinderImpl> bindings;
     private volatile UrlPipeline[] pipelines;

@@ -23,10 +23,10 @@ package org.webcat.core.git.http;
 
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
+import org.webcat.core.EOBase;
 import org.webcat.core.git.GitRef;
 import org.webcat.core.git.GitRepository;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.eocontrol.EOEnterpriseObject;
 
 //-------------------------------------------------------------------------
 /**
@@ -41,7 +41,7 @@ public class GitWebContext
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    public GitWebContext(EOEnterpriseObject originator,
+    public GitWebContext(EOBase originator,
             GitRepository repository, String repositoryName, GitWebMode mode)
     {
         this.originator = originator;
@@ -53,7 +53,7 @@ public class GitWebContext
 
 
     // ----------------------------------------------------------
-    public GitWebContext(EOEnterpriseObject originator,
+    public GitWebContext(EOBase originator,
             GitRepository repository, String repositoryName, GitWebMode mode,
             String pathSuffix)
     {
@@ -103,7 +103,7 @@ public class GitWebContext
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    public EOEnterpriseObject originator()
+    public EOBase originator()
     {
         return originator;
     }
@@ -335,7 +335,7 @@ public class GitWebContext
 
 
     // ----------------------------------------------------------
-    public static GitWebContext parse(EOEnterpriseObject originator,
+    public static GitWebContext parse(EOBase originator,
             GitRepository repository, String repositoryName, String path)
     {
         GitWebContext newContext = null;
@@ -493,7 +493,7 @@ public class GitWebContext
 
     //~ Static/instance variables .............................................
 
-    private EOEnterpriseObject originator;
+    private EOBase originator;
     private GitWebMode mode;
     private GitRepository repository;
     private String repositoryName;

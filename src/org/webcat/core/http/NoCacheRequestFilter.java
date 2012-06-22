@@ -19,10 +19,8 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package org.webcat.core.git.http;
+package org.webcat.core.http;
 
-import org.webcat.core.http.RequestFilter;
-import org.webcat.core.http.RequestFilterChain;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
 

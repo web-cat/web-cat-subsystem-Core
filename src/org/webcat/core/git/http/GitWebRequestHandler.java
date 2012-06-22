@@ -24,6 +24,7 @@ package org.webcat.core.git.http;
 import java.util.EnumMap;
 import org.eclipse.jgit.util.HttpSupport;
 import org.webcat.core.Application;
+import org.webcat.core.EOBase;
 import org.webcat.core.EntityRequestInfo;
 import org.webcat.core.Session;
 import org.webcat.core.git.GitRepository;
@@ -72,7 +73,7 @@ public class GitWebRequestHandler implements RequestHandlerWithResponse
         Session session = (Session) request.context().session();
         EOEditingContext ec = session.defaultEditingContext();
 
-        EOEnterpriseObject object = requestInfo.requestedObject(ec);
+        EOBase object = requestInfo.requestedObject(ec);
         GitRepository repository = GitRepository.repositoryForObject(object);
 
         String repoName = requestInfo.entityName() + "/"

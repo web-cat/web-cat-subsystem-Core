@@ -44,7 +44,7 @@ public class RepositoryRefModel
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    public RepositoryRefModel(NSArray<? extends EOEnterpriseObject> providers)
+    public RepositoryRefModel(NSArray<? extends EOBase> providers)
     {
         this.providers = providers;
     }
@@ -62,9 +62,9 @@ public class RepositoryRefModel
             NSArray<Object> result = (NSArray<Object>)providers;
             return result;
         }
-        else if (object instanceof EOEnterpriseObject)
+        else if (object instanceof EOBase)
         {
-            EOEnterpriseObject provider = (EOEnterpriseObject) object;
+            EOBase provider = (EOBase) object;
             GitRepository repository =
                 GitRepository.repositoryForObject(provider);
 
@@ -86,14 +86,14 @@ public class RepositoryRefModel
     // ----------------------------------------------------------
     public String pathForObject(Object object)
     {
-        if (object instanceof EOEnterpriseObject)
+        if (object instanceof EOBase)
         {
-            return ((RepositoryProvider) object).repositoryIdentifier();
+            return ((EOBase) object).apiId();
         }
         else if (object instanceof GitRef)
         {
             GitRef ref = (GitRef) object;
-            String provider = ((RepositoryProvider) ref.repository().provider()).repositoryIdentifier();
+            String provider = ref.repository().provider().apiId();
 
             return provider + "/" + ref.name().replace('/', '$');
         }
@@ -113,15 +113,15 @@ public class RepositoryRefModel
         {
             for (Object child : children)
             {
-                EOEnterpriseObject obj = (EOEnterpriseObject) child;
+                EOBase obj = (EOBase) child;
 
-                if (((RepositoryProvider) obj).repositoryIdentifier().equals(component))
+                if (obj.apiId().equals(component))
                 {
                     return child;
                 }
             }
         }
-        else if (object instanceof EOEnterpriseObject)
+        else if (object instanceof EOBase)
         {
             for (Object child : children)
             {

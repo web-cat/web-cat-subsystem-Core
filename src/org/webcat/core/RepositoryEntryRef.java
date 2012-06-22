@@ -194,8 +194,7 @@ public class RepositoryEntryRef
     {
         String[] parts = repository.split("/");
 
-        provider = RepositoryManager.getInstance().objectWithRepositoryId(
-                parts[0], parts[1], ec);
+        provider = EOBase.objectWithApiId(ec, parts[0], parts[1]);
         gitRepository = GitRepository.repositoryForObject(provider);
         ref = gitRepository.refWithName(branch);
 
@@ -333,7 +332,7 @@ public class RepositoryEntryRef
     private String path;
     private String branch;
 
-    private EOEnterpriseObject provider;
+    private EOBase provider;
     private GitRepository gitRepository;
     private GitRef ref;
     private ObjectId objectId;

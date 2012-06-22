@@ -116,62 +116,13 @@ public class RepositoryManager
      * @param object the object
      * @return the full repository name
      */
-    public String repositoryNameForObject(EOEnterpriseObject object)
+    public String repositoryNameForObject(EOBase object)
     {
-        if (!(object instanceof RepositoryProvider))
+        if (object instanceof RepositoryProvider)
         {
-            return null;
+            return object.entityName() + "/" + object.apiId();
         }
         else
-        {
-            RepositoryProvider rp = (RepositoryProvider) object;
-
-            return object.entityName() + "/" + rp.repositoryIdentifier();
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Gets the EO that has the specified repository identifier.
-     *
-     * @param entityName the type of EO to get
-     * @param repositoryId the unique repository identifier
-     * @param ec the editing context
-     * @return the EO that has the file repository with the specified
-     *     identifier, or null if there isn't one
-     * @throws EOUtilities.MoreThanOneException if more than one object was
-     *     found
-     */
-    public EOEnterpriseObject objectWithRepositoryId(
-            String entityName, String repositoryId,
-            EOEditingContext ec) throws EOUtilities.MoreThanOneException
-    {
-        try
-        {
-            EOEntity entity =
-                EOUtilities.entityNamed(ec, entityName);
-            String className = entity.className();
-
-            Class<?> klass = Class.forName(className);
-            Method method = klass.getMethod("objectWithRepositoryIdentifier",
-                    String.class, EOEditingContext.class);
-
-            return (EOEnterpriseObject) method.invoke(null, repositoryId, ec);
-        }
-        catch (InvocationTargetException e)
-        {
-            if (e.getTargetException() instanceof
-                    EOUtilities.MoreThanOneException)
-            {
-                throw (EOUtilities.MoreThanOneException) e.getTargetException();
-            }
-            else
-            {
-                return null;
-            }
-        }
-        catch (Exception e)
         {
             return null;
         }
@@ -186,15 +137,15 @@ public class RepositoryManager
      * @param ec the editing context
      * @return an array of all repositories that the specified user can access
      */
-    public NSArray<? extends EOEnterpriseObject> repositoriesPresentedToUser(
+    public NSArray<? extends EOBase> repositoriesPresentedToUser(
             User user, EOEditingContext ec)
     {
-        NSMutableArray<EOEnterpriseObject> providers =
-            new NSMutableArray<EOEnterpriseObject>();
+        NSMutableArray<EOBase> providers =
+            new NSMutableArray<EOBase>();
 
         for (String entity : repositoryProviders)
         {
-            NSArray<? extends EOEnterpriseObject> providersForEntity =
+            NSArray<? extends EOBase> providersForEntity =
                 repositoriesPresentedToUser(entity, user, ec);
 
             providers.addObjectsFromArray(providersForEntity);
@@ -206,8 +157,8 @@ public class RepositoryManager
                 @Override
                 public int compare(Object _lhs, Object _rhs)
                 {
-                    EOEnterpriseObject lhs = (EOEnterpriseObject) _lhs;
-                    EOEnterpriseObject rhs = (EOEnterpriseObject) _rhs;
+                    EOBase lhs = (EOBase) _lhs;
+                    EOBase rhs = (EOBase) _rhs;
 
                     return repositoryNameForObject(lhs).compareTo(
                             repositoryNameForObject(rhs));
@@ -234,7 +185,7 @@ public class RepositoryManager
      * @return an array of all repositories of the specified entity type that
      *     the user can access
      */
-    public NSArray<? extends EOEnterpriseObject> repositoriesPresentedToUser(
+    public NSArray<? extends EOBase> repositoriesPresentedToUser(
             String entityName, User user, EOEditingContext ec)
     {
         try
@@ -248,14 +199,13 @@ public class RepositoryManager
                     User.class, EOEditingContext.class);
 
             @SuppressWarnings("unchecked")
-            NSArray<? extends EOEnterpriseObject> result =
-                (NSArray<? extends EOEnterpriseObject>) method.invoke(
-                    null, user, ec);
+            NSArray<? extends EOBase> result =
+                (NSArray<? extends EOBase>) method.invoke(null, user, ec);
             return result;
         }
         catch (Exception e)
         {
-            return NSArray.<EOEnterpriseObject> emptyArray();
+            return NSArray.<EOBase> emptyArray();
         }
     }
 

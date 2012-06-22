@@ -24,6 +24,7 @@ package org.webcat.core.http;
 import org.apache.http.HttpStatus;
 import org.eclipse.jgit.util.HttpSupport;
 import org.webcat.core.Application;
+import org.webcat.core.EOBase;
 import org.webcat.core.LoginSession;
 import org.webcat.core.Session;
 import org.webcat.core.User;
@@ -38,12 +39,22 @@ import com.webobjects.eocontrol.EOEditingContext;
 
 //-------------------------------------------------------------------------
 /**
+ * <p>
  * A basic authentication filter that uses the Web-CAT user database to
- * authenticate users. It looks to see if a session already exists for the
- * user in the "wosid" cookie, and if it does, it does not require the user to
- * log-in again; otherwise, once the user is logged in, a session is created
- * for them and is associated with the request/response context so that it can
- * be used by components further down the request handler chain.
+ * authenticate users. The following authentication attempts are made:
+ * </p>
+ * <ol>
+ * <li>The request's "X-Session-Id" header is examined to see if it contains a
+ * valid Web-CAT login session identifier. If so, that session is used. (This
+ * supports the external web API.)</li>
+ * <li>If that header does not exist, the standard WebObjects session
+ * restoration is attempted (lookup the session ID in the "wosid" cookie). If
+ * found, that session is used. (This supports browser-based navigation.)</li>
+ * <li>If the cookie does not exist, authentication is attempted using HTTP
+ * basic authentication. If authentication succeeds, the user is logged in and
+ * a session is created. If there are no credentials associated with the
+ * request, a 401 status code is returned.</li>
+ * </ol>
  *
  * @author  Tony Allevato
  * @author  Last changed by $Author$
@@ -164,11 +175,17 @@ public abstract class BasicAuthenticationFilter
         final WORequest request = context.request();
         final WOResponse response = context.response();
 
-        Session session = (context._requestSessionID() != null)
+        String sessionId = request.headerForKey(SESSION_ID_HEADER);
+
+        if (sessionId == null)
+        {
+            sessionId = context._requestSessionID();
+        }
+
+        Session session = (sessionId != null)
             ? // Use an existing session if we have one.
-            (Session)Application.wcApplication()
-                .restoreSessionWithID(context._requestSessionID(),
-                    request.context())
+            (Session) Application.wcApplication()
+                .restoreSessionWithID(sessionId, request.context())
             : null;
 
         if (session == null)
@@ -207,7 +224,7 @@ public abstract class BasicAuthenticationFilter
                         else
                         {
                             context._setRequestSessionID(existingSessionId);
-                            result = (Session)context.session();
+                            result = (Session) context.session();
                             result.setUser(user.localInstance(
                                 result.defaultEditingContext()));
                             result._appendCookieToResponse(response);
@@ -236,7 +253,7 @@ public abstract class BasicAuthenticationFilter
             EOEditingContext ec)
     {
         // Look up the user based on the repository ID.
-        User user = User.objectWithRepositoryIdentifier(username, ec);
+        User user = EOBase.objectWithApiId(ec, User.class, username);
 
         // Validate the user's password.
         if (user != null)
@@ -265,6 +282,8 @@ public abstract class BasicAuthenticationFilter
 
 
     //~ Static/instance variables .............................................
+
+    private static final String SESSION_ID_HEADER = "X-Session-Id";
 
     private String existingSessionId;
 }

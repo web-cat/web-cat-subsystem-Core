@@ -162,8 +162,8 @@ public class Course
 
 
     // ----------------------------------------------------------
-    public static Course objectWithRepositoryIdentifier(
-            String repoId, EOEditingContext ec)
+    public static Course findObjectWithApiId(
+            EOEditingContext ec, String repoId)
         throws EOUtilities.MoreThanOneException
     {
         String[] parts = repoId.split("\\.");
@@ -209,10 +209,17 @@ public class Course
 
 
     // ----------------------------------------------------------
-    public String repositoryIdentifier()
+    public String apiId()
     {
-        return department().institution().subdirName() + "."
-            + department().abbreviation() + "." + number();
+        try
+        {
+            return department().institution().subdirName() + "."
+                + department().abbreviation() + "." + number();
+        }
+        catch (Exception e)
+        {
+            return id().toString();
+        }
     }
 
 

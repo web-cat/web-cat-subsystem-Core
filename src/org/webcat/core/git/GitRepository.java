@@ -42,9 +42,9 @@ import org.eclipse.jgit.treewalk.filter.PathSuffixFilter;
 import org.eclipse.jgit.treewalk.filter.TreeFilter;
 import org.jfree.util.Log;
 import org.webcat.archives.IWritableContainer;
+import org.webcat.core.EOBase;
 import org.webcat.core.NSMutableDataOutputStream;
 import org.webcat.core.git.GitUtilities.RefFilter;
-import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSDictionary;
@@ -76,7 +76,7 @@ public class GitRepository
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    public static GitRepository repositoryForObject(EOEnterpriseObject eo)
+    public static GitRepository repositoryForObject(EOBase eo)
     {
         Repository repo = GitUtilities.repositoryForObject(eo);
         GitRepository gr = new GitRepository(repo);
@@ -86,7 +86,7 @@ public class GitRepository
 
 
     // ----------------------------------------------------------
-    public EOEnterpriseObject provider()
+    public EOBase provider()
     {
         return provider;
     }
@@ -540,7 +540,7 @@ public class GitRepository
     //~ Static/instance variables .............................................
 
     private Repository repository;
-    private EOEnterpriseObject provider;
+    private EOBase provider;
 
     private static final Logger log = Logger.getLogger(GitRepository.class);
 }

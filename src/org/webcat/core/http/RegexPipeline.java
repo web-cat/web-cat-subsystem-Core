@@ -27,6 +27,8 @@ import com.webobjects.appserver.WODynamicURL;
 import com.webobjects.appserver.WOMessage;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
+import com.webobjects.foundation.NSKeyValueCoding;
+import com.webobjects.foundation.NSMutableArray;
 
 //-------------------------------------------------------------------------
 /**
@@ -99,6 +101,23 @@ public class RegexPipeline
 
                 Object oldFilterPath = request.userInfoForKey(
                         MetaRequestHandler.REGEX_FILTER_PATH_KEY);
+
+                NSMutableArray<String> groups = new NSMutableArray<String>();
+
+                for (int i = 0; i <= matcher.groupCount(); i++)
+                {
+                    if (matcher.group(i) == null)
+                    {
+                        groups.add("");
+                    }
+                    else
+                    {
+                        groups.add(matcher.group(i));
+                    }
+                }
+
+                request.setUserInfoForKey(groups,
+                        MetaRequestHandler.REGEX_CAPTURE_GROUPS_KEY);
 
                 try
                 {

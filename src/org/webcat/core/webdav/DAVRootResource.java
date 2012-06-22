@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.webcat.core.EOBase;
 import org.webcat.core.RepositoryManager;
 import org.webcat.core.RepositoryProvider;
 import org.webcat.core.Session;
@@ -54,7 +55,6 @@ import com.bradmcevoy.http.exceptions.ConflictException;
 import com.bradmcevoy.http.exceptions.NotAuthorizedException;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.eocontrol.EOEditingContext;
-import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.foundation.NSArray;
 
 //-------------------------------------------------------------------------
@@ -114,16 +114,14 @@ public class DAVRootResource extends AbstractDAVResource
         EOEditingContext ec = session.defaultEditingContext();
         User user = session.primeUser();
 
-        NSArray<? extends EOEnterpriseObject> objects =
+        NSArray<? extends EOBase> objects =
             RepositoryManager.getInstance().repositoriesPresentedToUser(
                     user, ec);
 
-        for (EOEnterpriseObject object : objects)
+        for (EOBase object : objects)
         {
-            RepositoryProvider provider = (RepositoryProvider) object;
-
             String path = object.entityName() + " "
-                + provider.repositoryIdentifier();
+                + object.apiId();
 
             roots.add(factory().resolvePath(path));
         }

@@ -115,7 +115,7 @@ public class FilePickerDialog
     // ----------------------------------------------------------
     private void updateRefModel()
     {
-        NSArray<? extends EOEnterpriseObject> providers =
+        NSArray<? extends EOBase> providers =
             RepositoryManager.getInstance().repositoriesPresentedToUser(
                     user(), localContext());
 
@@ -136,10 +136,10 @@ public class FilePickerDialog
     {
         GitRef ref;
 
-        if (object instanceof EOEnterpriseObject)
+        if (object instanceof EOBase)
         {
             GitRepository repo = GitRepository.repositoryForObject(
-                    (EOEnterpriseObject) object);
+                    (EOBase) object);
             ref = repo.refWithName(Constants.R_HEADS + Constants.MASTER);
         }
         else
@@ -254,10 +254,10 @@ public class FilePickerDialog
     // ----------------------------------------------------------
     public String displayNameForRepositoryItem()
     {
-        if (repositoryItem instanceof EOEnterpriseObject)
+        if (repositoryItem instanceof EOBase)
         {
             return RepositoryManager.getInstance().repositoryNameForObject(
-                    (EOEnterpriseObject) repositoryItem);
+                    (EOBase) repositoryItem);
         }
         else
         {
