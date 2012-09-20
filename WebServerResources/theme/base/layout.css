@@ -247,6 +247,7 @@ way to fit your requirements.
     -webkit-box-shadow: 0px 3px 8px -2px black;
     -moz-box-shadow: 0px 3px 8px -2px black;
     box-shadow: 0px 3px 8px -2px black;
+    max-height: 400px;
 }
 
 .WCDropDownListMenu ul li {
@@ -640,19 +641,19 @@ table td {
 }
 
 table.course-list tr.assignment td {
-	padding-top: 1.6em;
-	padding-bottom: 0.6em;
+    padding-top: 1.6em;
+    padding-bottom: 0.6em;
 }
 
 table.course-list tr.assignment td:first-child {
-	padding-left: 0;
-	padding-right: 1.2em;
+    padding-left: 0;
+    padding-right: 1.2em;
 }
 
 table.course-list th {
-	border-width: 0 0 1px 0;
-	border-style: solid;
-	border-color: black;
+    border-width: 0 0 1px 0;
+    border-style: solid;
+    border-color: black;
     color: inherit;
     background-color: inherit;
     font-weight: bold;
