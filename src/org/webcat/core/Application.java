@@ -1678,6 +1678,7 @@ public class Application
                 errorBuffer.append(anException.getClass().getName());
                 errorBuffer.append(":\n");
                 errorBuffer.append(anException.getMessage());
+                errorBuffer.append("\n");
                 if (anException.getMessage() != null
                     && loggedError != null)
                 {
