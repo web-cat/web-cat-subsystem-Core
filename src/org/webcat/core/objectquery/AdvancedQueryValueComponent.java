@@ -33,7 +33,7 @@ import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSTimestamp;
-import com.webobjects.foundation.NSTimestampFormatter;
+import er.extensions.formatters.ERXTimestampFormatter;
 
 //-------------------------------------------------------------------------
 /**
@@ -41,8 +41,9 @@ import com.webobjects.foundation.NSTimestampFormatter;
  * different lower-level components depending on the type of value used
  * in this particular query clause.
  *
- * @author aallowat
- * @version $Id$
+ * @author Tony Allevato
+ * @author Last changed by $Author$
+ * @version $Revision$, $Date$
  */
 public class AdvancedQueryValueComponent
     extends WCComponent
@@ -142,6 +143,7 @@ public class AdvancedQueryValueComponent
     // ----------------------------------------------------------
     public String commaDelimitedStringValuesOfRepresentedValueArray()
     {
+        @SuppressWarnings("unchecked")
     	NSArray<Object> array = (NSArray<Object>)representedValue;
 
     	StringBuffer buffer = new StringBuffer();
@@ -241,6 +243,7 @@ public class AdvancedQueryValueComponent
     // ----------------------------------------------------------
     public String commaDelimitedIntegerValuesOfRepresentedValueArray()
     {
+        @SuppressWarnings("unchecked")
     	NSArray<Object> array = (NSArray<Object>)representedValue;
     	StringBuffer buffer = new StringBuffer();
 
@@ -348,6 +351,7 @@ public class AdvancedQueryValueComponent
     // ----------------------------------------------------------
     public String commaDelimitedDoubleValuesOfRepresentedValueArray()
     {
+        @SuppressWarnings("unchecked")
     	NSArray<Object> array = (NSArray<Object>)representedValue;
     	StringBuffer buffer = new StringBuffer();
 
@@ -478,7 +482,7 @@ public class AdvancedQueryValueComponent
     	}
     	else
     	{
-    		NSTimestampFormatter formatter = new NSTimestampFormatter();
+    		ERXTimestampFormatter formatter = new ERXTimestampFormatter();
 
     		try
     		{
@@ -529,11 +533,12 @@ public class AdvancedQueryValueComponent
 
     	NSArray<EOSortOrdering> orderings =
     	    EntityUtils.sortOrderingsForEntityNamed(entityName);
-    	
+
     	EOFetchSpecification fetchSpec = new EOFetchSpecification(
     		entityName, null, orderings);
     	fetchSpec.setFetchLimit(1000);
 
+        @SuppressWarnings("unchecked")
     	NSArray<EOEnterpriseObject> objects =
     		localContext().objectsWithFetchSpecification(fetchSpec);
 
@@ -575,6 +580,7 @@ public class AdvancedQueryValueComponent
     	NSMutableArray<EOEnterpriseObject> values =
     		new NSMutableArray<EOEnterpriseObject>();
 
+        @SuppressWarnings("unchecked")
     	NSArray<Object> array = (NSArray<Object>)representedValue;
 
     	if (array != null)
@@ -584,7 +590,7 @@ public class AdvancedQueryValueComponent
 	    		if (object instanceof EOEnterpriseObject
                     && valueType.isAssignableFrom(object.getClass()))
 	    		{
-	    			values.addObject((EOEnterpriseObject)object);
+	    			values.addObject(object);
 	    		}
 	    	}
     	}
