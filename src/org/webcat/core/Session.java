@@ -476,6 +476,13 @@ public class Session
             + " users)");
         try
         {
+            if (loginSession != null && loginSession.editingContext() == null)
+            {
+                // This can happen if the session times out, instead of
+                // the user manually logging out.
+                loginSession = null;
+                loginSessionId = null;
+            }
             if (loginSession != null
                 && loginSessionId != null
                 && sessionID().equals(loginSessionId))
