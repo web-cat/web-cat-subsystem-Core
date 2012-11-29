@@ -153,8 +153,8 @@ public class GitTreeEntry
         {
             GitTreeEntry otherEntry = (GitTreeEntry) other;
             return path.equals(otherEntry.path)
-                && name.equals(otherEntry.name)
-                && objectId.equals(otherEntry.objectId);
+                && name.equals(otherEntry.name);
+                //&& objectId.equals(otherEntry.objectId);
         }
         else
         {
