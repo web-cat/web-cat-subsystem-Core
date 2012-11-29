@@ -25,13 +25,16 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevCommit;
 import org.webcat.archives.ArchiveManager;
 import org.webcat.core.git.GitCommit;
 import org.webcat.core.git.GitRef;
 import org.webcat.core.git.GitRepository;
 import org.webcat.core.git.GitTreeEntry;
 import org.webcat.core.git.GitUtilities;
+import org.webcat.ui.WCTree;
 import org.webcat.ui.generators.JavascriptGenerator;
 import org.webcat.ui.util.ComponentIDGenerator;
 import com.webobjects.appserver.WOContext;
@@ -68,10 +71,19 @@ public class FilePickerDialog
     public String id;
     public String title;
 
-    public RepositoryRefModel refModel;
+    public RepositoryRefModel refModel = new RepositoryRefModel();
     public Object repositoryItem;
 
-    public RepositoryEntryModel entryModel;
+    public RepositoryEntryModel entryModel = new RepositoryEntryModel()
+    {
+        @Override
+        public boolean canSelectObject(GitTreeEntry anEntry)
+        {
+            return delegate.fileCanBeSelected(
+                    filePickerItemForEntry(anEntry), anEntry.isTree());
+        }
+    };
+
     public GitTreeEntry entry;
 
     public RepositoryEntryRef initialSelection;
@@ -119,7 +131,7 @@ public class FilePickerDialog
             RepositoryManager.getInstance().repositoriesPresentedToUser(
                     user(), localContext());
 
-        refModel = new RepositoryRefModel(providers);
+        refModel.setProviders(providers);
 
         if (initialSelection != null)
         {
@@ -154,23 +166,16 @@ public class FilePickerDialog
     // ----------------------------------------------------------
     private void updateEntryModel()
     {
+        System.out.println(entryModel);
+
         NSSet<?> selectedRefs = refModel.selectedObjects();
         if (selectedRefs.isEmpty())
         {
-            entryModel = new RepositoryEntryModel(null);
+            entryModel.setRef(null);
         }
         else
         {
-            entryModel = new RepositoryEntryModel(
-                    refForModelObject(selectedRefs.anyObject()))
-            {
-                @Override
-                public boolean canSelectObject(GitTreeEntry anEntry)
-                {
-                    return delegate.fileCanBeSelected(
-                            filePickerItemForEntry(anEntry), anEntry.isTree());
-                }
-            };
+            entryModel.setRef(refForModelObject(selectedRefs.anyObject()));
 
             if (initialSelection != null)
             {
@@ -422,8 +427,9 @@ public class FilePickerDialog
             File gitIgnore = new File(newFolder, ".gitignore");
             FileOutputStream os = new FileOutputStream(gitIgnore);
             os.close();
-            GitUtilities.pushWorkingCopyImmediately(workingCopy, user(),
-                "Created folder \"" + newFolderName + "\"");
+            GitUtilities.pushWorkingCopyImmediately(
+                    workingCopy, user(),
+                    "Created folder \"" + newFolderName + "\"");
         }
         catch (Exception e)
         {
@@ -435,6 +441,7 @@ public class FilePickerDialog
             return js;
         }
 
+        initialSelection = null;
         updateRefModel();
 
         js.refresh(idFor.get("repositoryTree"), idFor.get("entryTree"));

@@ -44,13 +44,28 @@ public class RepositoryEntryModel extends WCTreeModel<GitTreeEntry>
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    public RepositoryEntryModel(GitRef ref)
+    public RepositoryEntryModel()
     {
-        this.ref = ref;
+        this.ref = null;
     }
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    public GitRef ref()
+    {
+        return ref;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setRef(GitRef aRef)
+    {
+        this.ref = aRef;
+        rearrangeObjects();
+    }
+
 
     // ----------------------------------------------------------
     @Override
@@ -81,6 +96,7 @@ public class RepositoryEntryModel extends WCTreeModel<GitTreeEntry>
         while (it.hasNext())
         {
             GitTreeEntry entry = it.next();
+
             if (".gitignore".equals(entry.name()))
             {
                 it.remove();

@@ -44,13 +44,28 @@ public class RepositoryRefModel
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    public RepositoryRefModel(NSArray<? extends EOBase> providers)
+    public RepositoryRefModel()
     {
-        this.providers = providers;
+        this.providers = NSArray.emptyArray();
     }
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    public NSArray<?> providers()
+    {
+        return providers;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setProviders(NSArray<? extends EOBase> someProviders)
+    {
+        this.providers = someProviders;
+        rearrangeObjects();
+    }
+
 
     // ----------------------------------------------------------
     @Override
@@ -158,5 +173,5 @@ public class RepositoryRefModel
 
     //~ Static/instance variables .............................................
 
-    private NSArray<? extends EOEnterpriseObject> providers;
+    private NSArray<?> providers;
 }
