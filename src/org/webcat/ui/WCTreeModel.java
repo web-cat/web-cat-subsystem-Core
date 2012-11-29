@@ -23,6 +23,7 @@ package org.webcat.ui;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.WeakHashMap;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
@@ -65,6 +66,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
         selectedObjects = new NSMutableSet<T>();
         sortOrderings = null;
         qualifier = null;
+        expandedItems = new HashMap<String, Boolean>();
     }
 
 
@@ -370,7 +372,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
             selectedObjects.removeAllObjects();
         }
 
-        selectionDidChange();
+        _selectionDidChange();
     }
 
 
@@ -397,7 +399,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
 
         if (changed)
         {
-            selectionDidChange();
+            _selectionDidChange();
         }
     }
 
@@ -413,7 +415,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
         if (canSelectObject(anObject))
         {
             selectedObjects.addObject(anObject);
-            selectionDidChange();
+            _selectionDidChange();
         }
     }
 
@@ -427,7 +429,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     public void deselectObject(T anObject)
     {
         selectedObjects.removeObject(anObject);
-        selectionDidChange();
+        _selectionDidChange();
     }
 
 
@@ -452,7 +454,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
 
         if (changed)
         {
-            selectionDidChange();
+            _selectionDidChange();
         }
     }
 
@@ -466,7 +468,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     public void deselectObjects(NSSet<T> objects)
     {
         selectedObjects.subtractSet(objects);
-        selectionDidChange();
+        _selectionDidChange();
     }
 
 
@@ -477,6 +479,42 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     public void clearSelection()
     {
         selectedObjects.removeAllObjects();
+        _selectionDidChange();
+    }
+
+
+    // ----------------------------------------------------------
+    private void _selectionDidChange()
+    {
+        // Make sure the current selection is always expanded.
+
+        for (T object : selectedObjects())
+        {
+            String pathToSelectedObject = pathForObject(object);
+
+            if (pathToSelectedObject != null)
+            {
+                String[] components = pathToSelectedObject.split("/");
+
+                T current = null;
+
+                for (String component : components)
+                {
+                    current = childWithPathComponent(current, component);
+
+                    if (current == null)
+                    {
+                        break;
+                    }
+
+                    if (!expandedItems.containsKey(current))
+                    {
+                        expandedItems.put(pathForObject(current), true);
+                    }
+                }
+            }
+        }
+
         selectionDidChange();
     }
 
@@ -490,6 +528,39 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     protected void selectionDidChange()
     {
         // Do nothing; subclasses can override.
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean isObjectExpanded(T object)
+    {
+        if (object != null)
+        {
+            String path = pathForObject(object);
+            return Boolean.TRUE.equals(expandedItems.get(path));
+        }
+        else
+        {
+            return true;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public void setObjectExpanded(T object, boolean expanded)
+    {
+        if (object != null)
+        {
+            String path = pathForObject(object);
+            if (expanded)
+            {
+                expandedItems.put(path, Boolean.TRUE);
+            }
+            else
+            {
+                expandedItems.remove(path);
+            }
+        }
     }
 
 
@@ -541,4 +612,6 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
 
     /* A qualifier used to filter the displayed items in the tree. */
     private EOQualifier qualifier;
+
+    private HashMap<String, Boolean> expandedItems;
 }

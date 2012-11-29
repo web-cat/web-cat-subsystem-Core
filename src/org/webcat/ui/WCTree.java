@@ -253,164 +253,124 @@ public class WCTree extends WCComponent
     }
 
 
-    // ----------------------------------------------------------
-    public Map<Object, Boolean> expandedItems()
-    {
-        if (expandedItems == null)
-        {
-            retrieveExpansionState();
-        }
-
-            // If there's a selection, expand to make that visible too.
-
-            for (Object object : treeModel.selectedObjects())
-            {
-                String pathToSelectedObject = treeModel.pathForObject(object);
-
-                if (pathToSelectedObject != null)
-                {
-                    String[] components = pathToSelectedObject.split("/");
-
-                    Object current = null;
-
-                    for (String component : components)
-                    {
-                        current = treeModel.childWithPathComponent(current, component);
-
-                        if (current == null)
-                        {
-                            break;
-                        }
-
-                        if (!expandedItems.containsKey(current))
-                        {
-                            expandedItems.put(current, true);
-                        }
-                    }
-                }
-            }
-
-        return expandedItems;
-    }
+//    // ----------------------------------------------------------
+//    public Map<Object, Boolean> expandedItems()
+//    {
+//        if (expandedItems == null)
+//        {
+//            retrieveExpansionState();
+//        }
+//
+//        // If there's a selection, expand to make that visible too.
+//
+//
+//        return expandedItems;
+//    }
 
 
     // ----------------------------------------------------------
     public boolean isItemExpanded(Object item)
     {
-        if (!expandedItems().containsKey(item))
-        {
-            return false;
-            //expandedItems().put(item, false);
-        }
-
-        return expandedItems().get(item);
+        return treeModel.isObjectExpanded(item);
     }
 
 
     // ----------------------------------------------------------
     public void toggleItemExpanded(Object item)
     {
-        if (expandedItems().containsKey(item))
-        {
-            expandedItems().put(item, !expandedItems().get(item));
-        }
-        else
-        {
-            expandedItems().put(item, true);
-        }
-
-        storeExpansionState();
+        treeModel.setObjectExpanded(item, !treeModel.isObjectExpanded(item));
+//        storeExpansionState();
     }
 
 
     // ----------------------------------------------------------
-    private void retrieveExpansionState()
-    {
-        expandedItems = new HashMap<Object, Boolean>();
-
-        if (settingsKey != null)
-        {
-            String ids = (String) user().preferences().valueForKey(
-                    settingsKey + "_expandedItemIds");
-
-            if (ids != null)
-            {
-                String[] splitIds = ids.split("\0");
-
-                Map<String, Boolean> expandedItemIds =
-                    new HashMap<String, Boolean>();
-
-                for (int i = 0; i < splitIds.length; i += 2)
-                {
-                    String id = splitIds[i];
-                    boolean expanded = Boolean.parseBoolean(splitIds[i + 1]);
-
-                    if (id.length() > 0)
-                    {
-                        expandedItemIds.put(id, expanded);
-                    }
-                }
-
-                //recursivelyExpandChildren(null, 0, expandedItemIds);
-            }
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    private void recursivelyExpandChildren(Object item, int depth,
-                                           Map<String, Boolean> expandedItemIds)
-    {
-        if (treeModel.objectHasArrangedChildren(item))
-        {
-            NSArray<?> children = treeModel.arrangedChildrenOfObject(item);
-            if (children != null)
-            {
-                for (Object child : children)
-                {
-                    String childId = treeModel.persistentIdOfObject(child);
-
-                    if ((childId != null && expandedItemIds.containsKey(childId))
-                            || (!expandedItemIds.containsKey(childId)
-                                    && (initialExpandDepth == -1
-                                            || depth < initialExpandDepth)))
-                    {
-                        expandedItems.put(child,
-                                expandedItemIds.get(childId));
-                        recursivelyExpandChildren(child, depth + 1, expandedItemIds);
-                    }
-                }
-            }
-        }
-    }
+//    private void retrieveExpansionState()
+//    {
+//        expandedItems = new HashMap<Object, Boolean>();
+//
+//        if (settingsKey != null)
+//        {
+//            String ids = (String) user().preferences().valueForKey(
+//                    settingsKey + "_expandedItemIds");
+//
+//            if (ids != null)
+//            {
+//                String[] splitIds = ids.split("\0");
+//
+//                Map<String, Boolean> expandedItemIds =
+//                    new HashMap<String, Boolean>();
+//
+//                for (int i = 0; i < splitIds.length; i += 2)
+//                {
+//                    String id = splitIds[i];
+//                    boolean expanded = Boolean.parseBoolean(splitIds[i + 1]);
+//
+//                    if (id.length() > 0)
+//                    {
+//                        expandedItemIds.put(id, expanded);
+//                    }
+//                }
+//
+//                //recursivelyExpandChildren(null, 0, expandedItemIds);
+//            }
+//        }
+//    }
 
 
     // ----------------------------------------------------------
-    private void storeExpansionState()
-    {
-        if (settingsKey != null)
-        {
-            StringBuffer buffer = new StringBuffer();
-            for (Object item : expandedItems.keySet())
-            {
-                boolean expanded = expandedItems.get(item);
-                String id = treeModel.persistentIdOfObject(item);
+//    private void recursivelyExpandChildren(Object item, int depth,
+//                                           Map<String, Boolean> expandedItemIds)
+//    {
+//        if (treeModel.objectHasArrangedChildren(item))
+//        {
+//            NSArray<?> children = treeModel.arrangedChildrenOfObject(item);
+//            if (children != null)
+//            {
+//                for (Object child : children)
+//                {
+//                    String childId = treeModel.persistentIdOfObject(child);
+//
+//                    if ((childId != null && expandedItemIds.containsKey(childId))
+//                            || (!expandedItemIds.containsKey(childId)
+//                                    && (initialExpandDepth == -1
+//                                            || depth < initialExpandDepth)))
+//                    {
+//                        expandedItems.put(child,
+//                                expandedItemIds.get(childId));
+//                        recursivelyExpandChildren(child, depth + 1, expandedItemIds);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
-                if (id != null)
-                {
-                    buffer.append(id);
-                    buffer.append('\0');
-                    buffer.append(Boolean.toString(expanded));
-                    buffer.append('\0');
-                }
-            }
-            String expandedItemIdsString = buffer.toString();
 
-            user().preferences().takeValueForKey(
-                    expandedItemIdsString, settingsKey + "_expandedItemIds");
-            user().savePreferences();
-        }
-    }
+    // ----------------------------------------------------------
+//    private void storeExpansionState()
+//    {
+//        if (settingsKey != null)
+//        {
+//            StringBuffer buffer = new StringBuffer();
+//            for (Object item : expandedItems.keySet())
+//            {
+//                boolean expanded = expandedItems.get(item);
+//                String id = treeModel.persistentIdOfObject(item);
+//
+//                if (id != null)
+//                {
+//                    buffer.append(id);
+//                    buffer.append('\0');
+//                    buffer.append(Boolean.toString(expanded));
+//                    buffer.append('\0');
+//                }
+//            }
+//            String expandedItemIdsString = buffer.toString();
+//
+//            user().preferences().takeValueForKey(
+//                    expandedItemIdsString, settingsKey + "_expandedItemIds");
+//            user().savePreferences();
+//        }
+//    }
 
 
     // ----------------------------------------------------------
@@ -602,8 +562,8 @@ public class WCTree extends WCComponent
 
     private String passthroughAttributes;
 
-    private Map<Object, Boolean> expandedItems;
-    private boolean expandedItemsCalled;
+    //private Map<Object, Boolean> expandedItems;
+    //private boolean expandedItemsCalled;
 
     protected int numberOfColumns = 0;
 }
