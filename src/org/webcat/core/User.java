@@ -325,12 +325,33 @@ public class User
 
     // ----------------------------------------------------------
     /**
-     * Return the user's full name as a string, in the format "First Last".
+     * Return the user's full name as a string, in the format "First Last",
+     * followed by the user name in parentheses.
      * @return the name
      */
     public String nameAndUid()
     {
         String name  = name();
+        if (name == null || name.equals(""))
+        {
+            return userName();
+        }
+        else
+        {
+            return name + " (" + userName() + ")";
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Return the user's full name as a string, in the format "Last, First",
+     * followed by the user name in parentheses.
+     * @return the name
+     */
+    public String nameAndUid_LF()
+    {
+        String name  = name_LF();
         if (name == null || name.equals(""))
         {
             return userName();
