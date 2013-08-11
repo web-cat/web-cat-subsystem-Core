@@ -25,6 +25,7 @@ import java.net.URLEncoder;
 import org.apache.log4j.Logger;
 import org.webcat.core.git.http.GitRequestHandler;
 import org.webcat.core.webdav.WebDAVRequestHandler;
+import org.webcat.ui.WCBasePage;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WODisplayGroup;
@@ -35,6 +36,7 @@ import com.webobjects.foundation.NSTimeZone;
 import com.webobjects.foundation.NSTimestamp;
 import er.extensions.eof.ERXQ;
 import er.extensions.foundation.ERXArrayUtilities;
+import er.extensions.foundation.ERXValueUtilities;
 
 //-------------------------------------------------------------------------
 /**
@@ -382,6 +384,24 @@ public class MyProfilePage
         log.debug("sharing ");
         openThemes = true;
         return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean wantsDevelopmentJavascript()
+    {
+        return ERXValueUtilities.booleanValueWithDefault(
+            user().preferences().valueForKey(
+                WCBasePage.UNCOMPRESSED_SCRIPT_PREF_KEY),
+                Application.isDevelopmentModeSafe());
+    }
+
+
+    // ----------------------------------------------------------
+    public void setWantsDevelopmentJavascript(boolean value)
+    {
+        user().preferences().takeValueForKey(Boolean.toString(value),
+            WCBasePage.UNCOMPRESSED_SCRIPT_PREF_KEY);
     }
 
 

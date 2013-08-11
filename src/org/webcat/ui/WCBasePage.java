@@ -32,6 +32,7 @@ import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSKeyValueCodingAdditions;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
+import er.extensions.foundation.ERXValueUtilities;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -43,6 +44,7 @@ import org.webcat.core.MutableArray;
 import org.webcat.core.MutableDictionary;
 import org.webcat.core.Session;
 import org.webcat.core.Theme;
+import org.webcat.core.User;
 import org.webcat.woextensions.WCResourceManager;
 
 // ------------------------------------------------------------------------
@@ -115,13 +117,18 @@ public class WCBasePage
     /** Used to refer to a single item in a repetition on the page. */
     public String oneExtraRequire;
 
+    public static final String UNCOMPRESSED_SCRIPT_PREF_KEY =
+        "useDevelopmentJavascript";
+
 
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
     public void appendToResponse(WOResponse response, WOContext context)
     {
-        if (Application.isDevelopmentModeSafe())
+        boolean useDevelopmentJavascript = Application.isDevelopmentModeSafe()
+            || wantsDevelopmentJavascript();
+        if (useDevelopmentJavascript)
         {
             pageScriptName = DEVELOPMENT_PAGE_SCRIPT_NAME;
             dojoScriptName = DEVELOPMENT_DOJO_SCRIPT_NAME;
@@ -432,6 +439,25 @@ public class WCBasePage
             }
         }
         return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean wantsDevelopmentJavascript()
+    {
+        boolean result = false;
+        if (hasSession())
+        {
+            User u = ((Session)session()).user();
+            if (u != null)
+            {
+                result = ERXValueUtilities.booleanValueWithDefault(
+                    u.preferences().valueForKey(
+                        WCBasePage.UNCOMPRESSED_SCRIPT_PREF_KEY),
+                        Application.isDevelopmentModeSafe());
+            }
+        }
+        return result;
     }
 
 
