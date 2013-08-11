@@ -441,10 +441,19 @@ public class Application
             }
             NSTimestamp thirtyDaysAgo = new NSTimestamp()
                 .timestampByAddingGregorianUnits(0, 0, -30, 0, 0, 0);
-            for (UsagePeriod period : UsagePeriod.objectsMatchingQualifier(
-                ec, UsagePeriod.startTime.before(thirtyDaysAgo)))
+            try
             {
-                period.delete();
+                for (UsagePeriod period : UsagePeriod.objectsMatchingQualifier(
+                    ec, UsagePeriod.startTime.before(thirtyDaysAgo)))
+                {
+                    period.delete();
+                }
+            }
+            catch (Exception e)
+            {
+                log.error("Unable to purge old usage periods due to exception",
+                    e);
+                // TODO: drop all rows in usage period table here
             }
             ec.saveChanges();
         }}.run();
