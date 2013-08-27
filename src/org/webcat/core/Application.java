@@ -123,6 +123,8 @@ public class Application
     {
         super();
 
+        try
+        {
         // Set UTF-8 encoding, to support localization
         WOMessage.setDefaultEncoding("UTF-8");
         WOMessage.setDefaultURLEncoding("UTF-8");
@@ -243,6 +245,23 @@ public class Application
         if (log.isDebugEnabled())
         {
             log.debug("classpath = " + System.getProperty("java.class.path"));
+        }
+
+        }
+        catch (Exception e)
+        {
+            log.fatal(
+                "An unexpected exception during application initialization "
+                + "kept Web-CAT from starting properly.",
+                e);
+            if (e instanceof RuntimeException)
+            {
+                throw (RuntimeException)e;
+            }
+            else
+            {
+                throw new RuntimeException(e);
+            }
         }
     }
 
