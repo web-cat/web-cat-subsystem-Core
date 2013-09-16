@@ -55,6 +55,7 @@ public class TarUtil
             if (name != null
                 && !tarEntry.isDirectory()
                 && !name.equals(".DS_Store")
+                && !name.endsWith("/.DS_Store")
                 && !name.startsWith("__MACOSX/"))
             {
                 ArchiveEntry entry = new ArchiveEntry(
@@ -83,7 +84,8 @@ public class TarUtil
             String name = tarEntry.getName();
 			if ( tarEntry.isDirectory() )
 			{
-                if (!"__MACOSX".equals(name))
+                if (!"__MACOSX".equals(name)
+                    && !name.startsWith("__MACOSX/"))
                 {
                     File destDir = new File( destPath, name );
 
