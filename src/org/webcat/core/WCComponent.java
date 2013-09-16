@@ -335,7 +335,7 @@ public class WCComponent
      */
     public WOComponent back()
     {
-        if ( hasMessages() )
+        if ( hasBlockingErrors() )
         {
             return null;
         }
@@ -550,7 +550,7 @@ public class WCComponent
      */
     public WOComponent finish()
     {
-        if ( applyLocalChanges() && !hasMessages() )
+        if ( applyLocalChanges() && !hasBlockingErrors() )
         {
             TabDescriptor parent = currentTab().parent();
             if ( parent.parent().parent() != null )
@@ -808,7 +808,7 @@ public class WCComponent
     // ----------------------------------------------------------
     private WOComponent internalNext(boolean save)
     {
-        if ( hasMessages() )
+        if ( hasBlockingErrors() )
         {
             return null;
         }
