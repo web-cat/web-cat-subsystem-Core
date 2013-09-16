@@ -166,8 +166,6 @@ public class FilePickerDialog
     // ----------------------------------------------------------
     private void updateEntryModel()
     {
-        System.out.println(entryModel);
-
         NSSet<?> selectedRefs = refModel.selectedObjects();
         if (selectedRefs.isEmpty())
         {
