@@ -1,5 +1,5 @@
 #This file is automatically rewritten by ANT, so all formatting will be trashed.
-#Mon Sep 16 09:31:19 EDT 2013
+#Mon Sep 16 09:48:55 EDT 2013
 er.extensions.ERXEnterpriseObject.updateInverseRelationships=true
 Core.license.url=http\://www.gnu.org/licenses/agpl.html
 Core.version.date=20130916
