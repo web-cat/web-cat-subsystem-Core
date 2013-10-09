@@ -103,7 +103,6 @@ public class ZipArchiveHandler
 
 			        if ( !destDir.exists() )
 			        {
-			            System.out.println("mkdir: " + destDir);
 			            destDir.mkdirs();
 			        }
 			    }
@@ -118,11 +117,9 @@ public class ZipArchiveHandler
 
 				if ( destParent != null  &&  !destParent.exists() )
                 {
-                    System.out.println("mkdir2: " + destParent);
 					destParent.mkdirs();
                 }
 
-                System.out.println("unpacking: " + destFile);
 				FileUtilities.copyStreamToFile(
                     zipStream, destFile, zipEntry.getTime() );
 			}
