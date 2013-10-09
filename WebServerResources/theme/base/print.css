@@ -1,5 +1,5 @@
 body {
-  font-size: 12pt;
+  font-size: 10pt;
   color: black;
   background: white;
 }
@@ -31,7 +31,7 @@ a {
 }
 
 /* Prints the URL after a link in CSS2 supporting browsers */
-a:link:after, 
+a:link:after,
 a:visited:after {
    content: " (" attr(href) ") ";
    font-size: 90%;
@@ -52,5 +52,13 @@ a:visited:after {
   padding: 0;
 }
 
+.module { margin-bottom: 1.5em; }
 
+.aristo .dijitTitlePaneContentOuter { border: none; }
 
+.dijitTitlePaneContentInner .dijitTitlePaneContentInner p { margin: 0; }
+.dijitTitlePaneContentInner .dijitTitlePaneContentInner blockquote {
+	margin: 0;
+	padding: 0 0 0 1.5em;
+	border: none;
+}
