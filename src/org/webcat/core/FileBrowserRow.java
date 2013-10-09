@@ -35,6 +35,7 @@ import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSTimestamp;
+import er.extensions.foundation.ERXArrayUtilities;
 import er.extensions.foundation.ERXFileUtilities;
 
 //-------------------------------------------------------------------------
@@ -197,7 +198,10 @@ public class FileBrowserRow
         {
             if (file.isDirectory())
             {
-                contents = new NSArray<File>(file.listFiles(notDotOrDotDot));
+                NSMutableArray<File> files =
+                    new NSMutableArray<File>(file.listFiles(notDotOrDotDot));
+                ERXArrayUtilities.sortArrayWithKey(files, "name");
+                contents = files;
             }
             else
             {
