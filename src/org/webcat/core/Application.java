@@ -157,7 +157,7 @@ public class Application
         if (log.isInfoEnabled())
         {
             log.info("Web-CAT v" + version()
-                + "\nCopyright (C) 2006-2011 Virginia Tech\n\n"
+                + "\nCopyright (C) 2006-2014 Virginia Tech\n\n"
                 + "Web-CAT comes with ABSOLUTELY NO WARRANTY; this is "
                 + "free software\n"
                 + "under the terms of the GNU Affero General Public License "
@@ -847,6 +847,22 @@ public class Application
 
     // ----------------------------------------------------------
     /**
+     * This is a typesafe version of the
+     * {@link #pageWithName(String, WOContext)}
+     * method, and should be used instead of the string version.
+     * @param pageClass the class of the page to create
+     * @param context The context for the page
+     * @return a new instance of the class, appropriately typed.
+     */
+    @SuppressWarnings("unchecked")
+    public <T> T pageWithName(Class<T> pageClass, WOContext context)
+    {
+        return (T)pageWithName(pageClass.getName(), context);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Returns the given component by name.
      *
      * @param name    The name of the component to find
@@ -981,12 +997,31 @@ public class Application
             requestLog.debug("\turi = " + aRequest.uri());
             requestLog.debug("\tcookies = " + aRequest.cookies());
         }
-        WOResponse result = super.dispatchRequest(aRequest);
-        if (requestLog.isDebugEnabled())
+        try
         {
-            requestLog.debug("dispatchRequest() result:\n" + result);
+            WOResponse result = super.dispatchRequest(aRequest);
+            if (requestLog.isDebugEnabled())
+            {
+                requestLog.debug("dispatchRequest() result:\n" + result);
+            }
+            return result;
         }
-        return result;
+        catch (IllegalStateException e)
+        {
+            String message = e.getMessage();
+            // Swallow Eclipse update site requests that were
+            // incorrectly targeted
+            if (message == null
+                || !message.contains("Direct Action type URL")
+                || !message.contains("eclipse")
+                || !(message.contains("contents.jar")
+                    || message.contains("artifacts.jar")
+                    || message.contains("p2.index")))
+            {
+                throw e;
+            }
+            return null;
+        }
     }
 
 
@@ -1075,7 +1110,7 @@ public class Application
     public boolean _isForeignSupportedDevelopmentPlatform()
     {
         return super._isForeignSupportedDevelopmentPlatform() ||
-            isAdditionalForeignSupportedDevelopmentPlatform();
+            isRunningOnWindows();
     }
 
 
@@ -1088,18 +1123,6 @@ public class Application
     {
         return staticHtmlResourcesNeedInitializing
             || super._rapidTurnaroundActiveForAnyProject();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Check for Windows XP
-     * @return true when running on XP
-     */
-    protected boolean isAdditionalForeignSupportedDevelopmentPlatform()
-    {
-        String s = System.getProperty("os.name");
-        return s != null && s.equals("Windows XP");
     }
 
 
