@@ -499,7 +499,6 @@ public abstract class Message
         if (editingContext == null)
         {
             editingContext = WCEC.newAutoLockingEditingContext();
-            editingContext.setSharedEditingContext(null);
         }
         return editingContext;
     }

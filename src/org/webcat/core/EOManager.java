@@ -66,7 +66,6 @@ public interface EOManager
         public ECManager()
         {
             ec = WCEC.newAutoLockingEditingContext();
-            ec.setSharedEditingContext(null);
         }
 
 
@@ -202,7 +201,6 @@ public interface EOManager
                 // Something happened, so try replacing the old context
                 // with a new one.
                 ERXEC newContext = WCEC.newAutoLockingEditingContext();
-                newContext.setSharedEditingContext(null);
                 eo = EOUtilities.localInstanceOfObject(newContext, eo);
                 newContext.refreshObject(eo);
 
