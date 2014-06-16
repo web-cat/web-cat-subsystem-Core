@@ -62,7 +62,7 @@ public class Language
      */
     public static NSArray<Language> languages()
     {
-        if ( languages == null )
+        if (languages == null)
         {
             refreshLanguages();
         }
@@ -76,14 +76,14 @@ public class Language
      */
     public static void refreshLanguages()
     {
-        log.debug( "refreshing shared language objects" );
+        log.debug("refreshing shared language objects");
         languages = allObjects(
-            EOSharedEditingContext.defaultSharedEditingContext() );
+            EOSharedEditingContext.defaultSharedEditingContext());
     }
 
 
     //~ Instance/static variables .............................................
     private static NSArray<Language> languages;
 
-    static Logger log = Logger.getLogger( Language.class );
+    static Logger log = Logger.getLogger(Language.class);
 }
