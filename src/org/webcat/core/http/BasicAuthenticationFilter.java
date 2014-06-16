@@ -206,31 +206,37 @@ public abstract class BasicAuthenticationFilter
                 authorization = Base64.decode(authorization.substring(6));
                 String[] parts = authorization.split(":");
 
-                final String username = parts[0];
-                final String password = (parts.length > 1) ? parts[1] : null;
-
-                final Session oldSession = session;
-                session = call(new ECActionWithResult<Session>()
+                if (parts != null && parts.length >= 2)
                 {
-                    public Session action() {
-                        Session result = oldSession;
-                        User user = validateUser(username, password, ec);
+                    final String username = parts[0];
+                    final String password =
+                        (parts.length > 1) ? parts[1] : null;
 
-                        if (user == null)
+                    final Session oldSession = session;
+                    session = call(new ECActionWithResult<Session>()
+                    {
+                        public Session action()
                         {
-                            Application.wcApplication().saveSessionForContext(
-                                context);
+                            Session result = oldSession;
+                            User user = validateUser(username, password, ec);
+
+                            if (user == null)
+                            {
+                                Application.wcApplication()
+                                    .saveSessionForContext(context);
+                            }
+                            else
+                            {
+                                context._setRequestSessionID(existingSessionId);
+                                result = (Session)context.session();
+                                result.setUser(user.localInstance(
+                                    result.defaultEditingContext()));
+                                result._appendCookieToResponse(response);
+                            }
+                            return result;
                         }
-                        else
-                        {
-                            context._setRequestSessionID(existingSessionId);
-                            result = (Session) context.session();
-                            result.setUser(user.localInstance(
-                                result.defaultEditingContext()));
-                            result._appendCookieToResponse(response);
-                        }
-                        return result;
-                }});
+                    });
+                }
             }
         }
 
