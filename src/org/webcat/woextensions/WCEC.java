@@ -109,11 +109,14 @@ public class WCEC
     @Override
     public void saveChanges()
     {
-        EOSharedEditingContext defaultSharedEC =
-            EOSharedEditingContext.defaultSharedEditingContext();
-        if (defaultSharedEC != null)
+        EOSharedEditingContext sharedEC = null;
+        if (sharedEditingContext() == null)
         {
-            defaultSharedEC.lock();
+            sharedEC = EOSharedEditingContext.defaultSharedEditingContext();
+            if (sharedEC != null)
+            {
+                sharedEC.lock();
+            }
         }
         try
         {
@@ -121,9 +124,9 @@ public class WCEC
         }
         finally
         {
-            if (defaultSharedEC != null)
+            if (sharedEC != null)
             {
-                defaultSharedEC.unlock();
+                sharedEC.unlock();
             }
         }
     }
