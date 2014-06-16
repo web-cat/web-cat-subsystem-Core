@@ -521,7 +521,8 @@ public class FileUtilities
     public static String mimeType( String fileName )
     {
         return FileUtilities.fileProperties.getFileProperty(
-            extensionOf( fileName ), "mimeType", "application/octet-stream" );
+            extensionOf( fileName ).toLowerCase(),
+            "mimeType", "application/octet-stream" );
     }
 
 
