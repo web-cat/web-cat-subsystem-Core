@@ -22,16 +22,9 @@
 package org.webcat.ui;
 
 import com.webobjects.appserver.WOActionResults;
-import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.appserver.WOResponse;
-import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSMutableArray;
-import com.webobjects.foundation.NSSet;
-import org.webcat.core.WCComponent;
 import org.webcat.ui._base.WCTreeSubcomponent;
 import org.webcat.ui.generators.JavascriptGenerator;
-import org.webcat.ui.util.ComponentIDGenerator;
 
 //-------------------------------------------------------------------------
 /**
@@ -50,11 +43,6 @@ public class WCTreeCell extends WCTreeSubcomponent
     {
         super(context);
     }
-
-
-    //~ KVC attributes (must be public) .......................................
-
-    public ComponentIDGenerator idFor = new ComponentIDGenerator(this);
 
 
     //~ Methods ...............................................................
@@ -124,9 +112,18 @@ public class WCTreeCell extends WCTreeSubcomponent
     public String startSpinnerScript()
     {
         JavascriptGenerator js = new JavascriptGenerator();
-        js.dijit(idFor.get("toggleSpinner")).call("start");
-        js.style(idFor.get("toggleControl"), "display", "none");
-        js.style(idFor.get("toggleSpinner"), "display", "inline-block");
+        js.dijit(idFor("toggleSpinner")).call("start");
+        js.style(idFor("toggleControl"), "display", "none");
+        js.style(idFor("toggleSpinner"), "display", "inline-block");
         return js.toString(true);
+    }
+
+
+    // ----------------------------------------------------------
+    public String idFor(String tag)
+    {
+        return tree().idFor.get(tag + "_")
+            + WCTreeItems.currentTreeItems().indexPath.toString().replace(
+                    '.', '_');
     }
 }

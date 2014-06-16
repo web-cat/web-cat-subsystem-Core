@@ -21,32 +21,17 @@
 
 package org.webcat.ui;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.webcat.core.WCComponent;
 import org.webcat.ui.generators.JavascriptFunction;
 import org.webcat.ui.generators.JavascriptGenerator;
 import org.webcat.ui.util.ComponentIDGenerator;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.appserver.WODisplayGroup;
 import com.webobjects.appserver.WOMessage;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
-import com.webobjects.eocontrol.EOOrQualifier;
-import com.webobjects.eocontrol.EOQualifier;
-import com.webobjects.eocontrol.EOSortOrdering;
-import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
-import com.webobjects.foundation.NSMutableSet;
-import com.webobjects.foundation.NSSelector;
-import com.webobjects.foundation.NSSet;
-import er.extensions.appserver.ERXDisplayGroup;
 import er.extensions.appserver.ERXWOContext;
-import er.extensions.eof.ERXQ;
-import er.extensions.eof.ERXS;
-import er.extensions.eof.ERXSortOrdering.ERXSortOrderings;
 
 //-------------------------------------------------------------------------
 /**
@@ -110,7 +95,7 @@ public class WCTree extends WCComponent
 
     public String id;
 
-    public WCTreeModel treeModel;
+    public WCTreeModel<Object> treeModel;
     public String settingsKey;
     public boolean canSelectItems = false;
     public boolean multipleSelection = false;
@@ -244,11 +229,11 @@ public class WCTree extends WCComponent
     {
         if (fixedSize != null)
         {
-            return "layout nomargin";
+            return "layout nomargin tree";
         }
         else
         {
-            return null;
+            return "tree";
         }
     }
 

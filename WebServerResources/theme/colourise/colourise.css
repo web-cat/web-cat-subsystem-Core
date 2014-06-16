@@ -153,10 +153,8 @@ label em { color: #e20; }
 /* @group =Tables
 ====================================================================== */
 
-table {
-    border: 1px solid #211E20;
-    border-top: 1px solid #48780E;
-}
+table { border: 1px solid #211E20; border-top: 1px solid #48780E; }
+table.tree { border: none; }
 
 table th {
     background-image: url(../base/images/white-15.png);

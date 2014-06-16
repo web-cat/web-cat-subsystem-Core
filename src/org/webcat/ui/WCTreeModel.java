@@ -23,7 +23,8 @@ package org.webcat.ui;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
+import org.apache.log4j.Logger;
+import com.webobjects.eocontrol.EOGenericRecord;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
@@ -67,6 +68,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
         sortOrderings = null;
         qualifier = null;
         expandedItems = new HashMap<String, Boolean>();
+        cachedParentRelationship = new HashMap<T, T>();
     }
 
 
@@ -120,6 +122,16 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     // ----------------------------------------------------------
     public T childWithPathComponent(T object, String component)
     {
+        if (component != null)
+        {
+            for (T child : childrenOfObject(object))
+            {
+                if (component.equals(persistentIdOfObject(child)))
+                {
+                    return child;
+                }
+            }
+        }
         return null;
     }
 
@@ -127,7 +139,18 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     // ----------------------------------------------------------
     public String pathForObject(T object)
     {
-        return null;
+        String path = persistentIdOfObject(object);
+        if (path == null)
+        {
+            path = "null";
+        }
+
+        T parent = parentOf(object);
+        if (parent != null)
+        {
+            path = pathForObject(parent) + "/" + path;
+        }
+        return path;
     }
 
 
@@ -156,9 +179,14 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
         else
         {
             arrangedChildren = childrenOfObject(object);
-
             if (arrangedChildren != null)
             {
+                // Save parent info in cache
+                for (T child : arrangedChildren)
+                {
+                    cachedParentRelationship.put(child, object);
+                }
+
                 if (qualifier != null)
                 {
                     arrangedChildren = ERXQ.filtered(
@@ -194,6 +222,7 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     public void rearrangeObjects()
     {
         cachedArrangedChildren.clear();
+        cachedParentRelationship.clear();
     }
 
 
@@ -277,13 +306,11 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
      * used to persist the expansion state of the tree in the user's
      * preferences.
      * </p><p>
-     * By default, the method returns null, which prevents the expansion state
-     * from being remember for the object; if you wish to use this tree model
-     * with a tree that should remember its expansion state across sessions,
-     * you must override this method and provide an appropriate implementation
-     * (for example, a directory tree could use path segments; a tree
-     * containing EOs could use a combination of the entity name and object
-     * ID).
+     * By default, the method use the ID of an EO, or the hashCode of
+     * an object, together with its simple class name, to generate a
+     * persistent ID.  If you wish to use this tree model
+     * with an item type where hash codes are not persistent (or may
+     * collide), then you must override this method in your subclass.
      * </p>
      *
      * @param object the object
@@ -291,7 +318,19 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
      */
     public String persistentIdOfObject(T object)
     {
-        return null;
+        if (object instanceof EOGenericRecord)
+        {
+            EOGenericRecord record = (EOGenericRecord) object;
+            return record.entityName() + "_"
+                + record.valueForKey("id");
+        }
+        else
+        {
+            // Won't work for objects that don't define hashCode properly,
+            // so models that use such objects should override this
+            // method.
+            return object.getClass().getSimpleName() + "_" + object.hashCode();
+        }
     }
 
 
@@ -507,9 +546,10 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
                         break;
                     }
 
-                    if (!expandedItems.containsKey(current))
+                    String path = pathForObject(current);
+                    if (!expandedItems.containsKey(path))
                     {
-                        expandedItems.put(pathForObject(current), true);
+                        expandedItems.put(path, true);
                     }
                 }
             }
@@ -597,6 +637,22 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     }
 
 
+    // ----------------------------------------------------------
+    private T parentOf(T item)
+    {
+        T result = cachedParentRelationship.get(item);
+        if (result == null)
+        {
+            if (!cachedParentRelationship.containsKey(item))
+            {
+                log.warn("tree model " + this + " does not contain "
+                    + "parent info for item " + item);
+            }
+        }
+        return result;
+    }
+
+
     //~ Static/instance variables .............................................
 
     /* The cache used to maintain the lists of arranged children for each
@@ -613,5 +669,8 @@ public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
     /* A qualifier used to filter the displayed items in the tree. */
     private EOQualifier qualifier;
 
-    private HashMap<String, Boolean> expandedItems;
+    private Map<String, Boolean> expandedItems;
+    private Map<T, T> cachedParentRelationship;
+
+    static Logger log = Logger.getLogger(WCTreeModel.class);
 }

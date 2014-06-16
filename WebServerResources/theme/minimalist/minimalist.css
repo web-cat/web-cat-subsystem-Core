@@ -22,6 +22,7 @@ table {
     border-style: solid;
     border-color: #ccc;
 }
+table.tree { border: none; }
 
 th.R {
     font-size: 13px;

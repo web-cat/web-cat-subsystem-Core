@@ -177,9 +177,9 @@ label em { color: #e20; }
 /* @group =Tables
 ====================================================================== */
 
-table {
-    border: 1px solid #115;
-}
+table { border: 1px solid #115; }
+table.tree { border: none; }
+.tableborder { border: 1px solid #115; }
 
 table th {
     background-color: #44b;

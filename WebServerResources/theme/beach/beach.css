@@ -175,13 +175,9 @@ label em { color: #e20; }
 /* @group =Tables
 ====================================================================== */
 
-table {
-    border: 1px solid #aaa;
-}
-
-.tableborder {
-    border: 1px solid #aaa;
-}
+table { border: 1px solid #aaa; }
+table.tree { border: none; }
+.tableborder { border: 1px solid #aaa; }
 
 table th {
     background-image: url(../base/images/black-20.png);

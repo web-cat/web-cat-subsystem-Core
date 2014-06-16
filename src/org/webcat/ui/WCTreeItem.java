@@ -22,11 +22,7 @@
 package org.webcat.ui;
 
 import com.webobjects.appserver.WOContext;
-import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSMutableArray;
 import er.extensions.components.ERXComponentUtilities;
-import org.webcat.core.WCComponent;
-import org.webcat.ui._base.WCTableSubcomponent;
 import org.webcat.ui._base.WCTreeSubcomponent;
 
 //-------------------------------------------------------------------------

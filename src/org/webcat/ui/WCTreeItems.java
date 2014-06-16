@@ -21,9 +21,6 @@
 
 package org.webcat.ui;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Stack;
 import org.webcat.ui._base.WCTreeSubcomponent;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
@@ -201,12 +198,12 @@ public class WCTreeItems extends WCTreeSubcomponent
      * {@link WCTreeModelRepetition} element to iterate over only the items
      * in the tree that are currently expanded.
      */
-    private class WrappedTreeModel extends WCTreeModel
+    private class WrappedTreeModel extends WCTreeModel<Object>
     {
         //~ Constructors ......................................................
 
         // ------------------------------------------------------
-        public WrappedTreeModel(WCTreeModel model)
+        public WrappedTreeModel(WCTreeModel<Object> model)
         {
             this.model = model;
         }
@@ -216,7 +213,7 @@ public class WCTreeItems extends WCTreeSubcomponent
 
         // ------------------------------------------------------
         @Override
-        public NSArray childrenOfObject(Object object)
+        public NSArray<Object> childrenOfObject(Object object)
         {
             return model.childrenOfObject(object);
         }
@@ -224,7 +221,7 @@ public class WCTreeItems extends WCTreeSubcomponent
 
         // ------------------------------------------------------
         @Override
-        public NSArray arrangedChildrenOfObject(Object object)
+        public NSArray<Object> arrangedChildrenOfObject(Object object)
         {
             if (object == null || tree().isItemExpanded(object))
             {
@@ -237,9 +234,17 @@ public class WCTreeItems extends WCTreeSubcomponent
         }
 
 
+        // ----------------------------------------------------------
+        @Override
+        public String persistentIdOfObject(Object object)
+        {
+            return model.persistentIdOfObject(object);
+        }
+
+
         //~ Static/instance variables .........................................
 
-        private WCTreeModel model;
+        private WCTreeModel<Object> model;
     }
 
 

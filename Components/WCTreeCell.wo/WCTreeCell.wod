@@ -23,14 +23,14 @@ Toggle: WCLink {
 
 ToggleControl: WOGenericContainer {
     elementName = "div";
-    id = idFor.toggleControl;
+    id = "~idFor('toggleControl')";
     class = toggleControlClass;
 }
 
 ToggleSpinner: WOGenericContainer {
     elementName = "div";
     dojoType = "webcat.Spinner";
-    id = idFor.toggleSpinner;
+    id = "~idFor('toggleSpinner')";
     size = "small";
     style = "display: none; width: 16px; height: 15px; vertical-align: text-top";
 }

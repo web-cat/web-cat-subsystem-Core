@@ -21,13 +21,10 @@
 
 package org.webcat.ui._base;
 
-import org.webcat.ui.WCTable;
 import org.webcat.ui.WCTree;
 import org.webcat.ui.WCTreeModel;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.appserver.WODisplayGroup;
-import er.extensions.appserver.ERXDisplayGroup;
 
 //-------------------------------------------------------------------------
 /**
@@ -76,7 +73,7 @@ public class WCTreeSubcomponent extends WOComponent
      * @return the display group that is bound to the table that contains this
      *     subcomponent
      */
-    public WCTreeModel treeModel()
+    public WCTreeModel<Object> treeModel()
     {
         return tree().treeModel;
     }
