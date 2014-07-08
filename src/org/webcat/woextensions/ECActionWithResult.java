@@ -143,6 +143,7 @@ public abstract class ECActionWithResult<ReturnType>
         if (ec == null)
         {
             ec = WCEC.newEditingContext();
+            this.ownsEC = true;
         }
     }
 

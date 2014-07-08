@@ -144,6 +144,7 @@ public abstract class ECAction
         if (ec == null)
         {
             ec = WCEC.newEditingContext();
+            this.ownsEC = true;
         }
     }
 
