@@ -24,6 +24,17 @@
         {name = id; prototypeName = id; },
         {columnName = CLASTNAME; name = lastName; prototypeName = tinyText; },
         {name = password; prototypeName = password; },
+        {name = salt; columnName = salt; prototypeName = password; },
+        {name = iterations; columnName = iterations; prototypeName = integer;
+           userInfo =
+           {
+               isScalar = true;
+               scalarConversionMethodName = intValue;
+               scalarDefault = 0;
+               type = int;
+               valueClassName = Integer;
+           };
+        },
         {
             columnName = CPREFERENCES;
             name = preferences;
@@ -54,9 +65,11 @@
         authenticationDomainId,
         email,
         firstName,
+        iterations,
         lastName,
         password,
         preferences,
+        salt,
         themeId,
         universityIDNo,
         updateMutableFields,
@@ -71,10 +84,12 @@
         email,
         enrolledIn,
         firstName,
+        iterations,
         lastName,
         password,
         passwordChangeRequest,
         preferences,
+        salt,
         teaching,
         theme,
         universityIDNo,

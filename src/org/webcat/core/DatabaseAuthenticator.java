@@ -1,7 +1,7 @@
 /*==========================================================================*\
  |  $Id$
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2014 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -17,21 +17,56 @@
  |
  |  You should have received a copy of the GNU Affero General Public License
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
+ |
+ *==========================================================================*
+ |
+ | Parts of this implementation are adapted from:
+ |
+ | Password Hashing With PBKDF2 (http://crackstation.net/hashing-security.htm).
+ | Copyright (c) 2013, Taylor Hornby
+ | All rights reserved.
+ |
+ | Redistribution and use in source and binary forms, with or without
+ | modification, are permitted provided that the following conditions are met:
+ |
+ | 1. Redistributions of source code must retain the above copyright notice,
+ | this list of conditions and the following disclaimer.
+ |
+ | 2. Redistributions in binary form must reproduce the above copyright notice,
+ | this list of conditions and the following disclaimer in the documentation
+ | and/or other materials provided with the distribution.
+ |
+ | THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ | AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ | IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ | ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+ | LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ | CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ | SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ | INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ | CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ | ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ | POSSIBILITY OF SUCH DAMAGE.
 \*==========================================================================*/
 
 package org.webcat.core;
 
 import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
-
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.SecretKeyFactory;
+import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.spec.InvalidKeySpecException;
 import org.webcat.core.Application;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.DatabaseAuthenticator;
 import org.webcat.core.User;
 import org.webcat.core.UserAuthenticator;
 import org.webcat.core.WCProperties;
-import org.webcat.woextensions.WCEC;
+import org.webcat.woextensions.ECActionWithResult;
+import static org.webcat.woextensions.ECActionWithResult.call;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -82,23 +117,22 @@ public class DatabaseAuthenticator
      * @return true If configuration was successful and authenticator is
      *              ready for service
      */
-    public boolean configure( String       baseName,
-                              WCProperties properties
-                            )
+    public boolean configure(String       baseName,
+                             WCProperties properties)
     {
-        addIfNotFound = properties.booleanForKey( baseName + ".addIfNotFound" );
+        addIfNotFound = properties.booleanForKey(baseName + ".addIfNotFound");
         skipPasswordChecks =
-            properties.booleanForKey( baseName + ".skipPasswordChecks" );
-        log.debug( baseName + ".addIfNotFound = " + addIfNotFound );
-        if ( skipPasswordChecks )
+            properties.booleanForKey(baseName + ".skipPasswordChecks");
+        log.debug(baseName + ".addIfNotFound = " + addIfNotFound);
+        if (skipPasswordChecks)
         {
             log.warn(
-                baseName + ".skipPasswordChecks = " + skipPasswordChecks );
+                baseName + ".skipPasswordChecks = " + skipPasswordChecks);
         }
         else
         {
             log.debug(
-                baseName + ".skipPasswordChecks = " + skipPasswordChecks );
+                baseName + ".skipPasswordChecks = " + skipPasswordChecks);
         }
         return true;
     }
@@ -115,11 +149,10 @@ public class DatabaseAuthenticator
      * @param ec       The editing context to use
      * @return The current user object, or null if invalid login
      */
-    public User authenticate( String userName,
-                              String password,
-                              AuthenticationDomain domain,
-                              com.webobjects.eocontrol.EOEditingContext ec
-                            )
+    public User authenticate(String userName,
+                             String password,
+                             AuthenticationDomain domain,
+                             com.webobjects.eocontrol.EOEditingContext ec)
     {
         User user = null;
         try
@@ -130,66 +163,75 @@ public class DatabaseAuthenticator
                     new Object[]{ userName , domain              },
                     new String[]{ User.USER_NAME_KEY,
                                   User.AUTHENTICATION_DOMAIN_KEY }
-                ) );
-            if (skipPasswordChecks
-                || (password == null && u.password() == null)
-                || (password != null && password.equals( u.password())))
+                    ));
+            boolean passwordMatches = skipPasswordChecks;
+            if (!skipPasswordChecks)
             {
-                log.debug( "user " + userName + " validated" );
-                user = u;
-                if ( user.authenticationDomain() != domain )
+                if (u.salt() == null)
                 {
-                    if ( user.authenticationDomain() == null )
+                    // Need to migrate user to encrypted password
+                    changePassword(u, u.password());
+                }
+                if (password == null)
+                {
+                    password = "";
+                }
+                byte[] salt = fromHex(u.salt());
+                byte[] hash = fromHex(u.password());
+                // Compute the hash of the provided password, using the
+                // same salt, iteration count, and hash length
+                byte[] testHash = pbkdf2(
+                    password.toCharArray(), salt, u.iterations(), hash.length);
+                // Compare the hashes in constant time. The password is
+                // correct if both hashes match.
+                passwordMatches = slowEquals(hash, testHash);
+            }
+            if (passwordMatches)
+            {
+                log.debug("user " + userName + " validated");
+                user = u;
+                if (user.authenticationDomain() != domain)
+                {
+                    if (user.authenticationDomain() == null)
                     {
-                        user.setAuthenticationDomainRelationship( domain );
-                        log.info( "user " + userName
-                                  + " added to domain ("
-                                  + domain.displayableName()
-                                  + ")" );
+                        user.setAuthenticationDomainRelationship(domain);
+                        log.info("user " + userName + " added to domain ("
+                            + domain.displayableName() + ")");
                     }
                     else
                     {
-                        log.warn(
-                                "user " + userName
-                                + " successfully validated in '"
-                                + domain.displayableName()
-                                + "' but bound to '"
-                                + user.authenticationDomain().displayableName()
-                                + "'"
-                                );
+                        log.warn("user " + userName
+                            + " successfully validated in '"
+                            + domain.displayableName() + "' but bound to '"
+                            + user.authenticationDomain().displayableName()
+                            + "'");
                         user = null;
                     }
                 }
             }
             else
             {
-                log.info( "user " + userName + ": login validation failed" );
+                log.info("user " + userName + ": login validation failed");
             }
         }
-        catch ( EOObjectNotAvailableException e )
+        catch (EOObjectNotAvailableException e)
         {
-            if ( addIfNotFound )
+            if (addIfNotFound)
             {
                 user = User.createUser(
                         userName,
                         password,
                         domain,
                         User.STUDENT_PRIVILEGES,
-                        ec
-                    );
-                log.info( "DatabaseAuthenticator: new user '"
-                          + userName
-                          + "' created"
-                        );
+                        ec);
+                log.info("DatabaseAuthenticator: new user '"
+                    + userName + "' created");
             }
         }
-        catch ( EOUtilities.MoreThanOneException e )
+        catch (EOUtilities.MoreThanOneException e)
         {
-            log.error( "DatabaseAuthenticator: user '"
-                       + userName
-                       + "':",
-                       e
-                     );
+            log.error("DatabaseAuthenticator: user '" + userName + "':",
+                e);
         }
 
         return user;
@@ -222,25 +264,40 @@ public class DatabaseAuthenticator
      * @param newPassword The password to change to
      * @return True if the password change was successful
      */
-    public boolean changePassword( User   user,
-                                   String newPassword )
+    public boolean changePassword(final User   user,
+                                  final String newPassword)
     {
-        boolean result = false;
-        EOEditingContext ec = WCEC.newEditingContext();
-        try
-        {
-            ec.lock();
-            User localUser = user.localInstance(ec);
-            localUser.setPassword( newPassword );
-            ec.saveChanges();
-            result = true;
-        }
-        finally
-        {
-            ec.unlock();
-            ec.dispose();
-        }
-        return result;
+        final String password = newPassword == null
+            ? ""
+            : newPassword;
+        return call(new ECActionWithResult<Boolean>() {
+            @Override
+            public Boolean action()
+            {
+                try
+                {
+                    User localUser = user.localInstance(ec);
+
+                    // Generate a random salt
+                    SecureRandom random = new SecureRandom();
+                    byte[] salt = new byte[SALT_BYTE_SIZE];
+                    random.nextBytes(salt);
+
+                    // Hash the password
+                    byte[] hash = pbkdf2(password.toCharArray(), salt,
+                        PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
+                    localUser.setIterations(PBKDF2_ITERATIONS);
+                    localUser.setSalt(toHex(salt));
+                    localUser.setPassword(toHex(hash));
+                    ec.saveChanges();
+                    return true;
+                }
+                catch (Exception e)
+                {
+                    return false;
+                }
+            }
+        });
     }
 
 
@@ -254,15 +311,16 @@ public class DatabaseAuthenticator
         StringBuffer password = new StringBuffer();
 
         // generate a random number
-        for(int i = 0; i < DEFAULT_GENERATED_LENGTH; i++)
+        for (int i = 0; i < DEFAULT_GENERATED_LENGTH; i++)
         {
             // now generate a random alpha-numeric for each position
             // in the password
-            int index = randGen.nextInt( availChars.length() );
-            password.append( availChars.charAt( index ) );
+            int index = randGen.nextInt(availChars.length());
+            password.append(availChars.charAt(index));
         }
         return password.toString();
     }
+
 
     // ----------------------------------------------------------
     /**
@@ -274,24 +332,24 @@ public class DatabaseAuthenticator
      * @param user        The user
      * @return True if the password change was successful
      */
-    public boolean newRandomPassword( User user )
+    public boolean newRandomPassword(User user)
     {
         String newPass = generatePassword();
-        if ( changePassword( user, newPass ) )
+        if (changePassword(user, newPass))
         {
             WCProperties properties =
-                new WCProperties( Application.configurationProperties() );
-            user.addPropertiesTo( properties );
-            if ( properties.getProperty( "login.url" ) == null )
+                new WCProperties(Application.configurationProperties());
+            user.addPropertiesTo(properties);
+            if (properties.getProperty("login.url") == null)
             {
                 String dest = Application.application().servletConnectURL();
-                properties.setProperty( "login.url", dest );
+                properties.setProperty("login.url", dest);
             }
             Application.sendSimpleEmail(
                 user.email(),
                 properties.stringForKeyWithDefault(
                     "DatabaseAuthenticator.new.user.email.title",
-                    "New Web-CAT Password" ),
+                    "New Web-CAT Password"),
                 properties.stringForKeyWithDefault(
                     "DatabaseAuthenticator.new.user.email.message",
                     "Your Web-CAT user name is   : ${user.userName}\n"
@@ -299,14 +357,104 @@ public class DatabaseAuthenticator
                     + "You login to Web-CAT at:\n\n"
                     + "${login.url}\n\n"
                     + "You can change your password by logging into Web-CAT "
-                    + "and visiting\nthe Home->My Profile page."
-                    )
-                );
+                    + "and visiting\nthe Home->My Profile page."));
             return true;
         }
         else
         {
             return false;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Converts a byte array into a hexadecimal string.
+     *
+     * @param   array  the byte array to convert
+     * @return         A length*2 character string encoding the byte array
+     */
+    private static String toHex(byte[] array)
+    {
+        BigInteger bi = new BigInteger(1, array);
+        String hex = bi.toString(16);
+        int paddingLength = (array.length * 2) - hex.length();
+        if (paddingLength > 0)
+        {
+            return String.format("%0" + paddingLength + "d", 0) + hex;
+        }
+        else
+        {
+            return hex;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Converts a string of hexadecimal characters into a byte array.
+     *
+     * @param   hex  the hex string
+     * @return       the hex string decoded into a byte array
+     */
+    private static byte[] fromHex(String hex)
+    {
+        byte[] binary = new byte[hex.length() / 2];
+        for (int i = 0; i < binary.length; i++)
+        {
+            binary[i] = (byte)Integer.parseInt(
+                hex.substring(2 * i, 2 * i + 2), 16);
+        }
+        return binary;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Compares two byte arrays in length-constant time. This comparison
+     * method is used so that password hashes cannot be extracted from
+     * an on-line system using a timing attack and then attacked off-line.
+     *
+     * @param   a  the first byte array
+     * @param   b  the second byte array
+     * @return     true if both byte arrays are the same, false if not
+     */
+    private static boolean slowEquals(byte[] a, byte[] b)
+    {
+        int diff = a.length ^ b.length;
+        for (int i = 0; i < a.length && i < b.length; i++)
+        {
+            diff |= a[i] ^ b[i];
+        }
+        return diff == 0;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     *  Computes the PBKDF2 hash of a password.
+     *
+     * @param   password    the password to hash.
+     * @param   salt        the salt
+     * @param   iterations  the iteration count (slowness factor)
+     * @param   bytes       the length of the hash to compute in bytes
+     * @return              the PBDKF2 hash of the password
+     */
+    private static byte[] pbkdf2(
+        char[] password, byte[] salt, int iterations, int bytes)
+    {
+        try
+        {
+            PBEKeySpec spec =
+                new PBEKeySpec(password, salt, iterations, bytes * 8);
+            SecretKeyFactory skf =
+                SecretKeyFactory.getInstance(PBKDF2_ALGORITHM);
+            return skf.generateSecret(spec).getEncoded();
+        }
+        catch (Exception e)
+        {
+            log.error("Unexpected exception computing pbkdf2 hash:", e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -320,6 +468,13 @@ public class DatabaseAuthenticator
     private static final int DEFAULT_GENERATED_LENGTH = 8;
     private static final String availChars =
         "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghikmnopqrstuvwxyz23456789!@#$%^&*";
+
+    private static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
+
+    // The following constants may be changed without breaking existing hashes.
+    private static final int SALT_BYTE_SIZE = 24;
+    private static final int HASH_BYTE_SIZE = 24;
+    private static final int PBKDF2_ITERATIONS = 1000;
 
     static Logger log = Logger.getLogger( DatabaseAuthenticator.class );
 }

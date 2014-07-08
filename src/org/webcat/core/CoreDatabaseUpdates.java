@@ -329,6 +329,18 @@ public class CoreDatabaseUpdates
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Adds the salt and iterations columns to the user table.
+     * @throws SQLException on error
+     */
+    public void updateIncrement18() throws SQLException
+    {
+        database().executeSQL("ALTER TABLE TUSER ADD salt TINYTEXT");
+        database().executeSQL("ALTER TABLE TUSER ADD iterations INTEGER");
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------

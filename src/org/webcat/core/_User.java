@@ -160,6 +160,9 @@ public abstract class _User
     public static final String FIRST_NAME_KEY = "firstName";
     public static final ERXKey<String> firstName =
         new ERXKey<String>(FIRST_NAME_KEY);
+    public static final String ITERATIONS_KEY = "iterations";
+    public static final ERXKey<Integer> iterations =
+        new ERXKey<Integer>(ITERATIONS_KEY);
     public static final String LAST_NAME_KEY = "lastName";
     public static final ERXKey<String> lastName =
         new ERXKey<String>(LAST_NAME_KEY);
@@ -169,6 +172,9 @@ public abstract class _User
     public static final String PREFERENCES_KEY = "preferences";
     public static final ERXKey<NSData> preferences =
         new ERXKey<NSData>(PREFERENCES_KEY);
+    public static final String SALT_KEY = "salt";
+    public static final ERXKey<String> salt =
+        new ERXKey<String>(SALT_KEY);
     public static final String UNIVERSITY_ID_NO_KEY = "universityIDNo";
     public static final ERXKey<String> universityIDNo =
         new ERXKey<String>(UNIVERSITY_ID_NO_KEY);
@@ -395,6 +401,70 @@ public abstract class _User
 
     // ----------------------------------------------------------
     /**
+     * Retrieve this object's <code>iterations</code> value.
+     * @return the value of the attribute
+     */
+    public int iterations()
+    {
+        Integer returnValue =
+            (Integer)storedValueForKey( "iterations" );
+        return ( returnValue == null )
+            ? 0
+            : returnValue.intValue();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>iterations</code>
+     * property.
+     *
+     * @param value The new value for this property
+     */
+    public void setIterations( int value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setIterations("
+                + value + "): was " + iterations() );
+        }
+        Integer actual =
+            er.extensions.eof.ERXConstant.integerForInt( value );
+            setIterationsRaw( actual );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>iterations</code> value.
+     * @return the value of the attribute
+     */
+    public Integer iterationsRaw()
+    {
+        return (Integer)storedValueForKey( "iterations" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>iterations</code>
+     * property.
+     *
+     * @param value The new value for this property
+     */
+    public void setIterationsRaw( Integer value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setIterationsRaw("
+                + value + "): was " + iterationsRaw() );
+        }
+        takeStoredValueForKey( value, "iterations" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Retrieve this object's <code>lastName</code> value.
      * @return the value of the attribute
      */
@@ -551,6 +621,35 @@ public abstract class _User
         takeStoredValueForKey( null, "preferences" );
         preferencesRawCache = null;
         preferencesCache = null;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>salt</code> value.
+     * @return the value of the attribute
+     */
+    public String salt()
+    {
+        return (String)storedValueForKey( "salt" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>salt</code>
+     * property.
+     *
+     * @param value The new value for this property
+     */
+    public void setSalt( String value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setSalt("
+                + value + "): was " + salt() );
+        }
+        takeStoredValueForKey( value, "salt" );
     }
 
 
