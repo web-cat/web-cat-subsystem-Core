@@ -75,7 +75,7 @@ public class MigratingEditingContext
         {
             EOEditingContext result =
                 super._newEditingContext(objectStore, validationEnabled);
-            result.setSharedEditingContext(null);
+//            result.setSharedEditingContext(null);
             return result;
         }
     }
