@@ -53,12 +53,6 @@ package org.webcat.core;
 
 import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.*;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.SecretKeyFactory;
-import java.math.BigInteger;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 import org.webcat.core.Application;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.DatabaseAuthenticator;
@@ -164,29 +158,8 @@ public class DatabaseAuthenticator
                     new String[]{ User.USER_NAME_KEY,
                                   User.AUTHENTICATION_DOMAIN_KEY }
                     ));
-            boolean passwordMatches = skipPasswordChecks;
-            if (!skipPasswordChecks)
-            {
-                if (u.salt() == null)
-                {
-                    // Need to migrate user to encrypted password
-                    changePassword(u, u.password());
-                }
-                if (password == null)
-                {
-                    password = "";
-                }
-                byte[] salt = fromHex(u.salt());
-                byte[] hash = fromHex(u.password());
-                // Compute the hash of the provided password, using the
-                // same salt, iteration count, and hash length
-                byte[] testHash = pbkdf2(
-                    password.toCharArray(), salt, u.iterations(), hash.length);
-                // Compare the hashes in constant time. The password is
-                // correct if both hashes match.
-                passwordMatches = slowEquals(hash, testHash);
-            }
-            if (passwordMatches)
+            if (skipPasswordChecks
+                || u.checkPassword(password))
             {
                 log.debug("user " + userName + " validated");
                 user = u;
@@ -267,9 +240,6 @@ public class DatabaseAuthenticator
     public boolean changePassword(final User   user,
                                   final String newPassword)
     {
-        final String password = newPassword == null
-            ? ""
-            : newPassword;
         return call(new ECActionWithResult<Boolean>() {
             @Override
             public Boolean action()
@@ -277,18 +247,7 @@ public class DatabaseAuthenticator
                 try
                 {
                     User localUser = user.localInstance(ec);
-
-                    // Generate a random salt
-                    SecureRandom random = new SecureRandom();
-                    byte[] salt = new byte[SALT_BYTE_SIZE];
-                    random.nextBytes(salt);
-
-                    // Hash the password
-                    byte[] hash = pbkdf2(password.toCharArray(), salt,
-                        PBKDF2_ITERATIONS, HASH_BYTE_SIZE);
-                    localUser.setIterations(PBKDF2_ITERATIONS);
-                    localUser.setSalt(toHex(salt));
-                    localUser.setPassword(toHex(hash));
+                    localUser.setPassword(newPassword);
                     ec.saveChanges();
                     return true;
                 }
@@ -345,6 +304,14 @@ public class DatabaseAuthenticator
                 String dest = Application.application().servletConnectURL();
                 properties.setProperty("login.url", dest);
             }
+            String institutionMsg = "";
+            if (AuthenticationDomain.authDomains().count() > 1)
+            {
+                institutionMsg = "When logging in, be sure to select "
+                    + "\""
+                    + user.authenticationDomain().displayableName()
+                    + "\"\nas your institution.\n\n";
+            }
             Application.sendSimpleEmail(
                 user.email(),
                 properties.stringForKeyWithDefault(
@@ -356,6 +323,7 @@ public class DatabaseAuthenticator
                     + "Your new Web-CAT password is: ${user.password}\n\n"
                     + "You login to Web-CAT at:\n\n"
                     + "${login.url}\n\n"
+                    + institutionMsg
                     + "You can change your password by logging into Web-CAT "
                     + "and visiting\nthe Home->My Profile page."));
             return true;
@@ -363,98 +331,6 @@ public class DatabaseAuthenticator
         else
         {
             return false;
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Converts a byte array into a hexadecimal string.
-     *
-     * @param   array  the byte array to convert
-     * @return         A length*2 character string encoding the byte array
-     */
-    private static String toHex(byte[] array)
-    {
-        BigInteger bi = new BigInteger(1, array);
-        String hex = bi.toString(16);
-        int paddingLength = (array.length * 2) - hex.length();
-        if (paddingLength > 0)
-        {
-            return String.format("%0" + paddingLength + "d", 0) + hex;
-        }
-        else
-        {
-            return hex;
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Converts a string of hexadecimal characters into a byte array.
-     *
-     * @param   hex  the hex string
-     * @return       the hex string decoded into a byte array
-     */
-    private static byte[] fromHex(String hex)
-    {
-        byte[] binary = new byte[hex.length() / 2];
-        for (int i = 0; i < binary.length; i++)
-        {
-            binary[i] = (byte)Integer.parseInt(
-                hex.substring(2 * i, 2 * i + 2), 16);
-        }
-        return binary;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Compares two byte arrays in length-constant time. This comparison
-     * method is used so that password hashes cannot be extracted from
-     * an on-line system using a timing attack and then attacked off-line.
-     *
-     * @param   a  the first byte array
-     * @param   b  the second byte array
-     * @return     true if both byte arrays are the same, false if not
-     */
-    private static boolean slowEquals(byte[] a, byte[] b)
-    {
-        int diff = a.length ^ b.length;
-        for (int i = 0; i < a.length && i < b.length; i++)
-        {
-            diff |= a[i] ^ b[i];
-        }
-        return diff == 0;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     *  Computes the PBKDF2 hash of a password.
-     *
-     * @param   password    the password to hash.
-     * @param   salt        the salt
-     * @param   iterations  the iteration count (slowness factor)
-     * @param   bytes       the length of the hash to compute in bytes
-     * @return              the PBDKF2 hash of the password
-     */
-    private static byte[] pbkdf2(
-        char[] password, byte[] salt, int iterations, int bytes)
-    {
-        try
-        {
-            PBEKeySpec spec =
-                new PBEKeySpec(password, salt, iterations, bytes * 8);
-            SecretKeyFactory skf =
-                SecretKeyFactory.getInstance(PBKDF2_ALGORITHM);
-            return skf.generateSecret(spec).getEncoded();
-        }
-        catch (Exception e)
-        {
-            log.error("Unexpected exception computing pbkdf2 hash:", e);
-            throw new RuntimeException(e);
         }
     }
 
@@ -468,13 +344,6 @@ public class DatabaseAuthenticator
     private static final int DEFAULT_GENERATED_LENGTH = 8;
     private static final String availChars =
         "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghikmnopqrstuvwxyz23456789!@#$%^&*";
-
-    private static final String PBKDF2_ALGORITHM = "PBKDF2WithHmacSHA1";
-
-    // The following constants may be changed without breaking existing hashes.
-    private static final int SALT_BYTE_SIZE = 24;
-    private static final int HASH_BYTE_SIZE = 24;
-    private static final int PBKDF2_ITERATIONS = 1000;
 
     static Logger log = Logger.getLogger( DatabaseAuthenticator.class );
 }

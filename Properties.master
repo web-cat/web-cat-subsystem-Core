@@ -1,7 +1,7 @@
 # ===================================================================
 # Core subsystem characteristics
 # ===================================================================
-subsystem.Core
+subsystem.Core = org.webcat.core.Core
 
 Core.version.major=2
 Core.version.minor=2

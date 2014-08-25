@@ -1,8 +1,8 @@
 #This file is automatically rewritten by ANT, so all formatting will be trashed.
-#Tue Jul 08 10:19:34 EDT 2014
+#Mon Aug 25 11:14:53 EDT 2014
 er.extensions.ERXEnterpriseObject.updateInverseRelationships=true
 Core.license.url=http\://www.gnu.org/licenses/agpl.html
-Core.version.date=20140708
+Core.version.date=20140825
 Core.version.minor=2
 Core.copyright=(c) 2006-2014 Virginia Tech Department of Computer Science
 log4j.logger.org.webcat.core.Theme=INFO
@@ -22,7 +22,7 @@ Core.requires=ExternalJars, WebObjectsUpdater, WonderUpdater, DBUpdateEngine, EO
 er.ajax.json.backtrackCacheSize=100
 log4j.logger.er.extensions.ERXEC=ERROR
 Core.license=GNU Affero General Public License v.3
-subsystem.Core=
+subsystem.Core=org.webcat.core.Core
 dbConnectDriverGLOBAL=com.mysql.jdbc.Driver
 ognl.helperFunctions=true
 log4j.logger.org.webcat.core.Application.requests=WARN
