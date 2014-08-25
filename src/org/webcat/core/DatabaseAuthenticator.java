@@ -320,7 +320,9 @@ public class DatabaseAuthenticator
                 properties.stringForKeyWithDefault(
                     "DatabaseAuthenticator.new.user.email.message",
                     "Your Web-CAT user name is   : ${user.userName}\n"
-                    + "Your new Web-CAT password is: ${user.password}\n\n"
+                    + "Your new Web-CAT password is: "
+                    + newPass
+                    + "\n\n"
                     + "You login to Web-CAT at:\n\n"
                     + "${login.url}\n\n"
                     + institutionMsg
