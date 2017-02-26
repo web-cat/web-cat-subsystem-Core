@@ -22,8 +22,8 @@
 package org.webcat.core.git.http;
 
 import org.eclipse.jgit.lib.ObjectDatabase;
-import org.eclipse.jgit.storage.file.ObjectDirectory;
-import org.eclipse.jgit.storage.file.PackFile;
+import org.eclipse.jgit.internal.storage.file.ObjectDirectory;
+import org.eclipse.jgit.internal.storage.file.PackFile;
 import org.webcat.core.http.RequestHandlerWithResponse;
 import org.webcat.core.http.RequestUtils;
 import com.webobjects.appserver.WORequest;

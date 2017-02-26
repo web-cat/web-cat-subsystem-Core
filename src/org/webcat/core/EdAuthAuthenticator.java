@@ -194,6 +194,7 @@ public class EdAuthAuthenticator
         boolean result = false;
         try
         {
+//            log.debug("a-`"+username+"` b-`"+password+"`");
             result = pm.authenticatePerson( username, password );
         }
         catch ( Exception e )

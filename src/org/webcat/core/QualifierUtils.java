@@ -71,6 +71,10 @@ public class QualifierUtils
      */
     public static boolean isQualifierFetchable(EOQualifier q, String entityName)
     {
+        if (q == null)
+        {
+            return true;
+        }
         try
         {
             EOClassDescription classDescription =

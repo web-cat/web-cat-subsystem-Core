@@ -45,6 +45,7 @@ import org.webcat.woextensions.WCFetchSpecification;
 public abstract class _User
     extends org.webcat.core.EOBase
     implements org.webcat.core.MutableContainer.MutableContainerOwner
+    , org.webcat.core.MigratoryAttributeOwner
 {
     //~ Constructors ..........................................................
 
@@ -871,6 +872,86 @@ public abstract class _User
 
 
     // ----------------------------------------------------------
+    @Override
+    public void awakeFromFetch(EOEditingContext ec)
+    {
+        super.awakeFromFetch(ec);
+
+        // Only try to migrate if the EC isn't a migrating context. If it is,
+        // we're already trying to migrate and this "awake" is coming from the
+        // child migration context.
+
+        if (!(ec instanceof org.webcat.woextensions.MigratingEditingContext))
+        {
+            migrateAttributeValuesIfNeeded();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Called by {@link #awake} to migrate attribute values if needed when the
+     * object is retrieved.
+     */
+    public final void migrateAttributeValuesIfNeeded()
+    {
+        log.debug("migrateAttributeValuesIfNeeded()");
+
+        if ( shouldMigrateSalt() )
+        {
+            new org.webcat.woextensions.ECAction(
+                org.webcat.woextensions.MigratingEditingContext
+                    .newEditingContext(), true)
+            {
+                public void action()
+                {
+                    migrateAttributeValues(
+                        (org.webcat.woextensions.MigratingEditingContext)ec,
+                        localInstance(ec));
+                    ec.saveChanges();
+                }
+            }.run();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Called by {@link #awake} to migrate attribute values when the
+     * object is retrieved.
+     */
+    protected void migrateAttributeValues(
+        org.webcat.woextensions.MigratingEditingContext mec,
+        User migratingObject
+    )
+    {
+        log.debug("migrateAttributeValues()");
+
+        if ( migratingObject.shouldMigrateSalt() )
+        {
+            migratingObject.migrateSalt(mec);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Called by {@link #migrateAttributeValues} to migrate the
+     * salt attribute.
+     */
+    protected abstract boolean shouldMigrateSalt();
+
+
+    // ----------------------------------------------------------
+    /**
+     * Called by {@link #migrateAttributeValues} to migrate the
+     * salt attribute.
+     */
+    protected abstract void migrateSalt(
+        org.webcat.woextensions.MigratingEditingContext mec);
+
+
+    // ----------------------------------------------------------
     /**
      * Retrieve the entity pointed to by the <code>authenticationDomain</code>
      * relationship.
@@ -1001,7 +1082,8 @@ public abstract class _User
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.CoreSelections> coreSelections()
     {
-        return (NSArray)storedValueForKey( "coreSelections" );
+        return (NSArray<org.webcat.core.CoreSelections>)
+            storedValueForKey("coreSelections");
     }
 
 
@@ -1012,14 +1094,15 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setCoreSelections( NSMutableArray<org.webcat.core.CoreSelections>  value )
+    public void setCoreSelections(
+        NSMutableArray<org.webcat.core.CoreSelections>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setCoreSelections("
-                + value + "): was " + coreSelections() );
+            log.debug("setCoreSelections("
+                + value + "): was " + coreSelections());
         }
-        takeStoredValueForKey( value, "coreSelections" );
+        takeStoredValueForKey(value, "coreSelections");
     }
 
 
@@ -1179,7 +1262,8 @@ public abstract class _User
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.CourseOffering> enrolledIn()
     {
-        return (NSArray)storedValueForKey( "enrolledIn" );
+        return (NSArray<org.webcat.core.CourseOffering>)
+            storedValueForKey("enrolledIn");
     }
 
 
@@ -1190,14 +1274,15 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setEnrolledIn( NSMutableArray<org.webcat.core.CourseOffering>  value )
+    public void setEnrolledIn(
+        NSMutableArray<org.webcat.core.CourseOffering>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setEnrolledIn("
-                + value + "): was " + enrolledIn() );
+            log.debug("setEnrolledIn("
+                + value + "): was " + enrolledIn());
         }
-        takeStoredValueForKey( value, "enrolledIn" );
+        takeStoredValueForKey(value, "enrolledIn");
     }
 
 
@@ -1357,7 +1442,8 @@ public abstract class _User
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.CourseOffering> graderFor()
     {
-        return (NSArray)storedValueForKey( "graderFor" );
+        return (NSArray<org.webcat.core.CourseOffering>)
+            storedValueForKey("graderFor");
     }
 
 
@@ -1368,14 +1454,15 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setGraderFor( NSMutableArray<org.webcat.core.CourseOffering>  value )
+    public void setGraderFor(
+        NSMutableArray<org.webcat.core.CourseOffering>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setGraderFor("
-                + value + "): was " + graderFor() );
+            log.debug("setGraderFor("
+                + value + "): was " + graderFor());
         }
-        takeStoredValueForKey( value, "graderFor" );
+        takeStoredValueForKey(value, "graderFor");
     }
 
 
@@ -1535,7 +1622,8 @@ public abstract class _User
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.PasswordChangeRequest> passwordChangeRequest()
     {
-        return (NSArray)storedValueForKey( "passwordChangeRequest" );
+        return (NSArray<org.webcat.core.PasswordChangeRequest>)
+            storedValueForKey("passwordChangeRequest");
     }
 
 
@@ -1546,14 +1634,15 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setPasswordChangeRequest( NSMutableArray<org.webcat.core.PasswordChangeRequest>  value )
+    public void setPasswordChangeRequest(
+        NSMutableArray<org.webcat.core.PasswordChangeRequest>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setPasswordChangeRequest("
-                + value + "): was " + passwordChangeRequest() );
+            log.debug("setPasswordChangeRequest("
+                + value + "): was " + passwordChangeRequest());
         }
-        takeStoredValueForKey( value, "passwordChangeRequest" );
+        takeStoredValueForKey(value, "passwordChangeRequest");
     }
 
 
@@ -1713,7 +1802,8 @@ public abstract class _User
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.SentMessage> sentMessages()
     {
-        return (NSArray)storedValueForKey( "sentMessages" );
+        return (NSArray<org.webcat.core.SentMessage>)
+            storedValueForKey("sentMessages");
     }
 
 
@@ -1724,14 +1814,15 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setSentMessages( NSMutableArray<org.webcat.core.SentMessage>  value )
+    public void setSentMessages(
+        NSMutableArray<org.webcat.core.SentMessage>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setSentMessages("
-                + value + "): was " + sentMessages() );
+            log.debug("setSentMessages("
+                + value + "): was " + sentMessages());
         }
-        takeStoredValueForKey( value, "sentMessages" );
+        takeStoredValueForKey(value, "sentMessages");
     }
 
 
@@ -1891,7 +1982,8 @@ public abstract class _User
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.CourseOffering> teaching()
     {
-        return (NSArray)storedValueForKey( "teaching" );
+        return (NSArray<org.webcat.core.CourseOffering>)
+            storedValueForKey("teaching");
     }
 
 
@@ -1902,14 +1994,15 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setTeaching( NSMutableArray<org.webcat.core.CourseOffering>  value )
+    public void setTeaching(
+        NSMutableArray<org.webcat.core.CourseOffering>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setTeaching("
-                + value + "): was " + teaching() );
+            log.debug("setTeaching("
+                + value + "): was " + teaching());
         }
-        takeStoredValueForKey( value, "teaching" );
+        takeStoredValueForKey(value, "teaching");
     }
 
 
@@ -2069,7 +2162,8 @@ public abstract class _User
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.UsagePeriod> usagePeriods()
     {
-        return (NSArray)storedValueForKey( "usagePeriods" );
+        return (NSArray<org.webcat.core.UsagePeriod>)
+            storedValueForKey("usagePeriods");
     }
 
 
@@ -2080,14 +2174,15 @@ public abstract class _User
      *
      * @param value The new set of entities to relate to
      */
-    public void setUsagePeriods( NSMutableArray<org.webcat.core.UsagePeriod>  value )
+    public void setUsagePeriods(
+        NSMutableArray<org.webcat.core.UsagePeriod>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setUsagePeriods("
-                + value + "): was " + usagePeriods() );
+            log.debug("setUsagePeriods("
+                + value + "): was " + usagePeriods());
         }
-        takeStoredValueForKey( value, "usagePeriods" );
+        takeStoredValueForKey(value, "usagePeriods");
     }
 
 
@@ -2303,8 +2398,8 @@ public abstract class _User
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        @SuppressWarnings("unchecked")
-        EOFetchSpecification fspec = new WCFetchSpecification(
+        WCFetchSpecification<User> fspec =
+            new WCFetchSpecification<User>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
@@ -2327,8 +2422,13 @@ public abstract class _User
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
+        WCFetchSpecification<User> fspec =
+            new WCFetchSpecification<User>(
+                ENTITY_NAME, qualifier, sortOrderings);
+        fspec.setUsesDistinct(true);
+        fspec.setFetchLimit(1);
         NSArray<User> objects =
-            objectsMatchingQualifier(context, qualifier, sortOrderings);
+            objectsWithFetchSpecification(context, fspec);
         return (objects.size() > 0)
             ? objects.get(0)
             : null;
@@ -2420,7 +2520,7 @@ public abstract class _User
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -2492,7 +2592,7 @@ public abstract class _User
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return firstObjectMatchingValues(
@@ -2516,8 +2616,8 @@ public abstract class _User
         NSArray<EOSortOrdering> sortOrderings,
         NSDictionary<String, Object> keysAndValues)
     {
-        @SuppressWarnings("unchecked")
-        EOFetchSpecification fspec = new WCFetchSpecification(
+        WCFetchSpecification<User> fspec =
+            new WCFetchSpecification<User>(
                 ENTITY_NAME,
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
@@ -2583,7 +2683,7 @@ public abstract class _User
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -2693,7 +2793,7 @@ public abstract class _User
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);

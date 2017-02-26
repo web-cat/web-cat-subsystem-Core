@@ -24,12 +24,14 @@ package org.webcat.core.git.http;
 import org.webcat.core.Application;
 import org.webcat.core.EntityRequestInfo;
 import org.webcat.core.RepositoryProvider;
+import org.webcat.core.RepositoryProviderWithAuthentication;
 import org.webcat.core.User;
 import org.webcat.core.http.BasicAuthenticationFilter;
 import org.webcat.core.http.RequestFilterChain;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
+import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 
 //-------------------------------------------------------------------------
@@ -101,7 +103,7 @@ public class GitAuthenticationFilter extends BasicAuthenticationFilter
 
         if (object instanceof RepositoryProvider)
         {
-            RepositoryProvider provider = (RepositoryProvider) object;
+            RepositoryProvider provider = (RepositoryProvider)object;
 
             return (user.hasAdminPrivileges() ||
                     provider.userCanAccessRepository(user));
@@ -110,6 +112,28 @@ public class GitAuthenticationFilter extends BasicAuthenticationFilter
         {
             return false;
         }
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    protected User validateUser(String username, String password,
+        EOEditingContext ec)
+    {
+        EOEnterpriseObject object = requestInfo.requestedObject(ec);
+
+        if (object instanceof RepositoryProviderWithAuthentication)
+        {
+            // Try provider's authentication first
+            User u = ((RepositoryProviderWithAuthentication)object)
+                .authorizedUserForRepository(ec, username, password);
+            if (u != null)
+            {
+                return u;
+            }
+            // If provider didn't authenticate, then fall back to normal
+        }
+        return super.validateUser(username, password, ec);
     }
 
 

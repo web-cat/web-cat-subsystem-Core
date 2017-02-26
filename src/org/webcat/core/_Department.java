@@ -337,7 +337,8 @@ public abstract class _Department
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.Course> courses()
     {
-        return (NSArray)storedValueForKey( "courses" );
+        return (NSArray<org.webcat.core.Course>)
+            storedValueForKey("courses");
     }
 
 
@@ -348,14 +349,15 @@ public abstract class _Department
      *
      * @param value The new set of entities to relate to
      */
-    public void setCourses( NSMutableArray<org.webcat.core.Course>  value )
+    public void setCourses(
+        NSMutableArray<org.webcat.core.Course>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setCourses("
-                + value + "): was " + courses() );
+            log.debug("setCourses("
+                + value + "): was " + courses());
         }
-        takeStoredValueForKey( value, "courses" );
+        takeStoredValueForKey(value, "courses");
     }
 
 
@@ -571,8 +573,8 @@ public abstract class _Department
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        @SuppressWarnings("unchecked")
-        EOFetchSpecification fspec = new WCFetchSpecification(
+        WCFetchSpecification<Department> fspec =
+            new WCFetchSpecification<Department>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
@@ -595,8 +597,13 @@ public abstract class _Department
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
+        WCFetchSpecification<Department> fspec =
+            new WCFetchSpecification<Department>(
+                ENTITY_NAME, qualifier, sortOrderings);
+        fspec.setUsesDistinct(true);
+        fspec.setFetchLimit(1);
         NSArray<Department> objects =
-            objectsMatchingQualifier(context, qualifier, sortOrderings);
+            objectsWithFetchSpecification(context, fspec);
         return (objects.size() > 0)
             ? objects.get(0)
             : null;
@@ -688,7 +695,7 @@ public abstract class _Department
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -760,7 +767,7 @@ public abstract class _Department
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return firstObjectMatchingValues(
@@ -784,8 +791,8 @@ public abstract class _Department
         NSArray<EOSortOrdering> sortOrderings,
         NSDictionary<String, Object> keysAndValues)
     {
-        @SuppressWarnings("unchecked")
-        EOFetchSpecification fspec = new WCFetchSpecification(
+        WCFetchSpecification<Department> fspec =
+            new WCFetchSpecification<Department>(
                 ENTITY_NAME,
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
@@ -851,7 +858,7 @@ public abstract class _Department
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -961,7 +968,7 @@ public abstract class _Department
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);

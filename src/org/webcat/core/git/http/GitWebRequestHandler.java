@@ -22,6 +22,7 @@
 package org.webcat.core.git.http;
 
 import java.util.EnumMap;
+import org.apache.log4j.Logger;
 import org.eclipse.jgit.util.HttpSupport;
 import org.webcat.core.Application;
 import org.webcat.core.EOBase;
@@ -66,6 +67,7 @@ public class GitWebRequestHandler implements RequestHandlerWithResponse
     public void handleRequest(WORequest request, WOResponse response)
             throws Exception
     {
+        long start = System.currentTimeMillis();
         String path = request.requestHandlerPath();
         EntityRequestInfo requestInfo =
             EntityRequestInfo.fromRequestHandlerPath(path);
@@ -83,6 +85,13 @@ public class GitWebRequestHandler implements RequestHandlerWithResponse
                 repoName, requestInfo.resourcePath());
 
         generateResponse(gitContext, request, response);
+        long end = System.currentTimeMillis();
+        if (log.isDebugEnabled())
+        {
+            double time = (end - start)/1000.0;
+            log.debug("handleRequest(): " + time + "s\n    url = "
+                + request.uri());
+        }
     }
 
 
@@ -135,6 +144,9 @@ public class GitWebRequestHandler implements RequestHandlerWithResponse
 
     private static final EnumMap<GitWebMode,
         Class<? extends GitWebComponent>> actionPages;
+
+    private static final Logger log =
+        Logger.getLogger(GitWebRequestHandler.class);
 
 
     // ----------------------------------------------------------

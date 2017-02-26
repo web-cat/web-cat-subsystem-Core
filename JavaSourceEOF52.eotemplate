@@ -641,7 +641,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
         {
             new org.webcat.woextensions.ECAction(
                 org.webcat.woextensions.MigratingEditingContext
-                    .newEditingContext())
+                    .newEditingContext(), true)
             {
                 public void action()
                 {
@@ -787,7 +787,8 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
     @SuppressWarnings("unchecked")
     public NSArray<${relationship.actualDestination.classNameWithDefault}> ${relationship.name}()
     {
-        return (NSArray)storedValueForKey( "${relationship.name}" );
+        return (NSArray<${relationship.actualDestination.classNameWithDefault}>)
+            storedValueForKey("${relationship.name}");
     }
 
 
@@ -798,14 +799,15 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
      *
      * @param value The new set of entities to relate to
      */
-    public void set${relationship.capitalizedName}( NSMutableArray<${relationship.actualDestination.classNameWithDefault}>  value )
+    public void set${relationship.capitalizedName}(
+        NSMutableArray<${relationship.actualDestination.classNameWithDefault}>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "set${relationship.capitalizedName}("
-                + value + "): was " + ${relationship.name}() );
+            log.debug("set${relationship.capitalizedName}("
+                + value + "): was " + ${relationship.name}());
         }
-        takeStoredValueForKey( value, "${relationship.name}" );
+        takeStoredValueForKey(value, "${relationship.name}");
     }
 
 
@@ -1040,8 +1042,8 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        @SuppressWarnings("unchecked")
-        EOFetchSpecification fspec = new WCFetchSpecification(
+        WCFetchSpecification<${entity.classNameWithoutPackage}> fspec =
+            new WCFetchSpecification<${entity.classNameWithoutPackage}>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
@@ -1064,8 +1066,13 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
+        WCFetchSpecification<${entity.classNameWithoutPackage}> fspec =
+            new WCFetchSpecification<${entity.classNameWithoutPackage}>(
+                ENTITY_NAME, qualifier, sortOrderings);
+        fspec.setUsesDistinct(true);
+        fspec.setFetchLimit(1);
         NSArray<${entity.classNameWithoutPackage}> objects =
-            objectsMatchingQualifier(context, qualifier, sortOrderings);
+            objectsWithFetchSpecification(context, fspec);
         return (objects.size() > 0)
             ? objects.get(0)
             : null;
@@ -1157,7 +1164,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -1229,7 +1236,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return firstObjectMatchingValues(
@@ -1253,8 +1260,8 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
         NSArray<EOSortOrdering> sortOrderings,
         NSDictionary<String, Object> keysAndValues)
     {
-        @SuppressWarnings("unchecked")
-        EOFetchSpecification fspec = new WCFetchSpecification(
+        WCFetchSpecification<${entity.classNameWithoutPackage}> fspec =
+            new WCFetchSpecification<${entity.classNameWithoutPackage}>(
                 ENTITY_NAME,
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
@@ -1320,7 +1327,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -1430,7 +1437,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);

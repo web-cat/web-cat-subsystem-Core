@@ -40,6 +40,7 @@ import ognl.helperfunction.WOHelperFunctionHTMLTemplateParser;
 import ognl.helperfunction.WOTagProcessor;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.webcat.archives.ArchiveManager;
 import org.webcat.archives.IArchiveHandler;
 import org.webcat.core.git.GitUtilities;
@@ -479,6 +480,7 @@ public class Application
         NSLog.debug.setIsEnabled(nsLogDebugEnabled);
 
         // Force common objects to be loaded into the shared editing context
+        // org.webcat.woextensions.WCSharedEC.install();
         AuthenticationDomain.refreshAuthDomains();
         Language.refreshLanguages();
         Theme.refreshThemes();
@@ -854,8 +856,10 @@ public class Application
      * @param context The context for the page
      * @return a new instance of the class, appropriately typed.
      */
+    @Override
     @SuppressWarnings("unchecked")
-    public <T> T pageWithName(Class<T> pageClass, WOContext context)
+    public <T extends WOComponent> T pageWithName(
+        Class<T> pageClass, WOContext context)
     {
         return (T)pageWithName(pageClass.getName(), context);
     }
@@ -1422,13 +1426,10 @@ public class Application
             if ("donotsendmail".equals(
                 configurationProperties().getProperty("mail.smtp.host")))
             {
-                if (log.isDebugEnabled())
-                {
-                    log.debug("E-MAIL DISABLED: unsent message:\nTo: "
-                        + to
-                        + "\nSubject: " + (subject == null ? "null" : subject)
-                        + "\nBody:\n" + (body == null ? "null" : body));
-                }
+                log.warn("E-MAIL DISABLED: unsent message:\nTo: "
+                    + to
+                    + "\nSubject: " + (subject == null ? "null" : subject)
+                    + "\nBody:\n" + (body == null ? "null" : body));
             }
             else
             {
@@ -1931,7 +1932,7 @@ public class Application
                 }
                 else
                 {
-                    cmdShell = "sh -c \"";
+                    cmdShell = "sh -c \"exec";
                 }
             }
             int len = cmdShell.length();
@@ -2106,7 +2107,22 @@ public class Application
             // stopped by timeout
             if (proc != null)
             {
-                proc.destroy();
+                if (DESTROY_FORCIBLY == null)
+                {
+                    proc.destroy();
+                }
+                else
+                {
+                    try
+                    {
+                        DESTROY_FORCIBLY.invoke(proc);
+                    }
+                    catch (Exception ee)
+                    {
+                        log.error("Error invoking destroyForcibly()", ee);
+                        proc.destroy();
+                    }
+                }
             }
             throw e;
         }
@@ -2145,10 +2161,12 @@ public class Application
             String shell = org.webcat.core.Application.cmdShell();
             if (shell != null && shell.length() > 0)
             {
-                if (shell.charAt(shell.length() - 1) == '"')
+                int pos = shell.lastIndexOf('"');
+                if (pos > 0)
                 {
-                    cmdArray = shell.split("\\s+");
-                    cmdArray[cmdArray.length - 1] = commandLine;
+                    cmdArray = shell.substring(0, pos + 1).split("\\s+");
+                    cmdArray[cmdArray.length - 1] =
+                        shell.substring(pos + 1) + commandLine;
                 }
                 else
                 {
@@ -2894,6 +2912,22 @@ public class Application
     private RelativeTimestampFormatter approximateRelativeTimestampFormatter;
     private RelativeTimestampFormatter exactRelativeTimestampFormatter;
     private FileSizeFormatter fileSizeFormatter;
+
+    private static java.lang.reflect.Method DESTROY_FORCIBLY;
+    static
+    {
+        try
+        {
+            DESTROY_FORCIBLY = Process.class
+                .getMethod("destroyForcibly", new Class<?>[] {});
+        }
+        catch (Exception e)
+        {
+            System.out.println("Cannot find Process.destroyForcibly() (only "
+                + "available in Java 1.8+): " + e.getClass().getSimpleName()
+                + ": " + e.getMessage());
+        }
+    }
 
     static Logger log = Logger.getLogger(Application.class);
     static Logger requestLog = Logger.getLogger(Application.class.getName()

@@ -24,6 +24,7 @@ package org.webcat.core.git.http;
 import java.io.IOException;
 import java.io.InputStream;
 import org.apache.http.HttpStatus;
+import org.apache.log4j.Logger;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.transport.UploadPack;
 import org.eclipse.jgit.transport.RefAdvertiser.PacketLineOutRefAdvertiser;
@@ -58,6 +59,7 @@ public class UploadPackRequestHandler
     public void handleRequest(WORequest request, WOResponse response)
         throws Exception
     {
+        long start = System.currentTimeMillis();
         String contentType = request.headerForKey(HttpSupport.HDR_CONTENT_TYPE);
 
         if (UPLOAD_PACK_REQUEST_TYPE.equals(contentType))
@@ -82,6 +84,13 @@ public class UploadPackRequestHandler
         else
         {
             response.setStatus(HttpStatus.SC_UNSUPPORTED_MEDIA_TYPE);
+        }
+        long end = System.currentTimeMillis();
+        if (log.isDebugEnabled())
+        {
+            double time = (end - start)/1000.0;
+            log.debug("handleRequest(): " + time + "s\n    url = "
+                + request.uri());
         }
     }
 
@@ -135,4 +144,7 @@ public class UploadPackRequestHandler
 
     private static final String UPLOAD_PACK_RESULT_TYPE =
         "application/x-git-upload-pack-result";
+
+    private static final Logger log =
+        Logger.getLogger(UploadPackRequestHandler.class);
 }

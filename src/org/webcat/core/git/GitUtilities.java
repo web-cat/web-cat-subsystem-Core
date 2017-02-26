@@ -34,6 +34,7 @@ import org.eclipse.jgit.api.CommitCommand;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.InitCommand;
 import org.eclipse.jgit.api.PushCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.NoFilepatternException;
 import org.eclipse.jgit.errors.RepositoryNotFoundException;
 import org.eclipse.jgit.lib.Constants;
@@ -146,6 +147,11 @@ public class GitUtilities
                 log.error("An exception occurred while trying to get the "
                         + "repository for object " + object, e);
             }
+            catch (GitAPIException e)
+            {
+                log.error("A git API exception occurred while trying to get "
+                        + "the repository for object " + object, e);
+            }
         }
 
         RepositoryInfo repoInfo = new RepositoryInfo();
@@ -187,6 +193,12 @@ public class GitUtilities
         catch (IOException e)
         {
             log.error("An exception occurred while trying to get the "
+                    + "working copy repository for repository "
+                    + repoInfo.repositoryDir, e);
+        }
+        catch (GitAPIException e)
+        {
+            log.error("A git API exception occurred while trying to get the "
                     + "working copy repository for repository "
                     + repoInfo.repositoryDir, e);
         }
@@ -389,7 +401,7 @@ public class GitUtilities
      * @return the newly created repository
      */
     private static Repository setUpNewRepository(EOEnterpriseObject object,
-            File location) throws IOException
+            File location) throws IOException, GitAPIException
     {
         // This method performs the following actions to set up a new
         // repository:

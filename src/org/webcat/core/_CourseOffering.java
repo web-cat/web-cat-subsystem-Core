@@ -509,7 +509,8 @@ public abstract class _CourseOffering
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.CoreSelections> coreSelections()
     {
-        return (NSArray)storedValueForKey( "coreSelections" );
+        return (NSArray<org.webcat.core.CoreSelections>)
+            storedValueForKey("coreSelections");
     }
 
 
@@ -520,14 +521,15 @@ public abstract class _CourseOffering
      *
      * @param value The new set of entities to relate to
      */
-    public void setCoreSelections( NSMutableArray<org.webcat.core.CoreSelections>  value )
+    public void setCoreSelections(
+        NSMutableArray<org.webcat.core.CoreSelections>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setCoreSelections("
-                + value + "): was " + coreSelections() );
+            log.debug("setCoreSelections("
+                + value + "): was " + coreSelections());
         }
-        takeStoredValueForKey( value, "coreSelections" );
+        takeStoredValueForKey(value, "coreSelections");
     }
 
 
@@ -687,7 +689,8 @@ public abstract class _CourseOffering
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.User> graders()
     {
-        return (NSArray)storedValueForKey( "graders" );
+        return (NSArray<org.webcat.core.User>)
+            storedValueForKey("graders");
     }
 
 
@@ -698,14 +701,15 @@ public abstract class _CourseOffering
      *
      * @param value The new set of entities to relate to
      */
-    public void setGraders( NSMutableArray<org.webcat.core.User>  value )
+    public void setGraders(
+        NSMutableArray<org.webcat.core.User>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setGraders("
-                + value + "): was " + graders() );
+            log.debug("setGraders("
+                + value + "): was " + graders());
         }
-        takeStoredValueForKey( value, "graders" );
+        takeStoredValueForKey(value, "graders");
     }
 
 
@@ -865,7 +869,8 @@ public abstract class _CourseOffering
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.User> instructors()
     {
-        return (NSArray)storedValueForKey( "instructors" );
+        return (NSArray<org.webcat.core.User>)
+            storedValueForKey("instructors");
     }
 
 
@@ -876,14 +881,15 @@ public abstract class _CourseOffering
      *
      * @param value The new set of entities to relate to
      */
-    public void setInstructors( NSMutableArray<org.webcat.core.User>  value )
+    public void setInstructors(
+        NSMutableArray<org.webcat.core.User>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setInstructors("
-                + value + "): was " + instructors() );
+            log.debug("setInstructors("
+                + value + "): was " + instructors());
         }
-        takeStoredValueForKey( value, "instructors" );
+        takeStoredValueForKey(value, "instructors");
     }
 
 
@@ -1043,7 +1049,8 @@ public abstract class _CourseOffering
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.User> students()
     {
-        return (NSArray)storedValueForKey( "students" );
+        return (NSArray<org.webcat.core.User>)
+            storedValueForKey("students");
     }
 
 
@@ -1054,14 +1061,15 @@ public abstract class _CourseOffering
      *
      * @param value The new set of entities to relate to
      */
-    public void setStudents( NSMutableArray<org.webcat.core.User>  value )
+    public void setStudents(
+        NSMutableArray<org.webcat.core.User>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setStudents("
-                + value + "): was " + students() );
+            log.debug("setStudents("
+                + value + "): was " + students());
         }
-        takeStoredValueForKey( value, "students" );
+        takeStoredValueForKey(value, "students");
     }
 
 
@@ -1277,8 +1285,8 @@ public abstract class _CourseOffering
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        @SuppressWarnings("unchecked")
-        EOFetchSpecification fspec = new WCFetchSpecification(
+        WCFetchSpecification<CourseOffering> fspec =
+            new WCFetchSpecification<CourseOffering>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
@@ -1301,8 +1309,13 @@ public abstract class _CourseOffering
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
+        WCFetchSpecification<CourseOffering> fspec =
+            new WCFetchSpecification<CourseOffering>(
+                ENTITY_NAME, qualifier, sortOrderings);
+        fspec.setUsesDistinct(true);
+        fspec.setFetchLimit(1);
         NSArray<CourseOffering> objects =
-            objectsMatchingQualifier(context, qualifier, sortOrderings);
+            objectsWithFetchSpecification(context, fspec);
         return (objects.size() > 0)
             ? objects.get(0)
             : null;
@@ -1394,7 +1407,7 @@ public abstract class _CourseOffering
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -1466,7 +1479,7 @@ public abstract class _CourseOffering
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return firstObjectMatchingValues(
@@ -1490,8 +1503,8 @@ public abstract class _CourseOffering
         NSArray<EOSortOrdering> sortOrderings,
         NSDictionary<String, Object> keysAndValues)
     {
-        @SuppressWarnings("unchecked")
-        EOFetchSpecification fspec = new WCFetchSpecification(
+        WCFetchSpecification<CourseOffering> fspec =
+            new WCFetchSpecification<CourseOffering>(
                 ENTITY_NAME,
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
@@ -1557,7 +1570,7 @@ public abstract class _CourseOffering
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -1667,7 +1680,7 @@ public abstract class _CourseOffering
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);

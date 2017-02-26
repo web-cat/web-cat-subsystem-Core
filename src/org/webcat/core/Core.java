@@ -89,6 +89,52 @@ public class Core
                     migrated = User
                         .objectsWithFetchSpecification(ec, needsMigration);
                 }
+
+                needsMigration =
+                    new WCFetchSpecification<User>(
+                        User.ENTITY_NAME,
+                        User.email.isNull().or(User.email.is("")),
+                        null);
+                needsMigration.setRefreshesRefetchedObjects(true);
+                needsMigration.setFetchLimit(500);
+
+                migrated = User
+                    .objectsWithFetchSpecification(ec, needsMigration);
+                while (migrated.size() > 0)
+                {
+                    log.info("performPeriodicMaintenance(): migrating "
+                        + migrated.size() + " user e-mail addresses");
+                    for (User u : migrated)
+                    {
+                        String email = u.email();
+                        if (email != null && !email.isEmpty())
+                        {
+                            u.setEmail(email);
+                        }
+                        try
+                        {
+                            ec.saveChanges();
+                        }
+                        catch (Exception e)
+                        {
+                            log.error("Failure saving migrated e-mail "
+                                + "addresses.  Will retry.", e);
+                            ec.revert();
+                        }
+                    }
+
+                    try
+                    {
+                        // Sleep for 2 seconds
+                        Thread.sleep(2000);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        // ignore
+                    }
+                    migrated = User
+                        .objectsWithFetchSpecification(ec, needsMigration);
+                }
             }
         });
     }

@@ -255,8 +255,8 @@ public abstract class BasicAuthenticationFilter
      * @param session the session to associate with the user
      * @return true if the user was successfully authenticated, otherwise false
      */
-    private User validateUser(String username, String password,
-            EOEditingContext ec)
+    protected User validateUser(String username, String password,
+        EOEditingContext ec)
     {
         // Look up the user based on the repository ID.
         User user = EOBase.objectWithApiId(ec, User.class, username);
@@ -265,7 +265,7 @@ public abstract class BasicAuthenticationFilter
         if (user != null)
         {
             user = User.validate(user.userName(), password,
-                    user.authenticationDomain(), ec);
+                user.authenticationDomain(), ec);
         }
 
         if (user != null)

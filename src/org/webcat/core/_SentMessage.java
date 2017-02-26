@@ -645,7 +645,8 @@ public abstract class _SentMessage
     @SuppressWarnings("unchecked")
     public NSArray<org.webcat.core.User> users()
     {
-        return (NSArray)storedValueForKey( "users" );
+        return (NSArray<org.webcat.core.User>)
+            storedValueForKey("users");
     }
 
 
@@ -656,14 +657,15 @@ public abstract class _SentMessage
      *
      * @param value The new set of entities to relate to
      */
-    public void setUsers( NSMutableArray<org.webcat.core.User>  value )
+    public void setUsers(
+        NSMutableArray<org.webcat.core.User>  value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setUsers("
-                + value + "): was " + users() );
+            log.debug("setUsers("
+                + value + "): was " + users());
         }
-        takeStoredValueForKey( value, "users" );
+        takeStoredValueForKey(value, "users");
     }
 
 
@@ -879,8 +881,8 @@ public abstract class _SentMessage
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
-        @SuppressWarnings("unchecked")
-        EOFetchSpecification fspec = new WCFetchSpecification(
+        WCFetchSpecification<SentMessage> fspec =
+            new WCFetchSpecification<SentMessage>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
         return objectsWithFetchSpecification(context, fspec);
@@ -903,8 +905,13 @@ public abstract class _SentMessage
         EOQualifier qualifier,
         NSArray<EOSortOrdering> sortOrderings)
     {
+        WCFetchSpecification<SentMessage> fspec =
+            new WCFetchSpecification<SentMessage>(
+                ENTITY_NAME, qualifier, sortOrderings);
+        fspec.setUsesDistinct(true);
+        fspec.setFetchLimit(1);
         NSArray<SentMessage> objects =
-            objectsMatchingQualifier(context, qualifier, sortOrderings);
+            objectsWithFetchSpecification(context, fspec);
         return (objects.size() > 0)
             ? objects.get(0)
             : null;
@@ -996,7 +1003,7 @@ public abstract class _SentMessage
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return objectsMatchingValues(context, valueDictionary);
@@ -1068,7 +1075,7 @@ public abstract class _SentMessage
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return firstObjectMatchingValues(
@@ -1092,8 +1099,8 @@ public abstract class _SentMessage
         NSArray<EOSortOrdering> sortOrderings,
         NSDictionary<String, Object> keysAndValues)
     {
-        @SuppressWarnings("unchecked")
-        EOFetchSpecification fspec = new WCFetchSpecification(
+        WCFetchSpecification<SentMessage> fspec =
+            new WCFetchSpecification<SentMessage>(
                 ENTITY_NAME,
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
@@ -1159,7 +1166,7 @@ public abstract class _SentMessage
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return uniqueObjectMatchingValues(context, valueDictionary);
@@ -1269,7 +1276,7 @@ public abstract class _SentMessage
                     + java.util.Arrays.toString(keysAndValues));
             }
 
-            valueDictionary.setObjectForKey(value, key);
+            valueDictionary.setObjectForKey(value, (String)key);
         }
 
         return countOfObjectsMatchingValues(context, valueDictionary);

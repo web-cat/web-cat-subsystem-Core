@@ -55,12 +55,12 @@ public class FileUtilities
      *
      * @throws IOException
      */
-    public static void copyFileToFile( File srcFile, File destFile )
+    public static void copyFileToFile(File srcFile, File destFile)
         throws IOException
     {
-        FileInputStream stream = new FileInputStream( srcFile );
+        FileInputStream stream = new FileInputStream(srcFile);
         FileUtilities.copyStreamToFile(
-            stream, destFile, srcFile.lastModified() );
+            stream, destFile, srcFile.lastModified());
         stream.close();
     }
 
@@ -73,16 +73,16 @@ public class FileUtilities
      * @param outputDir the destination directory
      * @throws IOException if there are IO errors
      */
-    public static void copyFileToDir( File oldFile, File outputDir )
+    public static void copyFileToDir(File oldFile, File outputDir)
         throws IOException
     {
-        FileInputStream  in  = new FileInputStream( oldFile );
-        File destFile = new File( outputDir, oldFile.getName() );
-        FileOutputStream out = new FileOutputStream( destFile );
-        copyStream( in, out );
+        FileInputStream  in  = new FileInputStream(oldFile);
+        File destFile = new File(outputDir, oldFile.getName());
+        FileOutputStream out = new FileOutputStream(destFile);
+        copyStream(in, out);
         in.close();
         out.close();
-        destFile.setLastModified( oldFile.lastModified() );
+        destFile.setLastModified(oldFile.lastModified());
     }
 
 
@@ -95,19 +95,19 @@ public class FileUtilities
      * @param outputDir the destination directory
      * @throws IOException if there are IO errors
      */
-    public static void copyFileToDirIfNecessary( File oldFile, File outputDir )
+    public static void copyFileToDirIfNecessary(File oldFile, File outputDir)
         throws IOException
     {
-        File target = new File( outputDir, oldFile.getName() );
-        if ( !target.exists()
-             || target.lastModified() < oldFile.lastModified() )
+        File target = new File(outputDir, oldFile.getName());
+        if (!target.exists()
+            || target.lastModified() < oldFile.lastModified())
         {
-            FileInputStream  in  = new FileInputStream( oldFile );
-            FileOutputStream out = new FileOutputStream( target );
-            copyStream( in, out );
+            FileInputStream  in  = new FileInputStream(oldFile);
+            FileOutputStream out = new FileOutputStream(target);
+            copyStream(in, out);
             in.close();
             out.close();
-            target.setLastModified( oldFile.lastModified() );
+            target.setLastModified(oldFile.lastModified());
         }
     }
 
@@ -160,18 +160,18 @@ public class FileUtilities
      * @throws IOException if there are IO errors
      */
     public static void copyDirectoryContentsIfNecessary(
-        File source, File destination )
+        File source, File destination)
         throws IOException
     {
         File[] fileList = source.listFiles();
-        for ( int i = 0; i < fileList.length; i++ )
+        for (int i = 0; i < fileList.length; i++)
         {
-            if ( fileList[i].isDirectory() )
+            if (fileList[i].isDirectory())
             {
                 // Copy the whole directory
-                File newDir = new File( destination, fileList[i].getName() );
+                File newDir = new File(destination, fileList[i].getName());
                 newDir.mkdir();
-                copyDirectoryContentsIfNecessary( fileList[i], newDir );
+                copyDirectoryContentsIfNecessary(fileList[i], newDir);
             }
             else if (fileList[i].getName().equals(".DS_Store"))
             {
@@ -179,7 +179,7 @@ public class FileUtilities
             }
             else
             {
-                copyFileToDirIfNecessary( fileList[i], destination );
+                copyFileToDirIfNecessary(fileList[i], destination);
             }
         }
     }
@@ -191,9 +191,9 @@ public class FileUtilities
      *
      * @param dirName the path of the directory
      */
-    public static void deleteDirectory( String dirName )
+    public static void deleteDirectory(String dirName)
     {
-        deleteDirectory( new File( dirName ) );
+        deleteDirectory(new File(dirName));
     }
 
 
@@ -203,16 +203,20 @@ public class FileUtilities
      *
      * @param dir the File object for the directory
      */
-    public static void deleteDirectory( File dir )
+    public static void deleteDirectory(File dir)
     {
         File[] files = dir.listFiles();
-        for ( int i = 0; i < files.length; i++ )
+
+        if (files != null)
         {
-            if ( files[i].isDirectory() )
+            for (int i = 0; i < files.length; i++)
             {
-                deleteDirectory( files[i] );
+                if (files[i].isDirectory())
+                {
+                    deleteDirectory(files[i]);
+                }
+                files[i].delete();
             }
-            files[i].delete();
         }
         dir.delete();
     }
@@ -228,16 +232,16 @@ public class FileUtilities
      * @param destination the new file name to rename it to
      * @throws IOException if there are IO errors
      */
-    public static void moveFileToFile( File source, File destination )
+    public static void moveFileToFile(File source, File destination)
         throws IOException
     {
-        if ( source.renameTo( destination ) )
+        if (source.renameTo(destination))
         {
             // if renaming worked, then we're done
             return;
         }
 
-        copyFileToFile( source, destination );
+        copyFileToFile(source, destination);
         source.delete();
     }
 
@@ -252,11 +256,11 @@ public class FileUtilities
      * @param destDir the destination directory to move it to
      * @throws IOException if there are IO errors
      */
-    public static void moveFileToDir( File source, File destDir )
+    public static void moveFileToDir(File source, File destDir)
         throws IOException
     {
-        File destFile = new File( destDir, source.getName() );
-        moveFileToFile( source, destFile );
+        File destFile = new File(destDir, source.getName());
+        moveFileToFile(source, destFile);
     }
 
 
@@ -269,23 +273,23 @@ public class FileUtilities
      * @param destination the destination directory
      * @throws IOException if there are IO errors
      */
-    public static void moveDirectoryContents( File source, File destination )
+    public static void moveDirectoryContents(File source, File destination)
         throws IOException
     {
         File[] fileList = source.listFiles();
-        for ( int i = 0; i < fileList.length; i++ )
+        for (int i = 0; i < fileList.length; i++)
         {
-            if ( fileList[i].isDirectory() )
+            if (fileList[i].isDirectory())
             {
                 // Copy the whole directory
-                File newDir = new File( destination, fileList[i].getName() );
+                File newDir = new File(destination, fileList[i].getName());
                 newDir.mkdir();
-                moveDirectoryContents( fileList[i], newDir );
+                moveDirectoryContents(fileList[i], newDir);
                 fileList[i].delete();
             }
             else
             {
-                moveFileToDir( fileList[i], destination );
+                moveFileToDir(fileList[i], destination);
             }
         }
     }
@@ -301,18 +305,18 @@ public class FileUtilities
      * @param out the destination
      * @throws IOException if there are IO errors
      */
-    public static void copyStream( InputStream in, OutputStream out )
+    public static void copyStream(InputStream in, OutputStream out)
         throws IOException
     {
         final int BUFFER_SIZE = 65536;
 
         // read in increments of BUFFER_SIZE
         byte[] b = new byte[BUFFER_SIZE];
-        int count = in.read( b );
-        while ( count > -1 )
+        int count = in.read(b);
+        while (count > -1)
         {
-            out.write( b, 0, count );
-            count = in.read( b );
+            out.write(b, 0, count);
+            count = in.read(b);
         }
         out.flush();
     }
@@ -328,11 +332,11 @@ public class FileUtilities
      *
      * @throws IOException
      */
-    public static void copyStreamToFile( InputStream stream, File destFile )
+    public static void copyStreamToFile(InputStream stream, File destFile)
         throws IOException
     {
-        OutputStream outStream = new FileOutputStream( destFile );
-        copyStream( stream, outStream );
+        OutputStream outStream = new FileOutputStream(destFile);
+        copyStream(stream, outStream);
         outStream.flush();
         outStream.close();
     }
@@ -351,13 +355,13 @@ public class FileUtilities
      * @throws IOException
      */
     public static void copyStreamToFile(
-        InputStream stream, File destFile, long fileTime )
+        InputStream stream, File destFile, long fileTime)
         throws IOException
     {
-        copyStreamToFile( stream, destFile );
-        if ( fileTime != -1 )
+        copyStreamToFile(stream, destFile);
+        if (fileTime != -1)
         {
-            destFile.setLastModified( fileTime );
+            destFile.setLastModified(fileTime);
         }
     }
 
@@ -400,52 +404,51 @@ public class FileUtilities
      * @param parentNameLen How much of the file's canonical path name prefix
      *                      to truncate when creating the zip entry
      */
-    public static void appendToZip( File            file,
-                                    ZipOutputStream zos,
-                                    int             parentNameLen )
+    public static void appendToZip(
+        File file, ZipOutputStream zos, int parentNameLen)
     {
         try
         {
-            if ( file.isDirectory()
-                 &&  !file.getName().equals( "." )
-                 &&  !file.getName().equals( ".." ) )
+            if (file.isDirectory()
+                &&  !file.getName().equals(".")
+                &&  !file.getName().equals(".."))
             {
                 File[] files = file.listFiles();
-                if ( files != null )
+                if (files != null)
                 {
-                    for ( int i = 0; i < files.length; i++ )
+                    for (int i = 0; i < files.length; i++)
                     {
-                        appendToZip( files[i], zos, parentNameLen );
+                        appendToZip(files[i], zos, parentNameLen);
                     }
                 }
             }
             else
             {
                 String fileName =
-                    file.getCanonicalPath().substring( parentNameLen + 1 );
-                if ( fileName.length() > 1
-                     && ( fileName.charAt( 0 ) == '/'
-                          || fileName.charAt( 0 ) == '\\' ) )
+                    file.getCanonicalPath().substring(parentNameLen + 1);
+                if (fileName.length() > 1
+                    && (fileName.charAt(0) == '/'
+                        || fileName.charAt(0) == '\\'))
                 {
-                    fileName = fileName.substring( 1 );
+                    fileName = fileName.substring(1);
                 }
                 // If we're on a Windows-style system, be sure to switch
                 // to forward slashes for path names inside the zip file
-                if ( System.getProperty( "file.separator" ).equals( "\\" ) )
+                if (System.getProperty("file.separator").equals("\\"))
                 {
-                    fileName = fileName.replace( '\\', '/' );
+                    fileName = fileName.replace('\\', '/');
                 }
-                ZipEntry e = new ZipEntry( fileName );
-                e.setSize( file.length() );
-                zos.putNextEntry( e );
-                FileInputStream stream = new FileInputStream( file );
-                copyStream( stream, zos );
+                ZipEntry e = new ZipEntry(fileName);
+                e.setSize(file.length());
+                zos.putNextEntry(e);
+                FileInputStream stream = new FileInputStream(file);
+                copyStream(stream, zos);
                 stream.close();
             }
         }
-        catch ( java.io.IOException e )
+        catch (java.io.IOException e)
         {
-            log.error( "exception trying to create zip output stream", e );
+            log.error("exception trying to create zip output stream", e);
         }
     }
 
@@ -458,10 +461,10 @@ public class FileUtilities
      * @param  fileName the file name
      * @return its extension
      */
-    public static String extensionOf( String fileName )
+    public static String extensionOf(String fileName)
     {
-        int pos = fileName.lastIndexOf( '.' );
-        return ( pos < 0 ) ? fileName : fileName.substring( pos + 1 );
+        int pos = fileName.lastIndexOf('.');
+        return (pos < 0) ? fileName : fileName.substring(pos + 1);
     }
 
 
@@ -473,9 +476,9 @@ public class FileUtilities
      * @param  file the file
      * @return its extension
      */
-    public static String extensionOf( File file )
+    public static String extensionOf(File file)
     {
-        return extensionOf( file.getName() );
+        return extensionOf(file.getName());
     }
 
 
@@ -488,10 +491,10 @@ public class FileUtilities
      * @param  fileName the file name
      * @return True if it is an archive file (currently, a zip or jar file)
      */
-    public static boolean isArchiveFile( String fileName )
+    public static boolean isArchiveFile(String fileName)
     {
-        String ext = extensionOf( fileName ).toLowerCase();
-        return ext.equals( "zip" ) || ext.equals( "jar" );
+        String ext = extensionOf(fileName).toLowerCase();
+        return ext.equals("zip") || ext.equals("jar");
     }
 
 
@@ -502,9 +505,9 @@ public class FileUtilities
      * @param  file the file
      * @return True if it is an archive file (currently, a zip or jar file)
      */
-    public static boolean isArchiveFile( File file )
+    public static boolean isArchiveFile(File file)
     {
-        return isArchiveFile( file.getName() );
+        return isArchiveFile(file.getName());
     }
 
 
@@ -518,11 +521,11 @@ public class FileUtilities
      * @param  fileName the file name to check
      * @return the MIME type
      */
-    public static String mimeType( String fileName )
+    public static String mimeType(String fileName)
     {
         return FileUtilities.fileProperties.getFileProperty(
-            extensionOf( fileName ).toLowerCase(),
-            "mimeType", "application/octet-stream" );
+            extensionOf(fileName).toLowerCase(),
+            "mimeType", "application/octet-stream");
     }
 
 
@@ -536,9 +539,9 @@ public class FileUtilities
      * @param  file the file to check
      * @return the MIME type
      */
-    public static String mimeType( File file )
+    public static String mimeType(File file)
     {
-        return mimeType( file.getName() );
+        return mimeType(file.getName());
     }
 
 
@@ -581,7 +584,7 @@ public class FileUtilities
      * @param  fileName the file name to check
      * @return the icon URL
      */
-    public static String iconURL( String fileName )
+    public static String iconURL(String fileName)
     {
         return FileUtilities.fileProperties.getFileProperty(
             extensionOf(fileName), "icon", DEFAULT_FILE_ICON);
@@ -598,7 +601,7 @@ public class FileUtilities
      * @param  file the file to check
      * @return the icon URL
      */
-    public static String iconURL( File file )
+    public static String iconURL(File file)
     {
         return iconURL(file.getName());
     }
@@ -614,10 +617,10 @@ public class FileUtilities
      * @param  fileName the file name to check
      * @return true if this file can be executed
      */
-    public static boolean isExecutable( String fileName )
+    public static boolean isExecutable(String fileName)
     {
         return FileUtilities.fileProperties.getFileFlag(
-            extensionOf( fileName ), "executable", false );
+            extensionOf(fileName), "executable", false);
     }
 
 
@@ -631,9 +634,9 @@ public class FileUtilities
      * @param  file the file to check
      * @return true if this file can be executed
      */
-    public static boolean isExecutable( File file )
+    public static boolean isExecutable(File file)
     {
-        return isExecutable( file.getName() );
+        return isExecutable(file.getName());
     }
 
 
@@ -647,10 +650,10 @@ public class FileUtilities
      * @param  fileName the file name to check
      * @return true if this file can be edited
      */
-    public static boolean isEditable( String fileName )
+    public static boolean isEditable(String fileName)
     {
         return FileUtilities.fileProperties.getFileFlag(
-            extensionOf( fileName ), "editable", false );
+            extensionOf(fileName), "editable", false);
     }
 
 
@@ -664,9 +667,9 @@ public class FileUtilities
      * @param  file the file to check
      * @return true if this file can be edited
      */
-    public static boolean isEditable( File file )
+    public static boolean isEditable(File file)
     {
-        return isEditable( file.getName() );
+        return isEditable(file.getName());
     }
 
 
@@ -680,10 +683,10 @@ public class FileUtilities
      * @param  fileName the file name to check
      * @return true if this file's type should be shown in a browser
      */
-    public static boolean showInline( String fileName )
+    public static boolean showInline(String fileName)
     {
         return FileUtilities.fileProperties.getFileFlag(
-            extensionOf( fileName ), "showInline", false );
+            extensionOf(fileName), "showInline", false);
     }
 
 
@@ -697,9 +700,9 @@ public class FileUtilities
      * @param  file the file to check
      * @return true if this file's type should be shown in a browser
      */
-    public static boolean showInline( File file )
+    public static boolean showInline(File file)
     {
-        return showInline( file.getName() );
+        return showInline(file.getName());
     }
 
 
@@ -783,14 +786,14 @@ public class FileUtilities
 
     //~ Static variables ......................................................
 
-    @SuppressWarnings( "deprecation" )
+    @SuppressWarnings("deprecation")
     static WCFileProperties fileProperties =
         new WCFileProperties(
             Application.configurationProperties().getProperty(
                 "filetype.properties",
                 Application.application().resourceManager()
-                .pathForResourceNamed( "filetype.properties", "Core", null ) ),
-            Application.configurationProperties() );
+                .pathForResourceNamed("filetype.properties", "Core", null)),
+            Application.configurationProperties());
 
     private static final String FOLDER_OPEN_ICON =
         "icons/filetypes/folder-open.png";

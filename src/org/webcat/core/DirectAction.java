@@ -298,8 +298,11 @@ public class DirectAction
         }
         else
         {
+            if (userName != null && !userName.contains("@"))
+            // Try to go through and look up by e-mail address
             errors.setObjectForKey(
-                "Please select your institution/affiliation.",
+                "Please specify your e-mail address, or select your "
+                + "institution/affiliation.",
                 "authDomain");
         }
 
@@ -308,7 +311,6 @@ public class DirectAction
         // be null from the error count
         if (errors.count() == 0 && userName != null)
         {
-            userName = userName.toLowerCase();
             EOEditingContext ec = WCEC.newEditingContext();
             try
             {
@@ -321,7 +323,8 @@ public class DirectAction
                         + " (" + domain.displayableName() + ")");
                     errors.setObjectForKey(
                         "Your login information could not be validated.  "
-                        + "Be sure you typed your user name and password "
+                        + "Be sure you typed your e-mail (or user name) "
+                        + "and password "
                         + "correctly, and selected the proper "
                         + "institution/affiliation.",
                         "failedAuthentication");

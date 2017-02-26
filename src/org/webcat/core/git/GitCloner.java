@@ -30,6 +30,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.InitCommand;
+import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.dircache.DirCache;
 import org.eclipse.jgit.dircache.DirCacheCheckout;
 import org.eclipse.jgit.errors.IncorrectObjectTypeException;
@@ -79,7 +80,8 @@ public class GitCloner
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    public Repository cloneRepository(boolean forcePull) throws IOException
+    public Repository cloneRepository(boolean forcePull)
+        throws IOException, GitAPIException
     {
         if (!destination.exists())
         {
@@ -105,7 +107,7 @@ public class GitCloner
 
     // ----------------------------------------------------------
     private Repository createWorkingCopyRepositoryIfNecessary(
-            File location, File remoteDir) throws IOException
+            File location, File remoteDir) throws IOException, GitAPIException
     {
         Repository wcRepository;
 

@@ -78,7 +78,7 @@ public class Session
      */
     private final void initSession()
     {
-        log.debug("creating " + sessionID());
+        log.debug("creating " + sessionID(), new Exception("from here"));
 
         setStoresIDsInCookies(true);
         setStoresIDsInURLs(false);
@@ -325,6 +325,10 @@ public class Session
                 try
                 {
                     log.debug("attempting to save");
+                    log.debug("context = "
+                        + loginSession.editingContext().getClass().getName());
+                    log.debug("shared context = "
+                        + loginSession.editingContext().sharedEditingContext());
                     loginSession.editingContext().saveChanges();
                     log.debug("saving complete");
                 }

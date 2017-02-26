@@ -28,15 +28,15 @@ import java.math.BigInteger;
 import java.util.Properties;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
-import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.security.spec.InvalidKeySpecException;
 import org.apache.log4j.Logger;
 import org.webcat.woextensions.ECAction;
+import org.webcat.woextensions.MigratingEditingContext;
 import static org.webcat.woextensions.ECAction.run;
 import org.webcat.woextensions.WCEC;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.eoaccess.EOUtilities;
+import com.webobjects.eoaccess.EOUtilities.MoreThanOneException;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
@@ -549,6 +549,57 @@ public class User
             com.webobjects.eocontrol.EOEditingContext ec
         )
     {
+        if (aUserName != null && aUserName.contains("@"))
+        {
+            try
+            {
+                User u = uniqueObjectMatchingQualifier(
+                    ec, User.email.is(aUserName));
+
+                if (u == null)
+                {
+                    try
+                    {
+                        u = uniqueObjectMatchingQualifier(
+                            ec, User.userName.is(aUserName));
+                    }
+                    catch (MoreThanOneException e)
+                    {
+                        log.debug("More than one user with user name "
+                            + aUserName + " found.");
+                    }
+                }
+
+                if (u != null)
+                {
+                    domain = u.authenticationDomain();
+                    aUserName = u.userName();
+                }
+            }
+            catch (MoreThanOneException e)
+            {
+                log.error("Non-unique user e-mail address: " + aUserName);
+            }
+        }
+        if (domain == null)
+        {
+            log.error("Cannot identify authentication domain for user "
+                + aUserName);
+            return null;
+        }
+        if (aUserName != null)
+        {
+            int pos = aUserName.indexOf('@');
+            if (pos > 0)
+            {
+                aUserName = aUserName.substring(0, pos)
+                    + aUserName.substring(pos).toLowerCase();
+            }
+            else
+            {
+                aUserName = aUserName.toLowerCase();
+            }
+        }
         UserAuthenticator authenticator = domain.authenticator();
         if (authenticator != null)
         {
@@ -1596,47 +1647,20 @@ public class User
 
     // ----------------------------------------------------------
     @Override
-    public void awakeFromFetch(EOEditingContext editingContext)
+    protected boolean shouldMigrateSalt()
     {
-        super.awakeFromFetch(editingContext);
-
-        // Only try to migrate if the EC isn't a migrating context. If it is,
-        // we're already trying to migrate and this "awake" is coming from the
-        // child migration context.
-
-        if (!(editingContext instanceof
-            org.webcat.woextensions.MigratingEditingContext))
-        {
-            migrateAttributeValuesIfNeeded();
-        }
+        String mySalt = salt();
+        String myPass = password();
+        return ((mySalt == null || mySalt.isEmpty())
+            && myPass != null && !myPass.isEmpty());
     }
 
 
     // ----------------------------------------------------------
-    /**
-     * Called by {@link #awake} to migrate attribute values if needed when the
-     * object is retrieved.
-     */
-    public void migrateAttributeValuesIfNeeded()
+    @Override
+    protected void migrateSalt(MigratingEditingContext mec)
     {
-        String mySalt = salt();
-        String myPass = password();
-        if ((mySalt == null || mySalt.isEmpty())
-            && myPass != null && !myPass.isEmpty())
-        {
-            run(new ECAction(org.webcat.woextensions.MigratingEditingContext
-                .newEditingContext(), true)
-            {
-                // ----------------------------------------------------------
-                @Override
-                public void action()
-                {
-                    User me = localInstance(ec);
-                    me.setUpdateMutableFields(!me.updateMutableFields());
-                    ec.saveChanges();
-                }
-            });
-        }
+        setUpdateMutableFields(!updateMutableFields());
     }
 
 

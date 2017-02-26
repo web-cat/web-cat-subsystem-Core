@@ -3,7 +3,13 @@ Library/Frameworks/EOJDBCPrototypes.framework
 Library/Frameworks/ERExtensions.framework
 Library/Frameworks/ERJars.framework
 Library/Frameworks/ExternalJars.framework
+Library/Frameworks/JavaEOAccess.framework
+Library/Frameworks/JavaEOControl.framework
+Library/Frameworks/JavaFoundation.framework
+Library/Frameworks/JavaJDBCAdaptor.framework
+Library/Frameworks/JavaWebObjects.framework
 Library/Frameworks/JavaWOExtensions.framework
+Library/Frameworks/JavaWOJSPServlet.framework
 Library/Frameworks/WebObjectsUpdater.framework
 Library/Frameworks/WonderUpdater.framework
 Library/Frameworks/WOOgnl.framework

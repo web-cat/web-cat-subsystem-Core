@@ -24,7 +24,12 @@
         {name = id; prototypeName = id; },
         {columnName = CLASTNAME; name = lastName; prototypeName = tinyText; },
         {name = password; prototypeName = password; },
-        {name = salt; columnName = salt; prototypeName = password; },
+        {
+            name = salt;
+            columnName = salt;
+            prototypeName = password;
+            userInfo = { needsMigration = true; };
+        },
         {name = iterations; columnName = iterations; prototypeName = integer;
            userInfo =
            {
