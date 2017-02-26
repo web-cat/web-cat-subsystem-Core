@@ -201,7 +201,31 @@ public class ArchiveManager
 
         if (handler != null)
         {
-            return handler.getContents(stream);
+            try
+            {
+                return handler.getContents(stream);
+            }
+            catch (java.util.zip.ZipException e)
+            {
+                // Krufty fix for occasions where the file name isn't
+                // the correct name for the file type--it seems some
+                // students upload tgz files which are actually zip
+                // archives (not sure how, but this is a brute force
+                // way of retrying the zip handler in that case)
+                if (!(handler instanceof
+                    org.webcat.archives.internal.ZipArchiveHandler))
+                {
+                    for (IArchiveHandler h : archiveHandlers)
+                    {
+                        if (h instanceof
+                            org.webcat.archives.internal.ZipArchiveHandler)
+                        {
+                            return h.getContents(stream);
+                        }
+                    }
+                }
+                throw e;
+            }
         }
         else
         {
