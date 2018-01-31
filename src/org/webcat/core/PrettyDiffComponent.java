@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: PrettyDiffComponent.java,v 1.2 2012/03/28 13:48:08 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -30,8 +30,8 @@ import com.webobjects.appserver.WOContext;
  * A component that displays a color-highlighted diff between two files.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.2 $, $Date: 2012/03/28 13:48:08 $
  */
 public class PrettyDiffComponent extends WOComponent
 {

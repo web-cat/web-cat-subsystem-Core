@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DeliverFile.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -39,7 +39,7 @@ import org.apache.log4j.Logger;
  *  content will be displayed or downloaded.
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @version $Id: DeliverFile.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  */
 public class DeliverFile
     extends WOComponent

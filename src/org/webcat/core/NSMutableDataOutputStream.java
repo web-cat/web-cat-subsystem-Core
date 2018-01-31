@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: NSMutableDataOutputStream.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -32,7 +32,7 @@ import com.webobjects.foundation.NSRange;
  * An output stream that uses an NSMutableData instance as its backing store.
  *
  * @author  Tony Allevato
- * @version $Id$
+ * @version $Id: NSMutableDataOutputStream.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  */
 public class NSMutableDataOutputStream extends OutputStream
 {

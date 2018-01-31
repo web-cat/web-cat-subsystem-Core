@@ -1,0 +1,5 @@
+BarePage : org.webcat.ui.WCBasePage {
+    title = "Callback Diagnostic";
+}
+
+Footer: org.webcat.core.Footer {}

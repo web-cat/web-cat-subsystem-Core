@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCImageButton.java,v 1.2 2011/04/19 16:31:36 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -57,7 +57,7 @@ import com.webobjects.foundation.NSLog;
  * </table>
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: WCImageButton.java,v 1.2 2011/04/19 16:31:36 aallowat Exp $
  */
 public class WCImageButton extends DojoActionFormElement
 {

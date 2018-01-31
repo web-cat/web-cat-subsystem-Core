@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DojoConstraintsHelper.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -40,7 +40,7 @@ import com.webobjects.foundation._NSDictionaryUtilities;
  * that is appropriate for use as the "constraints" attribute.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: DojoConstraintsHelper.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  */
 public class DojoConstraintsHelper
 {

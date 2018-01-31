@@ -1,0 +1,29 @@
+<webobject name="BarePage">
+<div id="content"><div id="page"><div class="width100">
+<div class="module login title">
+  <h1>Web-CAT Callback Diagnostic Info</h1>
+  <div style="clear:both"></div>
+</div>
+
+<div class="large-logo"><div class="module">
+
+<wo:link href="$loginUrl">go to cas</wo:link>
+
+<p>form values =
+<wo:str value="$incomingRequest.formValues" />
+</p>
+
+<wo:if condition="$response">
+<p>validation response =</p>
+<pre>
+<wo:string value="$response"/>
+</pre>
+</wo:if>
+
+<p>cookies =
+<wo:str value="$incomingRequest.cookies" />
+</p>
+
+</div></div>
+
+</div></div></div><webobject name="Footer"/></webobject>

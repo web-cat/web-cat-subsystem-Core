@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: SubmitDebug.java,v 1.2 2011/03/07 18:44:37 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -29,8 +29,8 @@ import com.webobjects.appserver.*;
  *  A simple test component used to debug some direct action issues.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.2 $, $Date: 2011/03/07 18:44:37 $
  */
 public class SubmitDebug
     extends WOComponent

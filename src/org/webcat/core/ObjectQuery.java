@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: ObjectQuery.java,v 1.3 2012/01/05 19:57:01 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -41,8 +41,8 @@ import er.extensions.eof.ERXEOControlUtilities;
  * TODO: place a real description here.
  *
  * @author  Tony Allevato
- * @author  latest changes by: $Author$
- * @version $Revision$, $Date$
+ * @author  latest changes by: $Author: stedwar2 $
+ * @version $Revision: 1.3 $, $Date: 2012/01/05 19:57:01 $
  */
 public class ObjectQuery
     extends _ObjectQuery

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCForm.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -47,7 +47,7 @@ import er.extensions.components._private.ERXWOForm;
  * </p>
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: WCForm.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  */
 public class WCForm extends ERXWOForm
 {

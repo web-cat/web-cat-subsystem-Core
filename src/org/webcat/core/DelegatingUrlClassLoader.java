@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DelegatingUrlClassLoader.java,v 1.2 2012/03/28 13:48:08 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -55,8 +55,8 @@ import org.apache.log4j.Logger;
  * </p>
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.2 $, $Date: 2012/03/28 13:48:08 $
  */
 public class DelegatingUrlClassLoader
     extends URLClassLoader
@@ -76,20 +76,30 @@ public class DelegatingUrlClassLoader
                DelegatingUrlClassLoader.class.getClassLoader()
                );
 
-//        log.debug( "constructor: my chain" );
-//        ClassLoader c = this;
-//        while ( c != null )
-//        {
-//            log.debug( "\tloader => " + c );
-//            c = c.getParent();
-//        }
-//        log.debug( "from class:" );
-//        c = DelegatingUrlClassLoader.class.getClassLoader();
-//        while ( c != null )
-//        {
-//            log.debug( "\tloader => " + c );
-//            c = c.getParent();
-//        }
+        if (log.isDebugEnabled())
+        {
+            log.debug( "constructor: my chain" );
+            ClassLoader c = this;
+            while ( c != null )
+            {
+                log.debug( "\tloader => " + c );
+                c = c.getParent();
+            }
+            log.debug( "from class:" );
+            c = DelegatingUrlClassLoader.class.getClassLoader();
+            while ( c != null )
+            {
+                log.debug( "\tloader => " + c );
+                c = c.getParent();
+            }
+            log.debug( "from thread:" );
+            c = Thread.currentThread().getContextClassLoader();
+            while ( c != null )
+            {
+                log.debug( "\tloader => " + c );
+                c = c.getParent();
+            }
+        }
     }
 
 

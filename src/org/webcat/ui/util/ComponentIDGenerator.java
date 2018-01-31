@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: ComponentIDGenerator.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -60,7 +60,7 @@ import com.webobjects.foundation.NSKeyValueCodingAdditions;
  * generated above would be "_0_5_3_aUniqueIdentifierString".
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: ComponentIDGenerator.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  */
 public class ComponentIDGenerator implements NSKeyValueCodingAdditions
 {

@@ -1,0 +1,125 @@
+AncestorList : WCFilteringSelect {
+    id = idFor.ancestorList;
+    list = ancestorLocations;
+    item = oneAncestorLocation;
+    selection = currentLocation;
+    displayString = displayStringForAncestorLocation;
+    searchString = displayStringForAncestorLocation;
+}
+
+AncestorSelectedConnection : WCConnectAction {
+    event = "onChange";
+    action = ancestorWasSelected;
+    remote = true;
+    remote.submit = idFor.ancestorListContainer;
+}
+
+CreateFolder : WCButton {
+    iconClass = "wcFileBrowserDialogIcon wcFileBrowserDialogIconCreateFolder";
+}
+
+CreateFolderDialog : WCDialog {
+    title = "Create New Folder";
+    id = idFor.createFolderDialog;
+    immediate = true;
+    okAction = createNewFolder;
+    okButtonId = createNewFolderOkButtonId;
+}
+
+DeleteSelectedFileAction : WCActionFunction {
+    action = deleteSelectedFile;
+    jsId = "~idFor.fileBrowser + '.deleteSelectedFileAction'";
+    waitForOnLoad = true;
+    remote = true;
+    remote.submit = idFor.fileListContainer;
+}
+
+Dialog : WCDialog {
+    title = title;
+    id = id;
+    okAction = okPressed;
+}
+
+FileEditorDialog : FileViewerDialog {
+    id = idFor.fileEditorDialog;
+    file = selectedFile;
+}
+
+FileIcon : WOImage {
+    filename = iconURLOfOneFile;
+    framework = "Core";
+}
+
+FileList : WOGenericContainer {
+    elementName = "table";
+    id = idFor.fileList;
+    jsId = "~idFor.fileBrowser + '.fileListSelector'";
+    dojoType = "webcat.Selector";
+    singular = true;
+    style = "width: 100%; margin: 0px; border: none";
+}
+
+FileListContainer : WCContentPane {
+    id = idFor.fileListContainer;
+    style = "border: 1px solid gray; overflow: auto; margin: 8px 0px";
+}
+
+FileRepetition : WORepetition {
+    list = filesAtCurrentLocation;
+    item = oneFile;
+    index = fileIndex;
+}
+
+FileWasDoubleClickedAction : WCActionFunction {
+    action = fileWasDoubleClicked;
+    jsId = "~idFor.fileBrowser + '.fileWasDoubleClickedAction'";
+    waitForOnLoad = true;
+    remote = true;
+    remote.submit = idFor.fileListContainer;
+}
+
+GoToParent : WCButton {
+    label = "Up";
+    action = goToParent;
+    remote = true;
+}
+
+NewFolderName : WCTextBox {
+    id = idFor.newFolderName;
+    value = newFolderName;
+    remoteValidator = validateNewFolderName;
+}
+
+SelectedFileIndex : WOHiddenField {
+    id = idFor.selectedFileIndex;
+    value = selectedFileIndex;
+}
+
+FileToUpload : WCFileUpload {
+    id = idFor.fileUpload;
+    data = uploadedFileData;
+    filePath = uploadedFilename;
+    action = fileWasUploaded;
+}
+
+ExpandArchiveContents : WCCheckBox {
+    checked = expandArchiveContents;
+}
+
+UploadedFileName : WCTextBox {
+    id = idFor.uploadedFilename;
+    value = uploadedFilename;
+    remoteValidator = validateUploadedFilename;
+}
+
+UploadFileDialog : WCDialog {
+    title = "Upload a File";
+    id = idFor.uploadFileDialog;
+    immediate = true;
+    okAction = saveUploadedFile;
+    okButtonId = uploadFileDialogOkButtonId;
+}
+
+UploadFile : WCButton {
+    iconClass = "wcFileBrowserDialogIcon wcFileBrowserDialogIconUploadFile";
+}

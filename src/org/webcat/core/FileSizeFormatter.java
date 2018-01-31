@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: FileSizeFormatter.java,v 1.2 2012/05/09 14:24:09 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -31,8 +31,8 @@ import java.text.ParsePosition;
  * A formatter that formats numbers intended to represent sizes of files.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.2 $, $Date: 2012/05/09 14:24:09 $
  */
 public class FileSizeFormatter extends Format
 {

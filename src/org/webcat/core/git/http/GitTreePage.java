@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: GitTreePage.java,v 1.3 2011/09/16 15:44:52 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -48,8 +48,8 @@ import com.webobjects.foundation.NSData;
  * TODO real description
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.3 $, $Date: 2011/09/16 15:44:52 $
  */
 public class GitTreePage extends GitWebComponent
 {

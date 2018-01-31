@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WorkingCopyResourceFactory.java,v 1.2 2012/06/22 16:23:18 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -42,8 +42,8 @@ import com.webobjects.eocontrol.EOEditingContext;
  * for WebDAV access.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.2 $, $Date: 2012/06/22 16:23:18 $
  */
 public class WorkingCopyResourceFactory implements ResourceFactory
 {

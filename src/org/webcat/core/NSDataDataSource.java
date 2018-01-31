@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: NSDataDataSource.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -34,7 +34,7 @@ import com.webobjects.foundation.NSData;
  * come from NSData objects.
  *
  * @author  Tony Allevato
- * @version $Id$
+ * @version $Id: NSDataDataSource.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  */
 public class NSDataDataSource implements DataSource
 {

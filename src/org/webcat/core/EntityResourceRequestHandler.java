@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: EntityResourceRequestHandler.java,v 1.11 2011/12/25 02:24:54 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2010-2011 Virginia Tech
  |
@@ -63,8 +63,8 @@ import er.extensions.eof.ERXQ;
  * </p>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.11 $, $Date: 2011/12/25 02:24:54 $
  */
 public class EntityResourceRequestHandler
     extends WORequestHandler

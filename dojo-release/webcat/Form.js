@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: Form.js,v 1.1 2010/03/15 16:48:57 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -30,7 +30,7 @@ dojo.require("dijit.form.Form");
  * just calling isValid().
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: Form.js,v 1.1 2010/03/15 16:48:57 aallowat Exp $
  */
 dojo.declare("webcat.Form", dijit.form.Form,
 {

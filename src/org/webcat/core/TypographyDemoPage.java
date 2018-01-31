@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: TypographyDemoPage.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -31,7 +31,7 @@ import com.webobjects.appserver.*;
 * debugging new themes.
 *
 *  @author Stephen Edwards
-*  @version $Id$
+*  @version $Id: TypographyDemoPage.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
 */
 public class TypographyDemoPage
     extends WCComponent

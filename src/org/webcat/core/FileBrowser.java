@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: FileBrowser.java,v 1.2 2010/10/30 02:37:20 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -34,8 +34,8 @@ import com.webobjects.foundation.NSArray;
  *  A directory contents table.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.2 $, $Date: 2010/10/30 02:37:20 $
  */
 public class FileBrowser
     extends WOComponent

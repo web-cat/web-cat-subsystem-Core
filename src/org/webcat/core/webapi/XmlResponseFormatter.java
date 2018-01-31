@@ -12,8 +12,8 @@ import com.webobjects.foundation.NSDictionary;
  * A web API response formatter that sends its response in XML format.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2012/06/22 16:23:17 $
  */
 public class XmlResponseFormatter extends ResponseFormatter
 {

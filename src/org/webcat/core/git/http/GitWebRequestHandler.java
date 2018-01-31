@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: GitWebRequestHandler.java,v 1.2 2012/06/22 16:23:17 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -49,8 +49,8 @@ import com.webobjects.eocontrol.EOEnterpriseObject;
  * </p>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.2 $, $Date: 2012/06/22 16:23:17 $
  */
 public class GitWebRequestHandler implements RequestHandlerWithResponse
 {

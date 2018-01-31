@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCPaginationBar.java,v 1.2 2010/10/29 20:36:15 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -60,8 +60,8 @@ import er.extensions.components.ERXComponentUtilities;
  * </dl>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.2 $, $Date: 2010/10/29 20:36:15 $
  */
 public class WCPaginationBar extends WCComponent
 {

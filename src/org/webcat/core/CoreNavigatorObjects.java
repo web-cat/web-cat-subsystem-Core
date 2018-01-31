@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: CoreNavigatorObjects.java,v 1.3 2012/01/19 16:29:52 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2010-2012 Virginia Tech
  |
@@ -33,8 +33,8 @@ import com.webobjects.foundation.NSMutableArray;
  * Provides inner classes that represent selections in navigator controls.
  *
  * @author  Tony Allevato
- * @author  Last changed by: $Author$
- * @version $Revision$ $Date$
+ * @author  Last changed by: $Author: stedwar2 $
+ * @version $Revision: 1.3 $ $Date: 2012/01/19 16:29:52 $
  */
 public class CoreNavigatorObjects
 {

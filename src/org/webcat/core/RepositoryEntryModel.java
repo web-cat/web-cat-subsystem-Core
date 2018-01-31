@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: RepositoryEntryModel.java,v 1.3 2012/11/29 16:31:59 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -36,8 +36,8 @@ import com.webobjects.foundation.NSArray;
  * repository.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.3 $, $Date: 2012/11/29 16:31:59 $
  */
 public class RepositoryEntryModel extends WCTreeModel<GitTreeEntry>
 {

@@ -5,7 +5,7 @@
 # theme.
 #
 # --
-# $Id$
+# $Id: build-theme.rb,v 1.2 2010/02/10 19:25:46 aallowat Exp $
 
 require 'rubygems'
 require 'RMagick'

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCDragHandle.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -35,7 +35,7 @@ import com.webobjects.foundation.NSDictionary;
  * as a row in a WCStyledTable.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: WCDragHandle.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  */
 public class WCDragHandle extends WOHTMLDynamicElement
 {

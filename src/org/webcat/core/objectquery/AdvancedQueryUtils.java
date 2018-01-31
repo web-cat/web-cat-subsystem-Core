@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: AdvancedQueryUtils.java,v 1.1 2010/05/11 14:51:59 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -37,7 +37,7 @@ import org.webcat.core.KeyPathParser;
  * A collection of static utility methods.
  *
  * @author aallowat
- * @version $Id$
+ * @version $Id: AdvancedQueryUtils.java,v 1.1 2010/05/11 14:51:59 aallowat Exp $
  */
 public class AdvancedQueryUtils
 {

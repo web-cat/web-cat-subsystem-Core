@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DojoRemoteHelper.java,v 1.2 2010/10/11 14:25:35 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -58,7 +58,7 @@ import er.extensions.components._private.ERXWOForm;
  * </dl>
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: DojoRemoteHelper.java,v 1.2 2010/10/11 14:25:35 aallowat Exp $
  */
 public class DojoRemoteHelper
 {

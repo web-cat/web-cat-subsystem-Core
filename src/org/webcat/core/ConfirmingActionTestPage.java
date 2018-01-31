@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: ConfirmingActionTestPage.java,v 1.5 2010/11/01 17:04:05 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2010 Virginia Tech
  |
@@ -32,8 +32,8 @@ import com.webobjects.appserver.WOContext;
  * confirmation pop-up dialogs.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.5 $, $Date: 2010/11/01 17:04:05 $
  */
 public class ConfirmingActionTestPage
     extends WCComponent

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: MiltonRequestWrapper.java,v 1.3 2011/06/10 00:31:45 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -48,8 +48,8 @@ import com.webobjects.appserver.WORequest;
  * its headers and content.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.3 $, $Date: 2011/06/10 00:31:45 $
  */
 public class MiltonRequestWrapper extends AbstractRequest
 {

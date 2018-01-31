@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCFileUpload.java,v 1.2 2011/03/07 18:45:12 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -92,8 +92,8 @@ import com.webobjects.foundation.NSDictionary;
  * </dl>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.2 $, $Date: 2011/03/07 18:45:12 $
  */
 public class WCFileUpload extends DojoElement
 {

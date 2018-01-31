@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: LoginPage.java,v 1.3 2012/01/29 03:02:57 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -33,8 +33,8 @@ import org.apache.log4j.Logger;
  * Implements the login UI functionality of the system.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.3 $, $Date: 2012/01/29 03:02:57 $
  */
 public class LoginPage
     extends WOComponent

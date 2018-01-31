@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: MyProfilePage.java,v 1.7 2013/08/11 01:57:11 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -44,8 +44,8 @@ import er.extensions.foundation.ERXValueUtilities;
  * (is "to be defined").
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.7 $, $Date: 2013/08/11 01:57:11 $
  */
 public class MyProfilePage
     extends WCComponent

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: FileInput.js,v 1.2 2011/11/08 14:04:35 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -30,7 +30,7 @@ dojo.require("webcat.Spinner");
  * modifications for layout.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: FileInput.js,v 1.2 2011/11/08 14:04:35 aallowat Exp $
  */
 dojo.declare("webcat.FileInput", dojox.form.FileInputAuto,
 {

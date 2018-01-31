@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: MutableContainer.java,v 1.5 2011/03/07 18:39:42 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -34,8 +34,8 @@ package net.sf.webcat.core;
  *              This version is only maintained for backward compatibility
  *              with legacy database blobs.
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.5 $, $Date: 2011/03/07 18:39:42 $
  */
 @Deprecated
 public interface MutableContainer

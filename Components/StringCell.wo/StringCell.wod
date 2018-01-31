@@ -1,0 +1,10 @@
+Span : WOGenericContainer {
+    elementName = "span";
+    class = properties.cssClass;
+    style = properties.style;
+}
+
+String : WOString {
+    value = formattedValue;
+    escapeHTML = escapeHTML;
+}

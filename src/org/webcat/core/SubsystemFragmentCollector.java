@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: SubsystemFragmentCollector.java,v 1.4 2012/03/28 13:48:08 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -34,8 +34,8 @@ import org.apache.log4j.Logger;
  *  in pages/components defined elsewhere in the application (like in Core).
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.4 $, $Date: 2012/03/28 13:48:08 $
  */
 public class SubsystemFragmentCollector
     extends WOComponent

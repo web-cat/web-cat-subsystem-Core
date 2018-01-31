@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: AjaxUpdateContainerTagProcessor.java,v 1.1 2011/10/25 12:51:37 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -33,8 +33,8 @@ import ognl.helperfunction.WOTagProcessor;
  * aspan is a shortcut for adding elementName="span" to the tag.
  *
  * @author Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.1 $, $Date: 2011/10/25 12:51:37 $
  */
 public class AjaxUpdateContainerTagProcessor
     extends WOTagProcessor

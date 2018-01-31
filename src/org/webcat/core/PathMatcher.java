@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: PathMatcher.java,v 1.1 2011/03/23 15:06:48 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -57,8 +57,8 @@ import java.util.regex.Pattern;
  * </p>
  *
  * @author  Tony Allevato (Virginia Tech Computer Science)
- * @author  latest changes by: $Author$
- * @version $Revision$ $Date$
+ * @author  latest changes by: $Author: aallowat $
+ * @version $Revision: 1.1 $ $Date: 2011/03/23 15:06:48 $
  */
 public class PathMatcher
 {

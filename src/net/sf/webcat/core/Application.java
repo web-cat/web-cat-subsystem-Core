@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: Application.java,v 1.53 2010/09/15 18:37:36 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -26,8 +26,8 @@ package net.sf.webcat.core;
  * A stub with the old package name for compatibility reasons.
  *
  * @author Tony Allevato
- * @author Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author Last changed by $Author: aallowat $
+ * @version $Revision: 1.53 $, $Date: 2010/09/15 18:37:36 $
  */
 @Deprecated
 public class Application extends org.webcat.core.Application

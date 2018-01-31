@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: AdvancedQueryValueComponent.java,v 1.2 2012/11/15 13:45:54 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -42,8 +42,8 @@ import er.extensions.formatters.ERXTimestampFormatter;
  * in this particular query clause.
  *
  * @author Tony Allevato
- * @author Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.2 $, $Date: 2012/11/15 13:45:54 $
  */
 public class AdvancedQueryValueComponent
     extends WCComponent

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCStyledTable.java,v 1.2 2012/03/28 13:48:07 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -97,8 +97,8 @@ import er.extensions.foundation.ERXStringUtilities;
  * </dl>
  *
  *  @author  Stephen Edwards, Tony Allevato
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.2 $, $Date: 2012/03/28 13:48:07 $
  */
 
 public class WCStyledTable

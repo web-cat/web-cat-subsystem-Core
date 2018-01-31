@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: MutableArray.java,v 1.7 2011/03/07 18:39:42 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -54,8 +54,8 @@ import com.webobjects.foundation.NSRange;
  *  Summer 2006-Spring 2010 semesters.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.7 $, $Date: 2011/03/07 18:39:42 $
  */
 @Deprecated
 @SuppressWarnings("unchecked")

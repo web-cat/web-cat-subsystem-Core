@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTreeSubcomponent.java,v 1.2 2014/06/16 15:57:55 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -32,8 +32,8 @@ import com.webobjects.appserver.WOContext;
  * and provides convenience methods for referring to that tree and its model.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.2 $, $Date: 2014/06/16 15:57:55 $
  */
 public class WCTreeSubcomponent extends WOComponent
 {

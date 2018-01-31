@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: contentAssist.java,v 1.3 2011/12/25 02:24:54 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -53,8 +53,8 @@ import er.extensions.appserver.ERXDirectAction;
  * entities and key paths, used for content assistance and previewing purposes.
  *
  * @author Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.3 $, $Date: 2011/12/25 02:24:54 $
  */
 public class contentAssist
     extends ERXDirectAction

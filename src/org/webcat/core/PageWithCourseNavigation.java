@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: PageWithCourseNavigation.java,v 1.1 2011/05/02 19:34:52 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -32,8 +32,8 @@ import com.webobjects.appserver.WOContext;
  * lists to change the course selection.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2011/05/02 19:34:52 $
  */
 public class PageWithCourseNavigation extends WCPageWithNavigation
 {

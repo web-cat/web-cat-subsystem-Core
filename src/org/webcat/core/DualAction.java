@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DualAction.java,v 1.2 2010/10/11 18:31:11 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -73,7 +73,7 @@ import er.extensions.appserver.ERXWOContext;
  * </p>
  *
  * @author  Tony Allevato
- * @version $Id$
+ * @version $Id: DualAction.java,v 1.2 2010/10/11 18:31:11 aallowat Exp $
  */
 public abstract class DualAction implements WOActionResults
 {

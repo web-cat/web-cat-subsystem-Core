@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: ArchiveManager.java,v 1.3 2011/05/13 19:42:32 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -54,8 +54,8 @@ import org.webcat.core.FileUtilities;
  * </ul>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.3 $, $Date: 2011/05/13 19:42:32 $
  */
 public class ArchiveManager
 {

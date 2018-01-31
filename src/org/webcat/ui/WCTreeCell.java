@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTreeCell.java,v 1.3 2014/06/16 15:57:54 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -31,8 +31,8 @@ import org.webcat.ui.generators.JavascriptGenerator;
  * A cell in a {@link WCTree}.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.3 $, $Date: 2014/06/16 15:57:54 $
  */
 public class WCTreeCell extends WCTreeSubcomponent
 {

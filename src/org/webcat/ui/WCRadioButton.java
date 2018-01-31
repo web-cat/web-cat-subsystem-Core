@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCRadioButton.java,v 1.2 2011/05/13 19:43:18 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -37,7 +37,7 @@ import com.webobjects.foundation.NSDictionary;
  * A radio button.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: WCRadioButton.java,v 1.2 2011/05/13 19:43:18 aallowat Exp $
  */
 public class WCRadioButton extends DojoFormElement
 {

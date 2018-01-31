@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCConnectAction.java,v 1.2 2010/10/13 20:35:40 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -52,7 +52,7 @@ import er.extensions.components.ERXComponentUtilities;
  * DojoRemoteHelper.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: WCConnectAction.java,v 1.2 2010/10/13 20:35:40 aallowat Exp $
  */
 public class WCConnectAction extends DojoActionFormElement
 {

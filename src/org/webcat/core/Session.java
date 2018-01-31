@@ -1,7 +1,7 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: Session.java,v 1.11 2012/11/15 13:45:21 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2012 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -40,8 +40,8 @@ import com.webobjects.foundation.NSTimestamp;
  * The current user session.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.11 $, $Date: 2012/11/15 13:45:21 $
  */
 public class Session
     extends er.extensions.appserver.ERXSession
@@ -78,7 +78,8 @@ public class Session
      */
     private final void initSession()
     {
-        log.debug("creating " + sessionID(), new Exception("from here"));
+        tracer.debug("creating " + sessionID());
+        // , new Exception("from here"));
 
         setStoresIDsInCookies(true);
         setStoresIDsInURLs(false);
@@ -124,11 +125,19 @@ public class Session
      */
     public synchronized String setUser(User u)
     {
-        log.debug("setUser(" + u.userName() + ")");
+        log.debug("setUser(" + u.userName() + ")) for session " + sessionID());
+       // tracer , new Exception("from here"));
         primeUser = u;
         localUser = u;
-        log.debug("setUser: userPreferences = "
-            + (primeUser == null ? null : primeUser.preferences()));
+        if (!doNotUseLoginSession)
+        {
+            Application.userCount++;
+        }
+        if (log.isDebugEnabled())
+        {
+            log.debug("setUser: userPreferences = "
+                + (primeUser == null ? null : primeUser.preferences()));
+        }
         Application.wcApplication().subsystemManager()
             .initializeSessionData(this);
         if (!properties().booleanForKey("core.suppressAccessControl"))
@@ -264,6 +273,12 @@ public class Session
         {
             return;
         }
+        // Only update ever 2 minutes or so
+        Long now = System.currentTimeMillis();
+        if (now - lastLSUpdate < LS_UPDATE_PERIOD)
+        {
+            return;
+        }
         if (loginSession != null && loginSession.editingContext() == null)
         {
             loginSession = null;
@@ -304,6 +319,7 @@ public class Session
                 loginSession.setExpirationTime(
                     (new NSTimestamp()).timestampByAddingGregorianUnits(
                         0, 0, 0, 0, 0, (int)timeOut()));
+                lastLSUpdate = now;
                 try
                 {
                     loginSession.usagePeriod().updateEndTime();
@@ -369,8 +385,11 @@ public class Session
             && loginSessionId != null
             && !loginSessionId.equals(sessionID()))
         {
-            log.error("Error: sleep()'ing with multiple sessions active for "
-                + "user: " + (user() == null ? "<null>" : user().name()));
+            tracer.error("Error: sleep()'ing with multiple sessions active for "
+                + "user: " + (user() == null ? "<null>" : user().name())
+                + ", current session = " + sessionID()
+                + ", login session = " + loginSessionId);
+                // , new Exception("from here"));
         }
     }
 
@@ -427,15 +446,18 @@ public class Session
      */
     public void terminate()
     {
-        if (log.isDebugEnabled())
+        if (tracer.isDebugEnabled())
         {
-            log.debug("terminating session " + sessionID());
-            log.debug("from here:", new Exception("terminate() called"));
+            tracer.debug("terminating session " + sessionID() + " for "
+                + "user: " + (user() == null ? "<null>" : user().name()));
+                // + " from here:", new Exception("terminate() called"));
         }
+
         if (primeUser != null)
         {
-            log.info("session timeout: "
-                + (primeUser == null ? "null" : primeUser.userName()));
+            tracer.info("session timeout, logging out user: "
+                + (primeUser == null ? "null" : primeUser.userName())
+                + ", session: " + sessionID());
             userLogout();
         }
         else
@@ -472,12 +494,15 @@ public class Session
      */
     public synchronized void userLogout()
     {
-        Application.userCount--;
-        log.info("user logout: "
+        if (!doNotUseLoginSession)
+        {
+            Application.userCount--;
+        }
+        tracer.info("user logout: "
             + (primeUser == null ? "null" : primeUser.userName())
             + " (now "
             + Application.userCount
-            + " users)");
+            + " users), in session: " + sessionID());
         try
         {
             if (loginSession != null && loginSession.editingContext() == null)
@@ -777,13 +802,15 @@ public class Session
     private NSMutableDictionary<String, Object> transientState;
     private WCEC.PeerManagerPool  childManagerPool;
     private boolean               doNotUseLoginSession = false;
+    private long                  lastLSUpdate         = 0L;
     private Theme                 temporaryTheme;
 
     @SuppressWarnings("deprecation")
     private com.webobjects.foundation.NSTimestampFormatter timeFormatter = null;
 
-    private static final Integer zero = new Integer( 0 );
-    private static final Integer one  = new Integer( 1 );
+    private static final Integer zero = new Integer(0);
+    private static final Integer one  = new Integer(1);
+    private static final long LS_UPDATE_PERIOD = 3L * 60L *1000L; // 3 minutes
 
     private static NSArray<TabDescriptor> subsystemTabTemplate;
     {
@@ -794,4 +821,6 @@ public class Session
      }
 
     static Logger log = Logger.getLogger(Session.class);
+    static Logger tracer =
+        Logger.getLogger(Session.class.getName() + ".tracer");
 }

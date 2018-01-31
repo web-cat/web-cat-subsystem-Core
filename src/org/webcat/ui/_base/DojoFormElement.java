@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DojoFormElement.java,v 1.1 2010/05/11 14:52:00 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -40,7 +40,7 @@ import com.webobjects.foundation.NSMutableDictionary;
  * submitted as part of a form submit operation on a page.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: DojoFormElement.java,v 1.1 2010/05/11 14:52:00 aallowat Exp $
  */
 public abstract class DojoFormElement extends DojoElement
 {

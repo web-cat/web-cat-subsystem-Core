@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: FileUtilities.java,v 1.5 2014/06/16 15:59:40 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -40,8 +40,8 @@ import org.apache.log4j.Logger;
  * handlers.
  *
  * @author  Tony Allowatt
- * @author  Last changed by: $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by: $Author: stedwar2 $
+ * @version $Revision: 1.5 $, $Date: 2014/06/16 15:59:40 $
  */
 public class FileUtilities
 {

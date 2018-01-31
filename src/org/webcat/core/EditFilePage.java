@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: EditFilePage.java,v 1.2 2012/02/23 19:21:27 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -35,7 +35,7 @@ import er.extensions.foundation.ERXFileUtilities;
  * are available for selection.
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @version $Id: EditFilePage.java,v 1.2 2012/02/23 19:21:27 aallowat Exp $
  */
 public class EditFilePage
     extends WCComponent

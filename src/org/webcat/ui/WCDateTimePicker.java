@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCDateTimePicker.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -65,8 +65,8 @@ import com.webobjects.foundation.NSTimestamp;
  * </table>
  *
  * @author Tony Allevato
- * @author Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2010/05/11 14:51:58 $
  */
 public class WCDateTimePicker extends WOComponent
 {

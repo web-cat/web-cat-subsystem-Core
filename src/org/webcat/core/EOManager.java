@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: EOManager.java,v 1.6 2014/06/16 16:01:32 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -44,8 +44,8 @@ import er.extensions.eof.ERXEC;
  * the other objects related to it.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.6 $, $Date: 2014/06/16 16:01:32 $
  */
 public interface EOManager
     extends NSKeyValueCoding,

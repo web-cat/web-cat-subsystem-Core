@@ -35,8 +35,8 @@ import er.extensions.components._private.ERXWOForm;
  * manually to the {@code onClick} handler of an element.
  *
  * @author Tony Allevato
- * @author Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2011/05/02 16:18:29 $
  */
 public class WCActionElement extends WOHTMLDynamicElement
 {

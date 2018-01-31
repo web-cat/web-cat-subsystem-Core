@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: EOBase.java,v 1.2 2012/06/22 16:23:18 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2012 Virginia Tech
  |
@@ -34,8 +34,8 @@ import com.webobjects.foundation.NSMutableDictionary;
  * them all to inherit.
  *
  * @author  Stephen Edwards
- * @author  Last changed by: $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by: $Author: aallowat $
+ * @version $Revision: 1.2 $, $Date: 2012/06/22 16:23:18 $
  */
 public class EOBase
     extends er.extensions.eof.ERXGenericRecord

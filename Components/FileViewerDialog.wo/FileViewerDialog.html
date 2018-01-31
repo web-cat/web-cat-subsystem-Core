@@ -1,0 +1,15 @@
+<wo:if condition="$isEditor">
+<wo name="EditorDialog">
+    <wo name="TextArea"/>
+    <script type="text/javascript">
+        dojo.addOnLoad(function() {
+//            dojo.connect('<wo:str value="$idFor.textArea"/>', 'onChange',
+//                dojo.hitch(this,
+        });
+    </script>
+</wo>
+</wo:if><wo:else>
+<wo name="ViewerDialog">
+    <p>TODO: file contents here</p>
+</wo>
+</wo:else>

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCDirectAction.java,v 1.1 2010/10/24 18:51:02 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2010 Virginia Tech
  |
@@ -33,8 +33,8 @@ import org.webcat.core.Application;
  * main application is done initializing.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.1 $, $Date: 2010/10/24 18:51:02 $
  */
 public abstract class WCDirectAction
     extends ERXDirectAction

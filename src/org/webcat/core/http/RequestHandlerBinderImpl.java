@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: RequestHandlerBinderImpl.java,v 1.2 2012/03/28 13:48:08 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011-2012 Virginia Tech
  |
@@ -29,8 +29,8 @@ import com.webobjects.appserver.WOMessage;
  * A concrete implementation of the request handler binder.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.2 $, $Date: 2012/03/28 13:48:08 $
  */
 public abstract class RequestHandlerBinderImpl
     implements RequestHandlerBinder

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: Theme.java,v 1.9 2012/03/28 13:48:08 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2008-2012 Virginia Tech
  |
@@ -41,8 +41,8 @@ import er.extensions.foundation.ERXValueUtilities;
  * Represents a theme (stored in the Core framework).
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.9 $, $Date: 2012/03/28 13:48:08 $
  */
 public class Theme
     extends _Theme

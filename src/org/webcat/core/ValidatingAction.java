@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: ValidatingAction.java,v 1.2 2010/10/07 20:47:31 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -67,7 +67,7 @@ import er.extensions.appserver.ERXWOContext;
  * </p>
  *
  * @author  Tony Allevato
- * @version $Id$
+ * @version $Id: ValidatingAction.java,v 1.2 2010/10/07 20:47:31 aallowat Exp $
  */
 public class ValidatingAction extends DualAction
 {

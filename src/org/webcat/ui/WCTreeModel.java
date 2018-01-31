@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTreeModel.java,v 1.6 2014/06/16 15:57:54 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -50,8 +50,8 @@ import er.extensions.eof.ERXS;
  *     to retrieve the children of those objects based on the actual type
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.6 $, $Date: 2014/06/16 15:57:54 $
  */
 public abstract class WCTreeModel<T> implements NSKeyValueCodingAdditions
 {

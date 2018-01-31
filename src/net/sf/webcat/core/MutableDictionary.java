@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: MutableDictionary.java,v 1.6 2011/03/07 18:39:42 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -66,8 +66,8 @@ import er.extensions.foundation.ERXFileUtilities;
  *  Summer 2006-Spring 2010 semesters.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.6 $, $Date: 2011/03/07 18:39:42 $
  */
 @Deprecated
 public class MutableDictionary

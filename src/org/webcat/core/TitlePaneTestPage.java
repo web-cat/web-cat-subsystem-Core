@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: TitlePaneTestPage.java,v 1.2 2010/10/24 18:49:06 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2010 Virginia Tech
  |
@@ -29,8 +29,8 @@ import com.webobjects.appserver.WOContext;
  * A test page for title panes.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.2 $, $Date: 2010/10/24 18:49:06 $
  */
 public class TitlePaneTestPage
     extends WCComponent

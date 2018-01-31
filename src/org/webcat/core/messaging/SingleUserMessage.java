@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: SingleUserMessage.java,v 1.1 2011/12/25 02:24:54 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -29,8 +29,8 @@ import com.webobjects.foundation.NSArray;
  * A message that is sent to one person.
  *
  * @author  Stephen Edwards
- * @author  Latest changes by: $Author$
- * @version $Revision$ $Date$
+ * @author  Latest changes by: $Author: stedwar2 $
+ * @version $Revision: 1.1 $ $Date: 2011/12/25 02:24:54 $
  */
 public abstract class SingleUserMessage
     extends Message

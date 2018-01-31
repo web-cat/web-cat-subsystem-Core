@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCComponent.java,v 1.5 2013/09/16 13:11:42 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2010 Virginia Tech
  |
@@ -65,8 +65,8 @@ import org.webcat.woextensions.WCEC;
  * </p>
  *
  * @author Stephen Edwards
- * @author  latest changes by: $Author$
- * @version $Revision$, $Date$
+ * @author  latest changes by: $Author: stedwar2 $
+ * @version $Revision: 1.5 $, $Date: 2013/09/16 13:11:42 $
  */
 public class WCComponent
     extends WCComponentWithErrorMessages

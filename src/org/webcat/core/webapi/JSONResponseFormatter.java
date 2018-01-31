@@ -16,8 +16,8 @@ import com.webobjects.foundation.NSDictionary;
  * is the default if no formatting specifier is included in the URL.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2012/06/22 16:23:17 $
  */
 public class JSONResponseFormatter extends ResponseFormatter
 {

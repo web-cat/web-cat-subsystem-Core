@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WOResponseOutputStream.java,v 1.2 2011/05/13 19:46:57 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -31,8 +31,8 @@ import com.webobjects.foundation.NSData;
  * An output stream that appends its content to a {@code WOResponse}.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.2 $, $Date: 2011/05/13 19:46:57 $
  */
 public class WOResponseOutputStream extends OutputStream
 {

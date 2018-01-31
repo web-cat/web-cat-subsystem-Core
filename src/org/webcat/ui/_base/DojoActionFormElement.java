@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DojoActionFormElement.java,v 1.4 2011/03/23 15:07:45 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -132,7 +132,7 @@ import er.extensions.components._private.ERXWOForm;
  * </table>
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: DojoActionFormElement.java,v 1.4 2011/03/23 15:07:45 aallowat Exp $
  */
 public abstract class DojoActionFormElement extends DojoFormElement
 {

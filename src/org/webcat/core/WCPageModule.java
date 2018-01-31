@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCPageModule.java,v 1.2 2010/10/13 20:37:19 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -32,7 +32,7 @@ import org.webcat.ui.util.ComponentIDGenerator;
  * and which will be rendered with the <code>.module</code> CSS class.
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @version $Id: WCPageModule.java,v 1.2 2010/10/13 20:37:19 aallowat Exp $
  */
 public class WCPageModule
     extends WOComponent

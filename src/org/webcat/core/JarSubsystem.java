@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: JarSubsystem.java,v 1.2 2011/03/07 18:44:37 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -41,8 +41,8 @@ import org.apache.log4j.Logger;
  *  <code>JarSubsystem(JarFile)</code> constructor in this class.
  *
  *  @author lally
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.2 $, $Date: 2011/03/07 18:44:37 $
  */
 public abstract class JarSubsystem
     extends Subsystem

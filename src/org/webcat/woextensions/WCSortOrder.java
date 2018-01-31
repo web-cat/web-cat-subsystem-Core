@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCSortOrder.java,v 1.1 2011/10/25 12:51:37 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -30,8 +30,8 @@ import com.webobjects.foundation.NSSelector;
  * Customizes the images used to indicate current sort order..
  *
  * @author Lally Singh
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.1 $, $Date: 2011/10/25 12:51:37 $
  */
 public class WCSortOrder
     extends com.webobjects.woextensions.WOSortOrder

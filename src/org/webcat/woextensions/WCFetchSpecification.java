@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCFetchSpecification.java,v 1.2 2012/03/28 13:48:08 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -40,8 +40,8 @@ import er.extensions.eof.ERXFetchSpecification;
  * @param <T> The type of entity to be fetched.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.2 $, $Date: 2012/03/28 13:48:08 $
  */
 public class WCFetchSpecification<T extends EOEnterpriseObject>
     extends ERXFetchSpecification<T>

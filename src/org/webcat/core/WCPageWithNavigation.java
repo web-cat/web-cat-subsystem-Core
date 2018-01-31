@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCPageWithNavigation.java,v 1.3 2011/09/16 16:11:19 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -41,8 +41,8 @@ import org.webcat.core.WCPageWithNavigation;
  * keys, which it passes on to its BarePage container.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.3 $, $Date: 2011/09/16 16:11:19 $
  */
 public class WCPageWithNavigation
     extends WCBasePage

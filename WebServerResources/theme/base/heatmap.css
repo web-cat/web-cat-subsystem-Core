@@ -1,0 +1,29 @@
+.file {
+  border: 1px solid black;
+  width: 160px;
+  overflow-x: hidden;
+  float: left;
+  background-color: white;
+  color: black;
+  margin-right: 8px;
+  margin-bottom: 8px;
+}
+.file .heat {
+  font-size: 3px;
+  background-color: #f2f2f2;
+  padding: 4px 0;
+  margin: 0;
+  background-image: none;
+}
+.file .heat .method { background-color: #fcfce2; margin: 0 4px; }
+.file .heat a:active,
+.file .heat a:focus,
+.file .heat a:hover { text-decoration: none; background-color: inherit; color: inherit; border: none; }
+.file h2 {
+  font-size: 9pt;
+  font-weight: normal;
+  text-align: center;
+  background-color: white;
+  margin: 0.5em 0.25em 0.25em;
+}
+.file .uncovered { background-color: #00c; }

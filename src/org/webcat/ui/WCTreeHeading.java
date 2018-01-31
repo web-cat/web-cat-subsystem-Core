@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTreeHeading.java,v 1.1 2011/05/13 19:43:46 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -46,8 +46,8 @@ import er.extensions.appserver.ERXWOContext;
  * </dl>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2011/05/13 19:43:46 $
  */
 public class WCTreeHeading extends WCTreeSubcomponent
 {

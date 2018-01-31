@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: Core.java,v 1.1 2014/08/25 15:28:42 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2014 Virginia Tech
  |
@@ -33,8 +33,8 @@ import com.webobjects.foundation.NSArray;
  * The Core subsystem class.
  *
  * @author  edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.1 $, $Date: 2014/08/25 15:28:42 $
  */
 public class Core
     extends Subsystem

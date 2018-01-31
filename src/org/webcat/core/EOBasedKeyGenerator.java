@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: EOBasedKeyGenerator.java,v 1.2 2011/03/23 15:06:14 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -53,7 +53,7 @@ import er.extensions.eof.ERXGenericRecord;
  * </p>
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: EOBasedKeyGenerator.java,v 1.2 2011/03/23 15:06:14 aallowat Exp $
  */
 public class EOBasedKeyGenerator
     implements NSKeyValueCodingAdditions, Serializable

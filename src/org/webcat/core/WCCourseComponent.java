@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCCourseComponent.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2010 Virginia Tech
  |
@@ -38,8 +38,8 @@ import org.apache.log4j.*;
  * a notion of a currently-selected course offering and/or course.
  *
  * @author Stephen Edwards
- * @author  latest changes by: $Author$
- * @version $Revision$, $Date$
+ * @author  latest changes by: $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2010/05/11 14:51:55 $
  */
 public class WCCourseComponent
     extends WCComponent

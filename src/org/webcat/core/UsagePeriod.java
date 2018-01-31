@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: UsagePeriod.java,v 1.1 2012/01/27 16:36:20 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2012 Virginia Tech
  |
@@ -30,8 +30,8 @@ import com.webobjects.foundation.NSTimestamp;
  * Represents a login period by a user, recorded for historical access.
  *
  * @author  Stephen Edwards
- * @author  Last changed by: $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by: $Author: stedwar2 $
+ * @version $Revision: 1.1 $, $Date: 2012/01/27 16:36:20 $
  */
 public class UsagePeriod
     extends _UsagePeriod

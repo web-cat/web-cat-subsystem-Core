@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DojoSingleSelectionListFormElement.java,v 1.1 2010/05/11 14:52:00 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -37,7 +37,7 @@ import com.webobjects.foundation.NSDictionary;
  * ComboBox and FilteringSelect.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: DojoSingleSelectionListFormElement.java,v 1.1 2010/05/11 14:52:00 aallowat Exp $
  */
 public abstract class DojoSingleSelectionListFormElement extends DojoFormElement
 {

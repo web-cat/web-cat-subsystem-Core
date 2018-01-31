@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: TableRow.java,v 1.5 2011/10/19 12:57:44 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -34,7 +34,7 @@ import org.apache.log4j.Logger;
  * row.
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @version $Id: TableRow.java,v 1.5 2011/10/19 12:57:44 stedwar2 Exp $
  */
 public class TableRow
     extends WOComponent

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: Footer.java,v 1.2 2011/05/02 19:36:52 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -31,7 +31,7 @@ import com.webobjects.appserver.*;
  * The common footer text for each generated page.
  *
  * @author Stephen Edwards
- * @version $Id$
+ * @version $Id: Footer.java,v 1.2 2011/05/02 19:36:52 aallowat Exp $
  */
 public class Footer
     extends WOComponent

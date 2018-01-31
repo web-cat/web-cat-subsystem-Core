@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: SubsystemManager.java,v 1.6 2012/03/07 03:03:41 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2010 Virginia Tech
  |
@@ -42,8 +42,8 @@ import com.webobjects.foundation.NSMutableDictionary;
  * framework or a separate jar file that contains a framework.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.6 $, $Date: 2012/03/07 03:03:41 $
  */
 public class SubsystemManager
 {

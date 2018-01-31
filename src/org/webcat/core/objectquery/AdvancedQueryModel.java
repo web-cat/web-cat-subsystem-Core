@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: AdvancedQueryModel.java,v 1.1 2010/05/11 14:51:59 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -31,7 +31,7 @@ import com.webobjects.foundation.NSMutableArray;
  * A query model implementation.
  *
  * @author aallowat
- * @version $Id$
+ * @version $Id: AdvancedQueryModel.java,v 1.1 2010/05/11 14:51:59 aallowat Exp $
  */
 public class AdvancedQueryModel
     extends AbstractQueryAssistantModel

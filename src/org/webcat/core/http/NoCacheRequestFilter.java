@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: NoCacheRequestFilter.java,v 1.1 2012/06/22 16:23:18 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011-2012 Virginia Tech
  |
@@ -30,8 +30,8 @@ import com.webobjects.appserver.WOResponse;
  * caching it.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2012/06/22 16:23:18 $
  */
 public class NoCacheRequestFilter
     implements RequestFilter

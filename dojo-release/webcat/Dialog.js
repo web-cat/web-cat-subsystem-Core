@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: Dialog.js,v 1.3 2010/10/29 20:36:15 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -30,7 +30,7 @@ dojo.require("webcat.ContentPane");
  * dijit.layout.ContentPane.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: Dialog.js,v 1.3 2010/10/29 20:36:15 aallowat Exp $
  */
 dojo.declare("webcat.Dialog", [webcat.ContentPane, dijit._DialogBase],
 {

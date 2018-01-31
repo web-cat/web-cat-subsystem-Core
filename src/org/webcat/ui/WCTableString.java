@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTableString.java,v 1.1 2010/10/28 00:37:30 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -36,8 +36,8 @@ import com.webobjects.foundation.NSDictionary;
  * highlight the table's current search string inside it.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2010/10/28 00:37:30 $
  */
 public class WCTableString extends WOString
 {

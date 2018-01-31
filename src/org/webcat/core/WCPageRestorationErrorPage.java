@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCPageRestorationErrorPage.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -32,7 +32,7 @@ import com.webobjects.appserver.*;
  *  {@link com.webobjects.woextensions.WOPageRestorationError}.
  *
  *  @author  stedwar2
- *  @version $Id$
+ *  @version $Id: WCPageRestorationErrorPage.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  */
 public class WCPageRestorationErrorPage
     extends WCComponent

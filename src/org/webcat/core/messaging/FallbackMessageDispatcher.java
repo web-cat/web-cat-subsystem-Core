@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: FallbackMessageDispatcher.java,v 1.3 2011/12/25 02:24:54 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2010-2011 Virginia Tech
  |
@@ -33,8 +33,8 @@ import com.webobjects.foundation.NSDictionary;
  * urgent messages will still be e-mailed to the system administrator.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.3 $, $Date: 2011/12/25 02:24:54 $
  */
 public class FallbackMessageDispatcher
     implements IMessageDispatcher

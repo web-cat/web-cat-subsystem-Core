@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTree.java,v 1.5 2014/06/16 15:57:54 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -75,8 +75,8 @@ import er.extensions.appserver.ERXWOContext;
  * </dl>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.5 $, $Date: 2014/06/16 15:57:54 $
  */
 public class WCTree extends WCComponent
 {

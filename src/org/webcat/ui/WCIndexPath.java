@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCIndexPath.java,v 1.1 2011/05/13 19:43:46 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -29,8 +29,8 @@ import java.util.Arrays;
  * positions of children in a tree.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2011/05/13 19:43:46 $
  */
 public class WCIndexPath implements Comparable<WCIndexPath>
 {

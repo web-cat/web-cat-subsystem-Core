@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCSearchField.java,v 1.3 2011/05/16 15:10:59 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -34,8 +34,8 @@ import com.webobjects.appserver.WOResponse;
  * operation is in progress.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.3 $, $Date: 2011/05/16 15:10:59 $
  */
 public class WCSearchField extends WOComponent
 {

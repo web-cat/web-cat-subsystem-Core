@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: CoreNavigator.java,v 1.6 2012/05/09 14:25:07 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -63,8 +63,8 @@ import er.extensions.foundation.ERXArrayUtilities;
  * </dl>
  *
  * @author Tony Allevato
- * @author  latest changes by: $Author$
- * @version $Revision$ $Date$
+ * @author  latest changes by: $Author: stedwar2 $
+ * @version $Revision: 1.6 $ $Date: 2012/05/09 14:25:07 $
  */
 public class CoreNavigator
     extends WCComponent

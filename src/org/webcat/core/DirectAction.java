@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DirectAction.java,v 1.8 2012/02/13 02:53:52 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -49,8 +49,8 @@ import org.webcat.woextensions.WCEC;
  * The default direct action class for Web-CAT.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.8 $, $Date: 2012/02/13 02:53:52 $
  */
 public class DirectAction
     extends WCDirectActionWithSession
@@ -378,7 +378,6 @@ public class DirectAction
                     ec.lock();
                     user = user.localInstance(ec);
                     String sessionID = mySession.setUser(user);
-                    Application.userCount++;
                     log.info("login: "
                         + user.userName()
                         + " ("
@@ -506,6 +505,18 @@ public class DirectAction
             page.errors.addEntriesFromDictionary(errors);
             return page;
         }
+    }
+
+
+    // ----------------------------------------------------------
+    public WOActionResults casCallbackAction()
+    {
+        log.debug("entering casCallbackAction()");
+        log.debug("hasSession() = " + context().hasSession());
+        CallbackDiagnosticPage result =
+            pageWithName(CallbackDiagnosticPage.class);
+        result.incomingRequest = request();
+        return result;
     }
 
 

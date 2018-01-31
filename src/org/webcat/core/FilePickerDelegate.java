@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: FilePickerDelegate.java,v 1.1 2011/05/13 19:46:57 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -29,8 +29,8 @@ import org.webcat.ui.generators.JavascriptGenerator;
  * filtering entries and is called when a file is selected.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2011/05/13 19:46:57 $
  */
 public interface FilePickerDelegate
 {

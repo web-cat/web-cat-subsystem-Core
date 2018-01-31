@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTreeModelRepetition.java,v 1.2 2011/11/08 14:05:23 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -46,8 +46,8 @@ import java.util.Stack;
  * model and provides iteration for its elements in a hierarchical manner.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.2 $, $Date: 2011/11/08 14:05:23 $
  */
 public class WCTreeModelRepetition extends WODynamicGroup
 {

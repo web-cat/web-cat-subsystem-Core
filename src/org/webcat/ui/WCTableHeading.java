@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTableHeading.java,v 1.2 2010/10/29 14:02:29 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -49,8 +49,8 @@ import er.extensions.appserver.ERXWOContext;
  * </dl>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.2 $, $Date: 2010/10/29 14:02:29 $
  */
 public class WCTableHeading extends WCTableSubcomponent
 {

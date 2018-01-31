@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: GitTreeEntry.java,v 1.4 2012/11/29 16:31:25 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011-2012 Virginia Tech
  |
@@ -35,8 +35,8 @@ import com.webobjects.foundation.NSKeyValueCodingAdditions;
  * TODO real description
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.4 $, $Date: 2012/11/29 16:31:25 $
  */
 public class GitTreeEntry
     implements NSKeyValueCodingAdditions

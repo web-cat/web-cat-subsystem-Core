@@ -1,7 +1,7 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: Application.java,v 1.26 2014/06/16 16:02:29 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2012 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -99,8 +99,8 @@ import er.extensions.foundation.ERXValueUtilities;
  * of exception handling for the Web-CAT application.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.26 $, $Date: 2014/06/16 16:02:29 $
  */
 public class Application
     extends er.extensions.appserver.ERXApplication
@@ -158,7 +158,7 @@ public class Application
         if (log.isInfoEnabled())
         {
             log.info("Web-CAT v" + version()
-                + "\nCopyright (C) 2006-2014 Virginia Tech\n\n"
+                + "\nCopyright (C) 2006-2018 Virginia Tech\n\n"
                 + "Web-CAT comes with ABSOLUTELY NO WARRANTY; this is "
                 + "free software\n"
                 + "under the terms of the GNU Affero General Public License "
@@ -232,6 +232,11 @@ public class Application
             setDirectConnectEnabled(false);
         }
 
+        if (log.isDebugEnabled())
+        {
+            log.debug("classpath = " + System.getProperty("java.class.path"));
+        }
+
         if (configurationProperties().hasUsableConfiguration())
         {
             log.debug("initializing application");
@@ -242,10 +247,6 @@ public class Application
         else
         {
             updateStaticHtmlResources();
-        }
-        if (log.isDebugEnabled())
-        {
-            log.debug("classpath = " + System.getProperty("java.class.path"));
         }
 
         }
@@ -506,6 +507,8 @@ public class Application
             tp, "aspan");
         WOHelperFunctionHTMLTemplateParser.registerTagProcessorForElementType(
             simpleTp, "label");
+        WOHelperFunctionHTMLTemplateParser.registerTagProcessorForElementType(
+            simpleTp, "div");
 
         setIncludeCommentsInResponses(false);
 

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: FilePickerDialog.java,v 1.7 2013/09/16 13:11:26 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011-2012 Virginia Tech
  |
@@ -51,8 +51,8 @@ import com.webobjects.foundation.NSTimestamp;
  * repositories that they have access to.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.7 $, $Date: 2013/09/16 13:11:26 $
  */
 public class FilePickerDialog
     extends WCComponent

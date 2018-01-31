@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: QualifierAugmenter.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -45,7 +45,7 @@ import er.extensions.qualifiers.ERXKeyValueQualifier;
  * of objects that have migratory attributes.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: QualifierAugmenter.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  */
 public class QualifierAugmenter
 {

@@ -39,6 +39,14 @@
             media = "print, screen, projection, tv";
         },
         {
+            file = "energy-bar.css";
+            media = "print, screen, projection, tv";
+        },
+        {
+            file = "heatmap.css";
+            media = "print, screen, projection, tv";
+        },
+        {
             file = "print.css";
             media = "print";
         },

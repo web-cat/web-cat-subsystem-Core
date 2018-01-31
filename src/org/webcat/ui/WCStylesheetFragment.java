@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCStylesheetFragment.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -41,7 +41,7 @@ import com.webobjects.foundation.NSDictionary;
  * content will be injected as inline CSS.
  * 
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: WCStylesheetFragment.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  */
 public class WCStylesheetFragment extends WODynamicGroup
 {

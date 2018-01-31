@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: RepositoryEntryRef.java,v 1.6 2012/06/22 16:23:17 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011-2012 Virginia Tech
  |
@@ -45,8 +45,8 @@ import com.webobjects.foundation.NSMutableDictionary;
  * stored in the database.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.6 $, $Date: 2012/06/22 16:23:17 $
  */
 public class RepositoryEntryRef
     implements NSKeyValueCodingAdditions

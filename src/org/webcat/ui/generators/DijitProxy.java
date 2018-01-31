@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DijitProxy.java,v 1.2 2011/05/16 17:29:30 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -35,7 +35,7 @@ package org.webcat.ui.generators;
  * </p>
  *
  * @author  Tony Allevato
- * @version $Id$
+ * @version $Id: DijitProxy.java,v 1.2 2011/05/16 17:29:30 aallowat Exp $
  */
 public class DijitProxy extends JavascriptProxy
 {

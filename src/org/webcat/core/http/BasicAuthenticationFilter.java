@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: BasicAuthenticationFilter.java,v 1.6 2014/06/16 16:00:40 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -22,6 +22,7 @@
 package org.webcat.core.http;
 
 import org.apache.http.HttpStatus;
+import org.apache.log4j.Logger;
 import org.eclipse.jgit.util.HttpSupport;
 import org.webcat.core.Application;
 import org.webcat.core.EOBase;
@@ -57,8 +58,8 @@ import com.webobjects.eocontrol.EOEditingContext;
  * </ol>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.6 $, $Date: 2014/06/16 16:00:40 $
  */
 public abstract class BasicAuthenticationFilter
      implements RequestFilter
@@ -78,8 +79,6 @@ public abstract class BasicAuthenticationFilter
     public void filterRequest(WORequest request, WOResponse response,
             RequestFilterChain filterChain) throws Exception
     {
-        existingSessionId = null;
-
         Session session = sessionFromContext(request.context());
 
         try
@@ -99,8 +98,15 @@ public abstract class BasicAuthenticationFilter
         {
             if (session != null)
             {
-                Application.wcApplication().saveSessionForContext(
+                if (session.useLoginSession())
+                {
+                    Application.wcApplication().saveSessionForContext(
                         request.context());
+                }
+                else
+                {
+                    session.terminate();
+                }
             }
         }
     }
@@ -222,15 +228,58 @@ public abstract class BasicAuthenticationFilter
 
                             if (user == null)
                             {
-                                Application.wcApplication()
-                                    .saveSessionForContext(context);
+                                response.setStatus(HttpStatus.SC_UNAUTHORIZED);
+                                return null;
                             }
                             else
                             {
-                                context._setRequestSessionID(existingSessionId);
-                                result = (Session)context.session();
-                                result.setUser(user.localInstance(
-                                    result.defaultEditingContext()));
+                                if (context.hasSession())
+                                {
+                                    result = (Session)context.session();
+                                    log.error("Basic auth request with "
+                                        + "existing session: "
+                                        + result.sessionID() + ": " + result);
+                                    if (result.primeUser() != null
+                                        && (user.id() == null
+                                            ||
+                                        result.primeUser().id().longValue()
+                                        != user.id().longValue()))
+                                    {
+                                        response.setStatus(
+                                            HttpStatus.SC_UNAUTHORIZED);
+                                        return null;
+                                    }
+                                }
+                                else
+                                {
+                                    String existingSessionId = userSessionId(
+                                        ec, user, USE_EXISTING_SESSIONS);
+                                    if (existingSessionId != null)
+                                    {
+                                        log.info("Basic auth, connecting to "
+                                            + "existing session: "
+                                            + existingSessionId);
+                                        result = (Session)Application
+                                            .wcApplication()
+                                            .restoreSessionWithID(
+                                                existingSessionId,
+                                                request.context());
+                                        log.info("Basic auth, connected to "
+                                            + "existing session: "
+                                            + existingSessionId
+                                            + ": for user: "
+                                            + (result.user() == null
+                                                ? "<null>"
+                                                : result.user().name()));
+                                    }
+                                    else
+                                    {
+                                        result = (Session)context.session();
+                                        result.setUseLoginSession(false);
+                                        result.setUser(user.localInstance(
+                                            result.defaultEditingContext()));
+                                    }
+                                }
                                 result._appendCookieToResponse(response);
                             }
                             return result;
@@ -267,29 +316,30 @@ public abstract class BasicAuthenticationFilter
             user = User.validate(user.userName(), password,
                 user.authenticationDomain(), ec);
         }
+        return user;
+    }
 
-        if (user != null)
+
+    // ----------------------------------------------------------
+    private String userSessionId(
+        EOEditingContext ec, User user, boolean useExistingSession)
+    {
+        if (useExistingSession && user != null)
         {
             LoginSession ls = LoginSession.getLoginSessionForUser(ec, user);
 
             if (ls != null)
             {
-                // Remember the existing session id for restoration.
-                existingSessionId = ls.sessionId();
+                return ls.sessionId();
             }
-
-            return user;
         }
-        else
-        {
-            return null;
-        }
+        return null;
     }
 
 
     //~ Static/instance variables .............................................
 
+    static Logger log = Logger.getLogger(BasicAuthenticationFilter.class);
     private static final String SESSION_ID_HEADER = "X-Session-Id";
-
-    private String existingSessionId;
+    private static final boolean USE_EXISTING_SESSIONS = false;
 }

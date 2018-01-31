@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DojoUtils.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -34,7 +34,7 @@ import er.extensions.appserver.ERXResponseRewriter.TagMissingBehavior;
  * Various helpful utility functions used by the Dojo support classes.
  * 
  * @author Tony Allevato
- * @author $Id$
+ * @author $Id: DojoUtils.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  */
 public class DojoUtils
 {

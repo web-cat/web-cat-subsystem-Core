@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: QueryAssistantManager.java,v 1.2 2010/10/15 00:43:17 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -44,7 +44,7 @@ import org.webcat.core.SubsystemManager;
  * stored in the subsystem's resources.
  *
  * @author aallowat
- * @version $Id$
+ * @version $Id: QueryAssistantManager.java,v 1.2 2010/10/15 00:43:17 stedwar2 Exp $
  */
 public class QueryAssistantManager
 {

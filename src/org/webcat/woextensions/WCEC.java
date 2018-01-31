@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCEC.java,v 1.3 2014/06/16 16:03:24 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -38,8 +38,8 @@ import er.extensions.eof.ERXEC;
  *  support for peer manager pools.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.3 $, $Date: 2014/06/16 16:03:24 $
  */
 public class WCEC
     extends ERXEC

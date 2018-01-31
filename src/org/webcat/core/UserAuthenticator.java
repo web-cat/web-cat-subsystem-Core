@@ -1,7 +1,7 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: UserAuthenticator.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -31,7 +31,7 @@ import org.webcat.core.WCProperties;
  *  techniques.
  *
  *  @author Stephen Edwards
- *  @version $Id$
+ *  @version $Id: UserAuthenticator.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  */
 public interface UserAuthenticator
 {
@@ -65,12 +65,15 @@ public interface UserAuthenticator
      * @param password The password to check
      * @param domain   The authentication domain associated with this check
      * @param ec       The editing context to use
+     * @param ls       An existing login session associated with this
+     *                 user, if one exists (or null, if not)
      * @return The current user object, or null if invalid login
      */
     public User authenticate( String userName,
                               String password,
                               AuthenticationDomain domain,
-                              com.webobjects.eocontrol.EOEditingContext ec
+                              com.webobjects.eocontrol.EOEditingContext ec,
+                              LoginSession ls
                             );
 
 

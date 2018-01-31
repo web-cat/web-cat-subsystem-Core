@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: AuthenticationDomain.java,v 1.7 2012/05/16 13:31:34 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -44,8 +44,8 @@ import org.apache.log4j.Logger;
  * different classes of user names.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.7 $, $Date: 2012/05/16 13:31:34 $
  */
 public class AuthenticationDomain
     extends _AuthenticationDomain

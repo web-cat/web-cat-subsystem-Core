@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DynamicElement.java,v 1.1 2011/10/25 12:51:37 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -33,8 +33,8 @@ import com.webobjects.foundation.*;
  * http://wodev.spearway.com/cgi-bin/WebObjects/WODev.woa/wa/Main?wikiPage=CreatingADynamicElement
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.1 $, $Date: 2011/10/25 12:51:37 $
  */
 public class DynamicElement
     extends WODynamicElement

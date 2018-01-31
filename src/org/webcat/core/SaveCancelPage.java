@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: SaveCancelPage.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -36,8 +36,8 @@ import com.webobjects.appserver.WOContext;
  * {@link WizardPage}.
  *
  * @author Stephen Edwards
- * @author Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2010/05/11 14:51:55 $
  */
 public class SaveCancelPage
     extends WCPageWithNavigation

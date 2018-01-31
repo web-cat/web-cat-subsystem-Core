@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: EntityResourceHandler.java,v 1.3 2011/03/07 18:44:17 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2010-2011 Virginia Tech
  |
@@ -35,8 +35,8 @@ import com.webobjects.eocontrol.EOFetchSpecification;
  * @param <T> the actual type of the EO used by this resource handler
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.3 $, $Date: 2011/03/07 18:44:17 $
  */
 public abstract class EntityResourceHandler<T extends EOEnterpriseObject>
 {

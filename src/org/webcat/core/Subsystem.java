@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: Subsystem.java,v 1.6 2012/03/07 03:03:41 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -46,8 +46,8 @@ import com.webobjects.foundation.NSPropertyListSerialization;
  *  communicate with subsystems.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.6 $, $Date: 2012/03/07 03:03:41 $
  */
 public class Subsystem
 {

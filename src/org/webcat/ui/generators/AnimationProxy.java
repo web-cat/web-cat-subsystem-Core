@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: AnimationProxy.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -35,7 +35,7 @@ package org.webcat.ui.generators;
  * </p>
  *
  * @author  Tony Allevato
- * @version $Id$
+ * @version $Id: AnimationProxy.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  */
 public class AnimationProxy extends JavascriptProxy
 {

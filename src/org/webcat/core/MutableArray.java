@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: MutableArray.java,v 1.2 2011/03/07 18:44:37 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -41,7 +41,7 @@ import org.apache.log4j.Logger;
  *  usage details.
  *
  *  @author  Stephen Edwards
- *  @version $Id$
+ *  @version $Id: MutableArray.java,v 1.2 2011/03/07 18:44:37 stedwar2 Exp $
  */
 @SuppressWarnings("unchecked")
 public class MutableArray

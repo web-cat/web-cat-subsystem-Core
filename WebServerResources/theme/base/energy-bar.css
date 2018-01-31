@@ -1,0 +1,60 @@
+.energy-bar-display {
+    margin-bottom: 15px;
+}
+
+.energy-bar-display .title {
+	font-weight: bold;
+	font-size: smaller;
+}
+
+.energy-bar-display .time-remaining,
+.energy-bar-display .time-free {
+	font-size: smaller;
+    display: inline-block;
+    padding-top: 3px;
+    padding-left: 4px;
+}
+
+.energy-slot {
+    float: left;
+    height: 15px;
+    width: 15px;
+    border: 1px solid #999;
+    background-color: orange;
+}
+
+.energy-slot.empty {
+    background-color: white;
+}
+
+.energy-bar .empty {
+    animation: energyBarColorChange 3s infinite;
+}
+
+/* Only animate first empty slot. See http://stackoverflow.com/questions/2717480/css-selector-for-first-element-with-class for idea */
+.energy-bar .empty ~ .empty {
+    animation: none;
+}
+
+.energy-slot.first {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.energy-slot.last {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+
+@keyframes energyBarColorChange {
+    0% { background: #fff }
+    50% { background: #ffd993; }
+    100% { background: #fff; }
+}
+
+@-webkit-keyframes energyBarColorChange {
+    0% { background: #fff }
+    50% { background: #ffd993; }
+    100% { background: #fff; }
+}

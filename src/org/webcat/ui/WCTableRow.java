@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTableRow.java,v 1.2 2010/10/29 20:36:15 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -39,8 +39,8 @@ import org.webcat.ui._base.WCTableSubcomponent;
  * </p>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.2 $, $Date: 2010/10/29 20:36:15 $
  */
 public class WCTableRow extends WCTableSubcomponent
 {

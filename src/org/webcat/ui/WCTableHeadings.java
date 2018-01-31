@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTableHeadings.java,v 1.4 2011/10/25 12:58:38 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -36,8 +36,8 @@ import er.extensions.appserver.ERXWOContext;
  * also provides the paging controls for the table.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.4 $, $Date: 2011/10/25 12:58:38 $
  */
 public class WCTableHeadings extends WCTableSubcomponent
 {

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: CodeEditor.java,v 1.1 2012/02/23 19:21:27 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -33,8 +33,8 @@ import com.webobjects.appserver.WOResponse;
  * CodeMirror Javascript library (http://codemirror.net/).
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2012/02/23 19:21:27 $
  */
 public class CodeEditor extends WOComponent
 {

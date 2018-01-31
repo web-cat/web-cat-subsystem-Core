@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: Selector.js,v 1.4 2011/08/22 19:59:13 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -26,7 +26,7 @@ dojo.require("dojo.dnd.Selector");
 // ------------------------------------------------------------------------
 /**
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: Selector.js,v 1.4 2011/08/22 19:59:13 aallowat Exp $
  */
 dojo.declare("webcat.Selector", dojo.dnd.Selector,
 {

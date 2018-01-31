@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCContentPane.java,v 1.2 2010/10/28 00:37:30 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -54,7 +54,7 @@ import er.extensions.appserver.ERXWOContext;
  * </dl>
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: WCContentPane.java,v 1.2 2010/10/28 00:37:30 aallowat Exp $
  */
 public class WCContentPane extends DojoElement
 {

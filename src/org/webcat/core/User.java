@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: User.java,v 1.18 2014/08/25 15:28:42 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -63,8 +63,8 @@ import er.extensions.foundation.ERXArrayUtilities;
  * </ul>
  *
  * @author  Stephen Edwards
- * @author  Last changed by: $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by: $Author: stedwar2 $
+ * @version $Revision: 1.18 $, $Date: 2014/08/25 15:28:42 $
  */
 public class User
     extends _User
@@ -549,11 +549,12 @@ public class User
             com.webobjects.eocontrol.EOEditingContext ec
         )
     {
+        User  u = null;
         if (aUserName != null && aUserName.contains("@"))
         {
             try
             {
-                User u = uniqueObjectMatchingQualifier(
+                u = uniqueObjectMatchingQualifier(
                     ec, User.email.is(aUserName));
 
                 if (u == null)
@@ -603,8 +604,27 @@ public class User
         UserAuthenticator authenticator = domain.authenticator();
         if (authenticator != null)
         {
+            if (u != null)
+            {
+                try
+                {
+                    u = uniqueObjectMatchingQualifier(ec,
+                        userName.is(aUserName)
+                        .and(authenticationDomain.is(domain)));
+                }
+                catch (EOUtilities.MoreThanOneException e)
+                {
+                    log.error("Non-unique user: " + aUserName);
+                }
+            }
+            LoginSession s = null;
+            if (u != null)
+            {
+                s = LoginSession.getLoginSessionForUser(ec, u);
+            }
+            log.debug("validate(), u = " + u + ", s = " + s);
             return authenticator.authenticate(
-                aUserName, aPassword, domain, ec);
+                aUserName, aPassword, domain, ec, s);
         }
         else
         {

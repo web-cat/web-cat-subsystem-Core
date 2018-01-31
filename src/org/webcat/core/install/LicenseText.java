@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: LicenseText.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -32,7 +32,7 @@ import com.webobjects.appserver.*;
  *  by an unstyled div instead.
  *
  *  @author Stephen Edwards
- *  @version $Id$
+ *  @version $Id: LicenseText.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  */
 public class LicenseText
     extends WOComponent

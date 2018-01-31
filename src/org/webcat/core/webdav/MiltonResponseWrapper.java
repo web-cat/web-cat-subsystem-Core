@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: MiltonResponseWrapper.java,v 1.1 2011/05/13 19:46:57 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -41,8 +41,8 @@ import com.webobjects.foundation.NSData;
  * access its headers and content.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2011/05/13 19:46:57 $
  */
 public class MiltonResponseWrapper extends AbstractResponse
 {

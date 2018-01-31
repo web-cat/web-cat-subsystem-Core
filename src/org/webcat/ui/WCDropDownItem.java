@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCDropDownItem.java,v 1.3 2012/03/09 18:36:53 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -32,8 +32,8 @@ import com.webobjects.appserver.WOContext;
  * An item in a drop-down list.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.3 $, $Date: 2012/03/09 18:36:53 $
  */
 public class WCDropDownItem extends WOComponent
 {

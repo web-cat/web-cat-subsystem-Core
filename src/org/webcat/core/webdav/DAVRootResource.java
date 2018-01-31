@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: DAVRootResource.java,v 1.3 2012/06/22 16:23:18 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -63,8 +63,8 @@ import com.webobjects.foundation.NSArray;
  * file repositories that a user can access.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.3 $, $Date: 2012/06/22 16:23:18 $
  */
 public class DAVRootResource extends AbstractDAVResource
     implements MakeCollectionableResource, PutableResource, CopyableResource,

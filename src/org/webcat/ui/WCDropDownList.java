@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCDropDownList.java,v 1.2 2011/05/13 19:43:18 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -38,8 +38,8 @@ import er.extensions.appserver.ERXWOContext;
  * A menu-like component that drops down a list when the mouse hovers over it.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.2 $, $Date: 2011/05/13 19:43:18 $
  */
 public class WCDropDownList extends WOComponent
 {

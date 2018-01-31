@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: GitWebContext.java,v 1.4 2012/06/22 16:23:17 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011-2012 Virginia Tech
  |
@@ -33,8 +33,8 @@ import com.webobjects.appserver.WOContext;
  * TODO real description
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.4 $, $Date: 2012/06/22 16:23:17 $
  */
 public class GitWebContext
 {

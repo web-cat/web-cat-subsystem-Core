@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTextBox.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -48,7 +48,7 @@ import com.webobjects.foundation.NSValidation;
  * </dl>
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: WCTextBox.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  */
 public class WCTextBox extends DojoFormElement
 {

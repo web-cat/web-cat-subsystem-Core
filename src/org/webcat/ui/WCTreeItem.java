@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTreeItem.java,v 1.2 2014/06/16 15:57:54 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2009 Virginia Tech
  |
@@ -36,8 +36,8 @@ import org.webcat.ui._base.WCTreeSubcomponent;
  * </p>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.2 $, $Date: 2014/06/16 15:57:54 $
  */
 public class WCTreeItem extends WCTreeSubcomponent
 {

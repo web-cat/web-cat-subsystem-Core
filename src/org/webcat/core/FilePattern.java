@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: FilePattern.java,v 1.1 2010/10/18 15:32:19 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -30,8 +30,8 @@ import java.util.regex.Pattern;
  * expression that can be used to match filenames.
  *
  * @author  Tony Allevato (Virginia Tech Computer Science)
- * @author  latest changes by: $Author$
- * @version $Revision$ $Date$
+ * @author  latest changes by: $Author: aallowat $
+ * @version $Revision: 1.1 $ $Date: 2010/10/18 15:32:19 $
  */
 public class FilePattern
 {

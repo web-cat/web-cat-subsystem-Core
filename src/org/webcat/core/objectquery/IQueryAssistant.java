@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: IQueryAssistant.java,v 1.1 2010/05/11 14:51:59 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -32,7 +32,7 @@ import com.webobjects.eocontrol.EOQualifier;
  * be used in a fetch specification.
  *
  * @author aallowat
- * @version $Id$
+ * @version $Id: IQueryAssistant.java,v 1.1 2010/05/11 14:51:59 aallowat Exp $
  */
 public interface IQueryAssistant
 {

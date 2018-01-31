@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCContext.java,v 1.1 2011/10/25 12:51:37 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -32,8 +32,8 @@ import er.extensions.appserver.ERXWOContext54;
  * for partial form submission (needed for AJAX support).
  *
  * @author  Anthony Allovato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.1 $, $Date: 2011/10/25 12:51:37 $
  */
 public class WCContext
     extends ERXWOContext54

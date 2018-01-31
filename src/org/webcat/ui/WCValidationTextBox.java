@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCValidationTextBox.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -43,7 +43,7 @@ import com.webobjects.foundation.NSDictionary;
  * </table>
  * 
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: WCValidationTextBox.java,v 1.1 2010/05/11 14:51:58 aallowat Exp $
  */
 public class WCValidationTextBox extends WCTextBox
 {

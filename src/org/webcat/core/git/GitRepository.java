@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: GitRepository.java,v 1.3 2012/06/22 16:23:18 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011-2012 Virginia Tech
  |
@@ -58,8 +58,8 @@ import com.webobjects.foundation.NSMutableDictionary;
  * TODO real description
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.3 $, $Date: 2012/06/22 16:23:18 $
  */
 public class GitRepository
     implements NSKeyValueCodingAdditions

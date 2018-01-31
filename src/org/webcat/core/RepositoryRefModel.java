@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: RepositoryRefModel.java,v 1.5 2012/11/29 16:31:59 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011-2012 Virginia Tech
  |
@@ -35,8 +35,8 @@ import com.webobjects.foundation.NSMutableArray;
  * repositories' refs (tags and branches) as their children.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.5 $, $Date: 2012/11/29 16:31:59 $
  */
 public class RepositoryRefModel
     extends WCTreeModel<Object>

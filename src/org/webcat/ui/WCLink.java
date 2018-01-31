@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCLink.java,v 1.3 2010/10/28 00:37:30 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -151,7 +151,7 @@ import er.extensions.components._private.ERXWOForm;
  * </table>
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: WCLink.java,v 1.3 2010/10/28 00:37:30 aallowat Exp $
  */
 public class WCLink extends WOHTMLDynamicElement
 {

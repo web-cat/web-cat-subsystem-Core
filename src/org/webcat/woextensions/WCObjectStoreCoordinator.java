@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCObjectStoreCoordinator.java,v 1.1 2011/12/25 02:24:54 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -34,8 +34,8 @@ import er.extensions.eof.ERXObjectStoreCoordinator;
  *  This is a specialized subclass with extra debugging support.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.1 $, $Date: 2011/12/25 02:24:54 $
  */
 public class WCObjectStoreCoordinator
     extends ERXObjectStoreCoordinator

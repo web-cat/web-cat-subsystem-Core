@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCResourceManager.java,v 1.1 2011/10/25 12:51:37 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -45,8 +45,8 @@ import org.apache.log4j.Logger;
  *  frameworksBaseURL() setting.
  *
  *  @author  Stephen Edwards
- *  @author  Latest changes by: $Author$
- *  @version $Revision$, $Date$
+ *  @author  Latest changes by: $Author: stedwar2 $
+ *  @version $Revision: 1.1 $, $Date: 2011/10/25 12:51:37 $
  */
 public class WCResourceManager
     extends ERXResourceManager

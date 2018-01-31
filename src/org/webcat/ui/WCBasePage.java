@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCBasePage.java,v 1.9 2013/08/11 01:55:35 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -83,8 +83,8 @@ import org.webcat.woextensions.WCResourceManager;
  * </table>
  *
  * @author Tony Allevato
- * @author Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.9 $, $Date: 2013/08/11 01:55:35 $
  */
 public class WCBasePage
     extends WOComponent

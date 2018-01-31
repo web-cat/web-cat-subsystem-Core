@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: IArchiveEntry.java,v 1.2 2011/03/07 18:39:42 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -28,8 +28,8 @@ import java.util.Date;
  * Represents a file or directory in an archive.
  *
  * @author Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.2 $, $Date: 2011/03/07 18:39:42 $
  */
 public interface IArchiveEntry
 {

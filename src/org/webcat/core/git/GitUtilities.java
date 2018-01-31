@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: GitUtilities.java,v 1.9 2012/11/29 16:31:25 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -61,8 +61,8 @@ import com.webobjects.foundation.NSMutableArray;
  * objects.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.9 $, $Date: 2012/11/29 16:31:25 $
  */
 public class GitUtilities
 {

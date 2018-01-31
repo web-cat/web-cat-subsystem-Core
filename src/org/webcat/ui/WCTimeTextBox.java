@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTimeTextBox.java,v 1.2 2011/07/29 17:55:33 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -37,8 +37,8 @@ import com.webobjects.foundation.NSTimestamp;
  * A text box that lets the user select a time from a popup control.
  *
  * @author Tony Allevato
- * @author Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author Last changed by $Author: aallowat $
+ * @version $Revision: 1.2 $, $Date: 2011/07/29 17:55:33 $
  */
 public class WCTimeTextBox extends DojoFormElement
 {

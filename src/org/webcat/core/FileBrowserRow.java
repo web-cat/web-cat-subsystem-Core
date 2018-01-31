@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: FileBrowserRow.java,v 1.4 2013/10/09 00:02:02 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -43,8 +43,8 @@ import er.extensions.foundation.ERXFileUtilities;
  *  One row in a directory contents table.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.4 $, $Date: 2013/10/09 00:02:02 $
  */
 public class FileBrowserRow
     extends WOComponent

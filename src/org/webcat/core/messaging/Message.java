@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: Message.java,v 1.9 2014/06/16 16:01:24 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2010-2011 Virginia Tech
  |
@@ -59,8 +59,8 @@ import com.webobjects.foundation.NSTimestamp;
  * </p>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.9 $, $Date: 2014/06/16 16:01:24 $
  */
 public abstract class Message
 {

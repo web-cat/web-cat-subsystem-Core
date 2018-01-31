@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: TimeUtilities.java,v 1.1 2011/04/19 16:47:36 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011 Virginia Tech
  |
@@ -30,8 +30,8 @@ import com.webobjects.foundation.NSTimestamp;
  * Helper methods that deal with dates and times.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2011/04/19 16:47:36 $
  */
 public class TimeUtilities
 {

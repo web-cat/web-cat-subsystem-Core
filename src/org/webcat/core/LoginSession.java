@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: LoginSession.java,v 1.2 2012/01/27 16:36:20 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -32,8 +32,8 @@ import org.webcat.core._LoginSession;
  * Keeps track of which user is logged in where.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.2 $, $Date: 2012/01/27 16:36:20 $
  */
 public class LoginSession
     extends _LoginSession

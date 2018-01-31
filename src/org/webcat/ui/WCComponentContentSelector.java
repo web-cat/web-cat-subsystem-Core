@@ -60,8 +60,8 @@ import com.webobjects.foundation._NSUtilities;
  * with TestElement1 and TestElement2 being processed as normal.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2010/10/28 00:37:30 $
  */
 public class WCComponentContentSelector extends WODynamicElement
 {

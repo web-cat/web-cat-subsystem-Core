@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: CoreSelections.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -33,8 +33,8 @@ import org.apache.log4j.*;
  * for entities in the Core subsystem.
  *
  * @author stedwar2
- * @author  latest changes by: $Author$
- * @version $Revision$ $Date$
+ * @author  latest changes by: $Author: aallowat $
+ * @version $Revision: 1.1 $ $Date: 2010/05/11 14:51:55 $
  */
 public class CoreSelections
     extends _CoreSelections

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCMenuItem.java,v 1.1 2010/05/11 14:51:57 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -34,7 +34,7 @@ import com.webobjects.foundation.NSDictionary;
  * TODO describe bindings
  * 
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: WCMenuItem.java,v 1.1 2010/05/11 14:51:57 aallowat Exp $
  */
 public class WCMenuItem extends DojoActionFormElement
 {

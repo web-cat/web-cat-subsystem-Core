@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: CoreDatabaseUpdates.java,v 1.6 2014/07/08 17:35:28 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -31,8 +31,8 @@ import java.sql.SQLException;
  * for this class uses its parent class' logger.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.6 $, $Date: 2014/07/08 17:35:28 $
  */
 public class CoreDatabaseUpdates
     extends UpdateSet

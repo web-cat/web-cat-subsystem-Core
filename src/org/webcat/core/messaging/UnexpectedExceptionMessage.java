@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: UnexpectedExceptionMessage.java,v 1.4 2011/12/25 02:24:54 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2010-2011 Virginia Tech
  |
@@ -33,8 +33,8 @@ import com.webobjects.foundation.NSDictionary;
  * occurs.
  *
  * @author  Tony Allevato
- * @author  latest changes by: $Author$
- * @version $Revision$ $Date$
+ * @author  latest changes by: $Author: stedwar2 $
+ * @version $Revision: 1.4 $ $Date: 2011/12/25 02:24:54 $
  */
 public class UnexpectedExceptionMessage
     extends SysAdminMessage

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: LdapAuthenticator.java,v 1.2 2012/03/28 13:48:08 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2012 Virginia Tech
  |
@@ -36,8 +36,8 @@ import org.apache.log4j.Logger;
  *  tests user ids/passwords using LDAP.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author$
- *  @version $Revision$, $Date$
+ *  @author  Last changed by $Author: stedwar2 $
+ *  @version $Revision: 1.2 $, $Date: 2012/03/28 13:48:08 $
  */
 public class LdapAuthenticator
     implements UserAuthenticator
@@ -146,18 +146,26 @@ public class LdapAuthenticator
         config.setUserField(new String[] {userField});
         authenticator = new Authenticator(config);
 
-        if (properties.booleanForKey(baseName + ".useTLS"))
+        try
         {
-            try
+            if (properties.booleanForKey(baseName + ".useTLS"))
             {
                 log.debug(baseName + ": turning TLS on");
                 authenticator.useTls(true);
             }
-            catch (Exception e)
+            else
             {
-                log.error("Cannot use TLS:", e);
+                log.debug(baseName + ": turning TLS off");
+                authenticator.useTls(false);
             }
         }
+        catch (Exception e)
+        {
+            log.error("Cannot use TLS:", e);
+        }
+
+        this.cacheInSession =
+            properties.booleanForKey(baseName + ".cacheInSession");
 
         return result;
     }
@@ -172,17 +180,21 @@ public class LdapAuthenticator
      * @param password The password to check
      * @param domain   The authentication domain associated with this check
      * @param ec       The editing context to use
+     * @param ls       An existing login session associated with this
+     *                 user, if one exists (or null, if not)
      * @return The current user object, or null if invalid login
      */
     public User authenticate( String               username,
                               String               password,
                               AuthenticationDomain domain,
-                              com.webobjects.eocontrol.EOEditingContext ec )
+                              com.webobjects.eocontrol.EOEditingContext ec,
+                              LoginSession ls)
     {
         User user = null;
-        if ( authenticate( username, password ) )
+        log.debug("authenticate(), user = " + username + ", session = " + ls);
+        if (authenticate(username, password, ls))
         {
-            log.debug( "user " + username + " validated" );
+            log.debug("user " + username + " validated");
             try
             {
                 user = User.uniqueObjectMatchingQualifier(
@@ -199,65 +211,79 @@ public class LdapAuthenticator
                         User.STUDENT_PRIVILEGES,
                         ec
                     );
-                    log.info( "new user '"
+                    log.info("new user '"
                         + username
                         + "' ("
                         + domain.displayableName()
-                        + ") created"
-                        );
+                        + ") created");
                 }
-                else if ( user.authenticationDomain() != domain )
+                else if (user.authenticationDomain() != domain)
                 {
-                    if ( user.authenticationDomain() == null )
+                    if (user.authenticationDomain() == null)
                     {
-                        user.setAuthenticationDomainRelationship( domain );
+                        user.setAuthenticationDomainRelationship(domain);
                     }
                     else
                     {
-                        log.warn(
-                                "user " + username
-                                + " successfully validated in '"
-                                + domain.displayableName()
-                                + "' but bound to '"
-                                + user.authenticationDomain().displayableName()
-                                + "'"
-                                );
+                        log.warn("user " + username
+                            + " successfully validated in '"
+                            + domain.displayableName()
+                            + "' but bound to '"
+                            + user.authenticationDomain().displayableName()
+                            + "'");
                         user = null;
                     }
                 }
             }
-            catch ( EOUtilities.MoreThanOneException e )
+            catch (EOUtilities.MoreThanOneException e)
             {
-                log.error( "user '"
-                           + username
-                           + "' ("
-                           + domain.displayableName()
-                           + "):",
-                           e
-                         );
+                log.error("user '"
+                    + username
+                    + "' ("
+                    + domain.displayableName()
+                    + "):",
+                    e);
             }
         }
         else
         {
-            log.info( "user " + username + "(" + domain.displayableName()
-                      + "): login validation failed" );
+            log.info("user " + username + "(" + domain.displayableName()
+                + "): login validation failed");
+        }
+        if (user != null && ls == null && this.cacheInSession)
+        {
+            log.info("user " + username + "(" + domain.displayableName() +
+                "): ldap caching");
+            user.setPassword(password);
+            ec.saveChanges();
         }
 
         return user;
     }
 
-    private boolean authenticate( String username, String password )
+    private boolean authenticate(
+        String username, String password, LoginSession s)
     {
         boolean result = false;
-        try
+        if ((s != null) && (this.cacheInSession))
         {
-            result = authenticator.authenticate( username, password );
+            result = (username.equals(s.user().userName())) &&
+                (s.user().checkPassword(password));
+            log.info("user " + username + ": ldap cache check = " + result);
         }
-        catch ( Exception e )
-        {
-            log.error( "authentication failure: ", e );
+        if (!result) {
+            try
+            {
+                result = authenticator.authenticate(username, password);
+                log.info("user " + username + ": ldap forced auth, result = "
+                    + result);
+            }
+            catch (Exception e)
+            {
+                log.error("authentication failure: ", e);
+            }
         }
-        log.debug( "result = " + result );
+        log.debug("result = " + result);
         return result;
     }
 
@@ -315,4 +341,5 @@ public class LdapAuthenticator
 
     static Logger log = Logger.getLogger( LdapAuthenticator.class );
     private Authenticator authenticator;
+    private boolean cacheInSession = false;
 }

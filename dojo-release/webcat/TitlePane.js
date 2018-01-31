@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: TitlePane.js,v 1.4 2011/05/16 17:29:30 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2009 Virginia Tech
  |
@@ -41,7 +41,7 @@ dojo.require("webcat.ContentPane");
  * dijit.TitlePane FROM IT BELOW.
  *
  * @author Tony Allevato
- * @version $Id$
+ * @version $Id: TitlePane.js,v 1.4 2011/05/16 17:29:30 aallowat Exp $
  */
 
 dojo.declare(

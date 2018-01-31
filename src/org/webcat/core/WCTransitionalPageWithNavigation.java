@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: WCTransitionalPageWithNavigation.java,v 1.3 2011/03/07 18:44:37 stedwar2 Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2011 Virginia Tech
  |
@@ -41,8 +41,8 @@ import org.webcat.core.WCTransitionalPageWithNavigation;
  * keys, which it passes on to its BarePage container.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: stedwar2 $
+ * @version $Revision: 1.3 $, $Date: 2011/03/07 18:44:37 $
  */
 public class WCTransitionalPageWithNavigation
     extends WCTransitionalBasePage

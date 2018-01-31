@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: AdvancedQueryAssistant.java,v 1.1 2010/05/11 14:51:59 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2008 Virginia Tech
  |
@@ -42,7 +42,7 @@ import com.webobjects.foundation.NSTimestamp;
  * by adding/combining key/value qualifiers of various kinds.
  *
  * @author aallowat
- * @version $Id$
+ * @version $Id: AdvancedQueryAssistant.java,v 1.1 2010/05/11 14:51:59 aallowat Exp $
  */
 public class AdvancedQueryAssistant
     extends WCComponent

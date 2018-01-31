@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  $Id$
+ |  $Id: MetaRequestHandler.java,v 1.6 2012/06/22 16:23:18 aallowat Exp $
  |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2011-2012 Virginia Tech
  |
@@ -44,8 +44,8 @@ import com.webobjects.appserver.WOResponse;
  * </p>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.6 $, $Date: 2012/06/22 16:23:18 $
  */
 public abstract class MetaRequestHandler
     extends WORequestHandler

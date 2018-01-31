@@ -42,8 +42,8 @@ import com.webobjects.foundation.NSMutableDictionary;
  * </dl>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
+ * @author  Last changed by $Author: aallowat $
+ * @version $Revision: 1.1 $, $Date: 2011/01/20 15:34:11 $
  */
 public class WCBooleanImage extends WOHTMLDynamicElement
 {
