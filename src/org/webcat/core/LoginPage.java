@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: LoginPage.java,v 1.3 2012/01/29 03:02:57 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2012 Virginia Tech
+ |  Copyright (C) 2006-2016 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -33,8 +31,6 @@ import org.apache.log4j.Logger;
  * Implements the login UI functionality of the system.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author: stedwar2 $
- *  @version $Revision: 1.3 $, $Date: 2012/01/29 03:02:57 $
  */
 public class LoginPage
     extends WOComponent
@@ -170,7 +166,8 @@ public class LoginPage
             AuthenticationDomain aDomain = (AuthenticationDomain)
                 domainDisplayGroup.allObjects().objectAtIndex(i);
             if (aDomain.authenticator() != null
-                && aDomain.authenticator().canChangePassword())
+                && aDomain.authenticator() instanceof
+                PasswordManagingUserAuthenticator)
             {
                 result = true;
                 break;

@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: WCComponent.java,v 1.5 2013/09/16 13:11:42 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2010 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -65,8 +63,6 @@ import org.webcat.woextensions.WCEC;
  * </p>
  *
  * @author Stephen Edwards
- * @author  latest changes by: $Author: stedwar2 $
- * @version $Revision: 1.5 $, $Date: 2013/09/16 13:11:42 $
  */
 public class WCComponent
     extends WCComponentWithErrorMessages
@@ -608,7 +604,7 @@ public class WCComponent
      * @return True if the page can be rendered using the info from params,
      * or false if required parameters are missing.
      */
-    public boolean startWith( NSDictionary<String, Object> params )
+    public boolean startWith(NSDictionary<String, NSArray<Object>> params)
     {
         return true;
     }
@@ -788,16 +784,13 @@ public class WCComponent
 
     // ----------------------------------------------------------
     protected String stringValueForKey(
-        NSDictionary<String, Object> dict, String key)
+        NSDictionary<String, NSArray<Object>> dict, String key)
     {
-        Object value = dict.valueForKey( key );
-        if ( value != null && value instanceof NSArray )
+        NSArray<?> values = dict.get(key);
+        Object value = values;
+        if (values != null && values.count() == 1)
         {
-            NSArray<?> values = (NSArray<?>)value;
-            if ( values.count() == 1 )
-            {
-                value = values.objectAtIndex( 0 );
-            }
+            value = values.objectAtIndex(0);
         }
         return value == null ? null : value.toString();
     }

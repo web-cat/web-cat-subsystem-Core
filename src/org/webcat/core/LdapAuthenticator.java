@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: LdapAuthenticator.java,v 1.2 2012/03/28 13:48:08 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2012 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,11 +21,6 @@ package org.webcat.core;
 
 import com.webobjects.eoaccess.*;
 import edu.vt.middleware.ldap.*;
-import org.webcat.core.AuthenticationDomain;
-import org.webcat.core.LdapAuthenticator;
-import org.webcat.core.User;
-import org.webcat.core.UserAuthenticator;
-import org.webcat.core.WCProperties;
 import org.apache.log4j.Logger;
 
 // --------------------------------------------------------------------------
@@ -36,8 +29,6 @@ import org.apache.log4j.Logger;
  *  tests user ids/passwords using LDAP.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author: stedwar2 $
- *  @version $Revision: 1.2 $, $Date: 2012/03/28 13:48:08 $
  */
 public class LdapAuthenticator
     implements UserAuthenticator
@@ -261,6 +252,8 @@ public class LdapAuthenticator
         return user;
     }
 
+
+    // ----------------------------------------------------------
     private boolean authenticate(
         String username, String password, LoginSession s)
     {
@@ -285,55 +278,6 @@ public class LdapAuthenticator
         }
         log.debug("result = " + result);
         return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Check whether users validated with this authenticator can
-     * change their password.  For authentication mechanisms using
-     * external databases or servers where no changes are allowed, the
-     * authenticator should return false.
-     *
-     * @return True if users associated with this authenticator can
-     *         change their password
-     */
-    public boolean canChangePassword()
-    {
-        return false;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Change the user's password.  For authentication mechanisms using
-     * external databases or servers where no changes are allowed, an
-     * authenticator may simply return false for all requests.
-     *
-     * @param user        The user
-     * @param newPassword The password to change to
-     * @return True if the password change was successful
-     */
-    public boolean changePassword( User   user,
-                                   String newPassword )
-    {
-        return false;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Change the user's password to a new random password, and e-mail's
-     * the user their new password.  For authentication mechanisms using
-     * external databases or servers where no changes are allowed, an
-     * authenticator may simply return false for all requests.
-     *
-     * @param user        The user
-     * @return True if the password change was successful
-     */
-    public boolean newRandomPassword( User user )
-    {
-        return false;
     }
 
 

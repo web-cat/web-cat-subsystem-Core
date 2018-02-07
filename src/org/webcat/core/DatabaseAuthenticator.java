@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: DatabaseAuthenticator.java,v 1.7 2014/08/25 15:37:06 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2014 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -53,12 +51,6 @@ package org.webcat.core;
 
 import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.*;
-import org.webcat.core.Application;
-import org.webcat.core.AuthenticationDomain;
-import org.webcat.core.DatabaseAuthenticator;
-import org.webcat.core.User;
-import org.webcat.core.UserAuthenticator;
-import org.webcat.core.WCProperties;
 import org.webcat.woextensions.ECActionWithResult;
 import static org.webcat.woextensions.ECActionWithResult.call;
 import org.apache.log4j.Logger;
@@ -76,11 +68,9 @@ import org.apache.log4j.Logger;
  *  admitted.
  *
  *  @author Stephen Edwards
- *  @author  Last changed by $Author: stedwar2 $
- *  @version $Revision: 1.7 $, $Date: 2014/08/25 15:37:06 $
  */
 public class DatabaseAuthenticator
-    implements UserAuthenticator
+    implements PasswordManagingUserAuthenticator
 {
     //~ Constructors ..........................................................
 
@@ -211,22 +201,6 @@ public class DatabaseAuthenticator
         }
 
         return user;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Check whether users validated with this authenticator can
-     * change their password.  For authentication mechanisms using
-     * external databases or servers where no changes are allowed, the
-     * authenticator should return false.
-     *
-     * @return True if users associated with this authenticator can
-     *         change their password
-     */
-    public boolean canChangePassword()
-    {
-        return true;
     }
 
 

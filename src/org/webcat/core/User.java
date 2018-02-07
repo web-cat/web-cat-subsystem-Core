@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: User.java,v 1.18 2014/08/25 15:28:42 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2012 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -30,9 +28,7 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.SecureRandom;
 import org.apache.log4j.Logger;
-import org.webcat.woextensions.ECAction;
 import org.webcat.woextensions.MigratingEditingContext;
-import static org.webcat.woextensions.ECAction.run;
 import org.webcat.woextensions.WCEC;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.eoaccess.EOUtilities;
@@ -63,8 +59,6 @@ import er.extensions.foundation.ERXArrayUtilities;
  * </ul>
  *
  * @author  Stephen Edwards
- * @author  Last changed by: $Author: stedwar2 $
- * @version $Revision: 1.18 $, $Date: 2014/08/25 15:28:42 $
  */
 public class User
     extends _User
@@ -650,7 +644,7 @@ public class User
         {
             UserAuthenticator authenticator = ad.authenticator();
             return authenticator != null
-                && authenticator.canChangePassword();
+                && authenticator instanceof PasswordManagingUserAuthenticator;
         }
     }
 
@@ -672,7 +666,9 @@ public class User
         {
             UserAuthenticator authenticator = ad.authenticator();
             return authenticator != null
-                && authenticator.changePassword(this, newPassword);
+                && authenticator instanceof PasswordManagingUserAuthenticator
+                && ((PasswordManagingUserAuthenticator)authenticator)
+                .changePassword(this, newPassword);
         }
     }
 
@@ -694,7 +690,9 @@ public class User
         {
             UserAuthenticator authenticator = ad.authenticator();
             return authenticator != null
-                && authenticator.newRandomPassword(this);
+                && authenticator instanceof PasswordManagingUserAuthenticator
+                && ((PasswordManagingUserAuthenticator)authenticator)
+                .newRandomPassword(this);
         }
     }
 

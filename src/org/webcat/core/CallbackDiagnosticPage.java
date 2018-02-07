@@ -1,6 +1,4 @@
 /*==========================================================================*\
- |  $Id$
- |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2017-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
@@ -41,8 +39,6 @@ import com.webobjects.appserver.WOResponse;
  * CAS login callbacks).
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author$
- * @version $Revision$, $Date$
  */
 public class CallbackDiagnosticPage
     extends WOComponent
@@ -76,7 +72,7 @@ public class CallbackDiagnosticPage
             String validationUrl = Application.configurationProperties()
               .getProperty(CallbackDiagnosticPage.class.getName()
               + ".validationUrl",
-              "https://login-dev.middleware.vt.edu/profile/cas/"
+              "https://login.middleware.vt.edu/profile/cas/"
               + "serviceValidate");
             String returnUrl = Application.configurationProperties()
               .getProperty(CallbackDiagnosticPage.class.getName()

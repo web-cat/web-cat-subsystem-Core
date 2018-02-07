@@ -1,6 +1,4 @@
 /*==========================================================================*\
- |  $Id: UserAuthenticator.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
- |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
@@ -31,7 +29,6 @@ import org.webcat.core.WCProperties;
  *  techniques.
  *
  *  @author Stephen Edwards
- *  @version $Id: UserAuthenticator.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
  */
 public interface UserAuthenticator
 {
@@ -51,9 +48,7 @@ public interface UserAuthenticator
      * @return true If configuration was successful and authenticator is
      *              ready for service
      */
-    public boolean configure( String       baseName,
-                              WCProperties properties
-                            );
+    public boolean configure(String baseName, WCProperties properties);
 
 
     // ----------------------------------------------------------
@@ -69,50 +64,10 @@ public interface UserAuthenticator
      *                 user, if one exists (or null, if not)
      * @return The current user object, or null if invalid login
      */
-    public User authenticate( String userName,
-                              String password,
-                              AuthenticationDomain domain,
-                              com.webobjects.eocontrol.EOEditingContext ec,
-                              LoginSession ls
-                            );
-
-
-    // ----------------------------------------------------------
-    /**
-     * Check whether users validated with this authenticator can
-     * change their password.  For authentication mechanisms using
-     * external databases or servers where no changes are allowed, the
-     * authenticator should return false.
-     *
-     * @return True if users associated with this authenticator can
-     *         change their password
-     */
-    public boolean canChangePassword();
-
-
-    // ----------------------------------------------------------
-    /**
-     * Change the user's password.  For authentication mechanisms using
-     * external databases or servers where no changes are allowed, an
-     * authenticator may simply return false for all requests.
-     *
-     * @param user        The user
-     * @param newPassword The password to change to
-     * @return True if the password change was successful
-     */
-    public boolean changePassword( User   user,
-                                   String newPassword );
-
-
-    // ----------------------------------------------------------
-    /**
-     * Change the user's password to a new random password, and e-mail's
-     * the user their new password.  For authentication mechanisms using
-     * external databases or servers where no changes are allowed, an
-     * authenticator may simply return false for all requests.
-     *
-     * @param user        The user
-     * @return True if the password change was successful
-     */
-    public boolean newRandomPassword( User user );
+    public User authenticate(
+        String userName,
+        String password,
+        AuthenticationDomain domain,
+        com.webobjects.eocontrol.EOEditingContext ec,
+        LoginSession ls);
 }

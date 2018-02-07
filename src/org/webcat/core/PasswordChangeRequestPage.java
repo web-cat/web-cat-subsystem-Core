@@ -150,8 +150,8 @@ public class PasswordChangeRequestPage
                                    == 1) ? "" : "and institution " )
                                 + "correctly.", false ), "4" );
                     }
-                    else if ( !u.authenticationDomain().authenticator()
-                                  .canChangePassword() )
+                    else if (!(u.authenticationDomain().authenticator()
+                        instanceof PasswordManagingUserAuthenticator))
                     {
                         errors.setObjectForKey(
                             new ErrorDictionaryPanel.ErrorMessage(

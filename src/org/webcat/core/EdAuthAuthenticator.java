@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: EdAuthAuthenticator.java,v 1.2 2011/03/07 18:44:37 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -24,11 +22,6 @@ package org.webcat.core;
 import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.NSDictionary;
 import edu.vt.middleware.eddo.*;
-import org.webcat.core.AuthenticationDomain;
-import org.webcat.core.EdAuthAuthenticator;
-import org.webcat.core.User;
-import org.webcat.core.UserAuthenticator;
-import org.webcat.core.WCProperties;
 import org.apache.log4j.Logger;
 
 // --------------------------------------------------------------------------
@@ -38,8 +31,6 @@ import org.apache.log4j.Logger;
  *  using LDAP.
  *
  *  @author Stephen Edwards
- *  @author  Last changed by $Author: stedwar2 $
- *  @version $Revision: 1.2 $, $Date: 2011/03/07 18:44:37 $
  */
 public class EdAuthAuthenticator
     implements UserAuthenticator
@@ -72,32 +63,17 @@ public class EdAuthAuthenticator
      * @return true If configuration was successful and authenticator is
      *              ready for service
      */
-    public boolean configure( String       baseName,
-                              WCProperties properties
-                            )
+    public boolean configure(String baseName, WCProperties properties)
     {
         try
         {
             dm = new DirectoryManager();
             pm = dm.createPersonManager();
         }
-        catch ( Exception e )
+        catch (Exception e)
         {
-            log.error( "failure connecting to EdAuth service", e );
+            log.error("failure connecting to EdAuth service", e);
         }
-
-//        Provider[] providers = Security.getProviders();
-//        for (int i = 0; i < providers.length; i++) {
-//            Provider provider = providers[i];
-//            log.warn("Provider name: " + provider.getName());
-//            log.warn("Provider information: " + provider.getInfo());
-//            log.warn("Provider version: " + provider.getVersion());
-//            Set entries = provider.entrySet();
-//            Iterator iterator = entries.iterator();
-//            while ( iterator.hasNext() ) {
-//                log.warn("Property entry: " + iterator.next());
-//            }
-//        }
         return true;
     }
 
@@ -115,17 +91,17 @@ public class EdAuthAuthenticator
      *                 user, if one exists (or null, if not)
      * @return The current user object, or null if invalid login
      */
-    public User authenticate( String               username,
-                              String               password,
-                              AuthenticationDomain domain,
-                              com.webobjects.eocontrol.EOEditingContext ec,
-                              LoginSession         ls
-                            )
+    public User authenticate(
+        String               username,
+        String               password,
+        AuthenticationDomain domain,
+        com.webobjects.eocontrol.EOEditingContext ec,
+        LoginSession         ls)
     {
         User user = null;
-        if ( authenticate( username, password ) )
+        if (authenticate(username, password))
         {
-            log.debug( "user " + username + " validated" );
+            log.debug("user " + username + " validated");
             try
             {
                 user = (User)EOUtilities.objectMatchingValues(
@@ -134,133 +110,72 @@ public class EdAuthAuthenticator
                         new Object[]{ username , domain              },
                         new String[]{ User.USER_NAME_KEY,
                                       User.AUTHENTICATION_DOMAIN_KEY }
-                    ) );
-                if ( user.authenticationDomain() != domain )
+                    ));
+                if (user.authenticationDomain() != domain)
                 {
-                    if ( user.authenticationDomain() == null )
+                    if (user.authenticationDomain() == null)
                     {
-                        user.setAuthenticationDomainRelationship( domain );
+                        user.setAuthenticationDomainRelationship(domain);
                     }
                     else
                     {
-                        log.warn(
-                                "user " + username
-                                + " successfully validated in '"
-                                + domain.displayableName()
-                                + "' but bound to '"
-                                + user.authenticationDomain().displayableName()
-                                + "'"
-                                );
+                        log.warn("user " + username
+                            + " successfully validated in '"
+                            + domain.displayableName() + "' but bound to '"
+                            + user.authenticationDomain().displayableName()
+                            + "'");
                         user = null;
                     }
                 }
             }
-            catch ( EOObjectNotAvailableException e )
+            catch (EOObjectNotAvailableException e)
             {
                 user = User.createUser(
-                         username,
-                         null,  // DO NOT MIRROR PASSWORD IN DATABASE
-                                // for security reasons
-                         domain,
-                         User.STUDENT_PRIVILEGES,
-                         ec
-                    );
-                log.info( "new user '"
-                          + username
-                          + "' ("
-                          + domain.displayableName()
-                          + ") created"
-                        );
+                    username,
+                    null,  // DO NOT MIRROR PASSWORD IN DATABASE
+                           // for security reasons
+                    domain,
+                    User.STUDENT_PRIVILEGES,
+                    ec);
+                log.info("new user '" + username + "' ("
+                    + domain.displayableName() + ") created");
             }
-            catch ( EOUtilities.MoreThanOneException e )
+            catch (EOUtilities.MoreThanOneException e)
             {
-                log.error( "user '"
-                           + username
-                           + "' ("
-                           + domain.displayableName()
-                           + "):",
-                           e
-                         );
+                log.error("user '" + username + "' ("
+                    + domain.displayableName() + "):", e);
             }
         }
         else
         {
-            log.info( "user " + username + "(" + domain.displayableName()
-                      + "): login validation failed" );
+            log.info("user " + username + "(" + domain.displayableName()
+                + "): login validation failed");
         }
 
         return user;
     }
 
+
+    // ----------------------------------------------------------
     private boolean authenticate( String username, String password )
     {
         boolean result = false;
         try
         {
-//            log.debug("a-`"+username+"` b-`"+password+"`");
-            result = pm.authenticatePerson( username, password );
+            result = pm.authenticatePerson(username, password);
         }
-        catch ( Exception e )
+        catch (Exception e)
         {
-            log.error( "authentication failure: ", e );
+            log.error("authentication failure: ", e);
         }
-        log.debug( "result = " + result );
+        log.debug("username = " + username + ", result = " + result);
         return result;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Check whether users validated with this authenticator can
-     * change their password.  For authentication mechanisms using
-     * external databases or servers where no changes are allowed, the
-     * authenticator should return false.
-     *
-     * @return True if users associated with this authenticator can
-     *         change their password
-     */
-    public boolean canChangePassword()
-    {
-        return false;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Change the user's password.  For authentication mechanisms using
-     * external databases or servers where no changes are allowed, an
-     * authenticator may simply return false for all requests.
-     *
-     * @param user        The user
-     * @param newPassword The password to change to
-     * @return True if the password change was successful
-     */
-    public boolean changePassword( User   user,
-                                   String newPassword )
-    {
-        return false;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Change the user's password to a new random password, and e-mail's
-     * the user their new password.  For authentication mechanisms using
-     * external databases or servers where no changes are allowed, an
-     * authenticator may simply return false for all requests.
-     *
-     * @param user        The user
-     * @return True if the password change was successful
-     */
-    public boolean newRandomPassword( User user )
-    {
-        return false;
     }
 
 
     //~ Instance/static variables .............................................
 
-    static Logger log = Logger.getLogger( EdAuthAuthenticator.class );
+    static Logger log = Logger.getLogger(EdAuthAuthenticator.class);
 
     private DirectoryManager dm;
     private PersonManager    pm;

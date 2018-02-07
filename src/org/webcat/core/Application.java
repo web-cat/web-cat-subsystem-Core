@@ -1,6 +1,4 @@
 /*==========================================================================*\
- |  $Id: Application.java,v 1.26 2014/06/16 16:02:29 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
@@ -99,8 +97,6 @@ import er.extensions.foundation.ERXValueUtilities;
  * of exception handling for the Web-CAT application.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.26 $, $Date: 2014/06/16 16:02:29 $
  */
 public class Application
     extends er.extensions.appserver.ERXApplication
@@ -620,14 +616,8 @@ public class Application
 
 
     // ----------------------------------------------------------
-    /**
-     * Redirect to the login page.
-     * @param context the context of the request
-     * @return The login page
-     */
-    public WORedirect gotoLoginPage(WOContext context)
+    public static String loginUrl(WOContext context)
     {
-        WORedirect redirect = (WORedirect)pageWithName("WORedirect", context);
         String dest = configurationProperties().getProperty("login.url");
         if (dest == null)
         {
@@ -638,6 +628,20 @@ public class Application
             dest = completeURLWithRequestHandlerKey(
                 context, null, null, null, false, 0);
         }
+        return dest;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Redirect to the login page.
+     * @param context the context of the request
+     * @return The login page
+     */
+    public WORedirect gotoLoginPage(WOContext context)
+    {
+        WORedirect redirect = (WORedirect)pageWithName("WORedirect", context);
+        String dest = loginUrl(context);
         log.debug("gotoLoginPage: " + dest);
         redirect.setUrl(dest);
         return redirect;

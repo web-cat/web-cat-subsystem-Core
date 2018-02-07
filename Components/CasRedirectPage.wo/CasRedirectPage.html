@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html><head>
+<title>CAS Login Redirect</title>
+<wo:if condition="$hasCookies"><wo name="Refresh"/></wo:if>
+
+<style type="text/css">
+body {
+    font-family: "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif;
+    font-size: 11pt;
+    line-height: 125%;
+}
+.warning {
+    padding: 10px;
+    border: 1px solid #888800;
+    background-color: #FFFFCC;
+}
+.error {
+    padding: 10px;
+    border: 1px solid #880000;
+    background-color: #FFCCCC;
+}
+</style>
+</head><body>
+<wo:if condition="$hasCookies">
+<!--
+  <p>You are being automatically forwarded to the
+  <wo:link href="$loginUrl">CAS login page</wo:link>
+  ...</p>
+-->
+</wo:if><wo:else>
+  <p>Please
+  <wo:link href="$nextUrl">reopen this page in your regular browser</wo:link>
+  to complete your submission.
+  (cookies must be enabled for CAS login to work).</p>
+</wo:else>
+</body></html>

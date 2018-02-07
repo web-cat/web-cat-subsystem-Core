@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: DirectAction.java,v 1.8 2012/02/13 02:53:52 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2012 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -49,8 +47,6 @@ import org.webcat.woextensions.WCEC;
  * The default direct action class for Web-CAT.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.8 $, $Date: 2012/02/13 02:53:52 $
  */
 public class DirectAction
     extends WCDirectActionWithSession
@@ -87,16 +83,21 @@ public class DirectAction
      * request, in which case a session is created and the session's current
      * page is returned
      */
-    @SuppressWarnings("unchecked")
     public WOActionResults defaultAction()
     {
         if (Application.wcApplication().needsInstallation())
         {
             return (new install(request())).defaultAction();
         }
-        NSMutableDictionary<?, ?> errors =
+        if (log.isDebugEnabled())
+        {
+            log.debug("defaultAction(): uri = " + request().uri());
+            log.debug("formValues = " + request().formValues());
+        }
+        NSMutableDictionary<Object, Object> errors =
             new NSMutableDictionary<Object, Object>();
-        NSMutableDictionary extra = request().formValues().mutableClone();
+        NSMutableDictionary<String, NSArray<Object>> extra =
+            request().formValues().mutableClone();
         for (String key : keysToScreen)
         {
             extra.removeObjectForKey(key);
@@ -107,17 +108,34 @@ public class DirectAction
             log.debug("formValues = " + request().formValues());
         }
 
-        // Look for an existing session via cookie
-        Session existingSession = (Session)existingSession();
-        if ((existingSession != null
-            && existingSession.isLoggedIn()
-            && !existingSession.isTerminating())
+        WOResponse result = checkForCas(request());
+        if (result != null)
+        {
+            return result;
+        }
 
+        // Look for an existing session via cookie
+        if (isLoggedIn()
             // Or, if no existing session, try logging in
             || tryLogin(request(), errors))
         {
             Session session = (Session)session();
-            String pageId = request().stringFormValueForKey("page");
+            WORequest req = request();
+            CasRequestInfo info = peekAtRequest(req);
+            if (info != null)
+            {
+                if (req.stringFormValueForKey(CONTEXT_ID_KEY) != null
+                    && info.action != null
+                    && !info.action.isEmpty()
+                    && !"default".equals(info.action))
+                {
+                    return casLoginAction();
+                }
+                info = recallRequest(req);
+                req = info.request;
+            }
+
+            String pageId = req.stringFormValueForKey("page");
             log.debug("target page = " + pageId);
             WOComponent startPage = null;
             if (pageId != null)
@@ -147,7 +165,7 @@ public class DirectAction
             {
                 startPage = pageWithName(session.currentPageName());
             }
-            WOResponse result = startPage.generateResponse();
+            result = startPage.generateResponse();
 
             // Update the current theme in the cookie when the user logs in,
             // so that it is always the most recent theme in situations where
@@ -163,10 +181,15 @@ public class DirectAction
                 result.addCookie(
                     new WOCookie(
                         AuthenticationDomain.COOKIE_LAST_USED_INSTITUTION,
-                        domain.propertyName()
-                            .substring("authenticator.".length()),
+                        domain.name(),
                         context().urlWithRequestHandlerKey(null, null, null),
                         null, ONE_YEAR, false));
+                result.addCookie(
+                    new WOCookie(
+                        CONTEXT_ID_KEY,
+                        "none",
+                        context().urlWithRequestHandlerKey(null, null, null),
+                        null, new NSTimestamp(), false));
             }
             if (log.isDebugEnabled())
             {
@@ -177,17 +200,151 @@ public class DirectAction
         }
         else
         {
-            log.debug("login failed");
-            LoginPage loginPage = pageWithName(org.webcat.core.LoginPage.class);
-            loginPage.errors   = errors;
-            loginPage.userName = request().stringFormValueForKey("UserName");
-            loginPage.extraKeys = extra;
-            if (domain != null)
-            {
-                loginPage.domain = domain;
-            }
-            return loginPage;
+            return loginFailed(errors, extra);
         }
+    }
+
+
+    // ----------------------------------------------------------
+    private WOActionResults loginFailed(
+        NSMutableDictionary<Object, Object> errors,
+        NSMutableDictionary<String, NSArray<Object>> extra)
+    {
+        log.debug("login failed");
+        LoginPage loginPage = pageWithName(org.webcat.core.LoginPage.class);
+        loginPage.errors   = errors;
+        loginPage.userName = request().stringFormValueForKey("UserName");
+        loginPage.extraKeys = extra;
+        if (domain != null)
+        {
+            loginPage.domain = domain;
+        }
+        return loginPage;
+    }
+
+
+    // ----------------------------------------------------------
+    protected WOResponse checkForCas(WORequest request)
+    {
+        log.debug("checkforCas()");
+        WOResponse result = null;
+        AuthenticationDomain d = null;
+
+        String ticket = request.stringFormValueForKey("ticket");
+        if (ticket != null)
+        {
+            log.debug("checkforCas(): ticket found, passing through");
+            return result;
+        }
+        if (isLoggedIn())
+        {
+            log.debug("checkforCas(): already logged in, passing through");
+            return result;
+        }
+
+        String contextId = request.stringFormValueForKey(CONTEXT_ID_KEY);
+        if (contextId != null)
+        {
+            log.debug("found contextId = " + contextId);
+            CasRequestInfo info = recallRequest(request);
+            if (info != null)
+            {
+                request = info.request;
+                log.debug("reloading request, form values = "
+                    + request.formValues());
+            }
+        }
+
+        String auth = request.stringFormValueForKey("AuthenticationDomain");
+        if (auth != null)
+        {
+            log.debug("found AuthenticationDomain form value");
+            int authIndex = -1;
+            try
+            {
+                // This conversion handles null correctly
+                authIndex = ERXValueUtilities.intValueWithDefault(auth, -1);
+            }
+            catch (Exception e)
+            {
+                // Silently ignore failed conversions, which will be
+                // treated as no selection
+            }
+            if (authIndex >= 0)
+            {
+                d = AuthenticationDomain.authDomains().get(authIndex);
+            }
+        }
+        if (d == null)
+        {
+            if (auth == null)
+            {
+                log.debug("checking institution form value");
+                auth = request.stringFormValueForKey("institution");
+            }
+            if (auth == null)
+            {
+                log.debug("checking d form value");
+                auth = request.stringFormValueForKey("d");
+            }
+            if (auth == null)
+            {
+                log.debug("checking auth domain cookie");
+                auth = request.cookieValueForKey(
+                    AuthenticationDomain.COOKIE_LAST_USED_INSTITUTION);
+            }
+            if (auth != null && !auth.isEmpty())
+            {
+                log.debug("checkForCas(): looking up domain: " + auth);
+                try
+                {
+                    d = AuthenticationDomain.authDomainByName(auth);
+                }
+                catch (EOObjectNotAvailableException e)
+                {
+                    log.error("Unrecognized institution parameter provided: '"
+                        + auth + "'", e);
+                }
+                catch (EOUtilities.MoreThanOneException e)
+                {
+                    log.error("Ambiguous institution parameter provided: '"
+                        + auth + "'", e);
+                }
+            }
+        }
+
+        if (d != null)
+        {
+            log.debug("checkForCas(): found domain: " + d);
+            if (d.authenticator() instanceof CasAuthenticator)
+            {
+                log.debug("checkForCas(): creating CAS redirect page");
+                CasAuthenticator authenticator =
+                    (CasAuthenticator)d.authenticator();
+                String returnUrl = Application
+                    .completeURLWithRequestHandlerKey(
+                        context(), "wa", "casLogin", null, true, 0);
+                log.debug("returnUrl = " + returnUrl);
+                String id = rememberRequest(request, d.name(),
+                    request.requestHandlerPath());
+//                if (request.cookies().size() > 0)
+//                {
+//                    WORedirect redir= (WORedirect)pageWithName("WORedirect");
+//                    redir.setUrl(authenticator.casLoginUrl(returnUrl));
+//                    result = redir.generateResponse();
+//                }
+//                else
+                {
+                    CasRedirectPage redir =
+                        pageWithName(CasRedirectPage.class);
+                    redir.contextId = id;
+                    redir.loginUrl = authenticator.casLoginUrl(returnUrl);
+                    result = redir.generateResponse();
+                }
+            }
+        }
+
+        return result;
     }
 
 
@@ -219,8 +376,12 @@ public class DirectAction
                 && request.formValueForKey("UserName") == null
                 && request.formValueForKey("p") == null
                 && request.formValueForKey("UserPassword") == null
-                && request.formValueForKey("AuthenticationDomain") == null))
+                && request.formValueForKey("AuthenticationDomain") == null
+                && request.formValueForKey("ticket") == null))
         {
+            log.debug("tryLogin(): mismatched parameters");
+            log.debug("  form values = " + request.formValues());
+            log.debug("  ticket = " + request.stringFormValueForKey("ticket"));
             return result;
         }
 
@@ -241,6 +402,22 @@ public class DirectAction
         int authIndex = -1;
         String auth = request.stringFormValueForKey("d");
         domain = null;
+
+        String ticket = request.stringFormValueForKey("ticket");
+        if (ticket != null)
+        {
+            log.debug("tryLogin(): ticket found");
+            password = ticket;
+            userName = Application.completeURLWithRequestHandlerKey(
+                context(), "wa", "casLogin", null, true, 0);
+            CasRequestInfo info = peekAtRequest(request);
+            if (info != null)
+            {
+                auth = info.auth;
+            }
+            log.debug("ticket = " + ticket + ", url = " + userName
+                + ", auth = " + auth);
+        }
 
         if (userName == null)
         {
@@ -521,6 +698,73 @@ public class DirectAction
 
 
     // ----------------------------------------------------------
+    public WOActionResults casLoginAction()
+    {
+        log.debug("entering casLogin()");
+        WOActionResults result = null;
+        if (!isLoggedIn())
+        {
+            result = checkForCas(request());
+            if (result != null)
+            {
+                return result;
+            }
+        }
+
+        CasRequestInfo info = null;
+        NSMutableDictionary<Object, Object> errors =
+            new NSMutableDictionary<Object, Object>();
+        // Look for an existing session via cookie
+        if (isLoggedIn()
+            // Or, if no existing session, try logging in
+            || tryLogin(request(), errors))
+        {
+            session();
+            log.debug("casLogin(): now logged in, redirecting to real action");
+            info = peekAtRequest(request());
+            if (info != null)
+            {
+                if ("submit".equals(info.action))
+                {
+                    result = submitAction();
+                }
+                else if ("report".equals(info.action))
+                {
+                    result = reportAction();
+                }
+            }
+            if (result == null)
+            {
+                result = defaultAction();
+            }
+        }
+        else
+        {
+            result = loginFailed(errors, null);
+        }
+        WOResponse response = (result instanceof WOResponse)
+            ? (WOResponse)result
+            : result.generateResponse();
+        if (info != null && info.auth != null)
+        {
+            response.addCookie(
+                new WOCookie(
+                    AuthenticationDomain.COOKIE_LAST_USED_INSTITUTION,
+                    info.auth,
+                    context().urlWithRequestHandlerKey(null, null, null),
+                    null, ONE_YEAR, false));
+        }
+        response.addCookie(
+            new WOCookie(
+                CONTEXT_ID_KEY,
+                "none",
+                context().urlWithRequestHandlerKey(null, null, null),
+                null, new NSTimestamp(), false));
+        return response;
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * This action is designed for use by content management systems
      * interacting with Web-CAT, its grades database, and its submission
@@ -553,20 +797,36 @@ public class DirectAction
      */
     public WOActionResults submitAction()
     {
+        log.debug("submitAction()");
+        WOActionResults result = checkForCas(request());
+        if (result != null)
+        {
+            return result;
+        }
+
         // TODO: this entire action should be moved to a separate
         // class in the Grader subsystem.
         NSMutableDictionary<?, ?> errors =
             new NSMutableDictionary<Object, Object>();
         log.debug("entering submitAction()");
         log.debug("hasSession() = " + context().hasSession());
-        WOActionResults result = null;
-        if (tryLogin(request(), errors))
+        log.debug("submitAction(): attempting login/session check");
+        if (isLoggedIn() || tryLogin(request(), errors))
         {
+            log.debug("submitAction(): authentication success");
+            Session session = (Session)session();
+            WORequest req = request();
+            CasRequestInfo info = recallRequest(req);
+            if (info != null)
+            {
+                req = info.request;
+            }
+
             log.debug("calling subsystem handler");
             Subsystem subsystem = Application.wcApplication()
                 .subsystemManager().subsystem("Grader");
             result = subsystem.handleDirectAction(
-                request(), (Session)session(), context());
+                req, session, context());
         }
         else
         {
@@ -589,20 +849,36 @@ public class DirectAction
      */
     public WOActionResults reportAction()
     {
+        log.debug("reportAction()");
+        WOActionResults result = checkForCas(request());
+        if (result != null)
+        {
+            return result;
+        }
+
         // TODO: this entire action should be moved to a separate
         // class in the Grader subsystem.
         log.debug("entering reportAction()");
         log.debug("hasSession() = " + context().hasSession());
         log.debug("check 2 = " + request().isSessionIDInRequest());
-        WOActionResults result = null;
-        Session mySession = (Session)session();
-        if (mySession != null)
+        NSMutableDictionary<?, ?> errors =
+            new NSMutableDictionary<Object, Object>();
+        if (isLoggedIn() || tryLogin(request(), errors))
         {
+            log.debug("reportAction(): authentication success");
+            Session session = (Session)session();
+            WORequest req = request();
+            CasRequestInfo info = recallRequest(req);
+            if (info != null)
+            {
+                req = info.request;
+            }
+
             log.debug("calling subsystem handler");
             Subsystem subsystem = Application.wcApplication()
                 .subsystemManager().subsystem("Grader");
             result = subsystem.handleDirectAction(
-                request(), mySession, context());
+                req, session, context());
         }
         else
         {
@@ -613,11 +889,15 @@ public class DirectAction
                 + "through <a href=\""
                 + context().urlWithRequestHandlerKey("wa", "default", null)
                 + "\">Web-CAT's main page</a> to view your report.";
-            page.errors = new NSDictionary<Object, Object>(msg, msg);
+            if (errors.count() == 0)
+            {
+                errors.takeValueForKey(msg, msg);
+            }
+            page.errors = errors;
             result = page.generateResponse();
         }
         log.debug("exiting reportAction()");
-        forgetSession();
+        // forgetSession();
         return result;
     }
 
@@ -662,6 +942,95 @@ public class DirectAction
     }
 
 
+    // ----------------------------------------------------------
+    private String rememberRequest(
+        WORequest request, String auth, String action)
+    {
+        String id = java.util.UUID.randomUUID().toString();
+//        rememberRequest(id, request, auth, action);
+        synchronized (casRequests)
+        {
+            casRequests.put(id, new CasRequestInfo(request, auth, action));
+        }
+        log.debug("rememberRequest(" + id + ") with action = " + action);
+        return id;
+    }
+
+
+    // ----------------------------------------------------------
+//    private void rememberRequest(
+//        String id, WORequest request, String auth, String action)
+//    {
+//        log.debug("rememberRequest(" + id + ")");
+//        synchronized (casRequests)
+//        {
+//            casRequests.put(id, new CasRequestInfo(request, auth, action));
+//        }
+//    }
+
+
+    // ----------------------------------------------------------
+    private String casRequestInfoKey(WORequest request)
+    {
+        String id = request.stringFormValueForKey(CONTEXT_ID_KEY);
+        if (id == null)
+        {
+            id = request.cookieValueForKey(CONTEXT_ID_KEY);
+        }
+        log.debug("casRequestInfoKey() = " + id);
+        return id;
+    }
+
+
+    // ----------------------------------------------------------
+    private CasRequestInfo peekAtRequest(WORequest req)
+    {
+        CasRequestInfo request = null;
+        String id = casRequestInfoKey(req);
+        log.debug("peekAtRequest(" + id + ")");
+        if (id != null)
+        {
+            synchronized (casRequests)
+            {
+                request = casRequests.get(id);
+            }
+        }
+        log.debug("peekAtRequest() = " + request);
+        return request;
+    }
+
+
+    // ----------------------------------------------------------
+    private CasRequestInfo recallRequest(WORequest req)
+    {
+        CasRequestInfo request = null;
+        String id = casRequestInfoKey(req);
+        log.debug("recallRequest(" + id + ")");
+        if (id != null)
+        {
+            synchronized (casRequests)
+            {
+                log.debug("recallRequest() cache = " + casRequests.count());
+                request = casRequests.get(id);
+                log.debug("recallRequest() check = " + request);
+                request = casRequests.removeObjectForKey(id);
+            }
+        }
+        log.debug("recallRequest() = " + request);
+        return request;
+    }
+
+
+    // ----------------------------------------------------------
+    private boolean isLoggedIn()
+    {
+        Session existingSession = (Session)existingSession();
+        return existingSession != null
+            && existingSession.isLoggedIn()
+            && !existingSession.isTerminating();
+    }
+
+
     //~ Instance/static variables .............................................
 
     private User                 user    = null;
@@ -674,10 +1043,31 @@ public class DirectAction
         "UserPassword",
         "d",
         "institution",
-        "AuthenticationDomain"
+        "AuthenticationDomain",
+        "ticket"
     };
     // One year, in seconds
-    private static final int ONE_YEAR = 60 * 60 * 24 * 365;
+    public static final int ONE_YEAR = 60 * 60 * 24 * 365;
+    public static final int TEN_MINUTES = 60 * 10;
+
+    private static class CasRequestInfo
+    {
+        public WORequest request;
+        public String auth;
+        public String action;
+        public CasRequestInfo(WORequest request, String auth, String action)
+        {
+            this.request = request;
+            this.auth = auth;
+            this.action = action;
+        }
+    }
+
+    private static final
+        NSMutableDictionary<String, CasRequestInfo> casRequests =
+        new NSMutableDictionary<String, CasRequestInfo>();
+
+    public static final String CONTEXT_ID_KEY = "owc_c";
 
     static Logger log = Logger.getLogger(DirectAction.class);
 }

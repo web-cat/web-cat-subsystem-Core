@@ -28,6 +28,7 @@ import com.webobjects.foundation.*;
 import org.webcat.core.Application;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.DatabaseAuthenticator;
+import org.webcat.core.PasswordManagingUserAuthenticator;
 import org.webcat.core.User;
 import org.webcat.core.WCConfigurationFile;
 import org.webcat.woextensions.ECAction;
@@ -92,7 +93,8 @@ public class InstallPage6
             run(new ECAction() { public void action() {
                 AuthenticationDomain domain =
                     AuthenticationDomain.authDomainByName(authDomainName);
-                canSetPassword = domain.authenticator().canChangePassword();
+                canSetPassword = domain.authenticator()
+                    instanceof PasswordManagingUserAuthenticator;
                 if (username != null && !username.equals(""))
                 {
                     NSArray<?> users = EOUtilities.objectsMatchingValues(
