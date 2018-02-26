@@ -20,18 +20,23 @@
 
 package org.webcat.core;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.log4j.Logger;
+import org.webcat.core.lti.LTILaunchRequest;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
+import net.oauth.OAuth;
+import net.oauth.OAuthAccessor;
+import net.oauth.OAuthConsumer;
+import net.oauth.OAuthMessage;
+import net.oauth.OAuthValidator;
+import net.oauth.SimpleOAuthValidator;
+import net.oauth.signature.OAuthSignatureMethod;
 
 //-------------------------------------------------------------------------
 /**
@@ -64,56 +69,6 @@ public class CallbackDiagnosticPage
     @Override
     public void appendToResponse(WOResponse aResponse, WOContext aContext)
     {
-        String ticket = aContext.request().stringFormValueForKey("ticket");
-        if (ticket != null)
-        {
-            log.debug("received ticket: " + ticket);
-
-            String validationUrl = Application.configurationProperties()
-              .getProperty(CallbackDiagnosticPage.class.getName()
-              + ".validationUrl",
-              "https://login.middleware.vt.edu/profile/cas/"
-              + "serviceValidate");
-            String returnUrl = Application.configurationProperties()
-              .getProperty(CallbackDiagnosticPage.class.getName()
-              + ".returnUrl",
-              "https://web-cat.cs.vt.edu/Web-CAT/WebObjects/Web-CAT.woa/"
-              + "wa/casCallback");
-
-            try
-            {
-                // given a url open a connection
-                URLConnection c = new URL(validationUrl
-                    + "?ticket="
-                    + URLEncoder.encode(ticket, "UTF-8")
-                    + "&service="
-                    + URLEncoder.encode(returnUrl, "UTF-8")).openConnection();
-
-                // set connection timeout to 5 sec and read timeout to 10 sec
-                c.setConnectTimeout(5000);
-                c.setReadTimeout(10000);
-
-                // get a stream to read data from
-                BufferedReader in = new BufferedReader(
-                    new InputStreamReader(c.getInputStream()));
-                StringBuilder content = new StringBuilder(1024);
-                String line = in.readLine();
-                while (line != null)
-                {
-                    content.append(line);
-                    line = in.readLine();
-                }
-
-                response = content.toString();
-
-                in.close();
-            }
-            catch (IOException e)
-            {
-                log.error(e);
-            }
-        }
-
         super.appendToResponse(aResponse, aContext);
     }
 
@@ -143,7 +98,65 @@ public class CallbackDiagnosticPage
     }
 
 
+    // ----------------------------------------------------------
+    public String oauthSignature()
+    {
+        WORequest request = context().request();
+//        String consumerKey = "QwertAsdfg";
+//        String consumerSecret = "GfdsaTrewq";
+//        String apiUrl = "https://web-cat2.cs.vt.edu/Web-CAT/WebObjects/"
+//            + "Web-CAT.woa/wa/ltiLaunch";
+//        String consumerSig = request.stringFormValueForKey("oauth_signature");
+//        List<OAuth.Parameter> params = new ArrayList<OAuth.Parameter>();
+        log.debug("begin request parameters {");
+        for (String key : request.formValueKeys())
+        {
+            String value = request.stringFormValueForKey(key);
+            log.debug("    " + key + " : " + value);
+//            params.add(new OAuth.Parameter(key, value));
+        }
+        log.debug("} end request parameters");
+//        OAuthMessage message = new OAuthMessage("POST", apiUrl, params);
+//        OAuthConsumer consumer =
+//            new OAuthConsumer(null, consumerKey, consumerSecret, null);
+//        OAuthAccessor accessor = new OAuthAccessor(consumer);
+//
+        String signature = null;
+//        try
+//        {
+//            log.debug("request parameters: " + params);
+//            log.debug("Signature base string: "
+//                + OAuthSignatureMethod.getBaseString(message));
+//            log.debug("consumer sig: " + consumerSig);
+//            log.debug("checking validity");
+//            try
+//            {
+//                VALIDATOR.validateMessage(message, accessor);
+//                log.debug("request is valid!");
+//            }
+//            catch (Exception e)
+//            {
+//                log.error("request is invalid: " + e.getClass().getSimpleName()
+//                    + ": " + e.getMessage());
+//            }
+//        }
+//        catch (Exception e)
+//        {
+//            log.error(e);
+//        }
+        LTILaunchRequest lti = new LTILaunchRequest(
+            context(), session().defaultEditingContext());
+        log.debug("LTI request is valid = " + lti.isValid());
+        log.debug("LMS instance = " + lti.lmsInstance());
+        log.debug("course name = " + lti.courseName());
+        log.debug("LTI user id = " + lti.userId());
+        log.debug("user = " + lti.user());
+        return signature;
+    }
+
+
     //~ Static/instance variables .............................................
 
+    private static OAuthValidator VALIDATOR = new SimpleOAuthValidator();
     static Logger log = Logger.getLogger(CallbackDiagnosticPage.class);
 }

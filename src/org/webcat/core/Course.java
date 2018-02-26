@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: Course.java,v 1.5 2012/06/22 16:23:17 aallowat Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2012 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -36,8 +34,6 @@ import com.webobjects.foundation.NSMutableSet;
  * semesters (represented by separate course offerings).
  *
  * @author  Stephen Edwards
- * @author  Last changed by: $Author: aallowat $
- * @version $Revision: 1.5 $, $Date: 2012/06/22 16:23:17 $
  */
 public class Course
     extends _Course
@@ -133,6 +129,7 @@ public class Course
         }
         return value;
     }
+
 
     // ----------------------------------------------------------
     @Override

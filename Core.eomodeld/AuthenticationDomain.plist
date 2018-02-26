@@ -36,6 +36,7 @@
         defaultEmailDomain, 
         defaultURLPattern, 
         displayableName, 
+        lmsInstances, 
         propertyName, 
         timeFormat, 
         timeZoneName
@@ -43,4 +44,13 @@
     externalName = TAUTHENTICATIONDOMAIN; 
     name = AuthenticationDomain; 
     primaryKeyAttributes = (id); 
+    relationships = (
+        {
+            destination = LMSInstance; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = institutionId; sourceAttribute = id; }); 
+            name = lmsInstances; 
+        }
+    ); 
 }

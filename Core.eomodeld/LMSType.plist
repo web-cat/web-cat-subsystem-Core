@@ -1,0 +1,22 @@
+{
+    attributes = (
+        {name = id; prototypeName = id; }, 
+        {allowsNull = N; columnName = name; name = name; prototypeName = tinyText; }
+    ); 
+    attributesUsedForLocking = (name); 
+    className = "org.webcat.core.lti.LMSType"; 
+    classProperties = (lmsInstances, name); 
+    externalName = LMSType; 
+    fetchSpecificationDictionary = {}; 
+    name = LMSType; 
+    primaryKeyAttributes = (id); 
+    relationships = (
+        {
+            destination = LMSInstance; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = lmsTypeId; sourceAttribute = id; }); 
+            name = lmsInstances; 
+        }
+    ); 
+}

@@ -144,6 +144,9 @@ public abstract class _CourseOffering
     public static final String LABEL_KEY = "label";
     public static final ERXKey<String> label =
         new ERXKey<String>(LABEL_KEY);
+    public static final String LMS_CONTEXT_ID_KEY = "lmsContextId";
+    public static final ERXKey<String> lmsContextId =
+        new ERXKey<String>(LMS_CONTEXT_ID_KEY);
     public static final String MOODLE_GROUP_ID_KEY = "moodleGroupId";
     public static final ERXKey<Long> moodleGroupId =
         new ERXKey<Long>(MOODLE_GROUP_ID_KEY);
@@ -157,6 +160,9 @@ public abstract class _CourseOffering
     public static final String COURSE_KEY = "course";
     public static final ERXKey<org.webcat.core.Course> course =
         new ERXKey<org.webcat.core.Course>(COURSE_KEY);
+    public static final String LMS_INSTANCE_KEY = "lmsInstance";
+    public static final ERXKey<org.webcat.core.lti.LMSInstance> lmsInstance =
+        new ERXKey<org.webcat.core.lti.LMSInstance>(LMS_INSTANCE_KEY);
     public static final String SEMESTER_KEY = "semester";
     public static final ERXKey<org.webcat.core.Semester> semester =
         new ERXKey<org.webcat.core.Semester>(SEMESTER_KEY);
@@ -288,6 +294,35 @@ public abstract class _CourseOffering
                 + value + "): was " + label() );
         }
         takeStoredValueForKey( value, "label" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>lmsContextId</code> value.
+     * @return the value of the attribute
+     */
+    public String lmsContextId()
+    {
+        return (String)storedValueForKey( "lmsContextId" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Change the value of this object's <code>lmsContextId</code>
+     * property.
+     *
+     * @param value The new value for this property
+     */
+    public void setLmsContextId( String value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setLmsContextId("
+                + value + "): was " + lmsContextId() );
+        }
+        takeStoredValueForKey( value, "lmsContextId" );
     }
 
 
@@ -435,6 +470,67 @@ public abstract class _CourseOffering
         else
         {
             addObjectToBothSidesOfRelationshipWithKey( value, "course" );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the entity pointed to by the <code>lmsInstance</code>
+     * relationship.
+     * @return the entity in the relationship
+     */
+    public org.webcat.core.lti.LMSInstance lmsInstance()
+    {
+        return (org.webcat.core.lti.LMSInstance)storedValueForKey( "lmsInstance" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the entity pointed to by the <code>lmsInstance</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>setLmsInstanceRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void setLmsInstance( org.webcat.core.lti.LMSInstance value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setLmsInstance("
+                + value + "): was " + lmsInstance() );
+        }
+        takeStoredValueForKey( value, "lmsInstance" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Set the entity pointed to by the <code>lmsInstance</code>
+     * relationship.  This method is a type-safe version of
+     * <code>addObjectToBothSidesOfRelationshipWithKey()</code>.
+     *
+     * @param value The new entity to relate to
+     */
+    public void setLmsInstanceRelationship(
+        org.webcat.core.lti.LMSInstance value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "setLmsInstanceRelationship("
+                + value + "): was " + lmsInstance() );
+        }
+        if ( value == null )
+        {
+            org.webcat.core.lti.LMSInstance object = lmsInstance();
+            if ( object != null )
+                removeObjectFromBothSidesOfRelationshipWithKey( object, "lmsInstance" );
+        }
+        else
+        {
+            addObjectToBothSidesOfRelationshipWithKey( value, "lmsInstance" );
         }
     }
 

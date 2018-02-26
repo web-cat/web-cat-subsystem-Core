@@ -205,6 +205,9 @@ public abstract class _User
     public static final String GRADER_FOR_KEY = "graderFor";
     public static final ERXKey<org.webcat.core.CourseOffering> graderFor =
         new ERXKey<org.webcat.core.CourseOffering>(GRADER_FOR_KEY);
+    public static final String LMS_IDENTITIES_KEY = "lmsIdentities";
+    public static final ERXKey<org.webcat.core.lti.LMSIdentity> lmsIdentities =
+        new ERXKey<org.webcat.core.lti.LMSIdentity>(LMS_IDENTITIES_KEY);
     public static final String PASSWORD_CHANGE_REQUEST_KEY = "passwordChangeRequest";
     public static final ERXKey<org.webcat.core.PasswordChangeRequest> passwordChangeRequest =
         new ERXKey<org.webcat.core.PasswordChangeRequest>(PASSWORD_CHANGE_REQUEST_KEY);
@@ -1609,6 +1612,186 @@ public abstract class _User
         for (org.webcat.core.CourseOffering object : graderFor())
         {
             deleteGraderForRelationship(object);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the entities pointed to by the <code>lmsIdentities</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    @SuppressWarnings("unchecked")
+    public NSArray<org.webcat.core.lti.LMSIdentity> lmsIdentities()
+    {
+        return (NSArray<org.webcat.core.lti.LMSIdentity>)
+            storedValueForKey("lmsIdentities");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>lmsIdentities</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setLmsIdentities(
+        NSMutableArray<org.webcat.core.lti.LMSIdentity>  value)
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug("setLmsIdentities("
+                + value + "): was " + lmsIdentities());
+        }
+        takeStoredValueForKey(value, "lmsIdentities");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>lmsIdentities</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToLmsIdentitiesRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToLmsIdentities( org.webcat.core.lti.LMSIdentity value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToLmsIdentities("
+                + value + "): was " + lmsIdentities() );
+        }
+        NSMutableArray<org.webcat.core.lti.LMSIdentity> array =
+            (NSMutableArray<org.webcat.core.lti.LMSIdentity>)lmsIdentities();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>lmsIdentities</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromLmsIdentitiesRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromLmsIdentities( org.webcat.core.lti.LMSIdentity value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromLmsIdentities("
+                + value + "): was " + lmsIdentities() );
+        }
+        NSMutableArray<org.webcat.core.lti.LMSIdentity> array =
+            (NSMutableArray<org.webcat.core.lti.LMSIdentity>)lmsIdentities();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>lmsIdentities</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToLmsIdentitiesRelationship( org.webcat.core.lti.LMSIdentity value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToLmsIdentitiesRelationship("
+                + value + "): was " + lmsIdentities() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "lmsIdentities" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>lmsIdentities</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromLmsIdentitiesRelationship( org.webcat.core.lti.LMSIdentity value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromLmsIdentitiesRelationship("
+                + value + "): was " + lmsIdentities() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "lmsIdentities" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>lmsIdentities</code> relationship.
+     *
+     * @return The new entity
+     */
+    public org.webcat.core.lti.LMSIdentity createLmsIdentitiesRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createLmsIdentitiesRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "LMSIdentity" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "lmsIdentities" );
+        return (org.webcat.core.lti.LMSIdentity)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>lmsIdentities</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteLmsIdentitiesRelationship( org.webcat.core.lti.LMSIdentity value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteLmsIdentitiesRelationship("
+                + value + "): was " + lmsIdentities() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "lmsIdentities" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>lmsIdentities</code> relationship.
+     */
+    public void deleteAllLmsIdentitiesRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllLmsIdentitiesRelationships(): was "
+                + lmsIdentities() );
+        }
+        for (org.webcat.core.lti.LMSIdentity object : lmsIdentities())
+        {
+            deleteLmsIdentitiesRelationship(object);
         }
     }
 

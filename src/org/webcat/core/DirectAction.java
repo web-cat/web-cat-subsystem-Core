@@ -19,6 +19,8 @@
 
 package org.webcat.core;
 
+import java.util.HashMap;
+import java.util.Map;
 import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
 import com.webobjects.eocontrol.*;
@@ -40,6 +42,8 @@ import org.webcat.core.WCComponent;
 import org.apache.log4j.Logger;
 import org.webcat.core.actions.WCDirectActionWithSession;
 import org.webcat.core.install.*;
+import org.webcat.core.lti.LTILaunchRequest;
+import org.webcat.woextensions.ECActionWithResult;
 import org.webcat.woextensions.WCEC;
 
 //-------------------------------------------------------------------------
@@ -509,14 +513,7 @@ public class DirectAction
                 else
                 {
                     result = true;
-                    LoginSession ls =
-                        LoginSession.getLoginSessionForUser(ec, user);
-                    if (ls != null)
-                    {
-                        // Remember the existing session id for restoration
-                        rememberWosid(ls.sessionId());
-                    }
-                    session();
+                    recoverSessionForUser(user);
                 }
             }
             finally
@@ -526,6 +523,27 @@ public class DirectAction
             }
         }
         return result;
+    }
+
+
+    // ----------------------------------------------------------
+    public Session recoverSessionForUser(User u)
+    {
+        if (u != null)
+        {
+            user = u;
+        }
+        if (user != null)
+        {
+            LoginSession ls = LoginSession.getLoginSessionForUser(
+                user.editingContext(), user);
+            if (ls != null)
+            {
+                // Remember the existing session id for restoration
+                rememberWosid(ls.sessionId());
+            }
+        }
+        return (Session)session();
     }
 
 
@@ -686,13 +704,41 @@ public class DirectAction
 
 
     // ----------------------------------------------------------
-    public WOActionResults casCallbackAction()
+    public WOActionResults ltiLaunchAction()
     {
-        log.debug("entering casCallbackAction()");
+        log.debug("entering ltiLaunchAction()");
         log.debug("hasSession() = " + context().hasSession());
-        CallbackDiagnosticPage result =
-            pageWithName(CallbackDiagnosticPage.class);
-        result.incomingRequest = request();
+//        CallbackDiagnosticPage result =
+//            pageWithName(CallbackDiagnosticPage.class);
+//        result.incomingRequest = request();
+        WOActionResults result = new ECActionWithResult<WOActionResults>()
+        {
+            // ----------------------------------------------------------
+            @Override
+            public WOActionResults action()
+            {
+                LTILaunchRequest lti = new LTILaunchRequest(context(), ec);
+                if (lti.isValid())
+                {
+                    Session session = recoverSessionForUser(lti.user());
+                    log.debug("ltiLaunchAction(): validation success");
+                    WORequest req = request();
+
+                    log.debug("calling subsystem handler");
+                    Subsystem subsystem = Application.wcApplication()
+                        .subsystemManager().subsystem("Grader");
+                    return subsystem.handleDirectAction(
+                        req, session, context());
+                }
+                else
+                {
+                    log.debug("ltiLaunchAction(): validation failure");
+                    SubmitDebug page = pageWithName(SubmitDebug.class);
+                    return page.generateResponse();
+                }
+            }
+        }.call();
+        log.debug("exiting ltiLaunchAction()");
         return result;
     }
 
@@ -826,7 +872,7 @@ public class DirectAction
             Subsystem subsystem = Application.wcApplication()
                 .subsystemManager().subsystem("Grader");
             result = subsystem.handleDirectAction(
-                req, session, context());
+                req, session, context(), info == null ? null : info.files);
         }
         else
         {
@@ -950,6 +996,42 @@ public class DirectAction
 //        rememberRequest(id, request, auth, action);
         synchronized (casRequests)
         {
+            // First, remove stale entries
+            NSTimestamp now = new NSTimestamp();
+            if (now.after(nextCasSweep))
+            {
+                // 5 minutes ago
+                NSTimestamp cutoff =
+                    now.timestampByAddingGregorianUnits(0, 0, 0, 0, -5, 0);
+                log.error("Sweeping for stale CAS entries, current count = "
+                    + casRequests.size());
+                int staleCount = 0;
+                long staleSize = 0;
+                NSMutableArray<String> keys = new NSMutableArray<String>();
+                for (Map.Entry<String, CasRequestInfo> entry :
+                    casRequests.entrySet())
+                {
+                    if (entry.getValue().time.before(cutoff))
+                    {
+                        staleCount++;
+                        NSData f = entry.getValue().files.get("file1");
+                        if (f != null)
+                        {
+                            staleSize += f.length();
+                        }
+                        keys.add(entry.getKey());
+                    }
+                }
+                for (String key : keys)
+                {
+                    casRequests.remove(key);
+                }
+                log.error("Purged " + staleCount + " entries, "
+                    + staleSize + " bytes");
+                // 5 minutes later ...
+                nextCasSweep =
+                    now.timestampByAddingGregorianUnits(0, 0, 0, 0, 5, 0);
+            }
             casRequests.put(id, new CasRequestInfo(request, auth, action));
         }
         log.debug("rememberRequest(" + id + ") with action = " + action);
@@ -1010,10 +1092,10 @@ public class DirectAction
         {
             synchronized (casRequests)
             {
-                log.debug("recallRequest() cache = " + casRequests.count());
+                log.debug("recallRequest() cache = " + casRequests.size());
                 request = casRequests.get(id);
                 log.debug("recallRequest() check = " + request);
-                request = casRequests.removeObjectForKey(id);
+                request = casRequests.remove(id);
             }
         }
         log.debug("recallRequest() = " + request);
@@ -1055,17 +1137,34 @@ public class DirectAction
         public WORequest request;
         public String auth;
         public String action;
+        public NSMutableDictionary<String, NSData> files;
+        public NSTimestamp time;
         public CasRequestInfo(WORequest request, String auth, String action)
         {
             this.request = request;
             this.auth = auth;
             this.action = action;
+            files = new NSMutableDictionary<String, NSData>();
+            int count = 1;
+            Object blob = request.formValueForKey("file" + count);
+            time = new NSTimestamp();
+            while (blob != null)
+            {
+                if (blob instanceof NSData)
+                {
+                    NSData fileData = new NSData(((NSData)blob).bytes());
+                    files.takeValueForKey(fileData, "file" + count);
+                }
+                count++;
+                blob = request.formValueForKey("file" + count);
+            }
         }
     }
 
     private static final
-        NSMutableDictionary<String, CasRequestInfo> casRequests =
-        new NSMutableDictionary<String, CasRequestInfo>();
+        Map<String, CasRequestInfo> casRequests =
+        new HashMap<String, CasRequestInfo>();
+    private static NSTimestamp nextCasSweep = new NSTimestamp();
 
     public static final String CONTEXT_ID_KEY = "owc_c";
 

@@ -1,0 +1,48 @@
+{
+    attributes = (
+        {name = id; prototypeName = id; }, 
+        {
+            allowsNull = N; 
+            columnName = lmsInstanceId; 
+            name = lmsInstanceId; 
+            prototypeName = foreignId; 
+        }, 
+        {
+            allowsNull = N; 
+            columnName = lmsUserId; 
+            name = lmsUserId; 
+            prototypeName = tinyText; 
+        }, 
+        {
+            allowsNull = N; 
+            columnName = userId; 
+            name = userId; 
+            prototypeName = foreignId; 
+        }
+    ); 
+    attributesUsedForLocking = (lmsInstanceId, lmsUserId, userId); 
+    className = "org.webcat.core.lti.LMSIdentity"; 
+    classProperties = (lmsInstance, lmsUserId, user); 
+    externalName = LMSIdentity; 
+    fetchSpecificationDictionary = {}; 
+    name = LMSIdentity; 
+    primaryKeyAttributes = (id); 
+    relationships = (
+        {
+            destination = LMSInstance; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = lmsInstanceId; }); 
+            name = lmsInstance; 
+        }, 
+        {
+            destination = User; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = userId; }); 
+            name = user; 
+        }
+    ); 
+}

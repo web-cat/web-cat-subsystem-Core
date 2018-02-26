@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: CoreDatabaseUpdates.java,v 1.6 2014/07/08 17:35:28 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2008 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -31,8 +29,6 @@ import java.sql.SQLException;
  * for this class uses its parent class' logger.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.6 $, $Date: 2014/07/08 17:35:28 $
  */
 public class CoreDatabaseUpdates
     extends UpdateSet
@@ -339,6 +335,26 @@ public class CoreDatabaseUpdates
         database().executeSQL("ALTER TABLE TUSER ADD salt TINYTEXT");
         database().executeSQL("ALTER TABLE TUSER ADD iterations INTEGER");
     }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Adds tables and columns for LTI support.
+     * @throws SQLException on error
+     */
+    public void updateIncrement19() throws SQLException
+    {
+        createLMSTypeTable();
+        createLMSInstanceTable();
+        createLMSIdentityTable();
+        database().executeSQL("ALTER TABLE TCOURSE ADD lmsTitle TINYTEXT");
+        createIndexFor("TCOURSE", "lmsTitle(10)");
+        database().executeSQL(
+            "ALTER TABLE TCOURSEOFFERING ADD lmsInstanceId INTEGER");
+        database().executeSQL(
+            "ALTER TABLE TCOURSEOFFERING ADD lmsContextId TINYTEXT");
+        createIndexFor("TCOURSEOFFERING", "lmsContextId(10)");
+     }
 
 
     //~ Private Methods .......................................................
@@ -760,6 +776,77 @@ public class CoreDatabaseUpdates
                 + "isLoggedOut BIT NOT NULL)");
             database().executeSQL(
                 "ALTER TABLE UsagePeriod ADD PRIMARY KEY (OID)");
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates the LMSType table, if needed.
+     * @throws SQLException on error
+     */
+    private void createLMSTypeTable() throws SQLException
+    {
+        if (!database().hasTable("LMSType"))
+        {
+            log.info("creating table LMSType");
+
+            database().executeSQL("CREATE TABLE LMSType ("
+                + "OID INTEGER NOT NULL , "
+                + "name TINYTEXT NOT NULL)");
+            database().executeSQL(
+                "ALTER TABLE LMSType ADD PRIMARY KEY (OID)");
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates the LMSInstance table, if needed.
+     * @throws SQLException on error
+     */
+    private void createLMSInstanceTable() throws SQLException
+    {
+        if (!database().hasTable("LMSInstance"))
+        {
+            log.info("creating table LMSInstance");
+
+            database().executeSQL("CREATE TABLE LMSInstance ("
+                + "OID INTEGER NOT NULL , "
+                + "consumerKey TINYTEXT NOT NULL , "
+                + "consumerSecret TINYTEXT NOT NULL , "
+                + "institutionId INTEGER NOT NULL , "
+                + "lmsTypeId INTEGER NOT NULL , "
+                + "url TINYTEXT)");
+            database().executeSQL(
+                "ALTER TABLE LMSInstance ADD PRIMARY KEY (OID)");
+            createIndexFor("LMSInstance", "consumerKey(8)");
+            createIndexFor("LMSInstance", "institutionId");
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Creates the LMSIdentity table, if needed.
+     * @throws SQLException on error
+     */
+    private void createLMSIdentityTable() throws SQLException
+    {
+        if (!database().hasTable("LMSIdentity"))
+        {
+            log.info("creating table LMSIdentity");
+
+            database().executeSQL("CREATE TABLE LMSIdentity ("
+                + "OID INTEGER NOT NULL , "
+                + "lmsInstanceId INTEGER NOT NULL , "
+                + "lmsUserId TINYTEXT NOT NULL , "
+                + "userId INTEGER NOT NULL)");
+            database().executeSQL(
+                "ALTER TABLE LMSIdentity ADD PRIMARY KEY (OID)");
+            createIndexFor("LMSIdentity", "lmsUserId(10)");
+            createIndexFor("LMSIdentity", "userId");
+            createIndexFor("LMSIdentity", "lmsInstanceId");
         }
     }
 }

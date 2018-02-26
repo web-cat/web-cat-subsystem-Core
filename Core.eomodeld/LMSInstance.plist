@@ -1,0 +1,77 @@
+{
+    attributes = (
+        {
+            allowsNull = N; 
+            columnName = consumerKey; 
+            name = consumerKey; 
+            prototypeName = tinyText; 
+        }, 
+        {
+            allowsNull = N; 
+            columnName = consumerSecret; 
+            name = consumerSecret; 
+            prototypeName = tinyText; 
+        }, 
+        {name = id; prototypeName = id; }, 
+        {
+            allowsNull = N; 
+            columnName = institutionId; 
+            name = institutionId; 
+            prototypeName = foreignId; 
+        }, 
+        {
+            allowsNull = N; 
+            columnName = lmsTypeId; 
+            name = lmsTypeId; 
+            prototypeName = foreignId; 
+        }, 
+        {columnName = url; name = url; prototypeName = tinyText; }
+    ); 
+    attributesUsedForLocking = (consumerKey, consumerSecret, institutionId, lmsTypeId, url); 
+    className = "org.webcat.core.lti.LMSInstance"; 
+    classProperties = (
+        authenticationDomain, 
+        consumerKey, 
+        consumerSecret, 
+        courseOfferings, 
+        lmsIdentities, 
+        lmsType, 
+        url
+    ); 
+    externalName = LMSInstance; 
+    fetchSpecificationDictionary = {}; 
+    name = LMSInstance; 
+    primaryKeyAttributes = (id); 
+    relationships = (
+        {
+            destination = AuthenticationDomain; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = institutionId; }); 
+            name = authenticationDomain; 
+        }, 
+        {
+            destination = CourseOffering; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = lmsInstanceId; sourceAttribute = id; }); 
+            name = courseOfferings; 
+        }, 
+        {
+            destination = LMSIdentity; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = lmsInstanceId; sourceAttribute = id; }); 
+            name = lmsIdentities; 
+        }, 
+        {
+            destination = LMSType; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = lmsTypeId; }); 
+            name = lmsType; 
+        }
+    ); 
+}

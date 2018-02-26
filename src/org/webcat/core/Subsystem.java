@@ -460,6 +460,30 @@ public class Subsystem
 
     // ----------------------------------------------------------
     /**
+     * Handle a direct action request.  The user's login session will be
+     * passed in as well.
+     *
+     * @param request the request to respond to
+     * @param session the user's session
+     * @param context the context for this request
+     * @return The response page or contents
+     */
+    public WOActionResults handleDirectAction(
+            WORequest request,
+            Session   session,
+            WOContext context,
+            NSDictionary<String, NSData> files)
+    {
+        throw new RuntimeException(
+            "invalid subsystem direct action request: "
+            + "\n---request---\n" + request
+            + "\n\n---session---\n" + session
+            + "\n\n---context---\n" + context);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Get the string path name for this subsystem's Resources directory.
      * This is designed for use by subclasses that want to locate internal
      * resources for use in setting up environment variable or plug-in

@@ -161,6 +161,9 @@ public abstract class _AuthenticationDomain
         new ERXKey<String>(TIME_ZONE_NAME_KEY);
     // To-one relationships ---
     // To-many relationships ---
+    public static final String LMS_INSTANCES_KEY = "lmsInstances";
+    public static final ERXKey<org.webcat.core.lti.LMSInstance> lmsInstances =
+        new ERXKey<org.webcat.core.lti.LMSInstance>(LMS_INSTANCES_KEY);
     // Fetch specifications ---
     public static final String ALL_OBJECTS_ORDERED_BY_DISPLAYABLE_NAME_FSPEC = "allObjectsOrderedByDisplayableName";
     public static final String ENTITY_NAME = "AuthenticationDomain";
@@ -416,6 +419,186 @@ public abstract class _AuthenticationDomain
                 + value + "): was " + timeZoneName() );
         }
         takeStoredValueForKey( value, "timeZoneName" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the entities pointed to by the <code>lmsInstances</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    @SuppressWarnings("unchecked")
+    public NSArray<org.webcat.core.lti.LMSInstance> lmsInstances()
+    {
+        return (NSArray<org.webcat.core.lti.LMSInstance>)
+            storedValueForKey("lmsInstances");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>lmsInstances</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setLmsInstances(
+        NSMutableArray<org.webcat.core.lti.LMSInstance>  value)
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug("setLmsInstances("
+                + value + "): was " + lmsInstances());
+        }
+        takeStoredValueForKey(value, "lmsInstances");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>lmsInstances</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToLmsInstancesRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToLmsInstances( org.webcat.core.lti.LMSInstance value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToLmsInstances("
+                + value + "): was " + lmsInstances() );
+        }
+        NSMutableArray<org.webcat.core.lti.LMSInstance> array =
+            (NSMutableArray<org.webcat.core.lti.LMSInstance>)lmsInstances();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>lmsInstances</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromLmsInstancesRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromLmsInstances( org.webcat.core.lti.LMSInstance value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromLmsInstances("
+                + value + "): was " + lmsInstances() );
+        }
+        NSMutableArray<org.webcat.core.lti.LMSInstance> array =
+            (NSMutableArray<org.webcat.core.lti.LMSInstance>)lmsInstances();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>lmsInstances</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToLmsInstancesRelationship( org.webcat.core.lti.LMSInstance value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToLmsInstancesRelationship("
+                + value + "): was " + lmsInstances() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "lmsInstances" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>lmsInstances</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromLmsInstancesRelationship( org.webcat.core.lti.LMSInstance value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromLmsInstancesRelationship("
+                + value + "): was " + lmsInstances() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "lmsInstances" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>lmsInstances</code> relationship.
+     *
+     * @return The new entity
+     */
+    public org.webcat.core.lti.LMSInstance createLmsInstancesRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createLmsInstancesRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "LMSInstance" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "lmsInstances" );
+        return (org.webcat.core.lti.LMSInstance)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>lmsInstances</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteLmsInstancesRelationship( org.webcat.core.lti.LMSInstance value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteLmsInstancesRelationship("
+                + value + "): was " + lmsInstances() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "lmsInstances" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>lmsInstances</code> relationship.
+     */
+    public void deleteAllLmsInstancesRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllLmsInstancesRelationships(): was "
+                + lmsInstances() );
+        }
+        for (org.webcat.core.lti.LMSInstance object : lmsInstances())
+        {
+            deleteLmsInstancesRelationship(object);
+        }
     }
 
 

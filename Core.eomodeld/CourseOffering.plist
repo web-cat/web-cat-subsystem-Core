@@ -4,6 +4,8 @@
         {columnName = CCRN; name = crn; prototypeName = tinyText; }, 
         {name = id; prototypeName = id; }, 
         {columnName = CLABEL; name = label; prototypeName = tinyText; }, 
+        {columnName = lmsContextId; name = lmsContextId; prototypeName = tinyText; }, 
+        {columnName = lmsInstanceId; name = lmsInstanceId; prototypeName = foreignId; }, 
         {
             columnName = CMOODLEGROUPID; 
             name = moodleGroupId; 
@@ -13,7 +15,17 @@
         {columnName = CSEMESTER; name = semesterId; prototypeName = foreignId; }, 
         {columnName = URL; name = url; prototypeName = tinyText; }
     ); 
-    attributesUsedForLocking = (courseId, crn, label, moodleGroupId, moodleId, semesterId, url); 
+    attributesUsedForLocking = (
+        courseId, 
+        crn, 
+        label, 
+        lmsContextId, 
+        lmsInstanceId, 
+        moodleGroupId, 
+        moodleId, 
+        semesterId, 
+        url
+    ); 
     className = "org.webcat.core.CourseOffering"; 
     classProperties = (
         coreSelections, 
@@ -26,7 +38,9 @@
         semester, 
         students, 
         url, 
-        graders
+        graders, 
+        lmsContextId, 
+        lmsInstance
     ); 
     externalName = TCOURSEOFFERING; 
     name = CourseOffering; 
@@ -82,6 +96,13 @@
             name = semester; 
         }, 
         {definition = "courseOfferingUsers.user"; name = students; }, 
-        {definition = "courseOfferingUsers2.user"; name = graders; }
+        {definition = "courseOfferingUsers2.user"; name = graders; }, 
+        {
+            destination = LMSInstance; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = lmsInstanceId; }); 
+            name = lmsInstance; 
+        }
     ); 
 }

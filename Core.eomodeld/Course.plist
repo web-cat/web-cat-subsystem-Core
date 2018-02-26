@@ -2,6 +2,7 @@
     attributes = (
         {columnName = CDEPARTMENTID; name = departmentId; prototypeName = foreignId; }, 
         {name = id; prototypeName = id; }, 
+        {columnName = lmsTitle; name = lmsTitle; prototypeName = tinyText; }, 
         {allowsNull = N; columnName = CNAME; name = name; prototypeName = tinyText; }, 
         {
             columnName = CNUMBER; 
@@ -18,9 +19,9 @@
             valueType = i; 
         }
     ); 
-    attributesUsedForLocking = (departmentId, name, number); 
+    attributesUsedForLocking = (departmentId, lmsTitle, name, number); 
     className = "org.webcat.core.Course"; 
-    classProperties = (coreSelections, department, name, number, offerings); 
+    classProperties = (coreSelections, department, lmsTitle, name, number, offerings); 
     externalName = TCOURSE; 
     fetchSpecificationDictionary = {}; 
     name = Course; 

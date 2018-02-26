@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: CourseOffering.java,v 1.6 2012/03/28 13:48:08 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2012 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -26,7 +24,10 @@ import com.webobjects.eocontrol.*;
 import er.extensions.eof.ERXKey;
 import er.extensions.foundation.ERXArrayUtilities;
 import java.io.File;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.apache.log4j.Logger;
+import org.webcat.core.lti.LMSInstance;
 
 // -------------------------------------------------------------------------
 /**
@@ -34,8 +35,6 @@ import org.apache.log4j.Logger;
  * semester).
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.6 $, $Date: 2012/03/28 13:48:08 $
  */
 public class CourseOffering
     extends _CourseOffering
@@ -108,25 +107,25 @@ public class CourseOffering
      */
     public String compactName()
     {
-        if ( cachedCompactName == null )
+        if (cachedCompactName == null)
         {
             String myLabel = label();
-            if ( myLabel == null || myLabel.equals( "" ) )
+            if (myLabel == null || myLabel.equals(""))
             {
                 myLabel = crn();
             }
-            if ( course() == null )
+            if (course() == null)
             {
                 // !!!
-                log.error(
-                    "course offering with no associated course: " + crn()
+                log.error("course offering with no associated course: " + crn()
                     + ((label() == null) ? "" : ("(" + label() + ")")));
                 // don't cache!
                 return "null (" + myLabel + ")";
             }
             else
             {
-                cachedCompactName = course().deptNumber() + " (" + myLabel + ")";
+                cachedCompactName =
+                    course().deptNumber() + " (" + myLabel + ")";
             }
         }
         return cachedCompactName;
@@ -141,7 +140,7 @@ public class CourseOffering
      */
     public String deptNumberAndName()
     {
-        if ( cachedDeptNumberAndName == null )
+        if (cachedDeptNumberAndName == null)
         {
             cachedDeptNumberAndName = compactName() + ": " + course().name();
         }
@@ -155,6 +154,7 @@ public class CourseOffering
      * offering, which currently returns {@link #compactName()}.
      * @return the description
      */
+    @Override
     public String userPresentableDescription()
     {
         return compactName();
@@ -187,7 +187,7 @@ public class CourseOffering
      * @deprecated Use the {@link #isGrader(User)} method instead.
      */
     @Deprecated
-    public boolean isTA( User user )
+    public boolean isTA(User user)
     {
         return isGrader(user);
     }
@@ -201,10 +201,10 @@ public class CourseOffering
      * @param user     The user to check
      * @return true if the user is a grader for the offering
      */
-    public boolean isGrader( User user )
+    public boolean isGrader(User user)
     {
         NSArray<User> tas = graders();
-        return ( ( tas.indexOfObject( user ) ) != NSArray.NotFound );
+        return ((tas.indexOfObject(user)) != NSArray.NotFound);
     }
 
 
@@ -304,11 +304,12 @@ public class CourseOffering
     /* (non-Javadoc)
      * @see org.webcat.core._CourseOffering#setCourse(org.webcat.core.Course)
      */
-    public void setCourse( Course value )
+    @Override
+    public void setCourse(Course value)
     {
         cachedCompactName = null;
         cachedDeptNumberAndName = null;
-        super.setCourse( value );
+        super.setCourse(value);
     }
 
 
@@ -319,24 +320,24 @@ public class CourseOffering
      *
      * @param value The new value for this property
      */
-    public void setCrn( String value )
+    @Override
+    public void setCrn(String value)
     {
         saveOldDirComponents();
         cachedSubdirName = null;
         cachedCompactName = null;
         cachedDeptNumberAndName = null;
-        super.setCrn( value.trim() );
+        super.setCrn(value.trim());
     }
 
 
     // ----------------------------------------------------------
-    public Object validateCrn( Object value )
+    public Object validateCrn(Object value)
     {
-        if ( value == null || value.equals("") )
+        if (value == null || value.equals(""))
         {
-            throw new ValidationException(
-                "Please provide a unique CRN to identify your course "
-                + "offering." );
+            throw new ValidationException("Please provide a unique CRN to "
+                + "identify your course offering." );
         }
         NSArray<CourseOffering> others = objectsMatchingQualifier(
             editingContext(), crn.is(value.toString()));
@@ -358,23 +359,24 @@ public class CourseOffering
      *
      * @param value The new value for this property
      */
-    public void setLabel( String value )
+    @Override
+    public void setLabel(String value)
     {
         cachedCompactName = null;
         cachedDeptNumberAndName = null;
-        super.setLabel( value );
+        super.setLabel(value);
     }
 
 
     // ----------------------------------------------------------
     public String crnSubdirName()
     {
-        if ( cachedSubdirName == null )
+        if (cachedSubdirName == null)
         {
             String name = crn();
-            cachedSubdirName = AuthenticationDomain.subdirNameOf( name );
-            log.debug( "trimmed name '" + name + "' to '"
-                       + cachedSubdirName + "'" );
+            cachedSubdirName = AuthenticationDomain.subdirNameOf(name);
+            log.debug("trimmed name '" + name + "' to '"
+                + cachedSubdirName + "'");
         }
         return cachedSubdirName;
     }
@@ -389,7 +391,8 @@ public class CourseOffering
      *
      * @param value The new entity to relate to
      */
-    public void setSemester( Semester value )
+    @Override
+    public void setSemester(Semester value)
     {
         log.debug("setSemester(" + value + ")");
         saveOldDirComponents();
@@ -399,7 +402,15 @@ public class CourseOffering
 
 
     // ----------------------------------------------------------
-    public void takeValueForKey( Object value, String key )
+    public String lmsName()
+    {
+        return LMSInstance.lmsNameFor(lmsInstance());
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void takeValueForKey(Object value, String key)
     {
         log.debug("takeValueForKey(" + value + ", " + key + ")");
         if (SEMESTER_KEY.equals(key))
@@ -407,7 +418,29 @@ public class CourseOffering
             saveOldDirComponents();
             cachedSubdirName = null;
         }
-        super.takeValueForKey( value, key );
+        super.takeValueForKey(value, key);
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void willUpdate()
+    {
+        String urlValue = url();
+        if (urlValue != null && !urlValue.isEmpty())
+        {
+            String id = lmsContextId();
+            if (id == null || id.isEmpty())
+            {
+                // Attempt to guess canvas id from url
+                Matcher m = CANVAS_URL.matcher(urlValue);
+                if (m.find())
+                {
+                    setLmsContextId(m.group(1));
+                }
+            }
+        }
+        super.willUpdate();
     }
 
 
@@ -415,16 +448,18 @@ public class CourseOffering
     /* (non-Javadoc)
      * @see er.extensions.eof.ERXGenericRecord#didUpdate()
      */
+    @Override
     public void didUpdate()
     {
         super.didUpdate();
-        if ( crnDirNeedingRenaming != null || semesterDirNeedingRenaming != null)
+        if (crnDirNeedingRenaming != null
+            || semesterDirNeedingRenaming != null)
         {
             renameSubdirs(
                 semesterDirNeedingRenaming,
-                ( semester() == null ? null : semester().dirName() ),
+                (semester() == null ? null : semester().dirName()),
                 crnDirNeedingRenaming,
-                crnSubdirName() );
+                crnSubdirName());
             crnDirNeedingRenaming = null;
             semesterDirNeedingRenaming = null;
         }
@@ -443,12 +478,12 @@ public class CourseOffering
      *        generated here)
      * @param course the course whose subdir should be added (may not be null).
      */
-    public void addSubdirTo( StringBuffer dir )
+    public void addSubdirTo(StringBuffer dir)
     {
-        dir.append( '/' );
-        dir.append( semester().dirName() );
-        dir.append( '/' );
-        dir.append( crnSubdirName() );
+        dir.append('/');
+        dir.append(semester().dirName());
+        dir.append('/' );
+        dir.append(crnSubdirName());
     }
 
 
@@ -485,10 +520,10 @@ public class CourseOffering
 
     // ----------------------------------------------------------
     @Override
-    public void didDelete( EOEditingContext context )
+    public void didDelete(EOEditingContext context)
     {
         log.debug("didDelete()");
-        super.didDelete( context );
+        super.didDelete(context);
         // should check to see if this is a child ec
         EOObjectStore parent = context.parentObjectStore();
         if (parent == null || !(parent instanceof EOEditingContext))
@@ -530,11 +565,11 @@ public class CourseOffering
                 "offeringsForCourseOffering", "AssignmentOffering");
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
-        bindings.setObjectForKey( this, "courseOffering" );
-        spec = spec.fetchSpecificationWithQualifierBindings( bindings );
+        bindings.setObjectForKey(this, "courseOffering");
+        spec = spec.fetchSpecificationWithQualifierBindings(bindings);
 
         NSArray<?> result =
-            editingContext().objectsWithFetchSpecification( spec );
+            editingContext().objectsWithFetchSpecification(spec);
         if (log.isDebugEnabled())
         {
             log.debug("hasAssignmentOfferings(): fetch = " + result);
@@ -546,7 +581,7 @@ public class CourseOffering
     // ----------------------------------------------------------
     private void renameSubdirs(
         String oldSemesterSubdir, String newSemesterSubdir,
-        String oldCrnSubdir,      String newCrnSubdir )
+        String oldCrnSubdir,      String newCrnSubdir)
     {
         NSArray<AuthenticationDomain> domains =
             AuthenticationDomain.authDomains();
@@ -558,28 +593,28 @@ public class CourseOffering
             int baseDirLen = dir.length();
             dir.append(oldSemesterSubdir);
             dir.append('/');
-            dir.append( oldCrnSubdir );
-            File oldDir = new File( dir.toString() );
+            dir.append(oldCrnSubdir);
+            File oldDir = new File(dir.toString());
             log.debug("Checking for: " + oldDir);
-            if ( oldDir.exists() )
+            if (oldDir.exists())
             {
-                dir.delete( baseDirLen, dir.length() );
+                dir.delete(baseDirLen, dir.length());
                 dir.append(newSemesterSubdir);
 
                 // First, make sure that the new dir exists!
-                File newDir = new File( dir.toString() );
+                File newDir = new File(dir.toString());
                 if (!newDir.exists())
                 {
                     newDir.mkdirs();
                 }
 
                 dir.append('/');
-                dir.append( newCrnSubdir );
-                newDir = new File( dir.toString() );
+                dir.append(newCrnSubdir);
+                newDir = new File(dir.toString());
 
                 // Do the renaming
                 log.debug("Renaming: " + oldDir + " => " + newDir);
-                if (!oldDir.renameTo( newDir ))
+                if (!oldDir.renameTo(newDir))
                 {
                     msgs = (msgs == null ? "" : (msgs + "  "))
                         + "Failed to rename directory: "
@@ -600,11 +635,11 @@ public class CourseOffering
         if (crnDirNeedingRenaming == null
             || semesterDirNeedingRenaming == null)
         {
-            if ( crnDirNeedingRenaming == null && crn() != null )
+            if (crnDirNeedingRenaming == null && crn() != null)
             {
                 crnDirNeedingRenaming = crnSubdirName();
             }
-            if ( semesterDirNeedingRenaming == null && semester() != null )
+            if (semesterDirNeedingRenaming == null && semester() != null)
             {
                 semesterDirNeedingRenaming = semester().dirName();
             }
@@ -621,5 +656,7 @@ public class CourseOffering
     private String crnDirNeedingRenaming      = null;
     private String subdirToDelete;
 
-    static Logger log = Logger.getLogger( CourseOffering.class );
+    private static final Pattern CANVAS_URL =
+        Pattern.compile("/([0-9]+)(/|$)");
+    static Logger log = Logger.getLogger(CourseOffering.class);
 }
