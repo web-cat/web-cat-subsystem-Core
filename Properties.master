@@ -4,10 +4,10 @@
 subsystem.Core = org.webcat.core.Core
 
 Core.version.major=2
-Core.version.minor=2
-Core.version.revision=12
+Core.version.minor=3
+Core.version.revision=0
 
-Core.copyright=(c) 2006-2014 Virginia Tech Department of Computer Science
+Core.copyright=(c) 2006-2018 Virginia Tech Department of Computer Science
 Core.provider=Virginia Tech Computer Science
 Core.provider.url=http\://web-cat.org/updates
 Core.info.url=http\://wiki.web-cat.org/WCWiki/CoreSubsystem
