@@ -19,7 +19,12 @@
 
 package org.webcat.core.lti;
 
+import static org.webcat.woextensions.ECAction.run;
 import java.util.UUID;
+import org.webcat.core.AuthenticationDomain;
+import org.webcat.woextensions.ECAction;
+import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSMutableArray;
 
 // -------------------------------------------------------------------------
 /**
@@ -70,15 +75,96 @@ public class LMSInstance
     // ----------------------------------------------------------
     public static String lmsNameFor(LMSInstance instance)
     {
-        String name = null;
+        AuthenticationDomain d = null;
+        LMSType t = null;
         if (instance != null)
         {
-            name = instance.lmsType().name();
+            d = instance.authenticationDomain();
+            t = instance.lmsType();
         }
-        if (name == null)
+        return lmsNameFor(d, t);
+    }
+
+
+    // ----------------------------------------------------------
+    public static String lmsNameFor(
+        AuthenticationDomain institution, LMSType type)
+    {
+        String iName = null;
+        String tName = null;
+        if (institution != null)
+        {
+            iName = institution.name();
+        }
+        if (type != null)
+        {
+            tName = type.name();
+        }
+        return lmsNameFor(iName, tName);
+    }
+
+
+    // ----------------------------------------------------------
+    public static String lmsNameFor(String institution, String type)
+    {
+        String name = null;
+        if (institution != null)
+        {
+            name = institution + " ";
+            if (type != null)
+            {
+                name += type;
+            }
+            else
+            {
+                name += "LMS";
+            }
+        }
+        else if (type != null)
+        {
+            name = type;
+        }
+        else
         {
             name = "Course Management System";
         }
         return name;
     }
+
+
+    // ----------------------------------------------------------
+    public static void ensureLMSInstancesForInstitutions()
+    {
+        log.debug("ensureLMSInstancesForInstitutions()");
+        LMSType.ensureDefaultLMSTypes();
+        run(new ECAction() { public void action() {
+            ec.setSharedEditingContext(null);
+            NSMutableArray<AuthenticationDomain> institutions =
+                AuthenticationDomain.allObjects(ec).mutableClone();
+            NSArray<LMSInstance> instances = allObjects(ec);
+            for (LMSInstance lms : instances)
+            {
+                if (lms.authenticationDomain() != null)
+                {
+                    institutions.removeObject(lms.authenticationDomain());
+                }
+            }
+
+            if (institutions.size() > 0)
+            {
+                LMSType defaultType = LMSType.allObjects(ec).get(0);
+                for (AuthenticationDomain institution : institutions)
+                {
+                    create(ec,
+                        UUID.randomUUID().toString(),
+                        UUID.randomUUID().toString(),
+                        institution,
+                        defaultType);
+                }
+                ec.saveChanges();
+            }
+        }});
+        log.debug("ensureLMSInstancesForInstitutions() finished");
+    }
+
 }

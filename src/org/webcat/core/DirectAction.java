@@ -42,6 +42,7 @@ import org.webcat.core.WCComponent;
 import org.apache.log4j.Logger;
 import org.webcat.core.actions.WCDirectActionWithSession;
 import org.webcat.core.install.*;
+import org.webcat.core.lti.LTIConfiguration;
 import org.webcat.core.lti.LTILaunchRequest;
 import org.webcat.woextensions.ECActionWithResult;
 import org.webcat.woextensions.WCEC;
@@ -326,8 +327,9 @@ public class DirectAction
                 CasAuthenticator authenticator =
                     (CasAuthenticator)d.authenticator();
                 String returnUrl = Application
-                    .completeURLWithRequestHandlerKey(
-                        context(), "wa", "casLogin", null, true, 0);
+                    .completeURLWithRequestHandlerKey(context(),
+                    Application.application().directActionRequestHandlerKey(),
+                    "casLogin", null, true, 0);
                 log.debug("returnUrl = " + returnUrl);
                 String id = rememberRequest(request, d.name(),
                     request.requestHandlerPath());
@@ -700,6 +702,13 @@ public class DirectAction
             page.errors.addEntriesFromDictionary(errors);
             return page;
         }
+    }
+
+
+    // ----------------------------------------------------------
+    public WOActionResults ltiConfigurationAction()
+    {
+        return pageWithName(LTIConfiguration.class).generateResponse();
     }
 
 

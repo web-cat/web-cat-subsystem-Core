@@ -24,6 +24,7 @@ package org.webcat.core;
 
 import static org.webcat.woextensions.ECAction.run;
 import org.apache.log4j.Logger;
+import org.webcat.core.lti.LMSInstance;
 import org.webcat.woextensions.ECAction;
 import org.webcat.woextensions.WCFetchSpecification;
 import com.webobjects.foundation.NSArray;
@@ -51,6 +52,15 @@ public class Core
     }
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    @Override
+    public void init()
+    {
+        super.init();
+        LMSInstance.ensureLMSInstancesForInstitutions();
+    }
+
 
     // ----------------------------------------------------------
     @Override

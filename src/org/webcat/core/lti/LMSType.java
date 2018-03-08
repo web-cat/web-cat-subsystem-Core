@@ -19,6 +19,10 @@
 
 package org.webcat.core.lti;
 
+import org.webcat.woextensions.ECAction;
+import com.webobjects.foundation.NSArray;
+import static org.webcat.woextensions.ECAction.run;
+
 // -------------------------------------------------------------------------
 /**
  * Represents the type of a registered LTI consumer.
@@ -47,4 +51,45 @@ public class LMSType
     {
         return name();
     }
+
+
+    // ----------------------------------------------------------
+    public static void ensureDefaultLMSTypes()
+    {
+        log.debug("ensureDefaultLMSTypes()");
+        run(new ECAction() { public void action() {
+            ec.setSharedEditingContext(null);
+            NSArray<LMSType> types = allObjects(ec);
+            if (types.size() < DEFAULT_TYPES.length)
+            {
+                for (String type : DEFAULT_TYPES)
+                {
+                    boolean exists = false;
+                    for (LMSType t : types)
+                    {
+                        if (type.equals(t.name()))
+                        {
+                            exists = true;
+                            break;
+                        }
+                    }
+                    if (!exists)
+                    {
+                        create(ec, type);
+                    }
+                }
+                ec.saveChanges();
+            }
+        }});
+    }
+
+
+    //~ Instance/static variables .............................................
+
+    private static final String[] DEFAULT_TYPES =
+    {
+        "LMS",
+        "Canvas",
+        "Moodle"
+    };
 }
