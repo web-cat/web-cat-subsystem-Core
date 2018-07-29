@@ -21,6 +21,6 @@ SearchField: WCSearchField {
 
 ToolbarHeader: WOGenericContainer {
     elementName = "th";
-    class = "pagination";
+    class = "paged";
     colspan = numberOfColumns;
 }

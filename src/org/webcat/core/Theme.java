@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: Theme.java,v 1.9 2012/03/28 13:48:08 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2008-2012 Virginia Tech
+ |  Copyright (C) 2008-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -41,8 +39,6 @@ import er.extensions.foundation.ERXValueUtilities;
  * Represents a theme (stored in the Core framework).
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author: stedwar2 $
- *  @version $Revision: 1.9 $, $Date: 2012/03/28 13:48:08 $
  */
 public class Theme
     extends _Theme
@@ -70,8 +66,20 @@ public class Theme
     public static Theme themeFromName(String themeDirName)
     {
         ensureThemesLoaded();
-        return themeForDirName(
-            EOSharedEditingContext.defaultSharedEditingContext(), themeDirName);
+        Theme result = null;
+        try
+        {
+            result = themeForDirName(
+                EOSharedEditingContext.defaultSharedEditingContext(),
+                themeDirName);
+            result.parent();
+        }
+        catch (Exception e)
+        {
+            log.error("Unrecognized theme name: \"" + themeDirName + "\"");
+            result = null;
+        }
+        return result == null ? defaultTheme() : result;
     }
 
 
@@ -93,7 +101,7 @@ public class Theme
         }
         else
         {
-            return themeFromName("dream-way");
+            return themeFromName(DEFAULT_THEME);
         }
     }
 
@@ -125,7 +133,7 @@ public class Theme
      */
     public static Theme defaultTheme()
     {
-        return themeFromName("dream-way");
+        return themeFromName(DEFAULT_THEME);
     }
 
 
@@ -537,4 +545,6 @@ public class Theme
 
     private static final String COOKIE_LAST_USED_THEME =
         "org.webcat.core.Theme.lastUsed";
+
+    public static final String DEFAULT_THEME = "gentelella";
 }

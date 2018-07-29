@@ -114,6 +114,14 @@ public class LoginPage
 
 
     // ----------------------------------------------------------
+    public boolean oneCasDomain()
+    {
+        return domainDisplayGroup.allObjects().count() == 1
+          && domainDisplayGroup.allObjects().get(0) instanceof CasAuthenticator;
+    }
+
+
+    // ----------------------------------------------------------
     public boolean hasSpecificAuthDomain()
     {
         WORequest request = context().request();

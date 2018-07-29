@@ -1,4 +1,4 @@
-<wo name="BasePage"><div id="content">
+<wo name="BasePage">
 <wo:if condition="$includePageWrapping"><div id="header">
   <div class="title width25 floatLeft">
     <h1>Web-CAT</h1>
@@ -6,8 +6,7 @@
   </div>
 
   <div id="utils">
-    <wo:link action="$goToProfile"><wo:str value="$session.user.name"/></wo:link> |
-    <wo:link href="$helpURL">help</wo:link> |
+    <wo:link action="$goToProfile">settings</wo:link> |
     <wo:link action="$goToFeedback">feedback</wo:link> |
     <wo:link action="$logout">logout</wo:link>
   </div>
@@ -28,7 +27,7 @@
     <ul id="mainMenu" class="floatRight">
       <wo:loop list="$selectedRole.children" item="$primaryTabItem">
         <wo:if condition="$primaryTabIsVisible"><wo name="PrimaryTab">
-          <wo:link action="$primaryTabLink"><wo:str value="$primaryTabItem.label"/><wo:if condition="$hasVisibleSecondaryTabs">  &#187;</wo:if></wo:link>
+          <wo:link action="$primaryTabLink"><wo:str value="$primaryTabItem.label"/><wo:if condition="$hasVisibleSecondaryTabs"><span class="double-arrow">  &#187;</span></wo:if></wo:link>
           <wo:if condition="$hasVisibleSecondaryTabs">
             <ul><wo:loop list="$primaryTabItem.children" item="$secondaryTabItem">
               <wo:if condition="$secondaryTabIsVisible"><wo name="SecondaryTab">
@@ -41,7 +40,7 @@
     </ul>
   </div>
 </div>
-</wo:if><div id="page"><div class="width100 floatRight">
+</wo:if><div id="content" class="clearfix"><div id="page"><div class="width100 floatRight">
 <wo:if condition="$hasTitle"><div class="module title">
   <wo:if condition="$permalink"><wo:link href="$permalink" class="permalink floatRight">Permalink</wo:link></wo:if>
   <h1><wo:str value="$title"/></h1></div></wo:if>

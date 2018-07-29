@@ -4,7 +4,7 @@ ContentPane: WCContentPane {
 
 FooterCell: WOGenericContainer {
     elementName = "th";
-    class = "pagination";
+    class = "paged";
     style = "text-align: right; vertical-align: middle;";
     colspan = numberOfColumns;
 }

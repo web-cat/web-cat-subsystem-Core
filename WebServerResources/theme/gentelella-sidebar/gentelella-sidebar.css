@@ -1,0 +1,83 @@
+#mainMenu li a:hover, #mainMenu li a:focus
+{ color: white; background-color: transparent; }
+
+body.with-nav { background-color: #2A3F54; }
+body.with-nav #content, body.with-nav #width
+{ margin-left: 230px;  background-color: #f7f7f7; }
+#page { background-color: #f7f7f7; }
+
+#header {
+  min-height: 100%;
+  width: 230px;
+  padding: 0;
+  position: absolute;
+  left: 0;
+  z-index: 1;
+  background: #2A3F54;
+}
+
+#header .title h1 { color: white; font-weight: 400; }
+#roles, #utils { color: #ddd; }
+#roles a, #utils a { color: #efe; }
+#roles a:focus, #utils a:focus, #roles a:hover, #utils a:hover { color: #bdb; }
+#header .title, #utils { text-align: center; }
+#header .title h2 { display: none; }
+#header .title { background: #172D44; padding-bottom: 0; }
+#header .width25 { width: 100%; }
+#header .floatLeft, #header .floatRight { float: none; }
+#utils, #roles { float: none; }
+#roles { margin: 0; padding: 10px 0 10px 10px; background: #172D44; }
+#roles .here { background: rgba(255, 255, 255, 0.15); padding: 2px; }
+#footer { float: none; }
+
+#utils {
+  bottom: 0;
+  display: block;
+  padding: 2px 0;
+  position: fixed;
+  width: 230px;
+  background: #172D44;
+  z-index: 999;
+}
+
+#mainMenu li a {
+  float: none;
+  background: transparent;
+  color: #ddd;
+  font-weight: 400;
+  font-size: 1rem;
+  padding: 0 0 0 10px;
+}
+#mainMenu ul li.here, #mainMenu ul li:hover, #mainMenu ul li:focus {
+  background: rgba(255,255,255,.05);
+  border-right: 5px solid #1ABB9C;
+}
+#mainMenu ul li.here a, #mainMenu ul li a:hover, #mainMenu ul li a:focus
+{ color: white; }
+
+#mainMenu { margin: 0; background: transparent; }
+#mainMenu li { float: none; margin: 0; border: none; }
+#mainMenu li a li { float: none; }
+#mainMenu :hover  ul { left: auto; top: auto; }
+#mainMenu a:hover ul { left: auto; }
+#mainMenu ul {
+  position: relative;
+  left: auto;
+  top: auto;
+  border: none;
+  background: transparent;
+}
+#mainMenu ul li { padding-left: 10px; }
+#mainMenu li:hover li:hover > ul { left: auto; margin-left: 0; top: auto; }
+#mainMenu li:hover > ul ul { position: relative; left: auto; top: auto; }
+#mainMenu a:hover a:hover ul,
+#mainMenu a:hover a:hover a:hover ul,
+#mainMenu a:hover a:hover a:hover a:hover ul,
+#mainMenu a:hover a:hover a:hover a:hover a:hover ul
+{ left: auto; top: auto; }
+
+#mainMenu a:hover ul ul,
+#mainMenu a:hover a:hover ul ul,
+#mainMenu a:hover a:hover a:hover ul ul,
+#mainMenu a:hover a:hover a:hover a:hover ul ul
+{ position: relative; left: auto; top: auto; }

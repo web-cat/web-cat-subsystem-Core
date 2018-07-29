@@ -316,6 +316,10 @@ public class DirectAction
                         + auth + "'", e);
                 }
             }
+            else if (AuthenticationDomain.authDomains().size() == 1)
+            {
+                d = AuthenticationDomain.defaultDomain();
+            }
         }
 
         if (d != null)

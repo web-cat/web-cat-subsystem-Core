@@ -31,23 +31,21 @@ a.bare, a:hover.bare, a:visited.bare {
 }
 
 #content {
-    height: 100%;
     min-height: 100%;
     text-align: left;
 }
 
-#content,
-#width {
-    width: expression(document.body.clientWidth > 1000 ? "1200px" : "94%");
-    max-width: 1200px;
+#content, #width, #header {
+    /*width: expression(document.body.clientWidth > 1000 ? "1200px" : "94%");
+    max-width: 1200px;*/
+    padding: 0 15px;
     margin: 0 auto;
 }
 
-#content[id],
-#width[id] {
+/*#content[id], #width[id], #header[id] {
     width: 94%;
     height: auto;
-}
+}*/
 
 #page {
     float: left;
@@ -177,7 +175,7 @@ way to fit your requirements.
 
 #mainMenu :hover  ul {
     left: 0;
-    top: 1.8em;
+    top: 1.6em;
     z-index: 300;
 }
 #mainMenu a:hover ul { left: -1px; }
@@ -500,8 +498,7 @@ pre, .code, code, var, samp, kbd {
     font-size: inherit;
 }
 
-img.help, img.icon, input.icon { vertical-align: text-top; }
-img.icon.so, input.icon.so { padding-bottom: -2px; padding-top: 2px; }
+img.help, img.icon, input.icon { vertical-align: middle; }
 
 .InlineStatusIndicator {
     display: inline-block;
@@ -768,26 +765,26 @@ table.course-list th {
     /* @group Paginated tables
     ================================================================== */
 
-    table .pagination {
+    table .paged {
         text-align: right;
         white-space: nowrap;
         padding: 5px 0px 5px 0px;
     }
 
-    table thead .pagination {
+    table thead .paged {
         text-align: right;
         white-space: nowrap;
         padding-bottom: 8px;
     }
 
-    table .pagination .active {
+    table .paged .active {
         background-color: rgba(255, 255, 255, 0.75);
         border: 1px solid gray;
         margin: 0px 2px;
         padding: 0px 2px;
     }
 
-    table .pagination .current {
+    table .paged .current {
         border: 1px solid gray;
         background-color: #A0C0FF;
         margin: 0px 2px;

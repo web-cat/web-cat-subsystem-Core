@@ -224,6 +224,33 @@ public class CourseOffering
 
     // ----------------------------------------------------------
     /**
+     * Returns true if the given user is enrolled in this course offering.
+     *
+     * @param user     The user to check
+     * @return true if the user is staff for the offering
+     */
+    public boolean isEnrolled(User user)
+    {
+        return (students().indexOfObject(user) != NSArray.NotFound);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Returns true if the given user is a student (enrolled and not an
+     * instructor or grader) for this course offering.
+     *
+     * @param user     The user to check
+     * @return true if the user is staff for the offering
+     */
+    public boolean isStudent(User user)
+    {
+        return !isStaff(user) && isEnrolled(user);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -560,9 +587,17 @@ public class CourseOffering
 
         // This code is basically the same as that in
         // _AssignmentOffering.objectsForCourseOffering()
-        EOFetchSpecification spec = EOFetchSpecification
-            .fetchSpecificationNamed(
+        EOFetchSpecification spec = null;
+        try
+        {
+            spec = EOFetchSpecification.fetchSpecificationNamed(
                 "offeringsForCourseOffering", "AssignmentOffering");
+        }
+        catch (Exception e)
+        {
+            log.error("Unable to fetch assignment offerings", e);
+            return false;
+        }
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
         bindings.setObjectForKey(this, "courseOffering");

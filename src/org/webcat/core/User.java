@@ -1441,6 +1441,28 @@ public class User
 
 
     // ----------------------------------------------------------
+    @Override
+    public Theme theme()
+    {
+        Theme result = null;
+        try
+        {
+            result = super.theme();
+            if (result != null)
+            {
+                result.parent();
+            }
+        }
+        catch (Exception e)
+        {
+            log.error("invalid user theme: " + e.getMessage());
+            result =null;
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
     public static String scriptRoot()
     {
         // I don't like having this here, but it's necessary to get the same

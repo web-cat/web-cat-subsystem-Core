@@ -34,6 +34,44 @@ not the desired behavior.
 
 </div>
 
+<div class="row">
+<div class="col-6 incomplete">
+<wo:WCPageModule title="Title Goes Here">
+<ul class="checklist">
+  <li class="incomplete">Coding errors
+    <span class="badge badge-pill badge-danger">3</span></li>
+  <li class="incomplete">Signature errors
+    <span class="badge badge-pill badge-danger">1</span></li>
+  <li>Coding flaws</li>
+  <li>Unit tests</li>
+</ul>
+</wo:WCPageModule>
+</div>
+</div>
+
+<div class="row">
+<div class="col-12">
+  <div class="module">
+  <h1 class="title">Details</h1>
+  <p>here</p>
+  </div>
+</div>
+</div>
+
+
+<div class="row">
+<div class="col-6">
+<wo:WCPageModule title="Title Goes Here">
+<ul class="checklist">
+  <li class="incomplete">Coding errors</li>
+  <li class="incomplete">Signature errors</li>
+  <li>Coding flaws</li>
+  <li>Unit tests</li>
+</ul>
+</wo:WCPageModule>
+</div>
+</div>
+
 <div class="module titlepane-3left">
 <wo:WCTitlePane title="Immediate content" id="titlePane1">
 <div class="floating-number">
@@ -136,17 +174,44 @@ We should make sure these controls line up vertically to the best of our ability
 </fieldset>
 <div>
 <wo:WCButton label="Normal"/>
+<button type="button" class="btn btn-primary">Primary</button>
 <wo:WCButton label="Positive" class="pos"/>
 <wo:WCButton label="Negative" class="neg"/>
-</div>
-<div>
-<wo:WCButton label="Normal" disabled="true"/>
-<wo:WCButton label="Positive" class="pos" disabled="true"/>
-<wo:WCButton label="Negative" class="neg" disabled="true"/>
 
                 <button dojoType="dijit.form.DropDownButton" iconClass="noteIcon">
                     <span>Drop Down</span>
                     <div dojoType="dijit.Menu" id="editMenu1" style="display: none;">
+
+                        <div dojoType="dijit.MenuItem"
+                            iconClass="dijitEditorIcon dijitEditorIconCut"
+                            onClick="console.debug('not actually cutting anything, just a test!')">
+                            Cut
+                        </div>
+
+                        <div dojoType="dijit.MenuItem"
+                             iconClass="dijitEditorIcon dijitEditorIconCopy"
+                            onClick="console.debug('not actually copying anything, just a test!')">
+                            Copy
+                        </div>
+
+                        <div dojoType="dijit.MenuItem"
+                             iconClass="dijitEditorIcon dijitEditorIconPaste"
+                            onClick="console.debug('not actually pasting anything, just a test!')">
+                            Paste
+                        </div>
+
+                    </div>
+                </button>
+</div>
+<div>
+<wo:WCButton label="Normal" disabled="true"/>
+<button type="button" class="btn btn-primary disabled">Primary</button>
+<wo:WCButton label="Positive" class="pos" disabled="true"/>
+<wo:WCButton label="Negative" class="neg" disabled="true"/>
+
+                <button dojoType="dijit.form.DropDownButton" disabled="true" iconClass="noteIcon">
+                    <span>Drop Down</span>
+                    <div dojoType="dijit.Menu" id="editMenu2" style="display: none;">
 
                         <div dojoType="dijit.MenuItem"
                             iconClass="dijitEditorIcon dijitEditorIconCut"
@@ -182,6 +247,27 @@ We should make sure these controls line up vertically to the best of our ability
 </div>
 
 </wo:WCForm>
+
+<p>Bootstrap-style buttons look like this:</p>
+<p><button type="button" class="btn btn-primary">Primary</button>
+<button type="button" class="btn btn-secondary">Secondary</button>
+<button type="button" class="btn btn-success">Success</button>
+<button type="button" class="btn btn-danger">Danger</button>
+<button type="button" class="btn btn-warning">Warning</button>
+<button type="button" class="btn btn-info">Info</button>
+<button type="button" class="btn btn-light">Light</button>
+<button type="button" class="btn btn-dark">Dark</button>
+<button type="button" class="btn btn-link">Link</button></p>
+<p>Bootstrap-style disabled buttons look like this:</p>
+<p><button type="button" class="btn btn-primary disabled">Primary</button>
+<button type="button" class="btn btn-secondary disabled">Secondary</button>
+<button type="button" class="btn btn-success disabled">Success</button>
+<button type="button" class="btn btn-danger disabled">Danger</button>
+<button type="button" class="btn btn-warning disabled">Warning</button>
+<button type="button" class="btn btn-info disabled">Info</button>
+<button type="button" class="btn btn-light disabled">Light</button>
+<button type="button" class="btn btn-dark disabled">Dark</button>
+<button type="button" class="btn btn-link disabled">Link</button></p>
 
 <h3>No-Form Test</h3>
 

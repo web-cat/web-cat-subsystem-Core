@@ -10,6 +10,7 @@ AuthList:  WOPopUpButton {
 
 BarePage : org.webcat.ui.WCBasePage {
     title = "Login";
+    extraBodyCssClass = "login";
 }
 
 Errors: org.webcat.core.ErrorDictionaryPanel {

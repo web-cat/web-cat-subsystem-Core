@@ -1,0 +1,453 @@
+body {
+  font-size: 13px;
+  color: #222;
+  background-color: #f7f7f7;
+}
+
+body, h1, h2, h3, h4, h5, h6,
+.dijitTitlePane .dijitTitlePaneTitle,
+.title,
+th, textarea { font-family: "Helvetica Neue", Roboto, Arial, "Droid Sans", "Lucida Grande", Verdana, sans-serif; }
+
+#roles, #utils, #footer, #header .title h1, #header .title h2
+{ color: #73879C; }
+
+#roles a, #utils a, #footer a {
+  box-shadow: none;
+  text-decoration: underline;
+  color: #5185b3;
+}
+
+#mainMenu li a { color: #73879C; font-weight: 400; font-size: 1rem; }
+#mainMenu :hover  ul { top: 1.55em; }
+#mainMenu ul, #mainMenu > li { border-color: #E6E9ED; }
+
+#mainMenu li a:hover, #mainMenu li a:focus
+{ color: #0056b3; background-color: #f3f3f3; }
+
+#roles a:focus, #utils a:focus, #footer a:focus,
+#roles a:hover, #utils a:hover, #footer a:hover { color: #0056b3; }
+
+tr.e, .batchnav  { background-color: #f3f3f3; }
+
+/* a { color: #337ab7; }
+a:focus, a:hover { color: #23527c; } */
+
+table th { color: white; background-color: #525D76; }
+table th .dijitInputField { color: #222; }
+
+table th a { color: #efe; }
+
+table th a:focus, table th a:hover { color: #bdb; }
+
+span.hl {
+  color: white;
+  background-color: #1ABB9C; /* #525D76; */
+  padding: 0 0.3em;
+}
+
+table.distchart, .tableborder { border-color: #E6E9ED; }
+
+.aristo .dijitTitlePaneTitle { color: #73879C; border-color: #73879C; }
+.aristo .dijitTitlePane .dijitTitlePaneTitle { font-weight: 400; }
+
+.module {
+  /* from .fullWidth-panel */
+  background: #fff;
+  /* margin: 5px 10px 10px 5px; */
+  /* from top-panel, and other panels */
+  border: 1px solid #E6E9ED;
+  /* padding: 13px 13px; */
+}
+
+.module.title {
+  background: transparent;
+  color: #73879C;
+  border-color: #73879C;
+  border-width: 0 0 1px 0;
+}
+.module.title h1 { font-weight: 400; }
+
+table.percentbar td.plus  { background-color: #26B99A; /* border: 1px solid #169F85; */ }
+table.percentbar td.minus { background-color: #d9534f; /* border: 1px solid #d43f3a; */ }
+
+
+/****** colors ********/
+
+.label {
+  color: white;
+  display: inline-block;
+  padding: .25em .4em;
+  font-size: 75%;
+  font-weight: 700;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  border-radius: .25rem;
+}
+
+.bg-primary, .label-primary, .badge-primary
+{ background-color: #337ab7; }
+.label-secondary { background-color: #6c757d; }
+.bg-success, .label-success, .badge-success
+{ background-color: #26B99A; }
+.bg-danger, .label-danger, .badge-danger
+{ background-color: #d9534f; }
+.bg-warning, .label-warning, .badge-warning
+{ background-color: #f0ad4e; }
+.bg-info, .label-info, .badge-info
+{ background-color: #5bc0de; }
+.bg-dark, .label-dark, .badge-dark
+{ color: #E9EDEF; background-color: #4B5F71; }
+.badge-warning { color: white; }
+
+.text-primary { color: #337ab7; }
+.text-success { color: #3c763d; }
+/* .text-danger { color: #d9534f; } */
+.text-warning { color: #f0ad4e; }
+.bg-info, .label-info, .badge-info
+{ background-color: #5bc0de; }
+.bg-dark, .label-dark, .badge-dark
+{ color: #E9EDEF; background-color: #4B5F71; }
+
+/****** buttons ********/
+
+.btn-primary, .btn-primary.disabled {
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+.btn-primary:not(.disabled):hover, .btn-primary:not(.disabled):focus,
+.btn-primary:not(.disabled):active, .btn-primary:not(.disabled).active,
+.open .dropdown-toggle.btn-primary:not(.disabled) {
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+.btn-success, .btn-success.disabled {
+	  background: #26B99A;
+  border: 1px solid #169F85;
+}
+.btn-success:not(.disabled):hover, .btn-success:not(.disabled):focus,
+.btn-success:not(.disabled):active, .btn-success:not(.disabled).active,
+.open .dropdown-toggle.btn-success:not(.disabled) {
+  background: #169F85;
+}
+
+.btn-dark, .btn-dark.disabled {
+  color: #E9EDEF;
+  background-color: #4B5F71;
+  border-color: #364B5F;
+}
+.btn-dark:not(.disabled):hover, .btn-dark:not(.disabled):focus,
+.btn-dark:not(.disabled):active, .btn-dark:not(.disabled).active,
+.open .dropdown-toggle.btn-dark:not(.disabled) {
+  color: #fff;
+  background-color: #394D5F;
+  border-color: #394D5F;
+}
+
+.btn-danger, .btn-danger.disabled {
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+.btn-danger:not(.disabled):hover, .btn-danger:not(.disabled):focus,
+.btn-danger:not(.disabled):active, .btn-danger:not(.disabled).active,
+.open .dropdown-toggle.btn-danger:not(.disabled) {
+  background-color: #c9302c;
+  border-color: #ac2925;
+}
+
+.btn-warning, .btn-warning.disabled {
+  color: #fff;
+  background-color: #f0ad4e;
+  border-color: #eea236;
+}
+.btn-warning:not(.disabled):hover, .btn-warning:not(.disabled):focus,
+.btn-warning:not(.disabled):active, .btn-warning:not(.disabled).active,
+.open .dropdown-toggle.btn-dark:not(.disabled) {
+  color: #fff;
+  background-color: #ec971f;
+  border-color: #d58512;
+}
+
+.btn-info, .btn-info.disabled {
+  background-color: #5bc0de;
+  border-color: #46b8da;
+}
+.btn-info:not(.disabled):hover, .btn-info:not(.disabled):focus,
+.btn-info:not(.disabled):active, .btn-info:not(.disabled).active,
+.open .dropdown-toggle.btn-info:not(.disabled) {
+  background-color: #31b0d5;
+  border-color: #269abc;
+}
+
+
+/* "default" button style mirrors bootstrap "primary" */
+
+.dijitButtonNode, span.dijitReset.dijitButtonNode,
+.primary .dijitButtonNode, .primary span.dijitReset.dijitButtonNode {
+  background-color: #337ab7;
+  border-color: #2e6da4;
+}
+
+.dijit:not(.dijitDisabled) .dijitButtonNode:hover,
+.dijit:not(.dijitDisabled) span.dijitReset.dijitButtonNode:hover,
+.dijit.primary:not(.dijitDisabled) .dijitButtonNode:hover,
+.dijit.primary:not(.dijitDisabled) span.dijitReset.dijitButtonNode:hover {
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+.dijit.dijitDisabled .dijitButtonNode,
+.dijit.dijitDisabled span.dijitReset.dijitButtonNode,
+.dijit.primary.dijitDisabled .dijitButtonNode,
+.dijit.primary.dijitDisabled span.dijitReset.dijitButtonNode {
+  color: #fff;
+  background-color: #17a2b8;
+  border-color: #17a2b8;
+}
+
+.dijit:not(.digitDisabled) .dijitButtonNode:active,
+.show > .dijitButton.dropdown-toggle,
+.dijit:not(.digitDisabled) span.dijitReset.dijitButtonNode:active,
+.show > span.dijitReset.dijitButton.dropdown-toggle,
+.dijit.primary:not(.digitDisabled) .dijitButtonNode:active,
+.dijit.primary:not(.digitDisabled) span.dijitReset.dijitButtonNode:active {
+  background-color: #286090;
+  border-color: #204d74;
+}
+
+
+/* fix toolbar buttons */
+
+.dijitToolbar .dijit.dijitDisabled .dijitButtonNode,
+.dijitToolbar .dijit.dijitDisabled span.dijitReset.dijitButtonNode {
+  background-color: transparent;
+  border-color: transparent;
+}
+
+
+
+/* "pos" button style mirrors bootstrap "success" */
+
+.pos .dijitButtonNode, .pos span.dijitReset.dijitButtonNode {
+  background: #26B99A;
+  border: 1px solid #169F85;
+}
+
+.dijit.pos:not(.dijitDisabled) .dijitButtonNode:hover,
+.dijit.pos:not(.dijitDisabled) span.dijitReset.dijitButtonNode:hover {
+  background: #169F85;
+  border: 1px solid #169F85;
+}
+
+.dijit.pos.dijitDisabled .dijitButtonNode,
+.dijit.pos.dijitDisabled span.dijitReset.dijitButtonNode {
+  background: #26B99A;
+  border: 1px solid #169F85;
+}
+
+.dijit.pos:not(.digitDisabled) .dijitButtonNode:active,
+.show > .dijitButton.pos.dropdown-toggle,
+.dijit.pos:not(.digitDisabled) span.dijitReset.dijitButtonNode:active,
+.show > span.dijitReset.dijitButton.pos.dropdown-toggle {
+  background: #169F85;
+  border: 1px solid #169F85;
+}
+
+
+/* "neg" button style mirrors bootstrap "danger" */
+
+.dijitButton.dijitButtonDisabled.neg .dijitButtonText { color: white; }
+
+.dijitButton.neg .dijitButtonText,
+.dijitButton.neg span.dijitReset.dijitInline.dijitButtonText,
+.dijitDropDownButton.neg .dijitButtonText,
+.dijitDropDownButton.neg span.dijitReset.dijitInline.dijitButtonText
+{ color: white; }
+
+.neg .dijitButtonNode, .neg span.dijitReset.dijitButtonNode {
+  color: white;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+
+.dijit.neg:not(.dijitDisabled) .dijitButtonNode:hover,
+.dijit.neg:not(.dijitDisabled) span.dijitReset.dijitButtonNode:hover {
+  color: white;
+  background-color: #c9302c;
+  border-color: #ac2925;
+}
+
+.dijit.neg.dijitDisabled .dijitButtonNode,
+.dijit.neg.dijitDisabled span.dijitReset.dijitButtonNode {
+  color: white;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+
+.dijit.neg:not(.digitDisabled) .dijitButtonNode:active,
+.show > .dijitButton.neg.dropdown-toggle,
+.dijit.neg:not(.digitDisabled) span.dijitReset.dijitButtonNode:active,
+.show > span.dijitReset.dijitButton.neg.dropdown-toggle {
+  color: white;
+  background-color: #c9302c;
+  border-color: #ac2925;
+}
+
+
+/* Feedback CSS */
+
+.checklist { list-style-type: none; }
+.checklist li::before { content: "?"; padding-right: 0.5em; }
+.checklist li.complete::before
+{ content: "\2713"; color: #26B99A; padding-right: 0.5em; }
+.checklist li.incomplete::before { content: "\2717"; color: #d9534f; }
+
+.aristo .incomplete .dijitTitlePane .dijitTitlePaneTitle {
+  color: white;
+  background-color: #d9534f;
+  border-color: #d43f3a;
+}
+.incomplete .module { box-shadow: 0px 0 6px 4px rgba(217, 83, 79, 0.4); }
+
+.more-info {
+  visibility: hidden;
+  display: none;
+  height: 0;
+  transition: height 350ms ease-in-out;
+}
+.more-info.visible { display:block; height: auto; }
+.more-info h1 { font-size: 1.5em; border-bottom: 1px solid #222; margin-top: 1em; }
+.more-info h2 { font-size: 1.2em; color: #73879C; margin-top: 1em; }
+.more-info .errorType { font-size: 1em; color: #dc3545; }
+.more-info pre { color: black; }
+.more-info .highlight { color: #dc3545; }
+.more-info pre.prettyprint { padding: 2px; border: 1px solid #888; }
+
+.arrow {
+  visibility: hidden;
+  width: 0px;
+  height: 0px;
+  margin: 0 auto;
+  line-height: 0;
+  border-top: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  left: 50%;
+  bottom: -2px;
+  border-bottom: 25px solid #fff;
+  position: absolute;
+  z-index: 4;
+}
+
+.borderArrow { bottom: 0; border-bottom-color: #e6e9ed; }
+.seeMoreButton { display:block; text-align: right; }
+
+/**
+chart css
+*/
+
+.chart *,
+.chart::before {
+  box-sizing: border-box;
+}
+
+.chart {
+  float: right;
+  position: relative;
+  width: 100px;
+  height: 50px;
+  overflow: hidden;
+  margin: 2px 0 0 1.5rem;
+  padding: 0;
+  list-style-type: none;
+}
+
+.chart::before, .chart::after { position: absolute; }
+
+.chart::before {
+  content: '';
+  width: inherit;
+  height: inherit;
+  border: 15px solid #d9534f;
+  border-bottom: none;
+  border-top-left-radius: 50px;
+  border-top-right-radius: 50px;
+}
+
+
+.chart li {
+    position: absolute;
+    top: 100%;
+    left: inherit;
+    width: inherit;
+    height: inherit;
+    border: 15px solid;
+    border-top: none;
+    border-bottom-left-radius: 50px;
+    border-bottom-right-radius: 50px;
+    transform-origin: 50% 0;
+    animation-fill-mode: forwards;
+    animation-duration: .4s;
+    animation-timing-function: linear;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+
+.chart li:nth-child(1) {
+  z-index: 2;
+  border-color: #26B99A;
+  animation-name: rotate-one;
+}
+
+.chart li:nth-child(2) {
+  z-index: 1;
+  border-color: #d9534f;
+  animation-name: rotate-two;
+  animation-delay: .4s;
+}
+
+.chart span { display: none; }
+.chart span.percentage {
+  display: block;
+  position: absolute;
+  bottom: 0;
+  left: 38px;
+  color: #73879C;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+@keyframes rotate-one { 100% { transform: rotate(120deg); } }
+
+@keyframes rotate-two {
+  0%   { transform: rotate(120deg); }
+  100% { transform: rotate(180deg); }
+}
+
+#codingChart li:nth-child(1) {
+  z-index: 2;
+  border-color: #26B99A;
+  animation-name: rotate-coding;
+}
+
+#testingChart li:nth-child(1) {
+  z-index: 2;
+  border-color: #26B99A;
+  animation-name: rotate-testing;
+}
+
+#behaviorChart li:nth-child(1) {
+  z-index: 2;
+  border-color: #26B99A;
+  animation-name: rotate-behavior;
+}
+
+#styleChart li:nth-child(1) {
+  z-index: 2;
+  border-color: #26B99A;
+  animation-name: rotate-style;
+}
+

@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: WCPageWithNavigation.java,v 1.3 2011/09/16 16:11:19 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -41,8 +39,6 @@ import org.webcat.core.WCPageWithNavigation;
  * keys, which it passes on to its BarePage container.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.3 $, $Date: 2011/09/16 16:11:19 $
  */
 public class WCPageWithNavigation
     extends WCBasePage
@@ -55,9 +51,9 @@ public class WCPageWithNavigation
      *
      * @param context The page's context
      */
-    public WCPageWithNavigation( WOContext context )
+    public WCPageWithNavigation(WOContext context)
     {
-        super( context );
+        super(context);
     }
 
 
@@ -80,6 +76,22 @@ public class WCPageWithNavigation
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    @Override
+    public void appendToResponse(WOResponse response, WOContext context)
+    {
+        if (extraBodyCssClass == null)
+        {
+            extraBodyCssClass = "with-nav";
+        }
+        else if (!extraBodyCssClass.contains("with-nav"))
+        {
+            extraBodyCssClass += " with-nav";
+        }
+        super.appendToResponse(response, context);
+    }
+
 
     // ----------------------------------------------------------
     /**

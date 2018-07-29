@@ -253,12 +253,12 @@ tr.e span.error { background-color: #f99; }
     /* @group Paginated tables
     ================================================================== */
 
-    table .pagination .active {
+    table .paged .active {
         background-color: rgba(255, 255, 255, 0.75);
         border-color: gray;
     }
 
-    table .pagination .current {
+    table .paged .current {
         border-color: gray;
         background-color: #A0C0FF;
     }

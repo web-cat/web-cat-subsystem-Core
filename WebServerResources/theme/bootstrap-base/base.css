@@ -1,0 +1,54 @@
+.module { box-shadow: none; }
+
+#mainMenu ul {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+  background-color: white;
+  border: 1px solid #ccc;
+}
+
+#mainMenu li {
+  -webkit-box-shadow: none;
+  -moz-box-shadow: none;
+  box-shadow: none;
+}
+
+#mainMenu > li { border: 1px solid #ccc; }
+
+#mainMenu li a {
+  background-color: white;
+}
+
+table.percentbar td.plus  { background-color: #28a745; }
+table.percentbar td.minus { background-color: #dc3545; }
+table tr#divider td { border-top: 1px solid #aaa; }
+
+table.distchart, .tableborder { border: 1px solid black; }
+
+.check { color: #28a745; }
+.warn  { color: #dc3545; }
+
+.caution, tr.o.caution, tr.o.caution.selected, tr.o span.caution {
+    background-color: #ffc107; }
+tr.e.caution,
+tr.e.caution.selected {
+    background-image: none;
+    background-color: #efb100;
+}
+tr.e span.caution { background-color: #efb100; }
+
+.error,
+tr.o.error,
+tr.o.caution.error,
+tr.o.error.selected,
+tr.o.caution.error.selected,
+tr.o span.error { background-color: #dc3545; }
+tr.e.error,
+tr.e.caution.error,
+tr.e.error.selected,
+tr.e.caution.error.selected {
+    background-image: none;
+    background-color: #cc2535;
+}
+tr.e span.error { background-color: #cc2535; }

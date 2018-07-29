@@ -1,0 +1,505 @@
+/* #live-chat {
+  display: hidden;
+} */
+
+.module.title {
+    display: inline;
+    float: left;
+}
+
+.col-lg-6 {
+  margin-top: 10px;
+  padding-left: 0px;
+}
+
+/**
+* Side navigation bar styling begin
+*/
+.sideNavBar {
+  height: 100%;
+  width: 250px;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  background-color: #2A3F54;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 10px;
+  text-align: left;
+  color: white;
+}
+
+.sidemenu {
+  float: none;
+}
+.sidemenu ul {
+  list-style: none;
+  font-size: 15px;
+  padding-left: 0px;
+}
+
+.menus {
+  position: relative;
+  display: block;
+  float: none;
+  width: 100%;
+}
+
+.menus>a {
+    position: relative;
+    display: block;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    padding-left: 5px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    box-shadow: rgba(0,0,0,.25) 0 1px 0, inset rgba(255,255,255,.16) 0 1px 0
+}
+
+.banner {
+  background-color: #EDEDED;
+  height: 50px;
+  vertical-align: middle;
+}
+
+.menus a {
+  border-top: black;
+  border-bottom: black;
+  color: #E7E7E7;
+}
+
+.submenus {
+   display: block;
+   padding: 0px;
+}
+
+.submenus li {
+  padding-left: 15px;
+}
+
+.menus a:hover {
+    text-decoration: none;
+    opacity: 0.8;
+    background-color: rgba(127,139,152, 0.4);
+    /* box-shadow: rgba(0,0,0,.25) 0 1px 0, inset rgba(255,255,255,.16) 0 1px 0 */
+}
+
+.submenus li:hover {
+    /* background-color: black; */
+    opacity: 0.8;
+    background-color: rgba(127,139,152, 0.4);
+    box-shadow: rgba(0,0,0,.25) 0 1px 0, inset rgba(255,255,255,.16) 0 1px 0
+}
+
+.arrow-down {
+    text-align: right!important;
+}
+
+/*Side menu bar styling end*/
+
+#content {
+  transition: margin-left .5s;
+  margin-left: 250px;
+  overflow-x: hidden;
+}
+
+
+.fullWidth-panel {
+    background: #fff;
+    padding: 10px 5px 10px 5px;
+    margin: 5px 10px 10px 5px;
+}
+
+/**
+top score chart full circle
+*/
+.clear {
+  visibility: show;
+}
+.item {
+    position: relative;
+    float: left;
+}
+
+.item h2 {
+    text-align:center;
+    position: absolute;
+    line-height: 165px;
+    width: 100%;
+    background-color: transparent;
+    color: #525D76;
+}
+
+.item h3 {
+  text-align:center;
+  position: absolute;
+  line-height: 115px;
+  width: 100%;
+  background-color: transparent;
+  color: #525D76;
+}
+
+svg {
+    transform: rotate(-90deg);
+}
+
+.circle_animation {
+  stroke-dasharray: 440;
+  stroke-dashoffset: 440;
+}
+
+.html .circle_animation {
+    -webkit-animation: html 1s ease-out forwards;
+    animation: html 1s ease-out forwards;
+}
+
+.css .circle_animation {
+    -webkit-animation: css 1s ease-out forwards;
+    animation: css 1s ease-out forwards;
+}
+
+@-webkit-keyframes html {
+  to {
+    stroke-dashoffset: 20;
+  }
+}
+
+@keyframes html {
+  to {
+    stroke-dashoffset: 20;
+  }
+}
+
+/*End full circle chart */
+
+/*Result summary and VTA feedback indicator */
+
+.indicator-feedback {
+  display: flex;
+}
+
+.top-level {
+  background: #fff;
+  border: 1px solid #E6E9ED;
+  margin-right: 7px;
+  padding: 13px 13px;
+}
+
+#feedback-image {
+  height:80px;
+  width:70px;
+}
+.talkbubble {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  padding: 10px;
+  border-radius: 5px;
+  border: solid #73879C;
+  background: #73879C;
+  margin-right: 8px;
+}
+
+.talkbubble:after {
+  content:"";
+  position: absolute;
+  left: 100%;
+  top: 26px;
+  width: 0;
+  height: 0;
+
+  border-top: 13px solid transparent;
+  border-left: 26px solid #73879C;
+  border-bottom: 13px solid transparent;
+}
+
+.talkbubble textarea {
+  position: inherit;
+  width: inherit;
+  height: 140px;
+  background: #73879C;
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  border: none;
+  resize: none;
+  font-size: medium;
+}
+
+.topPanel {
+  display: flex;
+}
+
+/* End Result summary and VTA feedback indicator */
+
+/**
+* categories of errors inside the boxes
+*/
+
+.shortDescription {
+    padding: 10px 0 10px 25px;
+    margin-top: 10px;
+    list-style-type: none;
+    font-size: large;
+}
+
+.shortDescription img {
+    width: 15px;
+    height: 15px;
+}
+
+.shortDescription li::before {
+  color: #6fdb6f;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.shortDescription li.incorrect::before {
+  content: "\2717";
+  color: crimson;
+}
+
+.shortDescription li.correct::before {
+  content: "\2713";
+  color: #6fdb6f;
+}
+
+/* feedback boxes */
+
+.x-gauge.panel {
+  width:100%;
+  /* margin-left: 5px; */
+  padding: 13px 13px;
+  display: inline-block;
+  background: #fff;
+  border: 1px solid #E6E9ED;
+  -webkit-column-break-inside: avoid;
+  -moz-column-break-inside: avoid;
+  column-break-inside: avoid;
+  opacity: 1;
+  transition: all .2s ease;
+  height: 100%;
+}
+
+.x-panel-heading {
+  border-bottom: #525D76;
+  border-bottom-style: inset;
+  padding: 3px;
+  display: flex;
+}
+
+.x-panel-heading h2 {
+    color: #525D76;
+    background-color: transparent;
+}
+
+.goal-pill {
+  background-color: crimson;
+  margin-left: 8px;
+  width: 80px;
+  font-size: 13px;
+  padding: 6px 5px 5px 5px;
+  border-radius: 3px;
+  font-family: "Lucida Console";
+  font-weight: 600;
+  color: #fff;
+}
+
+.panel-body {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0 15px 0;
+}
+
+.seeMoreLink {
+  color: #fff;
+  padding: 5px 0 0 4px;
+}
+
+.seeMoreLink:link, .seeMoreLink:visited, .seeMoreLink:hover, .seeMoreLink:active {
+  color: #fff;
+  text-decoration: none;
+}
+
+.seeMoreButton {
+  width: 40px;
+  height: 15px;
+  background-color: #2A3F54;
+  position: absolute;
+  bottom: 13px;
+  right: 25px;
+  color: #fff
+}
+
+.moreInfo {
+    background: #fff;
+    position: relative;
+    border-radius: 5px;
+    border: 1px solid #e6e9ed;
+    margin: 0px 15px 25px 0;
+    padding: 20px;
+    font-size: 14px;
+    display: none;
+    height: 0;
+    transition: height 350ms ease-in-out;
+}
+
+.moreInfo.is-visible {
+    display: block;
+    height: auto;
+}
+
+.arrow {
+  width: 0px;
+  height: 0px;
+  margin: 0;
+  line-height: 0;
+  border-top: 0;
+  border-left: 15px solid transparent;
+  border-right: 15px solid transparent;
+  left: 320px;
+  top: -25px;
+  border-bottom: 25px solid #fff;
+  position: absolute;
+}
+
+.borderArrow {
+    top: -27px;
+    border-bottom-color: #e6e9ed;
+}
+
+.moreInfo h2 {
+    background-color: transparent;
+    font-weight: bold;
+    color: inherit;
+}
+.moreInfo h1 {
+    border-bottom: #525D76;
+    border-bottom-style: inset;
+    padding: 3px;
+    color: #525D76;
+}
+
+.highlight {
+  color: red;
+}
+
+.errorType {
+  font-style: italic;
+  font-family: inherit;
+  color:red;
+}
+
+.expanded {
+  box-shadow: 0 0 4px 4px rgba(82,93,118, 0.4);
+}
+
+
+/**
+chart css
+*/
+
+.chart *,
+.chart::before {
+  box-sizing: border-box;
+}
+
+.chart {
+  position: relative;
+  width: 200px;
+  height: 100px;
+  overflow: hidden;
+  margin: 2px 0 0 20px;
+  padding: 0;
+  list-style-type: none;
+}
+
+.chart::before, .chart::after {
+  position: absolute;
+}
+
+.chart::before {
+  content: '';
+  width: inherit;
+  height: inherit;
+  border: 15px solid grey;
+  border-bottom: none;
+  border-top-left-radius: 100px;
+  border-top-right-radius: 100px;
+}
+
+
+.chart li {
+    position: absolute;
+    top: 100%;
+    left: inherit;
+    width: inherit;
+    height: inherit;
+    border: 15px solid;
+    border-top: none;
+    border-bottom-left-radius: 100px;
+    border-bottom-right-radius: 100px;
+    transform-origin: 50% 0;
+    animation-fill-mode: forwards;
+    animation-duration: .4s;
+    animation-timing-function: linear;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+}
+
+.chart li:nth-child(1) {
+  z-index: 2;
+  border-color: #6fdb6f;
+  animation-name: rotate-one;
+}
+
+.chart li:nth-child(2) {
+  z-index: 1;
+  border-color: crimson;
+  animation-name: rotate-two;
+  animation-delay: .4s;
+}
+
+.chart span {
+    display: none;
+}
+
+@keyframes rotate-one {
+  100% {
+    transform: rotate(120deg);
+  }
+}
+
+@keyframes rotate-two {
+  0% {
+    transform: rotate(120deg);
+  }
+  100% {
+    transform: rotate(180deg);
+  }
+}
+
+#codingChart li:nth-child(1) {
+  z-index: 2;
+  border-color: #6fdb6f;
+  animation-name: rotate-coding;
+}
+
+#testingChart li:nth-child(1) {
+  z-index: 2;
+  border-color: #6fdb6f;
+  animation-name: rotate-testing;
+}
+
+#behaviorChart li:nth-child(1) {
+  z-index: 2;
+  border-color: #6fdb6f;
+  animation-name: rotate-behavior;
+}
+
+#styleChart li:nth-child(1) {
+  z-index: 2;
+  border-color: #6fdb6f;
+  animation-name: rotate-style;
+}

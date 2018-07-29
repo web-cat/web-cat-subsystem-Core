@@ -3,6 +3,7 @@ AscendingImage: WOImage {
     height = 11;
     framework = "Core";
     filename = "icons/Ascending.gif";
+    class = "icon so";
 }
 
 DescendingImage: WOImage {
@@ -10,6 +11,7 @@ DescendingImage: WOImage {
     height = 11;
     framework = "Core";
     filename = "icons/Descending.gif";
+    class = "icon so";
 }
 
 SortLink: WCLink {
@@ -28,4 +30,5 @@ UnsortedImage: WOImage {
     height = 11;
     framework = "Core";
     filename = "icons/Unsorted.gif";
+    class = "icon so";
 }
