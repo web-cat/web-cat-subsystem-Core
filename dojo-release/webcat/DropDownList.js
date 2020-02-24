@@ -180,7 +180,7 @@ webcat.dropDownList.hideDropDown = function(event, dropDownId, menuId, force)
     else
     {
         var reltg = (event.relatedTarget) ? event.relatedTarget : event.toElement;
-        stayOpen = webcat.dropDownList._isNodeInListOrMenu(reltg);
+        stayOpen = reltg && webcat.dropDownList._isNodeInListOrMenu(reltg);
     }
 
     if (force)
