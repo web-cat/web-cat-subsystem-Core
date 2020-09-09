@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: CoreSelections.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -32,9 +30,7 @@ import org.apache.log4j.*;
  * This class represents persistent navigation choices a user has made
  * for entities in the Core subsystem.
  *
- * @author stedwar2
- * @author  latest changes by: $Author: aallowat $
- * @version $Revision: 1.1 $ $Date: 2010/05/11 14:51:55 $
+ * @author Stephen Edwards
  */
 public class CoreSelections
     extends _CoreSelections
@@ -64,11 +60,13 @@ public class CoreSelections
         try
         {
             Course result =  super.course();
-            if ( result != null )
+            if (result != null)
+            {
                 result.number();  // Force access of this object
+            }
             return result;
         }
-        catch ( com.webobjects.eoaccess.EOObjectNotAvailableException e )
+        catch (Exception e)
         {
             log.debug("course(): attempting to force null after " + e);
             if (log.isDebugEnabled())
@@ -78,21 +76,21 @@ public class CoreSelections
                 Level oldLevel = log.getLevel();
                 try
                 {
-                    log.setLevel( Level.OFF );
+                    log.setLevel(Level.OFF);
                     // Do NOT call setCourseRelationship, since it in turn
                     // calls course()!
-                    super.setCourse( null );
+                    super.setCourse(null);
                 }
                 finally
                 {
-                    log.setLevel( oldLevel );
+                    log.setLevel(oldLevel);
                 }
             }
             else
             {
                 // Do NOT call setCourseRelationship, since it in turn calls
                 // course()!
-                super.setCourse( null );
+                super.setCourse(null);
             }
             return super.course();
         }
@@ -110,12 +108,14 @@ public class CoreSelections
         try
         {
             CourseOffering result = super.courseOffering();
-            if ( result != null )
+            if (result != null)
+            {
                 result.course();  // Force access of this object
+            }
             log.debug("courseOffering() = " + result);
             return result;
         }
-        catch ( com.webobjects.eoaccess.EOObjectNotAvailableException e )
+        catch (Exception e)
         {
             log.debug("courseOffering(): attempting to force null after " + e);
             if (log.isDebugEnabled())
@@ -125,23 +125,38 @@ public class CoreSelections
                 Level oldLevel = log.getLevel();
                 try
                 {
-                    log.setLevel( Level.OFF );
+                    log.setLevel(Level.OFF);
                     // Do NOT call setCourseOfferingRelationship, since it in
                     // turn calls courseOffering()!
-                    super.setCourseOffering( null );
+                    super.setCourseOffering(null);
                 }
                 finally
                 {
-                    log.setLevel( oldLevel );
+                    log.setLevel(oldLevel);
                 }
             }
             else
             {
                 // Do NOT call setCourseOfferingRelationship, since it in
                 // turn calls courseOffering()!
-                super.setCourseOffering( null );
+                super.setCourseOffering(null);
             }
             return super.courseOffering();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public Object storedValueForKey(String key)
+    {
+        try
+        {
+            return super.storedValueForKey(key);
+        }
+        catch (IllegalStateException e)
+        {
+            return null;
         }
     }
 

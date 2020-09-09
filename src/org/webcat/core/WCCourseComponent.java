@@ -69,12 +69,22 @@ public class WCCourseComponent
         if (log.isDebugEnabled())
         {
             log.debug("awake(): begin " + getClass().getName());
+            log.debug("hasSession(): " + hasSession());
+            if (hasSession())
+            {
+                log.debug("session id = " + session().sessionID());
+            }
         }
         super.awake();
         coreSelections();
         if (log.isDebugEnabled())
         {
             log.debug("awake(): end " + getClass().getName());
+            log.debug("hasSession(): " + hasSession());
+            if (hasSession())
+            {
+                log.debug("session id = " + session().sessionID());
+            }
         }
     }
 
@@ -123,6 +133,7 @@ public class WCCourseComponent
     {
         if (csm == null)
         {
+            log.debug("coreSelections(), transient state = " + transientState());
             Object inheritedCsm = transientState().valueForKey( CSM_KEY );
             if (inheritedCsm == null)
             {

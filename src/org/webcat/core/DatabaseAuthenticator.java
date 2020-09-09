@@ -53,6 +53,7 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.*;
 import org.webcat.woextensions.ECActionWithResult;
 import static org.webcat.woextensions.ECActionWithResult.call;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -82,6 +83,7 @@ public class DatabaseAuthenticator
     public DatabaseAuthenticator()
     {
         // Private data are initialized in their declarations
+        log.debug("DatabaseAuthenticator(): " + hashCode());
     }
 
 
@@ -104,6 +106,8 @@ public class DatabaseAuthenticator
     public boolean configure(String       baseName,
                              WCProperties properties)
     {
+        log.debug("DatabaseAuthenticator.configure(" + baseName + "): "
+            + hashCode());
         addIfNotFound = properties.booleanForKey(baseName + ".addIfNotFound");
         skipPasswordChecks =
             properties.booleanForKey(baseName + ".skipPasswordChecks");
@@ -141,6 +145,12 @@ public class DatabaseAuthenticator
                              com.webobjects.eocontrol.EOEditingContext ec,
                              LoginSession ls)
     {
+        if (log.isDebugEnabled())
+        {
+            log.debug("DatabaseAuthenticator.authenticate(" + userName
+                + ", " + password + ", " + domain.subdirName() + "): "
+                + hashCode());
+        }
         User user = null;
         try
         {
@@ -192,6 +202,10 @@ public class DatabaseAuthenticator
                         ec);
                 log.info("DatabaseAuthenticator: new user '"
                     + userName + "' created");
+            }
+            else
+            {
+                log.debug("no user found matching username/domain");
             }
         }
         catch (EOUtilities.MoreThanOneException e)

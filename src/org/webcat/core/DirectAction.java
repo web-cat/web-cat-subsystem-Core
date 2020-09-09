@@ -97,7 +97,6 @@ public class DirectAction
         if (log.isDebugEnabled())
         {
             log.debug("defaultAction(): uri = " + request().uri());
-            log.debug("formValues = " + request().formValues());
         }
         NSMutableDictionary<Object, Object> errors =
             new NSMutableDictionary<Object, Object>();
@@ -507,7 +506,9 @@ public class DirectAction
                 if (user == null)
                 {
                     log.info("Failed login attempt: " + userName
-                        + " (" + domain.displayableName() + ")");
+                        + " ("
+                        + (domain == null ? "null" : domain.displayableName())
+                        + ")");
                     errors.setObjectForKey(
                         "Your login information could not be validated.  "
                         + "Be sure you typed your e-mail (or user name) "

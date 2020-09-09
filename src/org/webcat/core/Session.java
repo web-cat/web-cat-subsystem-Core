@@ -1,6 +1,4 @@
 /*==========================================================================*\
- |  $Id: Session.java,v 1.11 2012/11/15 13:45:21 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
  |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
@@ -23,6 +21,7 @@ package org.webcat.core;
 
 import org.apache.log4j.Logger;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
+import org.webcat.woextensions.ResourceCounter;
 import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCEC.PeerManager;
 import org.webcat.woextensions.WCEC.PeerManagerPool;
@@ -40,8 +39,6 @@ import com.webobjects.foundation.NSTimestamp;
  * The current user session.
  *
  * @author  Stephen Edwards
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.11 $, $Date: 2012/11/15 13:45:21 $
  */
 public class Session
     extends er.extensions.appserver.ERXSession
@@ -80,6 +77,7 @@ public class Session
     {
         tracer.debug("creating " + sessionID());
         // , new Exception("from here"));
+        counter.allocate(this);
 
         setStoresIDsInCookies(true);
         setStoresIDsInURLs(false);
@@ -115,12 +113,12 @@ public class Session
     /**
      * Set the user's identify when he or she first logs in.
      *
-     * Returns the appropriate login <code>Session</code> object.
+     * Returns the appropriate login <code>Session</code> ID value.
      * Note that this may return a <code>Session</code> other than the
      * recipient of this message, in which case the user has
      * another session open, which they must go to.
      *
-     * @param u The user loggin in
+     * @param u The user logging in
      * @return  The Session ID to use for this user
      */
     public synchronized String setUser(User u)
@@ -453,6 +451,56 @@ public class Session
                 // + " from here:", new Exception("terminate() called"));
         }
 
+        if (terminatedFrom != null)
+        {
+            log.error("terminate() called on session " + sessionID()
+                + " for user " + user()
+                + " that has already been terminated. Called from:",
+                new Exception("here"));
+            log.error("first terminated here:", terminatedFrom);
+        }
+        else
+        {
+            terminatedFrom = new Exception("terminate() called on session "
+                + sessionID() + " for user " + user());
+        }
+
+        if (transientState != null)
+        {
+            NSArray<Object> values = transientState.allValues();
+            for (int i = 0; i < values.count(); i++)
+            {
+                Object value = values.objectAtIndex(i);
+                if (value instanceof EOManager.ECManager)
+                {
+                    ((EOManager.ECManager)value).dispose();
+                }
+                else if (value instanceof EOEditingContext)
+                {
+                    ((EOEditingContext)value).dispose();
+                }
+                else if (value instanceof WCEC.PeerManager)
+                {
+                    ((PeerManager)value).dispose();
+                }
+                else if (value instanceof WCEC.PeerManagerPool)
+                {
+                    ((PeerManagerPool)value).dispose();
+                }
+                else
+                {
+                    log.error("unable to dispose() of "
+                        + value.getClass() + ": " + value);
+                }
+            }
+            transientState = null;
+        }
+        if (childManagerPool != null)
+        {
+            childManagerPool.dispose();
+            childManagerPool = null;
+        }
+
         if (primeUser != null)
         {
             tracer.info("session timeout, logging out user: "
@@ -472,6 +520,7 @@ public class Session
                     .send();
             }
         }
+        counter.deallocate(this);
     }
 
 
@@ -564,6 +613,8 @@ public class Session
                 finally
                 {
                     lockContext.unlock();
+                    lockContext.dispose();
+                    loginSession = null;
                 }
             }
         }
@@ -572,33 +623,15 @@ public class Session
             new UnexpectedExceptionMessage(e, context(), null, null)
                 .send();
         }
+        if (primeUser != null)
+        {
+            primeUser.userHasLoggedOut();
+            // FIXME: what about localUser's prefs?
+            // Ignore for now, since that is so rarely used, but it probably
+            // causes a very small EC leak
+        }
         primeUser = null;
         localUser = null;
-        if (transientState != null)
-        {
-            NSArray<Object> values = transientState.allValues();
-            for (int i = 0; i < values.count(); i++)
-            {
-                Object value = values.objectAtIndex(i);
-                if (value instanceof EOManager.ECManager)
-                {
-                    ((EOManager.ECManager)value).dispose();
-                }
-                else if (value instanceof EOEditingContext)
-                {
-                    ((EOEditingContext)value).dispose();
-                }
-                else if (value instanceof WCEC.PeerManager)
-                {
-                    ((PeerManager)value).dispose();
-                }
-                else if (value instanceof WCEC.PeerManagerPool)
-                {
-                    ((PeerManagerPool)value).dispose();
-                }
-            }
-            transientState = null;
-        }
         terminate();
     }
 
@@ -793,6 +826,13 @@ public class Session
     }
 
 
+    // ----------------------------------------------------------
+    public static void dumpLeaks()
+    {
+        counter.dumpLeaks();
+    }
+
+
     //~ Instance/static variables .............................................
 
     private User                  primeUser            = null;
@@ -804,6 +844,7 @@ public class Session
     private boolean               doNotUseLoginSession = false;
     private long                  lastLSUpdate         = 0L;
     private Theme                 temporaryTheme;
+    private Exception             terminatedFrom;
 
     @SuppressWarnings("deprecation")
     private com.webobjects.foundation.NSTimestampFormatter timeFormatter = null;
@@ -811,6 +852,9 @@ public class Session
     private static final Integer zero = new Integer(0);
     private static final Integer one  = new Integer(1);
     private static final long LS_UPDATE_PERIOD = 3L * 60L *1000L; // 3 minutes
+
+    private static final ResourceCounter counter =
+        new ResourceCounter(Session.class.getSimpleName());
 
     private static NSArray<TabDescriptor> subsystemTabTemplate;
     {

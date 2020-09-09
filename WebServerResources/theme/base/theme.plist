@@ -47,6 +47,10 @@
             media = "print, screen, projection, tv";
         },
         {
+            file = "chatbot.css";
+            media = "print, screen, projection, tv";
+        },
+        {
             file = "print.css";
             media = "print";
         },

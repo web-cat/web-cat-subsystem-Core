@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2018 Virginia Tech
+ |  Copyright (C) 2018-2019 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -258,7 +258,7 @@ public class CasAuthenticator
         }
         catch (IOException e)
         {
-            log.error(e);
+            log.error(e, e);
         }
         log.debug("validation response: " + response);
         if (response != null

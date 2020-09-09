@@ -1,0 +1,243 @@
+.flex { display: flex; }
+
+.talkbubble, .explainbubble {
+  position: relative;
+  width: 100%;
+  height: auto;
+  padding: 10px;
+  border-radius: 5px;
+  border: solid #73879C;
+  background: #73879C;
+  margin-right: 14px;
+  color: #fff;
+}
+
+.explainbubble {
+  margin-right: 0px;
+  margin-left: 8px;
+  max-width: 94%;
+}
+
+.talkbubble:after {
+  content:"";
+  position: absolute;
+  left: 100%;
+  top: 26px;
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-left: 26px solid #73879C;
+  border-bottom: 13px solid transparent;
+}
+
+.explainbubble:after {
+  content:"";
+  position: absolute;
+  right: 100%;
+  top: 26px;
+  width: 0;
+  height: 0;
+  border-top: 13px solid transparent;
+  border-right: 26px solid #73879C;
+  border-bottom: 13px solid transparent;
+}
+
+/* ---------- LIVE-CHAT ---------- */
+
+#live-chat {
+  bottom: 0;
+  font-size: 12px;
+  right: 2px;
+  position: fixed;
+  width: 394px;
+  z-index: 9;
+}
+
+.GradeStudentSubmissionPage #live-chat { display: none; }
+
+#live-chat header {
+  background: #293239;
+  border-radius: 5px 5px 0 0;
+  color: #fff;
+  cursor: pointer;
+  padding: 10px 20px;
+}
+
+#live-chat h4:before {
+  background: #1a8a34;
+  border-radius: 50%;
+  content: "";
+  display: inline-block;
+  height: 8px;
+  margin: 0 8px 0 0;
+  width: 8px;
+}
+
+#live-chat h4 {
+  font-size: 12px;
+}
+
+#live-chat h5 {
+  font-size: 10px;
+}
+
+#live-chat form {
+  padding: 5px;
+}
+
+#live-chat input[type="text"] {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 8px;
+  outline: none;
+  width: 225px;
+  margin-bottom: 0.8em;
+}
+
+.chat-message-counter {
+  background: #e62727;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  display: none;
+  font-size: 12px;
+  font-weight: bold;
+  height: 28px;
+  left: 0;
+  line-height: 28px;
+  margin: -15px 0 0 -15px;
+  position: absolute;
+  text-align: center;
+  top: 0;
+  width: 28px;
+}
+
+.chat-close {
+  background: #1b2126;
+  border-radius: 50%;
+  color: #fff;
+  display: block;
+  float: right;
+  font-size: 10px;
+  height: 16px;
+  line-height: 16px;
+  margin: 2px 0 0 0;
+  text-align: center;
+  width: 16px;
+}
+
+.chat {
+  background: #fff;
+  display: none;
+}
+
+.chat-history {
+  height: 250px;
+  padding: 8px 8px;
+  overflow-y: scroll;
+  width: 242px;
+}
+
+.mlcode {
+  white-space: pre-line;
+  font-family: 'Inconsolata', 'Lucida Sans Typewriter', 'Lucida Console', 'Monaco', monospace;
+}
+
+.feedback.chat-bubble {
+  display: block;
+}
+
+.chat-history ul#choices {
+  display: block;
+  list-style: none;
+  padding: 0;
+}
+
+.chat-history ul#choices li {
+  background: #2a3f54cf;
+  color: white;
+  border-radius: 10px;
+  margin: 0 2px 2px;
+  padding: 2px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.chat-message {
+  margin: 16px 0;
+}
+
+.chat-message img {
+  float: left;
+}
+
+.chat-message-content {
+  margin-left: 56px;
+}
+
+.chat-time {
+  float: right;
+  font-size: 10px;
+}
+
+.chat-feedback {
+  font-style: italic;
+  margin: 0 0 0 80px;
+}
+
+.chat-bubble {
+  margin: 6px 5px;
+  border-radius: 12px;
+  background: #00bfb6;
+  color: #fff;
+  padding: 12px 12px;
+  text-align: left;
+  clear: both;
+  position: relative;
+  width: 200px;
+}
+
+.chat-message-sent {
+  background: #2A3F54;
+  color: white;
+}
+
+.chat-message-sent:before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 10px solid #2A3F54;
+  border-right: 10px solid transparent;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid #2A3F54;
+  right: -8px;
+  bottom: 0px;
+}
+
+.chat-message-rcvd {
+  background: #f2f2f2;
+  color: black;
+}
+
+.chat-message-rcvd:before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 10px solid transparent;
+  border-right: 10px solid #f2f2f2;
+  border-top: 10px solid #f2f2f2;
+  border-bottom: 10px solid transparent;
+  left: -8px;
+  top: 0px;
+}
+
+.answer-buttons {
+  width: 50px;
+  background: #2A3F54;
+  color: white;
+  border-radius: 10px;
+  margin: 0 2px;
+}
+
+.avatar-avatarbox .avatar-avatarboxmenu { display: none; }

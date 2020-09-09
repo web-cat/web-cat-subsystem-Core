@@ -105,7 +105,10 @@ public abstract class BasicAuthenticationFilter
                 }
                 else
                 {
-                    session.terminate();
+                    EOEditingContext ctxt = session.defaultEditingContext();
+                    session.userLogout();
+                    ctxt.unlock();
+                    ctxt.dispose();
                 }
             }
         }

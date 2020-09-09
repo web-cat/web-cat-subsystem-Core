@@ -136,9 +136,18 @@ public class LTILaunchRequest
     public boolean isValid()
     {
         String consumerKey = get(OAUTH_CONSUMER_KEY);
+        if (consumerKey == null)
+        {
+            return false;
+        }
+
         LMSInstance lms = LMSInstance.uniqueObjectMatchingValues(
             ec, LMSInstance.CONSUMER_KEY_KEY, consumerKey);
 
+        if (lms == null)
+        {
+            return false;
+        }
         String consumerSecret = lms.consumerSecret();
         String apiUrl = Application.completeURLWithRequestHandlerKey(context,
             "wa", "ltiLaunch", null, true, 0);
@@ -220,18 +229,53 @@ public class LTILaunchRequest
                     NSArray<User> users = User.objectsMatchingQualifier(ec,
                         User.email.is(email)
                         .and(User.authenticationDomain.is(d)));
-                    if (users.size() == 1)
-                    {
-                        user = users.get(0);
-                    }
-                    else if (users.size() > 1)
+                    if (users.size() > 1)
                     {
                         String msg = "Multiple users with e-mail address '"
                             + email + "' in domain " + d;
                         log.error(msg);
                         throw new IllegalStateException(msg);
                     }
-                    else
+                    if (users.size() == 0)
+                    {
+                        users = User.objectsMatchingQualifier(ec,
+                            User.email.is(email));
+                        if (users.size() > 1)
+                        {
+                            String msg = "Multiple users with e-mail "
+                                + "address '" + email + "'";
+                            log.error(msg);
+                            throw new IllegalStateException(msg);
+                        }
+                        else if (users.size() == 1)
+                        {
+                            user = users.get(0);
+                            log.error("user '" + email
+                                + "' logging in through LMS Instance "
+                                + lmsInstance()
+                                + " associated with " + d
+                                + ", but user belongs to "
+                                + user.authenticationDomain());
+                        }
+                    }
+                    if (users.size() == 0)
+                    {
+                        String userName = get(CUSTOM_CANVAS_USER_LOGIN_ID);
+                        if (userName != null)
+                        {
+                            users = User.objectsMatchingQualifier(ec,
+                                User.userName.is(userName)
+                                .and(User.authenticationDomain.is(d)));
+                            if (users.size() > 1)
+                            {
+                                String msg = "Multiple users with user name '"
+                                    + userName + "' in domain " + d;
+                                log.error(msg);
+                                throw new IllegalStateException(msg);
+                            }
+                        }
+                    }
+                    if (users.size() == 0)
                     {
                         String userName = email;
                         int pos = userName.indexOf('@');
@@ -242,39 +286,18 @@ public class LTILaunchRequest
                         users = User.objectsMatchingQualifier(ec,
                             User.userName.is(userName)
                             .and(User.authenticationDomain.is(d)));
-                        if (users.size() == 1)
-                        {
-                            user = users.get(0);
-                        }
-                        else if (users.size() > 1)
+                        if (users.size() > 1)
                         {
                             String msg = "Multiple users with user name '"
                                 + userName + "' in domain " + d;
                             log.error(msg);
                             throw new IllegalStateException(msg);
                         }
-                        else
-                        {
-                            users = User.objectsMatchingQualifier(ec,
-                                User.email.is(email));
-                            if (users.size() == 1)
-                            {
-                                user = users.get(0);
-                                log.error("user '" + email
-                                    + "' logging in through LMS Instance "
-                                    + lmsInstance()
-                                    + " associated with " + d
-                                    + ", but user belongs to "
-                                    + user.authenticationDomain());
-                            }
-                            else if (users.size() > 1)
-                            {
-                                String msg = "Multiple users with e-mail "
-                                    + "address '" + email + "'";
-                                log.error(msg);
-                                throw new IllegalStateException(msg);
-                            }
-                        }
+                    }
+
+                    if (users.size() == 1)
+                    {
+                        user = users.get(0);
                     }
                 }
                 if (user == null)
@@ -283,7 +306,7 @@ public class LTILaunchRequest
                     if (userName != null)
                     {
                         NSArray<User> users = User.objectsMatchingQualifier(ec,
-                            User.userName.is(email)
+                            User.userName.is(userName)
                             .and(User.authenticationDomain.is(d)));
                         if (users.size() == 1)
                         {
@@ -436,40 +459,62 @@ public class LTILaunchRequest
     // ----------------------------------------------------------
     public NSArray<CourseOffering> courseOfferings()
     {
+        String contextId = get(CONTEXT_ID);
         NSArray<CourseOffering> result = CourseOffering
             .objectsMatchingQualifier(ec,
-            CourseOffering.lmsContextId.is(get(CONTEXT_ID)));
-        if (result.count() == 0)
+            CourseOffering.lmsContextId.is(contextId));
         {
-            result = CourseOffering.objectsMatchingQualifier(ec,
-                CourseOffering.lmsContextId.is(
-                get(CUSTOM_CANVAS_COURSE_ID)));
-            if (result.count() == 0)
+            String canvasId = get(CUSTOM_CANVAS_COURSE_ID);
+            NSArray<CourseOffering> canvasResult = null;
+            if (canvasId != null && !"".equals(canvasId))
             {
-                result = CourseOffering.objectsMatchingQualifier(ec,
-                    CourseOffering.lmsContextId.is(
-                    get(CONTEXT_LABEL)));
+                canvasResult = CourseOffering.objectsMatchingQualifier(ec,
+                    CourseOffering.lmsContextId.is(canvasId));
             }
-            if (result.count() > 0)
+            else
             {
-                // Update all matching course ids to the proper value
-                String id = get(CONTEXT_ID);
-                boolean needsSave = false;
-                if (id != null)
+                canvasResult = new NSArray<CourseOffering>();
+            }
+            String labelId = get(CONTEXT_LABEL);
+            NSArray<CourseOffering> labelResult = null;
+            if (labelId != null && !"".equals(labelId))
+            {
+                labelResult = CourseOffering.objectsMatchingQualifier(ec,
+                    CourseOffering.lmsContextId.is(labelId));
+            }
+            else
+            {
+                labelResult = new NSArray<CourseOffering>();
+            }
+            if (canvasResult.count() > 0 || labelResult.count() > 0)
+            {
+                NSMutableArray<CourseOffering> newResults =
+                    new NSMutableArray<CourseOffering>();
+                if (!contextId.equals(canvasId))
                 {
-                    for (CourseOffering co : result)
+                    newResults.addAll(canvasResult);
+                }
+                if (!contextId.equals(labelId))
+                {
+                    newResults.addAll(labelResult);
+                }
+
+                // Update all matching course ids to the proper value
+                boolean needsSave = false;
+                for (CourseOffering co : newResults)
+                {
+                    if (!contextId.equals(co.lmsContextId()))
                     {
-                        if (!id.equals(co.lmsContextId()))
-                        {
-                            co.setLmsContextId(id);
-                            needsSave = true;
-                        }
+                        co.setLmsContextId(contextId);
+                        needsSave = true;
                     }
                 }
                 if (needsSave)
                 {
                     ec.saveChanges();
                 }
+                newResults.addAll(result);
+                result = newResults;
             }
         }
         LMSInstance lms = lmsInstance();

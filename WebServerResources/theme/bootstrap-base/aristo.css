@@ -12,6 +12,9 @@
   margin-bottom: 1px;
 }
 
+tr.o.dojoDndItemAnchor,
+tr.e.dojoDndItemAnchor { background-color: #b8daff; }
+
 /* Button formatting from bootstrap */
 
 .aristo .dijitButtonNode {

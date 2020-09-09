@@ -79,6 +79,33 @@ public abstract class WCDirectActionWithSession
 
     // ----------------------------------------------------------
     /**
+     * If there is a current session but it hasn't been logged in, then
+     * terminate it.
+     */
+    protected void terminateSessionIfTemporary()
+    {
+        if (session != null)
+        {
+            if (session.isTerminating())
+            {
+                session = null;
+            }
+            if (session instanceof org.webcat.core.Session)
+            {
+                org.webcat.core.Session wc = (org.webcat.core.Session)session;
+                if (!wc.isLoggedIn())
+                {
+                    // Never logged in
+                    wc.terminate();
+                    session = null;
+                }
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Saves the session associated with this request, if possible.
      */
     protected void saveSession()
@@ -206,6 +233,7 @@ public abstract class WCDirectActionWithSession
     {
         WOActionResults result =
             super.performSynchronousActionNamed(actionName);
+        terminateSessionIfTemporary();
         saveSession();
         return result;
     }

@@ -100,6 +100,15 @@ public class WCPageWithNavigation
      */
     public void awake()
     {
+        if (requestLog.isDebugEnabled())
+        {
+            WOComponent root = this;
+            while (root.parent() != null)
+            {
+                root = root.parent();
+            }
+            requestLog.debug(root.getClass().getSimpleName() + ": awake()");
+        }
         log.debug( "awake()" );
         super.awake();
         if ( thisPage == null )
@@ -521,4 +530,6 @@ public class WCPageWithNavigation
     private TabDescriptor myTab;
     private String        helpURL;
     static Logger log = Logger.getLogger(WCPageWithNavigation.class);
+    static Logger requestLog = Logger.getLogger(Application.class.getName()
+        + ".requests");
 }

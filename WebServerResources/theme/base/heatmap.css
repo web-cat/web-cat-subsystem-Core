@@ -16,6 +16,12 @@
   background-image: none;
 }
 .file .heat .method { background-color: #fcfce2; margin: 0 4px; }
+.file .heat .method-suspect,
+.file .heat .method.suspect {
+  background-color: #dedece;
+  margin: 0 4px;
+  border: 2px solid #dc3545;
+}
 .file .heat a:active,
 .file .heat a:focus,
 .file .heat a:hover { text-decoration: none; background-color: inherit; color: inherit; border: none; }

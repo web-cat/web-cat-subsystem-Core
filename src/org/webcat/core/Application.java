@@ -38,7 +38,6 @@ import ognl.helperfunction.WOHelperFunctionHTMLTemplateParser;
 import ognl.helperfunction.WOTagProcessor;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
-import org.apache.log4j.Priority;
 import org.webcat.archives.ArchiveManager;
 import org.webcat.archives.IArchiveHandler;
 import org.webcat.core.git.GitUtilities;
@@ -84,6 +83,7 @@ import com.webobjects.woextensions.WOExceptionParser;
 import com.webobjects.woextensions.WOParsedErrorLine;
 import er.extensions.ERXExtensions;
 import er.extensions.appserver.ERXMessageEncoding;
+import er.extensions.eof.ERXEOAccessUtilities;
 import er.extensions.formatters.ERXTimestampFormatter;
 import er.extensions.foundation.ERXProperties;
 import er.extensions.foundation.ERXSystem;
@@ -452,10 +452,14 @@ public class Application
             {
                 // Silently swallow it, then retry on the next line
             }
-            for (LoginSession session : LoginSession.allObjects(ec))
-            {
-                session.delete();
-            }
+
+//            for (LoginSession session : LoginSession.allObjects(ec))
+//            {
+//                session.delete();
+//            }
+            ERXEOAccessUtilities.evaluateSQLWithEntityNamed(ec,
+                LoginSession.ENTITY_NAME, "truncate TLOGINSESSION;");
+
             NSTimestamp thirtyDaysAgo = new NSTimestamp()
                 .timestampByAddingGregorianUnits(0, 0, -30, 0, 0, 0);
             try
@@ -465,6 +469,7 @@ public class Application
                 {
                     period.delete();
                 }
+                ec.saveChanges();
             }
             catch (Exception e)
             {
@@ -472,7 +477,14 @@ public class Application
                     e);
                 // TODO: drop all rows in usage period table here
             }
-            ec.saveChanges();
+            try
+            {
+                ec.saveChanges();
+            }
+            catch (Exception e)
+            {
+                log.error("Database failure purging old login sessions", e);
+            }
         }}.run();
         NSLog.debug.setIsEnabled(nsLogDebugEnabled);
 
@@ -882,12 +894,18 @@ public class Application
      */
     public WOComponent pageWithName(String name, WOContext context)
     {
-        if (requestLog.isDebugEnabled())
+        if (requestDebug.isDebugEnabled())
         {
-            requestLog.debug("pageWithName( "
+            requestDebug.debug("pageWithName( "
                 + ((name == null) ? "<null>" : name)
                 + ", "
                 + context
+                + " )");
+        }
+        else if (requestLog.isDebugEnabled())
+        {
+            requestLog.debug("pageWithName( "
+                + ((name == null) ? "<null>" : name)
                 + " )");
         }
         if (name == null || name.length() == 0 || "Main".equals(name))
@@ -996,43 +1014,24 @@ public class Application
                 0   // seconds
                 );
         }
-        if (requestLog.isDebugEnabled())
+        if (requestDebug.isDebugEnabled())
         {
-            requestLog.debug("dispatchRequest(): method = "
+            requestDebug.debug("dispatchRequest(): method = "
                 + aRequest.method());
-            requestLog.debug("\tqueryString = " + aRequest.queryString());
-            requestLog.debug("\trequestHandlerKey = "
+            requestDebug.debug("\tqueryString = " + aRequest.queryString());
+            requestDebug.debug("\trequestHandlerKey = "
                 + aRequest.requestHandlerKey());
-            requestLog.debug("\trequestHandlerPath = "
+            requestDebug.debug("\trequestHandlerPath = "
                 + aRequest.requestHandlerPath());
-            requestLog.debug("\turi = " + aRequest.uri());
-            requestLog.debug("\tcookies = " + aRequest.cookies());
+            requestDebug.debug("\turi = " + aRequest.uri());
+            requestDebug.debug("\tcookies = " + aRequest.cookies());
         }
-        try
+        WOResponse result = super.dispatchRequest(aRequest);
+        if (requestDebug.isDebugEnabled())
         {
-            WOResponse result = super.dispatchRequest(aRequest);
-            if (requestLog.isDebugEnabled())
-            {
-                requestLog.debug("dispatchRequest() result:\n" + result);
-            }
-            return result;
+            requestDebug.debug("dispatchRequest() result:\n" + result);
         }
-        catch (IllegalStateException e)
-        {
-            String message = e.getMessage();
-            // Swallow Eclipse update site requests that were
-            // incorrectly targeted
-            if (message == null
-                || !message.contains("Direct Action type URL")
-                || !message.contains("eclipse")
-                || !(message.contains("contents.jar")
-                    || message.contains("artifacts.jar")
-                    || message.contains("p2.index")))
-            {
-                throw e;
-            }
-            return null;
-        }
+        return result;
     }
 
 
@@ -1211,6 +1210,23 @@ public class Application
      */
     public WOResponse handleException(Exception exception, WOContext context)
     {
+        if (exception instanceof IllegalStateException)
+        {
+            if (context != null && context.request() != null)
+            {
+                String uri = context.request().uri();
+                if (uri != null && uri.contains("assignments/eclipse/"))
+                {
+                    int pos = uri.lastIndexOf('/');
+                    String suffix = uri.substring(pos + 1);
+                    // redirect to web-cat.org:
+                    WORedirect redirect =
+                        (WORedirect)pageWithName("WORedirect", context);
+                    redirect.setUrl("http://web-cat.org/eclipse/" + suffix);
+                    return redirect.generateResponse();
+                }
+            }
+        }
         try
         {
             // We first want to test if we ran out of memory. If so we need
@@ -2939,4 +2955,5 @@ public class Application
     static Logger log = Logger.getLogger(Application.class);
     static Logger requestLog = Logger.getLogger(Application.class.getName()
         + ".requests");
+    static Logger requestDebug = Logger.getLogger("trace.all.requests");
 }

@@ -628,8 +628,21 @@ public class WCComponent
         if (log.isDebugEnabled())
         {
             log.debug("awake(): " + getClass().getName());
+            log.debug("hasSession(): " + hasSession());
+            if (hasSession())
+            {
+                log.debug("session id = " + session().sessionID());
+            }
         }
         localContext();
+        if (log.isDebugEnabled())
+        {
+            log.debug("hasSession(): " + hasSession());
+            if (hasSession())
+            {
+                log.debug("session id = " + session().sessionID());
+            }
+        }
         if (currentTab != null)
         {
             reselectCurrentTab();

@@ -300,10 +300,18 @@ table.percentbar td.minus { background-color: #d9534f; /* border: 1px solid #d43
 /* Feedback CSS */
 
 .checklist { list-style-type: none; }
-.checklist li::before { content: "?"; padding-right: 0.5em; }
+.checklist.box { padding-inline-start: 15px; }
+.checklist li::before { content: "?"; padding-right: 0.5em; font-size: 1.6rem; }
+.checklist.box li::before { content: "\2610"; padding-right: 0.5em; }
 .checklist li.complete::before
 { content: "\2713"; color: #26B99A; padding-right: 0.5em; }
+.checklist.box li.complete::before
+{ content: "\2611"; color: #26B99A; padding-right: 0.5em; }
 .checklist li.incomplete::before { content: "\2717"; color: #d9534f; }
+.checklist.box li.incomplete::before { content: "\2610"; color: inherit; }
+.checklist li.complete.strike { text-decoration: line-through; }
+.checklist li.complete.strike::before { text-decoration: none; }
+
 
 .aristo .incomplete .dijitTitlePane .dijitTitlePaneTitle {
   color: white;
@@ -322,6 +330,14 @@ table.percentbar td.minus { background-color: #d9534f; /* border: 1px solid #d43
 .more-info h1 { font-size: 1.5em; border-bottom: 1px solid #222; margin-top: 1em; }
 .more-info h2 { font-size: 1.2em; color: #73879C; margin-top: 1em; }
 .more-info .errorType { font-size: 1em; color: #dc3545; }
+.errorType .btn-sm {
+  line-height: 1;
+  font-size: .75rem;
+  border-radius: .25rem;
+  font-weight: 700;
+  padding: .15rem .4rem;
+}
+
 .more-info pre { color: black; }
 .more-info .highlight { color: #dc3545; }
 .more-info pre.prettyprint { padding: 2px; border: 1px solid #888; }

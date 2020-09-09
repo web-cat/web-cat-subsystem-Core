@@ -1441,6 +1441,24 @@ public class User
 
 
     // ----------------------------------------------------------
+    public void userHasLoggedOut()
+    {
+        if (ecForPrefs != null)
+        {
+            try
+            {
+                ecForPrefs.dispose();
+            }
+            catch (Exception e)
+            {
+                log.error("Exception disposing preferences EC for user "
+                    + userName() + ":" + id(), e);
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
     @Override
     public Theme theme()
     {
