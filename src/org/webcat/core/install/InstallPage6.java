@@ -92,7 +92,7 @@ public class InstallPage6
         {
             run(new ECAction() { public void action() {
                 AuthenticationDomain domain =
-                    AuthenticationDomain.authDomainByName(authDomainName);
+                    AuthenticationDomain.authDomainByName(ec, authDomainName);
                 canSetPassword = domain.authenticator()
                     instanceof PasswordManagingUserAuthenticator;
                 if (username != null && !username.equals(""))
@@ -182,7 +182,7 @@ public class InstallPage6
             {
                 ec.lock();
                 AuthenticationDomain domain =
-                    AuthenticationDomain.authDomainByName( authDomainName );
+                    AuthenticationDomain.authDomainByName(ec, authDomainName);
                 NSArray<?> users = EOUtilities.objectsMatchingValues(
                     ec,
                     User.ENTITY_NAME,

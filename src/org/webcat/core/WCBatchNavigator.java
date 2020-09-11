@@ -343,7 +343,8 @@ public class WCBatchNavigator
     // ----------------------------------------------------------
     public NSArray<AuthenticationDomain> authDomains()
     {
-        return AuthenticationDomain.authDomains();
+        return AuthenticationDomain.authDomains(
+            session().defaultEditingContext());
     }
 
 
@@ -367,7 +368,8 @@ public class WCBatchNavigator
                 if (prop != null)
                 {
                     NSArray<AuthenticationDomain> domains =
-                        AuthenticationDomain.authDomains();
+                        AuthenticationDomain.authDomains(
+                            session().defaultEditingContext());
                     for (AuthenticationDomain ad : domains)
                     {
                         if (prop.equals(ad.propertyName()))

@@ -148,6 +148,13 @@ public abstract class MetaRequestHandler
             }
         }
 
+        if (context._session() != null)
+        {
+            log.error("possible missing saveSessionInContext() for session "
+                + context._session().sessionID() + " in "
+                + this.getClass().getName());
+        }
+
         return response;
     }
 

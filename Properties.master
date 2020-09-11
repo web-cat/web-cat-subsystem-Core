@@ -64,6 +64,7 @@ er.extensions.ERXApplication.useEditingContextUnlocker = true
 er.extensions.ERXApplication.DefaultEncoding = UTF-8
 er.extensions.ERXEC.safeLocking = true
 er.extensions.ERXEC.traceOpenLocks = true
+er.extensions.ERXEC.useSharedEditingContext = false
 er.extensions.ERXEnterpriseObject.updateInverseRelationships = true
 
 er.extensions.ERXResourceManager.versionManager = \

@@ -615,7 +615,7 @@ public class WCComponent
     {
         // Make sure to handle logout actions on form pages correctly
         // by blocking value pushing if the session is terminating
-        if ( hasSession() && !session().isTerminating() )
+        if ( context()._session() != null && !session().isTerminating() )
         {
             super.pushValuesToParent();
         }
@@ -628,8 +628,8 @@ public class WCComponent
         if (log.isDebugEnabled())
         {
             log.debug("awake(): " + getClass().getName());
-            log.debug("hasSession(): " + hasSession());
-            if (hasSession())
+            log.debug("hasSession(): " + (context()._session() != null));
+            if (context()._session() != null)
             {
                 log.debug("session id = " + session().sessionID());
             }
@@ -637,8 +637,8 @@ public class WCComponent
         localContext();
         if (log.isDebugEnabled())
         {
-            log.debug("hasSession(): " + hasSession());
-            if (hasSession())
+            log.debug("hasSession(): " + (context()._session() != null));
+            if (context()._session() != null)
             {
                 log.debug("session id = " + session().sessionID());
             }

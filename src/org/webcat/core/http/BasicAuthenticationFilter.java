@@ -255,27 +255,27 @@ public abstract class BasicAuthenticationFilter
                                 }
                                 else
                                 {
-                                    String existingSessionId = userSessionId(
-                                        ec, user, USE_EXISTING_SESSIONS);
-                                    if (existingSessionId != null)
-                                    {
-                                        log.info("Basic auth, connecting to "
-                                            + "existing session: "
-                                            + existingSessionId);
-                                        result = (Session)Application
-                                            .wcApplication()
-                                            .restoreSessionWithID(
-                                                existingSessionId,
-                                                request.context());
-                                        log.info("Basic auth, connected to "
-                                            + "existing session: "
-                                            + existingSessionId
-                                            + ": for user: "
-                                            + (result.user() == null
-                                                ? "<null>"
-                                                : result.user().name()));
-                                    }
-                                    else
+//                                    String existingSessionId = userSessionId(
+//                                        ec, user, USE_EXISTING_SESSIONS);
+//                                    if (existingSessionId != null)
+//                                    {
+//                                        log.info("Basic auth, connecting to "
+//                                            + "existing session: "
+//                                            + existingSessionId);
+//                                        result = (Session)Application
+//                                            .wcApplication()
+//                                            .restoreSessionWithID(
+//                                                existingSessionId,
+//                                                request.context());
+//                                        log.info("Basic auth, connected to "
+//                                            + "existing session: "
+//                                            + existingSessionId
+//                                            + ": for user: "
+//                                            + (result.user() == null
+//                                                ? "<null>"
+//                                                : result.user().name()));
+//                                    }
+//                                    else
                                     {
                                         result = (Session)context.session();
                                         result.setUseLoginSession(false);
@@ -283,7 +283,10 @@ public abstract class BasicAuthenticationFilter
                                             result.defaultEditingContext()));
                                     }
                                 }
-                                result._appendCookieToResponse(response);
+                                if (result.useLoginSession())
+                                {
+                                    result._appendCookieToResponse(response);
+                                }
                             }
                             return result;
                         }

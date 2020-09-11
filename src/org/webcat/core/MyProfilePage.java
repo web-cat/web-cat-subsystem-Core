@@ -337,7 +337,7 @@ public class MyProfilePage
         // TODO: Add dojo support to select whether to show developer themes
         if (allThemes == null)
         {
-            allThemes = ERXQ.filtered(Theme.themes(),
+            allThemes = ERXQ.filtered(Theme.themes(localContext()),
                 ERXQ.equals(Theme.IS_FOR_THEME_DEVELOPERS_KEY, false));
         }
         return allThemes;
@@ -351,7 +351,7 @@ public class MyProfilePage
         log.debug("session theme = " + wcSession().theme());
         wcSession().setTemporaryTheme(
             user().theme() == null
-                ? Theme.defaultTheme()
+                ? Theme.defaultTheme(localContext())
                 : user().theme());
         log.debug("after preview, session theme = " + wcSession().theme());
         openThemes = true;

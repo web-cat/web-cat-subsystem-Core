@@ -22,6 +22,7 @@
 package org.webcat.core.actions;
 
 import com.webobjects.appserver.*;
+import er.extensions.appserver.ERXWOContext;
 import org.webcat.core.Application;
 import org.apache.log4j.Logger;
 
@@ -60,18 +61,30 @@ public abstract class WCDirectActionWithSession
     protected void restoreSession()
     {
         log.debug("restoreSession()");
-        String thisWosid = wosid();
-        if (session == null && thisWosid != null)
+        // ERXWOContext overrides existingSession() to do this already
+        WOContext ctxt = context();
+        if (ctxt instanceof ERXWOContext)
         {
-            if (context().hasSession())
+            if (((ERXWOContext)ctxt).existingSession() == null
+                && ctxt._requestSessionID() != null)
             {
-                session = context().session();
+                // Unable to restore, so must be stale id
+                forgetSession();
             }
-            else
+        }
+        else
+        {
+            String sessionID = ctxt._requestSessionID();
+            if (!ctxt.hasSession() && sessionID != null)
             {
-                session = Application.application()
-                    .restoreSessionWithID(thisWosid, context());
-                log.debug("restoreSession(): session = " + session);
+                log.debug("restoreSession(" + sessionID
+                    + ") calling restoreSessionWithID() for plain context");
+                if (Application.application().restoreSessionWithID(
+                    sessionID, ctxt) == null)
+                {
+                    // Unable to restore, so must be stale id
+                    forgetSession();
+                }
             }
         }
     }
@@ -84,21 +97,16 @@ public abstract class WCDirectActionWithSession
      */
     protected void terminateSessionIfTemporary()
     {
-        if (session != null)
+        WOSession session = context()._session();
+        if (session != null
+            && !session.isTerminating()
+            && session instanceof org.webcat.core.Session)
         {
-            if (session.isTerminating())
+            org.webcat.core.Session wc = (org.webcat.core.Session)session;
+            if (!wc.isLoggedIn())
             {
-                session = null;
-            }
-            if (session instanceof org.webcat.core.Session)
-            {
-                org.webcat.core.Session wc = (org.webcat.core.Session)session;
-                if (!wc.isLoggedIn())
-                {
-                    // Never logged in
-                    wc.terminate();
-                    session = null;
-                }
+                // Never logged in
+                wc.terminate();
             }
         }
     }
@@ -112,13 +120,23 @@ public abstract class WCDirectActionWithSession
     {
         log.debug("saveSession()");
         WOContext context = context();
-        if (session != null && context != null)
+        if (context != null)
         {
-            log.debug(
-                "saveSession(): attempting to save session = " + session);
-            Application.application().saveSessionForContext(context);
-            session = null;
+            WOSession session = context._session();
+            if (session != null)
+            {
+                log.debug("saveSession(): attempting to save session = "
+                    + session.sessionID());
+                Application.application().saveSessionForContext(context);
+            }
         }
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean alreadyHasSessionActive()
+    {
+        return context()._session() != null;
     }
 
 
@@ -128,24 +146,30 @@ public abstract class WCDirectActionWithSession
      *
      * @return the session if there is one, or null otherwise
      */
+    @Override
     public WOSession existingSession()
     {
         log.debug("existingSession()");
+        WOSession session = context()._session();
         if (session != null)
         {
-            log.debug("existingSession(): returning one we created");
+            log.debug("existingSession(): returning one we created: "
+                + session.sessionID());
             return session;
         }
 
         restoreSession();
+        session = context()._session();
         if (session != null)
         {
-            log.debug("existingSession(): returning restored session");
+            log.debug("existingSession(): returning restored session: "
+                + session.sessionID());
             return session;
         }
 
-        log.debug("existingSession(): returning super.existingSession()");
         session = super.existingSession();
+        log.debug("existingSession(): returning super.existingSession(): "
+            + (session == null ? "null" : session.sessionID()));
         return session;
     }
 
@@ -156,44 +180,22 @@ public abstract class WCDirectActionWithSession
      *
      * @return the session object
      */
+    @Override
     public WOSession session()
     {
-        log.debug("session()");
-        WOSession mySession = existingSession();
-        if (mySession == null)
+        log.debug("session(): checking for existing session");
+        WOSession session = existingSession();
+        if (session == null)
         {
-            log.debug("session(): calling super.session()");
-            mySession = context().session();
+            log.debug("session(): calling context().session()");
+            session = context().session();
         }
         if (log.isDebugEnabled())
         {
-            log.debug("session() = "
+            log.debug("session(): result = "
                 + (session == null ? "null" : session.sessionID()));
         }
-        if (session == null)
-        {
-            session = mySession;
-        }
-        return mySession;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Returns the session ID for this request, if there is one.
-     *
-     * @return the session object
-     */
-    public String wosid()
-    {
-        String result = wosid;
-        if (result == null)
-        {
-            log.debug("wosid(): attempting to get ID from request");
-            result = request().sessionID();
-        }
-        log.debug("wosid() = " + result);
-        return result;
+        return session;
     }
 
 
@@ -205,7 +207,7 @@ public abstract class WCDirectActionWithSession
      */
     protected void rememberWosid(String id)
     {
-        wosid = id;
+        context()._setRequestSessionID(id);
     }
 
 
@@ -218,7 +220,7 @@ public abstract class WCDirectActionWithSession
      */
     protected void forgetSession()
     {
-        session = null;
+        context()._setRequestSessionID(null);
     }
 
 
@@ -231,18 +233,19 @@ public abstract class WCDirectActionWithSession
     public synchronized WOActionResults performSynchronousActionNamed(
         String actionName)
     {
-        WOActionResults result =
-            super.performSynchronousActionNamed(actionName);
-        terminateSessionIfTemporary();
-        saveSession();
-        return result;
+        try
+        {
+            return super.performSynchronousActionNamed(actionName);
+        }
+        finally
+        {
+            terminateSessionIfTemporary();
+            saveSession();
+        }
     }
 
 
     //~ Instance/static variables .............................................
-
-    private WOSession session = null;
-    private String    wosid   = null;
 
     static Logger log = Logger.getLogger(WCDirectActionWithSession.class);
 }

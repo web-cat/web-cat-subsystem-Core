@@ -1532,7 +1532,7 @@ public class User
         if (dotIndex != -1)
         {
             AuthenticationDomain domain = AuthenticationDomain
-                .authDomainBySubdirName(apiId.substring(0, dotIndex));
+                .authDomainBySubdirName(ec, apiId.substring(0, dotIndex));
             if (domain != null)
             {
                 String name = apiId.substring(dotIndex + 1);

@@ -179,37 +179,37 @@ public class InstallPage7
                 dept.setName( "Sandbox Department" );
                 dept.setAbbreviation( "Sandbox" );
                 dept.setInstitutionRelationship(
-                    AuthenticationDomain.authDomainByName(
+                    AuthenticationDomain.authDomainByName(ec,
                         Application.configurationProperties()
-                        .getProperty( "authenticator.default" ) )
+                        .getProperty("authenticator.default"))
                 );
                 Course course = new Course();
-                ec.insertObject( course );
-                course.setDepartmentRelationship( dept );
-                course.setName( "Sandbox Course" );
-                course.setNumber( 1 );
+                ec.insertObject(course);
+                course.setDepartmentRelationship(dept);
+                course.setName("Sandbox Course");
+                course.setNumber(1);
             }
 
             // DeptName = ("");
             // DeptAbbrev = ("");
-            String deptName   = extractFormValue( formValues, "DeptName" );
-            String deptAbbrev = extractFormValue( formValues, "DeptAbbrev" );
-            if ( deptName != null && !deptName.equals( "" ) )
+            String deptName   = extractFormValue(formValues, "DeptName");
+            String deptAbbrev = extractFormValue(formValues, "DeptAbbrev");
+            if (deptName != null && !deptName.equals(""))
             {
-                if ( deptAbbrev == null || deptAbbrev.equals( "" ) )
+                if (deptAbbrev == null || deptAbbrev.equals(""))
                 {
-                    error( "Please provide a department abbreviation." );
+                    error("Please provide a department abbreviation.");
                 }
                 else
                 {
                     dept = new Department();
-                    ec.insertObject( dept );
-                    dept.setName( deptName );
-                    dept.setAbbreviation( deptAbbrev );
+                    ec.insertObject(dept);
+                    dept.setName(deptName);
+                    dept.setAbbreviation(deptAbbrev);
                     dept.setInstitutionRelationship(
-                        AuthenticationDomain.authDomainByName(
+                        AuthenticationDomain.authDomainByName(ec,
                             Application.configurationProperties()
-                            .getProperty( "authenticator.default" ) )
+                            .getProperty("authenticator.default"))
                     );
                 }
             }

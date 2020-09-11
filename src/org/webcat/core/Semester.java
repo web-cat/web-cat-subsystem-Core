@@ -462,7 +462,7 @@ public class Semester
     private void renameSubdirs(String oldSubdir, String newSubdir)
     {
         NSArray<AuthenticationDomain> domains =
-            AuthenticationDomain.authDomains();
+            AuthenticationDomain.authDomains(editingContext());
         String msgs = null;
         for (AuthenticationDomain domain : domains)
         {

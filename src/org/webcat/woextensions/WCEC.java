@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: WCEC.java,v 1.3 2014/06/16 16:03:24 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -24,6 +22,7 @@ package org.webcat.woextensions;
 import org.apache.log4j.Logger;
 import org.webcat.core.Application;
 import org.webcat.core.EOManager;
+import org.webcat.core.LockErrorScreamerEditingContext;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOObjectStore;
 import com.webobjects.eocontrol.EOSharedEditingContext;
@@ -38,11 +37,10 @@ import er.extensions.eof.ERXEC;
  *  support for peer manager pools.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author: stedwar2 $
- *  @version $Revision: 1.3 $, $Date: 2014/06/16 16:03:24 $
  */
 public class WCEC
-    extends ERXEC
+//    extends ERXEC
+    extends LockErrorScreamerEditingContext
 {
     //~ Constructors ..........................................................
 
@@ -53,6 +51,8 @@ public class WCEC
     public WCEC()
     {
         this(defaultParentObjectStore());
+        setUndoManager(null);
+        // setSharedEditingContext(null);
     }
 
 
@@ -64,6 +64,9 @@ public class WCEC
     public WCEC(EOObjectStore os)
     {
         super(os);
+        counter.allocate(this);
+        setUndoManager(null);
+        // setSharedEditingContext(null);
         if (log.isDebugEnabled())
         {
             String message = "creating " + getClass().getSimpleName()
@@ -105,31 +108,57 @@ public class WCEC
 
     //~ Methods ...............................................................
 
-    // ----------------------------------------------------------
-    @Override
-    public void saveChanges()
-    {
-        EOSharedEditingContext sharedEC = null;
-        if (sharedEditingContext() == null)
-        {
-            sharedEC = EOSharedEditingContext.defaultSharedEditingContext();
-            if (sharedEC != null)
-            {
-                sharedEC.lock();
-            }
-        }
-        try
-        {
-            super.saveChanges();
-        }
-        finally
-        {
-            if (sharedEC != null)
-            {
-                sharedEC.unlock();
-            }
-        }
-    }
+//    // ----------------------------------------------------------
+//    @Override
+//    public void lockObjectStore()
+//    {
+//        if (lockCount() == 0)
+//        {
+//            EOSharedEditingContext.defaultSharedEditingContext().lock();
+//        }
+//        super.lockObjectStore();
+//    }
+//
+//
+//    // ----------------------------------------------------------
+//    @Override
+//    public void unlockObjectStore()
+//    {
+//        boolean wasLocked = lockCount() > 0;
+//        super.unlockObjectStore();
+//        if (wasLocked
+//            && lockCount() == 0)
+//        {
+//            EOSharedEditingContext.defaultSharedEditingContext().unlock();
+//        }
+//    }
+
+
+//    // ----------------------------------------------------------
+//    @Override
+//    public void saveChanges()
+//    {
+//        EOSharedEditingContext sharedEC = null;
+//        if (sharedEditingContext() == null)
+//        {
+//            sharedEC = EOSharedEditingContext.defaultSharedEditingContext();
+//            if (sharedEC != null)
+//            {
+//                sharedEC.lock();
+//            }
+//        }
+//        try
+//        {
+//            super.saveChanges();
+//        }
+//        finally
+//        {
+//            if (sharedEC != null)
+//            {
+//                sharedEC.unlock();
+//            }
+//        }
+//    }
 
 
     // ----------------------------------------------------------
@@ -141,7 +170,8 @@ public class WCEC
             int lockCount = lockCount();
             if (lockCount > 0)
             {
-                log.error("Open lock count = " + lockCount);
+                String msg = "Open lock count = " + lockCount;
+                log.error(msg, new RuntimeException(msg + " here"));
             }
             super._checkOpenLockTraces();
         }
@@ -156,7 +186,15 @@ public class WCEC
         {
             log.debug("dispose(): " + this);
         }
+        counter.deallocate(this);
         super.dispose();
+    }
+
+
+    // ----------------------------------------------------------
+    public static void dumpLeaks()
+    {
+        counter.dumpLeaks();
     }
 
 
@@ -195,7 +233,15 @@ public class WCEC
         // ----------------------------------------------------------
         public PeerManager(PeerManagerPool pool)
         {
+            this(pool, false);
+        }
+
+
+        // ----------------------------------------------------------
+        public PeerManager(PeerManagerPool pool, boolean cachePermanently)
+        {
             owner = pool;
+            this.cachePermanently = cachePermanently;
             if (log.isDebugEnabled())
             {
                 log.debug("creating manager: " + this);
@@ -213,6 +259,14 @@ public class WCEC
                 {
                     log.debug("creating ec: " + ec.hashCode()
                         + " for manager: " + this);
+                }
+                if (cachePermanently)
+                {
+                    owner.cachePermanently(this);
+                }
+                else
+                {
+                    owner.cache(this);
                 }
             }
             return ec;
@@ -256,6 +310,11 @@ public class WCEC
                     {
                         ((PeerManagerPool)value).dispose();
                     }
+                    else
+                    {
+                        log.error("unable to dispose() of "
+                            + value.getClass() + ": " + value);
+                    }
                 }
                 transientState = null;
             }
@@ -265,20 +324,9 @@ public class WCEC
         // ----------------------------------------------------------
         public void sleep()
         {
-            if (ec != null)
+            if (log.isDebugEnabled())
             {
-                if (log.isDebugEnabled())
-                {
-                    log.debug("sleep(): " + this);
-                }
-                if (cachePermanently)
-                {
-                    owner.cachePermanently(this);
-                }
-                else
-                {
-                    owner.cache(this);
-                }
+                log.debug("sleep(): " + this);
             }
         }
 
@@ -433,6 +481,9 @@ public class WCEC
 
 
     //~ Instance/static variables .............................................
+
+    private static final ResourceCounter counter =
+        new ResourceCounter(WCEC.class.getSimpleName());
 
     private static Factory factory;
     static Logger log = Logger.getLogger(WCEC.class);

@@ -20,12 +20,17 @@
 package org.webcat.core;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
 import org.webcat.woextensions.ECAction;
+import org.webcat.woextensions.ECActionWithResult;
+import org.webcat.woextensions.WCEC;
 import static org.webcat.woextensions.ECAction.run;
 import org.webcat.woextensions.WCResourceManager;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOCookie;
+import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOSharedEditingContext;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
@@ -63,15 +68,13 @@ public class Theme
      * @param themeDirName the subdirectory name of the theme
      * @return The matching theme object
      */
-    public static Theme themeFromName(String themeDirName)
+    public static Theme themeFromName(
+        EOEditingContext ec, final String themeDirName)
     {
-        ensureThemesLoaded();
         Theme result = null;
         try
         {
-            result = themeForDirName(
-                EOSharedEditingContext.defaultSharedEditingContext(),
-                themeDirName);
+            result = themeForDirName(ec, themeDirName);
             result.parent();
         }
         catch (Exception e)
@@ -79,7 +82,33 @@ public class Theme
             log.error("Unrecognized theme name: \"" + themeDirName + "\"");
             result = null;
         }
-        return result == null ? defaultTheme() : result;
+        return result == null ? defaultTheme(ec) : result;
+    }
+
+
+    // ----------------------------------------------------------
+    public static Theme globalReadOnlyThemeFromName(final String themeDirName)
+    {
+        synchronized (globalInstances)
+        {
+            Theme result = globalInstances.get(themeDirName);
+            if (result == null)
+            {
+                result = new ECActionWithResult<Theme>(ec) {
+                    // ------------------------------------------------------
+                    @Override
+                    public Theme action()
+                    {
+                        return themeFromName(ec, themeDirName);
+                    }
+                }.call();
+                if (result != null)
+                {
+                    globalInstances.put(themeDirName, result);
+                }
+            }
+            return result;
+        }
     }
 
 
@@ -95,14 +124,11 @@ public class Theme
         String lastUsedTheme = context.request().cookieValueForKey(
                 COOKIE_LAST_USED_THEME);
 
-        if (lastUsedTheme != null)
+        if (lastUsedTheme == null)
         {
-            return themeFromName(lastUsedTheme);
+            lastUsedTheme = DEFAULT_THEME;
         }
-        else
-        {
-            return themeFromName(DEFAULT_THEME);
-        }
+        return globalReadOnlyThemeFromName(lastUsedTheme);
     }
 
 
@@ -131,9 +157,22 @@ public class Theme
      *
      * @return The default theme
      */
-    public static Theme defaultTheme()
+    public static String defaultThemeName()
     {
-        return themeFromName(DEFAULT_THEME);
+        return DEFAULT_THEME;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Return the default theme object to use when users have not
+     * chosen one of their own.
+     *
+     * @return The default theme
+     */
+    public static Theme defaultTheme(EOEditingContext ec)
+    {
+        return themeFromName(ec, DEFAULT_THEME);
     }
 
 
@@ -143,10 +182,9 @@ public class Theme
      * into the shared editing context.
      * @return an array of all theme objects
      */
-    public static NSArray<Theme> themes()
+    public static NSArray<Theme> themes(EOEditingContext ec)
     {
-        ensureThemesLoaded();
-        return themes;
+        return allObjectsOrderedByName(ec);
     }
 
 
@@ -174,7 +212,7 @@ public class Theme
                 : null;
             if (baseName != null)
             {
-                base = themeFromName(baseName);
+                base = themeFromName(editingContext(), baseName);
                 baseIsNotSet = false;
             }
         }
@@ -364,7 +402,11 @@ public class Theme
         log.debug("refreshThemes()");
         if (!themeBaseDir().exists()) return;
 
-        run(new ECAction() { public void action() {
+        if (ec == null)
+        {
+            ec = WCEC.newEditingContext();
+        }
+        run(new ECAction(ec) { public void action() {
             ec.setSharedEditingContext(null);
 
             for (File subdir : themeBaseDir().listFiles())
@@ -403,19 +445,13 @@ public class Theme
                         {
                             themeToUpdate.refreshFrom(plist);
                             ec.saveChanges();
+                            globalInstances.put(
+                                themeToUpdate.dirName(), themeToUpdate);
                         }
                     }
                 }
             }
         }});
-
-        log.debug( "refreshing shared theme objects" );
-        themes = allObjectsOrderedByName(
-            EOSharedEditingContext.defaultSharedEditingContext());
-        if (log.isDebugEnabled())
-        {
-            log.debug("Registered themes = " + themes);
-        }
     }
 
 
@@ -453,16 +489,6 @@ public class Theme
 
             new UnexpectedExceptionMessage(e, null, null,
                     "Error refreshing theme.").send();
-        }
-    }
-
-
-    // ----------------------------------------------------------
-    private static void ensureThemesLoaded()
-    {
-        if (themes == null)
-        {
-            refreshThemes();
         }
     }
 
@@ -530,12 +556,14 @@ public class Theme
 
     //~ Instance/static variables .............................................
 
+    private static EOEditingContext ec;
+    private static Map<String, Theme> globalInstances =
+        new HashMap<String, Theme>();
     private String linkTags;
     private Theme base;
     private boolean baseIsNotSet = true;
     private PropertyInheriter inheriter;
 
-    private static NSArray<Theme> themes;
     private static File themeBaseDir;
     private static final String INHERIT_KEY    = "inherit";
     private static final String INHERIT_PREFIX = INHERIT_KEY + ".";

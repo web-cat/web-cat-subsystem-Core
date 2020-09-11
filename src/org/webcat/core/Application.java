@@ -22,9 +22,12 @@ package org.webcat.core;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.activation.CommandMap;
@@ -489,9 +492,10 @@ public class Application
         NSLog.debug.setIsEnabled(nsLogDebugEnabled);
 
         // Force common objects to be loaded into the shared editing context
-        // org.webcat.woextensions.WCSharedEC.install();
+        // FIXME: comment out again after debugging
+        org.webcat.woextensions.WCSharedEC.install();
         AuthenticationDomain.refreshAuthDomains();
-        Language.refreshLanguages();
+        // Language.refreshLanguages();
         Theme.refreshThemes();
 
         NSLog.debug.setAllowedDebugLevel(NSLog.DebugLevelInformational);
@@ -611,6 +615,32 @@ public class Application
 
 
     // ----------------------------------------------------------
+    @Override
+    public WOSession createSessionForRequest(WORequest worequest)
+    {
+        WOSession result = super.createSessionForRequest(worequest);
+        if (result == null)
+        {
+            log.warn("createSessionForRequest(): no session created!");
+        }
+        else
+        {
+            String sessionID = result.sessionID();
+            SessionLockInfo myInfo =
+                new SessionLockInfo(sessionID, worequest.uri());
+            synchronized (sessionLocks)
+            {
+                myInfo.acquireTime = new NSTimestamp();
+                log.warn(
+                    "createSessionForRequest(): " + myInfo.toAcquireString());
+                sessionLocks.put(sessionID, myInfo);
+            }
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Restores a given session in context.
      *
@@ -622,8 +652,147 @@ public class Application
             String    sessionID,
             WOContext context)
     {
+        SessionLockInfo myInfo =
+            new SessionLockInfo(sessionID, context.request().uri());
+        synchronized (sessionLocks)
+        {
+            SessionLockInfo existing = sessionLocks.get(sessionID);
+            if (existing != null && !existing.released)
+            {
+                existing.queue.add(myInfo);
+                log.warn("restoreSessionWithID(" + sessionID + ")"
+                    + myInfo.toWaitString(existing));
+                log.warn("attempt " + myInfo.tag + " called from here",
+                    myInfo.location);
+                log.warn("owner " + existing.tag + " called from here",
+                    existing.location);
+            }
+            else
+            {
+                log.warn("restoreSessionWithID(" + sessionID
+                    + ") attempt by " + myInfo.tag);
+            }
+        }
         WOSession result = super.restoreSessionWithID(sessionID, context);
+        if (result == null)
+        {
+            log.warn("restoreSessionWithID(" + sessionID
+                + "): no session found for " + myInfo.tag);
+            if (sessionID.equals(context._requestSessionID()))
+            {
+                context._setRequestSessionID(null);
+            }
+        }
+        else
+        {
+            synchronized (sessionLocks)
+            {
+                myInfo.acquireTime = new NSTimestamp();
+                SessionLockInfo existing = sessionLocks.get(sessionID);
+                if (existing != null)
+                {
+                    if (!existing.released)
+                    {
+                        log.error("SessionLockInfo.released == false "
+                            + "unexpectedly for " + sessionID
+                            + " locked by " + existing.tag,
+                            existing.location);
+                        existing.released = true;
+                    }
+                    existing.queue.remove(myInfo);
+                    myInfo.queue.addAll(existing.queue);
+                    existing.queue.clear();
+                    log.warn(myInfo.toAcquireString());
+                    log.warn(myInfo.tag + " attempt called from here",
+                        myInfo.location);
+                }
+                else
+                {
+                    log.warn(myInfo.toAcquireString());
+                }
+                sessionLocks.put(sessionID, myInfo);
+            }
+        }
         return result;
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void saveSessionForContext(WOContext wocontext)
+    {
+        SessionLockInfo myInfo = null;
+        String sessionID = null;
+        WOSession wosession = wocontext._session();
+        if (wosession != null)
+        {
+            sessionID = wosession.sessionID();
+            String thread = Thread.currentThread().getName();
+            synchronized (sessionLocks)
+            {
+                myInfo = sessionLocks.get(sessionID);
+                if (myInfo != null)
+                {
+                    if (!thread.equals(myInfo.thread))
+                    {
+                        log.error("saveSessionForContext(" + sessionID
+                            + ") locked by " + myInfo.tag
+                            + " was called by different thread [" + thread
+                            + "] here",
+                            new Exception(sessionID + " locked by thread ["
+                                + myInfo.thread + "] from here"));
+                        log.error("saveSessionForContext() called by thread ["
+                            + thread + "] here",
+                            new Exception(
+                                "saveSessionForContext() called by ["
+                                + thread + "] here"));
+                    }
+                    log.warn(myInfo.toReleaseString());
+                    myInfo.released = true;
+                    if (wosession.isTerminating()
+                        && myInfo.queue.size() > 0)
+                    {
+                        log.error("saveSessionForContext(" + sessionID
+                            + "): called with terminating session while "
+                            + myInfo.queueSize(),
+                            new Exception("saveSessionForContext(" + sessionID
+                                + ") called from here"));
+                        for (int i = 0; i < myInfo.queue.size(); i++)
+                        {
+                            SessionLockInfo info = myInfo.queue.get(i);
+                            log.error(
+                                "pending infinite wait on queued no. "
+                                + (i + 1)
+                                + " " + info.tag,
+                                info.location);
+                        }
+                    }
+                }
+                else
+                {
+                    log.error("saveSessionForContext(" + sessionID
+                        + ") called on session that is not in lock "
+                        + "registry!!! here",
+                        new Exception("saveSessionForContext(" + sessionID
+                            + ") called by thread ["
+                            + thread + "] here"));
+                }
+            }
+        }
+        super.saveSessionForContext(wocontext);
+        synchronized (sessionLocks)
+        {
+            SessionLockInfo existing = sessionLocks.get(sessionID);
+            String thread = Thread.currentThread().getName();
+            if (existing != null
+                && thread.equals(existing.thread)
+                && existing.queue.size() == 0)
+            {
+                sessionLocks.remove(sessionID);
+            }
+            // otherwise, leave it in the map for the next lock holder to
+            // clear out, and/or it's already been removed!
+        }
     }
 
 
@@ -1026,7 +1195,20 @@ public class Application
             requestDebug.debug("\turi = " + aRequest.uri());
             requestDebug.debug("\tcookies = " + aRequest.cookies());
         }
+        WOContext holdContext = aRequest.context();
         WOResponse result = super.dispatchRequest(aRequest);
+        if (holdContext != null && holdContext.hasSession())
+        {
+            WOSession s = holdContext._session();
+            log.error("unsaved session with id " + s.sessionID() + "\n"
+                + "  request = " + aRequest.uri()
+                + "  session.terminating = " + s.isTerminating());
+            if (s instanceof Session)
+            {
+                log.error("Unsaved session created here", ((Session)s).createdAt());
+            }
+            saveSessionForContext(holdContext);
+        }
         if (requestDebug.isDebugEnabled())
         {
             requestDebug.debug("dispatchRequest() result:\n" + result);
@@ -2017,6 +2199,7 @@ public class Application
     public WOSessionStore sessionStore()
     {
         WOSessionStore store = super.sessionStore();
+        System.out.println("sessionStore() class = " + store.getClass().getName());
         if (log.isDebugEnabled())
         {
             log.debug("sessionStore() class = " + store.getClass().getName());
@@ -2951,6 +3134,79 @@ public class Application
                 + ": " + e.getMessage());
         }
     }
+
+    public static class SessionLockInfo
+    {
+        public String id;
+        public String thread;
+        public Exception location;
+        public NSTimestamp tryTime;
+        public NSTimestamp acquireTime;
+        public List<SessionLockInfo> queue;
+        public boolean released;
+        public String uri;
+        public String tag;
+
+        public SessionLockInfo(String id, String uri)
+        {
+            this.id = id;
+            this.uri = uri;
+            tryTime = new NSTimestamp();
+            thread = Thread.currentThread().getName();
+            tag = "thread [" + thread + "](" + uri + ")";
+            location = new Exception(tag + " lock entry from here");
+            queue = new ArrayList<SessionLockInfo>();
+            released = false;
+        }
+
+        public String toWaitString(SessionLockInfo holder)
+        {
+            NSTimestamp now = new NSTimestamp();
+            NSTimestamp.IntRef sec = new NSTimestamp.IntRef();
+            now.gregorianUnitsSinceTimestamp(
+                null, null, null, null, null, sec, holder.acquireTime);
+            return tag + " queuing for session store lock on "
+                + id + " held by " + holder.tag + " for "
+                + sec.value + "s, " + holder.queueSize();
+        }
+
+        public String queueSize()
+        {
+            if (queue.size() > 0)
+            {
+                return "queue size = " + queue.size();
+            }
+            else
+            {
+                return "no queue";
+            }
+        }
+
+        public String toAcquireString()
+        {
+            NSTimestamp now = new NSTimestamp();
+            NSTimestamp.IntRef sec = new NSTimestamp.IntRef();
+            now.gregorianUnitsSinceTimestamp(
+                null, null, null, null, null, sec, tryTime);
+            return tag + " acquiring session store lock on "
+                + id + " after waiting for "
+                + sec.value + "s, " + queueSize();
+        }
+
+        public String toReleaseString()
+        {
+            NSTimestamp now = new NSTimestamp();
+            NSTimestamp.IntRef sec = new NSTimestamp.IntRef();
+            now.gregorianUnitsSinceTimestamp(
+                null, null, null, null, null, sec, acquireTime);
+            return "thread [" + thread + "](" + uri
+                + ") releasing session store lock on "
+                + id + " held for "
+                + sec.value + "s, " + queueSize();
+        }
+    }
+    private static Map<String, SessionLockInfo> sessionLocks =
+        new HashMap<String, SessionLockInfo>();
 
     static Logger log = Logger.getLogger(Application.class);
     static Logger requestLog = Logger.getLogger(Application.class.getName()

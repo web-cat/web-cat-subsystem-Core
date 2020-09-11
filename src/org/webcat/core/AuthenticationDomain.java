@@ -33,6 +33,7 @@ import org.webcat.core.UserAuthenticator;
 import org.webcat.core.WCProperties;
 import org.webcat.core._AuthenticationDomain;
 import org.webcat.woextensions.ECAction;
+import org.webcat.woextensions.ECActionWithResult;
 import static org.webcat.woextensions.ECAction.run;
 import org.apache.log4j.Logger;
 
@@ -146,6 +147,14 @@ public class AuthenticationDomain
 
 
     // ----------------------------------------------------------
+    public static UserAuthenticator authenticatorForProperty(
+        String propName)
+    {
+        return theAuthenticatorMap.get(propName);
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Retrieve the user authenticator associated with this domain.
      * @return an authenticator object to use when validating credentials
@@ -153,7 +162,29 @@ public class AuthenticationDomain
      */
     public UserAuthenticator authenticator()
     {
-        return theAuthenticatorMap.get(propertyName());
+        return authenticatorForProperty(propertyName());
+    }
+
+
+    // ----------------------------------------------------------
+    public static String nameFromProperty(String property)
+    {
+        if (property != null && property.startsWith(PROPERTY_PREFIX))
+        {
+            property = property.substring(PROPERTY_PREFIX.length());
+        }
+        return property;
+    }
+
+
+    // ----------------------------------------------------------
+    public static String propertyFromName(String name)
+    {
+        if (name != null && !name.startsWith(PROPERTY_PREFIX))
+        {
+            name = PROPERTY_PREFIX + name;
+        }
+        return name;
     }
 
 
@@ -167,17 +198,7 @@ public class AuthenticationDomain
     {
         if (cachedName == null)
         {
-            String name = propertyName();
-            final String propertyPrefix = "authenticator.";
-            if (name != null)
-            {
-                // strip the prefix on the property name
-                if (name.startsWith(propertyPrefix))
-                {
-                    name = name.substring(propertyPrefix.length());
-                }
-            }
-            cachedName = name;
+            cachedName = nameFromProperty(propertyName());
         }
         return cachedName;
     }
@@ -320,12 +341,34 @@ public class AuthenticationDomain
      * @param name the property name of the authenticator
      * @return The matching AuthenticationDomain object
      */
-    public static AuthenticationDomain authDomainByName(String name)
+    public static AuthenticationDomain authDomainByName(
+        EOEditingContext ec, final String name)
     {
-        ensureAuthDomainsLoaded();
+        return authDomainByPropertyName(ec, propertyFromName(name));
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up and return an authentication domain object by its
+     * (partial) property name.  If you use a property called
+     * <code>authenticator.<i>MyAuthenticator</i></code> to define
+     * an authentication domain in a property file, then you can retrieve
+     * this authenticator using the name "<i>MyAuthenticator</i>".
+     *
+     * @param name the property name of the authenticator
+     * @return The matching AuthenticationDomain object
+     */
+    public static AuthenticationDomain authDomainByPropertyName(
+        EOEditingContext ec, final String name)
+    {
+        if (name == null)
+        {
+            return null;
+        }
         return firstObjectMatchingQualifier(
-            EOSharedEditingContext.defaultSharedEditingContext(),
-            propertyName.eq("authenticator." + name),
+            ec,
+            propertyName.eq(name),
             null);
     }
 
@@ -341,22 +384,88 @@ public class AuthenticationDomain
      * @param name the property name of the authenticator
      * @return The matching AuthenticationDomain object
      */
-    public static AuthenticationDomain authDomainBySubdirName(String name)
+    public static AuthenticationDomain authDomainBySubdirName(
+        EOEditingContext ec,
+        String name)
     {
         ensureAuthDomainsLoaded();
+        return authDomainByPropertyName(ec, authDomainsBySubdirName.get(name));
+    }
 
-        if (authDomainsBySubdirName == null)
+
+    // ----------------------------------------------------------
+    /**
+     * Get a list of shared authentication domain objects that have
+     * already been loaded into the shared editing context.
+     * @return an array of all AuthenticationDomain objects
+     */
+    public static NSArray<AuthenticationDomain> authDomains(
+        EOEditingContext ec)
+    {
+        ensureAuthDomainsLoaded();
+        return allObjectsOrderedByDisplayableName(ec);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get a list of shared authentication domain objects that have
+     * already been loaded into the shared editing context.
+     * @return an array of all AuthenticationDomain objects
+     */
+    public static NSArray<NSDictionary<String, String>> authDomainStubs()
+    {
+        ensureAuthDomainsLoaded();
+        return authDomainStubs;
+    }
+
+
+    // ----------------------------------------------------------
+    public static NSDictionary<String, String> authDomainStubByName(String name)
+    {
+        ensureAuthDomainsLoaded();
+        return authDomainStubsByName.get(name);
+    }
+
+
+    // ----------------------------------------------------------
+    public static String defaultDomainName()
+    {
+        if (defaultDomainName == null)
         {
-            authDomainsBySubdirName =
-                new HashMap<String, AuthenticationDomain>();
+            new ECAction() {
+                // ----------------------------------------------------------
+                @Override
+                public void action()
+                {
+                    // Force computation of default domain
+                    defaultDomain(ec);
+                }
+            }.run();
+        }
+        return defaultDomainName;
+    }
 
-            for (AuthenticationDomain domain : authDomains)
+
+    // ----------------------------------------------------------
+    public static NSDictionary<String, String> defaultDomainStub()
+    {
+        if (defaultDomainStub == null)
+        {
+            String name = defaultDomainName();
+            if (name != null)
             {
-                authDomainsBySubdirName.put(domain.subdirName(), domain);
+                for (NSDictionary<String, String> stub : authDomainStubs())
+                {
+                    if (name.equals(stub.get("name")))
+                    {
+                        defaultDomainStub = stub;
+                        return stub;
+                    }
+                }
             }
         }
-
-        return authDomainsBySubdirName.get(name);
+        return defaultDomainStub;
     }
 
 
@@ -366,51 +475,87 @@ public class AuthenticationDomain
      * already been loaded into the shared editing context.
      * @return an array of all AuthenticationDomain objects
      */
-    public static NSArray<AuthenticationDomain> authDomains()
+    public static AuthenticationDomain defaultDomain(EOEditingContext ec)
     {
-        ensureAuthDomainsLoaded();
-        return authDomains;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Get a list of shared authentication domain objects that have
-     * already been loaded into the shared editing context.
-     * @return an array of all AuthenticationDomain objects
-     */
-    public static AuthenticationDomain defaultDomain()
-    {
-        if (defaultDomain == null)
+        AuthenticationDomain result = null;
+        if (defaultDomainPropertyName == null)
         {
-            ensureAuthDomainsLoaded();
-            // Set up a default domain, if possible
-            String defaultDomainName = Application.configurationProperties()
+            String defName = Application.configurationProperties()
                 .getProperty("authenticator.default");
-            if (defaultDomainName != null)
+            if (defName != null)
             {
                 try
                 {
                     log.debug("looking up default domain");
-                    defaultDomain = authDomainByName(defaultDomainName);
+                    result = authDomainByName(ec, defName);
                 }
                 catch (EOObjectNotAvailableException e)
                 {
                     log.error("Default authentication domain ("
-                        + defaultDomainName + ") does not exist.");
+                        + defName + ") does not exist.");
                 }
                 catch (EOUtilities.MoreThanOneException e)
                 {
                     log.error("Multiple entries for default authentication "
-                        + "domain (" + defaultDomainName + ")");
+                        + "domain (" + defName + ")");
+                }
+                if (result == null)
+                {
+                    try
+                    {
+                        log.debug("looking up default domain by property");
+                        result = authDomainByPropertyName(ec, defName);
+                    }
+                    catch (EOObjectNotAvailableException e)
+                    {
+                        log.error("Default authentication domain (property = "
+                            + defName + ") does not exist.");
+                    }
+                    catch (EOUtilities.MoreThanOneException e)
+                    {
+                        log.error("Multiple entries for default authentication "
+                            + "domain (property = " + defName + ")");
+                    }
                 }
             }
-            if (defaultDomain == null)
+            if (result != null)
             {
-                defaultDomain = authDomains().objectAtIndex(0);
+                defaultDomainPropertyName = result.propertyName();
+                defaultDomainName =
+                    nameFromProperty(defaultDomainPropertyName);
             }
         }
-        return defaultDomain;
+        else
+        {
+            try
+            {
+                log.debug("looking up default domain");
+                result = authDomainByPropertyName(
+                    ec, defaultDomainPropertyName);
+            }
+            catch (EOObjectNotAvailableException e)
+            {
+                log.error("Default authentication domain (def property = "
+                    + defaultDomainName + ") does not exist.");
+            }
+            catch (EOUtilities.MoreThanOneException e)
+            {
+                log.error("Multiple entries for default authentication "
+                    + "domain (def property = " + defaultDomainName + ")");
+            }
+        }
+        if (result == null)
+        {
+            ensureAuthDomainsLoaded();
+            result = authDomains(ec).objectAtIndex(0);
+            if (defaultDomainPropertyName == null && result != null)
+            {
+                defaultDomainPropertyName = result.propertyName();
+                defaultDomainName =
+                    nameFromProperty(defaultDomainPropertyName);
+            }
+        }
+        return result;
     }
 
 
@@ -421,9 +566,12 @@ public class AuthenticationDomain
      */
     public static void ensureAuthDomainsLoaded()
     {
-        if (authDomains == null)
+        synchronized (AuthenticationDomain.class)
         {
-            refreshAuthDomains();
+            if (!authDomainsLoaded)
+            {
+                refreshAuthDomains();
+            }
         }
     }
 
@@ -436,7 +584,8 @@ public class AuthenticationDomain
     {
         log.debug("refreshAuthDomains()");
         theAuthenticatorMap = new TreeMap<String, UserAuthenticator>();
-        defaultDomain = null;
+        authDomainsBySubdirName = new HashMap<String, String>();
+        defaultDomainName = null;
 
         final WCProperties properties = Application.configurationProperties();
         @SuppressWarnings("unchecked")
@@ -533,6 +682,8 @@ public class AuthenticationDomain
                         }
                         if (domain != null)
                         {
+                            authDomainsBySubdirName.put(
+                                domain.subdirName(), domain.name());
                             String emailDomain = properties.getProperty(
                                 base + "." + DEFAULT_EMAIL_DOMAIN_KEY);
                             if (emailDomain != null)
@@ -549,11 +700,41 @@ public class AuthenticationDomain
                 }
             }
             ec.saveChanges();
+
+            NSMutableArray<NSDictionary<String, String>> stubs =
+                new NSMutableArray<NSDictionary<String, String>>();
+            Map<String, NSDictionary<String, String>> stubMap =
+                new HashMap<String, NSDictionary<String, String>>();
+            for (AuthenticationDomain d :
+                allObjectsOrderedByDisplayableName(ec))
+            {
+                NSMutableDictionary<String, String> stub =
+                    new NSMutableDictionary<String, String>();
+                stub.put("propertyName", d.propertyName());
+                stub.put("name", d.name());
+                stub.put("displayableName", d.displayableName());
+                stub.put("apiId", d.apiId());
+                stub.put("defaultEmailDomain", d.defaultEmailDomain());
+                stub.put("dateFormat", d.dateFormat());
+                stub.put("timeFormat", d.timeFormat());
+                stub.put("timeZoneName", d.timeZoneName());
+                stubs.add(stub);
+                stubMap.put(stub.get("name"), stub);
+                stubMap.put(stub.get("propertyName"), stub);
+            }
+            authDomainStubs = stubs;
+            authDomainStubsByName = stubMap;
         }});
 
-        log.debug("refreshing shared authentication domain objects");
-        authDomains = allObjectsOrderedByDisplayableName(
-            EOSharedEditingContext.defaultSharedEditingContext());
+//        log.debug("refreshing shared authentication domain objects");
+//        authDomains = new ECActionWithResult<NSArray<AuthenticationDomain>>(
+//            EOSharedEditingContext.defaultSharedEditingContext()) {
+//            // ----------------------------------------------------------
+//            public NSArray<AuthenticationDomain> action()
+//            {
+//                return allObjectsOrderedByDisplayableName(ec);
+//            }
+//        }.call();
 
         // TODO: can't do this yet, since the domain's authenticator class
         // and config settings are not stored in the database!
@@ -569,6 +750,7 @@ public class AuthenticationDomain
 //
 //            }
 //        }
+        authDomainsLoaded = true;
     }
 
 
@@ -790,15 +972,25 @@ public class AuthenticationDomain
 
     //~ Instance/static variables .............................................
 
-    private static NSArray<AuthenticationDomain> authDomains;
-    private static AuthenticationDomain defaultDomain;
+    private static boolean authDomainsLoaded = false;
+
+    private static NSArray<NSDictionary<String, String>> authDomainStubs;
+    private static Map<String, NSDictionary<String, String>>
+        authDomainStubsByName;
+//    private static AuthenticationDomain defaultDomain;
+    private static String defaultDomainName;
+    private static String defaultDomainPropertyName;
+    private static NSDictionary<String, String> defaultDomainStub;
+
     private static Map<String, UserAuthenticator> theAuthenticatorMap;
-    private static Map<String, AuthenticationDomain> authDomainsBySubdirName;
+    private static Map<String, String> authDomainsBySubdirName;
     private String cachedSubdirName = null;
     private String cachedName = null;
     private static NSArray<String> timeFormats;
     private static NSArray<String> dateFormats;
     private static NSArray<TimeZoneDescriptor> timeZones;
+
+    public static final String PROPERTY_PREFIX = "authenticator.";
 
     static Logger log = Logger.getLogger(AuthenticationDomain.class);
 }

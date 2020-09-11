@@ -296,7 +296,7 @@ public class DatabaseAuthenticator
                 properties.setProperty("login.url", dest);
             }
             String institutionMsg = "";
-            if (AuthenticationDomain.authDomains().count() > 1)
+            if (AuthenticationDomain.authDomainStubs().count() > 1)
             {
                 institutionMsg = "When logging in, be sure to select "
                     + "\""

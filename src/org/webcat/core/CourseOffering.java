@@ -558,7 +558,7 @@ public class CourseOffering
             if (subdirToDelete != null)
             {
                 NSArray<AuthenticationDomain> domains =
-                    AuthenticationDomain.authDomains();
+                    AuthenticationDomain.authDomains(context);
                 for (AuthenticationDomain domain : domains)
                 {
                     StringBuffer dir = domain.submissionBaseDirBuffer();
@@ -619,7 +619,7 @@ public class CourseOffering
         String oldCrnSubdir,      String newCrnSubdir)
     {
         NSArray<AuthenticationDomain> domains =
-            AuthenticationDomain.authDomains();
+            AuthenticationDomain.authDomains(editingContext());
         String msgs = null;
         for (AuthenticationDomain domain : domains)
         {

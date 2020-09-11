@@ -35,6 +35,7 @@ import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WORequestHandler;
 import com.webobjects.appserver.WOResponse;
+import com.webobjects.appserver.WOSession;
 import com.webobjects.eoaccess.EOEntity;
 import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOEditingContext;
@@ -89,9 +90,11 @@ public class EntityResourceRequestHandler
         StringBuffer buffer = new StringBuffer();
         String sessionString = null;
 
-        if (context.session().storesIDsInURLs())
+        if (context.request() != null)
         {
-            sessionString = "wosid=" + context.session().sessionID();
+            // Only pull this if it is stored in URL, but will be null if
+            // cookie is being used instead
+            sessionString = context.request().stringFormValueForKey("wosid");
         }
 
         buffer.append(entityName);
@@ -148,28 +151,10 @@ public class EntityResourceRequestHandler
         // resources that require logins (for user validation) in order to be
         // accessed.
 
-        Session session = null;
-        String sessionId = request.sessionID();
-
-        if (sessionId != null)
-        {
-            try
-            {
-                session = (Session)
-                    Application.application().restoreSessionWithID(
-                        sessionId, context);
-            }
-            catch (Exception e)
-            {
-                session = null;
-            }
-        }
-
         try
         {
             // Perform the actual request handling.
-
-            _handleRequest(request, context, response, session);
+            _handleRequest(request, context, response);
         }
         catch (Exception e)
         {
@@ -181,6 +166,7 @@ public class EntityResourceRequestHandler
         }
         finally
         {
+            WOSession session = context._session();
             if (session != null)
             {
                 Application.application().saveSessionForContext(context);
@@ -192,11 +178,32 @@ public class EntityResourceRequestHandler
 
 
     // ----------------------------------------------------------
+    private boolean isLoggedIn(WORequest request, WOContext context)
+    {
+        Session session = null;
+        String sessionId = request.sessionID();
+
+        if (sessionId != null)
+        {
+            try
+            {
+                session = (Session)Application.application()
+                    .restoreSessionWithID(sessionId, context);
+            }
+            catch (Exception e)
+            {
+                session = null;
+            }
+        }
+        return session != null && session.isLoggedIn();
+    }
+
+
+    // ----------------------------------------------------------
     private void _handleRequest(
         final WORequest request,
         final WOContext context,
-        final WOResponse response,
-        final Session session)
+        final WOResponse response)
     {
         final String handlerPath = request.requestHandlerPath();
 
@@ -225,7 +232,7 @@ public class EntityResourceRequestHandler
                 log.debug("Found handler for entity "
                         + entityRequest.entityName());
 
-                if (handler.requiresLogin() && session == null)
+                if (handler.requiresLogin() && !isLoggedIn(request, context))
                 {
                     log.warn("(403) Handler requires log-in, but no session "
                             + "found with id " + request.sessionID());
@@ -233,8 +240,15 @@ public class EntityResourceRequestHandler
                 }
                 else
                 {
+                    Session session = null;
                     EOEnterpriseObject object = fetchObject(
                             entityRequest, handler, ec);
+                    if (handler.requiresLogin())
+                    {
+                        // Session should have already been restored
+                        // by calling isLoggedIn() earlier
+                        session = (Session)context._session();
+                    }
 
                     if (object != null)
                     {

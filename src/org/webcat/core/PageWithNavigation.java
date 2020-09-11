@@ -439,7 +439,7 @@ public class PageWithNavigation
     {
         // Make sure to handle logout actions on form pages correctly
         // by blocking value pushing if the session is terminating
-        if ( hasSession() && !session().isTerminating() )
+        if (context()._session() != null && !session().isTerminating())
         {
             super.pushValuesToParent();
         }

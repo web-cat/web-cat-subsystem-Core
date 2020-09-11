@@ -480,8 +480,9 @@ public class WCBasePage
                 lastUsedTheme = Theme.lastUsedThemeInContext(context());
             }
 
-            return (lastUsedTheme != null) ?
-                    lastUsedTheme : Theme.defaultTheme();
+            return (lastUsedTheme != null)
+                ? lastUsedTheme
+                : Theme.globalReadOnlyThemeFromName(Theme.defaultThemeName());
         }
     }
 

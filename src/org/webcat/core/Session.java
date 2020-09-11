@@ -76,6 +76,7 @@ public class Session
     private final void initSession()
     {
         tracer.debug("creating " + sessionID());
+        createdAt = new Exception("here");
         // , new Exception("from here"));
         counter.allocate(this);
 
@@ -87,6 +88,13 @@ public class Session
         tabs.mergeClonedChildren(subsystemTabTemplate);
         tabs.selectDefault();
         childManagerPool = new WCEC.PeerManagerPool();
+    }
+
+
+    // ----------------------------------------------------------
+    public Exception createdAt()
+    {
+        return createdAt;
     }
 
 
@@ -125,6 +133,10 @@ public class Session
     {
         log.debug("setUser(" + u.userName() + ")) for session " + sessionID());
        // tracer , new Exception("from here"));
+        if (u != null && u.editingContext() != defaultEditingContext())
+        {
+            u = u.localInstance(defaultEditingContext());
+        }
         primeUser = u;
         localUser = u;
         if (!doNotUseLoginSession)
@@ -444,6 +456,14 @@ public class Session
      */
     public void terminate()
     {
+        if (primeUser != null)
+        {
+            tracer.info("session timeout, logging out user: "
+                + primeUser.userName()
+                + ", session: " + sessionID());
+            userLogout();
+            return;
+        }
         if (tracer.isDebugEnabled())
         {
             tracer.debug("terminating session " + sessionID() + " for "
@@ -501,24 +521,14 @@ public class Session
             childManagerPool = null;
         }
 
-        if (primeUser != null)
+        try
         {
-            tracer.info("session timeout, logging out user: "
-                + (primeUser == null ? "null" : primeUser.userName())
-                + ", session: " + sessionID());
-            userLogout();
+            super.terminate();
         }
-        else
+        catch (Exception e)
         {
-            try
-            {
-                super.terminate();
-            }
-            catch (Exception e)
-            {
-                new UnexpectedExceptionMessage(e, context(), null, null)
-                    .send();
-            }
+            new UnexpectedExceptionMessage(e, context(), null, null)
+            .send();
         }
         counter.deallocate(this);
     }
@@ -786,7 +796,7 @@ public class Session
             return temporaryTheme;
         }
         return (user() == null || user().theme() == null)
-            ? Theme.defaultTheme()
+            ? Theme.defaultTheme(defaultEditingContext())
             :  user().theme();
     }
 
@@ -864,6 +874,7 @@ public class Session
                 TabDescriptor.TAB_DEFINITIONS)));
      }
 
+    private Exception createdAt;
     static Logger log = Logger.getLogger(Session.class);
     static Logger tracer =
         Logger.getLogger(Session.class.getName() + ".tracer");

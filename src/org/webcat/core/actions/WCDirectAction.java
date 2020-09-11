@@ -61,6 +61,7 @@ public abstract class WCDirectAction
      * @param actionName The name of the action to dispatch
      * @return the action's result
      */
+    @Override
     public WOActionResults performActionNamed(String actionName)
     {
         // wait for application to initialize
@@ -89,7 +90,7 @@ public abstract class WCDirectAction
     public static WOActionResults performActionNamed(
         String actionName, WCDirectAction owner)
     {
-        log.debug("performActionNamed(\"" + actionName + "\")");
+        log.debug("performActionNamed(\"" + actionName + "\", owner)");
         return owner.performSynchronousActionNamed(actionName);
     }
 

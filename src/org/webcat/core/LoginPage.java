@@ -55,8 +55,8 @@ public class LoginPage
     public String                    password;
     public NSMutableDictionary<?, ?> errors;
     public WODisplayGroup            domainDisplayGroup;
-    public AuthenticationDomain      domain;
-    public AuthenticationDomain      domainItem;
+    public NSDictionary<String, String> domain;
+    public NSDictionary<String, String> domainItem;
     public NSDictionary<?, ?>        extraKeys;
     public String                    aKey;
 
@@ -72,20 +72,16 @@ public class LoginPage
         super.awake();
         if (log.isDebugEnabled())
         {
-            log.debug("hasSession = " + hasSession());
-            if (hasSession())
-            {
-                log.debug("session = " + session().sessionID());
-            }
+            log.debug("session id = " + context()._requestSessionID());
             log.debug("errors = " + errors);
             log.debug("domain = " + domain);
         }
 
         domainDisplayGroup.setObjectArray(
-            AuthenticationDomain.authDomains());
+            AuthenticationDomain.authDomainStubs());
         if (domain == null && !hasSpecificAuthDomain())
         {
-            domain = AuthenticationDomain.defaultDomain();
+            domain = AuthenticationDomain.defaultDomainStub();
         }
         log.debug("domain = " + domain);
     }
@@ -97,11 +93,6 @@ public class LoginPage
      */
     public void sleep()
     {
-        log.debug("hasSession = " + hasSession());
-        if (hasSession())
-        {
-            log.debug("session = " + session().sessionID());
-        }
         super.sleep();
     }
 
@@ -127,32 +118,39 @@ public class LoginPage
         WORequest request = context().request();
         String auth = request.cookieValueForKey(
             AuthenticationDomain.COOKIE_LAST_USED_INSTITUTION);
-        if (auth == null)
+        if (auth == null || auth.isEmpty())
         {
             auth = request.stringFormValueForKey("institution");
         }
-        if (auth == null)
+        if (auth == null || auth.isEmpty())
         {
             auth = request.stringFormValueForKey("d");
         }
-        if (auth != null)
+        if (auth != null && !auth.isEmpty())
         {
-            try
-            {
+//            try
+//            {
                 log.debug("looking up domain: " + auth);
-                domain = AuthenticationDomain.authDomainByName(auth);
-                specificAuthDomainName = auth;
-            }
-            catch (EOObjectNotAvailableException e)
-            {
-                log.error("Unrecognized institution parameter provided: '"
-                    + auth + "'", e);
-            }
-            catch (EOUtilities.MoreThanOneException e)
-            {
-                log.error("Ambiguous institution parameter provided: '"
-                    + auth + "'", e);
-            }
+                if (AuthenticationDomain.authDomainStubByName(auth) != null)
+                {
+                    specificAuthDomainName = auth;
+                }
+                else
+                {
+                    log.error("Unrecognized institution parameter provided: '"
+                        + auth + "'");
+                }
+//            }
+//            catch (EOObjectNotAvailableException e)
+//            {
+//                log.error("Unrecognized institution parameter provided: '"
+//                    + auth + "'", e);
+//            }
+//            catch (EOUtilities.MoreThanOneException e)
+//            {
+//                log.error("Ambiguous institution parameter provided: '"
+//                    + auth + "'", e);
+//            }
         }
         return specificAuthDomainName != null;
     }
@@ -171,11 +169,13 @@ public class LoginPage
         boolean result = false;
         for (int i = 0; i < domainDisplayGroup.allObjects().count(); i++)
         {
-            AuthenticationDomain aDomain = (AuthenticationDomain)
+            NSDictionary<String, String> aDomain =
+                (NSDictionary<String, String>)
                 domainDisplayGroup.allObjects().objectAtIndex(i);
-            if (aDomain.authenticator() != null
-                && aDomain.authenticator() instanceof
-                PasswordManagingUserAuthenticator)
+            UserAuthenticator authenticator = AuthenticationDomain
+                .authenticatorForProperty(aDomain.get("propertyName"));
+            if (authenticator != null
+                && authenticator instanceof PasswordManagingUserAuthenticator)
             {
                 result = true;
                 break;

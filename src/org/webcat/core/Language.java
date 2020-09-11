@@ -26,6 +26,7 @@ import com.webobjects.eocontrol.*;
 
 import org.webcat.core.Language;
 import org.webcat.core._Language;
+import org.webcat.woextensions.ECActionWithResult;
 import org.apache.log4j.*;
 
 // -------------------------------------------------------------------------
@@ -60,30 +61,13 @@ public class Language
      * already been loaded into the shared editing context.
      * @return an array of all AuthenticationDomain objects
      */
-    public static NSArray<Language> languages()
+    public static NSArray<Language> languages(EOEditingContext ec)
     {
-        if (languages == null)
-        {
-            refreshLanguages();
-        }
-        return languages;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Force reloading of the list of shared authentication domain objects.
-     */
-    public static void refreshLanguages()
-    {
-        log.debug("refreshing shared language objects");
-        languages = allObjects(
-            EOSharedEditingContext.defaultSharedEditingContext());
+        return allObjects(ec);
     }
 
 
     //~ Instance/static variables .............................................
-    private static NSArray<Language> languages;
 
     static Logger log = Logger.getLogger(Language.class);
 }

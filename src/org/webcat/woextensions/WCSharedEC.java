@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: WCSharedEC.java,v 1.1 2011/12/25 02:24:54 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2018 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -29,6 +27,8 @@ import org.apache.log4j.Logger;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.eocontrol.EOObjectStore;
 import com.webobjects.eocontrol.EOSharedEditingContext;
+import com.webobjects.foundation.NSTimestamp;
+import com.webobjects.foundation.NSTimestamp.IntRef;
 
 // -------------------------------------------------------------------------
 /**
@@ -36,8 +36,6 @@ import com.webobjects.eocontrol.EOSharedEditingContext;
  *  access.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author: stedwar2 $
- *  @version $Revision: 1.1 $, $Date: 2011/12/25 02:24:54 $
  */
 public class WCSharedEC
     extends EOSharedEditingContext
@@ -63,6 +61,7 @@ public class WCSharedEC
     {
         super(os);
         setDelegate(WCEC.factory().defaultEditingContextDelegate());
+//        counter.allocate(this);
         if (log.isDebugEnabled())
         {
             log.debug("creating " + getClass().getSimpleName()
@@ -93,6 +92,7 @@ public class WCSharedEC
     public void lock()
     {
         String message = null;
+        NSTimestamp tryTime = new NSTimestamp();
         if (log.isDebugEnabled())
         {
             synchronized (this)
@@ -115,8 +115,18 @@ public class WCSharedEC
                         + "locked by another thread! Owners = " + owners);
                     String dump = "Existing locks from = "
                         + lockLocations.size();
-                    for (String msg : lockLocations)
+                    NSTimestamp now = new NSTimestamp();
+                    NSTimestamp.IntRef sec = new NSTimestamp.IntRef();
+                    for (int i = 0; i < lockLocations.size(); i++)
                     {
+                        NSTimestamp ack = acquireTimes.get(i);
+                        now.gregorianUnitsSinceTimestamp(
+                            null, null, null, null, null, sec, ack);
+                        String msg =
+                            tryTimes.get(i) + ": "
+                            +" acquired " + ack + ", held for "
+                            + sec.value + "s: "
+                            + lockLocations.get(i);
                         dump += "\n" + msg;
                     }
                     log.warn(dump);
@@ -135,10 +145,15 @@ public class WCSharedEC
                     initDebugFields();
                 }
                 writer.getBuffer().setLength(0);
-                message = "lock() acquired; " + message;
+                NSTimestamp ackTime = new NSTimestamp();
+                message = "lock() acquired at "
+                    + ackTime + " (tried at " + tryTime
+                    + "); " + message;
                 new Exception(message).printStackTrace(out);
                 lockLocations.add(writer.toString());
                 owners.add(Thread.currentThread());
+                acquireTimes.add(ackTime);
+                tryTimes.add(tryTime);
                 log.debug(message);
             }
         }
@@ -150,6 +165,7 @@ public class WCSharedEC
     public boolean tryLock()
     {
         String message = null;
+        NSTimestamp tryTime = new NSTimestamp();
         if (log.isDebugEnabled())
         {
             synchronized (this)
@@ -176,10 +192,15 @@ public class WCSharedEC
                         initDebugFields();
                     }
                     writer.getBuffer().setLength(0);
-                    message = "tryLock() acquired; " + message;
+                    NSTimestamp ackTime = new NSTimestamp();
+                    message = "tryLock() acquired at "
+                        + ackTime + " (tried at " + tryTime
+                        + "); " + message;
                     new Exception(message).printStackTrace(out);
                     lockLocations.add(writer.toString());
                     owners.add(Thread.currentThread());
+                    acquireTimes.add(ackTime);
+                    tryTimes.add(tryTime);
                     log.debug(message);
                 }
                 else
@@ -232,19 +253,33 @@ public class WCSharedEC
         {
             synchronized (this)
             {
-                log.debug("unlock(); shared EC; " + this
-                    + "; by " + Thread.currentThread()
-                    + "; at " + System.currentTimeMillis()
-                    // , new Exception("from here")
-                );
                 if (lockLocations == null)
                 {
                     initDebugFields();
                 }
-                else if (lockLocations.size() > 0)
+                String extra = "";
+                if (acquireTimes.size() > 0)
+                {
+                    NSTimestamp now = new NSTimestamp();
+                    NSTimestamp ack =
+                        acquireTimes.get(acquireTimes.size() - 1);
+                    NSTimestamp.IntRef sec = new NSTimestamp.IntRef();
+                    now.gregorianUnitsSinceTimestamp(
+                        null, null, null, null, null, sec, ack);
+                    extra = " acquired " + ack + ", held for "
+                        + sec.value + "s; ";
+                }
+                log.debug("unlock();" + extra + " shared EC; " + this
+                    + "; by " + Thread.currentThread()
+                    + "; at " + System.currentTimeMillis()
+                    // , new Exception("from here")
+                );
+                if (lockLocations.size() > 0)
                 {
                     lockLocations.remove(lockLocations.size() - 1);
                     owners.remove(owners.size() - 1);
+                    acquireTimes.remove(acquireTimes.size() - 1);
+                    tryTimes.remove(tryTimes.size() - 1);
                 }
                 else
                 {
@@ -263,6 +298,7 @@ public class WCSharedEC
         {
             log.debug("dispose(): " + this);
         }
+//        counter.deallocate(this);
         super.dispose();
     }
 
@@ -272,17 +308,31 @@ public class WCSharedEC
     {
         lockLocations = new ArrayList<String>(16);
         owners = new ArrayList<Thread>(16);
+        tryTimes = new ArrayList<NSTimestamp>(16);
+        acquireTimes = new ArrayList<NSTimestamp>(16);
         writer = new StringWriter();
         out = new PrintWriter(writer);
     }
+
+
+    // ----------------------------------------------------------
+//    public static void dumpLeaks()
+//    {
+//        counter.dumpLeaks();
+//    }
 
 
     //~ Instance/static variables .............................................
 
     private List<String> lockLocations = null;
     private List<Thread> owners = null;
+    private List<NSTimestamp> tryTimes = null;
+    private List<NSTimestamp> acquireTimes = null;
     private StringWriter writer = null;
     private PrintWriter out = null;
+
+//    private static final ResourceCounter counter =
+//        new ResourceCounter(WCSharedEC.class.getSimpleName());
 
     static Logger log = Logger.getLogger(WCSharedEC.class);
 }

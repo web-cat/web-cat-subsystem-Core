@@ -185,7 +185,7 @@ public class DirectAction
                 result.addCookie(
                     new WOCookie(
                         AuthenticationDomain.COOKIE_LAST_USED_INSTITUTION,
-                        domain.name(),
+                        domain.get("name"),
                         context().urlWithRequestHandlerKey(null, null, null),
                         null, ONE_YEAR, false));
                 result.addCookie(
@@ -232,7 +232,7 @@ public class DirectAction
     {
         log.debug("checkforCas()");
         WOResponse result = null;
-        AuthenticationDomain d = null;
+        NSDictionary<String, String> d = null;
 
         String ticket = request.stringFormValueForKey("ticket");
         if (ticket != null)
@@ -276,7 +276,7 @@ public class DirectAction
             }
             if (authIndex >= 0)
             {
-                d = AuthenticationDomain.authDomains().get(authIndex);
+                d = AuthenticationDomain.authDomainStubs().get(authIndex);
             }
         }
         if (d == null)
@@ -302,7 +302,7 @@ public class DirectAction
                 log.debug("checkForCas(): looking up domain: " + auth);
                 try
                 {
-                    d = AuthenticationDomain.authDomainByName(auth);
+                    d = AuthenticationDomain.authDomainStubByName(auth);
                 }
                 catch (EOObjectNotAvailableException e)
                 {
@@ -315,26 +315,27 @@ public class DirectAction
                         + auth + "'", e);
                 }
             }
-            else if (AuthenticationDomain.authDomains().size() == 1)
+            else if (AuthenticationDomain.authDomainStubs().size() == 1)
             {
-                d = AuthenticationDomain.defaultDomain();
+                d = AuthenticationDomain.defaultDomainStub();
             }
         }
 
         if (d != null)
         {
             log.debug("checkForCas(): found domain: " + d);
-            if (d.authenticator() instanceof CasAuthenticator)
+            UserAuthenticator authr = AuthenticationDomain
+                .authenticatorForProperty(d.get("propertyName"));
+            if (authr instanceof CasAuthenticator)
             {
                 log.debug("checkForCas(): creating CAS redirect page");
-                CasAuthenticator authenticator =
-                    (CasAuthenticator)d.authenticator();
+                CasAuthenticator authenticator = (CasAuthenticator)authr;
                 String returnUrl = Application
                     .completeURLWithRequestHandlerKey(context(),
                     Application.application().directActionRequestHandlerKey(),
                     "casLogin", null, true, 0);
                 log.debug("returnUrl = " + returnUrl);
-                String id = rememberRequest(request, d.name(),
+                String id = rememberRequest(request, d.get("name"),
                     request.requestHandlerPath());
 //                if (request.cookies().size() > 0)
 //                {
@@ -452,35 +453,43 @@ public class DirectAction
         // also check for auth == null
         if (authIndex >= 0)
         {
-            domain = AuthenticationDomain.authDomains().get(authIndex);
+            domain = AuthenticationDomain.authDomainStubs().get(authIndex);
         }
         else if (auth != null)
         {
-            try
-            {
+//            try
+//            {
                 log.debug("tryLogin(): looking up domain");
-                domain = AuthenticationDomain.authDomainByName(auth);
-            }
-            catch (EOObjectNotAvailableException e)
-            {
-                errors.setObjectForKey(
-                    "Illegal institution/affiliation provided ("
-                    + e + ").",
-                    "authDomain");
-            }
-            catch (EOUtilities.MoreThanOneException e)
-            {
-                errors.setObjectForKey(
-                    "Ambiguous institution/affiliation provided ("
-                    + e + ").",
-                    "authDomain");
-            }
+                domain = AuthenticationDomain.authDomainStubByName(auth);
+                if (domain == null)
+                {
+                    errors.setObjectForKey(
+                        "Illegal institution/affiliation provided ("
+                        + auth + ").",
+                        "authDomain");
+                }
+//            }
+//            catch (EOObjectNotAvailableException e)
+//            {
+//                errors.setObjectForKey(
+//                    "Illegal institution/affiliation provided ("
+//                    + e + ").",
+//                    "authDomain");
+//            }
+//            catch (EOUtilities.MoreThanOneException e)
+//            {
+//                errors.setObjectForKey(
+//                    "Ambiguous institution/affiliation provided ("
+//                    + e + ").",
+//                    "authDomain");
+//            }
         }
-        else if (AuthenticationDomain.authDomains().count() == 1)
+        else if (AuthenticationDomain.authDomainStubs().count() == 1)
         {
             // If there is just one authentication domain, then use it, since
             // no choice will appear on the login page
-            domain = AuthenticationDomain.authDomains().objectAtIndex(0);
+            domain = AuthenticationDomain.authDomainStubs()
+                .objectAtIndex(0);
         }
         else
         {
@@ -501,13 +510,17 @@ public class DirectAction
             try
             {
                 ec.lock();
+                AuthenticationDomain authDomain = AuthenticationDomain
+                    .authDomainByPropertyName(
+                    ec, domain.get("propertyName"));
                 log.debug( "tryLogin(): looking up user" );
-                user = User.validate(userName, password, domain, ec);
+                user = User.validate(userName, password, authDomain, ec);
                 if (user == null)
                 {
                     log.info("Failed login attempt: " + userName
                         + " ("
-                        + (domain == null ? "null" : domain.displayableName())
+                        + (authDomain == null
+                            ? "null" : authDomain.displayableName())
                         + ")");
                     errors.setObjectForKey(
                         "Your login information could not be validated.  "
@@ -540,14 +553,95 @@ public class DirectAction
         {
             user = u;
         }
-        if (user != null)
+        if (alreadyHasSessionActive())
+        {
+            Session existing = (Session)existingSession();
+            if (existing.isTerminating())
+            {
+                log.error("recoverSessionForUser("
+                    + (u == null ? "null" : u.userName())
+                    + ") called when existing session "
+                    + existing.sessionID() + "is terminating!!");
+            }
+            if (existing.user() == null)
+            {
+                if (u != null)
+                {
+                    existing.setUser(u);
+                }
+            }
+            else if (u == null)
+            {
+                log.error("recoverSessionForUser(null) called for existing "
+                    + "session " + existing.sessionID()
+                    + "that already has logged in user "
+                    + existing.primeUser().userName());
+            }
+            else if (existing.primeUser().id().equals(u.id()))
+            {
+                log.warn("recoverSessionForUser(" + u.userName() + ") called "
+                    + "with existing session " + existing.sessionID()
+                    + " already owned by that user");
+            }
+            else
+            {
+                log.error("recoverSessionForUser(" + u.userName()
+                    + ") called for existing "
+                    + "session " + existing.sessionID()
+                    + "that already has logged in user "
+                    + existing.primeUser().userName());
+                u = existing.primeUser();
+            }
+            user = u;
+            if (user != null)
+            {
+                String lsSessionId = new ECActionWithResult<String>() {
+                    // ------------------------------------------------------
+                    public String action()
+                    {
+                        User local = user.localInstance(ec);
+                        LoginSession ls = LoginSession.getLoginSessionForUser(
+                            user.editingContext(), local);
+                        if (ls != null)
+                        {
+                            return ls.sessionId();
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }.call();
+                if (lsSessionId != null)
+                {
+                    log.error("recoverSessionForUser(" + user.userName()
+                        + ") called with existing session "
+                        + existing.sessionID() + " when active LoginSession "
+                        + " id = " + lsSessionId);
+                }
+            }
+            return existing;
+        }
+        else if (user != null)
         {
             LoginSession ls = LoginSession.getLoginSessionForUser(
                 user.editingContext(), user);
             if (ls != null)
             {
-                // Remember the existing session id for restoration
-                rememberWosid(ls.sessionId());
+                String ctxtId = context()._requestSessionID();
+                if (ctxtId == null)
+                {
+                    // Remember the existing session id for restoration
+                    rememberWosid(ls.sessionId());
+                }
+                else if (!ls.sessionId().equals(ctxtId))
+                {
+                    log.error("recoverSessionForUser(" + user.userName()
+                        + ") using LoginSession id "
+                        + ls.sessionId() + " to overwrite context session id "
+                        + ctxtId + " before session is restored");
+                    rememberWosid(ls.sessionId());
+                }
             }
         }
         return (Session)session();
@@ -643,16 +737,7 @@ public class DirectAction
             else
             {
                 result = true;
-                LoginSession ls =
-                    LoginSession.getLoginSessionForUser(ec, pcr.user());
-                if (ls != null)
-                {
-                    // Remember the existing session id for restoration
-                    rememberWosid(ls.sessionId());
-                }
-                Session session = (Session)session();
-                session.setUser(pcr.user().localInstance(
-                        session.defaultEditingContext()));
+                recoverSessionForUser(pcr.user());
                 pcr.delete();
                 try
                 {
@@ -688,6 +773,11 @@ public class DirectAction
      */
     public WOActionResults passwordChangeRequestAction()
     {
+        if (Application.wcApplication().needsInstallation())
+        {
+            return defaultAction();
+        }
+
         NSMutableDictionary<?, ?> errors =
             new NSMutableDictionary<Object, Object>();
 
@@ -713,6 +803,10 @@ public class DirectAction
     // ----------------------------------------------------------
     public WOActionResults ltiConfigurationAction()
     {
+        if (Application.wcApplication().needsInstallation())
+        {
+            return defaultAction();
+        }
         return pageWithName(LTIConfiguration.class).generateResponse();
     }
 
@@ -720,6 +814,10 @@ public class DirectAction
     // ----------------------------------------------------------
     public WOActionResults ltiLaunchAction()
     {
+        if (Application.wcApplication().needsInstallation())
+        {
+            return defaultAction();
+        }
         log.debug("entering ltiLaunchAction()");
         log.debug("hasSession() = " + context().hasSession());
 //        CallbackDiagnosticPage result =
@@ -760,6 +858,10 @@ public class DirectAction
     // ----------------------------------------------------------
     public WOActionResults casLoginAction()
     {
+        if (Application.wcApplication().needsInstallation())
+        {
+            return defaultAction();
+        }
         log.debug("entering casLogin()");
         WOActionResults result = null;
         if (!isLoggedIn())
@@ -774,12 +876,13 @@ public class DirectAction
         CasRequestInfo info = null;
         NSMutableDictionary<Object, Object> errors =
             new NSMutableDictionary<Object, Object>();
+        Session session = null;
         // Look for an existing session via cookie
         if (isLoggedIn()
             // Or, if no existing session, try logging in
             || tryLogin(request(), errors))
         {
-            session();
+            session = (Session)session();
             log.debug("casLogin(): now logged in, redirecting to real action");
             info = peekAtRequest(request());
             if (info != null)
@@ -814,6 +917,10 @@ public class DirectAction
                     context().urlWithRequestHandlerKey(null, null, null),
                     null, ONE_YEAR, false));
         }
+        if (session != null)
+        {
+            session._appendCookieToResponse(response);
+        }
         response.addCookie(
             new WOCookie(
                 CONTEXT_ID_KEY,
@@ -834,6 +941,10 @@ public class DirectAction
      */
     public WOActionResults cmsRequestAction()
     {
+        if (Application.wcApplication().needsInstallation())
+        {
+            return defaultAction();
+        }
         // TODO: this entire action should be moved to a separate
         // class in the Grader subsystem.
         log.debug("entering cmsRequestAction()");
@@ -857,6 +968,10 @@ public class DirectAction
      */
     public WOActionResults submitAction()
     {
+        if (Application.wcApplication().needsInstallation())
+        {
+            return defaultAction();
+        }
         log.debug("submitAction()");
         WOActionResults result = checkForCas(request());
         if (result != null)
@@ -909,6 +1024,10 @@ public class DirectAction
      */
     public WOActionResults reportAction()
     {
+        if (Application.wcApplication().needsInstallation())
+        {
+            return defaultAction();
+        }
         log.debug("reportAction()");
         WOActionResults result = checkForCas(request());
         if (result != null)
@@ -1017,8 +1136,11 @@ public class DirectAction
                 // 5 minutes ago
                 NSTimestamp cutoff =
                     now.timestampByAddingGregorianUnits(0, 0, 0, 0, -5, 0);
-                log.error("Sweeping for stale CAS entries, current count = "
+                if (casRequests.size() > 0)
+                {
+                    log.info("Sweeping for stale CAS entries, current count = "
                     + casRequests.size());
+                }
                 int staleCount = 0;
                 long staleSize = 0;
                 NSMutableArray<String> keys = new NSMutableArray<String>();
@@ -1040,8 +1162,11 @@ public class DirectAction
                 {
                     casRequests.remove(key);
                 }
-                log.error("Purged " + staleCount + " entries, "
-                    + staleSize + " bytes");
+                if (staleCount > 0)
+                {
+                    log.info("Purged " + staleCount + " entries, "
+                        + staleSize + " bytes");
+                }
                 // 5 minutes later ...
                 nextCasSweep =
                     now.timestampByAddingGregorianUnits(0, 0, 0, 0, 5, 0);
@@ -1130,7 +1255,8 @@ public class DirectAction
     //~ Instance/static variables .............................................
 
     private User                 user    = null;
-    private AuthenticationDomain domain  = null;
+//    private AuthenticationDomain domain  = null;
+    private NSDictionary<String, String> domain  = null;
 
     private static final String[] keysToScreen = new String[] {
         "u",
