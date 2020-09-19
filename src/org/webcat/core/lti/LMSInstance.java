@@ -161,7 +161,7 @@ public class LMSInstance
                         institution,
                         defaultType);
                 }
-                ec.saveChanges();
+                ec.saveChangesTolerantly();
             }
         }});
         log.debug("ensureLMSInstancesForInstitutions() finished");

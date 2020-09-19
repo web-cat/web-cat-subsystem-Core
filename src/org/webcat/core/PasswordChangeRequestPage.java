@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: PasswordChangeRequestPage.java,v 1.3 2011/12/25 02:24:54 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,7 +21,6 @@ package org.webcat.core;
 
 import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.ErrorDictionaryPanel;
@@ -39,8 +36,6 @@ import org.apache.log4j.Logger;
  * Implements the login UI functionality of the system.
  *
  *  @author Stephen Edwards
- *  @author  Last changed by $Author: stedwar2 $
- *  @version $Revision: 1.3 $, $Date: 2011/12/25 02:24:54 $
  */
 public class PasswordChangeRequestPage
     extends WOComponent
@@ -131,7 +126,7 @@ public class PasswordChangeRequestPage
             if (errors.count() == 0)
             {
                 // Try to look up the user
-                EOEditingContext ec = WCEC.newEditingContext();
+                WCEC ec = WCEC.newEditingContext();
                 try
                 {
                     ec.lock();

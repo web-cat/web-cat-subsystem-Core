@@ -31,6 +31,7 @@ import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
 import org.webcat.core.EOBasedKeyGenerator;
+import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCFetchSpecification;
 
 // -------------------------------------------------------------------------
@@ -141,6 +142,27 @@ public abstract class _UsagePeriod
      * @return The object, or null if no such id exists
      */
     public static UsagePeriod forId(
+        EOEditingContext ec, EOGlobalID id)
+    {
+        UsagePeriod _result =
+            (UsagePeriod)ec.objectForGlobalID(id);
+        if (_result == null)
+        {
+            _result = (UsagePeriod)ec.faultForGlobalID(id, ec);
+        }
+        return _result;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static UsagePeriod forId(
         EOEditingContext ec, String id)
     {
         return forId(ec, er.extensions.foundation.ERXValueUtilities.intValue(id));
@@ -218,6 +240,7 @@ public abstract class _UsagePeriod
             return er.extensions.eof.ERXConstant.ZeroInteger;
         }
     }
+
 
     // ----------------------------------------------------------
     /**
@@ -894,11 +917,13 @@ public abstract class _UsagePeriod
      * fetch specification.
      *
      * @param context The editing context to use
+     * @param isLoggedOutBinding fetch spec parameter
      * @param userBinding fetch spec parameter
      * @return the object retrieved, or null if one was not found
      */
     public static UsagePeriod mostRecentForUser(
             EOEditingContext context,
+            Integer isLoggedOutBinding,
             org.webcat.core.User userBinding
         )
     {
@@ -908,6 +933,11 @@ public abstract class _UsagePeriod
         NSMutableDictionary<String, Object> bindings =
             new NSMutableDictionary<String, Object>();
 
+        if ( isLoggedOutBinding != null )
+        {
+            bindings.setObjectForKey( isLoggedOutBinding,
+                                      "isLoggedOut" );
+        }
         if ( userBinding != null )
         {
             bindings.setObjectForKey( userBinding,
@@ -920,6 +950,7 @@ public abstract class _UsagePeriod
         if (log.isDebugEnabled())
         {
             log.debug( "mostRecentForUser(ec"
+                + ", " + isLoggedOutBinding
                 + ", " + userBinding
                 + "): " + objects );
         }

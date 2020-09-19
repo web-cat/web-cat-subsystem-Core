@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: IMessageDispatcher.java,v 1.2 2011/12/25 02:24:54 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2010-2011 Virginia Tech
+ |  Copyright (C) 2010-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -25,8 +23,6 @@ package org.webcat.core.messaging;
  * An interface for anything that can send message objects.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.2 $, $Date: 2011/12/25 02:24:54 $
  */
 public interface IMessageDispatcher
 {

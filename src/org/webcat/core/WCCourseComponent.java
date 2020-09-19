@@ -60,15 +60,12 @@ public class WCCourseComponent
     //~ Public Methods ........................................................
 
     // ----------------------------------------------------------
-    /**
-     * Grab user's current selections when waking, if necessary.
-     */
-    @Override
+    @Deprecated
     public void awake()
     {
         if (log.isDebugEnabled())
         {
-            log.debug("awake(): begin " + getClass().getName());
+            log.debug("aw?ake(): begin " + getClass().getName());
             log.debug("hasSession(): " + (context()._session() != null));
             if (context()._session() != null)
             {
@@ -76,10 +73,38 @@ public class WCCourseComponent
             }
         }
         super.awake();
-        coreSelections();
         if (log.isDebugEnabled())
         {
             log.debug("awake(): end " + getClass().getName());
+            log.debug("hasSession(): " + (context()._session() != null));
+            if (context()._session() != null)
+            {
+                log.debug("session id = " + session().sessionID());
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Grab user's current selections when waking, if necessary.
+     */
+    public void lateAwake()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug("lateAwake(): begin " + getClass().getName());
+            log.debug("hasSession(): " + (context()._session() != null));
+            if (context()._session() != null)
+            {
+                log.debug("session id = " + session().sessionID());
+            }
+        }
+        super.awake();
+//        coreSelections();
+        if (log.isDebugEnabled())
+        {
+            log.debug("lateAwake(): end " + getClass().getName());
             log.debug("hasSession(): " + (context()._session() != null));
             if (context()._session() != null)
             {
@@ -94,6 +119,7 @@ public class WCCourseComponent
     {
         // TODO make this method final and adjust all the other pages
 
+        lateAwake();
         boolean force = forceNavigatorSelection();
 
         if (!force)
@@ -133,21 +159,34 @@ public class WCCourseComponent
     {
         if (csm == null)
         {
-            log.debug("coreSelections(), transient state = " + transientState());
-            Object inheritedCsm = transientState().valueForKey( CSM_KEY );
-            if (inheritedCsm == null)
+//            log.debug("coreSelections(), transient state = " + transientState());
+//            Object inheritedCsm = transientState().valueForKey( CSM_KEY );
+//            if (inheritedCsm == null)
+//            {
+//                if (user() != null)
+//                {
+//                    csm = new CoreSelectionsManager(
+//                        user().getMyCoreSelections(), ecManager());
+//                }
+//                // else: How is it possible to get here !?!?
+//            }
+//            else
+//            {
+//                csm = (CoreSelectionsManager)
+//                    ((CoreSelectionsManager)inheritedCsm).clone();
+//            }
+            if (user() != null)
             {
-                if (user() != null)
-                {
-                    csm = new CoreSelectionsManager(
-                        user().getMyCoreSelections(), ecManager());
-                }
-                // else: How is it possible to get here !?!?
+                csm = new CoreSelectionsManager(
+                    user().getMyCoreSelections(),
+                    localContext());
             }
             else
             {
-                csm = (CoreSelectionsManager)
-                    ((CoreSelectionsManager)inheritedCsm).clone();
+                log.warn("no user() in coreSelections() yet!",
+                    new Exception("coreSelections() called from here with "
+                        + "session = "
+                        + (session() == null ? "null" : session().sessionID())));
             }
         }
         return csm;
@@ -327,17 +366,17 @@ public class WCCourseComponent
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
-    protected EOManager.ECManager ecManager()
-    {
-        EOManager.ECManager result = (EOManager.ECManager)
-            transientState().valueForKey(ECMANAGER_KEY);
-        if (result == null)
-        {
-            result = new EOManager.ECManager();
-            transientState().takeValueForKey(result, ECMANAGER_KEY);
-        }
-        return result;
-    }
+//    protected EOManager.ECManager ecManager()
+//    {
+//        EOManager.ECManager result = (EOManager.ECManager)
+//            transientState().valueForKey(ECMANAGER_KEY);
+//        if (result == null)
+//        {
+//            result = new EOManager.ECManager();
+//            transientState().takeValueForKey(result, ECMANAGER_KEY);
+//        }
+//        return result;
+//    }
 
 
     //~ Instance/static variables .............................................

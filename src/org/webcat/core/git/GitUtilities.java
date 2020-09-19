@@ -94,6 +94,22 @@ public class GitUtilities
             Application.wcApplication().repositoryPathForObject(object);
         File wcDir =
             Application.wcApplication().workingCopyPathForObject(object);
+        if (fsDir == null)
+        {
+            String details = (object == null)
+                ? "null"
+                : (object.getClass().getSimpleName() + " " + object);
+            log.error("repositoryForObject(): repositoryPathForObject() "
+                + "returned null for " + details);
+        }
+        if (wcDir == null)
+        {
+            String details = (object == null)
+                ? "null"
+                : (object.getClass().getSimpleName() + " " + object);
+            log.error("repositoryForObject(): workingCopyPathForObject() "
+                + "returned null for " + details);
+        }
 
         Repository repository = null;
 
@@ -154,6 +170,14 @@ public class GitUtilities
             }
         }
 
+        if (repository == null)
+        {
+            String details = (object == null)
+                ? "null"
+                : (object.getClass().getSimpleName() + " " + object);
+            log.error("repositoryForObject(): repository == null for "
+                + details);
+        }
         RepositoryInfo repoInfo = new RepositoryInfo();
         repoInfo.repositoryDir = fsDir;
         repoInfo.workingCopyDir = wcDir;

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2018 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,6 +22,7 @@ package org.webcat.core;
 import com.webobjects.eoaccess.*;
 import edu.vt.middleware.ldap.*;
 import org.apache.log4j.Logger;
+import org.webcat.woextensions.WCEC;
 
 // --------------------------------------------------------------------------
 /**
@@ -178,8 +179,8 @@ public class LdapAuthenticator
     public User authenticate( String               username,
                               String               password,
                               AuthenticationDomain domain,
-                              com.webobjects.eocontrol.EOEditingContext ec,
-                              LoginSession ls)
+                              WCEC                 ec,
+                              LoginSession         ls)
     {
         User user = null;
         log.debug("authenticate(), user = " + username + ", session = " + ls);
@@ -246,7 +247,7 @@ public class LdapAuthenticator
             log.info("user " + username + "(" + domain.displayableName() +
                 "): ldap caching");
             user.setPassword(password);
-            ec.saveChanges();
+            ec.saveChangesTolerantly();
         }
 
         return user;

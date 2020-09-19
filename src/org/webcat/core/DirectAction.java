@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2018 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,14 +23,12 @@ import java.util.HashMap;
 import java.util.Map;
 import com.webobjects.appserver.*;
 import com.webobjects.eoaccess.*;
-import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import er.extensions.foundation.ERXValueUtilities;
 import org.webcat.core.Application;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.DirectAction;
 import org.webcat.core.LoginPage;
-import org.webcat.core.LoginSession;
 import org.webcat.core.PasswordChangeRequest;
 import org.webcat.core.PasswordChangeRequestPage;
 import org.webcat.core.Session;
@@ -506,7 +504,7 @@ public class DirectAction
         // be null from the error count
         if (errors.count() == 0 && userName != null)
         {
-            EOEditingContext ec = WCEC.newEditingContext();
+            WCEC ec = WCEC.newEditingContext();
             try
             {
                 ec.lock();
@@ -549,101 +547,7 @@ public class DirectAction
     // ----------------------------------------------------------
     public Session recoverSessionForUser(User u)
     {
-        if (u != null)
-        {
-            user = u;
-        }
-        if (alreadyHasSessionActive())
-        {
-            Session existing = (Session)existingSession();
-            if (existing.isTerminating())
-            {
-                log.error("recoverSessionForUser("
-                    + (u == null ? "null" : u.userName())
-                    + ") called when existing session "
-                    + existing.sessionID() + "is terminating!!");
-            }
-            if (existing.user() == null)
-            {
-                if (u != null)
-                {
-                    existing.setUser(u);
-                }
-            }
-            else if (u == null)
-            {
-                log.error("recoverSessionForUser(null) called for existing "
-                    + "session " + existing.sessionID()
-                    + "that already has logged in user "
-                    + existing.primeUser().userName());
-            }
-            else if (existing.primeUser().id().equals(u.id()))
-            {
-                log.warn("recoverSessionForUser(" + u.userName() + ") called "
-                    + "with existing session " + existing.sessionID()
-                    + " already owned by that user");
-            }
-            else
-            {
-                log.error("recoverSessionForUser(" + u.userName()
-                    + ") called for existing "
-                    + "session " + existing.sessionID()
-                    + "that already has logged in user "
-                    + existing.primeUser().userName());
-                u = existing.primeUser();
-            }
-            user = u;
-            if (user != null)
-            {
-                String lsSessionId = new ECActionWithResult<String>() {
-                    // ------------------------------------------------------
-                    public String action()
-                    {
-                        User local = user.localInstance(ec);
-                        LoginSession ls = LoginSession.getLoginSessionForUser(
-                            user.editingContext(), local);
-                        if (ls != null)
-                        {
-                            return ls.sessionId();
-                        }
-                        else
-                        {
-                            return null;
-                        }
-                    }
-                }.call();
-                if (lsSessionId != null)
-                {
-                    log.error("recoverSessionForUser(" + user.userName()
-                        + ") called with existing session "
-                        + existing.sessionID() + " when active LoginSession "
-                        + " id = " + lsSessionId);
-                }
-            }
-            return existing;
-        }
-        else if (user != null)
-        {
-            LoginSession ls = LoginSession.getLoginSessionForUser(
-                user.editingContext(), user);
-            if (ls != null)
-            {
-                String ctxtId = context()._requestSessionID();
-                if (ctxtId == null)
-                {
-                    // Remember the existing session id for restoration
-                    rememberWosid(ls.sessionId());
-                }
-                else if (!ls.sessionId().equals(ctxtId))
-                {
-                    log.error("recoverSessionForUser(" + user.userName()
-                        + ") using LoginSession id "
-                        + ls.sessionId() + " to overwrite context session id "
-                        + ctxtId + " before session is restored");
-                    rememberWosid(ls.sessionId());
-                }
-            }
-        }
+        user = u;
         return (Session)session();
     }
 
@@ -658,8 +562,8 @@ public class DirectAction
     public WOSession session()
     {
         log.debug("session()");
-        Session mySession = (Session)super.session();
-        if (mySession != null && !mySession.isLoggedIn())
+        Session session = (Session)super.session();
+        if (session != null && !session.isLoggedIn())
         {
             if (user == null)
             {
@@ -668,33 +572,37 @@ public class DirectAction
             else
             {
                 log.debug("session(): no user associated with session");
-                EOEditingContext ec = mySession.defaultEditingContext();
-                try
+
+                if (session.isTerminating())
                 {
-                    ec.lock();
-                    user = user.localInstance(ec);
-                    String sessionID = mySession.setUser(user);
-                    log.info("login: "
-                        + user.userName()
-                        + " ("
-                        + user.authenticationDomain().displayableName()
-                        + ") (now "
-                        + Application.userCount
-                        + " users)");
-                    if (!sessionID.equals(mySession.sessionID()))
+                    log.error("session(), user = "
+                        + (user == null ? "null" : user.userName())
+                        + ", called when existing session "
+                        + session.sessionID() + "is terminating!!");
+                }
+                if (session.user() == null)
+                {
+                    if (user != null)
                     {
-                        log.error("session(): mismatched session IDs: have "
-                            + mySession.sessionID()
-                            + " but expected " + sessionID);
+                        session.setUser(user);
                     }
                 }
-                finally
+                else if (session.primeUser().id().equals(user.id()))
                 {
-                    ec.unlock();
+                    //ignore, users match
+                }
+                else
+                {
+                    log.error("session(), user = " + user.userName()
+                        + ", called for session "
+                        + session.sessionID()
+                        + "that already has logged in user "
+                        + session.primeUser().userName());
+                    user = session.primeUser();
                 }
             }
         }
-        return mySession;
+        return session;
     }
 
 
@@ -714,7 +622,7 @@ public class DirectAction
         WORequest request, NSMutableDictionary<?, ?> errors)
     {
         boolean result = false;
-        EOEditingContext ec = WCEC.newEditingContext();
+        WCEC ec = WCEC.newEditingContext();
         String code = request().stringFormValueForKey("code");
         if (code == null)
         {
@@ -741,7 +649,7 @@ public class DirectAction
                 pcr.delete();
                 try
                 {
-                    ec.saveChanges();
+                    ec.saveChangesTolerantly();
                 }
                 catch (Exception e)
                 {
@@ -1115,7 +1023,7 @@ public class DirectAction
     {
         if ("default".equals(actionName))
         {
-            return false;
+            return !Application.wcApplication().needsInstallation();
         }
         return super.actionShouldWaitForInitialization(actionName);
     }

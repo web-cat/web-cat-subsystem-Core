@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2018 Virginia Tech
+ |  Copyright (C) 2018-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -30,6 +30,7 @@ import org.webcat.core.CourseOffering;
 import org.webcat.core.Department;
 import org.webcat.core.Semester;
 import org.webcat.core.User;
+import org.webcat.woextensions.WCEC;
 import net.oauth.OAuth;
 import net.oauth.OAuthAccessor;
 import net.oauth.OAuthConsumer;
@@ -38,7 +39,6 @@ import net.oauth.OAuthValidator;
 import net.oauth.SimpleOAuthValidator;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WORequest;
-import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableArray;
 
@@ -122,7 +122,7 @@ public class LTILaunchRequest
     //~ Constructors ..........................................................
 
     // ----------------------------------------------------------
-    public LTILaunchRequest(WOContext context, EOEditingContext ec)
+    public LTILaunchRequest(WOContext context, WCEC ec)
     {
         this.context = context;
         this.request = context.request();
@@ -326,7 +326,7 @@ public class LTILaunchRequest
                 {
                     // Add LMSIdentity, since it is missing
                     LMSIdentity.create(ec, userId(), lmsInstance, user);
-                    ec.saveChanges();
+                    ec.saveChangesTolerantly();
                 }
             }
 
@@ -377,7 +377,7 @@ public class LTILaunchRequest
                     user.setEmail(email);
                 }
                 LMSIdentity.create(ec, userId(), lmsInstance, user);
-                ec.saveChanges();
+                ec.saveChangesTolerantly();
             }
 
             if (user != null)
@@ -406,7 +406,7 @@ public class LTILaunchRequest
                 }
                 if (user.changesFromCommittedSnapshot().size() > 0)
                 {
-                    ec.saveChanges();
+                    ec.saveChangesTolerantly();
                 }
             }
         }
@@ -511,7 +511,7 @@ public class LTILaunchRequest
                 }
                 if (needsSave)
                 {
-                    ec.saveChanges();
+                    ec.saveChangesTolerantly();
                 }
                 newResults.addAll(result);
                 result = newResults;
@@ -540,7 +540,7 @@ public class LTILaunchRequest
             }
             if (needsSave)
             {
-                ec.saveChanges();
+                ec.saveChangesTolerantly();
             }
         }
         log.debug("courseOfferings() = " + result);
@@ -642,7 +642,7 @@ public class LTILaunchRequest
 
     private WOContext context;
     private WORequest request;
-    protected EOEditingContext ec;
+    protected WCEC ec;
 
     private LMSInstance lmsInstance;
     private User user;

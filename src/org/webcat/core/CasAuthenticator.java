@@ -30,6 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.webobjects.eoaccess.*;
 import org.apache.log4j.Logger;
+import org.webcat.woextensions.WCEC;
 
 // --------------------------------------------------------------------------
 /**
@@ -118,8 +119,8 @@ public class CasAuthenticator
         String               returnUrl,
         String               ticket,
         AuthenticationDomain domain,
-        com.webobjects.eocontrol.EOEditingContext ec,
-        LoginSession ls)
+        WCEC                 ec,
+        LoginSession         ls)
     {
         if (returnUrl != null && !returnUrl.startsWith("https://"))
         {
@@ -156,7 +157,7 @@ public class CasAuthenticator
                     {
                         user.setEmail(
                             username + "@" + domain.defaultEmailDomain());
-                        ec.saveChanges();
+                        ec.saveChangesTolerantly();
                     }
                 }
                 else if (user.authenticationDomain() != domain)

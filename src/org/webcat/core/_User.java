@@ -31,6 +31,7 @@ import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
 import org.webcat.core.EOBasedKeyGenerator;
+import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCFetchSpecification;
 
 // -------------------------------------------------------------------------
@@ -131,6 +132,27 @@ public abstract class _User
             }
         }
         return obj;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Look up an object by id number.  Assumes the editing
+     * context is appropriately locked.
+     * @param ec The editing context to use
+     * @param id The id to look up
+     * @return The object, or null if no such id exists
+     */
+    public static User forId(
+        EOEditingContext ec, EOGlobalID id)
+    {
+        User _result =
+            (User)ec.objectForGlobalID(id);
+        if (_result == null)
+        {
+            _result = (User)ec.faultForGlobalID(id, ec);
+        }
+        return _result;
     }
 
 
@@ -280,6 +302,7 @@ public abstract class _User
             return er.extensions.eof.ERXConstant.ZeroInteger;
         }
     }
+
 
     // ----------------------------------------------------------
     /**
@@ -911,7 +934,7 @@ public abstract class _User
                     migrateAttributeValues(
                         (org.webcat.woextensions.MigratingEditingContext)ec,
                         localInstance(ec));
-                    ec.saveChanges();
+                    ec.saveChangesTolerantly();
                 }
             }.run();
         }

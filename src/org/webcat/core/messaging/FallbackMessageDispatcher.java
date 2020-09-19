@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: FallbackMessageDispatcher.java,v 1.3 2011/12/25 02:24:54 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2010-2011 Virginia Tech
+ |  Copyright (C) 2010-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,6 +19,8 @@
 
 package org.webcat.core.messaging;
 
+import java.io.File;
+import java.util.List;
 import org.webcat.core.Application;
 import org.webcat.core.User;
 import com.webobjects.foundation.NSArray;
@@ -33,8 +33,6 @@ import com.webobjects.foundation.NSDictionary;
  * urgent messages will still be e-mailed to the system administrator.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.3 $, $Date: 2011/12/25 02:24:54 $
  */
 public class FallbackMessageDispatcher
     implements IMessageDispatcher
@@ -58,20 +56,14 @@ public class FallbackMessageDispatcher
         // Send the message directly to any users to whom the message applies,
         // if they have notifications for a particular protocol enabled.
 
-        NSArray<User> users = message.users();
-        if (users != null)
+        NSArray<String> emails = message.userEmails();
+        if (emails != null && emails.size() > 0)
         {
-            for (User user : users)
+            String title = message.title();
+            List<File> attachments = message.attachments();
+            for (String email : emails)
             {
-                // Sanity check to ensure that messages don't get sent to users
-                // who shouldn't receive them based on their access level.
-
-                if (user.accessLevel() >= descriptor.accessLevel())
-                {
-                    Application.sendSimpleEmail(
-                            user.email(), message.title(), body,
-                            message.attachments());
-                }
+                Application.sendSimpleEmail(email, title, body, attachments);
             }
         }
     }

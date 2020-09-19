@@ -23,6 +23,7 @@ import com.webobjects.eoaccess.*;
 import com.webobjects.foundation.NSDictionary;
 import edu.vt.middleware.eddo.*;
 import org.apache.log4j.Logger;
+import org.webcat.woextensions.WCEC;
 
 // --------------------------------------------------------------------------
 /**
@@ -95,7 +96,7 @@ public class EdAuthAuthenticator
         String               username,
         String               password,
         AuthenticationDomain domain,
-        com.webobjects.eocontrol.EOEditingContext ec,
+        WCEC                 ec,
         LoginSession         ls)
     {
         User user = null;

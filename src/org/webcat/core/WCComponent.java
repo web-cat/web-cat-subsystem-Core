@@ -678,7 +678,7 @@ public class WCComponent
      * changes.
      * @return The child editing context
      */
-    public EOEditingContext localContext()
+    public WCEC localContext()
     {
         return peerContextManager().editingContext();
 
@@ -701,7 +701,7 @@ public class WCComponent
     {
         if (user == null && wcSession().user() != null)
         {
-            user = wcSession().user().localInstance( localContext() );
+            user = wcSession().user().localInstance(localContext());
         }
         return user;
     }
@@ -713,11 +713,11 @@ public class WCComponent
      * students by administrators and instructors.
      * @param u the new user to impersonate
      */
-    public void setLocalUser( User u )
+    public void setLocalUser(User u)
     {
         user = null;
         wcSession().setLocalUser(
-            u.localInstance( wcSession().sessionContext() ));
+            u.localInstance(wcSession().sessionContext()));
     }
 
 
@@ -958,7 +958,7 @@ public class WCComponent
               // auto-locked it yet.
               peerContextManager.editingContext().lock();
 
-              peerContextManager.editingContext().saveChanges();
+              peerContextManager.editingContext().saveChangesTolerantly();
               peerContextManager.editingContext().revert();
               peerContextManager.editingContext().refaultAllObjects();
           }
@@ -991,5 +991,5 @@ public class WCComponent
     private User              user;
     private boolean           alreadyGrabbed;
     private boolean           breakWorkflow;
-    static Logger log = Logger.getLogger( WCComponent.class );
+    static Logger log = Logger.getLogger(WCComponent.class);
 }

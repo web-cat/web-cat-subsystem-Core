@@ -123,7 +123,7 @@ public class Core
                         }
                         try
                         {
-                            ec.saveChanges();
+                            ec.saveChangesTolerantly();
                         }
                         catch (Exception e)
                         {

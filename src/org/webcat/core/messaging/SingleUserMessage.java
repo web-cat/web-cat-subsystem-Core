@@ -22,6 +22,7 @@
 package org.webcat.core.messaging;
 
 import org.webcat.core.User;
+import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.foundation.NSArray;
 
 //-------------------------------------------------------------------------
@@ -40,21 +41,7 @@ public abstract class SingleUserMessage
     // ----------------------------------------------------------
     public SingleUserMessage(User user)
     {
-        users = new NSArray<User>(user.localInstance(editingContext()));
+        setUserEmails(new NSArray<String>(user.email()));
+        setUserIds(new NSArray<EOGlobalID>(user.globalId()));
     }
-
-
-    //~ Methods ...............................................................
-
-    // ----------------------------------------------------------
-    @Override
-    public NSArray<User> users()
-    {
-        return users;
-    }
-
-
-    //~ Static/instance variables .............................................
-
-    private NSArray<User> users;
 }

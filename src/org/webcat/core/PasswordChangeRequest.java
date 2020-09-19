@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: PasswordChangeRequest.java,v 1.2 2011/03/07 18:44:37 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -31,6 +29,7 @@ import org.webcat.core.PasswordChangeRequest;
 import org.webcat.core.User;
 import org.webcat.core.WCProperties;
 import org.webcat.core._PasswordChangeRequest;
+import org.webcat.woextensions.WCEC;
 import org.apache.log4j.*;
 
 // -------------------------------------------------------------------------
@@ -39,8 +38,6 @@ import org.apache.log4j.*;
  * the old one.
  *
  * @author Stephen Edwards
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.2 $, $Date: 2011/03/07 18:44:37 $
  */
 public class PasswordChangeRequest
     extends _PasswordChangeRequest
@@ -85,7 +82,7 @@ public class PasswordChangeRequest
      * or null otherwise
      */
     public static PasswordChangeRequest requestForCode(
-        EOEditingContext ec, String requestCode )
+        WCEC ec, String requestCode)
     {
         PasswordChangeRequest request = null;
         NSArray<PasswordChangeRequest> results =
@@ -97,7 +94,7 @@ public class PasswordChangeRequest
             {
                 // Expired timestamp, so delete it!
                 request.delete();
-                ec.saveChanges();
+                ec.saveChangesTolerantly();
                 request = null;
             }
         }
@@ -114,7 +111,7 @@ public class PasswordChangeRequest
      * false if none were found
      */
     public static boolean clearPendingUserRequests(
-        EOEditingContext ec, User forUser )
+        WCEC ec, User forUser)
     {
         NSArray<PasswordChangeRequest> results = requestsForUser(ec, forUser);
         boolean result = results.count() > 0;
@@ -125,7 +122,7 @@ public class PasswordChangeRequest
         }
         if ( result )
         {
-            ec.saveChanges();
+            ec.saveChangesTolerantly();
         }
         return result;
     }
@@ -140,7 +137,7 @@ public class PasswordChangeRequest
      * @param forUser The user requesting the password reset instructions
      */
     public static void sendPasswordResetEmail(
-        EOEditingContext ec, User forUser )
+        WCEC ec, User forUser)
     {
         log.info( "Creating password change ticket for: "
             + forUser.nameAndUid() );
@@ -152,7 +149,7 @@ public class PasswordChangeRequest
             0, 0, 1, 0, 0, 0 ) );
         pcr.setCode(digestString(forUser.userName() + formatter.format(now)
             + forUser.email() + Integer.toString(random.nextInt())));
-        ec.saveChanges();
+        ec.saveChangesTolerantly();
 
         WCProperties properties =
             new WCProperties( Application.configurationProperties() );

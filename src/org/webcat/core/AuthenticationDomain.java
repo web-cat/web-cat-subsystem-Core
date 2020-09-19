@@ -683,7 +683,7 @@ public class AuthenticationDomain
                         if (domain != null)
                         {
                             authDomainsBySubdirName.put(
-                                domain.subdirName(), domain.name());
+                                domain.subdirName(), domain.propertyName());
                             String emailDomain = properties.getProperty(
                                 base + "." + DEFAULT_EMAIL_DOMAIN_KEY);
                             if (emailDomain != null)
@@ -699,7 +699,7 @@ public class AuthenticationDomain
                     }
                 }
             }
-            ec.saveChanges();
+            ec.saveChangesTolerantly();
 
             NSMutableArray<NSDictionary<String, String>> stubs =
                 new NSMutableArray<NSDictionary<String, String>>();

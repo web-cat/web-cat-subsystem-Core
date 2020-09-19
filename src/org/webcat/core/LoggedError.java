@@ -25,6 +25,7 @@ import org.webcat.core.LoggedError;
 import org.webcat.core._LoggedError;
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
+import er.extensions.foundation.ERXExceptionUtilities;
 
 // -------------------------------------------------------------------------
 /**
@@ -66,18 +67,18 @@ public class LoggedError
             Throwable        throwable
         )
     {
-        if ( throwable == null ) return null;
-
-        // Drill down to the root cause first
-        while ( throwable.getCause() != null )
+        if (throwable == null)
         {
-            throwable = throwable.getCause();
+            return null;
         }
 
+        // Drill down to the root cause first
+        throwable = ERXExceptionUtilities.getMeaningfulThrowable(throwable);
+
         StackTraceElement[] trace = throwable.getStackTrace();
-        StackTraceElement top = ( trace != null && trace.length > 0 )
+        StackTraceElement top = (trace != null && trace.length > 0)
             ? trace[0]
-            : new StackTraceElement( "unknown", "unknown", "unknown", 0 );
+            : new StackTraceElement("unknown", "unknown", "unknown", 0);
 
         LoggedError result = null;
         NSArray<LoggedError> results = errorsWithExceptionLocation(
@@ -86,19 +87,104 @@ public class LoggedError
             top.getLineNumber(),
             top.getMethodName(),
             throwable.getClass().getName() );
-        if ( results != null && results.count() > 0 )
+        if (results != null && results.count() > 0)
         {
-            result = results.objectAtIndex( 0 );
+            result = results.objectAtIndex(0);
         }
         else
         {
-            result = (LoggedError)er.extensions.eof.ERXEOControlUtilities
-                .createAndInsertObject( context, ENTITY_NAME );
-            result.setLine( top.getLineNumber() );
-            result.setExceptionName( throwable.getClass().getName() );
-            result.setInClass( top.getClassName() );
-            result.setInMethod( top.getMethodName() );
+            result = create(context, top.getLineNumber(), 1);
+            result.setExceptionName(throwable.getClass().getName());
+            result.setInClass(top.getClassName());
+            result.setInMethod(top.getMethodName());
         }
         return result;
     }
+
+
+    // ----------------------------------------------------------
+    private String trim(String value, int maxLen, boolean leftTrunc)
+    {
+        if (value != null && value.length() > maxLen)
+        {
+            if (leftTrunc)
+            {
+                value = value.substring(value.length() - maxLen);
+            }
+            else // truncate right side
+            {
+                value = value.substring(0, maxLen);
+            }
+        }
+        return value;
+    }
+
+
+    // ----------------------------------------------------------
+    private String tiny(String value)
+    {
+        return trim(value, TINY_LENGTH, false);
+    }
+
+
+    // ----------------------------------------------------------
+    private String tinyRight(String value)
+    {
+        return trim(value, TINY_LENGTH, true);
+    }
+
+
+    // ----------------------------------------------------------
+    private String medium(String value)
+    {
+        // Enforce limits of MEDIUMTEXT for this column, which can
+        // hold max 2^16 = 65,536 characters
+        return trim(value, MEDIUM_LENGTH, false);
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void setInMethod(String value)
+    {
+        super.setInMethod(tiny(value));
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void setInClass(String value)
+    {
+        super.setInClass(tinyRight(value));
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void setExceptionName(String value)
+    {
+        super.setExceptionName(tinyRight(value));
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void setMessage(String value)
+    {
+        super.setMessage(tiny(value));
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void setStackTrace(String value)
+    {
+        super.setStackTrace(medium(value));
+    }
+
+
+    //~ Fields ................................................................
+
+    private static final int MEDIUM_LENGTH = 65500;
+    private static final int TINY_LENGTH = 250;
 }

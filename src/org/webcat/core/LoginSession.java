@@ -50,83 +50,83 @@ public class LoginSession
     }
 
 
-    // ----------------------------------------------------------
-    /**
-     * A static factory method for creating a new LoginSession object for
-     * the given user and session ID.
-     * @param editingContext The context in which the new object will be
-     * inserted
-     * @param aUser The user for this login session.
-     * @param sessionID The session ID.
-     * @return The newly created object
-     */
-    public static LoginSession create(
-        EOEditingContext editingContext, User aUser, String sessionID)
-    {
-        LoginSession loginSession = create(
-            editingContext,
-            UsagePeriod.currentUsagePeriodForUser(editingContext, aUser));
-        loginSession.setSessionId(sessionID);
-        loginSession.setUserRelationship(aUser);
-        return loginSession;
-    }
+//    // ----------------------------------------------------------
+//    /**
+//     * A static factory method for creating a new LoginSession object for
+//     * the given user and session ID.
+//     * @param editingContext The context in which the new object will be
+//     * inserted
+//     * @param aUser The user for this login session.
+//     * @param sessionID The session ID.
+//     * @return The newly created object
+//     */
+//    public static LoginSession create(
+//        EOEditingContext editingContext, User aUser, String sessionID)
+//    {
+//        LoginSession loginSession = create(
+//            editingContext,
+//            UsagePeriod.currentUsagePeriodForUser(editingContext, aUser));
+//        loginSession.setSessionId(sessionID);
+//        loginSession.setUserRelationship(aUser);
+//        return loginSession;
+//    }
 
 
     //~ Methods ...............................................................
 
 
-    // ----------------------------------------------------------
-    /**
-     * Looks up the current WCLoginSession for this user in the
-     * database.
-     *
-     * This is used for session timeout tracking, as well as to
-     * handle situations where the user is logged in through multiple
-     * browser windows simultaneously.  This method presumes the given
-     * editing context is already locked or uses auto-locking.
-     *
-     * @param ec   The current editing context
-     * @param aUser The user to look for
-     * @return The current login session, or null if there is not one
-     */
-    public static LoginSession getLoginSessionForUser(
-        EOEditingContext ec, User aUser)
-    {
-        log.debug("getLoginSession()");
-        LoginSession result = null;
-        if (aUser != null)
-        {
-            log.debug("searching for login session for " + aUser.userName());
-            NSArray<LoginSession> items =
-                objectsMatchingValues(ec, USER_KEY, aUser);
-
-            if (items != null)
-            {
-                if (items.count() > 1)
-                {
-                    // More than one active session with this user.
-                    log.error(
-                        "Error: multiple stored login sessions for user: "
-                        + aUser.name());
-                }
-                if (items.count() > 0)
-                {
-                    result = items.objectAtIndex(0);
-                }
-            }
-        }
-        else
-        {
-            log.debug("null login session: user not logged in");
-        }
-        if (result != null)
-        {
-            log.debug("getLoginSession(): " + result.sessionId());
-        }
-        else
-        {
-            log.debug("getLoginSession(): null login session");
-        }
-        return result;
-    }
+//    // ----------------------------------------------------------
+//    /**
+//     * Looks up the current WCLoginSession for this user in the
+//     * database.
+//     *
+//     * This is used for session timeout tracking, as well as to
+//     * handle situations where the user is logged in through multiple
+//     * browser windows simultaneously.  This method presumes the given
+//     * editing context is already locked or uses auto-locking.
+//     *
+//     * @param ec   The current editing context
+//     * @param aUser The user to look for
+//     * @return The current login session, or null if there is not one
+//     */
+//    public static LoginSession getLoginSessionForUser(
+//        EOEditingContext ec, User aUser)
+//    {
+//        log.debug("getLoginSession()");
+//        LoginSession result = null;
+//        if (aUser != null)
+//        {
+//            log.debug("searching for login session for " + aUser.userName());
+//            NSArray<LoginSession> items =
+//                objectsMatchingValues(ec, USER_KEY, aUser);
+//
+//            if (items != null)
+//            {
+//                if (items.count() > 1)
+//                {
+//                    // More than one active session with this user.
+//                    log.error(
+//                        "Error: multiple stored login sessions for user: "
+//                        + aUser.name());
+//                }
+//                if (items.count() > 0)
+//                {
+//                    result = items.objectAtIndex(0);
+//                }
+//            }
+//        }
+//        else
+//        {
+//            log.debug("null login session: user not logged in");
+//        }
+//        if (result != null)
+//        {
+//            log.debug("getLoginSession(): " + result.sessionId());
+//        }
+//        else
+//        {
+//            log.debug("getLoginSession(): null login session");
+//        }
+//        return result;
+//    }
 }

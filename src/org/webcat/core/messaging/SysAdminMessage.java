@@ -21,6 +21,10 @@
 
 package org.webcat.core.messaging;
 
+import org.webcat.core.User;
+import org.webcat.woextensions.ECAction;
+import com.webobjects.foundation.NSArray;
+
 //-------------------------------------------------------------------------
 /**
  * An abstract subclass of {@link Message} used for messages that should also
@@ -34,6 +38,19 @@ package org.webcat.core.messaging;
 public abstract class SysAdminMessage
     extends Message
 {
+    //~ Constructor ...........................................................
+
+    // ----------------------------------------------------------
+    public SysAdminMessage()
+    {
+        new ECAction() { public void action() {
+            NSArray<User> users = User.systemAdmins(ec);
+            setUserIds(extractIds(ec, users));
+            setUserEmails(extractEmails(ec, users));
+        }}.run();
+    }
+
+
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
@@ -41,5 +58,13 @@ public abstract class SysAdminMessage
     public boolean isSevere()
     {
         return true;
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void overrideSend()
+    {
+        log.info(shortBody());
     }
 }

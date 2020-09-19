@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: EOBase.java,v 1.2 2012/06/22 16:23:18 aallowat Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2012 Virginia Tech
+ |  Copyright (C) 2012-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,11 +20,11 @@
 package org.webcat.core;
 
 import java.lang.reflect.Method;
+import org.webcat.woextensions.WCEC;
 import com.webobjects.eoaccess.EOEntity;
 import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOEditingContext;
-import com.webobjects.foundation.NSDictionary;
-import com.webobjects.foundation.NSMutableDictionary;
+import com.webobjects.eocontrol.EOGlobalID;
 
 // -------------------------------------------------------------------------
 /**
@@ -34,8 +32,6 @@ import com.webobjects.foundation.NSMutableDictionary;
  * them all to inherit.
  *
  * @author  Stephen Edwards
- * @author  Last changed by: $Author: aallowat $
- * @version $Revision: 1.2 $, $Date: 2012/06/22 16:23:18 $
  */
 public class EOBase
     extends er.extensions.eof.ERXGenericRecord
@@ -53,6 +49,23 @@ public class EOBase
 
 
     //~ Methods ...............................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Get this object's editing context.
+     * @return this object's editing context
+     */
+    public WCEC wcEditingContext()
+    {
+        EOEditingContext ec = super.editingContext();
+        if (ec != null && !(ec instanceof WCEC))
+        {
+            throw new IllegalStateException("Expected EO to be owned by WCEC, "
+                + "but found " + ec.getClass() + " instead; EO = " + this);
+        }
+        return (WCEC)ec;
+    }
+
 
     // ----------------------------------------------------------
     /**
@@ -95,6 +108,29 @@ public class EOBase
         throw new UnsupportedOperationException("This EO does not override "
                 + "the id() method. This is probably a problem in the "
                 + "generated template.");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve this object's <code>EOGlobalId</code> value.
+     * @return the global id for this entity
+     */
+    public EOGlobalID globalId()
+    {
+        return editingContext().globalIDForObject(this);
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void takeValueForKey(Object value, String key)
+    {
+        if (value instanceof com.webobjects.foundation.NSKeyValueCoding.Null<?>)
+        {
+            value = null;
+        }
+        super.takeValueForKey(value, key);
     }
 
 

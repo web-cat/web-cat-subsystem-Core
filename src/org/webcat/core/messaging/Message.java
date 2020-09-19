@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.apache.log4j.Logger;
 import org.jfree.util.Log;
 import org.webcat.core.Application;
 import org.webcat.core.MutableDictionary;
@@ -37,6 +38,7 @@ import org.webcat.woextensions.ECAction;
 import static org.webcat.woextensions.ECAction.run;
 import org.webcat.woextensions.WCEC;
 import com.webobjects.eocontrol.EOEditingContext;
+import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSDictionary;
@@ -260,7 +262,103 @@ public abstract class Message
      * @return an array of Users who should receive the message, or null if it
      *     should only be broadcast system-wide
      */
-    public abstract NSArray<User> users();
+    public final NSArray<User> users(EOEditingContext ec)
+    {
+        if (userIds == null)
+        {
+            return null;
+        }
+
+        NSMutableArray<User> users = new NSMutableArray<User>(userIds.size());
+        for (EOGlobalID userId : userIds)
+        {
+            users.add(User.forId(ec, userId));
+        }
+        return users;
+    }
+
+
+    // ----------------------------------------------------------
+    protected final void setUserIds(NSArray<EOGlobalID> userIds)
+    {
+        this.userIds = userIds;
+    }
+
+
+    // ----------------------------------------------------------
+    // Should only be called in constructor to avoid EO locking issues!
+    // context parameter isn't used, but forces caller to think about
+    // where the locked context is coming from
+    protected NSArray<String> extractEmails(
+        EOEditingContext ec, NSArray<User> users)
+    {
+        if (users == null)
+        {
+            return null;
+        }
+        final MessageDescriptor descriptor = messageDescriptor();
+        NSMutableArray<String> result =
+            new NSMutableArray<String>(users.size());
+        for (User user : users)
+        {
+            if (user.accessLevel() >= descriptor.accessLevel())
+            {
+                result.add(user.email());
+            }
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    // Should only be called in constructor to avoid EO locking issues!
+    // context parameter isn't used, but forces caller to think about
+    // where the locked context is coming from
+    protected NSArray<EOGlobalID> extractIds(
+        EOEditingContext ec, NSArray<User> users)
+    {
+        if (users == null)
+        {
+            return null;
+        }
+        final MessageDescriptor descriptor = messageDescriptor();
+        NSMutableArray<EOGlobalID> result =
+            new NSMutableArray<EOGlobalID>(users.size());
+        for (User user : users)
+        {
+            if (user.accessLevel() >= descriptor.accessLevel())
+            {
+                result.add(user.globalId());
+            }
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
+    protected final void setUserEmails(NSArray<String> userEmails)
+    {
+        this.userEmails = userEmails;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * <p>
+     * Gets the list of users who should receive this message. If the message
+     * is meant to be broadcast system-wide only, then this method may return
+     * null.
+     * </p><p>
+     * This method is only called during the message sending cycle.
+     * </p>
+     *
+     * @return an array of Users who should receive the message, or null if it
+     *     should only be broadcast system-wide
+     */
+    public final NSArray<String> userEmails()
+    {
+        return userEmails;
+    }
 
 
     // ----------------------------------------------------------
@@ -410,30 +508,25 @@ public abstract class Message
 
 
     // ----------------------------------------------------------
+    public void overrideSend()
+    {
+        log.fatal("send(): Message " + this
+            + " does not override overrideSend(), so message is hidden");
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Sends the message, then disposes of it.
      */
     public final synchronized void send()
     {
-        if (disposed)
-        {
-            throw new IllegalStateException(getClass().getSimpleName()
-                + ": send() called on disposed message.  Each message can "
-                + "only be sent once.");
-        }
+//        overrideSend();
+        Application.wcApplication().messageDispatcher()
+            .sendMessage(Message.this);
 
-        run(new ECAction(editingContext()) { public void action() {
-            // Use the application's registered message dispatcher to send
-            // the message.
-            Application.wcApplication().messageDispatcher()
-                .sendMessage(Message.this);
-
-            // Store the message in the database.
-            storeMessage();
-        }});
-
-        // Dispose of message and its EC
-        dispose();
+        // Store the message in the database.
+//        storeMessage();
     }
 
 
@@ -443,93 +536,53 @@ public abstract class Message
      *
      * @param descriptor the message descriptor for this message
      */
-    private synchronized void storeMessage()
+    private void storeMessage()
     {
-        final MessageDescriptor descriptor = messageDescriptor();
+        run(new ECAction() { public void action() {
+            final MessageDescriptor descriptor = messageDescriptor();
 
-        // The editing context is already locked by the caller
-        // (or it will auto-lock).
-        EOEditingContext ec = editingContext();
+            // Create a representation of the message in the database so that it
+            // can be viewed by users later.
+            SentMessage message = SentMessage.create(ec, false);
 
-        // Create a representation of the message in the database so that it
-        // can be viewed by users later.
-        SentMessage message = SentMessage.create(ec, false);
+            message.setSentTime(new NSTimestamp());
+            message.setMessageType(messageType());
+            message.setTitle(title());
+            message.setShortBody(shortBody());
+            message.setIsBroadcast(descriptor.isBroadcast());
 
-        message.setSentTime(new NSTimestamp());
-        message.setMessageType(messageType());
-        message.setTitle(title());
-        message.setShortBody(shortBody());
-        message.setIsBroadcast(descriptor.isBroadcast());
-
-        if (links() != null)
-        {
-            message.setLinks(new MutableDictionary(links()));
-        }
-
-        NSArray<User> users = users();
-        if (users != null)
-        {
-            for (User user : users)
+            if (links() != null)
             {
-                // Sanity check to ensure that messages don't get sent to
-                // users who shouldn't receive them based on their access
-                // level.
+                message.setLinks(new MutableDictionary(links()));
+            }
 
-                if (user.accessLevel() >= descriptor.accessLevel())
+            NSArray<User> users = users(ec);
+            if (users != null)
+            {
+                for (User user : users)
                 {
-                    message.addToUsersRelationship(user.localInstance(ec));
+                    // Sanity check to ensure that messages don't get sent to
+                    // users who shouldn't receive them based on their access
+                    // level.
+                    // This check is redundant now
+
+                    if (user.accessLevel() >= descriptor.accessLevel())
+                    {
+                        message.addToUsersRelationship(user);
+                    }
                 }
             }
-        }
 
-        ec.saveChanges();
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Gets the editing context used during the sending of this message.
-     * Subclasses can access this editing context during the message sending
-     * cycle if they need to fetch EOs.
-     *
-     * @return an editing context
-     */
-    public synchronized EOEditingContext editingContext()
-    {
-        if (editingContext == null)
-        {
-            editingContext = WCEC.newAutoLockingEditingContext();
-        }
-        return editingContext;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Release the resources associated with this message (e.g., its internal
-     * editing context) because this message will not be used again.
-     */
-    protected synchronized void dispose()
-    {
-        if (disposed)
-        {
-            throw new IllegalStateException(getClass().getSimpleName()
-                + ": dispose() called on disposed message.");
-        }
-        if (editingContext != null)
-        {
-            editingContext.dispose();
-            editingContext = null;
-        }
-        disposed = true;
+            ec.saveChangesTolerantly();
+        }});
     }
 
 
     //~ Static/instance variables .............................................
 
-    private EOEditingContext editingContext;
-    private boolean disposed = false;
-
+    private NSArray<String> userEmails = null;
+    private NSArray<EOGlobalID> userIds = null;
     private static Map<Class<? extends Message>, MessageDescriptor> descriptors
         = new HashMap<Class<? extends Message>, MessageDescriptor>();
+    public static Logger log = Logger.getLogger(Message.class);
 }

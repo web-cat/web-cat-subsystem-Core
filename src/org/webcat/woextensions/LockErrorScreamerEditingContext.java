@@ -19,13 +19,13 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package org.webcat.core;
+package org.webcat.woextensions;
 
 import com.webobjects.eocontrol.*;
 import com.webobjects.foundation.*;
 import java.io.StringWriter;
 import java.io.PrintWriter;
-import org.webcat.core.LockErrorScreamerEditingContext;
+import org.webcat.woextensions.LockErrorScreamerEditingContext;
 import org.apache.log4j.Logger;
 
 
@@ -60,9 +60,9 @@ public class LockErrorScreamerEditingContext
      * Constructor for nested editing contexts.
      * @param parent EOEditingContext that this editing context is a child of
      */
-    public LockErrorScreamerEditingContext( EOObjectStore parent )
+    public LockErrorScreamerEditingContext(EOObjectStore parent)
     {
-        super( parent );
+        super(parent);
     }
 
 
@@ -84,12 +84,12 @@ public class LockErrorScreamerEditingContext
         // If we have not recorded any traces this editing context is not
         // currently locked and this results in a the lock being taken by
         // a new thread.
-        if ( stackTraces.count() == 0 )
+        if (stackTraces.count() == 0)
         {
-            stackTraces.addObject( trace() );
+            stackTraces.addObject(trace());
             nameOfLockingThread = nameOfCurrentThread;
-            log.debug( "+++ Lock number (" +  stackTraces.count()
-                       + ") in " + nameOfCurrentThread );
+            log.debug("+++ Lock number (" +  stackTraces.count()
+                + ") in " + nameOfCurrentThread);
         }
         else
         {
@@ -97,11 +97,11 @@ public class LockErrorScreamerEditingContext
             // If the thread is the same then this is a secondary call that
             // results in an increased recursionCount() for the
             // NSRecursiveLock.
-            if ( nameOfCurrentThread.equals( nameOfLockingThread ) )
+            if (nameOfCurrentThread.equals(nameOfLockingThread))
             {
-                stackTraces.addObject( trace() );
-                log.debug( "+++ Lock number (" + stackTraces.count()
-                           + ") in " + nameOfCurrentThread );
+                stackTraces.addObject(trace());
+                log.debug("+++ Lock number (" + stackTraces.count()
+                    + ") in " + nameOfCurrentThread);
             }
             // If the thread is not the same it will block.  For editing
             // contexts in a session this results in deadlock so an error
@@ -113,13 +113,12 @@ public class LockErrorScreamerEditingContext
             // is not nested correctly.
             else
             {
-                log.error( "!!! Attempting to lock editing context from "
-                           + nameOfCurrentThread
-                           + " that was previously locked in "
-                           + nameOfLockingThread );
-                log.error( "!!! Current stack trace:\n" + trace() );
-                log.error( "!!! Stack trace for most recent lock:\n"
-                           + stackTraces.lastObject() );
+                log.error("!!! Attempting to lock editing context from "
+                    + nameOfCurrentThread
+                    + " that was previously locked in "
+                    + nameOfLockingThread);
+                log.error("!!! Current stack trace:\n" + trace());
+                errorDumpLocks();
             }
         }
         super.lock();
@@ -137,15 +136,22 @@ public class LockErrorScreamerEditingContext
         // This will throw an IllegalStateException if the editing context
         // is not locked, or if the unlocking thread is not the thread with
         // the lock.
-        super.unlock();
+        try
+        {
+            super.unlock();
+        }
+        catch (IllegalMonitorStateException e)
+        {
+            log.error(e);
+        }
 
         // This editing context is already locked, so remove the trace for the
         // latest lock(), assuming that it corresponds to this unlock().
-        if ( stackTraces.count() > 0 )
+        if (stackTraces.count() > 0)
         {
             stackTraces.removeLastObject();
         }
-        if ( stackTraces.count() == 0 )
+        if (stackTraces.count() == 0)
         {
             // No more traces means that we are no longer locked so
             // dis-associate ourselves with the thread that had us locked.
@@ -154,6 +160,20 @@ public class LockErrorScreamerEditingContext
         String nameOfCurrentThread = Thread.currentThread().getName();
         log.debug( "--- Unlocked in " +  nameOfCurrentThread + " ("
                    + stackTraces.count() + " remaining)" );
+    }
+
+
+    // ----------------------------------------------------------
+    private void errorDumpLocks()
+    {
+        int count = stackTraces.size();
+        log.error("!!! Locked by [" + nameOfLockingThread + "] "
+            + count + " times");
+        for (String trace : stackTraces)
+        {
+            log.error("!!! Lock " + count + ":\n" + trace);
+            count--;
+        }
     }
 
 
@@ -168,14 +188,13 @@ public class LockErrorScreamerEditingContext
      * <code>( (_stackTraces.count() != 0)
      *         && (parent() instanceof EOEditingContext) )</code>
      */
-    public void goodbye()
+    private void goodbye()
     {
-        if ( stackTraces.count() != 0 )
+        if (stackTraces.count() != 0)
         {
-            log.error( "!!! editing context being disposed with "
-                       + stackTraces.count() + " locks." );
-            log.error( "!!! Most recently locked by:\n"
-                       + stackTraces.lastObject() );
+            log.error("!!! editing context being disposed with "
+                + stackTraces.count() + " locks.");
+            errorDumpLocks();
         }
     }
 
@@ -229,8 +248,8 @@ public class LockErrorScreamerEditingContext
     private String trace()
     {
         StringWriter stringWriter = new StringWriter();
-        PrintWriter printWriter = new PrintWriter( stringWriter );
-        ( new Throwable() ).printStackTrace( printWriter );
+        PrintWriter printWriter = new PrintWriter(stringWriter);
+        new Throwable().printStackTrace(printWriter);
         return stringWriter.toString();
     }
 
@@ -241,5 +260,5 @@ public class LockErrorScreamerEditingContext
     private NSMutableArray<String> stackTraces = new NSMutableArray<String>();
 
     static Logger log =
-        Logger.getLogger( LockErrorScreamerEditingContext.class );
+        Logger.getLogger(LockErrorScreamerEditingContext.class);
 }

@@ -24,6 +24,7 @@ package org.webcat.core;
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.apache.log4j.Logger;
 import org.eclipse.jgit.lib.Constants;
 import org.eclipse.jgit.lib.ObjectId;
 import org.webcat.core.git.GitRef;
@@ -78,8 +79,7 @@ public class RepositoryEntryRef
     // ----------------------------------------------------------
     public static RepositoryEntryRef fromOldStylePath(String path)
     {
-        Pattern pattern = Pattern.compile("^([^/]+)/([^/]+)(?:/(.*))?$");
-        Matcher matcher = pattern.matcher(path);
+        Matcher matcher = PATTERN.matcher(path);
 
         if (matcher.matches())
         {
@@ -194,17 +194,36 @@ public class RepositoryEntryRef
     {
         String[] parts = repository.split("/");
 
-        provider = EOBase.objectWithApiId(ec, parts[0], parts[1]);
-        gitRepository = GitRepository.repositoryForObject(provider);
-        ref = gitRepository.refWithName(branch);
+        try
+        {
+            provider = EOBase.objectWithApiId(ec, parts[0], parts[1]);
+            if (provider == null)
+            {
+                log.error("resolve(): objectWithApiId(" + parts[0] + ", "
+                    + parts[1] + ") returned null for repository "
+                    + repository);
+            }
+            gitRepository = GitRepository.repositoryForObject(provider);
+            ref = gitRepository.refWithName(branch);
 
-        if (ref != null)
-        {
-            objectId = gitRepository.resolve(ref.objectId().getName() + ":" + path);
+            if (ref != null)
+            {
+                objectId = gitRepository.resolve(
+                    ref.objectId().getName() + ":" + path);
+            }
+            else
+            {
+                objectId = null;
+            }
         }
-        else
+        catch (NullPointerException e)
         {
-            objectId = null;
+            throw new IllegalArgumentException("Cannot resolve git "
+                + "resource " + repository() + "/"
+                + path()
+                // + " on branch " + branch()
+                + ". Repository contents or path may have changed "
+                + "since plugin parameter was set?");
         }
     }
 
@@ -336,4 +355,9 @@ public class RepositoryEntryRef
     private GitRepository gitRepository;
     private GitRef ref;
     private ObjectId objectId;
+    private static Pattern PATTERN =
+        Pattern.compile("^([^/]+)/([^/]+)(?:/(.*))?$");
+
+    private static final Logger log =
+        Logger.getLogger(RepositoryEntryRef.class);
 }

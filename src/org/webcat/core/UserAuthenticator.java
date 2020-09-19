@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2018 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -22,6 +22,7 @@ package org.webcat.core;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.User;
 import org.webcat.core.WCProperties;
+import org.webcat.woextensions.WCEC;
 
 // -------------------------------------------------------------------------
 /**
@@ -68,6 +69,6 @@ public interface UserAuthenticator
         String userName,
         String password,
         AuthenticationDomain domain,
-        com.webobjects.eocontrol.EOEditingContext ec,
+        WCEC ec,
         LoginSession ls);
 }

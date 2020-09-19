@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2018 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -30,6 +30,7 @@ import org.webcat.core.PopAuthenticator;
 import org.webcat.core.User;
 import org.webcat.core.UserAuthenticator;
 import org.webcat.core.WCProperties;
+import org.webcat.woextensions.WCEC;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -124,7 +125,7 @@ public class PopAuthenticator
         String userName,
         String password,
         AuthenticationDomain domain,
-        com.webobjects.eocontrol.EOEditingContext ec,
+        WCEC ec,
         LoginSession ls)
     {
         User user = null;

@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: GitAuthenticationFilter.java,v 1.1 2011/05/13 19:46:57 aallowat Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -28,10 +26,10 @@ import org.webcat.core.RepositoryProviderWithAuthentication;
 import org.webcat.core.User;
 import org.webcat.core.http.BasicAuthenticationFilter;
 import org.webcat.core.http.RequestFilterChain;
+import org.webcat.woextensions.WCEC;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
-import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 
 //-------------------------------------------------------------------------
@@ -40,8 +38,6 @@ import com.webobjects.eocontrol.EOEnterpriseObject;
  * URL, to validate the user against the Web-CAT user database.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author: aallowat $
- * @version $Revision: 1.1 $, $Date: 2011/05/13 19:46:57 $
  */
 public class GitAuthenticationFilter extends BasicAuthenticationFilter
 {
@@ -117,8 +113,7 @@ public class GitAuthenticationFilter extends BasicAuthenticationFilter
 
     // ----------------------------------------------------------
     @Override
-    protected User validateUser(String username, String password,
-        EOEditingContext ec)
+    protected User validateUser(String username, String password, WCEC ec)
     {
         EOEnterpriseObject object = requestInfo.requestedObject(ec);
 

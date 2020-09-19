@@ -61,11 +61,18 @@ WOAllowsConcurrentRequestHandling = true
 # -------------------------------------------------------------------
 dbConnectDriverGLOBAL = com.mysql.jdbc.Driver
 er.extensions.ERXApplication.useEditingContextUnlocker = true
+er.extensions.ERXApplication.traceOpenEditingContextLocks = true
 er.extensions.ERXApplication.DefaultEncoding = UTF-8
 er.extensions.ERXEC.safeLocking = true
 er.extensions.ERXEC.traceOpenLocks = true
 er.extensions.ERXEC.useSharedEditingContext = false
 er.extensions.ERXEnterpriseObject.updateInverseRelationships = true
+er.extensions.ERXRaiseOnMissingEditingContextDelegate = true
+er.extensions.ERXJDBCAdaptor.className=er.extensions.jdbc.ERXJDBCAdaptor
+er.extensions.ERXJDBCAdaptor.switchReadWrite=false
+er.extensions.stackTrace.cleanup=true
+er.extensions.ERXWOForm.multipleSubmitDefault=true
+er.extensions.ERXDatabaseContext.className = er.extensions.eof.ERXDatabaseContext
 
 er.extensions.ERXResourceManager.versionManager = \
     org.webcat.woextensions.WCResourceManager$WCVersionManager

@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: ECActionWithResult.java,v 1.2 2014/07/08 17:35:00 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,7 +19,6 @@
 
 package org.webcat.woextensions;
 
-import com.webobjects.eocontrol.EOEditingContext;
 import er.extensions.eof.ERXEC;
 
 //-------------------------------------------------------------------------
@@ -75,8 +72,6 @@ import er.extensions.eof.ERXEC;
  * @param <ReturnType> The return type of the action.
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author: stedwar2 $
- *  @version $Revision: 1.2 $, $Date: 2014/07/08 17:35:00 $
  */
 public abstract class ECActionWithResult<ReturnType>
     implements java.util.concurrent.Callable<ReturnType>
@@ -121,7 +116,7 @@ public abstract class ECActionWithResult<ReturnType>
      * be disposed when the action completes.
      * @param context The existing EC to use in the action.
      */
-    public ECActionWithResult(EOEditingContext context)
+    public ECActionWithResult(WCEC context)
     {
         this(context, false);
     }
@@ -136,7 +131,7 @@ public abstract class ECActionWithResult<ReturnType>
      *                action completes.  If false, the EC will not be
      *                disposed.
      */
-    public ECActionWithResult(EOEditingContext context, boolean ownsEC)
+    public ECActionWithResult(WCEC context, boolean ownsEC)
     {
         ec = context;
         this.ownsEC = ownsEC;
@@ -207,7 +202,7 @@ public abstract class ECActionWithResult<ReturnType>
     //~ Instance/static variables .............................................
 
     /** This action's editing context, for use in {@link #action()}. */
-    protected EOEditingContext ec;
+    protected WCEC ec;
     /** True if this object will dispose of ec at the end of run(). */
-    protected boolean          ownsEC;
+    protected boolean ownsEC;
 }

@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: ECAction.java,v 1.3 2014/07/08 17:35:00 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,7 +19,6 @@
 
 package org.webcat.woextensions;
 
-import com.webobjects.eocontrol.EOEditingContext;
 import er.extensions.eof.ERXEC;
 
 //-------------------------------------------------------------------------
@@ -72,8 +69,6 @@ import er.extensions.eof.ERXEC;
  * </pre>
  *
  *  @author  Stephen Edwards
- *  @author  Last changed by $Author: stedwar2 $
- *  @version $Revision: 1.3 $, $Date: 2014/07/08 17:35:00 $
  */
 public abstract class ECAction
     implements Runnable
@@ -122,7 +117,7 @@ public abstract class ECAction
      * be disposed when the action completes.
      * @param context The existing EC to use in the action.
      */
-    public ECAction(EOEditingContext context)
+    public ECAction(WCEC context)
     {
         this(context, false);
     }
@@ -137,7 +132,7 @@ public abstract class ECAction
      *                action completes.  If false, the EC will not be
      *                disposed.
      */
-    public ECAction(EOEditingContext context, boolean ownsEC)
+    public ECAction(WCEC context, boolean ownsEC)
     {
         ec = context;
         this.ownsEC = ownsEC;
@@ -205,7 +200,7 @@ public abstract class ECAction
     //~ Instance/static variables .............................................
 
     /** This action's editing context, for use in {@link #action()}. */
-    protected EOEditingContext ec;
+    protected WCEC ec;
     /** True if this object will dispose of ec at the end of run(). */
-    protected boolean          ownsEC;
+    protected boolean ownsEC;
 }

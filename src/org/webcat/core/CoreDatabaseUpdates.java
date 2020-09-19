@@ -354,7 +354,20 @@ public class CoreDatabaseUpdates
         database().executeSQL(
             "ALTER TABLE TCOURSEOFFERING ADD lmsContextId TINYTEXT");
         createIndexFor("TCOURSEOFFERING", "lmsContextId(10)");
-     }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Adds indices to message-related tables.
+     * @throws SQLException on error
+     */
+    public void updateIncrement20() throws SQLException
+    {
+        createIndexFor("SentMessage", "sentTime");
+        createIndexFor("UserMessageSubscription", "userId");
+        createIndexFor("UsagePeriod", "isLoggedOut");
+    }
 
 
     //~ Private Methods .......................................................

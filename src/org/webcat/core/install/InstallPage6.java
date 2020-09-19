@@ -177,7 +177,7 @@ public class InstallPage6
         }
         else if ( username != null && !hasMessages() )
         {
-            EOEditingContext ec = WCEC.newEditingContext();
+            WCEC ec = WCEC.newEditingContext();
             try
             {
                 ec.lock();
@@ -214,7 +214,7 @@ public class InstallPage6
                     {
                         admin.setLastName( last );
                     }
-                    ec.saveChanges();
+                    ec.saveChangesTolerantly();
                 }
                 else
                 {
@@ -248,7 +248,7 @@ public class InstallPage6
                         {
                             admin.setLastName( last );
                         }
-                        ec.saveChanges();
+                        ec.saveChangesTolerantly();
                     }
                 }
             }

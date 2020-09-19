@@ -21,7 +21,9 @@
 
 package org.webcat.core;
 
+import org.webcat.woextensions.ECAction;
 import com.webobjects.eocontrol.EOEditingContext;
+import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSTimestamp;
 
@@ -49,29 +51,92 @@ public class UsagePeriod
 
 
     // ----------------------------------------------------------
-    public static UsagePeriod currentUsagePeriodForUser(
-        EOEditingContext editingContext, User aUser)
+    public static void updateUsagePeriodForUser(final EOGlobalID userId)
     {
-        NSTimestamp now = new NSTimestamp();
-        UsagePeriod period = mostRecentForUser(editingContext, aUser);
-        if (period != null
-            && (period.isLoggedOut()
-                || now.getTime() - period.endTime().getTime()
-                    > USAGE_PERIOD_WINDOW))
-        {
-            period = null;
-        }
-        if (period == null)
-        {
-            period = UsagePeriod.create(
-                editingContext, now, false, now, aUser);
-        }
-        else
-        {
-            period.setEndTime(now);
-        }
-        return period;
+//        new ECAction() {
+//            // ----------------------------------------------------------
+//            public void action()
+//            {
+//                NSTimestamp now = new NSTimestamp();
+//                User aUser = User.forId(ec, userId);
+//                UsagePeriod period = mostRecentForUser(ec, 0, aUser);
+//                if (period != null
+//                    && (period.isLoggedOut()
+//                        || now.getTime() - period.endTime().getTime()
+//                            > USAGE_PERIOD_WINDOW))
+//                {
+//                    period = null;
+//                }
+//                if (period == null)
+//                {
+//                    period = UsagePeriod.create(ec, now, false, now, aUser);
+//                }
+//                else
+//                {
+//                    period.setEndTime(now);
+//                }
+//                ec.saveChanges();
+//            }
+//        }.run();
     }
+
+
+    // ----------------------------------------------------------
+    public static void userDidLogout(final EOGlobalID userId)
+    {
+//        new ECAction() {
+//            // ----------------------------------------------------------
+//            public void action()
+//            {
+//                NSTimestamp now = new NSTimestamp();
+//                User aUser = User.forId(ec, userId);
+//                UsagePeriod period = mostRecentForUser(ec, 0, aUser);
+//                if (period != null
+//                    && (period.isLoggedOut()
+//                        || now.getTime() - period.endTime().getTime()
+//                            > USAGE_PERIOD_WINDOW))
+//                {
+//                    period = null;
+//                }
+//                if (period == null)
+//                {
+//                    period = UsagePeriod.create(ec, now, false, now, aUser);
+//                }
+//                else
+//                {
+//                    period.setEndTime(now);
+//                }
+//                period.setIsLoggedOut(true);
+//                ec.saveChanges();
+//            }
+//        }.run();
+    }
+
+
+    // ----------------------------------------------------------
+//    public static UsagePeriod currentUsagePeriodForUser(
+//        EOEditingContext editingContext, User aUser)
+//    {
+//        NSTimestamp now = new NSTimestamp();
+//        UsagePeriod period = mostRecentForUser(editingContext, aUser);
+//        if (period != null
+//            && (period.isLoggedOut()
+//                || now.getTime() - period.endTime().getTime()
+//                    > USAGE_PERIOD_WINDOW))
+//        {
+//            period = null;
+//        }
+//        if (period == null)
+//        {
+//            period = UsagePeriod.create(
+//                editingContext, now, false, now, aUser);
+//        }
+//        else
+//        {
+//            period.setEndTime(now);
+//        }
+//        return period;
+//    }
 
 
     //~ Methods ...............................................................
@@ -87,24 +152,24 @@ public class UsagePeriod
 
 
     // ----------------------------------------------------------
-    public boolean isStillActive()
-    {
-        if (isLoggedOut())
-        {
-            return false;
-        }
-
-        NSArray<LoginSession> sessions = LoginSession.objectsMatchingQualifier(
-            editingContext(),
-            LoginSession.usagePeriod.is(this));
-        if (sessions.size() > 0)
-        {
-            return true;
-        }
-
-        return (System.currentTimeMillis() - endTime().getTime())
-            < USAGE_PERIOD_WINDOW;
-    }
+//    public boolean isStillActive()
+//    {
+//        if (isLoggedOut())
+//        {
+//            return false;
+//        }
+//
+//        NSArray<LoginSession> sessions = LoginSession.objectsMatchingQualifier(
+//            editingContext(),
+//            LoginSession.usagePeriod.is(this));
+//        if (sessions.size() > 0)
+//        {
+//            return true;
+//        }
+//
+//        return (System.currentTimeMillis() - endTime().getTime())
+//            < USAGE_PERIOD_WINDOW;
+//    }
 
 
     //~ Instance/static variables .............................................

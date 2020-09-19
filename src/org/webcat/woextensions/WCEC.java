@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2018 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -19,14 +19,20 @@
 
 package org.webcat.woextensions;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
 import org.webcat.core.Application;
 import org.webcat.core.EOManager;
-import org.webcat.core.LockErrorScreamerEditingContext;
+import com.webobjects.eoaccess.EOAdaptorChannel;
+import com.webobjects.eoaccess.EODatabaseContext;
+import com.webobjects.eoaccess.EODatabaseOperation;
+import com.webobjects.eoaccess.EOGeneralAdaptorException;
 import com.webobjects.eocontrol.EOEditingContext;
+import com.webobjects.eocontrol.EOEnterpriseObject;
+import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.eocontrol.EOObjectStore;
-import com.webobjects.eocontrol.EOSharedEditingContext;
 import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
 import er.extensions.eof.ERXEC;
@@ -39,8 +45,8 @@ import er.extensions.eof.ERXEC;
  *  @author  Stephen Edwards
  */
 public class WCEC
-//    extends ERXEC
-    extends LockErrorScreamerEditingContext
+    extends ERXEC
+//    extends LockErrorScreamerEditingContext
 {
     //~ Constructors ..........................................................
 
@@ -51,8 +57,6 @@ public class WCEC
     public WCEC()
     {
         this(defaultParentObjectStore());
-        setUndoManager(null);
-        // setSharedEditingContext(null);
     }
 
 
@@ -76,6 +80,7 @@ public class WCEC
                 + "; at " + System.currentTimeMillis();
             log.debug(message, new Exception("from here"));
         }
+        active.incrementAndGet();
     }
 
 
@@ -134,6 +139,81 @@ public class WCEC
 //    }
 
 
+    // ----------------------------------------------------------
+    @Override
+    public void initializeObject(
+        EOEnterpriseObject eoenterpriseobject,
+        EOGlobalID eoglobalid,
+        EOEditingContext eoeditingcontext)
+    {
+        int tries = 3;
+        while (tries-- > 0)
+        {
+            try
+            {
+                // TODO Auto-generated method stub
+                super.initializeObject(
+                    eoenterpriseobject, eoglobalid, eoeditingcontext);
+                return;
+            }
+            catch (NullPointerException ee)
+            {
+                if (tries > 0)
+                {
+                    log.warn("initializeObject() failed with NPE, will retry "
+                        + tries + " times", ee);
+                    try
+                    {
+                        // Give other threads a chance to finish mods to
+                        // database first
+                        Thread.sleep(5);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        // ignore
+                    }
+                }
+                else
+                {
+                    throw ee;
+                }
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void saveChangesTolerantly()
+    {
+        boolean wasAutoLocked = autoLock("saveChangesTolerantly");
+        try {
+            super.saveChangesTolerantly();
+        }
+        finally {
+            autoUnlock(wasAutoLocked);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * This is redeclared here just to mark it deprecated, since we should
+     * use saveChangesTolerantly() instead ... but we can't just override
+     * this to delegate to saveChangesTolerantly() because of how this
+     * method is already used inside saveChangesTolerantly() and how other
+     * framework code uses saveChanges(). Making it deprecated at least
+     * means developers will get warnings if they use the wrong method
+     * and will be forced to think about it first.
+     */
+    @Override
+    @Deprecated
+    public void saveChanges()
+    {
+      super.saveChanges();
+    }
+
+
 //    // ----------------------------------------------------------
 //    @Override
 //    public void saveChanges()
@@ -185,9 +265,60 @@ public class WCEC
         if (log.isDebugEnabled())
         {
             log.debug("dispose(): " + this);
+            if (lockCount() > 0)
+            {
+                log.error("EC disposed while locked (" + lockCount() + ")",
+                    new Exception("EC dispose() with locks called from here"));
+            }
         }
         counter.deallocate(this);
+        active.decrementAndGet();
         super.dispose();
+    }
+
+
+    // ----------------------------------------------------------
+//    public boolean unlockIfNecessary()
+//    {
+//        int count = lockCount();
+//        if (count > 0)
+//        {
+//            unlock();
+//        }
+//        return count > 0;
+//    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public void unlock()
+    {
+        // This will throw an IllegalStateException if the editing context
+        // is not locked, or if the unlocking thread is not the thread with
+        // the lock.
+        try
+        {
+            super.unlock();
+        }
+        catch (IllegalMonitorStateException e)
+        {
+            log.error(e);
+            _checkOpenLockTraces();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public static int createdCount()
+    {
+        return created.get();
+    }
+
+
+    // ----------------------------------------------------------
+    public static int activeCount()
+    {
+        return active.get();
     }
 
 
@@ -200,7 +331,9 @@ public class WCEC
 
     // ----------------------------------------------------------
     public static class WCECFactory
-        extends er.extensions.eof.ERXEC.DefaultFactory
+        extends WCObjectStoreCoordinatorPool.MultiOSCFactory
+//        extends er.extensions.eof.ERXObjectStoreCoordinatorPool.MultiOSCFactory
+//        extends er.extensions.eof.ERXEC.DefaultFactory
     {
         protected EOEditingContext _createEditingContext(EOObjectStore parent)
         {
@@ -223,6 +356,11 @@ public class WCEC
     // ----------------------------------------------------------
     public static void installWOECFactory()
     {
+        er.extensions.eof.ERXObjectStoreCoordinatorSynchronizer.synchronizer()
+            .setDefaultSettings(new er.extensions.eof
+            .ERXObjectStoreCoordinatorSynchronizer.SynchronizerSettings(
+            false, true, true, true));
+        WCObjectStoreCoordinatorPool.initialize();
         er.extensions.eof.ERXEC.setFactory(factory());
     }
 
@@ -250,7 +388,7 @@ public class WCEC
 
 
         // ----------------------------------------------------------
-        public EOEditingContext editingContext()
+        public WCEC editingContext()
         {
             if (ec == null)
             {
@@ -276,25 +414,15 @@ public class WCEC
         // ----------------------------------------------------------
         public void dispose()
         {
-            if (ec != null)
-            {
-                if (log.isDebugEnabled())
-                {
-                    log.debug("disposing ec: " + ec
-                        + " for manager: " + this);
-                }
-                ec.dispose();
-                ec = null;
-            }
-            else
-            {
-                log.debug("dispose() called with null ec for manager: " + this);
-            }
             if (transientState != null)
             {
                 for (Object value : transientState.allValues())
                 {
-                    if (value instanceof EOManager.ECManager)
+                    if (value instanceof EOManager)
+                    {
+                        ((EOManager)value).dispose();
+                    }
+                    else if (value instanceof EOManager.ECManager)
                     {
                         ((EOManager.ECManager)value).dispose();
                     }
@@ -317,6 +445,20 @@ public class WCEC
                     }
                 }
                 transientState = null;
+            }
+            if (ec != null)
+            {
+                if (log.isDebugEnabled())
+                {
+                    log.debug("disposing ec: " + ec
+                        + " for manager: " + this);
+                }
+                ec.dispose();
+                ec = null;
+            }
+            else
+            {
+                log.debug("dispose() called with null ec for manager: " + this);
             }
         }
 
@@ -367,7 +509,7 @@ public class WCEC
 
 
         //~ Instance/static variables .........................................
-        private EOEditingContext                    ec;
+        private WCEC                                ec;
         private PeerManagerPool                     owner;
         private boolean                             cachePermanently;
         private NSMutableDictionary<String, Object> transientState;
@@ -484,6 +626,9 @@ public class WCEC
 
     private static final ResourceCounter counter =
         new ResourceCounter(WCEC.class.getSimpleName());
+
+    private static final AtomicInteger created = new AtomicInteger();
+    private static final AtomicInteger active = new AtomicInteger();
 
     private static Factory factory;
     static Logger log = Logger.getLogger(WCEC.class);

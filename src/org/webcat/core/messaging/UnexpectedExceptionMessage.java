@@ -76,8 +76,8 @@ public class UnexpectedExceptionMessage
     @Override
     public String shortBody()
     {
-        String body = Application.wcApplication()
-            .informationForExceptionInContext(exception, extraInfo, context);
+        String body = Application.informationForExceptionInContext(
+            exception, extraInfo, context);
 
         if (message != null)
         {
@@ -105,9 +105,9 @@ public class UnexpectedExceptionMessage
 
     // ----------------------------------------------------------
     @Override
-    public synchronized NSArray<User> users()
+    public void overrideSend()
     {
-        return User.systemAdmins(editingContext());
+        log.error(message, exception);
     }
 
 

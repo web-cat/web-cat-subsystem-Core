@@ -20,22 +20,22 @@
 package org.webcat.core;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
 import org.webcat.woextensions.ECAction;
-import org.webcat.woextensions.ECActionWithResult;
-import org.webcat.woextensions.WCEC;
 import static org.webcat.woextensions.ECAction.run;
 import org.webcat.woextensions.WCResourceManager;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOCookie;
 import com.webobjects.eocontrol.EOEditingContext;
-import com.webobjects.eocontrol.EOSharedEditingContext;
+import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSKeyValueCodingAdditions;
+import com.webobjects.foundation.NSPropertyListSerialization;
 import com.webobjects.foundation.NSTimestamp;
 import er.extensions.foundation.ERXValueUtilities;
 
@@ -74,8 +74,40 @@ public class Theme
         Theme result = null;
         try
         {
-            result = themeForDirName(ec, themeDirName);
-            result.parent();
+            synchronized (themeIds)
+            {
+                EOGlobalID id = themeIds.get(themeDirName);
+                if (id != null)
+                {
+                    return Theme.forId(ec, id);
+                }
+            }
+
+                // If it's not in our ID stash yet
+                result = themeForDirName(ec, themeDirName);
+                if (result == null)
+                {
+                    if (defaultThemeName().equals(themeDirName))
+                    {
+                        // horror! Cannot load default theme ?!?!?!?
+                        // could be because ec is dead
+                        log.error("themeFromName(\"" + themeDirName + "\"): "
+                            + "themeForDirName returned null for default "
+                            + "theme name!?!?!?");
+                        return null;
+                    }
+                    // otherwise, fall through and let return statement call
+                    // defaultTheme() instead
+                }
+                else
+                {
+                    result.parent();
+                    EOGlobalID id = result.globalId();
+                    synchronized (themeIds)
+                    {
+                        themeIds.put(themeDirName, result.globalId());
+                    }
+                }
         }
         catch (Exception e)
         {
@@ -87,29 +119,33 @@ public class Theme
 
 
     // ----------------------------------------------------------
-    public static Theme globalReadOnlyThemeFromName(final String themeDirName)
-    {
-        synchronized (globalInstances)
-        {
-            Theme result = globalInstances.get(themeDirName);
-            if (result == null)
-            {
-                result = new ECActionWithResult<Theme>(ec) {
-                    // ------------------------------------------------------
-                    @Override
-                    public Theme action()
-                    {
-                        return themeFromName(ec, themeDirName);
-                    }
-                }.call();
-                if (result != null)
-                {
-                    globalInstances.put(themeDirName, result);
-                }
-            }
-            return result;
-        }
-    }
+//    public static Theme globalReadOnlyThemeFromName(final String themeDirName)
+//    {
+//        synchronized (globalInstances)
+//        {
+//            Theme result = globalInstances.get(themeDirName);
+//            if (result == null)
+//            {
+//                result = new ECActionWithResult<Theme>(globalContext) {
+//                    // ------------------------------------------------------
+//                    @Override
+//                    public Theme action()
+//                    {
+//                        return themeFromName(ec, themeDirName);
+//                    }
+//                }.call();
+//                if (result != null)
+//                {
+//                    globalInstances.put(themeDirName, result);
+//                }
+//                else if (!defaultThemeName().equals(themeDirName))
+//                {
+//                    result = globalReadOnlyThemeFromName(defaultThemeName());
+//                }
+//            }
+//            return result;
+//        }
+//    }
 
 
     // ----------------------------------------------------------
@@ -119,17 +155,23 @@ public class Theme
      * @param context the context from which to retrieve the cookie
      * @return The last-used theme stored in the cookie
      */
-    public static Theme lastUsedThemeInContext(WOContext context)
-    {
-        String lastUsedTheme = context.request().cookieValueForKey(
-                COOKIE_LAST_USED_THEME);
-
-        if (lastUsedTheme == null)
-        {
-            lastUsedTheme = DEFAULT_THEME;
-        }
-        return globalReadOnlyThemeFromName(lastUsedTheme);
-    }
+//    public static Theme lastUsedThemeInContext(WOContext context)
+//    {
+//        String lastUsedTheme = context.request().cookieValueForKey(
+//                COOKIE_LAST_USED_THEME);
+//
+//        if (lastUsedTheme == null)
+//        {
+//            lastUsedTheme = DEFAULT_THEME;
+//        }
+//        Theme result = globalReadOnlyThemeFromName(lastUsedTheme);
+//        if (result == null)
+//        {
+//            log.error("lastUsedThemeInContext(): Unable to retrieve theme '"
+//                + lastUsedTheme + "'");
+//        }
+//        return result;
+//    }
 
 
     // ----------------------------------------------------------
@@ -328,6 +370,53 @@ public class Theme
 
 
     // ----------------------------------------------------------
+    private static String computeLinkTags(String aName, MutableDictionary props)
+    {
+        String result = "";
+        if (props != null)
+        {
+            try
+            {
+                Object cssFileList = props.valueForKey("cssOrder");
+                if (cssFileList != null && cssFileList instanceof NSArray)
+                {
+                    @SuppressWarnings("unchecked")
+                    NSArray<NSDictionary<String, String>> cssFiles =
+                        (NSArray<NSDictionary<String, String>>)cssFileList;
+                    String baseLocation =
+                        "Core.framework/WebServerResources/theme/"
+                        + aName + "/";
+                    for (NSDictionary<String, String> css : cssFiles)
+                    {
+                        result += "<link rel=\"stylesheet\" "
+                            + "type=\"text/css\" href=\""
+                            + WCResourceManager.resourceURLFor(
+                                baseLocation
+                                + css.get("file"),
+                                null)
+                            + "\"";
+                        String media = css.get("media");
+                        if (media != null)
+                        {
+                            result += " media=\"" + media + "\"";
+                        }
+                        result += " />";
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                new UnexpectedExceptionMessage(e, null, null,
+                    "Unexpected exception trying to decode theme "
+                    + "properties for theme: " + aName
+                    + ".").send();
+            }
+        }
+        return result;
+    }
+
+
+    // ----------------------------------------------------------
     public String linkTags()
     {
         if (linkTags == null)
@@ -335,46 +424,7 @@ public class Theme
             linkTags = (parent() == null)
                 ? ""
                 : parent().linkTags();
-            if (properties() != null)
-            {
-                try
-                {
-                    Object cssFileList = properties().valueForKey("cssOrder");
-                    if (cssFileList != null && cssFileList instanceof NSArray)
-                    {
-                        @SuppressWarnings("unchecked")
-                        NSArray<NSDictionary<String, String>> cssFiles =
-                            (NSArray<NSDictionary<String, String>>)cssFileList;
-                        String baseLocation =
-                            "Core.framework/WebServerResources/theme/"
-                            + dirName() + "/";
-                        for (NSDictionary<String, String> css : cssFiles)
-                        {
-                            linkTags += "<link rel=\"stylesheet\" "
-                                + "type=\"text/css\" href=\""
-                                + WCResourceManager.resourceURLFor(
-                                    baseLocation
-                                    + css.get("file"),
-                                    null)
-                                + "\"";
-                            String media = css.get("media");
-                            if (media != null)
-                            {
-                                linkTags += " media=\"" + media + "\"";
-                            }
-                            linkTags += " />";
-                        }
-                    }
-                }
-                catch (Exception e)
-                {
-                    new UnexpectedExceptionMessage(e, null, null,
-                        "Unexpected exception trying to decode theme "
-                        + "properties for theme: " + dirName()
-                        + "(" + id() + ").")
-                        .send();
-                }
-            }
+            linkTags += computeLinkTags(dirName(), properties());
         }
         return linkTags;
     }
@@ -402,13 +452,19 @@ public class Theme
         log.debug("refreshThemes()");
         if (!themeBaseDir().exists()) return;
 
-        if (ec == null)
+//        if (globalContext == null)
+//        {
+//            globalContext = WCEC.newAutoLockingEditingContext();
+//        }
+//        synchronized(globalInstances)
+        synchronized(themeIds)
         {
-            ec = WCEC.newEditingContext();
+//            globalInstances.clear();
+            themeIds.clear();
         }
-        run(new ECAction(ec) { public void action() {
-            ec.setSharedEditingContext(null);
-
+//        run(new ECAction(globalContext) { public void action()
+        run(new ECAction() { public void action()
+        {
             for (File subdir : themeBaseDir().listFiles())
             {
                 if (subdir.isDirectory())
@@ -444,9 +500,10 @@ public class Theme
                         if (themeToUpdate != null)
                         {
                             themeToUpdate.refreshFrom(plist);
-                            ec.saveChanges();
-                            globalInstances.put(
-                                themeToUpdate.dirName(), themeToUpdate);
+                            ec.saveChangesTolerantly();
+                            // don't need to cache in themeIds, since that
+                            // was already done in themeFromName() at the
+                            // top of this loop
                         }
                     }
                 }
@@ -461,6 +518,79 @@ public class Theme
         // Silently swallow this operation, since Themes are held in
         // the shared editing context and should not be modified, except
         // under very controlled conditions.
+    }
+
+
+    // ----------------------------------------------------------
+    public static synchronized NSKeyValueCodingAdditions installTheme()
+    {
+        if (installTheme == null)
+        {
+            // Can't use the subsystem manager, since it isn't initialized
+            NSBundle core = NSBundle.bundleForName("Core");
+            if (core != null)
+            {
+                @SuppressWarnings("deprecation")
+                String themeDir =
+                    core.bundlePath() + "/WebServerResources/theme/";
+                try
+                {
+                    MutableDictionary props =
+                        MutableDictionary.fromPropertyList(new File(
+                            themeDir, DEFAULT_THEME + "/theme.plist"));
+                    String parentName = (String)props.get("extends");
+                    props.remove("extends");
+                    String linkTagContent =
+                        computeLinkTags(DEFAULT_THEME, props);
+                    MutableArray cssOrder =
+                        (MutableArray)props.get("cssOrder");
+                    while (parentName != null)
+                    {
+                        MutableDictionary parentProps = MutableDictionary
+                            .fromPropertyList(new File(
+                                themeDir, parentName + "/theme.plist"));
+                        linkTagContent =
+                            computeLinkTags(parentName, parentProps)
+                            + linkTagContent;
+                        @SuppressWarnings("unchecked")
+                        NSArray<NSDictionary<String, String>> cssFiles =
+                            (NSArray<NSDictionary<String, String>>)parentProps
+                            .get("cssOrder");
+                        for (NSDictionary<String, String> css : cssFiles)
+                        {
+                            css.put("file", "../" + parentName + "/"
+                                + css.get("file"));
+                            cssOrder.add(css);
+                        }
+                        if (parentProps.containsKey("dojoTheme") &&
+                            ! props.containsKey("dojoTheme"))
+                        {
+                            props.put(
+                                "dojoTheme", parentProps.get("dojoTheme"));
+                        }
+                        parentName = (String)parentProps.get("extends");
+                    }
+
+                    installTheme = props;
+                    installTheme.takeValueForKey(linkTagContent, "linkTags");
+                    if (!installTheme.containsKey("name"))
+                    {
+                        installTheme.takeValueForKey(DEFAULT_THEME, "name");
+                    }
+                    installTheme.takeValueForKey(DEFAULT_THEME, "dirName");
+                    // installTheme.takeValueForKey(installTheme, "inherit");
+                    installTheme.takeValueForKey(
+                        installTheme.mutableClone(), "properties");
+                    installTheme.takeValueForKey(
+                        installTheme.mutableClone(), "inherit");
+                }
+                catch (IOException e)
+                {
+                    log.error("error creating temporary theme", e);
+                }
+            }
+        }
+        return installTheme;
     }
 
 
@@ -486,7 +616,6 @@ public class Theme
         catch (Exception e)
         {
             log.error("Unable to refresh theme from " + plist, e);
-
             new UnexpectedExceptionMessage(e, null, null,
                     "Error refreshing theme.").send();
         }
@@ -556,9 +685,12 @@ public class Theme
 
     //~ Instance/static variables .............................................
 
-    private static EOEditingContext ec;
-    private static Map<String, Theme> globalInstances =
-        new HashMap<String, Theme>();
+    private static NSDictionary<String, Object> installTheme;
+//    private static EOEditingContext globalContext;
+//    private static Map<String, Theme> globalInstances =
+//        new HashMap<String, Theme>();
+    private static Map<String, EOGlobalID> themeIds =
+        new HashMap<String, EOGlobalID>();
     private String linkTags;
     private Theme base;
     private boolean baseIsNotSet = true;

@@ -27,6 +27,7 @@ import org.webcat.core.Course;
 import org.webcat.core.CourseOffering;
 import org.webcat.core.Semester;
 import org.webcat.core.User;
+import org.webcat.woextensions.WCEC;
 import er.extensions.eof.ERXConstant;
 import er.extensions.foundation.ERXValueUtilities;
 
@@ -52,9 +53,9 @@ public class CoreSelectionsManager
      * @param manager the (probably shared) editing context manager to use
      * for independent saving of the given eo
      */
-    public CoreSelectionsManager(CoreSelections selections, ECManager manager)
+    public CoreSelectionsManager(CoreSelections selections, WCEC context)
     {
-        super(selections, manager);
+        super(selections, context);
     }
 
 

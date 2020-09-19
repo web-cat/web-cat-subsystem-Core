@@ -10,3 +10,4 @@ filetype.properties
 config.plist
 **/*.settings.plist
 QueryAssistants.plist
+StackTraceSkipPatterns-Normal.plist

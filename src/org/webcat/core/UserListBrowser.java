@@ -115,8 +115,8 @@ public class UserListBrowser
             else
             {
                 log.debug("setting data source to all users");
-                users.setDataSource(
-                    new EODatabaseDataSource(localContext(), User.ENTITY_NAME));
+                users.setDataSource(new EODatabaseDataSource(
+                    localContext(), User.ENTITY_NAME));
             }
             log.debug("data source = " + users.dataSource());
             log.debug("    beginning fetch ...");

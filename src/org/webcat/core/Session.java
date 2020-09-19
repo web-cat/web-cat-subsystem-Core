@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2018 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -32,7 +32,6 @@ import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSTimeZone;
-import com.webobjects.foundation.NSTimestamp;
 
 // -------------------------------------------------------------------------
 /**
@@ -106,6 +105,20 @@ public class Session
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
+    @Override
+    public WCEC defaultEditingContext()
+    {
+        EOEditingContext ec = super.defaultEditingContext();
+        if (ec != null && !(ec instanceof WCEC))
+        {
+            throw new IllegalStateException("defaultEditingContext(): "
+                + "Expected WCEC but found " + ec.getClass());
+        }
+        return (WCEC)ec;
+    }
+
+
+    // ----------------------------------------------------------
     /**
      * Determine whether the user is currently logged in.
      *
@@ -129,19 +142,19 @@ public class Session
      * @param u The user logging in
      * @return  The Session ID to use for this user
      */
-    public synchronized String setUser(User u)
+    public synchronized void setUser(User u)
     {
         log.debug("setUser(" + u.userName() + ")) for session " + sessionID());
        // tracer , new Exception("from here"));
-        if (u != null && u.editingContext() != defaultEditingContext())
+        if (u.editingContext() != defaultEditingContext())
         {
             u = u.localInstance(defaultEditingContext());
         }
         primeUser = u;
         localUser = u;
-        if (!doNotUseLoginSession)
+        if (isLoginSession && primeUser != null)
         {
-            Application.userCount++;
+            Application.userCount.incrementAndGet();
         }
         if (log.isDebugEnabled())
         {
@@ -155,41 +168,10 @@ public class Session
             tabs.filterByAccessLevel(u.accessLevel());
         }
         tabs.selectDefault();
-        if (!doNotUseLoginSession)
+        if (isLoginSession)
         {
-            EOEditingContext ec = WCEC.newEditingContext();
-            loginSession = null;
-            loginSessionId = null;
-            try
-            {
-                ec.lock();
-                loginSession = LoginSession.getLoginSessionForUser(ec, user());
-                if (loginSession != null)
-                {
-                    NSTimestamp now = new NSTimestamp();
-                    if (loginSession.expirationTime().after(now))
-                    {
-                        loginSessionId = loginSession.sessionId();
-                        return loginSessionId;
-                    }
-                    // otherwise ... fall through to default case
-                }
-            }
-            finally
-            {
-                ec.unlock();
-            }
-            if (loginSession == null)
-            {
-                ec.dispose();
-            }
-            updateLoginSession();
+            UsagePeriod.updateUsagePeriodForUser(primeUser.globalId());
         }
-        if (loginSession != null)
-        {
-            loginSessionId = this.sessionID();
-        }
-        return this.sessionID();
     }
 
 
@@ -249,7 +231,7 @@ public class Session
      */
     public boolean useLoginSession()
     {
-        return !doNotUseLoginSession;
+        return isLoginSession;
     }
 
 
@@ -261,122 +243,10 @@ public class Session
      */
     public void setUseLoginSession(boolean value)
     {
-        doNotUseLoginSession = !value;
-    }
-
-
-    // ----------------------------------------------------------
-    /**
-     * Refresh the stored information about the current login session
-     * in the database.
-     *
-     * This updates the stored timeout for this session.
-     */
-    private synchronized void updateLoginSession()
-    {
-        if (doNotUseLoginSession)
+        isLoginSession = value;
+        if (primeUser != null)
         {
-            return;
-        }
-        log.debug("updateLoginSession()");
-        if (primeUser == null)
-        {
-            return;
-        }
-        // Only update ever 2 minutes or so
-        Long now = System.currentTimeMillis();
-        if (now - lastLSUpdate < LS_UPDATE_PERIOD)
-        {
-            return;
-        }
-        if (loginSession != null && loginSession.editingContext() == null)
-        {
-            loginSession = null;
-        }
-        if (loginSession == null)
-        {
-            EOEditingContext ec = WCEC.newEditingContext();
-            try
-            {
-                ec.lock();
-                User loginUser = primeUser.localInstance(ec);
-                loginSession =
-                    LoginSession.getLoginSessionForUser(ec, loginUser);
-                if (loginSession == null)
-                {
-                    loginSession =
-                        LoginSession.create(ec, loginUser, sessionID());
-                    loginSessionId = sessionID();
-                }
-            }
-            finally
-            {
-                ec.unlock();
-            }
-            if (loginSession == null)
-            {
-                ec.dispose();
-                log.error("updateLoginSession() cannot find login session for "
-                    + "user " + primeUser + " and sessionId = " + sessionID());
-                return;
-            }
-        }
-        if (loginSession != null)
-        {
-            try
-            {
-                loginSession.editingContext().lock();
-                loginSession.setExpirationTime(
-                    (new NSTimestamp()).timestampByAddingGregorianUnits(
-                        0, 0, 0, 0, 0, (int)timeOut()));
-                lastLSUpdate = now;
-                try
-                {
-                    loginSession.usagePeriod().updateEndTime();
-                }
-                catch (Exception e)
-                {
-                    log.warn("Exception updating usage period for "
-                        + primeUser + " (normally this is due to an external "
-                        + "change to\nusage periods, in which case the "
-                        + "problem will be auto-corrected now)", e);
-                    // Assume exception was due to a deleted/missing period
-                    // Attempt to create/retrieve new one
-                    loginSession.setUsagePeriod(UsagePeriod
-                        .currentUsagePeriodForUser(
-                            loginSession.editingContext(),
-                            loginSession.user()));
-                }
-
-                try
-                {
-                    log.debug("attempting to save");
-                    log.debug("context = "
-                        + loginSession.editingContext().getClass().getName());
-                    log.debug("shared context = "
-                        + loginSession.editingContext().sharedEditingContext());
-                    loginSession.editingContext().saveChanges();
-                    log.debug("saving complete");
-                }
-                catch (Exception e)
-                {
-                    new UnexpectedExceptionMessage(e, context(), null, null)
-                        .send();
-                    EOEditingContext ec = loginSession.editingContext();
-                    loginSession = null;
-                    ec.revert();
-                    ec.invalidateAllObjects();
-                    ec.unlock();
-                }
-            }
-            finally
-            {
-                if (loginSession != null
-                    && loginSession.editingContext() != null)
-                {
-                    loginSession.editingContext().unlock();
-                }
-            }
+            Application.userCount.decrementAndGet();
         }
     }
 
@@ -384,23 +254,16 @@ public class Session
     // ----------------------------------------------------------
     /**
      * Called when request-response loop is done.  Saves the current timeout
-     * to the loginsession database.
+     * to the usage period database.
      */
     public void sleep()
     {
         log.debug("sleep()");
-        super.sleep();
-        updateLoginSession();
-        if (loginSession != null
-            && loginSessionId != null
-            && !loginSessionId.equals(sessionID()))
+        if (primeUser != null)
         {
-            tracer.error("Error: sleep()'ing with multiple sessions active for "
-                + "user: " + (user() == null ? "<null>" : user().name())
-                + ", current session = " + sessionID()
-                + ", login session = " + loginSessionId);
-                // , new Exception("from here"));
+            UsagePeriod.updateUsagePeriodForUser(primeUser.globalId());
         }
+        super.sleep();
     }
 
 
@@ -466,15 +329,13 @@ public class Session
         }
         if (tracer.isDebugEnabled())
         {
-            tracer.debug("terminating session " + sessionID() + " for "
-                + "user: " + (user() == null ? "<null>" : user().name()));
+            tracer.debug("terminating session " + sessionID());
                 // + " from here:", new Exception("terminate() called"));
         }
 
         if (terminatedFrom != null)
         {
             log.error("terminate() called on session " + sessionID()
-                + " for user " + user()
                 + " that has already been terminated. Called from:",
                 new Exception("here"));
             log.error("first terminated here:", terminatedFrom);
@@ -482,7 +343,7 @@ public class Session
         else
         {
             terminatedFrom = new Exception("terminate() called on session "
-                + sessionID() + " for user " + user());
+                + sessionID());
         }
 
         if (transientState != null)
@@ -553,92 +414,27 @@ public class Session
      */
     public synchronized void userLogout()
     {
-        if (!doNotUseLoginSession)
+        if (primeUser != null && isLoginSession)
         {
-            Application.userCount--;
-        }
-        tracer.info("user logout: "
-            + (primeUser == null ? "null" : primeUser.userName())
-            + " (now "
-            + Application.userCount
-            + " users), in session: " + sessionID());
-        try
-        {
-            if (loginSession != null && loginSession.editingContext() == null)
-            {
-                // This can happen if the session times out, instead of
-                // the user manually logging out.
-                loginSession = null;
-                loginSessionId = null;
-            }
-            if (loginSession != null
-                && loginSessionId != null
-                && sessionID().equals(loginSessionId))
-            {
-                EOEditingContext lockContext = loginSession.editingContext();
-                try
-                {
-                    lockContext.lock();
-                    log.debug("deleting login session " + loginSessionId);
-                    loginSession.usagePeriod().updateEndTime();
-                    loginSession.usagePeriod().setIsLoggedOut(true);
-                    loginSession.editingContext().deleteObject(loginSession);
-                    loginSession.editingContext().saveChanges();
-                }
-                catch (Exception e)
-                {
-                    new UnexpectedExceptionMessage(e, context(), null, null)
-                        .send();
-                    EOEditingContext ec = WCEC.newEditingContext();
-                    try
-                    {
-                        ec.lock();
-                        User u = primeUser.localInstance(ec);
-                        NSArray<LoginSession> items =
-                            LoginSession.objectsMatchingQualifier(ec,
-                                LoginSession.user.is(u));
-                        if (items != null && items.count() >= 1)
-                        {
-                            LoginSession ls = items.objectAtIndex(0);
-                            ls.usagePeriod().updateEndTime();
-                            ls.usagePeriod().setIsLoggedOut(true);
-                            ec.deleteObject(ls);
-                        }
-                        try
-                        {
-                            ec.saveChanges();
-                        }
-                        catch (Exception e2)
-                        {
-                            new UnexpectedExceptionMessage(
-                                e2, context(), null, null).send();
-                        }
-                    }
-                    finally
-                    {
-                        ec.unlock();
-                        ec.dispose();
-                    }
-                }
-                finally
-                {
-                    lockContext.unlock();
-                    lockContext.dispose();
-                    loginSession = null;
-                }
-            }
-        }
-        catch (Exception e)
-        {
-            new UnexpectedExceptionMessage(e, context(), null, null)
-                .send();
-        }
-        if (primeUser != null)
-        {
+            UsagePeriod.userDidLogout(primeUser.globalId());
+            Application.userCount.decrementAndGet();
             primeUser.userHasLoggedOut();
+            tracer.info("user logout: "
+                + (primeUser == null ? "null" : primeUser.userName())
+                + " (now "
+                + Application.userCount
+                + " users), in session: " + sessionID());
             // FIXME: what about localUser's prefs?
             // Ignore for now, since that is so rarely used, but it probably
             // causes a very small EC leak
+        }
+        else
+        {
+            tracer.info("user logout: "
+                + (primeUser == null ? "null" : primeUser.userName())
+                + " (not login session, "
+                + Application.userCount
+                + " users), in session: " + sessionID());
         }
         primeUser = null;
         localUser = null;
@@ -679,7 +475,7 @@ public class Session
     {
         log.debug("commitLocalChanges()");
         temporaryTheme = null;
-        defaultEditingContext().saveChanges();
+        defaultEditingContext().saveChangesTolerantly();
         defaultEditingContext().revert();
         defaultEditingContext().refaultAllObjects();
     }
@@ -847,12 +643,9 @@ public class Session
 
     private User                  primeUser            = null;
     private User                  localUser            = null;
-    private LoginSession          loginSession         = null;
-    private String                loginSessionId       = null;
     private NSMutableDictionary<String, Object> transientState;
     private WCEC.PeerManagerPool  childManagerPool;
-    private boolean               doNotUseLoginSession = false;
-    private long                  lastLSUpdate         = 0L;
+    private boolean               isLoginSession = true;
     private Theme                 temporaryTheme;
     private Exception             terminatedFrom;
 
@@ -861,7 +654,6 @@ public class Session
 
     private static final Integer zero = new Integer(0);
     private static final Integer one  = new Integer(1);
-    private static final long LS_UPDATE_PERIOD = 3L * 60L *1000L; // 3 minutes
 
     private static final ResourceCounter counter =
         new ResourceCounter(Session.class.getSimpleName());

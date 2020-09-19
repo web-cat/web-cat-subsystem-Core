@@ -4,10 +4,21 @@
         entityName = UsagePeriod;
         fetchLimit = 1;
         qualifier = {
-            class = EOKeyValueQualifier;
-            key = user;
-            selectorName = "isEqualTo:";
-            value = {"_key" = user; class = EOQualifierVariable; };
+            class = EOAndQualifier;
+            qualifiers = (
+                {
+                    class = EOKeyValueQualifier;
+                    key = user;
+                    selectorName = "isEqualTo:";
+                    value = {"_key" = user; class = EOQualifierVariable; };
+                },
+                {
+                    class = EOKeyValueQualifier;
+                    key = isLoggedOut;
+                    selectorName = "isEqualTo:";
+                    value = {"_key" = isLoggedOut; class = EOQualifierVariable; };
+                }
+            );
         };
         sortOrderings = (
             {

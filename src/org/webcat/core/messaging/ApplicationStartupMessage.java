@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: ApplicationStartupMessage.java,v 1.4 2011/12/25 02:24:54 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2010-2011 Virginia Tech
+ |  Copyright (C) 2010-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,6 +21,7 @@ package org.webcat.core.messaging;
 
 import org.webcat.core.Application;
 import org.webcat.core.User;
+import org.webcat.woextensions.ECAction;
 import com.webobjects.foundation.NSArray;
 
 //-------------------------------------------------------------------------
@@ -30,8 +29,6 @@ import com.webobjects.foundation.NSArray;
  * A message that is broadcast when the system starts up.
  *
  * @author  Tony Allevato
- * @author  latest changes by: $Author: stedwar2 $
- * @version $Revision: 1.4 $ $Date: 2011/12/25 02:24:54 $
  */
 public class ApplicationStartupMessage
     extends SysAdminMessage
@@ -67,14 +64,6 @@ public class ApplicationStartupMessage
     public String title()
     {
         return "Web-CAT (" + hostString() + ") has started up";
-    }
-
-
-    // ----------------------------------------------------------
-    @Override
-    public synchronized NSArray<User> users()
-    {
-        return User.systemAdmins(editingContext());
     }
 
 

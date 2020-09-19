@@ -145,7 +145,7 @@ public class CallbackDiagnosticPage
 //            log.error(e);
 //        }
         LTILaunchRequest lti = new LTILaunchRequest(
-            context(), session().defaultEditingContext());
+            context(), ((Session)session()).defaultEditingContext());
         log.debug("LTI request is valid = " + lti.isValid());
         log.debug("LMS instance = " + lti.lmsInstance());
         log.debug("course name = " + lti.courseName());

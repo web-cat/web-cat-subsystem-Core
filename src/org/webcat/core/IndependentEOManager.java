@@ -57,6 +57,7 @@ public class IndependentEOManager
     public IndependentEOManager(EOEnterpriseObject eo)
     {
         this(eo.editingContext(), eo, new ECManager());
+        ownsEcm = true;
     }
 
 
@@ -239,9 +240,20 @@ public class IndependentEOManager
     }
 
 
+    // ----------------------------------------------------------
+    public void dispose()
+    {
+        if (ownsEcm && ecm != null)
+        {
+            ecm.dispose();
+        }
+    }
+
+
     //~ Instance/static variables .............................................
 
     private ECManager           ecm;
+    private boolean             ownsEcm = false;
     private EOEnterpriseObject  mirror;   // copy of EO in ecm context
     private EOEditingContext    clientContext;
 

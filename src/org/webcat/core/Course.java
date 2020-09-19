@@ -186,12 +186,19 @@ public class Course
                 .and(number.is(courseNumber));
 
             NSArray<Course> courses = objectsMatchingQualifier(ec, qualifier);
+//            log.warn("findObjectWithApiId(" + repoId
+//                + "): courses considered = " + courses);
 
             for (Course course : courses)
             {
+//                log.warn("findObjectWithApiId(" + repoId
+//                    + "): comparing " + institution + " against "
+//                    + course.department().institution().subdirName());
                 if (institution.equals(
                         course.department().institution().subdirName()))
                 {
+//                    log.warn("findObjectWithApiId(" + repoId
+//                        + "): found " + course);
                     return course;
                 }
             }

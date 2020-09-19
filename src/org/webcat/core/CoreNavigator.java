@@ -112,6 +112,7 @@ public class CoreNavigator
 
         idFor = new ComponentIDGenerator(this);
 
+        lateAwake();
         updateSemesters();
 
         super.appendToResponse(response, context);
@@ -120,9 +121,19 @@ public class CoreNavigator
 
 
     // ----------------------------------------------------------
+    @Deprecated
     public void awake()
     {
-        log.debug("entering awake()");
+        super.awake();
+    }
+
+
+    // ----------------------------------------------------------
+    // Should override, but can't do it here
+    // FIXME: refactor so this applies across the whole hierarchy
+    public void lateAwake()
+    {
+        log.debug("entering lateAwake()");
         if (selectionsParent == null)
         {
             selectionsParent = findNearestAncestor(WCCourseComponent.class);
@@ -194,7 +205,7 @@ public class CoreNavigator
         log.debug("selectionsParent = "
             + selectionsParent.getClass().getName());
         super.awake();
-        log.debug("leaving awake()");
+        log.debug("leaving lateAwake()");
     }
 
 

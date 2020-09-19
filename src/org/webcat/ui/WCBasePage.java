@@ -147,6 +147,7 @@ public class WCBasePage
         includePageWrapping = (nowrap == null);
         response.appendHeader("no-cache", "pragma");
         response.appendHeader("no-cache", "cache-control");
+
         super.appendToResponse(response, context);
     }
 
@@ -464,25 +465,35 @@ public class WCBasePage
     // ----------------------------------------------------------
     public NSKeyValueCodingAdditions theme()
     {
-        if (hasSession())
+        if (lastUsedTheme != null)
+        {
+            return lastUsedTheme;
+        }
+
+        if (context()._session() != null) // (hasSession())
         {
             return ((Session)session()).theme();
         }
         else
         {
-            NSKeyValueCodingAdditions lastUsedTheme = null;
-            if (Application.wcApplication().needsInstallation())
-            {
-                lastUsedTheme = installTheme();
-            }
-            else
-            {
-                lastUsedTheme = Theme.lastUsedThemeInContext(context());
-            }
+//            if (!Application.wcApplication().needsInstallation())
+//            {
+//                Theme last = Theme.lastUsedThemeInContext(context());
+//                if (last != null)
+//                {
+//                    unlockTheme = true;
+//                    last.editingContext().lock();
+//                    lastUsedTheme = last;
+//                }
+//                else
+//                {
+//                    log.error(
+//                        "theme(): lastUsedThemeInContext() returned null");
+//                }
+//            }
 
-            return (lastUsedTheme != null)
-                ? lastUsedTheme
-                : Theme.globalReadOnlyThemeFromName(Theme.defaultThemeName());
+            lastUsedTheme = Theme.installTheme();
+            return lastUsedTheme;
         }
     }
 
@@ -537,64 +548,6 @@ public class WCBasePage
     }
 
 
-    // ----------------------------------------------------------
-    private static NSKeyValueCodingAdditions installTheme()
-    {
-        if (installTheme == null)
-        {
-            // Can't use the subsystem manager, since it isn't initialized
-            NSBundle core = NSBundle.bundleForName("Core");
-            if (core != null)
-            {
-                @SuppressWarnings("deprecation")
-                String themeDir =
-                    core.bundlePath() + "/WebServerResources/theme/";
-                try
-                {
-                    @SuppressWarnings("unchecked")
-                    NSMutableDictionary<String, Object> properties =
-                        MutableDictionary.fromPropertyList(new File(
-                            themeDir, "dream-way/theme.plist"));
-                    Object parentName = properties.get("extends");
-                    properties.remove("extends");
-                    MutableArray cssOrder =
-                        (MutableArray)properties.get("cssOrder");
-                    while (parentName != null)
-                    {
-                        MutableDictionary parentProps = MutableDictionary
-                            .fromPropertyList(new File(
-                                themeDir, parentName + "/theme.plist"));
-                        @SuppressWarnings("unchecked")
-                        NSArray<NSDictionary<String, String>> cssFiles =
-                            (NSArray<NSDictionary<String, String>>)parentProps
-                            .get("cssOrder");
-                        for (NSDictionary<String, String> css : cssFiles)
-                        {
-                            css.put("file", "../" + parentName + "/"
-                                + css.get("file"));
-                            cssOrder.add(css);
-                        }
-                        if (parentProps.containsKey("dojoTheme"))
-                        {
-                            properties.put(
-                                "dojoTheme", parentProps.get("dojoTheme"));
-                        }
-                        parentName = parentProps.get("extends");
-                    }
-
-                    installTheme = properties;
-                    installTheme.takeValueForKey("Dream Way", "name");
-                    installTheme.takeValueForKey("dream-way", "dirName");
-                    installTheme.takeValueForKey(installTheme, "inherit");
-                }
-                catch (IOException e)
-                {
-                    log.error("error creating temporary theme", e);
-                }
-            }
-        }
-        return installTheme;
-    }
 
 
     //~ Static/instance variables .............................................
@@ -618,7 +571,8 @@ public class WCBasePage
     private static final Pattern CSS_LINK_PATTERN =
         Pattern.compile("^(.*)\\[([^\\]]*)\\]$");
 
-    private static NSDictionary<String, Object> installTheme;
+    private NSKeyValueCodingAdditions lastUsedTheme;
+    private boolean unlockTheme = false;
 
     static Logger log = Logger.getLogger(WCBasePage.class);
 }

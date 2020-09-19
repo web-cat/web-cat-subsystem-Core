@@ -79,6 +79,15 @@ public class GitRepository
     public static GitRepository repositoryForObject(EOBase eo)
     {
         Repository repo = GitUtilities.repositoryForObject(eo);
+        if (repo == null)
+        {
+            String details = (eo == null)
+                ? "null"
+                : (eo.getClass().getSimpleName() + " " + eo);
+            log.error("repositoryForObject(): null repo for EO = "
+                + details,
+                new Exception("repositoryForObject() called here"));
+        }
         GitRepository gr = new GitRepository(repo);
         gr.provider = eo;
         return gr;

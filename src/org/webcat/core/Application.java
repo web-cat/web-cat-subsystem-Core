@@ -67,10 +67,7 @@ import com.webobjects.appserver.WOResourceManager;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.appserver.WOSession;
 import com.webobjects.appserver.WOSessionStore;
-import com.webobjects.eoaccess.EODatabaseChannel;
-import com.webobjects.eoaccess.EODatabaseContext;
 import com.webobjects.eoaccess.EOModelGroup;
-import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
@@ -88,6 +85,7 @@ import er.extensions.ERXExtensions;
 import er.extensions.appserver.ERXMessageEncoding;
 import er.extensions.eof.ERXEOAccessUtilities;
 import er.extensions.formatters.ERXTimestampFormatter;
+import er.extensions.foundation.ERXExceptionUtilities;
 import er.extensions.foundation.ERXProperties;
 import er.extensions.foundation.ERXSystem;
 import er.extensions.foundation.ERXValueUtilities;
@@ -135,6 +133,10 @@ public class Application
         // restoring sessions through the WCServletSessionStore doesn't
         // really work.
         setSessionStoreClassName("WOServerSessionStore");
+        // org.webcat.woextensions.WCObjectStoreCoordinator.install();
+        traceSessionLocks = configurationProperties().booleanForKeyWithDefault(
+            Application.class.getName() + ".traceSessionLocks", false);
+        log.debug("traceSessionLocks = " + traceSessionLocks);
 
         // I'm not sure these do anything, since the corresponding
         // notifications should have occurred before this constructor
@@ -157,7 +159,7 @@ public class Application
         if (log.isInfoEnabled())
         {
             log.info("Web-CAT v" + version()
-                + "\nCopyright (C) 2006-2018 Virginia Tech\n\n"
+                + "\nCopyright (C) 2006-2021 Virginia Tech\n\n"
                 + "Web-CAT comes with ABSOLUTELY NO WARRANTY; this is "
                 + "free software\n"
                 + "under the terms of the GNU Affero General Public License "
@@ -206,7 +208,7 @@ public class Application
         // Register the Git request handler.
         apiHandler = new WebAPIRequestHandler();
         registerRequestHandler(apiHandler,
-                WebAPIRequestHandler.REQUEST_HANDLER_KEY);
+            WebAPIRequestHandler.REQUEST_HANDLER_KEY);
 
         // Register the entity resource request handler.
         registerRequestHandler(new EntityResourceRequestHandler(),
@@ -214,11 +216,11 @@ public class Application
 
         // Register the Git request handler.
         registerRequestHandler(new GitRequestHandler(),
-                GitRequestHandler.REQUEST_HANDLER_KEY);
+            GitRequestHandler.REQUEST_HANDLER_KEY);
 
         // Register the WebDAV request handler.
         registerRequestHandler(new WebDAVRequestHandler(),
-                WebDAVRequestHandler.REQUEST_HANDLER_KEY);
+            WebDAVRequestHandler.REQUEST_HANDLER_KEY);
 
         // Set page cache size from property
         setPageCacheSize(ERXValueUtilities.intValueWithDefault(
@@ -238,7 +240,7 @@ public class Application
 
         if (configurationProperties().hasUsableConfiguration())
         {
-            log.debug("initializing application");
+            log.info("initializing application");
             initializeApplication();
             setNeedsInstallation(false);
             notifyAdminsOfStartup();
@@ -396,12 +398,12 @@ public class Application
         EOModelGroup.defaultGroup().setDelegate(new SubsystemEOMRedirector());
 
         // register for database channel needed notification
-        NSNotificationCenter.defaultCenter().addObserver(
-            this,
-            new NSSelector<Void>("createAdditionalDatabaseChannel",
-                new Class<?>[] { NSNotification.class }),
-            EODatabaseContext.DatabaseChannelNeededNotification,
-            null);
+//        NSNotificationCenter.defaultCenter().addObserver(
+//            this,
+//            new NSSelector<Void>("createAdditionalDatabaseChannel",
+//                new Class<?>[] { NSNotification.class }),
+//            EODatabaseContext.DatabaseChannelNeededNotification,
+//            null);
 
         // log.debug("models = " + EOModelGroup.defaultGroup());
 
@@ -444,6 +446,7 @@ public class Application
         // Remove all state login session data
         boolean nsLogDebugEnabled = NSLog.debug.isEnabled();
         NSLog.debug.setIsEnabled(false);
+        log.info("closing stale usage periods");
         new ECAction() { public void action() {
             // First, attempt to force the initial JNDI exception because
             // the name jdbc is not bound
@@ -472,7 +475,19 @@ public class Application
                 {
                     period.delete();
                 }
-                ec.saveChanges();
+                ec.saveChangesTolerantly();
+                for (UsagePeriod period : UsagePeriod.objectsMatchingQualifier(
+                    ec, UsagePeriod.isLoggedOut.isFalse()))
+                {
+                    period.setIsLoggedOut(true);
+                }
+                ec.saveChangesTolerantly();
+                for (SentMessage msg : SentMessage.objectsMatchingQualifier(
+                    ec, SentMessage.sentTime.before(thirtyDaysAgo)))
+                {
+                    msg.delete();
+                }
+                ec.saveChangesTolerantly();
             }
             catch (Exception e)
             {
@@ -482,7 +497,7 @@ public class Application
             }
             try
             {
-                ec.saveChanges();
+                ec.saveChangesTolerantly();
             }
             catch (Exception e)
             {
@@ -493,13 +508,19 @@ public class Application
 
         // Force common objects to be loaded into the shared editing context
         // FIXME: comment out again after debugging
+        log.info("loading common database entities");
         org.webcat.woextensions.WCSharedEC.install();
         AuthenticationDomain.refreshAuthDomains();
         // Language.refreshLanguages();
         Theme.refreshThemes();
 
-        NSLog.debug.setAllowedDebugLevel(NSLog.DebugLevelInformational);
+        log.info("initializing handlers");
+        if (!configurationProperties().containsKey("NSDebugLevel"))
+        {
+            NSLog.debug.setAllowedDebugLevel(NSLog.DebugLevelInformational);
+        }
         NSLog.allowDebugLoggingForGroups(NSLog.DebugGroupMultithreading);
+        NSLog.allowDebugLoggingForGroups(NSLog.DebugGroupDatabaseAccess);
 
         // Add useful tag shortcuts for inline component tags.
         WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
@@ -524,6 +545,7 @@ public class Application
 
         setIncludeCommentsInResponses(false);
 
+        log.info("initializing messaging subsystem");
         initializeMessagingSystem();
 
         // Ensure subsystems are all loaded
@@ -531,6 +553,7 @@ public class Application
 //        subsystemManager();
         startTime = new NSTimestamp();
         checkBootstrapVersion();
+        log.info("initialization complete");
         initializationComplete = true;
     }
 
@@ -578,25 +601,25 @@ public class Application
      *
      * @param notification The notification received
      */
-    public void createAdditionalDatabaseChannel(NSNotification notification)
-    {
-        EODatabaseContext dbContext = (EODatabaseContext)notification.object();
-        EODatabaseChannel dbChannel = new EODatabaseChannel(dbContext);
-        if (dbContext != null)
-        {
-            // consensus is that if you need more than 5 open channels,
-            // you might want to re-think something in your code or model
-            if (dbContext.registeredChannels().count() < 5)
-            {
-                log.debug("createAdditionalDatabaseChannel()");
-                dbContext.registerChannel(dbChannel);
-            }
-            else
-            {
-                log.error("requesting > 5 database channels");
-            }
-        }
-    }
+//    public void createAdditionalDatabaseChannel(NSNotification notification)
+//    {
+//        EODatabaseContext dbContext = (EODatabaseContext)notification.object();
+//        EODatabaseChannel dbChannel = new EODatabaseChannel(dbContext);
+//        if (dbContext != null)
+//        {
+//            // consensus is that if you need more than 5 open channels,
+//            // you might want to re-think something in your code or model
+//            if (dbContext.registeredChannels().count() < 5)
+//            {
+//                log.debug("createAdditionalDatabaseChannel()");
+//                dbContext.registerChannel(dbChannel);
+//            }
+//            else
+//            {
+//                log.error("requesting > 5 database channels");
+//            }
+//        }
+//    }
 
 
     // ----------------------------------------------------------
@@ -614,6 +637,140 @@ public class Application
     }
 
 
+    public static class SessionRecord
+    {
+        public String id;
+        public WOSession session;
+        public String owner;
+        public NSTimestamp tryTime;
+        public NSTimestamp acquireTime;
+        public Exception location;
+        public String tag;
+        public SessionRecord(
+            WOSession session,
+            NSTimestamp tryTime,
+            NSTimestamp acquireTime)
+        {
+            this.session = session;
+            id = session.sessionID();
+            owner = Thread.currentThread().getName();
+            this.tryTime = tryTime;
+            if (acquireTime != null)
+            {
+                acquired(acquireTime);
+            }
+            else
+            {
+                if (this.tryTime == null)
+                {
+                    this.tryTime = new NSTimestamp();
+                }
+                tag = "thread [" + owner + "] attempting to lock "
+                    + " session " + id + " at " + this.tryTime;
+                location = new Exception(tag);
+            }
+        }
+        public void acquired()
+        {
+            acquired(new NSTimestamp());
+        }
+        public void acquired(NSTimestamp time)
+        {
+            acquireTime = time;
+            tag = "thread [" + owner + "] acquired session " + id
+                + " at " + acquireTime;
+            if (tryTime != null)
+            {
+                NSTimestamp.IntRef sec = new NSTimestamp.IntRef();
+                acquireTime.gregorianUnitsSinceTimestamp(
+                    null, null, null, null, null, sec, tryTime);
+                tag += " (waited " + sec.value + "s)";
+            }
+            else
+            {
+                tryTime = acquireTime;
+            }
+            location = new Exception(tag);
+        }
+    }
+    private Map<String, SessionRecord> newSessions =
+        new HashMap<String, SessionRecord>();
+    private ThreadLocal<List<SessionRecord>> myLocks =
+        new ThreadLocal<List<SessionRecord>>();
+    private List<SessionRecord> myLockList()
+    {
+        List<SessionRecord> locks = myLocks.get();
+        if (locks == null)
+        {
+            locks = new ArrayList<SessionRecord>();
+            myLocks.set(locks);
+        }
+        return locks;
+    }
+    private SessionRecord findLock(String id)
+    {
+        for (SessionRecord sr : myLockList())
+        {
+            if (id.equals(sr.id))
+            {
+                return sr;
+            }
+        }
+        return null;
+    }
+    private SessionRecord removeLock(String id)
+    {
+        List<SessionRecord> list = myLockList();
+        for (int i = 0; i < list.size(); i++)
+        {
+            SessionRecord sr = list.get(i);
+            if (id.equals(sr.id))
+            {
+                list.remove(i);
+                return sr;
+            }
+        }
+        return null;
+    }
+    private void dumpLocks()
+    {
+        int i = 0;
+        for (SessionRecord sr : myLockList())
+        {
+            i++;
+            log.warn("session record " + i, sr.location);
+        }
+    }
+    private boolean preCheckout(String method, String id)
+    {
+        boolean notAlreadyLocked = true;
+        List<SessionRecord> locks = myLockList();
+        String tag = "thread [" + Thread.currentThread().getName() + "] "
+            + "about to attempt acquiring session " + id;
+
+        if (locks.size() > 0)
+        {
+            log.error(method + "(): " + tag
+                + ", but " + locks.size() + " sessions already being held");
+            dumpLocks();
+            SessionRecord other = findLock(id);
+            if (other != null)
+            {
+                log.error(method + "(): "
+                    + tag
+                    + ", but already holding same session: "
+                    + other.tag);
+                notAlreadyLocked = false;
+            }
+        }
+        return notAlreadyLocked;
+    }
+    private void addLock(String method, SessionRecord sr)
+    {
+        myLockList().add(sr);
+    }
+
+
     // ----------------------------------------------------------
     @Override
     public WOSession createSessionForRequest(WORequest worequest)
@@ -623,7 +780,7 @@ public class Application
         {
             log.warn("createSessionForRequest(): no session created!");
         }
-        else
+        else if (traceSessionLocks)
         {
             String sessionID = result.sessionID();
             SessionLockInfo myInfo =
@@ -634,6 +791,27 @@ public class Application
                 log.warn(
                     "createSessionForRequest(): " + myInfo.toAcquireString());
                 sessionLocks.put(sessionID, myInfo);
+            }
+            SessionRecord myRecord = new SessionRecord(
+                result, null, new NSTimestamp());
+            synchronized (newSessions)
+            {
+                if (newSessions.containsKey(sessionID))
+                {
+                    log.error("createSessionForRequest(): duplicate session "
+                        + "ID " + sessionID + "!");
+                }
+                else
+                {
+                    newSessions.put(sessionID, myRecord);
+                }
+            }
+            {
+                // Handle thread local list of session locks
+                if (preCheckout("createSessionForRequest", sessionID))
+                {
+                    addLock("createSessionForRequest", myRecord);
+                }
             }
         }
         return result;
@@ -652,8 +830,11 @@ public class Application
             String    sessionID,
             WOContext context)
     {
-        SessionLockInfo myInfo =
-            new SessionLockInfo(sessionID, context.request().uri());
+        SessionLockInfo myInfo = null;
+        NSTimestamp entry = null;
+        if (traceSessionLocks)
+        {
+            myInfo = new SessionLockInfo(sessionID, context.request().uri());
         synchronized (sessionLocks)
         {
             SessionLockInfo existing = sessionLocks.get(sessionID);
@@ -673,12 +854,19 @@ public class Application
                     + ") attempt by " + myInfo.tag);
             }
         }
+        // Check thread local for existing locks
+        preCheckout("retoreSessionWithID", sessionID);
+        entry = new NSTimestamp();
+        }
         WOSession result = super.restoreSessionWithID(sessionID, context);
+        if (traceSessionLocks)
+        {
         if (result == null)
         {
             log.warn("restoreSessionWithID(" + sessionID
                 + "): no session found for " + myInfo.tag);
-            if (sessionID.equals(context._requestSessionID()))
+            if (sessionID != null
+                && sessionID.equals(context._requestSessionID()))
             {
                 context._setRequestSessionID(null);
             }
@@ -693,11 +881,7 @@ public class Application
                 {
                     if (!existing.released)
                     {
-                        log.error("SessionLockInfo.released == false "
-                            + "unexpectedly for " + sessionID
-                            + " locked by " + existing.tag,
-                            existing.location);
-                        existing.released = true;
+                        myInfo.queue.add(existing);
                     }
                     existing.queue.remove(myInfo);
                     myInfo.queue.addAll(existing.queue);
@@ -712,6 +896,9 @@ public class Application
                 }
                 sessionLocks.put(sessionID, myInfo);
             }
+            addLock("restoreSessionWithID",
+                new SessionRecord(result, entry, myInfo.acquireTime));
+        }
         }
         return result;
     }
@@ -724,47 +911,63 @@ public class Application
         SessionLockInfo myInfo = null;
         String sessionID = null;
         WOSession wosession = wocontext._session();
-        if (wosession != null)
+        if (traceSessionLocks && wosession != null)
         {
             sessionID = wosession.sessionID();
             String thread = Thread.currentThread().getName();
             synchronized (sessionLocks)
             {
-                myInfo = sessionLocks.get(sessionID);
-                if (myInfo != null)
+                SessionLockInfo owner = sessionLocks.get(sessionID);
+                if (owner != null)
                 {
-                    if (!thread.equals(myInfo.thread))
+                    if (thread.equals(owner.thread))
+                    {
+                        myInfo = owner;
+                    }
+                    else
+                    {
+                        for (SessionLockInfo sli : owner.queue)
+                        {
+                            if (thread.equals(sli.thread))
+                            {
+                                myInfo = sli;
+                                break;
+                            }
+                        }
+                    }
+                    if (myInfo == null)
                     {
                         log.error("saveSessionForContext(" + sessionID
-                            + ") locked by " + myInfo.tag
+                            + ") locked by " + owner.tag
                             + " was called by different thread [" + thread
                             + "] here",
-                            new Exception(sessionID + " locked by thread ["
-                                + myInfo.thread + "] from here"));
+                            owner.location);
                         log.error("saveSessionForContext() called by thread ["
                             + thread + "] here",
                             new Exception(
                                 "saveSessionForContext() called by ["
                                 + thread + "] here"));
                     }
-                    log.warn(myInfo.toReleaseString());
-                    myInfo.released = true;
-                    if (wosession.isTerminating()
-                        && myInfo.queue.size() > 0)
+                    else
                     {
-                        log.error("saveSessionForContext(" + sessionID
-                            + "): called with terminating session while "
-                            + myInfo.queueSize(),
-                            new Exception("saveSessionForContext(" + sessionID
-                                + ") called from here"));
-                        for (int i = 0; i < myInfo.queue.size(); i++)
+                        log.warn(myInfo.toReleaseString());
+                        if (wosession.isTerminating()
+                            && owner.queue.size() > 0)
                         {
-                            SessionLockInfo info = myInfo.queue.get(i);
-                            log.error(
-                                "pending infinite wait on queued no. "
-                                + (i + 1)
-                                + " " + info.tag,
-                                info.location);
+                            log.error("saveSessionForContext(" + sessionID
+                                + "): called with terminating session while "
+                                + owner.queueSize(),
+                                new Exception("saveSessionForContext("
+                                    + sessionID + ") called from here"));
+                            for (int i = 0; i < owner.queue.size(); i++)
+                            {
+                                SessionLockInfo info = owner.queue.get(i);
+                                log.error(
+                                    "pending infinite wait on queued no. "
+                                    + (i + 1)
+                                    + " " + info.tag,
+                                    info.location);
+                            }
                         }
                     }
                 }
@@ -778,20 +981,58 @@ public class Application
                             + thread + "] here"));
                 }
             }
+            // Check thread local lock store
+            if (null == findLock(sessionID))
+            {
+                log.error("saveSessionForContext(): called on session "
+                    + sessionID + " when no lock info stored in thread local",
+                    new Exception("saveSessionForContext() called for "
+                        + "session " + sessionID + " here"));
+            }
         }
         super.saveSessionForContext(wocontext);
-        synchronized (sessionLocks)
+        if (traceSessionLocks && sessionID != null)
         {
-            SessionLockInfo existing = sessionLocks.get(sessionID);
-            String thread = Thread.currentThread().getName();
-            if (existing != null
-                && thread.equals(existing.thread)
-                && existing.queue.size() == 0)
+            synchronized (sessionLocks)
             {
-                sessionLocks.remove(sessionID);
+                SessionLockInfo owner = sessionLocks.get(sessionID);
+                if (owner != null && myInfo != null)
+                {
+                    if (owner == myInfo)
+                    {
+                        if (myInfo.queue.size() == 0)
+                        {
+                            sessionLocks.remove(sessionID);
+                        }
+                        else
+                        {
+                            // leave it in the map for the next lock holder
+                            // to clear out
+                            myInfo.released = true;
+                        }
+                    }
+                    else if (!owner.queue.remove(myInfo))
+                    {
+                        log.error("saveSessionForContext(): after release, "
+                            + myInfo.tag + ", cannot find SessionLockInfo!",
+                            new Exception("saveSessionForContext() called for "
+                                + "session " + sessionID + " here"));
+                    }
+                }
+
+
+
+
+
             }
-            // otherwise, leave it in the map for the next lock holder to
-            // clear out, and/or it's already been removed!
+            SessionRecord sr = removeLock(sessionID);
+            if (sr == null)
+            {
+                log.error("saveSessionForContext(): finishing on session "
+                    + sessionID + " when no lock info stored in thread local",
+                    new Exception("saveSessionForContext() finishing for "
+                        + "session " + sessionID + " here"));
+            }
         }
     }
 
@@ -1071,11 +1312,21 @@ public class Application
                 + context
                 + " )");
         }
-        else if (requestLog.isDebugEnabled())
+        if (requestLog.isDebugEnabled())
         {
+            String uri = null;
+            if (context.request() != null)
+            {
+                uri = context.request().uri();
+            }
             requestLog.debug("pageWithName( "
                 + ((name == null) ? "<null>" : name)
-                + " )");
+                + " ), uri = " + uri);
+            if (threadPageNames.get() == null)
+            {
+                threadPageNames.set(new ArrayList<String>(10));
+            }
+            threadPageNames.get().add(name);
         }
         if (name == null || name.length() == 0 || "Main".equals(name))
         {
@@ -1195,19 +1446,60 @@ public class Application
             requestDebug.debug("\turi = " + aRequest.uri());
             requestDebug.debug("\tcookies = " + aRequest.cookies());
         }
-        WOContext holdContext = aRequest.context();
-        WOResponse result = super.dispatchRequest(aRequest);
-        if (holdContext != null && holdContext.hasSession())
+        WOContext savedContext = aRequest.context();
+        // clear thread-local name of page being rendered
+        if (requestLog.isDebugEnabled())
         {
-            WOSession s = holdContext._session();
-            log.error("unsaved session with id " + s.sessionID() + "\n"
-                + "  request = " + aRequest.uri()
-                + "  session.terminating = " + s.isTerminating());
-            if (s instanceof Session)
+            if (threadPageNames.get() == null)
             {
-                log.error("Unsaved session created here", ((Session)s).createdAt());
+                threadPageNames.set(new ArrayList<String>(10));
             }
-            saveSessionForContext(holdContext);
+            threadPageNames.get().clear();
+        }
+        long dispatchTime = System.currentTimeMillis();
+        WOResponse result = super.dispatchRequest(aRequest);
+        if (requestLog.isDebugEnabled())
+        {
+            long time = System.currentTimeMillis() - dispatchTime;
+            requestLog.info("dispatchRequest(),"
+                + aRequest.uri()
+                + "," + threadPageNames.get().toString().replaceAll(",", ";")
+                + "," + time + "ms"
+                + "," + userCount
+                + "," + activeSessionsCount()
+                + "," + WCEC.activeCount()
+                + "," + WCEC.createdCount()
+                );
+        }
+        if (traceSessionLocks)
+        {
+        List<SessionRecord> locks = myLockList();
+        if (locks.size() > 0)
+        {
+            log.error("dispatchRequest(): thread ["
+                + Thread.currentThread().getName() + "] finishing with "
+                + "locked sessions");
+            if (savedContext == null)
+            {
+                log.error("dispatchRequest(): savedContext == null");
+                savedContext = aRequest.context();
+                if (savedContext == null)
+                {
+                    log.error("dispatchRequest(): aRequest.context() == null");
+                    savedContext = new WOContext(null);
+                }
+            }
+            int count = 0;
+            for (SessionRecord sr : locks)
+            {
+                count++;
+                log.error("dispatchRequest(): saving locked session "
+                    + count + ": " + sr.tag, sr.location);
+                savedContext._setSession(sr.session);
+                super.saveSessionForContext(savedContext);
+            }
+            locks.clear();
+        }
         }
         if (requestDebug.isDebugEnabled())
         {
@@ -1359,6 +1651,7 @@ public class Application
         }
         else
         {
+            t = ERXExceptionUtilities.getMeaningfulThrowable(t);
             new UnexpectedExceptionMessage(t, context, extraInfo, null)
                 .send();
         }
@@ -1839,25 +2132,25 @@ public class Application
      * Method to assemble information on the exception, including the
      * message, stack trace, the name of the component which contained
      * the error (or caused it), and any session information required.
-     * This is an instance method instead of being static to ensure that
-     * it is synchronized.
      * @param anException the exception that occurred
      * @param extraInfo   dictionary of extra information about what was
      *                    happening when the exception was thrown
      * @param aContext    the context in which the exception occurred
      * @return a printable description of the error
      */
-    public synchronized String informationForExceptionInContext(
-        Throwable          anException,
-        NSDictionary<?, ?> extraInfo,
-        WOContext          aContext)
+    public static String informationForExceptionInContext(
+        final Throwable          aThrowable,
+        final NSDictionary<?, ?> extraInfo,
+        final WOContext          aContext)
     {
-        Session s = (aContext != null  &&  aContext.hasSession())
+        final Session s = (aContext != null  &&  aContext._session() != null)
             ? (Session)aContext.session()
             : null;
 
         // Set up a buffer for the content
-        StringBuffer errorBuffer = new StringBuffer();
+        final StringBuffer errorBuffer = new StringBuffer();
+        final Throwable anException =
+            ERXExceptionUtilities.getMeaningfulThrowable(aThrowable);
 
         if (s != null  &&  s.primeUser() != null)
         {
@@ -1867,7 +2160,7 @@ public class Application
         }
 
         // Get the date and time for the exception
-        NSTimestamp now = new NSTimestamp();
+        final NSTimestamp now = new NSTimestamp();
         errorBuffer.append("\nDate/time:   ");
         errorBuffer.append(now.toString());
         if (aContext != null && aContext.request() != null)
@@ -1878,18 +2171,15 @@ public class Application
             errorBuffer.append(aContext.request().headerForKey("referer"));
         }
 
-        if (errorLoggingContext == null)
-        {
-            errorLoggingContext = WCEC.newEditingContext();
-        }
-        try
-        {
-            errorLoggingContext.lock();
+        new ECAction() {
+            // ----------------------------------------------------------
+            public void action()
+            {
             LoggedError loggedError = null;
-            if (!needsInstallation())
+            if (!wcApplication().needsInstallation())
             {
                 loggedError = LoggedError.objectForException(
-                    errorLoggingContext, anException);
+                    ec, anException);
             }
 
             if (loggedError != null)
@@ -2023,40 +2313,17 @@ public class Application
                     }
                 }
             }
-            errorLoggingContext.saveChanges();
-        }
-        catch (Exception e)
-        {
-            EOEditingContext old = errorLoggingContext;
-            errorLoggingContext = null;
             try
             {
-                try
-                {
-                    // Try to unlock it, if possible
-                    old.unlock();
-                }
-                catch (Exception ee)
-                {
-                    // ignore, since we're throwing it away
-                }
-                old.dispose();
+                ec.saveChangesTolerantly();
             }
-            catch (Exception e2)
+            catch (Exception e)
             {
-                log.fatal("error releasing error logging editing context",
-                    e2);
-                log.fatal("original exception causing error logging "
-                    + "context to be released", e);
+                log.fatal("informationForExceptionInContext() failed", e);
+                log.info("failed exception details", anException);
             }
         }
-        finally
-        {
-            if (errorLoggingContext != null)
-            {
-                errorLoggingContext.unlock();
-            }
-        }
+        }.run();
 
         // Return the information
         return errorBuffer.toString();
@@ -2407,7 +2674,7 @@ public class Application
     /**
      * Enables logging of executed SQL statements.
      */
-    public static synchronized void enableSQLLogging()
+    public static void enableSQLLogging()
     {
         Logger.getLogger("NSLog").setLevel(Level.DEBUG);
         Logger.getLogger(er.extensions.logging.ERXNSLogLog4jBridge.class)
@@ -2426,7 +2693,7 @@ public class Application
     /**
      * Disables logging of executed SQL statements.
      */
-    public static synchronized void disableSQLLogging()
+    public static void disableSQLLogging()
     {
         Logger.getLogger("NSLog").setLevel(Level.OFF);
         Logger.getLogger(er.extensions.logging.ERXNSLogLog4jBridge.class)
@@ -2746,11 +3013,14 @@ public class Application
      *
      * @return the message dispatcher used by the application
      */
-    public synchronized IMessageDispatcher messageDispatcher()
+    public IMessageDispatcher messageDispatcher()
     {
         if (messageDispatcher == null)
         {
-            messageDispatcher = new FallbackMessageDispatcher();
+            synchronized (FallbackMessageDispatcher.class)
+            {
+                messageDispatcher = new FallbackMessageDispatcher();
+            }
         }
 
         return messageDispatcher;
@@ -2763,7 +3033,7 @@ public class Application
      *
      * @param dispatcher the message dispatcher
      */
-    public synchronized void setMessageDispatcher(IMessageDispatcher dispatcher)
+    public void setMessageDispatcher(IMessageDispatcher dispatcher)
     {
         messageDispatcher = dispatcher;
     }
@@ -2790,7 +3060,7 @@ public class Application
      *
      * @return the {@link WebAPIRequestHandler}
      */
-    public synchronized WebAPIRequestHandler webAPI()
+    public WebAPIRequestHandler webAPI()
     {
         return apiHandler;
     }
@@ -2956,6 +3226,11 @@ public class Application
         }
         else
         {
+            String details = (object == null)
+                ? "null"
+                : (object.getClass().getSimpleName() + " " + object);
+            log.error("repositoryPathForObject() called on non-provider "
+                + "value " + details);
             return null;
         }
     }
@@ -3082,7 +3357,9 @@ public class Application
     @SuppressWarnings("unused")
     private static ERXProperties forcedInitialization2 = null;
 
-    public static int userCount = 0;
+    // Should make this private and add accessor method
+    public static java.util.concurrent.atomic.AtomicInteger userCount =
+        new java.util.concurrent.atomic.AtomicInteger();
 
     private static final int maxAttachmentSize = 100000; // bytes
 
@@ -3113,7 +3390,6 @@ public class Application
 
     private IMessageDispatcher messageDispatcher;
     private WebAPIRequestHandler apiHandler;
-    private EOEditingContext errorLoggingContext;
 
     private RelativeTimestampFormatter approximateRelativeTimestampFormatter;
     private RelativeTimestampFormatter exactRelativeTimestampFormatter;
@@ -3207,6 +3483,9 @@ public class Application
     }
     private static Map<String, SessionLockInfo> sessionLocks =
         new HashMap<String, SessionLockInfo>();
+    private static boolean traceSessionLocks = false;
+    private ThreadLocal<List<String>> threadPageNames =
+        new ThreadLocal<List<String>>();
 
     static Logger log = Logger.getLogger(Application.class);
     static Logger requestLog = Logger.getLogger(Application.class.getName()

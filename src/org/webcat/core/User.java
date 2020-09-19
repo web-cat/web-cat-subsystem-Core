@@ -109,7 +109,7 @@ public class User
                                   String               aPassword,
                                   AuthenticationDomain domain,
                                   byte                 anAccessLevel,
-                                  EOEditingContext     ec)
+                                  WCEC                 ec)
     {
         User u = new User();
         ec.insertObject(u);
@@ -118,7 +118,7 @@ public class User
         u.setPassword(aPassword);
         u.setAccessLevel(anAccessLevel);
         u.setAuthenticationDomainRelationship(domain);
-        ec.saveChanges();
+        ec.saveChangesTolerantly();
         return u;
     }
 
@@ -540,7 +540,7 @@ public class User
             String aUserName,
             String aPassword,
             AuthenticationDomain domain,
-            com.webobjects.eocontrol.EOEditingContext ec
+            WCEC ec
         )
     {
         User  u = null;
@@ -612,13 +612,14 @@ public class User
                 }
             }
             LoginSession s = null;
-            if (u != null)
-            {
-                s = LoginSession.getLoginSessionForUser(ec, u);
-            }
             log.debug("validate(), u = " + u + ", s = " + s);
-            return authenticator.authenticate(
+            User result = authenticator.authenticate(
                 aUserName, aPassword, domain, ec, s);
+            if (result != null)
+            {
+                UsagePeriod.updateUsagePeriodForUser(result.globalId());
+            }
+            return result;
         }
         else
         {
@@ -1356,14 +1357,14 @@ public class User
         NSArray<CoreSelections> cs = coreSelections();
         if (cs.count() == 0)
         {
-            EOEditingContext ec = WCEC.newEditingContext();
+            WCEC ec = WCEC.newEditingContext();
             try
             {
                 ec.lock();
                 CoreSelections newCoreSelections = new CoreSelections();
                 ec.insertObject(newCoreSelections);
                 newCoreSelections.setUserRelationship(localInstance(ec));
-                ec.saveChanges();
+                ec.saveChangesTolerantly();
                 editingContext().refreshObject(this);
                 cs = coreSelections();
             }
@@ -1389,14 +1390,14 @@ public class User
         {
             ecForPrefs = WCEC.newEditingContext();
         }
-        EOEditingContext ec = ecForPrefs;
+        WCEC ec = ecForPrefs;
         ec.lock();
         try
         {
             // Use a separate EC to store the changed preferences
             User me = localInstance(ec);
             me.setPreferences(preferences());
-            ec.saveChanges();
+            ec.saveChangesTolerantly();
             // Now refresh the session's user object so that it loads
             // this saved preferences value
             editingContext().refreshObject(this);
@@ -1886,7 +1887,7 @@ public class User
     private static String scriptRoot;
     private static String userDataRoot;
 
-    private EOEditingContext ecForPrefs;
+    private WCEC ecForPrefs;
     private NSDictionary<String, User> userIsMe;
 
     private boolean studentView = false;

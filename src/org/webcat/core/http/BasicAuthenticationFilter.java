@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: BasicAuthenticationFilter.java,v 1.6 2014/06/16 16:00:40 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2011 Virginia Tech
+ |  Copyright (C) 2011-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -26,17 +24,16 @@ import org.apache.log4j.Logger;
 import org.eclipse.jgit.util.HttpSupport;
 import org.webcat.core.Application;
 import org.webcat.core.EOBase;
-import org.webcat.core.LoginSession;
 import org.webcat.core.Session;
 import org.webcat.core.User;
 import org.webcat.woextensions.ECActionWithResult;
+import org.webcat.woextensions.WCEC;
 import static org.webcat.woextensions.ECActionWithResult.call;
 import com.Ostermiller.util.Base64;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOMessage;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
-import com.webobjects.eocontrol.EOEditingContext;
 
 //-------------------------------------------------------------------------
 /**
@@ -58,8 +55,6 @@ import com.webobjects.eocontrol.EOEditingContext;
  * </ol>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.6 $, $Date: 2014/06/16 16:00:40 $
  */
 public abstract class BasicAuthenticationFilter
      implements RequestFilter
@@ -84,8 +79,8 @@ public abstract class BasicAuthenticationFilter
         try
         {
             if (session != null
-                    && isRequestValid(request)
-                    && userHasAccess(session.primeUser()))
+                && isRequestValid(request)
+                && userHasAccess(session.primeUser()))
             {
                 filterChain.filterRequest(request, response);
             }
@@ -96,20 +91,22 @@ public abstract class BasicAuthenticationFilter
         }
         finally
         {
+            session = (Session)request.context()._session();
             if (session != null)
             {
-                if (session.useLoginSession())
+                if (!session.useLoginSession())
                 {
-                    Application.wcApplication().saveSessionForContext(
-                        request.context());
-                }
-                else
-                {
-                    EOEditingContext ctxt = session.defaultEditingContext();
                     session.userLogout();
-                    ctxt.unlock();
-                    ctxt.dispose();
                 }
+//                if (session.useLoginSession())
+//                {
+//                    EOEditingContext ctxt = session.defaultEditingContext();
+//                    session.userLogout();
+//                    ctxt.unlock();
+//                    ctxt.dispose();
+//                }
+                Application.wcApplication().saveSessionForContext(
+                    request.context());
             }
         }
     }
@@ -255,33 +252,10 @@ public abstract class BasicAuthenticationFilter
                                 }
                                 else
                                 {
-//                                    String existingSessionId = userSessionId(
-//                                        ec, user, USE_EXISTING_SESSIONS);
-//                                    if (existingSessionId != null)
-//                                    {
-//                                        log.info("Basic auth, connecting to "
-//                                            + "existing session: "
-//                                            + existingSessionId);
-//                                        result = (Session)Application
-//                                            .wcApplication()
-//                                            .restoreSessionWithID(
-//                                                existingSessionId,
-//                                                request.context());
-//                                        log.info("Basic auth, connected to "
-//                                            + "existing session: "
-//                                            + existingSessionId
-//                                            + ": for user: "
-//                                            + (result.user() == null
-//                                                ? "<null>"
-//                                                : result.user().name()));
-//                                    }
-//                                    else
-                                    {
-                                        result = (Session)context.session();
-                                        result.setUseLoginSession(false);
-                                        result.setUser(user.localInstance(
-                                            result.defaultEditingContext()));
-                                    }
+                                    result = (Session)context.session();
+                                    result.setUseLoginSession(false);
+                                    result.setUser(user.localInstance(
+                                        result.defaultEditingContext()));
                                 }
                                 if (result.useLoginSession())
                                 {
@@ -310,8 +284,7 @@ public abstract class BasicAuthenticationFilter
      * @param session the session to associate with the user
      * @return true if the user was successfully authenticated, otherwise false
      */
-    protected User validateUser(String username, String password,
-        EOEditingContext ec)
+    protected User validateUser(String username, String password, WCEC ec)
     {
         // Look up the user based on the repository ID.
         User user = EOBase.objectWithApiId(ec, User.class, username);
@@ -326,26 +299,8 @@ public abstract class BasicAuthenticationFilter
     }
 
 
-    // ----------------------------------------------------------
-    private String userSessionId(
-        EOEditingContext ec, User user, boolean useExistingSession)
-    {
-        if (useExistingSession && user != null)
-        {
-            LoginSession ls = LoginSession.getLoginSessionForUser(ec, user);
-
-            if (ls != null)
-            {
-                return ls.sessionId();
-            }
-        }
-        return null;
-    }
-
-
     //~ Static/instance variables .............................................
 
     static Logger log = Logger.getLogger(BasicAuthenticationFilter.class);
     private static final String SESSION_ID_HEADER = "X-Session-Id";
-    private static final boolean USE_EXISTING_SESSIONS = false;
 }
