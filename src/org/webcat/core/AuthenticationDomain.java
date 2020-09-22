@@ -699,7 +699,7 @@ public class AuthenticationDomain
                     }
                 }
             }
-            ec.saveChangesTolerantly();
+            ec.saveChanges();
 
             NSMutableArray<NSDictionary<String, String>> stubs =
                 new NSMutableArray<NSDictionary<String, String>>();

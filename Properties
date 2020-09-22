@@ -1,9 +1,9 @@
 #This file is automatically rewritten by ANT, so all formatting will be trashed.
-#Fri Sep 18 13:16:47 GMT-05:00 2020
+#Mon Sep 21 20:52:21 GMT-05:00 2020
 er.extensions.ERXRaiseOnMissingEditingContextDelegate=true
 er.extensions.ERXEnterpriseObject.updateInverseRelationships=true
 Core.license.url=http\://www.gnu.org/licenses/agpl.html
-Core.version.date=20200918
+Core.version.date=20200921
 Core.version.minor=3
 Core.copyright=(c) 2006-2018 Virginia Tech Department of Computer Science
 log4j.logger.org.webcat.core.Theme=INFO

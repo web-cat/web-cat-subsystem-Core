@@ -475,19 +475,19 @@ public class Application
                 {
                     period.delete();
                 }
-                ec.saveChangesTolerantly();
+                ec.saveChanges();
                 for (UsagePeriod period : UsagePeriod.objectsMatchingQualifier(
                     ec, UsagePeriod.isLoggedOut.isFalse()))
                 {
                     period.setIsLoggedOut(true);
                 }
-                ec.saveChangesTolerantly();
+                ec.saveChanges();
                 for (SentMessage msg : SentMessage.objectsMatchingQualifier(
                     ec, SentMessage.sentTime.before(thirtyDaysAgo)))
                 {
                     msg.delete();
                 }
-                ec.saveChangesTolerantly();
+                ec.saveChanges();
             }
             catch (Exception e)
             {
@@ -497,7 +497,7 @@ public class Application
             }
             try
             {
-                ec.saveChangesTolerantly();
+                ec.saveChanges();
             }
             catch (Exception e)
             {
@@ -520,7 +520,7 @@ public class Application
             NSLog.debug.setAllowedDebugLevel(NSLog.DebugLevelInformational);
         }
         NSLog.allowDebugLoggingForGroups(NSLog.DebugGroupMultithreading);
-        NSLog.allowDebugLoggingForGroups(NSLog.DebugGroupDatabaseAccess);
+        // NSLog.allowDebugLoggingForGroups(NSLog.DebugGroupDatabaseAccess);
 
         // Add useful tag shortcuts for inline component tags.
         WOHelperFunctionHTMLTemplateParser.registerTagShortcut(
@@ -2315,7 +2315,7 @@ public class Application
             }
             try
             {
-                ec.saveChangesTolerantly();
+                ec.saveChanges();
             }
             catch (Exception e)
             {

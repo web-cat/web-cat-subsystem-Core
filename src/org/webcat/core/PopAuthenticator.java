@@ -20,6 +20,7 @@
 package org.webcat.core;
 
 import com.webobjects.eoaccess.*;
+import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.*;
 import java.io.*;
 import java.net.*;
@@ -30,7 +31,6 @@ import org.webcat.core.PopAuthenticator;
 import org.webcat.core.User;
 import org.webcat.core.UserAuthenticator;
 import org.webcat.core.WCProperties;
-import org.webcat.woextensions.WCEC;
 import org.apache.log4j.Logger;
 
 // -------------------------------------------------------------------------
@@ -125,7 +125,7 @@ public class PopAuthenticator
         String userName,
         String password,
         AuthenticationDomain domain,
-        WCEC ec,
+        EOEditingContext ec,
         LoginSession ls)
     {
         User user = null;

@@ -20,9 +20,9 @@
 package org.webcat.core;
 
 import com.webobjects.eoaccess.*;
+import com.webobjects.eocontrol.EOEditingContext;
 import edu.vt.middleware.ldap.*;
 import org.apache.log4j.Logger;
-import org.webcat.woextensions.WCEC;
 
 // --------------------------------------------------------------------------
 /**
@@ -179,7 +179,7 @@ public class LdapAuthenticator
     public User authenticate( String               username,
                               String               password,
                               AuthenticationDomain domain,
-                              WCEC                 ec,
+                              EOEditingContext     ec,
                               LoginSession         ls)
     {
         User user = null;
@@ -247,7 +247,7 @@ public class LdapAuthenticator
             log.info("user " + username + "(" + domain.displayableName() +
                 "): ldap caching");
             user.setPassword(password);
-            ec.saveChangesTolerantly();
+            ec.saveChanges();
         }
 
         return user;

@@ -671,7 +671,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
                     migrateAttributeValues(
                         (org.webcat.woextensions.MigratingEditingContext)ec,
                         localInstance(ec));
-                    ec.saveChangesTolerantly();
+                    ec.saveChanges();
                 }
             }.run();
         }

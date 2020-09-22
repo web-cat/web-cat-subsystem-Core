@@ -934,7 +934,7 @@ public abstract class _User
                     migrateAttributeValues(
                         (org.webcat.woextensions.MigratingEditingContext)ec,
                         localInstance(ec));
-                    ec.saveChangesTolerantly();
+                    ec.saveChanges();
                 }
             }.run();
         }

@@ -958,7 +958,7 @@ public class WCComponent
               // auto-locked it yet.
               peerContextManager.editingContext().lock();
 
-              peerContextManager.editingContext().saveChangesTolerantly();
+              peerContextManager.editingContext().saveChanges();
               peerContextManager.editingContext().revert();
               peerContextManager.editingContext().refaultAllObjects();
           }

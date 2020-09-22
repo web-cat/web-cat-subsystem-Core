@@ -280,7 +280,7 @@ public class InstallPage7
             }
 
             // commit changes to the database
-            ec.saveChangesTolerantly();
+            ec.saveChanges();
         }});
         Application.configurationProperties().remove( "StartDate" );
         Application.configurationProperties().remove( "EndDate" );

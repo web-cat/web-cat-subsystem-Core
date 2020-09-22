@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: Message.java,v 1.9 2014/06/16 16:01:24 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2010-2011 Virginia Tech
+ |  Copyright (C) 2010-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -36,7 +34,6 @@ import org.webcat.core.Subsystem;
 import org.webcat.core.User;
 import org.webcat.woextensions.ECAction;
 import static org.webcat.woextensions.ECAction.run;
-import org.webcat.woextensions.WCEC;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.foundation.NSArray;
@@ -61,8 +58,6 @@ import com.webobjects.foundation.NSTimestamp;
  * </p>
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.9 $, $Date: 2014/06/16 16:01:24 $
  */
 public abstract class Message
 {
@@ -573,7 +568,7 @@ public abstract class Message
                 }
             }
 
-            ec.saveChangesTolerantly();
+            ec.saveChanges();
         }});
     }
 

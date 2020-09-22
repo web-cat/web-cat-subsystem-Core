@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2018 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -20,10 +20,10 @@
 package org.webcat.core;
 
 import com.webobjects.eoaccess.*;
+import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.NSDictionary;
 import edu.vt.middleware.eddo.*;
 import org.apache.log4j.Logger;
-import org.webcat.woextensions.WCEC;
 
 // --------------------------------------------------------------------------
 /**
@@ -96,7 +96,7 @@ public class EdAuthAuthenticator
         String               username,
         String               password,
         AuthenticationDomain domain,
-        WCEC                 ec,
+        EOEditingContext     ec,
         LoginSession         ls)
     {
         User user = null;

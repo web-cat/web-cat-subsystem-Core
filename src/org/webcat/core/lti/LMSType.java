@@ -78,7 +78,7 @@ public class LMSType
                         create(ec, type);
                     }
                 }
-                ec.saveChangesTolerantly();
+                ec.saveChanges();
             }
         }});
     }

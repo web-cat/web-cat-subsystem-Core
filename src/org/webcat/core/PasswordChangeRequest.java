@@ -29,7 +29,6 @@ import org.webcat.core.PasswordChangeRequest;
 import org.webcat.core.User;
 import org.webcat.core.WCProperties;
 import org.webcat.core._PasswordChangeRequest;
-import org.webcat.woextensions.WCEC;
 import org.apache.log4j.*;
 
 // -------------------------------------------------------------------------
@@ -82,7 +81,7 @@ public class PasswordChangeRequest
      * or null otherwise
      */
     public static PasswordChangeRequest requestForCode(
-        WCEC ec, String requestCode)
+        EOEditingContext ec, String requestCode)
     {
         PasswordChangeRequest request = null;
         NSArray<PasswordChangeRequest> results =
@@ -94,7 +93,7 @@ public class PasswordChangeRequest
             {
                 // Expired timestamp, so delete it!
                 request.delete();
-                ec.saveChangesTolerantly();
+                ec.saveChanges();
                 request = null;
             }
         }
@@ -111,7 +110,7 @@ public class PasswordChangeRequest
      * false if none were found
      */
     public static boolean clearPendingUserRequests(
-        WCEC ec, User forUser)
+        EOEditingContext ec, User forUser)
     {
         NSArray<PasswordChangeRequest> results = requestsForUser(ec, forUser);
         boolean result = results.count() > 0;
@@ -122,7 +121,7 @@ public class PasswordChangeRequest
         }
         if ( result )
         {
-            ec.saveChangesTolerantly();
+            ec.saveChanges();
         }
         return result;
     }
@@ -137,7 +136,7 @@ public class PasswordChangeRequest
      * @param forUser The user requesting the password reset instructions
      */
     public static void sendPasswordResetEmail(
-        WCEC ec, User forUser)
+        EOEditingContext ec, User forUser)
     {
         log.info( "Creating password change ticket for: "
             + forUser.nameAndUid() );
@@ -149,7 +148,7 @@ public class PasswordChangeRequest
             0, 0, 1, 0, 0, 0 ) );
         pcr.setCode(digestString(forUser.userName() + formatter.format(now)
             + forUser.email() + Integer.toString(random.nextInt())));
-        ec.saveChangesTolerantly();
+        ec.saveChanges();
 
         WCProperties properties =
             new WCProperties( Application.configurationProperties() );

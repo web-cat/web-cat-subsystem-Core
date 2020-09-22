@@ -500,7 +500,7 @@ public class Theme
                         if (themeToUpdate != null)
                         {
                             themeToUpdate.refreshFrom(plist);
-                            ec.saveChangesTolerantly();
+                            ec.saveChanges();
                             // don't need to cache in themeIds, since that
                             // was already done in themeFromName() at the
                             // top of this loop

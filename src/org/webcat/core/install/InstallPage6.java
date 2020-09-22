@@ -214,7 +214,7 @@ public class InstallPage6
                     {
                         admin.setLastName( last );
                     }
-                    ec.saveChangesTolerantly();
+                    ec.saveChanges();
                 }
                 else
                 {
@@ -248,7 +248,7 @@ public class InstallPage6
                         {
                             admin.setLastName( last );
                         }
-                        ec.saveChangesTolerantly();
+                        ec.saveChanges();
                     }
                 }
             }

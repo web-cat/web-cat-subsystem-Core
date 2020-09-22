@@ -649,7 +649,7 @@ public class DirectAction
                 pcr.delete();
                 try
                 {
-                    ec.saveChangesTolerantly();
+                    ec.saveChanges();
                 }
                 catch (Exception e)
                 {

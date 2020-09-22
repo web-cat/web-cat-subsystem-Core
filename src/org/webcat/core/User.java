@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2018 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -28,12 +28,14 @@ import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import java.security.SecureRandom;
 import org.apache.log4j.Logger;
+import org.webcat.woextensions.ECActionWithResult;
 import org.webcat.woextensions.MigratingEditingContext;
 import org.webcat.woextensions.WCEC;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eoaccess.EOUtilities.MoreThanOneException;
 import com.webobjects.eocontrol.EOEditingContext;
+import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
@@ -109,7 +111,7 @@ public class User
                                   String               aPassword,
                                   AuthenticationDomain domain,
                                   byte                 anAccessLevel,
-                                  WCEC                 ec)
+                                  EOEditingContext     ec)
     {
         User u = new User();
         ec.insertObject(u);
@@ -118,7 +120,7 @@ public class User
         u.setPassword(aPassword);
         u.setAccessLevel(anAccessLevel);
         u.setAuthenticationDomainRelationship(domain);
-        ec.saveChangesTolerantly();
+        ec.saveChanges();
         return u;
     }
 
@@ -540,7 +542,7 @@ public class User
             String aUserName,
             String aPassword,
             AuthenticationDomain domain,
-            WCEC ec
+            EOEditingContext ec
         )
     {
         User  u = null;
@@ -1357,22 +1359,16 @@ public class User
         NSArray<CoreSelections> cs = coreSelections();
         if (cs.count() == 0)
         {
-            WCEC ec = WCEC.newEditingContext();
-            try
-            {
-                ec.lock();
-                CoreSelections newCoreSelections = new CoreSelections();
-                ec.insertObject(newCoreSelections);
-                newCoreSelections.setUserRelationship(localInstance(ec));
-                ec.saveChangesTolerantly();
-                editingContext().refreshObject(this);
-                cs = coreSelections();
-            }
-            finally
-            {
-                ec.unlock();
-                ec.dispose();
-            }
+            EOGlobalID id = new ECActionWithResult<EOGlobalID>() {
+                public EOGlobalID action() {
+                    CoreSelections newCoreSelections = new CoreSelections();
+                    ec.insertObject(newCoreSelections);
+                    newCoreSelections.setUserRelationship(localInstance(ec));
+                    ec.saveChanges();
+                    return newCoreSelections.globalId();
+                }}.call();
+            editingContext().refreshObject(this);
+            return CoreSelections.forId(editingContext(), id);
         }
         return cs.objectAtIndex(0);
     }
@@ -1397,7 +1393,7 @@ public class User
             // Use a separate EC to store the changed preferences
             User me = localInstance(ec);
             me.setPreferences(preferences());
-            ec.saveChangesTolerantly();
+            ec.saveChanges();
             // Now refresh the session's user object so that it loads
             // this saved preferences value
             editingContext().refreshObject(this);

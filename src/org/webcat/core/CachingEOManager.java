@@ -149,15 +149,7 @@ public class CachingEOManager
             log.debug(me() + ": addObjectToBothSidesOfRelationshipWithKey(), "
                 + "key = " + key + " => " + other);
             clone.addObjectToBothSidesOfRelationshipWithKey(other, key);
-            try
-            {
-                ec.saveChanges();
-            }
-            catch (Exception e)
-            {
-                log.error(me(), e);
-                ec.saveChangesTolerantly();
-            }
+            ec.saveChanges();
             log.debug(me() + ": addObjectToBothSidesOfRelationshipWithKey(), "
                 + "after save = " + key + " => " + clone.valueForKey(key));
         }}.run();
@@ -212,7 +204,7 @@ public class CachingEOManager
             log.debug(me() + ": addObjectToPropertyWithKey(), key = "
                 + key + " => " + eo);
             clone.addObjectToPropertyWithKey(eo, key);
-            ec.saveChangesTolerantly();
+            ec.saveChanges();
             log.debug(me() + ": addObjectToPropertyWithKey(), after save = "
                 + key + " => " + clone.valueForKey(key));
         }}.run();
@@ -267,7 +259,7 @@ public class CachingEOManager
             log.debug(me() + ": removeObjectFromBothSidesOfRelationship"
                 + "WithKey(), key = " + key + " - " + other);
             clone.removeObjectFromBothSidesOfRelationshipWithKey(other, key);
-            ec.saveChangesTolerantly();
+            ec.saveChanges();
             log.debug(me() + ": removeObjectFromBothSidesOfRelationship"
                 + "WithKey(), after save = " + key + " - "
                 + clone.valueForKey(key));
@@ -310,7 +302,7 @@ public class CachingEOManager
             log.debug(me() + ": removeObjectFromPropertyWithKey(), key = "
                 + key + " - " + eo);
             clone.removeObjectFromPropertyWithKey(eo, key);
-            ec.saveChangesTolerantly();
+            ec.saveChanges();
             log.debug(me() + ": removeObjectFromPropertyWithKey(), after "
                 + "save = " + key + " - " + clone.valueForKey(key));
         }}.run();
@@ -436,7 +428,7 @@ public class CachingEOManager
                             + key + ") null => removing " + current);
                         clone.removeObjectFromBothSidesOfRelationshipWithKey(
                             (EORelationshipManipulation)current, key);
-                        ec.saveChangesTolerantly();
+                        ec.saveChanges();
                         log.debug(me() + ": handleTakeValueForUnboundKey("
                             + key + ") after save => " + key + " => "
                             + clone.valueForKey(key));
@@ -474,7 +466,7 @@ public class CachingEOManager
                         clone.addObjectToBothSidesOfRelationshipWithKey(
                             other, key);
                     }
-                    ec.saveChangesTolerantly();
+                    ec.saveChanges();
                     log.debug(me() + ": handleTakeValueForUnboundKey("
                         + key + ") after save => " + clone.valueForKey(key));
                 }}.run();
@@ -514,7 +506,7 @@ public class CachingEOManager
                         + ") => adding " + other);
                     clone.addObjectToBothSidesOfRelationshipWithKey(
                         other, key);
-                    ec.saveChangesTolerantly();
+                    ec.saveChanges();
                     log.debug(me() + ": handleTakeValueForUnboundKey(" + key
                         + ") after save => " + clone.valueForKey(key));
                 }}.run();
@@ -544,7 +536,7 @@ public class CachingEOManager
             log.debug(me() + ": handleTakeValueForUnboundKey(" + key
                 + ") => takeValueForKey(): " + value);
             clone.takeValueForKey(value, key);
-            ec.saveChangesTolerantly();
+            ec.saveChanges();
             log.debug(me() + ": handleTakeValueForUnboundKey(" + key
                 + ") => after takeValueForKey(): " + clone.valueForKey(key));
         }}.run();

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2018-2019 Virginia Tech
+ |  Copyright (C) 2018-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -29,8 +29,8 @@ import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import com.webobjects.eoaccess.*;
+import com.webobjects.eocontrol.EOEditingContext;
 import org.apache.log4j.Logger;
-import org.webcat.woextensions.WCEC;
 
 // --------------------------------------------------------------------------
 /**
@@ -119,7 +119,7 @@ public class CasAuthenticator
         String               returnUrl,
         String               ticket,
         AuthenticationDomain domain,
-        WCEC                 ec,
+        EOEditingContext     ec,
         LoginSession         ls)
     {
         if (returnUrl != null && !returnUrl.startsWith("https://"))
@@ -157,7 +157,7 @@ public class CasAuthenticator
                     {
                         user.setEmail(
                             username + "@" + domain.defaultEmailDomain());
-                        ec.saveChangesTolerantly();
+                        ec.saveChanges();
                     }
                 }
                 else if (user.authenticationDomain() != domain)

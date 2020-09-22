@@ -50,9 +50,9 @@
 package org.webcat.core;
 
 import com.webobjects.eoaccess.*;
+import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.*;
 import org.webcat.woextensions.ECActionWithResult;
-import org.webcat.woextensions.WCEC;
 import static org.webcat.woextensions.ECActionWithResult.call;
 import org.apache.log4j.Logger;
 
@@ -142,7 +142,7 @@ public class DatabaseAuthenticator
     public User authenticate(String userName,
                              String password,
                              AuthenticationDomain domain,
-                             WCEC ec,
+                             EOEditingContext ec,
                              LoginSession ls)
     {
         if (log.isDebugEnabled())
@@ -239,7 +239,7 @@ public class DatabaseAuthenticator
                 {
                     User localUser = user.localInstance(ec);
                     localUser.setPassword(newPassword);
-                    ec.saveChangesTolerantly();
+                    ec.saveChanges();
                     return true;
                 }
                 catch (Exception e)

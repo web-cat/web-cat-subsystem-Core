@@ -23,16 +23,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
 import org.webcat.core.Application;
 import org.webcat.core.EOManager;
-import com.webobjects.eoaccess.EOAdaptorChannel;
-import com.webobjects.eoaccess.EODatabaseContext;
-import com.webobjects.eoaccess.EODatabaseOperation;
-import com.webobjects.eoaccess.EOGeneralAdaptorException;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.eocontrol.EOObjectStore;
 import com.webobjects.foundation.NSArray;
-import com.webobjects.foundation.NSDictionary;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
 import er.extensions.eof.ERXEC;
@@ -160,7 +155,9 @@ public class WCEC
             {
                 if (tries > 0)
                 {
-                    log.warn("initializeObject() failed with NPE, will retry "
+                    log.warn("initializeObject() failed with NPE on "
+                        + eoglobalid
+                        + ", will retry "
                         + tries + " times", ee);
                     try
                     {
@@ -175,9 +172,18 @@ public class WCEC
                 }
                 else
                 {
+                    log.warn("initializeObject() failed with NPE on "
+                        + eoglobalid
+                        + " after max "
+                        + "retries, giving up", ee);
                     throw ee;
                 }
             }
+        }
+        if (tries < 2)
+        {
+            log.warn("initializeObject() succeeded after " + (3 - tries)
+                + " tries on " + eoglobalid);
         }
     }
 
@@ -194,51 +200,6 @@ public class WCEC
             autoUnlock(wasAutoLocked);
         }
     }
-
-
-    // ----------------------------------------------------------
-    /**
-     * This is redeclared here just to mark it deprecated, since we should
-     * use saveChangesTolerantly() instead ... but we can't just override
-     * this to delegate to saveChangesTolerantly() because of how this
-     * method is already used inside saveChangesTolerantly() and how other
-     * framework code uses saveChanges(). Making it deprecated at least
-     * means developers will get warnings if they use the wrong method
-     * and will be forced to think about it first.
-     */
-    @Override
-    @Deprecated
-    public void saveChanges()
-    {
-      super.saveChanges();
-    }
-
-
-//    // ----------------------------------------------------------
-//    @Override
-//    public void saveChanges()
-//    {
-//        EOSharedEditingContext sharedEC = null;
-//        if (sharedEditingContext() == null)
-//        {
-//            sharedEC = EOSharedEditingContext.defaultSharedEditingContext();
-//            if (sharedEC != null)
-//            {
-//                sharedEC.lock();
-//            }
-//        }
-//        try
-//        {
-//            super.saveChanges();
-//        }
-//        finally
-//        {
-//            if (sharedEC != null)
-//            {
-//                sharedEC.unlock();
-//            }
-//        }
-//    }
 
 
     // ----------------------------------------------------------
@@ -335,11 +296,20 @@ public class WCEC
 //        extends er.extensions.eof.ERXObjectStoreCoordinatorPool.MultiOSCFactory
 //        extends er.extensions.eof.ERXEC.DefaultFactory
     {
+        @Override
         protected EOEditingContext _createEditingContext(EOObjectStore parent)
         {
-            return new WCEC(parent == null
+            WCEC ec = new WCEC(parent == null
                 ? EOEditingContext.defaultParentObjectStore()
                 : parent);
+            ec.lock();
+            try {
+                ec.setOptions(true, true, true);
+            }
+            finally {
+                ec.unlock();
+            }
+            return ec;
         }
     }
 

@@ -326,7 +326,7 @@ public class LTILaunchRequest
                 {
                     // Add LMSIdentity, since it is missing
                     LMSIdentity.create(ec, userId(), lmsInstance, user);
-                    ec.saveChangesTolerantly();
+                    ec.saveChanges();
                 }
             }
 
@@ -377,7 +377,7 @@ public class LTILaunchRequest
                     user.setEmail(email);
                 }
                 LMSIdentity.create(ec, userId(), lmsInstance, user);
-                ec.saveChangesTolerantly();
+                ec.saveChanges();
             }
 
             if (user != null)
@@ -406,7 +406,7 @@ public class LTILaunchRequest
                 }
                 if (user.changesFromCommittedSnapshot().size() > 0)
                 {
-                    ec.saveChangesTolerantly();
+                    ec.saveChanges();
                 }
             }
         }
@@ -511,7 +511,7 @@ public class LTILaunchRequest
                 }
                 if (needsSave)
                 {
-                    ec.saveChangesTolerantly();
+                    ec.saveChanges();
                 }
                 newResults.addAll(result);
                 result = newResults;
@@ -540,7 +540,7 @@ public class LTILaunchRequest
             }
             if (needsSave)
             {
-                ec.saveChangesTolerantly();
+                ec.saveChanges();
             }
         }
         log.debug("courseOfferings() = " + result);

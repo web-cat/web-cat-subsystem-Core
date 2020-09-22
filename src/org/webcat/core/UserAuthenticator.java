@@ -22,7 +22,7 @@ package org.webcat.core;
 import org.webcat.core.AuthenticationDomain;
 import org.webcat.core.User;
 import org.webcat.core.WCProperties;
-import org.webcat.woextensions.WCEC;
+import com.webobjects.eocontrol.EOEditingContext;
 
 // -------------------------------------------------------------------------
 /**
@@ -69,6 +69,6 @@ public interface UserAuthenticator
         String userName,
         String password,
         AuthenticationDomain domain,
-        WCEC ec,
+        EOEditingContext ec,
         LoginSession ls);
 }

@@ -475,7 +475,7 @@ public class Session
     {
         log.debug("commitLocalChanges()");
         temporaryTheme = null;
-        defaultEditingContext().saveChangesTolerantly();
+        defaultEditingContext().saveChanges();
         defaultEditingContext().revert();
         defaultEditingContext().refaultAllObjects();
     }
