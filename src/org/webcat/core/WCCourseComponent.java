@@ -26,10 +26,10 @@ import com.webobjects.foundation.NSArray;
 import org.webcat.core.CoreSelectionsManager;
 import org.webcat.core.Course;
 import org.webcat.core.CourseOffering;
-import org.webcat.core.EOManager;
 import org.webcat.core.Semester;
 import org.webcat.core.WCComponent;
 import org.webcat.core.WCCourseComponent;
+import org.webcat.woextensions.EOManager;
 import org.apache.log4j.*;
 
 //-------------------------------------------------------------------------

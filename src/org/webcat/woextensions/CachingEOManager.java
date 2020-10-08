@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: CachingEOManager.java,v 1.2 2011/12/25 02:24:54 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -19,15 +17,13 @@
  |  along with Web-CAT; if not, see <http://www.gnu.org/licenses/>.
 \*==========================================================================*/
 
-package org.webcat.core;
+package org.webcat.woextensions;
 
 import com.webobjects.foundation.*;
 import com.webobjects.eocontrol.*;
-import org.webcat.core.CachingEOManager;
-import org.webcat.core.EOManager;
-import org.webcat.woextensions.ECAction;
-import org.webcat.woextensions.ECActionWithResult;
-import org.webcat.woextensions.WCEC;
+import er.extensions.eof.ERXDatabaseContextDelegate.ObjectNotAvailableException;
+import org.webcat.core.EOBase;
+import org.webcat.woextensions.CachingEOManager;
 import org.apache.log4j.Logger;
 
 //-------------------------------------------------------------------------
@@ -38,8 +34,6 @@ import org.apache.log4j.Logger;
  * are locally cached as well.
  *
  * @author stedwar2
- * @author  latest changes by: $Author: stedwar2 $
- * @version $Revision: 1.2 $ $Date: 2011/12/25 02:24:54 $
  */
 public class CachingEOManager
     implements EOManager,
@@ -117,6 +111,32 @@ public class CachingEOManager
 //        return NSKeyValueCoding.DefaultImplementation.valueForKey(this, key);
         Object result = original.valueForKey(key);
         log.debug(me() + ": valueForKey(" + key + ") => " + result);
+        if (result instanceof EOEnterpriseObject)
+        {
+            EOEnterpriseObject eo = (EOEnterpriseObject)result;
+            try
+            {
+                if (eo.isFault())
+                {
+                    eo.willRead();
+                }
+            }
+            catch (ObjectNotAvailableException e)
+            {
+                result = null;
+                try
+                {
+                    takeValueForKey(null, key);
+                }
+                catch (Exception ee)
+                {
+                    log.error("Unexpected exception trying to set null for "
+                        + "key", ee);
+                    log.error("Attempted to set null to clear "
+                        + "ObjectNotAvaliableException", e);
+                }
+            }
+        }
         return result;
     }
 
@@ -658,7 +678,13 @@ public class CachingEOManager
                 log.error("Mismatched editing contexts",
                     new Exception("refreshMaster() called here"));
             }
-            context.refaultObject(original);
+            context.refreshObject(original);
+            if (key != null)
+            {
+                log.debug(me() + ": refreshing master, " + key
+                    + " => " + original.valueForKey(key));
+            }
+//            context.refaultObject(original);
 //                new ECAction(original.wcEditingContext()) {
 //                    public void action() {
 //                        ec.refreshObject(original);

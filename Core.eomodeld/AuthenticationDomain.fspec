@@ -10,5 +10,6 @@
                 selectorName = compareCaseInsensitiveAscending;
             }
         );
+        refreshesRefetchedObjects = YES; 
     };
 }

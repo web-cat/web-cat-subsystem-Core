@@ -3,7 +3,6 @@
         class = WCFetchSpecification;
         entityName = User;
         fetchLimit = 0;
-        isDeep = YES;
         qualifier = {
             class = EOAndQualifier;
             qualifiers = (
@@ -21,12 +20,12 @@
                 }
             );
         };
+        refreshesRefetchedObjects = YES; 
     };
     staffForCourse = {
         class = WCFetchSpecification;
         entityName = User;
         fetchLimit = 0;
-        isDeep = YES;
         qualifier = {
             class = EOOrQualifier;
             qualifiers = (
@@ -44,12 +43,12 @@
                 }
             );
         };
+        refreshesRefetchedObjects = YES; 
     };
     studentsForCourse = {
         class = WCFetchSpecification;
         entityName = User;
         fetchLimit = 0;
-        isDeep = YES;
         qualifier = {
             class = EOAndQualifier;
             qualifiers = (
@@ -81,6 +80,7 @@
                 }
             );
         };
+        refreshesRefetchedObjects = YES; 
     };
     systemAdmins = {
         class = WCFetchSpecification;
@@ -90,13 +90,13 @@
             class = EOKeyValueQualifier;
             key = accessLevel;
             selectorName = "isGreaterThanOrEqualTo:";
-            value = {class = NSNumber; value = 90; };
+            value = { class = NSNumber; value = 90; };
         };
+        refreshesRefetchedObjects = YES; 
     };
     userWithDomainAndEmail = {
         class = WCFetchSpecification;
         entityName = User;
-        isDeep = YES;
         qualifier = {
             class = EOAndQualifier;
             qualifiers = (
@@ -114,12 +114,12 @@
                 }
             );
         };
-        userInfo = {ensureUnique = true; };
+        refreshesRefetchedObjects = YES; 
+        userInfo = { ensureUnique = true; };
     };
     userWithDomainAndName = {
         class = WCFetchSpecification;
         entityName = User;
-        isDeep = YES;
         qualifier = {
             class = EOAndQualifier;
             qualifiers = (
@@ -137,18 +137,19 @@
                 }
             );
         };
-        userInfo = {ensureUnique = true; };
+        refreshesRefetchedObjects = YES; 
+        userInfo = { ensureUnique = true; };
     };
     userWithName = {
         class = WCFetchSpecification;
         entityName = User;
-        isDeep = YES;
         qualifier = {
             class = EOKeyValueQualifier;
             key = userName;
             selectorName = "isEqualTo:";
             value = {"_key" = name; class = EOQualifierVariable; };
         };
-        userInfo = {ensureUnique = true; };
+        refreshesRefetchedObjects = YES; 
+        userInfo = { ensureUnique = true; };
     };
 }

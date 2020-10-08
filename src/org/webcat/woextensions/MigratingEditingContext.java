@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: MigratingEditingContext.java,v 1.2 2014/08/25 15:28:01 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -33,8 +31,6 @@ import com.webobjects.eocontrol.EOObjectStore;
  * has to be loaded into a child context for migration.
  *
  * @author  Tony Allevato
- * @author  Last changed by $Author: stedwar2 $
- * @version $Revision: 1.2 $, $Date: 2014/08/25 15:28:01 $
  */
 public class MigratingEditingContext
     extends WCEC
@@ -63,27 +59,41 @@ public class MigratingEditingContext
     public static class MigratingFactory
         extends WCECFactory
     {
-        protected EOEditingContext _createEditingContext(EOObjectStore parent)
+        @Override
+        protected MigratingEditingContext _createEditingContext(
+            EOObjectStore parent)
         {
-            return new MigratingEditingContext(parent == null
+            MigratingEditingContext ec = new MigratingEditingContext(
+                parent == null
                 ? EOEditingContext.defaultParentObjectStore()
                 : parent);
+            ec.lock();
+            try {
+                ec.setOptions(true, true, true);
+            }
+            finally {
+                ec.unlock();
+            }
+            return ec;
         }
 
-        public EOEditingContext _newEditingContext(
-            EOObjectStore objectStore, boolean validationEnabled)
-        {
-            EOEditingContext result =
-                super._newEditingContext(objectStore, validationEnabled);
-//            result.setSharedEditingContext(null);
-            return result;
-        }
+//        @Override
+//        public EOEditingContext _newEditingContext(
+//            EOObjectStore objectStore, boolean validationEnabled)
+//        {
+//            EOEditingContext result =
+//                super._newEditingContext(objectStore, validationEnabled);
+////            result.setSharedEditingContext(null);
+//            return result;
+//        }
     }
 
 
     // ----------------------------------------------------------
-    public static Factory factory() {
-        if (factory == null) {
+    public static WCECFactory factory()
+    {
+        if (factory == null)
+        {
             factory = new MigratingFactory();
         }
         return factory;
@@ -92,5 +102,5 @@ public class MigratingEditingContext
 
     //~ Static/instance variables .............................................
 
-    private static Factory factory;
+    private static WCECFactory factory;
 }

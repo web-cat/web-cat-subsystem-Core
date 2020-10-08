@@ -2,7 +2,6 @@
     savedQueriesForObjectTypeAndUser = {
         class = WCFetchSpecification;
         entityName = ObjectQuery;
-        isDeep = NO;
         prefetchingRelationshipKeyPaths = ();
         qualifier = {
             class = EOAndQualifier;
@@ -27,6 +26,7 @@
                 }
             );
         };
+        refreshesRefetchedObjects = YES; 
         sortOrderings = (
             {
                 class = EOSortOrdering;

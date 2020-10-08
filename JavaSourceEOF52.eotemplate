@@ -36,7 +36,6 @@ import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
 import org.webcat.core.EOBasedKeyGenerator;
-import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCFetchSpecification;
 
 // -------------------------------------------------------------------------
@@ -181,13 +180,7 @@ import org.webcat.woextensions.WCFetchSpecification;
     public static ${entity.classNameWithoutPackage} forId(
         EOEditingContext ec, EOGlobalID id)
     {
-        ${entity.classNameWithoutPackage} _result =
-            (${entity.classNameWithoutPackage})ec.objectForGlobalID(id);
-        if (_result == null)
-        {
-            _result = (${entity.classNameWithoutPackage})ec.faultForGlobalID(id, ec);
-        }
-        return _result;
+        return (${entity.classNameWithoutPackage})ec.faultForGlobalID(id, ec);
     }
 
 
@@ -282,6 +275,19 @@ import org.webcat.woextensions.WCFetchSpecification;
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Refetch this object from the database.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public ${entity.classNameWithoutPackage} refetch(EOEditingContext editingContext)
+    {
+        return (${entity.classNameWithoutPackage})refetchObjectFromDBinEditingContext(
+            editingContext);
+    }
+
+
 #if (!$entity.parentSet)
     // ----------------------------------------------------------
     /**
@@ -348,26 +354,26 @@ import org.webcat.woextensions.WCFetchSpecification;
                 ${attribute.name}RawCache = dbValue;
                 ${attribute.userInfo.valueClassName} newValue =
                     ${attribute.userInfo.valueClassName}
-                    .${attribute.userInfo.valueFactoryMethodName}( dbValue );
-                if ( ${attribute.name}Cache != null )
+                    .${attribute.userInfo.valueFactoryMethodName}(dbValue);
+                if (${attribute.name}Cache != null)
                 {
-                    ${attribute.name}Cache.copyFrom( newValue );
+                    ${attribute.name}Cache.copyFrom(newValue);
                 }
                 else
                 {
                     ${attribute.name}Cache = newValue;
                 }
-                ${attribute.name}Cache.setOwner( this );
-                setUpdateMutableFields( true );
+                ${attribute.name}Cache.setOwner(this);
+                setUpdateMutableFields(true);
             }
         }
-        else if ( dbValue == null && ${attribute.name}Cache == null )
+        else if (dbValue == null && ${attribute.name}Cache == null)
         {
             ${attribute.name}Cache =
                 ${attribute.userInfo.valueClassName}
-                .${attribute.userInfo.valueFactoryMethodName}( dbValue );
-             ${attribute.name}Cache.setOwner( this );
-             setUpdateMutableFields( true );
+                .${attribute.userInfo.valueFactoryMethodName}(dbValue);
+             ${attribute.name}Cache.setOwner(this);
+             setUpdateMutableFields(true);
         }
         return ${attribute.name}Cache;
     }
@@ -380,26 +386,26 @@ import org.webcat.woextensions.WCFetchSpecification;
      *
      * @param value The new value for this property
      */
-    public void set${attribute.capitalizedName}( ${attribute.userInfo.valueClassName} value )
+    public void set${attribute.capitalizedName}(${attribute.userInfo.valueClassName} value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "set${attribute.capitalizedName}("
-                + value + ")" );
+            log.debug("set${attribute.capitalizedName}("
+                + value + ")");
         }
-        if ( ${attribute.name}Cache == null )
+        if (${attribute.name}Cache == null)
         {
             ${attribute.name}Cache = value;
             value.setHasChanged( false );
             ${attribute.name}RawCache = value.${attribute.userInfo.adaptorValueConversionMethodName}();
-            takeStoredValueForKey( ${attribute.name}RawCache, "${attribute.name}" );
+            takeStoredValueForKey(${attribute.name}RawCache, "${attribute.name}");
         }
-        else if ( ${attribute.name}Cache != value )  // ( ${attribute.name}Cache != null )
+        else if (${attribute.name}Cache != value)  // ( ${attribute.name}Cache != null )
         {
-            ${attribute.name}Cache.copyFrom( value );
-            setUpdateMutableFields( true );
+            ${attribute.name}Cache.copyFrom(value);
+            setUpdateMutableFields(true);
         }
-        else  // ( ${attribute.name}Cache == non-null value )
+        else  // (${attribute.name}Cache == non-null value)
         {
             // no nothing
         }
@@ -415,9 +421,9 @@ import org.webcat.woextensions.WCFetchSpecification;
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "clear${attribute.capitalizedName}()" );
+            log.debug("clear${attribute.capitalizedName}()");
         }
-        takeStoredValueForKey( null, "${attribute.name}" );
+        takeStoredValueForKey(null, "${attribute.name}");
         ${attribute.name}RawCache = null;
         ${attribute.name}Cache = null;
     }
@@ -1069,6 +1075,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
             new WCFetchSpecification<${entity.classNameWithoutPackage}>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -1093,6 +1100,7 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
             new WCFetchSpecification<${entity.classNameWithoutPackage}>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<${entity.classNameWithoutPackage}> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -1288,6 +1296,8 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
                 ENTITY_NAME,
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
+        fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<${entity.classNameWithoutPackage}> objects =
@@ -1726,8 +1736,49 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
         {
             key = key.substring(BASE_PREFIX_DOT.length());
         }
+        // if (ERXValueUtilities.isNull(value))
+        if (value == NSKeyValueCoding.NullValue
+            || value instanceof NSKeyValueCoding.Null)
+        {
+            value = null;
+        }
 
-        super.takeValueForKey(value, key);
+        if (value instanceof NSData)
+        {
+            super.takeStoredValueForKey(value, key);
+        }
+        else
+        {
+            super.takeValueForKey(value, key);
+        }
+    }
+
+#else
+
+    // ----------------------------------------------------------
+    /**
+     * Hack to workaround bugs in ERXEOAccessUtilities.reapplyChanges().
+     *
+     * @param value the new value of the key
+     * @param key the key to access
+     */
+    public void takeValueForKey(Object value, String key)
+    {
+        // if (ERXValueUtilities.isNull(value))
+        if (value == NSKeyValueCoding.NullValue
+            || value instanceof NSKeyValueCoding.Null)
+        {
+            value = null;
+        }
+
+        if (value instanceof NSData)
+        {
+            super.takeStoredValueForKey(value, key);
+        }
+        else
+        {
+            super.takeValueForKey(value, key);
+        }
     }
 
 #end

@@ -4,5 +4,6 @@
         class = WCFetchSpecification;
         entityName = Language;
         fetchLimit = 0;
+        refreshesRefetchedObjects = YES; 
     };
 }

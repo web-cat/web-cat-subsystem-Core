@@ -21,6 +21,7 @@ package org.webcat.core;
 
 import org.apache.log4j.Logger;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
+import org.webcat.woextensions.EOManager;
 import org.webcat.woextensions.ResourceCounter;
 import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCEC.PeerManager;

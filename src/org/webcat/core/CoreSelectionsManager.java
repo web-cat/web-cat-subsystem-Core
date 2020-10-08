@@ -21,12 +21,12 @@
 
 package org.webcat.core;
 
-import org.webcat.core.CachingEOManager;
 import org.webcat.core.CoreSelections;
 import org.webcat.core.Course;
 import org.webcat.core.CourseOffering;
 import org.webcat.core.Semester;
 import org.webcat.core.User;
+import org.webcat.woextensions.CachingEOManager;
 import org.webcat.woextensions.WCEC;
 import er.extensions.eof.ERXConstant;
 import er.extensions.foundation.ERXValueUtilities;

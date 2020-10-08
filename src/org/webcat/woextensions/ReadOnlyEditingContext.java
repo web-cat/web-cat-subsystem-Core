@@ -251,7 +251,7 @@ public class ReadOnlyEditingContext
     public static class ReadOnlyFactory
         extends WCECFactory
     {
-        protected EOEditingContext _createEditingContext(EOObjectStore parent)
+        protected WCEC _createEditingContext(EOObjectStore parent)
         {
             return new ReadOnlyEditingContext(parent == null
                 ? EOEditingContext.defaultParentObjectStore()
@@ -261,8 +261,10 @@ public class ReadOnlyEditingContext
 
 
     // ----------------------------------------------------------
-    public static Factory factory() {
-        if (factory == null) {
+    public static WCECFactory factory()
+    {
+        if (factory == null)
+        {
             factory = new ReadOnlyFactory();
         }
         return factory;
@@ -275,6 +277,6 @@ public class ReadOnlyEditingContext
     private boolean loggingSuppressed = false;
     private boolean suppressesLogAfterFirstAttempt = false;
 
-    private static Factory factory;
+    private static WCECFactory factory;
     static final Logger log = Logger.getLogger(ReadOnlyEditingContext.class);
 }

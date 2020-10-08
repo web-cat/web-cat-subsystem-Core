@@ -31,7 +31,6 @@ import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
 import org.webcat.core.EOBasedKeyGenerator;
-import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCFetchSpecification;
 
 // -------------------------------------------------------------------------
@@ -132,13 +131,7 @@ public abstract class _AuthenticationDomain
     public static AuthenticationDomain forId(
         EOEditingContext ec, EOGlobalID id)
     {
-        AuthenticationDomain _result =
-            (AuthenticationDomain)ec.objectForGlobalID(id);
-        if (_result == null)
-        {
-            _result = (AuthenticationDomain)ec.faultForGlobalID(id, ec);
-        }
-        return _result;
+        return (AuthenticationDomain)ec.faultForGlobalID(id, ec);
     }
 
 
@@ -206,6 +199,19 @@ public abstract class _AuthenticationDomain
     {
         return (AuthenticationDomain)EOUtilities.localInstanceOfObject(
             editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Refetch this object from the database.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public AuthenticationDomain refetch(EOEditingContext editingContext)
+    {
+        return (AuthenticationDomain)refetchObjectFromDBinEditingContext(
+            editingContext);
     }
 
 
@@ -694,6 +700,7 @@ public abstract class _AuthenticationDomain
             new WCFetchSpecification<AuthenticationDomain>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -718,6 +725,7 @@ public abstract class _AuthenticationDomain
             new WCFetchSpecification<AuthenticationDomain>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<AuthenticationDomain> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -913,6 +921,8 @@ public abstract class _AuthenticationDomain
                 ENTITY_NAME,
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
+        fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<AuthenticationDomain> objects =
@@ -1149,6 +1159,33 @@ public abstract class _AuthenticationDomain
     public String toString()
     {
         return userPresentableDescription();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Hack to workaround bugs in ERXEOAccessUtilities.reapplyChanges().
+     *
+     * @param value the new value of the key
+     * @param key the key to access
+     */
+    public void takeValueForKey(Object value, String key)
+    {
+        // if (ERXValueUtilities.isNull(value))
+        if (value == NSKeyValueCoding.NullValue
+            || value instanceof NSKeyValueCoding.Null)
+        {
+            value = null;
+        }
+
+        if (value instanceof NSData)
+        {
+            super.takeStoredValueForKey(value, key);
+        }
+        else
+        {
+            super.takeValueForKey(value, key);
+        }
     }
 
 

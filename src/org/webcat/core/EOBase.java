@@ -69,6 +69,26 @@ public class EOBase
 
     // ----------------------------------------------------------
     /**
+     * Refetch this object from the database.
+     */
+    public void refetch()
+    {
+        refetchObjectFromDBinEditingContext(editingContext());
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Refresh this object (refault it).
+     */
+    public void refresh()
+    {
+        editingContext().refreshObject(this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Determine if a given user can access this object.  The default
      * implementation simply returns true, and should be overridden by
      * subclasses that wish to limit access to a subset of users.

@@ -31,7 +31,6 @@ import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
 import org.webcat.core.EOBasedKeyGenerator;
-import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCFetchSpecification;
 
 // -------------------------------------------------------------------------
@@ -142,13 +141,7 @@ public abstract class _Theme
     public static Theme forId(
         EOEditingContext ec, EOGlobalID id)
     {
-        Theme _result =
-            (Theme)ec.objectForGlobalID(id);
-        if (_result == null)
-        {
-            _result = (Theme)ec.faultForGlobalID(id, ec);
-        }
-        return _result;
+        return (Theme)ec.faultForGlobalID(id, ec);
     }
 
 
@@ -211,6 +204,19 @@ public abstract class _Theme
     {
         return (Theme)EOUtilities.localInstanceOfObject(
             editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Refetch this object from the database.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public Theme refetch(EOEditingContext editingContext)
+    {
+        return (Theme)refetchObjectFromDBinEditingContext(
+            editingContext);
     }
 
 
@@ -426,26 +432,26 @@ public abstract class _Theme
                 propertiesRawCache = dbValue;
                 org.webcat.core.MutableDictionary newValue =
                     org.webcat.core.MutableDictionary
-                    .objectWithArchiveData( dbValue );
-                if ( propertiesCache != null )
+                    .objectWithArchiveData(dbValue);
+                if (propertiesCache != null)
                 {
-                    propertiesCache.copyFrom( newValue );
+                    propertiesCache.copyFrom(newValue);
                 }
                 else
                 {
                     propertiesCache = newValue;
                 }
-                propertiesCache.setOwner( this );
-                setUpdateMutableFields( true );
+                propertiesCache.setOwner(this);
+                setUpdateMutableFields(true);
             }
         }
-        else if ( dbValue == null && propertiesCache == null )
+        else if (dbValue == null && propertiesCache == null)
         {
             propertiesCache =
                 org.webcat.core.MutableDictionary
-                .objectWithArchiveData( dbValue );
-             propertiesCache.setOwner( this );
-             setUpdateMutableFields( true );
+                .objectWithArchiveData(dbValue);
+             propertiesCache.setOwner(this);
+             setUpdateMutableFields(true);
         }
         return propertiesCache;
     }
@@ -458,26 +464,26 @@ public abstract class _Theme
      *
      * @param value The new value for this property
      */
-    public void setProperties( org.webcat.core.MutableDictionary value )
+    public void setProperties(org.webcat.core.MutableDictionary value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setProperties("
-                + value + ")" );
+            log.debug("setProperties("
+                + value + ")");
         }
-        if ( propertiesCache == null )
+        if (propertiesCache == null)
         {
             propertiesCache = value;
             value.setHasChanged( false );
             propertiesRawCache = value.archiveData();
-            takeStoredValueForKey( propertiesRawCache, "properties" );
+            takeStoredValueForKey(propertiesRawCache, "properties");
         }
-        else if ( propertiesCache != value )  // ( propertiesCache != null )
+        else if (propertiesCache != value)  // ( propertiesCache != null )
         {
-            propertiesCache.copyFrom( value );
-            setUpdateMutableFields( true );
+            propertiesCache.copyFrom(value);
+            setUpdateMutableFields(true);
         }
-        else  // ( propertiesCache == non-null value )
+        else  // (propertiesCache == non-null value)
         {
             // no nothing
         }
@@ -493,9 +499,9 @@ public abstract class _Theme
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "clearProperties()" );
+            log.debug("clearProperties()");
         }
-        takeStoredValueForKey( null, "properties" );
+        takeStoredValueForKey(null, "properties");
         propertiesRawCache = null;
         propertiesCache = null;
     }
@@ -700,6 +706,7 @@ public abstract class _Theme
             new WCFetchSpecification<Theme>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -724,6 +731,7 @@ public abstract class _Theme
             new WCFetchSpecification<Theme>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<Theme> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -919,6 +927,8 @@ public abstract class _Theme
                 ENTITY_NAME,
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
+        fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<Theme> objects =
@@ -1202,6 +1212,33 @@ public abstract class _Theme
     public String toString()
     {
         return userPresentableDescription();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Hack to workaround bugs in ERXEOAccessUtilities.reapplyChanges().
+     *
+     * @param value the new value of the key
+     * @param key the key to access
+     */
+    public void takeValueForKey(Object value, String key)
+    {
+        // if (ERXValueUtilities.isNull(value))
+        if (value == NSKeyValueCoding.NullValue
+            || value instanceof NSKeyValueCoding.Null)
+        {
+            value = null;
+        }
+
+        if (value instanceof NSData)
+        {
+            super.takeStoredValueForKey(value, key);
+        }
+        else
+        {
+            super.takeValueForKey(value, key);
+        }
     }
 
 

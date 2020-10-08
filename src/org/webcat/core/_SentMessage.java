@@ -31,7 +31,6 @@ import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
 import org.webcat.core.EOBasedKeyGenerator;
-import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCFetchSpecification;
 
 // -------------------------------------------------------------------------
@@ -136,13 +135,7 @@ public abstract class _SentMessage
     public static SentMessage forId(
         EOEditingContext ec, EOGlobalID id)
     {
-        SentMessage _result =
-            (SentMessage)ec.objectForGlobalID(id);
-        if (_result == null)
-        {
-            _result = (SentMessage)ec.faultForGlobalID(id, ec);
-        }
-        return _result;
+        return (SentMessage)ec.faultForGlobalID(id, ec);
     }
 
 
@@ -210,6 +203,19 @@ public abstract class _SentMessage
     {
         return (SentMessage)EOUtilities.localInstanceOfObject(
             editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Refetch this object from the database.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public SentMessage refetch(EOEditingContext editingContext)
+    {
+        return (SentMessage)refetchObjectFromDBinEditingContext(
+            editingContext);
     }
 
 
@@ -338,26 +344,26 @@ public abstract class _SentMessage
                 linksRawCache = dbValue;
                 org.webcat.core.MutableDictionary newValue =
                     org.webcat.core.MutableDictionary
-                    .objectWithArchiveData( dbValue );
-                if ( linksCache != null )
+                    .objectWithArchiveData(dbValue);
+                if (linksCache != null)
                 {
-                    linksCache.copyFrom( newValue );
+                    linksCache.copyFrom(newValue);
                 }
                 else
                 {
                     linksCache = newValue;
                 }
-                linksCache.setOwner( this );
-                setUpdateMutableFields( true );
+                linksCache.setOwner(this);
+                setUpdateMutableFields(true);
             }
         }
-        else if ( dbValue == null && linksCache == null )
+        else if (dbValue == null && linksCache == null)
         {
             linksCache =
                 org.webcat.core.MutableDictionary
-                .objectWithArchiveData( dbValue );
-             linksCache.setOwner( this );
-             setUpdateMutableFields( true );
+                .objectWithArchiveData(dbValue);
+             linksCache.setOwner(this);
+             setUpdateMutableFields(true);
         }
         return linksCache;
     }
@@ -370,26 +376,26 @@ public abstract class _SentMessage
      *
      * @param value The new value for this property
      */
-    public void setLinks( org.webcat.core.MutableDictionary value )
+    public void setLinks(org.webcat.core.MutableDictionary value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setLinks("
-                + value + ")" );
+            log.debug("setLinks("
+                + value + ")");
         }
-        if ( linksCache == null )
+        if (linksCache == null)
         {
             linksCache = value;
             value.setHasChanged( false );
             linksRawCache = value.archiveData();
-            takeStoredValueForKey( linksRawCache, "links" );
+            takeStoredValueForKey(linksRawCache, "links");
         }
-        else if ( linksCache != value )  // ( linksCache != null )
+        else if (linksCache != value)  // ( linksCache != null )
         {
-            linksCache.copyFrom( value );
-            setUpdateMutableFields( true );
+            linksCache.copyFrom(value);
+            setUpdateMutableFields(true);
         }
-        else  // ( linksCache == non-null value )
+        else  // (linksCache == non-null value)
         {
             // no nothing
         }
@@ -405,9 +411,9 @@ public abstract class _SentMessage
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "clearLinks()" );
+            log.debug("clearLinks()");
         }
-        takeStoredValueForKey( null, "links" );
+        takeStoredValueForKey(null, "links");
         linksRawCache = null;
         linksCache = null;
     }
@@ -908,6 +914,7 @@ public abstract class _SentMessage
             new WCFetchSpecification<SentMessage>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -932,6 +939,7 @@ public abstract class _SentMessage
             new WCFetchSpecification<SentMessage>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<SentMessage> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -1127,6 +1135,8 @@ public abstract class _SentMessage
                 ENTITY_NAME,
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
+        fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<SentMessage> objects =
@@ -1363,6 +1373,33 @@ public abstract class _SentMessage
     public String toString()
     {
         return userPresentableDescription();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Hack to workaround bugs in ERXEOAccessUtilities.reapplyChanges().
+     *
+     * @param value the new value of the key
+     * @param key the key to access
+     */
+    public void takeValueForKey(Object value, String key)
+    {
+        // if (ERXValueUtilities.isNull(value))
+        if (value == NSKeyValueCoding.NullValue
+            || value instanceof NSKeyValueCoding.Null)
+        {
+            value = null;
+        }
+
+        if (value instanceof NSData)
+        {
+            super.takeStoredValueForKey(value, key);
+        }
+        else
+        {
+            super.takeValueForKey(value, key);
+        }
     }
 
 

@@ -31,7 +31,6 @@ import er.extensions.eof.ERXEOControlUtilities;
 import er.extensions.eof.ERXKey;
 import org.apache.log4j.Logger;
 import org.webcat.core.EOBasedKeyGenerator;
-import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCFetchSpecification;
 
 // -------------------------------------------------------------------------
@@ -136,13 +135,7 @@ public abstract class _ObjectQuery
     public static ObjectQuery forId(
         EOEditingContext ec, EOGlobalID id)
     {
-        ObjectQuery _result =
-            (ObjectQuery)ec.objectForGlobalID(id);
-        if (_result == null)
-        {
-            _result = (ObjectQuery)ec.faultForGlobalID(id, ec);
-        }
-        return _result;
+        return (ObjectQuery)ec.faultForGlobalID(id, ec);
     }
 
 
@@ -201,6 +194,19 @@ public abstract class _ObjectQuery
     {
         return (ObjectQuery)EOUtilities.localInstanceOfObject(
             editingContext, this);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Refetch this object from the database.
+     * @param editingContext The target editing context
+     * @return An instance of this object in the target editing context
+     */
+    public ObjectQuery refetch(EOEditingContext editingContext)
+    {
+        return (ObjectQuery)refetchObjectFromDBinEditingContext(
+            editingContext);
     }
 
 
@@ -323,26 +329,26 @@ public abstract class _ObjectQuery
                 queryInfoRawCache = dbValue;
                 org.webcat.core.MutableDictionary newValue =
                     org.webcat.core.MutableDictionary
-                    .objectWithArchiveData( dbValue );
-                if ( queryInfoCache != null )
+                    .objectWithArchiveData(dbValue);
+                if (queryInfoCache != null)
                 {
-                    queryInfoCache.copyFrom( newValue );
+                    queryInfoCache.copyFrom(newValue);
                 }
                 else
                 {
                     queryInfoCache = newValue;
                 }
-                queryInfoCache.setOwner( this );
-                setUpdateMutableFields( true );
+                queryInfoCache.setOwner(this);
+                setUpdateMutableFields(true);
             }
         }
-        else if ( dbValue == null && queryInfoCache == null )
+        else if (dbValue == null && queryInfoCache == null)
         {
             queryInfoCache =
                 org.webcat.core.MutableDictionary
-                .objectWithArchiveData( dbValue );
-             queryInfoCache.setOwner( this );
-             setUpdateMutableFields( true );
+                .objectWithArchiveData(dbValue);
+             queryInfoCache.setOwner(this);
+             setUpdateMutableFields(true);
         }
         return queryInfoCache;
     }
@@ -355,26 +361,26 @@ public abstract class _ObjectQuery
      *
      * @param value The new value for this property
      */
-    public void setQueryInfo( org.webcat.core.MutableDictionary value )
+    public void setQueryInfo(org.webcat.core.MutableDictionary value)
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "setQueryInfo("
-                + value + ")" );
+            log.debug("setQueryInfo("
+                + value + ")");
         }
-        if ( queryInfoCache == null )
+        if (queryInfoCache == null)
         {
             queryInfoCache = value;
             value.setHasChanged( false );
             queryInfoRawCache = value.archiveData();
-            takeStoredValueForKey( queryInfoRawCache, "queryInfo" );
+            takeStoredValueForKey(queryInfoRawCache, "queryInfo");
         }
-        else if ( queryInfoCache != value )  // ( queryInfoCache != null )
+        else if (queryInfoCache != value)  // ( queryInfoCache != null )
         {
-            queryInfoCache.copyFrom( value );
-            setUpdateMutableFields( true );
+            queryInfoCache.copyFrom(value);
+            setUpdateMutableFields(true);
         }
-        else  // ( queryInfoCache == non-null value )
+        else  // (queryInfoCache == non-null value)
         {
             // no nothing
         }
@@ -390,9 +396,9 @@ public abstract class _ObjectQuery
     {
         if (log.isDebugEnabled())
         {
-            log.debug( "clearQueryInfo()" );
+            log.debug("clearQueryInfo()");
         }
-        takeStoredValueForKey( null, "queryInfo" );
+        takeStoredValueForKey(null, "queryInfo");
         queryInfoRawCache = null;
         queryInfoCache = null;
     }
@@ -658,6 +664,7 @@ public abstract class _ObjectQuery
             new WCFetchSpecification<ObjectQuery>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -682,6 +689,7 @@ public abstract class _ObjectQuery
             new WCFetchSpecification<ObjectQuery>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<ObjectQuery> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -877,6 +885,8 @@ public abstract class _ObjectQuery
                 ENTITY_NAME,
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
+        fspec.setUsesDistinct(true);
+        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<ObjectQuery> objects =
@@ -1134,6 +1144,33 @@ public abstract class _ObjectQuery
     public String toString()
     {
         return userPresentableDescription();
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Hack to workaround bugs in ERXEOAccessUtilities.reapplyChanges().
+     *
+     * @param value the new value of the key
+     * @param key the key to access
+     */
+    public void takeValueForKey(Object value, String key)
+    {
+        // if (ERXValueUtilities.isNull(value))
+        if (value == NSKeyValueCoding.NullValue
+            || value instanceof NSKeyValueCoding.Null)
+        {
+            value = null;
+        }
+
+        if (value instanceof NSData)
+        {
+            super.takeStoredValueForKey(value, key);
+        }
+        else
+        {
+            super.takeValueForKey(value, key);
+        }
     }
 
 

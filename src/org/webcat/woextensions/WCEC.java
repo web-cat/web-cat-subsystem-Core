@@ -22,11 +22,11 @@ package org.webcat.woextensions;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
 import org.webcat.core.Application;
-import org.webcat.core.EOManager;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.eocontrol.EOObjectStore;
+import com.webobjects.eocontrol.EOSharedEditingContext;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSMutableDictionary;
@@ -87,7 +87,7 @@ public class WCEC
      */
     public static WCEC newEditingContext()
     {
-        return (WCEC)factory()._newEditingContext();
+        return factory().newEditingContext();
     }
 
 
@@ -99,10 +99,7 @@ public class WCEC
      */
     public static WCEC newAutoLockingEditingContext()
     {
-        WCEC result = newEditingContext();
-        result.setCoalesceAutoLocks(false);
-        result.setUseAutoLock(true);
-        return result;
+        return factory().newAutoLockingEditingContext();
     }
 
 
@@ -163,7 +160,7 @@ public class WCEC
                     {
                         // Give other threads a chance to finish mods to
                         // database first
-                        Thread.sleep(5);
+                        Thread.sleep(50);
                     }
                     catch (InterruptedException e)
                     {
@@ -291,41 +288,188 @@ public class WCEC
 
 
     // ----------------------------------------------------------
+    /**
+     * An internal factory method used by the different factory classes
+     * to create WCEC's. It ensures the created WCEC uses tolerant
+     * saving by default, to help with auto-recovery from optimistic
+     * locking failures.
+     * @return The newly created WCEC.
+     */
+    private static WCEC createWCEC(EOObjectStore parent)
+    {
+        WCEC ec = new WCEC(parent == null
+            ? EOEditingContext.defaultParentObjectStore()
+            : parent);
+        ec.lock();
+        try {
+            ec.setOptions(true, true, true);
+        }
+        finally {
+            ec.unlock();
+        }
+        return ec;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * The default factory class, using the WC OSC pool for multi-threading
+     * support. This is the kind of factory that is installed for
+     * EOEditingContext creation, and that is accessible from the
+     * factory() method.
+     */
     public static class WCECFactory
         extends WCObjectStoreCoordinatorPool.MultiOSCFactory
-//        extends er.extensions.eof.ERXObjectStoreCoordinatorPool.MultiOSCFactory
-//        extends er.extensions.eof.ERXEC.DefaultFactory
     {
         @Override
-        protected EOEditingContext _createEditingContext(EOObjectStore parent)
+        protected WCEC _createEditingContext(EOObjectStore parent)
         {
-            WCEC ec = new WCEC(parent == null
-                ? EOEditingContext.defaultParentObjectStore()
-                : parent);
-            ec.lock();
-            try {
-                ec.setOptions(true, true, true);
-            }
-            finally {
-                ec.unlock();
-            }
-            return ec;
+            return WCEC.createWCEC(parent);
+        }
+
+        // ----------------------------------------------------------
+        /**
+         * Creates a new peer editing context, typically used to make
+         * changes outside of a session's editing context.
+         * @return the new editing context
+         */
+        public WCEC newEditingContext()
+        {
+            return (WCEC)_newEditingContext();
+        }
+
+
+        // ----------------------------------------------------------
+        /**
+         * Creates a new peer editing context that performs
+         * auto-locking/auto-unlocking on each method call.
+         * @return the new editing context
+         */
+        public WCEC newAutoLockingEditingContext()
+        {
+            WCEC result = newEditingContext();
+            result.setCoalesceAutoLocks(false);
+            result.setUseAutoLock(true);
+            return result;
         }
     }
 
 
     // ----------------------------------------------------------
-    public static Factory factory() {
-        if (factory == null) {
-            factory = new WCECFactory();
+    /**
+     * A custom factory class that includes its own independent (non-pooled)
+     * OSC, separate from the pool managed by the pool coordinator.
+     */
+    public static class WCECFactoryWithOSC
+        extends er.extensions.eof.ERXEC.DefaultFactory
+    {
+        private EOObjectStore rootStore = new WCObjectStoreCoordinator();
+        private EOSharedEditingContext sec = null;
+
+
+        // ----------------------------------------------------------
+        public WCECFactoryWithOSC()
+        {
+            super();
+            if (useSharedEditingContext())
+            {
+                sec = new WCSharedEC(rootStore);
+            }
         }
-        return factory;
+
+
+        // ----------------------------------------------------------
+        public WCEC _newEditingContext()
+        {
+            return _newEditingContext(true);
+        }
+
+
+        // ----------------------------------------------------------
+        public WCEC _newEditingContext(boolean validationEnabled)
+        {
+            WCEC ec = (WCEC)_newEditingContext(rootStore, validationEnabled);
+            ec.lock();
+            try
+            {
+                ec.setSharedEditingContext(sec);
+            }
+            finally
+            {
+                ec.unlock();
+            }
+            return ec;
+        }
+
+
+        // ----------------------------------------------------------
+        @Override
+        protected WCEC _createEditingContext(EOObjectStore parent)
+        {
+            return WCEC.createWCEC(parent);
+        }
+
+
+        // ----------------------------------------------------------
+        /**
+         * Creates a new peer editing context, typically used to make
+         * changes outside of a session's editing context.
+         * @return the new editing context
+         */
+        public WCEC newEditingContext()
+        {
+            return _newEditingContext();
+        }
+
+
+        // ----------------------------------------------------------
+        /**
+         * Creates a new peer editing context that performs
+         * auto-locking/auto-unlocking on each method call.
+         * @return the new editing context
+         */
+        public WCEC newAutoLockingEditingContext()
+        {
+            WCEC result = newEditingContext();
+            result.setCoalesceAutoLocks(false);
+            result.setUseAutoLock(true);
+            return result;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public static WCECFactory factory()
+    {
+        synchronized (WCEC.class)
+        {
+            if (factory == null)
+            {
+                factory = new WCECFactory();
+            }
+            return factory;
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    public static WCECFactoryWithOSC factoryWithToolOSC()
+    {
+        synchronized (WCEC.class)
+        {
+            if (factoryWithOSC == null)
+            {
+                factoryWithOSC = new WCECFactoryWithOSC();
+            }
+            return factoryWithOSC;
+        }
     }
 
 
     // ----------------------------------------------------------
     public static void installWOECFactory()
     {
+        EOEditingContext.setDefaultFetchTimestampLag(0);
         er.extensions.eof.ERXObjectStoreCoordinatorSynchronizer.synchronizer()
             .setDefaultSettings(new er.extensions.eof
             .ERXObjectStoreCoordinatorSynchronizer.SynchronizerSettings(
@@ -600,6 +744,7 @@ public class WCEC
     private static final AtomicInteger created = new AtomicInteger();
     private static final AtomicInteger active = new AtomicInteger();
 
-    private static Factory factory;
+    private static WCECFactory factory;
+    private static WCECFactoryWithOSC factoryWithOSC;
     static Logger log = Logger.getLogger(WCEC.class);
 }
