@@ -1075,7 +1075,6 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
             new WCFetchSpecification<${entity.classNameWithoutPackage}>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -1100,7 +1099,6 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
             new WCFetchSpecification<${entity.classNameWithoutPackage}>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<${entity.classNameWithoutPackage}> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -1297,7 +1295,6 @@ shouldMigrate${attribute.capitalizedName}()#set ($alreadyFoundOneMigratoryAttrib
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<${entity.classNameWithoutPackage}> objects =

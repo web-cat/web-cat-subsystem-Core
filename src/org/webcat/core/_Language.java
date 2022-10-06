@@ -389,7 +389,6 @@ public abstract class _Language
             new WCFetchSpecification<Language>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -414,7 +413,6 @@ public abstract class _Language
             new WCFetchSpecification<Language>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<Language> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -611,7 +609,6 @@ public abstract class _Language
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<Language> objects =

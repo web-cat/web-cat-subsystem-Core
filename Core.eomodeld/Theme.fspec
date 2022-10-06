@@ -3,7 +3,6 @@
         class = WCFetchSpecification;
         entityName = Theme;
         prefetchingRelationshipKeyPaths = ();
-        refreshesRefetchedObjects = YES; 
         sortOrderings = (
             {
                 class = EOSortOrdering;
@@ -16,12 +15,12 @@
         class = WCFetchSpecification;
         entityName = Theme;
         fetchLimit = 1;
+        isDeep = YES;
         qualifier = {
             class = EOKeyValueQualifier;
             key = dirName;
             selectorName = "isEqualTo:";
             value = {"_key" = dirName; class = EOQualifierVariable; };
         };
-        refreshesRefetchedObjects = YES; 
     };
 }

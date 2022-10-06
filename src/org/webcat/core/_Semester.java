@@ -460,7 +460,6 @@ public abstract class _Semester
             new WCFetchSpecification<Semester>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -485,7 +484,6 @@ public abstract class _Semester
             new WCFetchSpecification<Semester>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<Semester> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -682,7 +680,6 @@ public abstract class _Semester
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<Semester> objects =

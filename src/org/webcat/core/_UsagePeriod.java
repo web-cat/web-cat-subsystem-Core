@@ -500,7 +500,6 @@ public abstract class _UsagePeriod
             new WCFetchSpecification<UsagePeriod>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -525,7 +524,6 @@ public abstract class _UsagePeriod
             new WCFetchSpecification<UsagePeriod>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<UsagePeriod> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -722,7 +720,6 @@ public abstract class _UsagePeriod
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<UsagePeriod> objects =

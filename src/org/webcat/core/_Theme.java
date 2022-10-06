@@ -706,7 +706,6 @@ public abstract class _Theme
             new WCFetchSpecification<Theme>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -731,7 +730,6 @@ public abstract class _Theme
             new WCFetchSpecification<Theme>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<Theme> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -928,7 +926,6 @@ public abstract class _Theme
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<Theme> objects =

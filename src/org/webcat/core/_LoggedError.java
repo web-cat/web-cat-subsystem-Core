@@ -689,7 +689,6 @@ public abstract class _LoggedError
             new WCFetchSpecification<LoggedError>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -714,7 +713,6 @@ public abstract class _LoggedError
             new WCFetchSpecification<LoggedError>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<LoggedError> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -911,7 +909,6 @@ public abstract class _LoggedError
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<LoggedError> objects =

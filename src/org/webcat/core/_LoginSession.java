@@ -488,7 +488,6 @@ public abstract class _LoginSession
             new WCFetchSpecification<LoginSession>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -513,7 +512,6 @@ public abstract class _LoginSession
             new WCFetchSpecification<LoginSession>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<LoginSession> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -710,7 +708,6 @@ public abstract class _LoginSession
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<LoginSession> objects =

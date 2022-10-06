@@ -9,7 +9,6 @@
             rightKey = true;
             selectorName = "isEqualTo:";
         };
-        refreshesRefetchedObjects = YES; 
         sortOrderings = ({class = EOSortOrdering; key = sentTime; selectorName = ascending; });
     };
 }

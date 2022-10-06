@@ -3,7 +3,6 @@
         class = WCFetchSpecification;
         entityName = Semester;
         prefetchingRelationshipKeyPaths = ();
-        refreshesRefetchedObjects = YES; 
         sortOrderings = (
             {
                 class = EOSortOrdering;
@@ -22,7 +21,6 @@
             selectorName = "isLessThanOrEqualTo:";
             value = {"_key" = date; class = EOQualifierVariable; };
         };
-        refreshesRefetchedObjects = YES; 
         sortOrderings = (
             {
                 class = EOSortOrdering;

@@ -510,7 +510,6 @@ public abstract class _LMSType
             new WCFetchSpecification<LMSType>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -535,7 +534,6 @@ public abstract class _LMSType
             new WCFetchSpecification<LMSType>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<LMSType> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -732,7 +730,6 @@ public abstract class _LMSType
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<LMSType> objects =

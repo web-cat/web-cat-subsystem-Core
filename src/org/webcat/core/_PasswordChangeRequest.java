@@ -426,7 +426,6 @@ public abstract class _PasswordChangeRequest
             new WCFetchSpecification<PasswordChangeRequest>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         return objectsWithFetchSpecification(context, fspec);
     }
 
@@ -451,7 +450,6 @@ public abstract class _PasswordChangeRequest
             new WCFetchSpecification<PasswordChangeRequest>(
                 ENTITY_NAME, qualifier, sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
         NSArray<PasswordChangeRequest> objects =
             objectsWithFetchSpecification(context, fspec);
@@ -648,7 +646,6 @@ public abstract class _PasswordChangeRequest
                 EOQualifier.qualifierToMatchAllValues(keysAndValues),
                 sortOrderings);
         fspec.setUsesDistinct(true);
-        fspec.setRefreshesRefetchedObjects(true);
         fspec.setFetchLimit(1);
 
         NSArray<PasswordChangeRequest> objects =
