@@ -29,6 +29,7 @@ import org.webcat.core.EntityResourceRequestHandler;
 import org.webcat.core.EntityResourceHandler;
 import org.webcat.core.Session;
 import org.webcat.woextensions.ECAction;
+import org.webcat.woextensions.WCFetchSpecification;
 import static org.webcat.woextensions.ECAction.run;
 import org.apache.log4j.Logger;
 import com.webobjects.appserver.WOContext;
@@ -386,7 +387,8 @@ public class EntityResourceRequestHandler
         {
             long id = Long.parseLong(entityRequest.objectID());
 
-            fspec = new EOFetchSpecification(entityRequest.entityName(),
+            fspec = new WCFetchSpecification<EOEnterpriseObject>(
+                entityRequest.entityName(),
                     ERXQ.is("id", id), null);
         }
         catch (NumberFormatException e)

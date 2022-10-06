@@ -144,7 +144,10 @@ public class WCBasePage
         {
             log.debug("nowrap = " + nowrap);
         }
-        includePageWrapping = (nowrap == null);
+        if (nowrap != null)
+        {
+            includePageWrapping = false;
+        }
         response.appendHeader("no-cache", "pragma");
         response.appendHeader("no-cache", "cache-control");
 

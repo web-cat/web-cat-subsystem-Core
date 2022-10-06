@@ -20,6 +20,7 @@
 package org.webcat.woextensions;
 
 import com.webobjects.foundation.*;
+import com.webobjects.eoaccess.EOObjectNotAvailableException;
 import com.webobjects.eocontrol.*;
 import er.extensions.eof.ERXDatabaseContextDelegate.ObjectNotAvailableException;
 import org.webcat.core.EOBase;
@@ -109,7 +110,15 @@ public class CachingEOManager
     public Object valueForKey(String key)
     {
 //        return NSKeyValueCoding.DefaultImplementation.valueForKey(this, key);
-        Object result = original.valueForKey(key);
+        Object result = null;
+        try
+        {
+            result = original.valueForKey(key);
+        }
+        catch (EOObjectNotAvailableException e)
+        {
+            // ignore, forcing null result
+        }
         log.debug(me() + ": valueForKey(" + key + ") => " + result);
         if (result instanceof EOEnterpriseObject)
         {
@@ -142,7 +151,7 @@ public class CachingEOManager
 
 
     // ----------------------------------------------------------
-    public void takeValueForKey( Object value, String key )
+    public void takeValueForKey(Object value, String key)
     {
         NSKeyValueCoding.DefaultImplementation.takeValueForKey(
             this, value, key);
@@ -355,7 +364,15 @@ public class CachingEOManager
     // ----------------------------------------------------------
     public Object handleQueryWithUnboundKey(final String key)
     {
-        Object result = original.valueForKey(key);
+        Object result = null;
+        try
+        {
+            result = original.valueForKey(key);
+        }
+        catch (EOObjectNotAvailableException e)
+        {
+            // ignore, forcing result to null
+        }
 //        log.error("handleQueryWithUnboundKey("
 //            + key + ") should never be called",
 //            new Exception("incorrectly called from here"));
@@ -610,7 +627,16 @@ public class CachingEOManager
     // ----------------------------------------------------------
     public void unableToSetNullForKey(String key)
     {
-        NSKeyValueCoding.DefaultImplementation.unableToSetNullForKey(this, key);
+        NSKeyValueCoding.DefaultImplementation
+            .unableToSetNullForKey(this, key);
+    }
+
+
+    // ----------------------------------------------------------
+    @Override
+    public String toString()
+    {
+        return original.toString();
     }
 
 
@@ -625,39 +651,39 @@ public class CachingEOManager
 
 
     // ----------------------------------------------------------
-    private Object localize(final Object obj)
-    {
-        if (obj == null)
-        {
-            return null;
-        }
-        else if (obj == NullValue || obj instanceof Null)
-        {
-            return null;
-        }
-        else if (obj instanceof EOGlobalID)
-        {
-            return new ECActionWithResult<Object>(context) {
-                public Object action() {
-                    return ec.faultForGlobalID((EOGlobalID)obj, ec);
-                }}.call();
-        }
-        else if (obj instanceof EOCustomObject)
-        {
-            final EOBase eo = (EOBase)obj;
-            log.warn(me() + ": localize() received EO = " + eo.globalId(),
-                new Exception("localize() called from here"));
-            return new ECActionWithResult<Object>(context) {
-                public Object action()
-                {
-                    return ec.faultForGlobalID(eo.globalId(), ec);
-                }}.call();
-        }
-        else
-        {
-            return obj;
-        }
-    }
+//    private Object localize(final Object obj)
+//    {
+//        if (obj == null)
+//        {
+//            return null;
+//        }
+//        else if (obj == NullValue || obj instanceof Null)
+//        {
+//            return null;
+//        }
+//        else if (obj instanceof EOGlobalID)
+//        {
+//            return new ECActionWithResult<Object>(context) {
+//                public Object action() {
+//                    return ec.faultForGlobalID((EOGlobalID)obj, ec);
+//                }}.call();
+//        }
+//        else if (obj instanceof EOCustomObject)
+//        {
+//            final EOBase eo = (EOBase)obj;
+//            log.warn(me() + ": localize() received EO = " + eo.globalId(),
+//                new Exception("localize() called from here"));
+//            return new ECActionWithResult<Object>(context) {
+//                public Object action()
+//                {
+//                    return ec.faultForGlobalID(eo.globalId(), ec);
+//                }}.call();
+//        }
+//        else
+//        {
+//            return obj;
+//        }
+//    }
 
 
     // ----------------------------------------------------------

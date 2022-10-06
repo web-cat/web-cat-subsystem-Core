@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: SentMessage.java,v 1.2 2012/03/28 13:48:08 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2012 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -24,7 +22,7 @@ package org.webcat.core;
 import org.webcat.core.SentMessage;
 import org.webcat.core.User;
 import org.webcat.core._SentMessage;
-import com.webobjects.eocontrol.EOFetchSpecification;
+import org.webcat.woextensions.WCFetchSpecification;
 import com.webobjects.foundation.NSArray;
 import er.extensions.eof.ERXQ;
 import er.extensions.eof.ERXS;
@@ -34,8 +32,6 @@ import er.extensions.eof.ERXS;
  * TODO: place a real description here.
  *
  * @author  Tony Allevato
- * @author  Last changed by: $Author: stedwar2 $
- * @version $Revision: 1.2 $ $Date: 2012/03/28 13:48:08 $
  */
 public class SentMessage
     extends _SentMessage
@@ -63,7 +59,8 @@ public class SentMessage
      */
     public static NSArray<SentMessage> recentMessagesForUser(User user)
     {
-        EOFetchSpecification fspec = new EOFetchSpecification(
+        WCFetchSpecification<SentMessage> fspec =
+            new WCFetchSpecification<SentMessage>(
                 ENTITY_NAME,
                 ERXQ.equals(USERS_KEY, user),
                 ERXS.descs(SENT_TIME_KEY));

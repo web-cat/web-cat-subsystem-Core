@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: CoreSelectionsManager.java,v 1.1 2010/05/11 14:51:55 aallowat Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2009 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,6 +19,7 @@
 
 package org.webcat.core;
 
+import org.apache.log4j.Logger;
 import org.webcat.core.CoreSelections;
 import org.webcat.core.Course;
 import org.webcat.core.CourseOffering;
@@ -37,8 +36,6 @@ import er.extensions.foundation.ERXValueUtilities;
  *  {@link CoreSelections} object.
  *
  *  @author  Stephen Edwards
- *  @author  latest changes by: $Author: aallowat $
- *  @version $Revision: 1.1 $ $Date: 2010/05/11 14:51:55 $
  */
 public class CoreSelectionsManager
     extends CachingEOManager
@@ -167,10 +164,22 @@ public class CoreSelectionsManager
     {
         this.semester = semester;
         User user = (User)valueForKey(CoreSelections.USER_KEY);
-        user.preferences().takeValueForKey(
-            semester == null ? ERXConstant.ZeroInteger : semester.id(),
-            SEMESTER_KEY);
-        user.savePreferences();
+        if (user != null)
+        {
+            if (user.preferences() == null)
+            {
+                throw new IllegalStateException("null user.preferences() "
+                    + "found for " + this);
+            }
+            user.preferences().takeValueForKey(
+                semester == null ? ERXConstant.ZeroInteger : semester.id(),
+                SEMESTER_KEY);
+            user.savePreferences();
+        }
+        else
+        {
+            log.error("null user found in " + this);
+        }
     }
 
 
@@ -235,4 +244,6 @@ public class CoreSelectionsManager
     private Semester semester;
     private Boolean includeWhatImTeaching;
     private Boolean includeAdminAccess;
+
+    static Logger log = Logger.getLogger(CoreSelectionsManager.class);
 }

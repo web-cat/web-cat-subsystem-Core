@@ -602,6 +602,8 @@ public class CourseOffering
             new NSMutableDictionary<String, Object>();
         bindings.setObjectForKey(this, "courseOffering");
         spec = spec.fetchSpecificationWithQualifierBindings(bindings);
+        spec.setUsesDistinct(true);
+        spec.setRefreshesRefetchedObjects(true);
 
         NSArray<?> result =
             editingContext().objectsWithFetchSpecification(spec);

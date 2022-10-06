@@ -415,9 +415,37 @@ public class LTILaunchRequest
 
 
     // ----------------------------------------------------------
+    public boolean isInIFrame()
+    {
+        String target = request.stringFormValueForKey(
+            LAUNCH_PRESENTATION_DOCUMENT_TARGET);
+        return target != null && target.toLowerCase().equals("iframe");
+    }
+
+
+    // ----------------------------------------------------------
     public boolean isInstructor()
     {
-        return request.formValuesForKey(ROLES).contains("Instructor");
+        NSArray<Object> roles = request.formValuesForKey(ROLES);
+        boolean result = false;
+        for (int i = 0; i < roles.size(); i++)
+        {
+            Object o = roles.get(i);
+            if (o != null)
+            {
+                String role = o.toString().toLowerCase();
+                
+                if (role.contains("instructor")
+                    || role.contains("teacher")
+                    || role.contains("designer")
+                    || role.contains("consultant"))
+                {
+                    result = true;
+                    break;
+                }
+            }
+        }
+        return result;
     }
 
 

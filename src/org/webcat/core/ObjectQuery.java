@@ -1,7 +1,5 @@
 /*==========================================================================*\
- |  $Id: ObjectQuery.java,v 1.3 2012/01/05 19:57:01 stedwar2 Exp $
- |*-------------------------------------------------------------------------*|
- |  Copyright (C) 2006-2011 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -28,6 +26,7 @@ import org.webcat.core.MutableDictionary;
 import org.webcat.core.QualifierSerialization;
 import org.webcat.core.QualifierUtils;
 import org.webcat.core._ObjectQuery;
+import com.webobjects.eoaccess.EODatabaseContext;
 import com.webobjects.eoaccess.EOEntity;
 import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOEditingContext;
@@ -41,8 +40,6 @@ import er.extensions.eof.ERXEOControlUtilities;
  * TODO: place a real description here.
  *
  * @author  Tony Allevato
- * @author  latest changes by: $Author: stedwar2 $
- * @version $Revision: 1.3 $, $Date: 2012/01/05 19:57:01 $
  */
 public class ObjectQuery
     extends _ObjectQuery
@@ -258,9 +255,20 @@ public class ObjectQuery
         EOFetchSpecification pkFetchSpec =
             ERXEOControlUtilities.primaryKeyFetchSpecificationForEntity(
                 editingContext(), objectType(), quals[0], null, null);
+        pkFetchSpec.setUsesDistinct(true);
 
-        NSArray<?> primaryKeyDictionaries =
-            editingContext().objectsWithFetchSpecification(pkFetchSpec);
+        EODatabaseContext dbContext = EODatabaseContext
+            .registeredDatabaseContextForModel(entity.model(), editingContext());
+        NSArray<?> primaryKeyDictionaries = null;
+        dbContext.lock();
+        try {
+            primaryKeyDictionaries = dbContext
+                .objectsWithFetchSpecification(pkFetchSpec, editingContext());
+        }
+        finally
+        {
+            dbContext.unlock();
+        }
 
         String pkAttributeName =
             entity.primaryKeyAttributes().lastObject().name();

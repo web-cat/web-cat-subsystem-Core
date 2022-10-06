@@ -32,6 +32,7 @@ import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.eocontrol.EOObjectStore;
 import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.foundation.NSArray;
+import er.extensions.eof.ERXEC;
 
 //-------------------------------------------------------------------------
 /**
@@ -251,17 +252,40 @@ public class ReadOnlyEditingContext
     public static class ReadOnlyFactory
         extends WCECFactory
     {
-        protected WCEC _createEditingContext(EOObjectStore parent)
+
+        public ReadOnlyFactory()
         {
-            return new ReadOnlyEditingContext(parent == null
-                ? EOEditingContext.defaultParentObjectStore()
-                : parent);
+            super(new ERXEC.DefaultFactory() {
+                // ------------------------------------------------------
+                @Override
+                protected ReadOnlyEditingContext _createEditingContext(
+                    EOObjectStore parent)
+                {
+                    return new ReadOnlyEditingContext(parent);
+                }
+            });
+        }
+
+        @Override
+        protected ReadOnlyEditingContext _createEditingContext(
+            EOObjectStore parent)
+        {
+            return new ReadOnlyEditingContext(parent);
+        }
+
+        @Override
+        public ReadOnlyEditingContext _newEditingContext(
+            boolean validationEnabled)
+        {
+            return (ReadOnlyEditingContext)_newEditingContext(
+                WCEC.factoryWithToolOSC().factoryRootObjectStore(),
+                validationEnabled);
         }
     }
 
 
     // ----------------------------------------------------------
-    public static WCECFactory factory()
+    public static ReadOnlyFactory factory()
     {
         if (factory == null)
         {
@@ -277,6 +301,6 @@ public class ReadOnlyEditingContext
     private boolean loggingSuppressed = false;
     private boolean suppressesLogAfterFirstAttempt = false;
 
-    private static WCECFactory factory;
+    private static ReadOnlyFactory factory;
     static final Logger log = Logger.getLogger(ReadOnlyEditingContext.class);
 }

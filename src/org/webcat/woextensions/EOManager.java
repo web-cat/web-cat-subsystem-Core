@@ -20,6 +20,7 @@
 package org.webcat.woextensions;
 
 import org.apache.log4j.Logger;
+import org.webcat.core.Disposable;
 import com.webobjects.eoaccess.EOUtilities;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
@@ -44,7 +45,8 @@ import er.extensions.eof.ERXEC;
  */
 public interface EOManager
     extends NSKeyValueCoding,
-            EORelationshipManipulation
+            EORelationshipManipulation,
+            Disposable
 {
     // ----------------------------------------------------------
     public abstract void dispose();
@@ -57,6 +59,7 @@ public interface EOManager
      * errors that need to be dumped.
      */
     public static class ECManager
+        implements Disposable
     {
         // ----------------------------------------------------------
         /**

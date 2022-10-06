@@ -22,8 +22,10 @@
 package org.webcat.core.objectquery;
 
 import java.text.ParseException;
+import org.webcat.core.EOBase;
 import org.webcat.core.EntityUtils;
 import org.webcat.core.WCComponent;
+import org.webcat.woextensions.WCFetchSpecification;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResponse;
 import com.webobjects.eocontrol.EOClassDescription;
@@ -534,7 +536,7 @@ public class AdvancedQueryValueComponent
     	NSArray<EOSortOrdering> orderings =
     	    EntityUtils.sortOrderingsForEntityNamed(entityName);
 
-    	EOFetchSpecification fetchSpec = new EOFetchSpecification(
+    	EOFetchSpecification fetchSpec = new WCFetchSpecification<EOBase>(
     		entityName, null, orderings);
     	fetchSpec.setFetchLimit(1000);
 

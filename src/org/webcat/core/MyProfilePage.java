@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2018 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -54,9 +54,9 @@ public class MyProfilePage
      *
      * @param context The context to use
      */
-    public MyProfilePage( WOContext context )
+    public MyProfilePage(WOContext context)
     {
-        super( context );
+        super(context);
     }
 
 
@@ -88,36 +88,35 @@ public class MyProfilePage
     //~ Methods ...............................................................
 
     // ----------------------------------------------------------
-    public void appendToResponse( WOResponse response, WOContext context )
+    public void appendToResponse(WOResponse response, WOContext context)
     {
         now = new NSTimestamp();
-        enrolledInDisplayGroup.setMasterObject( user() );
-        teachingDisplayGroup.setMasterObject( user() );
-        TADisplayGroup.setMasterObject( user() );
-        if ( selectedZone == null )
+        enrolledInDisplayGroup.setMasterObject(user());
+        teachingDisplayGroup.setMasterObject(user());
+        TADisplayGroup.setMasterObject(user());
+        if (selectedZone == null)
         {
             if (user() != null)
             {
                 selectedZone = AuthenticationDomain.descriptorForZone(
-                    user().timeZoneName() );
+                    user().timeZoneName());
             }
-            if ( selectedZone == null )
+            if (selectedZone == null)
             {
                 // !!!
                 selectedZone = AuthenticationDomain.descriptorForZone(
-                    NSTimeZone.getDefault().getID() );
+                    NSTimeZone.getDefault().getID());
             }
         }
-        log.debug("appendToResponse(), theme = " + user().theme());
-        super.appendToResponse( response, context );
+        super.appendToResponse(response, context);
     }
 
 
     // ----------------------------------------------------------
     public WOComponent applyTimeFormats()
     {
-        log.debug( "applyTimeFormats()" );
-        user().setTimeZoneName( selectedZone.id );
+        log.debug("applyTimeFormats()");
+        user().setTimeZoneName(selectedZone.id);
         applyLocalChanges();
         wcSession().clearCachedTimeFormatter();
         openThemes = false;
@@ -128,7 +127,7 @@ public class MyProfilePage
     // ----------------------------------------------------------
     public WOComponent applyThemeCustomizations()
     {
-        log.debug( "applyThemeCustomizations()" );
+        log.debug("applyThemeCustomizations()");
         user().preferences().takeValueForKey(
             backgroundUrl, "customBackgroundUrl");
         user().preferences().takeValueForKey(extraCss, "customCss");
@@ -143,69 +142,69 @@ public class MyProfilePage
     public String formattedCurrentTime()
     {
         com.webobjects.foundation.NSTimestampFormatter formatter =
-            new com.webobjects.foundation.NSTimestampFormatter( aFormat );
+            new com.webobjects.foundation.NSTimestampFormatter(aFormat);
         formatter.setDefaultFormatTimeZone(
-            wcSession().timeFormatter().defaultFormatTimeZone() );
-        return formatter.format( now );
+            wcSession().timeFormatter().defaultFormatTimeZone());
+        return formatter.format(now);
     }
 
 
     // ----------------------------------------------------------
     public boolean applyLocalChanges()
     {
-        log.debug( "applyLocalChanges()" );
+        log.debug("applyLocalChanges()");
         openThemes = false;
         User u = user();
-        String lcPassword = ( newPassword1 == null )
+        String lcPassword = (newPassword1 == null)
             ? null
             : newPassword1.toLowerCase();
-        if (  u.canChangePassword()
-           && (  newPassword1 != null
-              || newPassword2 != null ) )
+        if (u.canChangePassword()
+           && (newPassword1 != null
+              || newPassword2 != null))
         {
-            if ( newPassword1 == null || newPassword2 == null )
+            if (newPassword1 == null || newPassword2 == null)
             {
                 error(
-                    "To change your password, complete both password fields." );
+                    "To change your password, complete both password fields.");
             }
-            else if ( !newPassword1.equals( newPassword2 ) )
+            else if (!newPassword1.equals(newPassword2))
             {
                 error(
                     "The two password fields do not match.  "
-                    + "Please re-enter your password." );
+                    + "Please re-enter your password.");
             }
-            else if ( newPassword1.length() < 6 )
+            else if (newPassword1.length() < 6)
             {
                 error(
-                    "Your password must be at least six characters long." );
+                    "Your password must be at least six characters long.");
             }
-            else if (  lcPassword.equals( u.userName().toLowerCase() )
-                    || ( u.firstName() != null
-                         && lcPassword.equals( u.firstName().toLowerCase() ) )
-                    || ( u.lastName() != null
-                         && lcPassword.equals( u.lastName().toLowerCase() ) ) )
+            else if (lcPassword.equals(u.userName().toLowerCase())
+                || (u.firstName() != null
+                    && lcPassword.equals( u.firstName().toLowerCase()))
+                    || (u.lastName() != null
+                        && lcPassword.equals( u.lastName().toLowerCase())))
             {
-                error(
-                    "You may not use your first name, last name, or user name "
-                    + "as a password.  Please enter a different password." );
+                error("You may not use your first name, last name, "
+                    + "or user name as a password.  "
+                    + "Please enter a different password.");
             }
-            else if ( newPassword1.equals( u.password() ) )
+            else if (newPassword1.equals( u.password()))
             {
-                error( "The password you have specified is already "
-                       + "your current password." );
+                error("The password you have specified is already "
+                       + "your current password.");
             }
-            if ( !hasMessages() )
+            if (!hasMessages())
             {
-                u.changePassword( newPassword1 );
-                confirmationMessage( "Your password has been changed." );
+                u.changePassword(newPassword1);
+                confirmationMessage("Your password has been changed.");
             }
         }
         newPassword1 = null;
         newPassword2 = null;
         // TODO: include user validation here
 //        wcSession().commitLocalChanges();
-//        return pageWithName( wcSession().currentTab().selectDefaultSibling()
-//                             .selectedPageName() );
+//        return pageWithName(wcSession().currentTab().selectDefaultSibling()
+//                            .selectedPageName());
         return super.applyLocalChanges();
     }
 
@@ -216,17 +215,17 @@ public class MyProfilePage
         String institution = user().authenticationDomain().name();
         try
         {
-            institution = URLEncoder.encode( institution, "UTF-8" );
+            institution = URLEncoder.encode(institution, "UTF-8");
         }
-        catch ( java.io.UnsupportedEncodingException e )
+        catch (java.io.UnsupportedEncodingException e)
         {
-            log.error( "Cannot encode in UTF-8", e );
+            log.error("Cannot encode in UTF-8", e);
         }
         return Application.completeURLWithRequestHandlerKey(
             context(),
             Application.application().directActionRequestHandlerKey(),
             "assignments/bluej?institution=" + institution
-                + ( ( user().accessLevel() > 0 ) ? "&staff=true" : "" ),
+                + ((user().accessLevel() > 0) ? "&staff=true" : ""),
             null,
             false,
             0,
@@ -241,40 +240,39 @@ public class MyProfilePage
         String institution = user().authenticationDomain().name();
         try
         {
-            institution = URLEncoder.encode( institution, "UTF-8" );
+            institution = URLEncoder.encode(institution, "UTF-8");
         }
-        catch ( java.io.UnsupportedEncodingException e )
+        catch (java.io.UnsupportedEncodingException e)
         {
-            log.error( "Cannot encode in UTF-8", e );
+            log.error("Cannot encode in UTF-8", e);
         }
         return Application.completeURLWithRequestHandlerKey(
             context(),
             Application.application().directActionRequestHandlerKey(),
             "assignments/eclipse?institution=" + institution
-                + ( ( user().accessLevel() > 0 ) ? "&staff=true" : "" ),
+                + ((user().accessLevel() > 0) ? "&staff=true" : ""),
             null,
             true,
-            0
-            );
+            0);
     }
 
 
     // ----------------------------------------------------------
     public String icalUrl()
     {
-        if ( icalUrl == null )
+        if (icalUrl == null)
         {
             String crnList = null;
             User me = user();
             NSMutableArray<CourseOffering> offerings =
                 me.enrolledIn().mutableClone();
-            ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates( offerings,
-                me.graderFor() );
-            ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates( offerings,
-                me.teaching() );
-            for ( int i = 0; i < offerings.count(); i++ )
+            ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates(offerings,
+                me.graderFor());
+            ERXArrayUtilities.addObjectsFromArrayWithoutDuplicates(offerings,
+                me.teaching());
+            for (int i = 0; i < offerings.count(); i++)
             {
-                if ( i == 0 )
+                if (i == 0)
                 {
                     crnList = "";
                 }
@@ -284,19 +282,20 @@ public class MyProfilePage
                 }
                 crnList += offerings.objectAtIndex(i).crn();
             }
-            if ( crnList!= null )
+            if (crnList!= null)
             {
                 try
                 {
-                    crnList = URLEncoder.encode( crnList, "UTF-8" );
+                    crnList = URLEncoder.encode(crnList, "UTF-8");
                 }
-                catch ( java.io.UnsupportedEncodingException e )
+                catch (java.io.UnsupportedEncodingException e)
                 {
-                    log.error( "Cannot encode in UTF-8", e );
+                    log.error("Cannot encode in UTF-8", e);
                 }
                 crnList = "?crns=" + crnList;
-                if ( me.accessLevel() > 0
-                     && ( me.graderFor().count() > 0 || me.teaching().count() > 0 ) )
+                if (me.accessLevel() > 0
+                    && (me.graderFor().count() > 0
+                        || me.teaching().count() > 0))
                 {
                     crnList += "&staff=true";
                 }
@@ -307,8 +306,7 @@ public class MyProfilePage
                 "assignments/ical.ics" + crnList,
                 null,
                 true,
-                0
-                );
+                0);
         }
         return icalUrl;
     }
@@ -318,8 +316,8 @@ public class MyProfilePage
     public String webcalUrl()
     {
         String url = icalUrl();
-        int pos = url.indexOf( ':' );
-        url = "webcal" + url.substring( pos );
+        int pos = url.indexOf(':');
+        url = "webcal" + url.substring(pos);
         return url;
     }
 
@@ -379,7 +377,8 @@ public class MyProfilePage
                 ? "null"
                 : user().theme().editingContext().toString()));
         log.debug("Changing theme, session theme = " + wcSession().theme());
-        log.debug("sesssion theme ec = " + wcSession().theme().editingContext());
+        log.debug("sesssion theme ec = "
+            + wcSession().theme().editingContext());
         log.debug("sharing ");
         openThemes = true;
         return null;
@@ -407,8 +406,8 @@ public class MyProfilePage
     // ----------------------------------------------------------
     public NSArray<? extends EOBase> repositoryProviders()
     {
-        return RepositoryManager.getInstance().repositoriesPresentedToUser(user(),
-                    localContext());
+        return RepositoryManager.getInstance()
+            .repositoriesPresentedToUser(user(), localContext());
     }
 
 
@@ -432,5 +431,5 @@ public class MyProfilePage
     private String icalUrl;
     private NSTimestamp now;
     private NSArray<Theme> allThemes;
-    static Logger log = Logger.getLogger( MyProfilePage.class );
+    static Logger log = Logger.getLogger(MyProfilePage.class);
 }

@@ -91,6 +91,19 @@ sequence of multiple arguments.";
   it dies.";
     },
     {
+        property    = "org.webcat.woextensions.WCObjectStoreCoordinatorPool.maxCoordinators";
+        type        = integer;
+        name        = "Number of Concurrent Database Stacks";
+        category    = "Administration";
+        description =
+  "Controls the number of parallel database stacks used for concurrent access
+  to the database. A number too small will limit the amount of concurrency
+  in processing responses, but each stack uses a sizeable amount of memory,
+  so a number too large will cause out of memory errors. Recommended
+  values are 3-8 stacks, but be sure the JVM's memory limit is large enough,
+  allowing 1.5-2Gb of heap space per stack.";
+    },
+    {
         property    = "mail.smtp.host";
         type        = shortText;
         size        = 70;
@@ -133,7 +146,7 @@ sequence of multiple arguments.";
         property    = dateFormats;
         type        = longText;
         default     =
-"( 
+"(
    \"%m/%d/%y\",
    \"%m/%d/%Y\",
    \"%d.%m.%Y\",

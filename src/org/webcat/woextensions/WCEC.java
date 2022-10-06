@@ -1,4 +1,5 @@
 /*==========================================================================*\
+
  |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
@@ -22,6 +23,7 @@ package org.webcat.woextensions;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.apache.log4j.Logger;
 import org.webcat.core.Application;
+import org.webcat.core.Disposable;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOEnterpriseObject;
 import com.webobjects.eocontrol.EOGlobalID;
@@ -41,6 +43,7 @@ import er.extensions.eof.ERXEC;
  */
 public class WCEC
     extends ERXEC
+    implements Disposable
 //    extends LockErrorScreamerEditingContext
 {
     //~ Constructors ..........................................................
@@ -105,6 +108,54 @@ public class WCEC
 
     //~ Methods ...............................................................
 
+    // ----------------------------------------------------------
+    @Override
+    public void _EOAssertSafeMultiThreadedAccess(String info)
+    {
+        // TODO Auto-generated method stub
+        if (!_doAssertLock)
+        {
+            return;
+        }
+        if (!_doAssertLockInitialized)
+        {
+            _checkAssertLock();
+            if (!_doAssertLock)
+            {
+                return;
+            }
+        }
+        if (lockCount() == 0)
+        {
+            // shut off warnings past limit, so log doesn't overflow
+            if (lockWarnings.incrementAndGet() <= MAX_LOCK_WARNINGS)
+            {
+                log.warn("*** WCEditingContext: access with no lock: "
+                    + info + "!",
+                    new Exception(
+                    "WCEditingContext accessed without lock from here"));
+            }
+            return;
+        }
+        else if (_baseClassLockCount() == 0)
+        {
+            if (lockWarnings.incrementAndGet() <= MAX_LOCK_WARNINGS)
+            {
+                log.warn("*** WCEditingContext: access with inconsistent "
+                    + "lock counts: lockCount() = " + lockCount()
+                    + ", _lockCount = " + _baseClassLockCount(),
+                    new Exception("WCEditingContext accessed without "
+                        + "inconsistent lock counts from here"));
+            }
+            return;
+        }
+        // Let inherited method handle case where locked by other
+        // thread
+        super._EOAssertSafeMultiThreadedAccess(info);
+    }
+
+
+
 //    // ----------------------------------------------------------
 //    @Override
 //    public void lockObjectStore()
@@ -131,6 +182,8 @@ public class WCEC
 //    }
 
 
+    private static int[] WAITS = {1, 2500, 1000, 500, 100 };
+    
     // ----------------------------------------------------------
     @Override
     public void initializeObject(
@@ -138,12 +191,11 @@ public class WCEC
         EOGlobalID eoglobalid,
         EOEditingContext eoeditingcontext)
     {
-        int tries = 3;
+        int tries = 5;
         while (tries-- > 0)
         {
             try
             {
-                // TODO Auto-generated method stub
                 super.initializeObject(
                     eoenterpriseobject, eoglobalid, eoeditingcontext);
                 return;
@@ -152,15 +204,15 @@ public class WCEC
             {
                 if (tries > 0)
                 {
-                    log.warn("initializeObject() failed with NPE on "
-                        + eoglobalid
-                        + ", will retry "
-                        + tries + " times", ee);
+//                    log.warn("initializeObject() failed with NPE on "
+//                        + eoglobalid
+//                        + ", will retry "
+//                        + tries + " times", ee);
                     try
                     {
                         // Give other threads a chance to finish mods to
                         // database first
-                        Thread.sleep(50);
+                        Thread.sleep(WAITS[tries]);
                     }
                     catch (InterruptedException e)
                     {
@@ -173,13 +225,19 @@ public class WCEC
                         + eoglobalid
                         + " after max "
                         + "retries, giving up", ee);
-                    throw ee;
+                    NullPointerException eee = new NullPointerException(
+                        "initializeObject() failed with NPE on "
+                            + eoglobalid
+                            + " after max "
+                            + "retries, giving up");
+                    eee.setStackTrace(ee.getStackTrace());
+                    throw eee;
                 }
             }
         }
-        if (tries < 2)
+        if (tries < 3)
         {
-            log.warn("initializeObject() succeeded after " + (3 - tries)
+            log.warn("initializeObject() succeeded after " + (5 - tries)
                 + " tries on " + eoglobalid);
         }
     }
@@ -321,11 +379,33 @@ public class WCEC
     public static class WCECFactory
         extends WCObjectStoreCoordinatorPool.MultiOSCFactory
     {
-        @Override
+        // ----------------------------------------------------------
+        public WCECFactory(Factory backingFactory)
+        {
+            super(WCObjectStoreCoordinatorPool._pool(), backingFactory);
+        }
+
+
+        // ----------------------------------------------------------
+        public WCECFactory()
+        {
+            this(new ERXEC.DefaultFactory() {
+                // ------------------------------------------------------
+                @Override
+                protected WCEC _createEditingContext(EOObjectStore parent)
+                {
+                    return WCEC.createWCEC(parent);
+                }
+            });
+        }
+
+
+        // ----------------------------------------------------------
         protected WCEC _createEditingContext(EOObjectStore parent)
         {
             return WCEC.createWCEC(parent);
         }
+
 
         // ----------------------------------------------------------
         /**
@@ -363,18 +443,40 @@ public class WCEC
     public static class WCECFactoryWithOSC
         extends er.extensions.eof.ERXEC.DefaultFactory
     {
-        private EOObjectStore rootStore = new WCObjectStoreCoordinator();
+        private EOObjectStore rootStore;
         private EOSharedEditingContext sec = null;
+
+
+        // ----------------------------------------------------------
+        public WCECFactoryWithOSC(EOObjectStore rootStore)
+        {
+            super();
+            this.rootStore = rootStore;
+            if (useSharedEditingContext())
+            {
+                sec = new WCSharedEC(rootStore);
+            }
+        }
+
+
+        // ----------------------------------------------------------
+        public WCECFactoryWithOSC(WCECFactoryWithOSC parent)
+        {
+            this(parent.factoryRootObjectStore());
+        }
 
 
         // ----------------------------------------------------------
         public WCECFactoryWithOSC()
         {
-            super();
-            if (useSharedEditingContext())
-            {
-                sec = new WCSharedEC(rootStore);
-            }
+            this(new WCObjectStoreCoordinator());
+        }
+
+
+        // ----------------------------------------------------------
+        public EOObjectStore factoryRootObjectStore()
+        {
+            return rootStore;
         }
 
 
@@ -470,10 +572,10 @@ public class WCEC
     public static void installWOECFactory()
     {
         EOEditingContext.setDefaultFetchTimestampLag(0);
-        er.extensions.eof.ERXObjectStoreCoordinatorSynchronizer.synchronizer()
-            .setDefaultSettings(new er.extensions.eof
-            .ERXObjectStoreCoordinatorSynchronizer.SynchronizerSettings(
-            false, true, true, true));
+//        er.extensions.eof.ERXObjectStoreCoordinatorSynchronizer.synchronizer()
+//            .setDefaultSettings(new er.extensions.eof
+//            .ERXObjectStoreCoordinatorSynchronizer.SynchronizerSettings(
+//            false, true, true, true));
         WCObjectStoreCoordinatorPool.initialize();
         er.extensions.eof.ERXEC.setFactory(factory());
     }
@@ -481,6 +583,7 @@ public class WCEC
 
     // ----------------------------------------------------------
     public static class PeerManager
+        implements Disposable
     {
         // ----------------------------------------------------------
         public PeerManager(PeerManagerPool pool)
@@ -532,25 +635,13 @@ public class WCEC
             {
                 for (Object value : transientState.allValues())
                 {
-                    if (value instanceof EOManager)
+                    if (value instanceof Disposable)
                     {
-                        ((EOManager)value).dispose();
-                    }
-                    else if (value instanceof EOManager.ECManager)
-                    {
-                        ((EOManager.ECManager)value).dispose();
+                        ((Disposable)value).dispose();
                     }
                     else if (value instanceof EOEditingContext)
                     {
                         ((EOEditingContext)value).dispose();
-                    }
-                    else if (value instanceof PeerManager)
-                    {
-                        ((PeerManager)value).dispose();
-                    }
-                    else if (value instanceof PeerManagerPool)
-                    {
-                        ((PeerManagerPool)value).dispose();
                     }
                     else
                     {
@@ -634,6 +725,7 @@ public class WCEC
 
     // ----------------------------------------------------------
     public static class PeerManagerPool
+        implements Disposable
     {
         // ----------------------------------------------------------
         public PeerManagerPool()
@@ -743,6 +835,8 @@ public class WCEC
 
     private static final AtomicInteger created = new AtomicInteger();
     private static final AtomicInteger active = new AtomicInteger();
+    private static final AtomicInteger lockWarnings = new AtomicInteger();
+    private static final int MAX_LOCK_WARNINGS = 1000;
 
     private static WCECFactory factory;
     private static WCECFactoryWithOSC factoryWithOSC;

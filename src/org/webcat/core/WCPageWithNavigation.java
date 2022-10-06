@@ -66,6 +66,7 @@ public class WCPageWithNavigation
     public String        sideStepTitle;
     public boolean       hideSteps = false;
     public String        permalink;
+    public boolean       isInIFrame;
 
     // Repetition variables
     public TabDescriptor primaryTabItem;
@@ -81,15 +82,25 @@ public class WCPageWithNavigation
     @Override
     public void appendToResponse(WOResponse response, WOContext context)
     {
-        if (extraBodyCssClass == null)
+        if (includeHeaderFooter())
         {
-            extraBodyCssClass = "with-nav";
-        }
-        else if (!extraBodyCssClass.contains("with-nav"))
-        {
-            extraBodyCssClass += " with-nav";
+            if (extraBodyCssClass == null)
+            {
+                extraBodyCssClass = "with-nav";
+            }
+            else if (!extraBodyCssClass.contains("with-nav"))
+            {
+                extraBodyCssClass += " with-nav";
+            }
         }
         super.appendToResponse(response, context);
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean includeHeaderFooter()
+    {
+        return !isInIFrame && includePageWrapping;
     }
 
 

@@ -349,6 +349,27 @@ public class User
 
     // ----------------------------------------------------------
     /**
+     * Return the user's full name as a string, in the format "First Last",
+     * followed by the user name in parentheses.
+     * @return the name
+     */
+    public String nameAndEmail()
+    {
+        String name  = name();
+        if (name == null)
+        {
+            name = "";
+        }
+        else
+        {
+            name += " ";
+        }
+        return name + "<" + email() + ">";
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * Return the user's full name as a string, in the format "Last, First",
      * followed by the user name in parentheses.
      * @return the name

@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2018 Virginia Tech
+ |  Copyright (C) 2006-2021 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -2156,7 +2156,7 @@ public class Application
         {
             // Get the pid of the user of the session
             errorBuffer.append("User     :   ");
-            errorBuffer.append(s.primeUser().nameAndUid());
+            errorBuffer.append(s.primeUser().nameAndEmail());
         }
 
         // Get the date and time for the exception
@@ -2490,36 +2490,68 @@ public class Application
                  keys.hasMoreElements();)
             {
                 String key = keys.nextElement().toString();
+                if (key.startsWith("java."))
+                {
+                    continue;
+                }
                 if (key.endsWith("version.major"))
                 {
-                    int thisMajor = config.intForKey(key);
-                    if (thisMajor > major)
+                    try
                     {
-                        major = thisMajor;
+                        int thisMajor = config.intForKey(key);
+                        if (thisMajor > major)
+                        {
+                            major = thisMajor;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // ignore illegal state and number format exceptions
                     }
                 }
                 else if (key.endsWith( "version.minor"))
                 {
-                    int thisMinor = config.intForKey(key);
-                    if (thisMinor > minor)
+                    try
                     {
-                        minor = thisMinor;
+                        int thisMinor = config.intForKey(key);
+                        if (thisMinor > minor)
+                        {
+                            minor = thisMinor;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // ignore illegal state and number format exceptions
                     }
                 }
                 else if ( key.endsWith("version.revision"))
                 {
-                    int thisRevision = config.intForKey(key);
-                    if (thisRevision > revision)
+                    try
                     {
-                        revision = thisRevision;
+                        int thisRevision = config.intForKey(key);
+                        if (thisRevision > revision)
+                        {
+                            revision = thisRevision;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // ignore illegal state and number format exceptions
                     }
                 }
                 else if (key.endsWith("version.date"))
                 {
-                    int thisDate = config.intForKey(key);
-                    if (thisDate > date)
+                    try
                     {
-                        date = thisDate;
+                        int thisDate = config.intForKey(key);
+                        if (thisDate > date)
+                        {
+                            date = thisDate;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        // ignore illegal state and number format exceptions
                     }
                 }
             }

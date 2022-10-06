@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.webcat.ui.generators.JavascriptGenerator;
 import org.webcat.ui.util.ComponentIDGenerator;
+import org.webcat.woextensions.WCFetchSpecification;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WOResponse;
@@ -127,7 +128,7 @@ public class FilteringUserSelector
     // ----------------------------------------------------------
     private void resetAvailableUsers()
     {
-        EOFetchSpecification fspec = new EOFetchSpecification(
+        EOFetchSpecification fspec = new WCFetchSpecification<User>(
                 User.ENTITY_NAME, fullQualifier(), USER_SORT_CRITERIA);
 
         batchIterator = new ERXFetchSpecificationBatchIterator(

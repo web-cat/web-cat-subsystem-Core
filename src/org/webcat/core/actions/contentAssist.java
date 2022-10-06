@@ -25,11 +25,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.webcat.core.Application;
+import org.webcat.core.EOBase;
 import org.webcat.core.EntityUtils;
 import org.webcat.core.KVCAttributeFinder;
 import org.webcat.core.KVCAttributeInfo;
 import org.webcat.core.Subsystem;
 import org.webcat.woextensions.ReadOnlyEditingContext;
+import org.webcat.woextensions.WCFetchSpecification;
 import com.webobjects.appserver.WOActionResults;
 import com.webobjects.appserver.WORequest;
 import com.webobjects.appserver.WOResponse;
@@ -336,7 +338,8 @@ public class contentAssist
                 NSArray<EOSortOrdering> orderings =
                     EntityUtils.sortOrderingsForEntityNamed(entityName);
 
-                EOFetchSpecification fetchSpec = new EOFetchSpecification(
+                EOFetchSpecification fetchSpec =
+                    new WCFetchSpecification<EOBase>(
                     entityName, null, orderings);
                 fetchSpec.setFetchLimit(250);
 
@@ -382,7 +385,8 @@ public class contentAssist
                 NSArray<EOSortOrdering> orderings =
                     EntityUtils.sortOrderingsForEntityNamed(entityName);
 
-                EOFetchSpecification fetchSpec = new EOFetchSpecification(
+                EOFetchSpecification fetchSpec =
+                    new WCFetchSpecification<EOBase>(
                     entityName, null, orderings);
                 fetchSpec.setFetchLimit(250);
 
