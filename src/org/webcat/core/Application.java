@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2021 Virginia Tech
+ |  Copyright (C) 2006-2023 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -59,6 +59,7 @@ import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCResourceManager;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
+import com.webobjects.appserver.WOCookie;
 import com.webobjects.appserver.WOMessage;
 import com.webobjects.appserver.WOPageNotFoundException;
 import com.webobjects.appserver.WORedirect;
@@ -1458,6 +1459,19 @@ public class Application
         }
         long dispatchTime = System.currentTimeMillis();
         WOResponse result = super.dispatchRequest(aRequest);
+        for (WOCookie cookie : result.cookies())
+        {
+            if ((useSecureConnectionsByDefault() || isSecure(aRequest))
+                && cookie.sameSite() != WOCookie.SameSite.NONE)
+            {
+                String name = cookie.name();
+                if (name == null || !name.startsWith("wo"))
+                {
+                    log.info("forcing samesite: none on cookie: " + cookie);
+                }
+                cookie.setSameSite(WOCookie.SameSite.NONE);
+            }
+        }
         if (requestLog.isDebugEnabled())
         {
             long time = System.currentTimeMillis() - dispatchTime;
