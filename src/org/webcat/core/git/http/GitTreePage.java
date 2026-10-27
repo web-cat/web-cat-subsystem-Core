@@ -267,6 +267,7 @@ public class GitTreePage extends GitWebComponent
             }
 
             File destFile = new File(destDir, filePathToUpload);
+            File tempFile = null;
 
             try
             {
@@ -278,9 +279,16 @@ public class GitTreePage extends GitWebComponent
                 }
                 else
                 {
-                    FileOutputStream os = new FileOutputStream(destFile);
+                    if (!destDir.exists())
+                    {
+                        destDir.mkdirs();
+                    }
+                    tempFile = File.createTempFile("upload", ".tmp", destDir);
+                    FileOutputStream os = new FileOutputStream(tempFile);
                     fileDataToUpload.writeToStream(os);
                     os.close();
+
+                    GitUtilities.atomicMove(tempFile, destFile);
                 }
 
                 GitUtilities.pushWorkingCopyImmediately(
@@ -292,6 +300,13 @@ public class GitTreePage extends GitWebComponent
                     + destFile + ": ", e);
                 error("The following error occurred trying to upload the "
                     + "file \"" + filePathToUpload + "\": " + e.getMessage());
+            }
+            finally
+            {
+                if (tempFile != null && tempFile.exists())
+                {
+                    tempFile.delete();
+                }
             }
         }
 

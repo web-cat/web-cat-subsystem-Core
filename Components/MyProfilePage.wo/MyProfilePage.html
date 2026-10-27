@@ -9,12 +9,20 @@ the domain <span class="hl"><webobject name="DomainName"/></span>.</p>
 <tr><td class="R">Last name:</td><td><webobject name="LastName"/></td></tr>
 <tr><td class="R">E-mail:</td><td><webobject name="Email"/></td></tr>
 <tr><td class="R">URL:</td><td><webobject name="URL"/></td></tr>
-<webobject name="CanChangePassword">
+<wo:if condition="$user.canChangePassword">
 <tr><td class="R">New password:</td>
     <td><webobject name="NewPassword1"/></td></tr>
 <tr><td class="R">Confirm password:</td>
     <td><webobject name="NewPassword2"/></td></tr>
-</webobject>
+</wo:if><wo:else>
+<wo:if condition="$user.hasFacultyPrivileges">
+<tr><td class="R">New git password:</td>
+    <td><webobject name="NewPassword1"/></td></tr>
+<tr><td class="R">Confirm git password:</td>
+    <td><webobject name="NewPassword2"/></td></tr>
+</wo:if><wo:else>
+</wo:if>
+</wo:else>
 <tr><td></td>
     <td><webobject name="ApplyChanges"/></td></tr>
 </table></webobject>
@@ -105,7 +113,7 @@ WebDAV URL: <wo name="WebDAVLink"/>
     <wo:if condition="~(aTheme.id == session.theme.id)">
     (currently selected)
     </wo:if><wo:else><wo:link action="$changeTheme">Select</wo:link>
-    </wo:else><wo:if condition="~(@org.webcat.core.Theme@defaultTheme().id() == aTheme.id)"> (default)</wo:if></td></tr>
+    </wo:else><wo:if condition="~(@org.webcat.core.Theme@defaultThemeName() == aTheme.name)"> (default)</wo:if></td></tr>
   </wo>
 </wo:loop>
 <h2 style="clear:both">Customize My Selected Theme</h2>

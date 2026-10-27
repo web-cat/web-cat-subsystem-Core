@@ -37,6 +37,7 @@ import com.webobjects.foundation.NSDictionary;
  *
  * @author  Stephen Edwards
  */
+@Deprecated
 public class IndependentEOManager
     implements EOManager
 {

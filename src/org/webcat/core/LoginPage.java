@@ -131,7 +131,8 @@ public class LoginPage
 //            try
 //            {
                 log.debug("looking up domain: " + auth);
-                if (AuthenticationDomain.authDomainStubByName(auth) != null)
+                domain = AuthenticationDomain.authDomainStubByName(auth);
+                if (domain != null)
                 {
                     specificAuthDomainName = auth;
                 }
@@ -169,6 +170,7 @@ public class LoginPage
         boolean result = false;
         for (int i = 0; i < domainDisplayGroup.allObjects().count(); i++)
         {
+            @SuppressWarnings("unchecked")
             NSDictionary<String, String> aDomain =
                 (NSDictionary<String, String>)
                 domainDisplayGroup.allObjects().objectAtIndex(i);

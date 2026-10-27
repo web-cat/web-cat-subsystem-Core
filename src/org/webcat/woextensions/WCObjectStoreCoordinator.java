@@ -145,6 +145,8 @@ public class WCObjectStoreCoordinator
                     + "!!!!!", record.location);
                 log.fatal("!!!!! lock(): previous lock location",
                     alreadyHolding.location);
+                dumpLocks("lock", locks);
+                dumpLocks("queue", queue);
                 throw new IllegalStateException(
                     "WCObjectStoreCoordinator.lock() called to lock " + this
                         + " while already holding lock on "
@@ -234,12 +236,27 @@ public class WCObjectStoreCoordinator
                 log.fatal("!!!!! unlock(): attempting to unlock " + this
                     + " while not holding lock"
                     + "!!!!!");
+                dumpLocks("lock", locks);
+                dumpLocks("queue", queue);
             }
             else if (alreadyHolding.os != this)
             {
-                log.fatal("!!!!! unlock(): attempting to unlock " + this
-                    + " while holding lock on " + alreadyHolding.os
-                    + "!!!!!");
+                if (record == null)
+                {
+                    log.fatal("!!!!! unlock(): attempting to unlock " + this
+                        + " without holding lock "
+                        + " while also holding lock on " + alreadyHolding.os
+                        + "!!!!!");
+                }
+                else
+                {
+                    log.fatal("!!!!! unlock(): attempting to unlock " + this
+                        + " out of 2-phase sequence "
+                        + " while holding lock on " + alreadyHolding.os
+                        + "!!!!!");
+                }
+                dumpLocks("lock", locks);
+                dumpLocks("queue", queue);
             }
             else
             {

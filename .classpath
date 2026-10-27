@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="/Bootstrap"/>
+	<classpathentry exported="true" kind="lib" path="/Library/Frameworks/EOJDBCPrototypes.framework/Resources/Java/eojdbcprototypes.jar"/>
 	<classpathentry exported="true" kind="con" path="WOFramework/DBUpdateEngine"/>
 	<classpathentry exported="true" kind="con" path="WOFramework/EOJDBCPrototypes"/>
 	<classpathentry exported="true" kind="con" path="WOFramework/ExternalJars"/>

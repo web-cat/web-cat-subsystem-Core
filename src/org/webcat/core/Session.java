@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2021 Virginia Tech
+ |  Copyright (C) 2006-2023 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -23,16 +23,21 @@ import org.apache.log4j.Logger;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
 import org.webcat.woextensions.EOManager;
 import org.webcat.woextensions.ResourceCounter;
+import org.webcat.woextensions.WCCookie;
 import org.webcat.woextensions.WCEC;
 import org.webcat.woextensions.WCEC.PeerManager;
 import org.webcat.woextensions.WCEC.PeerManagerPool;
 import com.webobjects.appserver.WOComponent;
+import com.webobjects.appserver.WORequest;
+import com.webobjects.appserver.WOResponse;
+import com.webobjects.appserver._private.WOShared;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSBundle;
 import com.webobjects.foundation.NSData;
 import com.webobjects.foundation.NSMutableDictionary;
 import com.webobjects.foundation.NSTimeZone;
+import com.webobjects.foundation.NSTimestamp;
 
 // -------------------------------------------------------------------------
 /**
@@ -547,6 +552,59 @@ public class Session
                 td = td.selectedChild();
             }
         }
+    }
+
+
+    public void _appendCookieToResponse(WOResponse aResponse)
+    {
+        if (storesIDsInCookies())
+        {
+            String instance, path = domainForIDCookies();
+            int timeout = isTerminating() ? 0 : timeOutForIDCookies();
+            NSTimestamp expirationDate = isTerminating()
+                ? (new NSTimestamp()).timestampByAddingGregorianUnits(
+                    0, -1, 0, 0, 0, 0)
+                : null;
+            String sess_id = isTerminating() ? "" : sessionID();
+            WCCookie aSessionIDCookie = new WCCookie(
+                Application.application().sessionIdKey(),
+                sess_id, path, null, timeout);
+            aSessionIDCookie.setExpires(expirationDate);
+            aResponse.addCookie(aSessionIDCookie);
+            if (isDistributionEnabled() || isTerminating())
+            {
+                instance = "-1";
+                timeout = 0;
+            }
+            else
+            {
+                int inst;
+                WORequest request = this.context().request();
+                if (request != null)
+                {
+                    inst = request.applicationNumber();
+                }
+                else
+                {
+                    inst = -1;
+                } 
+                if (inst == -1)
+                {
+                    instance = "-1";
+                }
+                else
+                {
+                    instance = WOShared.unsignedIntString(inst);
+                }
+            } 
+            WCCookie anInstanceCookie = new WCCookie(
+                Application.application().instanceIdKey(),
+                instance,
+                path,
+                null,
+                timeout);
+            aResponse.addCookie(anInstanceCookie);
+        } 
     }
 
 

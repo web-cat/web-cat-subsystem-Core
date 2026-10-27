@@ -396,6 +396,8 @@ public class Application
             new CoreDatabaseUpdates());
 
         // Set the eo model delegator
+        System.out.println("default model group = " + 
+            EOModelGroup.defaultGroup());
         EOModelGroup.defaultGroup().setDelegate(new SubsystemEOMRedirector());
 
         // register for database channel needed notification
@@ -1859,18 +1861,25 @@ public class Application
             message.setSentDate(new NSTimestamp());
 
             // Add each recipient to the message.
-            for (String toAddress : to)
+            if (to.size() > 0)
             {
-                String defaultDomain = configurationProperties()
-                    .getProperty("mail.default.domain");
-
-                if (toAddress.indexOf( '@' ) == -1 && defaultDomain != null)
+                InternetAddress[] addresses = new InternetAddress[to.size()];
+                int i = 0;
+                for (String toAddress : to)
                 {
-                    toAddress += "@" + defaultDomain;
+                    String defaultDomain = configurationProperties()
+                        .getProperty("mail.default.domain");
+
+                    if (toAddress.indexOf( '@' ) == -1 && defaultDomain != null)
+                    {
+                        toAddress += "@" + defaultDomain;
+                    }
+                    addresses[i] = new InternetAddress(toAddress);
+                    i++;
                 }
 
-                message.addRecipient(javax.mail.Message.RecipientType.TO,
-                                     new InternetAddress(toAddress));
+                message.addRecipients(
+                    javax.mail.Message.RecipientType.TO, addresses);
             }
 
             message.setSubject(appIdentifier() + subject);

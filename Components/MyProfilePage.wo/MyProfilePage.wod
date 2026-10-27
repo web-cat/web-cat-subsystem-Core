@@ -15,10 +15,6 @@ BlueJLinkInfo: org.webcat.core.PopUpInfo {
     message = "Web-CAT uses this URL to publish assignment definitions for use with the <a href=&quot;http://www.bluej.org/extensions/submitter/submitter.html&quot;>BlueJ submitter extension</a>. See the &quot;Configure BlueJ&quot; section of the <a href=&quot;http://web-cat.cs.vt.edu/WCWiki/ConfigureBlueJsSubmitter&quot;>ConfigureBlueJsSubmitter</a> recipe in the Web-CAT Cookbook.";
 }
 
-CanChangePassword: WOConditional {
-    condition = user.canChangePassword;
-}
-
 CanTA: WOConditional {
     condition = user.hasTAPrivileges;
 }

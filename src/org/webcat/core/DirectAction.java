@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2006-2021 Virginia Tech
+ |  Copyright (C) 2006-2023 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -21,9 +21,6 @@ package org.webcat.core;
 
 import java.util.HashMap;
 import java.util.Map;
-import com.webobjects.appserver.*;
-import com.webobjects.eoaccess.*;
-import com.webobjects.foundation.*;
 import er.extensions.foundation.ERXValueUtilities;
 import org.webcat.core.Application;
 import org.webcat.core.AuthenticationDomain;
@@ -43,7 +40,21 @@ import org.webcat.core.install.*;
 import org.webcat.core.lti.LTIConfiguration;
 import org.webcat.core.lti.LTILaunchRequest;
 import org.webcat.woextensions.ECActionWithResult;
+import org.webcat.woextensions.WCCookie;
 import org.webcat.woextensions.WCEC;
+import com.webobjects.appserver.WOActionResults;
+import com.webobjects.appserver.WOComponent;
+import com.webobjects.appserver.WORequest;
+import com.webobjects.appserver.WOResponse;
+import com.webobjects.appserver.WOSession;
+import com.webobjects.eoaccess.EOObjectNotAvailableException;
+import com.webobjects.eoaccess.EOUtilities;
+import com.webobjects.foundation.NSArray;
+import com.webobjects.foundation.NSData;
+import com.webobjects.foundation.NSDictionary;
+import com.webobjects.foundation.NSMutableArray;
+import com.webobjects.foundation.NSMutableDictionary;
+import com.webobjects.foundation.NSTimestamp;
 
 //-------------------------------------------------------------------------
 /**
@@ -176,22 +187,21 @@ public class DirectAction
             {
                 session.user().theme().setAsLastUsedThemeInContext(context());
             }
-
             // Store selected authentication domain in cookie
             if (domain != null)
             {
                 result.addCookie(
-                    new WOCookie(
+                    new WCCookie(
                         AuthenticationDomain.COOKIE_LAST_USED_INSTITUTION,
                         domain.get("name"),
                         context().urlWithRequestHandlerKey(null, null, null),
-                        null, ONE_YEAR, false));
+                        null, ONE_YEAR));
                 result.addCookie(
-                    new WOCookie(
+                    new WCCookie(
                         CONTEXT_ID_KEY,
                         "none",
                         context().urlWithRequestHandlerKey(null, null, null),
-                        null, new NSTimestamp(), false));
+                        null, new NSTimestamp()));
             }
             if (log.isDebugEnabled())
             {
@@ -346,6 +356,7 @@ public class DirectAction
                     CasRedirectPage redir =
                         pageWithName(CasRedirectPage.class);
                     redir.contextId = id;
+                    redir.authId = d.get("propertyName");
                     redir.loginUrl = authenticator.casLoginUrl(returnUrl);
                     result = redir.generateResponse();
                 }
@@ -819,22 +830,22 @@ public class DirectAction
         if (info != null && info.auth != null)
         {
             response.addCookie(
-                new WOCookie(
+                new WCCookie(
                     AuthenticationDomain.COOKIE_LAST_USED_INSTITUTION,
                     info.auth,
                     context().urlWithRequestHandlerKey(null, null, null),
-                    null, ONE_YEAR, false));
+                    null, ONE_YEAR));
         }
         if (session != null)
         {
             session._appendCookieToResponse(response);
         }
         response.addCookie(
-            new WOCookie(
+            new WCCookie(
                 CONTEXT_ID_KEY,
                 "none",
                 context().urlWithRequestHandlerKey(null, null, null),
-                null, new NSTimestamp(), false));
+                null, new NSTimestamp()));
         return response;
     }
 

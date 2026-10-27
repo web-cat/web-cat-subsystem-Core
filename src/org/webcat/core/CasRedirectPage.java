@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2018 Virginia Tech
+ |  Copyright (C) 2018-2023 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -20,9 +20,9 @@
 
 package org.webcat.core;
 
+import org.webcat.woextensions.WCCookie;
 import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.appserver.WOCookie;
 import com.webobjects.appserver.WOResponse;
 
 //-------------------------------------------------------------------------
@@ -67,12 +67,15 @@ public class CasRedirectPage
         hasCookies = context.request().cookies().size() > 0;
 
         String myUrl = context().urlWithRequestHandlerKey(null, null, null);
-        response.addCookie(new WOCookie(
-            AuthenticationDomain.COOKIE_LAST_USED_INSTITUTION,
-            authId, myUrl, null, DirectAction.ONE_YEAR, false));
-        response.addCookie(new WOCookie(
+        if (authId != null && !authId.isEmpty())
+        {
+            response.addCookie(new WCCookie(
+                AuthenticationDomain.COOKIE_LAST_USED_INSTITUTION,
+                authId, myUrl, null, DirectAction.ONE_YEAR));
+        }
+        response.addCookie(new WCCookie(
             DirectAction.CONTEXT_ID_KEY,
-            contextId, myUrl,null, DirectAction.TEN_MINUTES, false));
+            contextId, myUrl,null, DirectAction.TEN_MINUTES));
 
         nextUrl = Application.completeURLWithRequestHandlerKey(context,
             null, null, null, true, 0);

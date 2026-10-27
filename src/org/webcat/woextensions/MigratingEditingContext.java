@@ -21,6 +21,7 @@ package org.webcat.woextensions;
 
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOObjectStore;
+import er.extensions.eof.ERXEC;
 
 //-------------------------------------------------------------------------
 /**
@@ -51,7 +52,26 @@ public class MigratingEditingContext
      */
     public static MigratingEditingContext newEditingContext()
     {
-        return (MigratingEditingContext)factory()._newEditingContext();
+        return MigratingEditingContext.factory().newEditingContext();
+    }
+
+
+    // ----------------------------------------------------------
+    private static MigratingEditingContext createMigratingEditingContext(
+        EOObjectStore parent)
+    {
+        MigratingEditingContext ec = new MigratingEditingContext(
+            parent == null
+            ? EOEditingContext.defaultParentObjectStore()
+            : parent);
+        ec.lock();
+        try {
+            ec.setOptions(true, true, true);
+        }
+        finally {
+            ec.unlock();
+        }
+        return ec;
     }
 
 
@@ -59,38 +79,55 @@ public class MigratingEditingContext
     public static class MigratingFactory
         extends WCECFactory
     {
+        // ----------------------------------------------------------
+        public MigratingFactory()
+        {
+            super(new ERXEC.DefaultFactory() {
+                // ------------------------------------------------------
+                @Override
+                protected MigratingEditingContext _createEditingContext(
+                    EOObjectStore parent)
+                {
+                    return MigratingEditingContext
+                        .createMigratingEditingContext(parent);
+                }
+            });
+        }
+
+
+        // ----------------------------------------------------------
         @Override
         protected MigratingEditingContext _createEditingContext(
             EOObjectStore parent)
         {
-            MigratingEditingContext ec = new MigratingEditingContext(
-                parent == null
-                ? EOEditingContext.defaultParentObjectStore()
-                : parent);
-            ec.lock();
-            try {
-                ec.setOptions(true, true, true);
-            }
-            finally {
-                ec.unlock();
-            }
-            return ec;
+            return MigratingEditingContext
+                .createMigratingEditingContext(parent);
         }
 
+
+        // ----------------------------------------------------------
 //        @Override
 //        public EOEditingContext _newEditingContext(
 //            EOObjectStore objectStore, boolean validationEnabled)
 //        {
 //            EOEditingContext result =
 //                super._newEditingContext(objectStore, validationEnabled);
-////            result.setSharedEditingContext(null);
+//            result.setSharedEditingContext(null);
 //            return result;
 //        }
+
+
+        // ----------------------------------------------------------
+        @Override
+        public MigratingEditingContext newEditingContext()
+        {
+            return (MigratingEditingContext)super.newEditingContext();
+        }
     }
 
 
     // ----------------------------------------------------------
-    public static WCECFactory factory()
+    public static MigratingFactory factory()
     {
         if (factory == null)
         {
@@ -102,5 +139,5 @@ public class MigratingEditingContext
 
     //~ Static/instance variables .............................................
 
-    private static WCECFactory factory;
+    private static MigratingFactory factory;
 }

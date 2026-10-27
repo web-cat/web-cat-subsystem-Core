@@ -198,15 +198,34 @@ public class DirectoryResource
         log.debug("createNew: " + path() + ", " + name);
 
         DAVPath destPath = new DAVPath(path(), name);
+        File destFile = destPath.toFile();
+        File parentDir = destFile.getParentFile();
+        if (parentDir != null && !parentDir.exists())
+        {
+            parentDir.mkdirs();
+        }
+        File tempFile = File.createTempFile("dav", ".tmp", parentDir);
         FileOutputStream out = null;
         try
         {
-            out = new FileOutputStream(destPath.toFile());
+            out = new FileOutputStream(tempFile);
             FileUtilities.copyStream(in, out);
         }
         finally
         {
             FileUtilities.closeQuietly(out);
+        }
+
+        try
+        {
+            GitUtilities.atomicMove(tempFile, destFile);
+        }
+        finally
+        {
+            if (tempFile.exists())
+            {
+                tempFile.delete();
+            }
         }
 
         pushWorkingCopy();

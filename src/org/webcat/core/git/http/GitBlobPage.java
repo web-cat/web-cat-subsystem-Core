@@ -173,12 +173,21 @@ public class GitBlobPage
             Repository workingCopy = GitUtilities.workingCopyForRepository(
                 gitContext().repository().repository(), true);
             File file = new File(workingCopy.getWorkTree(), gitContext().path());
+            File parentDir = file.getParentFile();
+            if (parentDir != null && !parentDir.exists())
+            {
+                parentDir.mkdirs();
+            }
+            File tempFile = null;
 
             try
             {
-                FileWriter writer = new FileWriter(file);
+                tempFile = File.createTempFile("blob", ".tmp", parentDir);
+                FileWriter writer = new FileWriter(tempFile);
                 writer.write(blobContentString);
                 writer.close();
+
+                GitUtilities.atomicMove(tempFile, file);
 
                 GitUtilities.pushWorkingCopyImmediately(
                     workingCopy, user(), commitMessageForChanges);
@@ -189,6 +198,13 @@ public class GitBlobPage
                 error("The following error occurred trying to commit the "
                     + "file \"" + gitContext().path() + "\": "
                     + e.getMessage());
+            }
+            finally
+            {
+                if (tempFile != null && tempFile.exists())
+                {
+                    tempFile.delete();
+                }
             }
         }
 

@@ -58,9 +58,35 @@ public class GitAuthenticationFilter extends BasicAuthenticationFilter
             RequestFilterChain filterChain) throws Exception
     {
         String path = request.requestHandlerPath();
-        requestInfo = EntityRequestInfo.fromRequestHandlerPath(path);
+        EntityRequestInfo info = EntityRequestInfo.fromRequestHandlerPath(path);
+        currentRequestInfo.set(info);
+        request.setUserInfoForKey(info, KEY_REQUEST_INFO);
 
-        super.filterRequest(request, response, filterChain);
+        try
+        {
+            super.filterRequest(request, response, filterChain);
+        }
+        finally
+        {
+            currentRequestInfo.remove();
+            request.setUserInfoForKey(null, KEY_REQUEST_INFO);
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    private EntityRequestInfo getRequestInfo(WORequest request)
+    {
+        EntityRequestInfo info = null;
+        if (request != null)
+        {
+            info = (EntityRequestInfo) request.userInfoForKey(KEY_REQUEST_INFO);
+        }
+        if (info == null)
+        {
+            info = currentRequestInfo.get();
+        }
+        return info;
     }
 
 
@@ -68,7 +94,7 @@ public class GitAuthenticationFilter extends BasicAuthenticationFilter
     @Override
     protected boolean isRequestValid(WORequest request)
     {
-        return requestInfo != null;
+        return getRequestInfo(request) != null;
     }
 
 
@@ -76,10 +102,20 @@ public class GitAuthenticationFilter extends BasicAuthenticationFilter
     @Override
     protected String realmForContext(WOContext context)
     {
-        if (requestInfo != null)
+        EntityRequestInfo info = null;
+        if (context != null)
+        {
+            info = getRequestInfo(context.request());
+        }
+        else
+        {
+            info = currentRequestInfo.get();
+        }
+
+        if (info != null)
         {
             return "Web-CAT Git repository "
-                + requestInfo.entityName() + "/" + requestInfo.objectID()
+                + info.entityName() + "/" + info.objectID()
                 + " on " + Application.wcApplication().host();
         }
         else
@@ -94,7 +130,13 @@ public class GitAuthenticationFilter extends BasicAuthenticationFilter
     @Override
     protected boolean userHasAccess(User user)
     {
-        EOEnterpriseObject object = requestInfo.requestedObject(
+        EntityRequestInfo info = currentRequestInfo.get();
+        if (info == null)
+        {
+            return false;
+        }
+
+        EOEnterpriseObject object = info.requestedObject(
                 user.editingContext());
 
         if (object instanceof RepositoryProvider)
@@ -115,22 +157,35 @@ public class GitAuthenticationFilter extends BasicAuthenticationFilter
     @Override
     protected User validateUser(String username, String password, WCEC ec)
     {
-        EOEnterpriseObject object = requestInfo.requestedObject(ec);
-
-        if (object instanceof RepositoryProviderWithAuthentication)
+        EntityRequestInfo info = currentRequestInfo.get();
+        if (info != null)
         {
-            User u = ((RepositoryProviderWithAuthentication)object)
-                .authorizedUserForRepository(ec, username, password);
-            if (u != null)
+            EOEnterpriseObject object = info.requestedObject(ec);
+
+            if (object instanceof RepositoryProviderWithAuthentication)
             {
-                return u;
+                User u = ((RepositoryProviderWithAuthentication)object)
+                    .authorizedUserForRepository(ec, username, password);
+                if (u != null)
+                {
+                    return u;
+                }
             }
         }
         return super.validateUser(username, password, ec);
     }
 
 
+    // ----------------------------------------------------------
+    @Override
+    protected boolean alsoCheckDbPassword() { return true; }
+
+
     //~ Static/instance variables .............................................
 
-    private EntityRequestInfo requestInfo;
+    private static final String KEY_REQUEST_INFO =
+        "org.webcat.core.git.http.GitAuthenticationFilter.requestInfo";
+
+    private static final ThreadLocal<EntityRequestInfo> currentRequestInfo =
+        new ThreadLocal<EntityRequestInfo>();
 }

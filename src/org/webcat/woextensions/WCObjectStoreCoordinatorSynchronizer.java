@@ -805,6 +805,17 @@ public class WCObjectStoreCoordinatorSynchronizer
 					    osc, entityName);
 					dbcs.setObjectForKey(dbc, key);
 				}
+				else if (dbc != ERXEOAccessUtilities
+				    .databaseContextForEntityNamed(osc, entityName))
+				{
+				    String msg = "dbc for entity " + entityName + "was "
+                        + dbc;
+                    dbc = ERXEOAccessUtilities.databaseContextForEntityNamed(
+                        osc, entityName);
+                    dbcs.setObjectForKey(dbc, key);
+                    msg += " but now is " + dbc;
+				    log.fatal(msg, new Exception("here"));
+				}
 				EODatabase database = dbc.database();
 				NSMutableDictionary snapshotsByGlobalID =
 				    new NSMutableDictionary();
@@ -819,6 +830,7 @@ public class WCObjectStoreCoordinatorSynchronizer
 				}
 				if (snapshotsByGlobalID.count() > 0)
 				{
+				    log.info("_process: locking " + dbc);
 					dbc.lock();
 					try
 					{
@@ -827,6 +839,7 @@ public class WCObjectStoreCoordinatorSynchronizer
 					}
 					finally
 					{
+	                    log.info("_process: unlocking " + dbc);
 						dbc.unlock();
 					}
 				}
@@ -874,6 +887,7 @@ public class WCObjectStoreCoordinatorSynchronizer
 					EODatabaseContext dbc = ERXEOAccessUtilities
 					    .databaseContextForEntityNamed(osc, gid.entityName());
 					EODatabase database = dbc.database();
+                    log.info("processRemoteChange: locking " + dbc);
 					dbc.lock();
 					try
 					{
@@ -896,6 +910,7 @@ public class WCObjectStoreCoordinatorSynchronizer
 					}
 					finally
 					{
+	                    log.info("processRemoteChange: unlocking " + dbc);
 						dbc.unlock();
 					}
 				}

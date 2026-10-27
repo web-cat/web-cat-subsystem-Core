@@ -24,10 +24,11 @@ package org.webcat.core.git;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 import org.apache.log4j.Logger;
 import org.eclipse.jgit.api.AddCommand;
 import org.eclipse.jgit.api.CommitCommand;
@@ -51,7 +52,6 @@ import org.webcat.core.FileUtilities;
 import org.webcat.core.RepositoryProvider;
 import org.webcat.core.User;
 import com.webobjects.eocontrol.EOEnterpriseObject;
-import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSComparator;
 import com.webobjects.foundation.NSMutableArray;
 
@@ -115,22 +115,6 @@ public class GitUtilities
 
         if (fsDir != null)
         {
-            File masterRef = new File(fsDir, "refs/heads/master");
-            if (!masterRef.exists())
-            {
-                // If the directory exists but we don't have a master ref, then
-                // the repository is probably corrupted. Blow away the
-                // directory, clear the repository cache, and then the code
-                // below will re-create it for us.
-
-                log.warn("Found the directory for the repository at "
-                        + fsDir.getAbsolutePath() + ", but it appears to be "
-                        + "corrupt (no master ref). Re-creating it...");
-
-                RepositoryCache.clear();
-                FileUtilities.deleteDirectory(fsDir);
-                fsDir.mkdirs();
-            }
 
             try
             {
@@ -181,9 +165,117 @@ public class GitUtilities
         RepositoryInfo repoInfo = new RepositoryInfo();
         repoInfo.repositoryDir = fsDir;
         repoInfo.workingCopyDir = wcDir;
-        repositoryInfos.put(repository, repoInfo);
+        String repoKey = canonicalPath(fsDir);
+        if (repoKey != null)
+        {
+            repositoryInfos.put(repoKey, repoInfo);
+        }
+        String wcKey = canonicalPath(wcDir);
+        if (wcKey != null)
+        {
+            repositoryInfos.put(wcKey, repoInfo);
+        }
 
         return repository;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the canonical path of a file, falling back to absolute path on error.
+     *
+     * @param file the file
+     * @return canonical path string or null if file is null
+     */
+    public static String canonicalPath(File file)
+    {
+        if (file == null)
+        {
+            return null;
+        }
+        try
+        {
+            return file.getCanonicalPath();
+        }
+        catch (IOException e)
+        {
+            return file.getAbsolutePath();
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets the canonical path for a repository directory or its worktree.
+     *
+     * @param repo the repository
+     * @return canonical path string or null if repo is null
+     */
+    public static String canonicalPath(Repository repo)
+    {
+        if (repo == null)
+        {
+            return null;
+        }
+        File dir = repo.isBare() ? repo.getDirectory() : repo.getWorkTree();
+        return canonicalPath(dir);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Gets or creates a reentrant lock for synchronizing operations on the
+     * specified working copy directory.
+     *
+     * @param workingCopyDir the working copy directory
+     * @return the ReentrantLock associated with the working copy, or null if directory is null
+     */
+    public static ReentrantLock lockForWorkingCopy(File workingCopyDir)
+    {
+        if (workingCopyDir == null)
+        {
+            return null;
+        }
+        String key = canonicalPath(workingCopyDir);
+        ReentrantLock lock = workingCopyLocks.get(key);
+        if (lock == null)
+        {
+            ReentrantLock newLock = new ReentrantLock();
+            ReentrantLock existing = workingCopyLocks.putIfAbsent(key, newLock);
+            lock = (existing != null) ? existing : newLock;
+        }
+        return lock;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Atomically moves a source file to a destination file, falling back to a
+     * standard replace if atomic move is not supported by the underlying filesystem.
+     *
+     * @param source the source file
+     * @param destination the destination file
+     * @throws IOException if an error occurs
+     */
+    public static void atomicMove(File source, File destination)
+        throws IOException
+    {
+        File parent = destination.getParentFile();
+        if (parent != null && !parent.exists())
+        {
+            parent.mkdirs();
+        }
+        try
+        {
+            java.nio.file.Files.move(source.toPath(), destination.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING,
+                java.nio.file.StandardCopyOption.ATOMIC_MOVE);
+        }
+        catch (java.nio.file.AtomicMoveNotSupportedException e)
+        {
+            java.nio.file.Files.move(source.toPath(), destination.toPath(),
+                java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 
 
@@ -203,12 +295,30 @@ public class GitUtilities
     public static Repository workingCopyForRepository(Repository repository,
             boolean forcePull)
     {
-        RepositoryInfo repoInfo = repositoryInfos.get(repository);
+        String key = canonicalPath(repository);
+        RepositoryInfo repoInfo = (key != null) ? repositoryInfos.get(key) : null;
+        if (repoInfo == null && repository != null)
+        {
+            key = canonicalPath(repository.getDirectory());
+            repoInfo = (key != null) ? repositoryInfos.get(key) : null;
+        }
+
+        if (repoInfo == null)
+        {
+            log.error("workingCopyForRepository(): no RepositoryInfo found for "
+                    + repository);
+            return null;
+        }
 
         GitCloner cloner = new GitCloner(repoInfo.repositoryDir,
                 repoInfo.workingCopyDir);
 
         Repository wcRepository = null;
+        ReentrantLock lock = lockForWorkingCopy(repoInfo.workingCopyDir);
+        if (lock != null)
+        {
+            lock.lock();
+        }
 
         try
         {
@@ -225,6 +335,13 @@ public class GitUtilities
             log.error("A git API exception occurred while trying to get the "
                     + "working copy repository for repository "
                     + repoInfo.repositoryDir, e);
+        }
+        finally
+        {
+            if (lock != null)
+            {
+                lock.unlock();
+            }
         }
 
         return wcRepository;
@@ -243,14 +360,19 @@ public class GitUtilities
     public static void pushWorkingCopy(Repository workingCopy, User user,
             String commitMessage)
     {
+        if (workingCopy == null)
+        {
+            return;
+        }
+        String key = canonicalPath(workingCopy);
         synchronized (workingCopyPushTimers)
         {
-            Timer timer = workingCopyPushTimers.get(workingCopy);
+            Timer timer = workingCopyPushTimers.get(key);
 
             if (timer != null)
             {
                 timer.cancel();
-                workingCopyPushTimers.remove(workingCopy);
+                workingCopyPushTimers.remove(key);
             }
 
             timer = new Timer();
@@ -258,7 +380,7 @@ public class GitUtilities
                     workingCopy, user, commitMessage);
             timer.schedule(task, 5000);
 
-            workingCopyPushTimers.put(workingCopy, timer);
+            workingCopyPushTimers.put(key, timer);
         }
     }
 
@@ -276,30 +398,15 @@ public class GitUtilities
     public static RevCommit pushWorkingCopyImmediately(Repository workingCopy,
             String authorName, String emailAddress, String commitMessage)
     {
+        ReentrantLock lock = (workingCopy != null)
+            ? lockForWorkingCopy(workingCopy.getWorkTree()) : null;
+        if (lock != null)
+        {
+            lock.lock();
+        }
+
         try
         {
-            // Amending commits after they've been pushed is BAD NEWS. This is
-            // going to go away.
-            //
-            /*boolean amend = false;
-
-            GitRepository gitRepo = new GitRepository(workingCopy);
-
-            GitRef ref = gitRepo.refWithName(
-                    Constants.R_HEADS + Constants.MASTER);
-            NSArray<GitCommit> commits = ref.commits();
-
-            if (commits != null && !commits.isEmpty())
-            {
-                GitCommit commit = commits.objectAtIndex(0);
-                if (commitMessage.equals(commit.shortMessage()) &&
-                        commit.commitTime().timeIntervalSinceNow()
-                            > -3 * 60 * 60)
-                {
-                    amend = true;
-                }
-            }*/
-
             Git git = new Git(workingCopy);
 
             git.add()
@@ -330,6 +437,13 @@ public class GitUtilities
         {
             log.error("Error updating repository: ", e);
         }
+        finally
+        {
+            if (lock != null)
+            {
+                lock.unlock();
+            }
+        }
 
         return null;
     }
@@ -357,9 +471,13 @@ public class GitUtilities
         @Override
         public void run()
         {
+            String key = canonicalPath(workingCopy);
             synchronized (workingCopyPushTimers)
             {
-                workingCopyPushTimers.remove(workingCopy);
+                if (key != null)
+                {
+                    workingCopyPushTimers.remove(key);
+                }
 
                 pushWorkingCopyImmediately(workingCopy, authorName,
                         emailAddress, commitMessage);
@@ -575,6 +693,8 @@ public class GitUtilities
         // Cleanup after ourselves.
         FileUtilities.deleteDirectory(tempRepoDir);
 
+        RepositoryCache.register(bareRepository);
+
         return bareRepository;
     }
 
@@ -607,10 +727,12 @@ public class GitUtilities
 
     //~ Static/instance variables .............................................
 
-    private static Map<Repository, RepositoryInfo> repositoryInfos =
-        new HashMap<Repository, RepositoryInfo>();
-    private static Map<Repository, Timer> workingCopyPushTimers =
-        new HashMap<Repository, Timer>();
+    private static final Map<String, RepositoryInfo> repositoryInfos =
+        new ConcurrentHashMap<String, RepositoryInfo>();
+    private static final Map<String, Timer> workingCopyPushTimers =
+        new ConcurrentHashMap<String, Timer>();
+    private static final Map<String, ReentrantLock> workingCopyLocks =
+        new ConcurrentHashMap<String, ReentrantLock>();
 
     private static final Logger log = Logger.getLogger(GitUtilities.class);
 }

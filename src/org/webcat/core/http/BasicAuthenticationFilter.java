@@ -292,11 +292,23 @@ public abstract class BasicAuthenticationFilter
         // Validate the user's password.
         if (user != null)
         {
+            if (alsoCheckDbPassword()
+                && user.checkPassword(password))
+            {
+                // Short circuit first check against DB password, regardless
+                // of authentication domain, if subclass requires it (for
+                // git password usage)
+                return user;
+            }
             user = User.validate(user.userName(), password,
                 user.authenticationDomain(), ec);
         }
         return user;
     }
+    
+
+    // ----------------------------------------------------------
+    protected boolean alsoCheckDbPassword() { return false; }
 
 
     //~ Static/instance variables .............................................

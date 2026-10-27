@@ -94,6 +94,7 @@ public class CachingEOManager
 //            result.snapshot =
 //                (NSMutableDictionary<String, Object>)snapshot.clone();
             result.original = original;
+            result.context = context;
             result.globalId = globalId;
 
             return result;
@@ -119,7 +120,10 @@ public class CachingEOManager
         {
             // ignore, forcing null result
         }
-        log.debug(me() + ": valueForKey(" + key + ") => " + result);
+        if (log.isDebugEnabled())
+        {
+            log.debug(me() + ": valueForKey(" + key + ") => " + result);
+        }
         if (result instanceof EOEnterpriseObject)
         {
             EOEnterpriseObject eo = (EOEnterpriseObject)result;
@@ -175,12 +179,20 @@ public class CachingEOManager
                 ? null
                 : ec.faultForGlobalID(finalId, ec);
 
-            log.debug(me() + ": addObjectToBothSidesOfRelationshipWithKey(), "
-                + "key = " + key + " => " + other);
+            if (log.isDebugEnabled())
+            {
+                log.debug(me()
+                    + ": addObjectToBothSidesOfRelationshipWithKey(), "
+                    + "key = " + key + " => " + other);
+            }
             clone.addObjectToBothSidesOfRelationshipWithKey(other, key);
             ec.saveChanges();
-            log.debug(me() + ": addObjectToBothSidesOfRelationshipWithKey(), "
-                + "after save = " + key + " => " + clone.valueForKey(key));
+            if (log.isDebugEnabled())
+            {
+                log.debug(me()
+                    + ": addObjectToBothSidesOfRelationshipWithKey(), "
+                    + "after save = " + key + " => " + clone.valueForKey(key));
+            }
         }}.run();
         refreshMaster(key);
 //        Object current = snapshot.valueForKey(key);
@@ -230,12 +242,19 @@ public class CachingEOManager
     {
         new ECAction() { public void action() {
             EOEnterpriseObject clone = ec.faultForGlobalID(globalId, ec);
-            log.debug(me() + ": addObjectToPropertyWithKey(), key = "
-                + key + " => " + eo);
+            if (log.isDebugEnabled())
+            {
+                log.debug(me() + ": addObjectToPropertyWithKey(), key = "
+                    + key + " => " + eo);
+            }
             clone.addObjectToPropertyWithKey(eo, key);
             ec.saveChanges();
-            log.debug(me() + ": addObjectToPropertyWithKey(), after save = "
-                + key + " => " + clone.valueForKey(key));
+            if (log.isDebugEnabled())
+            {
+                log.debug(me()
+                    + ": addObjectToPropertyWithKey(), after save = "
+                    + key + " => " + clone.valueForKey(key));
+            }
         }}.run();
         refreshMaster(key);
 //        Object current = snapshot.valueForKey(key);
@@ -285,13 +304,19 @@ public class CachingEOManager
                 ? null
                 : ec.faultForGlobalID(finalId, ec);
 
-            log.debug(me() + ": removeObjectFromBothSidesOfRelationship"
-                + "WithKey(), key = " + key + " - " + other);
+            if (log.isDebugEnabled())
+            {
+                log.debug(me() + ": removeObjectFromBothSidesOfRelationship"
+                    + "WithKey(), key = " + key + " - " + other);
+            }
             clone.removeObjectFromBothSidesOfRelationshipWithKey(other, key);
             ec.saveChanges();
-            log.debug(me() + ": removeObjectFromBothSidesOfRelationship"
-                + "WithKey(), after save = " + key + " - "
-                + clone.valueForKey(key));
+            if (log.isDebugEnabled())
+            {
+                log.debug(me() + ": removeObjectFromBothSidesOfRelationship"
+                    + "WithKey(), after save = " + key + " - "
+                    + clone.valueForKey(key));
+            }
         }}.run();
         refreshMaster(key);
 //        Object current = snapshot.valueForKey(key);
@@ -328,12 +353,18 @@ public class CachingEOManager
     {
         new ECAction() { public void action() {
             EOEnterpriseObject clone = ec.faultForGlobalID(globalId, ec);
-            log.debug(me() + ": removeObjectFromPropertyWithKey(), key = "
-                + key + " - " + eo);
+            if (log.isDebugEnabled())
+            {
+                log.debug(me() + ": removeObjectFromPropertyWithKey(), key = "
+                    + key + " - " + eo);
+            }
             clone.removeObjectFromPropertyWithKey(eo, key);
             ec.saveChanges();
-            log.debug(me() + ": removeObjectFromPropertyWithKey(), after "
-                + "save = " + key + " - " + clone.valueForKey(key));
+            if (log.isDebugEnabled())
+            {
+                log.debug(me() + ": removeObjectFromPropertyWithKey(), after "
+                    + "save = " + key + " - " + clone.valueForKey(key));
+            }
         }}.run();
         refreshMaster(key);
 //        Object current = snapshot.valueForKey(key);
@@ -398,7 +429,10 @@ public class CachingEOManager
 //            result = null;
 //        }
 //        result = localize(result);
-        log.debug(me() + ": valueForKey(" + key + ") => " + result);
+        if (log.isDebugEnabled())
+        {
+            log.debug(me() + ": valueForKey(" + key + ") => " + result);
+        }
         return result;
     }
 
@@ -461,14 +495,20 @@ public class CachingEOManager
                                     + currents);
                             }
                         }
-                        log.debug(me() + ": handleTakeValueForUnboundKey("
-                            + key + ") null => removing " + current);
+                        if (log.isDebugEnabled())
+                        {
+                            log.debug(me() + ": handleTakeValueForUnboundKey("
+                                + key + ") null => removing " + current);
+                        }
                         clone.removeObjectFromBothSidesOfRelationshipWithKey(
                             (EORelationshipManipulation)current, key);
                         ec.saveChanges();
-                        log.debug(me() + ": handleTakeValueForUnboundKey("
-                            + key + ") after save => " + key + " => "
-                            + clone.valueForKey(key));
+                        if (log.isDebugEnabled())
+                        {
+                            log.debug(me() + ": handleTakeValueForUnboundKey("
+                                + key + ") after save => " + key + " => "
+                                + clone.valueForKey(key));
+                        }
                     }
                 }}.run();
 
@@ -486,8 +526,11 @@ public class CachingEOManager
                     {
                         EOBase other =
                             (EOBase)currents.objectAtIndex(i);
-                        log.debug(me() + ": handleTakeValueForUnboundKey("
-                            + key + ") null => removing " + other);
+                        if (log.isDebugEnabled())
+                        {
+                            log.debug(me() + ": handleTakeValueForUnboundKey("
+                                + key + ") null => removing " + other);
+                        }
                         clone.removeObjectFromBothSidesOfRelationshipWithKey(
                             ec.faultForGlobalID(
                                 other.globalId(), ec),
@@ -498,14 +541,21 @@ public class CachingEOManager
                         EORelationshipManipulation other =
                             (EORelationshipManipulation)newOnes
                             .objectAtIndex(i);
-                        log.debug(me() + ": handleTakeValueForUnboundKey("
-                            + key + ") => adding " + other);
+                        if (log.isDebugEnabled())
+                        {
+                            log.debug(me() + ": handleTakeValueForUnboundKey("
+                                + key + ") => adding " + other);
+                        }
                         clone.addObjectToBothSidesOfRelationshipWithKey(
                             other, key);
                     }
                     ec.saveChanges();
-                    log.debug(me() + ": handleTakeValueForUnboundKey("
-                        + key + ") after save => " + clone.valueForKey(key));
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug(me() + ": handleTakeValueForUnboundKey("
+                            + key + ") after save => "
+                            + clone.valueForKey(key));
+                    }
                 }}.run();
             }
             else if (value instanceof EOCustomObject)
@@ -532,20 +582,30 @@ public class CachingEOManager
                                     + currents);
                             }
                         }
-                        log.debug(me() + "handleTakeValueForUnboundKey(" + key
-                            + ") => removing current: " + current);
+                        if (log.isDebugEnabled())
+                        {
+                            log.debug(me() + "handleTakeValueForUnboundKey("
+                                + key + ") => removing current: " + current);
+                        }
                         clone.removeObjectFromBothSidesOfRelationshipWithKey(
                             (EORelationshipManipulation)current, key);
                     }
                     EOEnterpriseObject other = ec.faultForGlobalID(
                         ((EOBase)value).globalId(), ec);
-                    log.debug(me() + ": handleTakeValueForUnboundKey(" + key
-                        + ") => adding " + other);
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug(me() + ": handleTakeValueForUnboundKey("
+                            + key + ") => adding " + other);
+                    }
                     clone.addObjectToBothSidesOfRelationshipWithKey(
                         other, key);
                     ec.saveChanges();
-                    log.debug(me() + ": handleTakeValueForUnboundKey(" + key
-                        + ") after save => " + clone.valueForKey(key));
+                    if (log.isDebugEnabled())
+                    {
+                        log.debug(me() + ": handleTakeValueForUnboundKey("
+                            + key + ") after save => "
+                            + clone.valueForKey(key));
+                    }
                 }}.run();
 //                if (current != null
 //                    && current != NullValue
@@ -570,12 +630,19 @@ public class CachingEOManager
 
         new ECAction() { public void action() {
             EOEnterpriseObject clone = ec.faultForGlobalID(globalId, ec);
-            log.debug(me() + ": handleTakeValueForUnboundKey(" + key
-                + ") => takeValueForKey(): " + value);
+            if (log.isDebugEnabled())
+            {
+                log.debug(me() + ": handleTakeValueForUnboundKey(" + key
+                    + ") => takeValueForKey(): " + value);
+            }
             clone.takeValueForKey(value, key);
             ec.saveChanges();
-            log.debug(me() + ": handleTakeValueForUnboundKey(" + key
-                + ") => after takeValueForKey(): " + clone.valueForKey(key));
+            if (log.isDebugEnabled())
+            {
+                log.debug(me() + ": handleTakeValueForUnboundKey(" + key
+                    + ") => after takeValueForKey(): "
+                    + clone.valueForKey(key));
+            }
         }}.run();
         refreshMaster(key);
 //        if (current == value

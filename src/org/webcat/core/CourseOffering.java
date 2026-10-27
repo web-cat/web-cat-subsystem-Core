@@ -256,8 +256,9 @@ public class CourseOffering
     @Override
     public boolean accessibleByUser(User user)
     {
-        return isStaff(user);
-    }
+        // return isStaff(user);
+        return isInstructor(user);
+     }
 
 
     // ----------------------------------------------------------

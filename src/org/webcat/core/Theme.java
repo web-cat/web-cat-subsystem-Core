@@ -1,5 +1,5 @@
 /*==========================================================================*\
- |  Copyright (C) 2008-2018 Virginia Tech
+ |  Copyright (C) 2008-2023 Virginia Tech
  |
  |  This file is part of Web-CAT.
  |
@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 import org.webcat.core.messaging.UnexpectedExceptionMessage;
 import org.webcat.woextensions.ECAction;
+import org.webcat.woextensions.WCCookie;
 import static org.webcat.woextensions.ECAction.run;
 import org.webcat.woextensions.WCResourceManager;
 import com.webobjects.appserver.WOContext;
-import com.webobjects.appserver.WOCookie;
 import com.webobjects.eocontrol.EOEditingContext;
 import com.webobjects.eocontrol.EOGlobalID;
 import com.webobjects.foundation.NSArray;
@@ -186,8 +186,8 @@ public class Theme
     public void setAsLastUsedThemeInContext(WOContext context)
     {
         String path = context.urlWithRequestHandlerKey(null, null, null);
-        WOCookie cookie = new WOCookie(COOKIE_LAST_USED_THEME, dirName(), path,
-                null, ONE_YEAR, false);
+        WCCookie cookie = new WCCookie(COOKIE_LAST_USED_THEME, dirName(), path,
+                null, ONE_YEAR);
         context.response().addCookie(cookie);
     }
 
