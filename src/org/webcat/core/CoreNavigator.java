@@ -159,7 +159,7 @@ public class CoreNavigator
                     selectionsParent.forceNavigatorSelection());
             }
 
-            Semester semester = selectionsParent.coreSelections().semester();
+            Semester semester = selectionsParent.selectedSemester();
             if (semester != null)
             {
                 selectedSemester =
@@ -167,7 +167,7 @@ public class CoreNavigator
             }
 
             // Handle course preference
-            Course course = selectionsParent.coreSelections().course();
+            Course course = selectionsParent.selectedCourse();
             if (course != null && allowsAllOfferingsForCourse)
             {
                 wantOfferingsForCourse = course;
@@ -175,7 +175,7 @@ public class CoreNavigator
             else
             {
                 CourseOffering co =
-                    selectionsParent.coreSelections().courseOffering();
+                    selectionsParent.selectedCourseOffering();
                 if (co != null)
                 {
                     selectedCourseOffering =
@@ -463,11 +463,13 @@ public class CoreNavigator
                 {
                     log.debug("saving semester selection = " + selected);
                 }
+                selectionsParent.setSelectedSemester(selected);
                 selectionsParent.coreSelections().setSemester(selected);
             }
             else if (allowsAllSemesters)
             {
                 log.debug("saving semester selection = null (all semesters)");
+                selectionsParent.setSelectedSemester(null);
                 selectionsParent.coreSelections().setSemester(null);
             }
         }
@@ -494,13 +496,15 @@ public class CoreNavigator
                         log.debug("saving course selection = " + co.course()
                             + " (all)");
                     }
+                    selectionsParent.setSelectedCourse(co.course());
                     selectionsParent.coreSelections()
                         .setCourseRelationship(co.course());
                     CourseOffering co2 =
-                        selectionsParent.coreSelections().courseOffering();
+                        selectionsParent.selectedCourseOffering();
                     if (co2 != null && co2.course() != co.course())
                     {
                         log.debug("saving course offering selection = null");
+                        selectionsParent.setSelectedCourseOffering(null);
                         selectionsParent.coreSelections()
                             .setCourseOfferingRelationship(null);
                     }
@@ -516,8 +520,10 @@ public class CoreNavigator
                         log.debug("saving course selection = null");
                         log.debug("saving course offering selection = " + co);
                     }
+                    selectionsParent.setSelectedCourse(null);
                     selectionsParent.coreSelections()
                         .setCourseRelationship(null);
+                    selectionsParent.setSelectedCourseOffering(co);
                     selectionsParent.coreSelections()
                         .setCourseOfferingRelationship(co);
                 }

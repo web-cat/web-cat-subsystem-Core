@@ -102,6 +102,10 @@ public class WCCourseComponent
         }
         super.awake();
 //        coreSelections();
+        if (!courseSelectionsSeeded)
+        {
+            seedCourseSelections();
+        }
         if (log.isDebugEnabled())
         {
             log.debug("lateAwake(): end " + getClass().getName());
@@ -208,6 +212,135 @@ public class WCCourseComponent
 
     // ----------------------------------------------------------
     /**
+     * Access the currently selected semester for this page.
+     * @return the selected semester
+     */
+    public Semester selectedSemester()
+    {
+        if (selectedSemester == null && !courseSelectionsSeeded)
+        {
+            seedCourseSelections();
+        }
+        return selectedSemester;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sets the selected semester for this page.
+     * @param value the semester
+     */
+    public void setSelectedSemester(Semester value)
+    {
+        this.selectedSemester = value;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Access the currently selected course for this page.
+     * @return the selected course
+     */
+    public Course selectedCourse()
+    {
+        if (selectedCourse == null && selectedCourseOffering == null && !courseSelectionsSeeded)
+        {
+            seedCourseSelections();
+        }
+        return selectedCourse;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sets the selected course for this page.
+     * @param value the course
+     */
+    public void setSelectedCourse(Course value)
+    {
+        this.selectedCourse = value;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Access the currently selected course offering for this page.
+     * @return the selected course offering
+     */
+    public CourseOffering selectedCourseOffering()
+    {
+        if (selectedCourseOffering == null && selectedCourse == null && !courseSelectionsSeeded)
+        {
+            seedCourseSelections();
+        }
+        return selectedCourseOffering;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Sets the selected course offering for this page.
+     * @param value the course offering
+     */
+    public void setSelectedCourseOffering(CourseOffering value)
+    {
+        this.selectedCourseOffering = value;
+        if (value != null)
+        {
+            if (this.selectedCourse == null)
+            {
+                this.selectedCourse = value.course();
+            }
+            if (this.selectedSemester == null)
+            {
+                this.selectedSemester = value.semester();
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Seeds the page-level course selections from persistent preferences
+     * if the page does not already have an active selection.
+     */
+    protected void seedCourseSelections()
+    {
+        courseSelectionsSeeded = true;
+        if (selectedCourseOffering == null && selectedCourse == null)
+        {
+            CourseOffering co = coreSelections().courseOffering();
+            Course c = coreSelections().course();
+            if (co != null)
+            {
+                this.selectedCourseOffering = co;
+                if (this.selectedCourse == null)
+                {
+                    this.selectedCourse = co.course();
+                }
+                if (this.selectedSemester == null)
+                {
+                    this.selectedSemester = co.semester();
+                }
+            }
+            else if (c != null)
+            {
+                this.selectedCourse = c;
+            }
+        }
+        if (selectedSemester == null)
+        {
+            Semester sem = coreSelections().semester();
+            if (sem != null)
+            {
+                this.selectedSemester = sem;
+            }
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
      * This method determines whether any embedded navigator will
      * automatically pop up to force a selection and page reload.
      * The default implementation simply returns false, but is designed
@@ -220,7 +353,7 @@ public class WCCourseComponent
 
         // Check for required semester
         if (!allowsAllSemesters()
-            && coreSelections().semester() == null)
+            && selectedSemester() == null)
         {
             // Guess the most recent semester
             Semester best = bestMatchingSemester();
@@ -230,18 +363,20 @@ public class WCCourseComponent
             }
             else
             {
+                setSelectedSemester(best);
                 coreSelections().setSemester(best);
             }
         }
 
         // Check for required course
         if (!allowsAllOfferingsForCourse()
-            && coreSelections().courseOffering() == null)
+            && selectedCourseOffering() == null)
         {
             // Try to guess a course offering from the course
             CourseOffering bestOffering = bestMatchingCourseOffering();
             if (bestOffering != null)
             {
+                setSelectedCourseOffering(bestOffering);
                 coreSelections().setCourseOfferingRelationship(
                     bestOffering);
             }
@@ -286,10 +421,10 @@ public class WCCourseComponent
      */
     protected CourseOffering bestMatchingCourseOffering()
     {
-        CourseOffering bestOffering = coreSelections().courseOffering();
+        CourseOffering bestOffering = selectedCourseOffering();
         if (bestOffering == null)
         {
-            Course course = coreSelections().course();
+            Course course = selectedCourse();
             if (course != null)
             {
                 for (CourseOffering offering : user().enrolledIn())
@@ -380,6 +515,11 @@ public class WCCourseComponent
 
 
     //~ Instance/static variables .............................................
+
+    private Semester selectedSemester;
+    private Course selectedCourse;
+    private CourseOffering selectedCourseOffering;
+    private boolean courseSelectionsSeeded = false;
 
     private CoreSelectionsManager csm;
     private static final String CSM_KEY =
