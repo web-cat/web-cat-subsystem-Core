@@ -170,7 +170,6 @@ public class GitAuthenticationFilter extends BasicAuthenticationFilter
     @Override
     protected User validateUser(String username, String password, WCEC ec)
     {
-        System.out.println("GitAuthenticationFilter: username = '" + username + "', pass = '" + password + "'");
         if (password == null || password.trim().isEmpty())
         {
             return null;
