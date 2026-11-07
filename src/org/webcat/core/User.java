@@ -40,6 +40,8 @@ import com.webobjects.eocontrol.EOQualifier;
 import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSDictionary;
+import com.webobjects.foundation.NSMutableArray;
+import com.webobjects.foundation.NSTimestamp;
 import er.extensions.eof.ERXKey;
 import er.extensions.foundation.ERXArrayUtilities;
 
@@ -718,6 +720,45 @@ public class User
                 && ((PasswordManagingUserAuthenticator)authenticator)
                 .newRandomPassword(this);
         }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Generate a new personal access token for this user.
+     *
+     * @param name A descriptive name for the token (e.g. "VS Code Git", "Claude MCP")
+     * @param scopes A list of granted scopes (e.g. AccessToken.SCOPE_GIT_READ)
+     * @param expiresAt Optional expiration date (null for no expiration)
+     * @return GenerationResult containing the created AccessToken entity and the one-time raw token string
+     */
+    public AccessToken.GenerationResult generateAccessToken(
+        String name,
+        NSArray<String> scopes,
+        NSTimestamp expiresAt)
+    {
+        return AccessToken.generateToken(
+            editingContext(), this, name, scopes, expiresAt);
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Get all active (non-revoked, non-expired) access tokens for this user.
+     *
+     * @return NSArray of active AccessTokens
+     */
+    public NSArray<AccessToken> activeAccessTokens()
+    {
+        NSMutableArray<AccessToken> active = new NSMutableArray<AccessToken>();
+        for (AccessToken token : accessTokens())
+        {
+            if (token.isValid())
+            {
+                active.addObject(token);
+            }
+        }
+        return active;
     }
 
 

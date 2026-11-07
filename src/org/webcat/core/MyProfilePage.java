@@ -28,6 +28,7 @@ import com.webobjects.appserver.WOComponent;
 import com.webobjects.appserver.WOContext;
 import com.webobjects.appserver.WODisplayGroup;
 import com.webobjects.appserver.WOResponse;
+import com.webobjects.eocontrol.EOSortOrdering;
 import com.webobjects.foundation.NSArray;
 import com.webobjects.foundation.NSMutableArray;
 import com.webobjects.foundation.NSTimeZone;
@@ -57,6 +58,7 @@ public class MyProfilePage
     public MyProfilePage(WOContext context)
     {
         super(context);
+        selectedExpirationOption = defaultExpirationOption();
     }
 
 
@@ -83,6 +85,22 @@ public class MyProfilePage
     public EOBase              aRepositoryProvider;
     public int                 indexOfARepositoryProvider;
     public boolean             openThemes;
+
+    // Personal Access Tokens
+    public AccessToken         anAccessToken;
+    public int                 tokenIndex;
+    public String              aScope;
+    public String              newTokenName;
+    public ExpirationOption    anExpirationOption;
+    public ExpirationOption    selectedExpirationOption;
+    public boolean             scopeGitRead = true;
+    public boolean             scopeGitWrite = true;
+    public boolean             scopeApiRead = false;
+    public boolean             scopeApiWrite = false;
+    public boolean             scopeMcpRead = false;
+    public boolean             scopeMcpWrite = false;
+    public String              newlyGeneratedToken;
+    public boolean             openTokens;
 
 
     //~ Methods ...............................................................
@@ -423,6 +441,199 @@ public class MyProfilePage
     public String webdavURL()
     {
         return WebDAVRequestHandler.completeURLForPath(context(), null);
+    }
+
+
+    //~ Access Token Methods ..................................................
+
+    // ----------------------------------------------------------
+    /**
+     * Helper option for token expiration dropdown choices.
+     */
+    public static class ExpirationOption
+    {
+        private final String description;
+        private final Integer days; // null means no expiration
+
+        public ExpirationOption(String description, Integer days)
+        {
+            this.description = description;
+            this.days = days;
+        }
+
+        public String description()
+        {
+            return description;
+        }
+
+        public Integer days()
+        {
+            return days;
+        }
+    }
+
+
+    public static final NSArray<ExpirationOption> EXPIRATION_OPTIONS =
+        new NSArray<ExpirationOption>(new ExpirationOption[] {
+            new ExpirationOption("30 days", 30),
+            new ExpirationOption("60 days", 60),
+            new ExpirationOption("90 days (Recommended)", 90),
+            new ExpirationOption("180 days", 180),
+            new ExpirationOption("1 year", 365),
+            new ExpirationOption("No expiration", null)
+        });
+
+
+    // ----------------------------------------------------------
+    public NSArray<ExpirationOption> expirationOptions()
+    {
+        return EXPIRATION_OPTIONS;
+    }
+
+
+    // ----------------------------------------------------------
+    public static ExpirationOption defaultExpirationOption()
+    {
+        return EXPIRATION_OPTIONS.objectAtIndex(2); // 90 days
+    }
+
+
+    // ----------------------------------------------------------
+    public NSArray<AccessToken> sortedAccessTokens()
+    {
+        User u = user();
+        if (u == null)
+        {
+            return NSArray.emptyArray();
+        }
+        NSArray<AccessToken> tokens = u.accessTokens();
+        if (tokens == null || tokens.isEmpty())
+        {
+            return NSArray.emptyArray();
+        }
+        return EOSortOrdering.sortedArrayUsingKeyOrderArray(
+            tokens, AccessToken.created.ascs());
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean userHasTokens()
+    {
+        return !sortedAccessTokens().isEmpty();
+    }
+
+
+    // ----------------------------------------------------------
+    public boolean openTokens()
+    {
+        return openTokens || newlyGeneratedToken != null;
+    }
+
+
+    // ----------------------------------------------------------
+    public void setOpenTokens(boolean value)
+    {
+        openTokens = value;
+    }
+
+
+    // ----------------------------------------------------------
+    public WOComponent generateNewToken()
+    {
+        openTokens = true;
+        if (newTokenName == null || newTokenName.trim().isEmpty())
+        {
+            error("Please enter a name for the token.");
+            return null;
+        }
+
+        NSMutableArray<String> scopes = new NSMutableArray<String>();
+        if (scopeGitRead || scopeGitWrite)
+        {
+            scopes.addObject(AccessToken.SCOPE_GIT_READ);
+        }
+        if (scopeGitWrite)
+        {
+            scopes.addObject(AccessToken.SCOPE_GIT_WRITE);
+        }
+        if (scopeApiRead || scopeApiWrite)
+        {
+            scopes.addObject(AccessToken.SCOPE_API_READ);
+        }
+        if (scopeApiWrite)
+        {
+            scopes.addObject(AccessToken.SCOPE_API_WRITE);
+        }
+        if (scopeMcpRead || scopeMcpWrite)
+        {
+            scopes.addObject(AccessToken.SCOPE_MCP_READ);
+        }
+        if (scopeMcpWrite)
+        {
+            scopes.addObject(AccessToken.SCOPE_MCP_WRITE);
+        }
+
+        if (scopes.isEmpty())
+        {
+            error("Please select at least one scope for the token.");
+            return null;
+        }
+
+        NSTimestamp expiresAt = null;
+        if (selectedExpirationOption != null && selectedExpirationOption.days() != null)
+        {
+            expiresAt = (new NSTimestamp()).timestampByAddingGregorianUnits(
+                0, 0, selectedExpirationOption.days().intValue(), 0, 0, 0);
+        }
+
+        AccessToken.GenerationResult result = AccessToken.generateToken(
+            localContext(),
+            user(),
+            newTokenName.trim(),
+            scopes,
+            expiresAt);
+
+        localContext().saveChanges();
+
+        newlyGeneratedToken = result.rawToken;
+        confirmationMessage("Your new personal access token '" + newTokenName.trim()
+            + "' has been created.");
+
+        // Reset form inputs for next time
+        newTokenName = null;
+        scopeGitRead = true;
+        scopeGitWrite = true;
+        scopeApiRead = false;
+        scopeApiWrite = false;
+        scopeMcpRead = false;
+        scopeMcpWrite = false;
+        selectedExpirationOption = defaultExpirationOption();
+
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public WOComponent revokeToken()
+    {
+        openTokens = true;
+        if (anAccessToken != null)
+        {
+            String name = anAccessToken.name();
+            anAccessToken.revoke();
+            localContext().saveChanges();
+            confirmationMessage("The access token '" + name + "' has been revoked.");
+        }
+        return null;
+    }
+
+
+    // ----------------------------------------------------------
+    public WOComponent dismissNewToken()
+    {
+        newlyGeneratedToken = null;
+        openTokens = true;
+        return null;
     }
 
 

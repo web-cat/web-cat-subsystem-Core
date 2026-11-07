@@ -62,6 +62,13 @@ Email: WCTextBox {
     style = "width: 20em";
 }
 
+ExpirationPopUp: WOPopUpButton {
+    list          = expirationOptions;
+    item          = anExpirationOption;
+    selection     = selectedExpirationOption;
+    displayString = anExpirationOption.description;
+}
+
 EnrolledInCourses: WOConditional {
     condition = user.enrolledIn.count;
 }
@@ -209,6 +216,11 @@ TimeZone: WOPopUpButton {
     item   		  = zone;
     selection     = selectedZone;
     displayString = zone.printableName;
+}
+
+TokenNameInfo: org.webcat.core.PopUpInfo {
+    title   = "Personal Access Token Name";
+    message = "Provide a descriptive name to help identify what application, computer, or script is using this token (for example, &quot;MacBook VS Code&quot; or &quot;Claude MCP Agent&quot;).";
 }
 
 TR: org.webcat.core.TableRow {

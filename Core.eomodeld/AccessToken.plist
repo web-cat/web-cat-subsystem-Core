@@ -1,0 +1,102 @@
+{
+    attributes = (
+        {
+            allowsNull = N; 
+            columnName = created; 
+            name = created; 
+            prototypeName = dateTime; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = expiresAt; 
+            name = expiresAt; 
+            prototypeName = dateTime; 
+        }, 
+        {allowsNull = N; name = id; prototypeName = id; }, 
+        {
+            allowsNull = N; 
+            columnName = isRevoked; 
+            name = isRevoked; 
+            prototypeName = boolean; 
+            userInfo = {isScalar = true; scalarDefault = false; type = boolean; }; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = lastUsedAt; 
+            name = lastUsedAt; 
+            prototypeName = dateTime; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = lastUsedIp; 
+            name = lastUsedIp; 
+            prototypeName = tinyText; 
+        }, 
+        {
+            allowsNull = N; 
+            columnName = name; 
+            name = name; 
+            prototypeName = tinyText; 
+        }, 
+        {
+            allowsNull = Y; 
+            columnName = scopes; 
+            name = scopes; 
+            prototypeName = text; 
+        }, 
+        {
+            allowsNull = N; 
+            columnName = tokenHash; 
+            name = tokenHash; 
+            prototypeName = tinyText; 
+        }, 
+        {
+            allowsNull = N; 
+            columnName = tokenPrefix; 
+            name = tokenPrefix; 
+            prototypeName = tinyText; 
+        }, 
+        {
+            allowsNull = N; 
+            columnName = userId; 
+            name = userId; 
+            prototypeName = foreignId; 
+        }
+    ); 
+    attributesUsedForLocking = (
+        isRevoked, 
+        lastUsedIp, 
+        name, 
+        scopes, 
+        tokenHash, 
+        tokenPrefix, 
+        userId
+    ); 
+    className = "org.webcat.core.AccessToken"; 
+    classProperties = (
+        created, 
+        expiresAt, 
+        isRevoked, 
+        lastUsedAt, 
+        lastUsedIp, 
+        name, 
+        scopes, 
+        tokenHash, 
+        tokenPrefix, 
+        user
+    ); 
+    externalName = AccessToken; 
+    name = AccessToken; 
+    primaryKeyAttributes = (id); 
+    relationships = (
+        {
+            destination = User; 
+            isMandatory = Y; 
+            isToMany = N; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = id; sourceAttribute = userId; }); 
+            name = user; 
+        }
+    ); 
+}
+

@@ -370,6 +370,17 @@ public class CoreDatabaseUpdates
     }
 
 
+    // ----------------------------------------------------------
+    /**
+     * Add AccessToken table for user personal access / bearer tokens.
+     * @throws SQLException on error
+     */
+    public void updateIncrement21() throws SQLException
+    {
+        createAccessTokenTable();
+    }
+
+
     //~ Private Methods .......................................................
 
     // ----------------------------------------------------------
@@ -675,6 +686,37 @@ public class CoreDatabaseUpdates
                 + "OID INTEGER NOT NULL, userId INTEGER NOT NULL)");
             database().executeSQL(
                 "ALTER TABLE PasswordChangeRequest ADD PRIMARY KEY (OID)");
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create the AccessToken table, if needed.
+     * @throws SQLException on error
+     */
+    private void createAccessTokenTable() throws SQLException
+    {
+        if (!database().hasTable("AccessToken"))
+        {
+            log.info("creating table AccessToken");
+            database().executeSQL(
+                "CREATE TABLE AccessToken ("
+                + "OID INTEGER NOT NULL, "
+                + "userId INTEGER NOT NULL, "
+                + "name TINYTEXT NOT NULL, "
+                + "tokenHash TINYTEXT NOT NULL, "
+                + "tokenPrefix TINYTEXT NOT NULL, "
+                + "scopes TEXT, "
+                + "created DATETIME NOT NULL, "
+                + "expiresAt DATETIME, "
+                + "lastUsedAt DATETIME, "
+                + "lastUsedIp TINYTEXT, "
+                + "isRevoked BIT NOT NULL)");
+            database().executeSQL(
+                "ALTER TABLE AccessToken ADD PRIMARY KEY (OID)");
+            createIndexFor("AccessToken", "tokenHash(64)");
+            createIndexFor("AccessToken", "userId");
         }
     }
 

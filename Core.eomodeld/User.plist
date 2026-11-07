@@ -86,6 +86,7 @@
     className = "org.webcat.core.User"; 
     classProperties = (
         accessLevel, 
+        accessTokens, 
         authenticationDomain, 
         coreSelections, 
         email, 
@@ -112,6 +113,14 @@
     name = User; 
     primaryKeyAttributes = (id); 
     relationships = (
+        {
+            deleteRule = EODeleteRuleCascade; 
+            destination = AccessToken; 
+            isToMany = Y; 
+            joinSemantic = EOInnerJoin; 
+            joins = ({destinationAttribute = userId; sourceAttribute = id; }); 
+            name = accessTokens; 
+        }, 
         {
             destination = AuthenticationDomain; 
             isMandatory = Y; 

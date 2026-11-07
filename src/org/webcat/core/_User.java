@@ -211,6 +211,9 @@ public abstract class _User
     public static final ERXKey<org.webcat.core.Theme> theme =
         new ERXKey<org.webcat.core.Theme>(THEME_KEY);
     // To-many relationships ---
+    public static final String ACCESS_TOKENS_KEY = "accessTokens";
+    public static final ERXKey<org.webcat.core.AccessToken> accessTokens =
+        new ERXKey<org.webcat.core.AccessToken>(ACCESS_TOKENS_KEY);
     public static final String CORE_SELECTIONS_KEY = "coreSelections";
     public static final ERXKey<org.webcat.core.CoreSelections> coreSelections =
         new ERXKey<org.webcat.core.CoreSelections>(CORE_SELECTIONS_KEY);
@@ -1101,6 +1104,186 @@ public abstract class _User
         else
         {
             addObjectToBothSidesOfRelationshipWithKey( value, "theme" );
+        }
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Retrieve the entities pointed to by the <code>accessTokens</code>
+     * relationship.
+     * @return an NSArray of the entities in the relationship
+     */
+    @SuppressWarnings("unchecked")
+    public NSArray<org.webcat.core.AccessToken> accessTokens()
+    {
+        return (NSArray<org.webcat.core.AccessToken>)
+            storedValueForKey("accessTokens");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Replace the list of entities pointed to by the
+     * <code>accessTokens</code> relationship.
+     *
+     * @param value The new set of entities to relate to
+     */
+    public void setAccessTokens(
+        NSMutableArray<org.webcat.core.AccessToken>  value)
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug("setAccessTokens("
+                + value + "): was " + accessTokens());
+        }
+        takeStoredValueForKey(value, "accessTokens");
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>accessTokens</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>addToAccessTokensRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToAccessTokens( org.webcat.core.AccessToken value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToAccessTokens("
+                + value + "): was " + accessTokens() );
+        }
+        NSMutableArray<org.webcat.core.AccessToken> array =
+            (NSMutableArray<org.webcat.core.AccessToken>)accessTokens();
+        willChange();
+        array.addObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>accessTokens</code>
+     * relationship (DO NOT USE--instead, use
+     * <code>removeFromAccessTokensRelationship()</code>.
+     * This method is provided for WebObjects use.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromAccessTokens( org.webcat.core.AccessToken value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "RemoveFromAccessTokens("
+                + value + "): was " + accessTokens() );
+        }
+        NSMutableArray<org.webcat.core.AccessToken> array =
+            (NSMutableArray<org.webcat.core.AccessToken>)accessTokens();
+        willChange();
+        array.removeObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Add a new entity to the <code>accessTokens</code>
+     * relationship.
+     *
+     * @param value The new entity to relate to
+     */
+    public void addToAccessTokensRelationship( org.webcat.core.AccessToken value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "addToAccessTokensRelationship("
+                + value + "): was " + accessTokens() );
+        }
+        addObjectToBothSidesOfRelationshipWithKey(
+            value, "accessTokens" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove a specific entity from the <code>accessTokens</code>
+     * relationship.
+     *
+     * @param value The entity to remove from the relationship
+     */
+    public void removeFromAccessTokensRelationship( org.webcat.core.AccessToken value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "removeFromAccessTokensRelationship("
+                + value + "): was " + accessTokens() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "accessTokens" );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Create a brand new object that is a member of the
+     * <code>accessTokens</code> relationship.
+     *
+     * @return The new entity
+     */
+    public org.webcat.core.AccessToken createAccessTokensRelationship()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "createAccessTokensRelationship()" );
+        }
+        EOClassDescription eoClassDesc = EOClassDescription
+            .classDescriptionForEntityName( "AccessToken" );
+        EOEnterpriseObject eoObject = eoClassDesc
+            .createInstanceWithEditingContext( editingContext(), null );
+        editingContext().insertObject( eoObject );
+        addObjectToBothSidesOfRelationshipWithKey(
+            eoObject, "accessTokens" );
+        return (org.webcat.core.AccessToken)eoObject;
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove and then delete a specific entity that is a member of the
+     * <code>accessTokens</code> relationship.
+     *
+     * @param value The entity to remove from the relationship and then delete
+     */
+    public void deleteAccessTokensRelationship( org.webcat.core.AccessToken value )
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAccessTokensRelationship("
+                + value + "): was " + accessTokens() );
+        }
+        removeObjectFromBothSidesOfRelationshipWithKey(
+            value, "accessTokens" );
+        editingContext().deleteObject( value );
+    }
+
+
+    // ----------------------------------------------------------
+    /**
+     * Remove (and then delete, if owned) all entities that are members of the
+     * <code>accessTokens</code> relationship.
+     */
+    public void deleteAllAccessTokensRelationships()
+    {
+        if (log.isDebugEnabled())
+        {
+            log.debug( "deleteAllAccessTokensRelationships(): was "
+                + accessTokens() );
+        }
+        for (org.webcat.core.AccessToken object : accessTokens())
+        {
+            deleteAccessTokensRelationship(object);
         }
     }
 

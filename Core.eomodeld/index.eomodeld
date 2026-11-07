@@ -9,6 +9,7 @@
         username = ""; 
     }; 
     entities = (
+        {className = "org.webcat.core.AccessToken"; name = AccessToken; }, 
         {
             className = "org.webcat.core.AuthenticationDomain"; 
             name = AuthenticationDomain; 
